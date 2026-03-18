@@ -24,14 +24,14 @@
 
   <!-- Firebase Config — REPLACE with your new config after rotating your key -->
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
+   const firebaseConfig = {
+  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
   storageBucket: "veteran-career-builder.firebasestorage.app",
   messagingSenderId: "664123627374",
   appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-    };
+};
     firebase.initializeApp(firebaseConfig);
 
     // Firebase helpers used throughout the app
@@ -1086,23 +1086,23 @@ function App() {
   const buildExpSummary = () => {
     const milParts = milExperiences.map(e=>{
       const rolesStr = (e.mosRoles||[]).length
-        ? `Sub-roles: ${e.mosRoles.map(r=>`${r.title} (${r.duration})`).join(", ")}`
+        ? `Sub-roles: ${e.mosRoles.map(r=>r.title+" ("+r.duration+")").join(", ")}`
         : "";
       const awardsStr = (e.awards||[]).length ? `Awards: ${(e.awards||[]).join(", ")}` : "";
       const qualStr = [
-        e.asi?.length?`ASIs: ${e.asi.map(a=>`${a.code}(${a.desc})`).join(", ")}`:null,
-        e.sqi?.length?`SQIs: ${e.sqi.map(s=>`${s.code}(${s.desc})`).join(", ")}`:null,
+        e.asi?.length?`ASIs: ${e.asi.map(a=>a.code+"("+a.desc+")").join(", ")}`:null,
+        e.sqi?.length?`SQIs: ${e.sqi.map(s=>s.code+"("+s.desc+")").join(", ")}`:null,
         e.additionalDuties?.length?`Additional Duties: ${e.additionalDuties.join(", ")}`:null,
       ].filter(Boolean).join(" | ");
       const clearStr = e.clearanceLevel!=="None"
-        ? `Clearance: ${e.clearanceLevel} (${e.clearanceStatus})${e.polygraph!=="None"?` + ${e.polygraph} Poly`:""}`
+        ? `Clearance: ${e.clearanceLevel} (${e.clearanceStatus})${e.polygraph!=="None"?" + "+e.polygraph+" Poly":""}`
         : "No clearance";
-      return `[MILITARY] ${e.branch} | ${e.rank} | MOS: ${e.mos}${e.mosTitle?` (${e.mosTitle})`:""} | ${e.serviceType} | Unit: ${e.unit} | TOS: ${e.tos||"not listed"} | ${e.startDate||"?"}–${e.current?"Present":e.endDate||"?"} | ${clearStr}${qualStr?` | ${qualStr}`:""} | Duties: ${e.duties||"not listed"}${rolesStr?` | ${rolesStr}`:""}${awardsStr?` | ${awardsStr}`:""}${e.deployments?` | Deployments: ${e.deployments}`:""}`;
+      return `[MILITARY] ${e.branch} | ${e.rank} | MOS: ${e.mos}${e.mosTitle?" ("+e.mosTitle+")":""} | ${e.serviceType} | Unit: ${e.unit} | TOS: ${e.tos||"not listed"} | ${e.startDate||"?"}–${e.current?"Present":e.endDate||"?"} | ${clearStr}${qualStr?" | "+qualStr:""} | Duties: ${e.duties||"not listed"}${rolesStr?" | "+rolesStr:""}${awardsStr?" | "+awardsStr:""}${e.deployments?" | Deployments: "+e.deployments:""}`;
     });
     const civParts = civExperiences.map(e=>{
       const clearStr = (e.clearanceLevel&&e.clearanceLevel!=="None")
         ? `Clearance: ${e.clearanceLevel}`:"";
-      return `[${e.type.toUpperCase()}] ${e.jobTitle||"Role"} at ${e.employer||"Unknown"} | ${e.startDate||"?"}–${e.current?"Present":e.endDate||"?"} | Duties: ${e.duties||"not listed"}${clearStr?` | ${clearStr}`:""}`;
+      return `[${e.type.toUpperCase()}] ${e.jobTitle||"Role"} at ${e.employer||"Unknown"} | ${e.startDate||"?"}–${e.current?"Present":e.endDate||"?"} | Duties: ${e.duties||"not listed"}${clearStr?" | "+clearStr:""}`;
     });
     return [...milParts,...civParts].join("\n");
   };
@@ -1118,10 +1118,10 @@ function App() {
     const lines = milExp.map(e=>[
       `MOS/Rate: ${e.mos} (${e.mosTitle||"see title"})`,
       `Branch: ${e.branch} | Rank: ${e.rank} | Service: ${e.serviceType} | TOS: ${e.tos||"unknown"}`,
-      e.asi.length?`ASIs: ${e.asi.map(a=>`${a.code} – ${a.desc}`).join(", ")}`:null,
-      e.sqi.length?`SQIs: ${e.sqi.map(s=>`${s.code} – ${s.desc}`).join(", ")}`:null,
+      e.asi.length?`ASIs: ${e.asi.map(a=>a.code+" - "+a.desc).join(", ")}`:null,
+      e.sqi.length?`SQIs: ${e.sqi.map(s=>s.code+" - "+s.desc).join(", ")}`:null,
       e.additionalDuties.length?`Additional Duties: ${e.additionalDuties.join(", ")}`:null,
-      e.clearanceLevel!=="None"?`Clearance: ${e.clearanceLevel} ${e.clearanceStatus}${e.polygraph!=="None"?` (${e.polygraph} Poly)`:""}`:null,
+      e.clearanceLevel!=="None"?`Clearance: ${e.clearanceLevel} ${e.clearanceStatus}${e.polygraph!=="None"?" ("+e.polygraph+" Poly)":""}`:null,
       `Self-described duties: ${e.duties||"not yet entered"}`,
     ].filter(Boolean).join("\n")).join("\n\n---\n\n");
     const prompt = `A veteran has this military record:\n\n${lines}\n\nReturn ONLY valid JSON starting with { and ending with }. No markdown.\n{\n"summary": "3-sentence professional civilian summary",\n"roles": [{"mos":"code","title":"full title","whatYouDid":"2-3 plain English sentences about day-to-day work","transferableSkills":["skill1","skill2","skill3","skill4","skill5","skill6"],"resumeBullets":["bullet1","bullet2","bullet3","bullet4"]}],\n"qualifications": [{"code":"ASI/SQI code","name":"full name","civilianMeaning":"1 sentence civilian value","unlocks":"specific industries or roles this opens"}],\n"additionalDuties": [{"duty":"duty name","civilianEquivalent":"civilian job title or function","value":"1 sentence on why employers care"}]\n}`;
@@ -1235,7 +1235,7 @@ Use this exact structure:
     setL("resume",true);
     setResume("");
     const expText = buildExpSummary();
-    const eduText = education.map(e=>`${e.degree} in ${e.field} — ${e.institution} (${e.year})${e.pme?` | PME/Military Schools: ${e.pme}`:""}`).join("\n");
+    const eduText = education.map(e=>`${e.degree} in ${e.field} — ${e.institution} (${e.year})${e.pme?" | PME/Military Schools: "+e.pme:""}`).join("\n");
     try {
       const formatInstructions = {
         ats_chrono: "ATS CHRONOLOGICAL FORMAT: Simple clean layout. Standard section headers (Summary, Experience, Education, Skills, Certifications). Reverse chronological work history. No tables, no text boxes, no columns. Keyword-rich. ATS-safe fonts and structure.",
@@ -1250,7 +1250,7 @@ Use this exact structure:
         creative: "CREATIVE FORMAT: Use tasteful formatting with section color accents (use ASCII/text characters to simulate). Clear visual hierarchy. Creative but readable. Appropriate for design, media, and branding roles.",
       };
       const formatGuide = formatInstructions[resumeFormat] || formatInstructions.ats_chrono;
-      const prompt = `Create a complete professional resume for this veteran.\n\nFORMAT: ${formatGuide}\n\nCONTACT: ${personal.name} | ${personal.email} | ${personal.phone} | ${personal.location}${personal.linkedin?` | ${personal.linkedin}`:""}\nTARGET ROLE: ${target.title||"open"} | Industry: ${target.industry||"any"} | Keywords: ${target.keywords||"leadership, operations"}\n\nFULL EXPERIENCE:\n${expText}\n\nEDUCATION:\n${eduText}\n\nSKILLS: ${skills.technical}\nLEADERSHIP: ${skills.leadership}\nLANGUAGES: ${skills.languages}\nCERTIFICATIONS: ${skills.certs}\n\nCRITICAL INSTRUCTIONS:\n1. Translate ALL military jargon, MOS codes, ASIs, SQIs into civilian language\n2. ASIs and SQIs = advanced specialized training — each is a competitive differentiator, name them in civilian terms\n3. Additional duty qualifications = extra competencies — convert each to a civilian function\n4. Active security clearances = PREMIUM ASSET — feature prominently in header and skills section\n5. Reserve/Guard service concurrent with civilian job = dual-career professional with exceptional time management — highlight this strength\n6. Quantify EVERYTHING possible: team sizes, budgets, equipment values, mission counts, personnel trained\n7. Use powerful action verbs: Led, Commanded, Directed, Managed, Coordinated, Trained, Deployed, Maintained, Secured\n8. Make it ATS-friendly with relevant keywords for: ${target.title||"operations management, leadership, logistics"}\n9. Follow the specified format precisely\n\nWrite the complete ready-to-use resume now:`;
+      const prompt = `Create a complete professional resume for this veteran.\n\nFORMAT: ${formatGuide}\n\nCONTACT: ${personal.name} | ${personal.email} | ${personal.phone} | ${personal.location}${personal.linkedin?" | "+personal.linkedin:""}\nTARGET ROLE: ${target.title||"open"} | Industry: ${target.industry||"any"} | Keywords: ${target.keywords||"leadership, operations"}\n\nFULL EXPERIENCE:\n${expText}\n\nEDUCATION:\n${eduText}\n\nSKILLS: ${skills.technical}\nLEADERSHIP: ${skills.leadership}\nLANGUAGES: ${skills.languages}\nCERTIFICATIONS: ${skills.certs}\n\nCRITICAL INSTRUCTIONS:\n1. Translate ALL military jargon, MOS codes, ASIs, SQIs into civilian language\n2. ASIs and SQIs = advanced specialized training — each is a competitive differentiator, name them in civilian terms\n3. Additional duty qualifications = extra competencies — convert each to a civilian function\n4. Active security clearances = PREMIUM ASSET — feature prominently in header and skills section\n5. Reserve/Guard service concurrent with civilian job = dual-career professional with exceptional time management — highlight this strength\n6. Quantify EVERYTHING possible: team sizes, budgets, equipment values, mission counts, personnel trained\n7. Use powerful action verbs: Led, Commanded, Directed, Managed, Coordinated, Trained, Deployed, Maintained, Secured\n8. Make it ATS-friendly with relevant keywords for: ${target.title||"operations management, leadership, logistics"}\n9. Follow the specified format precisely\n\nWrite the complete ready-to-use resume now:`;
       const out = await callClaude(
         prompt,
         "You are a top-tier military-to-civilian resume writer. You have expert knowledge of military qualifications, ASIs, SQIs, and how to translate them into compelling civilian credentials.",
@@ -1263,6 +1263,8 @@ Use this exact structure:
       setResume("Error generating resume: " + (e.message || "Please check your API key and try again."));
       setL("resume",false);
     }
+  };
+
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
 
   const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","My Profile"];

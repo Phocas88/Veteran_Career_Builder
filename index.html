@@ -24,14 +24,14 @@
 
   <!-- Firebase Config — REPLACE with your new config after rotating your key -->
   <script>
-   const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+    const firebaseConfig = {
+      apiKey: "REPLACE_WITH_YOUR_NEW_API_KEY",
+      authDomain: "veteran-career-builder.firebaseapp.com",
+      projectId: "veteran-career-builder",
+      storageBucket: "veteran-career-builder.firebasestorage.app",
+      messagingSenderId: "664123627374",
+      appId: "REPLACE_WITH_YOUR_NEW_APP_ID"
+    };
     firebase.initializeApp(firebaseConfig);
 
     // Firebase helpers used throughout the app
@@ -845,6 +845,8 @@ function App() {
   const [translationData, setTranslationData] = useState(null);
   const [loading, setLoading] = useState({ translate:false, careers:false, resume:false, careerDetail:false });
   const [apiError, setApiError] = useState("");
+  const [careerError, setCareerError] = useState("");
+  const [resumeError, setResumeError] = useState("");
   const [copied, setCopied] = useState(false);
 
   // ── AUTH STATE ──
@@ -1110,42 +1112,103 @@ function App() {
   // ── TRANSLATE ──────────────────────────────────────────────────────────────
   const translateMOS = async () => {
     if (!isApiKeySet()) { setApiError("Please add your Anthropic API key to the HTML file to enable AI features."); return; }
-    const milExp = milExperiences;
-    if (!milExp.length) return;
+    if (!milExperiences.length) return;
     setApiError("");
-    setL("translate",true);
     setTranslationData(null);
-    const lines = milExp.map(e=>[
-      `MOS/Rate: ${e.mos} (${e.mosTitle||"see title"})`,
-      `Branch: ${e.branch} | Rank: ${e.rank} | Service: ${e.serviceType} | TOS: ${e.tos||"unknown"}`,
-      e.asi.length?`ASIs: ${e.asi.map(a=>a.code+" - "+a.desc).join(", ")}`:null,
-      e.sqi.length?`SQIs: ${e.sqi.map(s=>s.code+" - "+s.desc).join(", ")}`:null,
-      e.additionalDuties.length?`Additional Duties: ${e.additionalDuties.join(", ")}`:null,
-      e.clearanceLevel!=="None"?`Clearance: ${e.clearanceLevel} ${e.clearanceStatus}${e.polygraph!=="None"?" ("+e.polygraph+" Poly)":""}`:null,
-      `Self-described duties: ${e.duties||"not yet entered"}`,
-    ].filter(Boolean).join("\n")).join("\n\n---\n\n");
-    const prompt = `A veteran has this military record:\n\n${lines}\n\nReturn ONLY valid JSON starting with { and ending with }. No markdown.\n{\n"summary": "3-sentence professional civilian summary",\n"roles": [{"mos":"code","title":"full title","whatYouDid":"2-3 plain English sentences about day-to-day work","transferableSkills":["skill1","skill2","skill3","skill4","skill5","skill6"],"resumeBullets":["bullet1","bullet2","bullet3","bullet4"]}],\n"qualifications": [{"code":"ASI/SQI code","name":"full name","civilianMeaning":"1 sentence civilian value","unlocks":"specific industries or roles this opens"}],\n"additionalDuties": [{"duty":"duty name","civilianEquivalent":"civilian job title or function","value":"1 sentence on why employers care"}]\n}`;
+    setMosOut("");
+    setL("translate", true);
+
     try {
-      const raw = await callClaude(prompt,"You are a military career transition expert. Return ONLY valid JSON. No markdown, no backticks.");
-      const start = raw.indexOf("{"); const end = raw.lastIndexOf("}");
-      if(start===-1||end===-1) throw new Error("No JSON");
-      setTranslationData(JSON.parse(raw.slice(start,end+1)));
-    } catch {
-      setMosOut("Could not parse structured response. Please try again.");
+      const lines = milExperiences.map(e => {
+        const parts = [
+          "MOS/Rate: " + (e.mos||"unknown") + " (" + (e.mosTitle||"see title") + ")",
+          "Branch: " + e.branch + " | Rank: " + (e.rank||"not listed") + " | Service: " + (e.serviceType||"Active Duty") + " | TOS: " + (e.tos||"unknown"),
+          (e.asi&&e.asi.length) ? "ASIs: " + e.asi.map(a=>a.code+" - "+a.desc).join(", ") : null,
+          (e.sqi&&e.sqi.length) ? "SQIs: " + e.sqi.map(s=>s.code+" - "+s.desc).join(", ") : null,
+          (e.additionalDuties&&e.additionalDuties.length) ? "Additional Duties: " + e.additionalDuties.join(", ") : null,
+          (e.mosRoles&&e.mosRoles.length) ? "Roles held: " + e.mosRoles.map(r=>r.title+" ("+r.duration+")").join(", ") : null,
+          (e.awards&&e.awards.length) ? "Awards: " + e.awards.join(", ") : null,
+          (e.clearanceLevel&&e.clearanceLevel!=="None") ? "Clearance: " + e.clearanceLevel + " " + (e.clearanceStatus||"Active") : null,
+          "Duties: " + (e.duties||"not described"),
+        ];
+        return parts.filter(Boolean).join("
+");
+      }).join("
+
+---
+
+");
+
+      const prompt = "A veteran has this military background:
+
+" + lines + "
+
+" +
+        "Please provide a detailed civilian translation. Return ONLY a JSON object with NO markdown, no backticks, no extra text. Start with { and end with }.
+
+" +
+        "The JSON must have these exact keys:
+" +
+        "summary: a 3-sentence professional civilian summary paragraph
+" +
+        "roles: array of objects, one per military role, each with: mos (string), title (string), whatYouDid (string, 2-3 plain English sentences), transferableSkills (array of 6 strings), resumeBullets (array of 4 strong resume bullet points starting with action verbs)
+" +
+        "qualifications: array of objects for each ASI/SQI, each with: code, name, civilianMeaning, unlocks
+" +
+        "additionalDuties: array of objects for each additional duty, each with: duty, civilianEquivalent, value";
+
+      const raw = await callClaude(
+        prompt,
+        "You are an expert military-to-civilian career transition coach. You translate military experience into compelling civilian language. Always respond with valid JSON only — no markdown, no backticks, no explanation text before or after the JSON.",
+        2000
+      );
+
+      // Robust JSON extraction
+      const start = raw.indexOf("{");
+      const end = raw.lastIndexOf("}");
+      if (start === -1 || end === -1) {
+        throw new Error("Response did not contain valid JSON. Raw: " + raw.slice(0,200));
+      }
+      const parsed = JSON.parse(raw.slice(start, end + 1));
+      
+      // Ensure required fields exist with fallbacks
+      const result = {
+        summary: parsed.summary || "Your military background demonstrates strong leadership, discipline, and mission-focused expertise.",
+        roles: Array.isArray(parsed.roles) ? parsed.roles : [],
+        qualifications: Array.isArray(parsed.qualifications) ? parsed.qualifications : [],
+        additionalDuties: Array.isArray(parsed.additionalDuties) ? parsed.additionalDuties : [],
+      };
+      setTranslationData(result);
+
+    } catch(err) {
+      console.error("translateMOS error:", err);
+      setMosOut("Translation failed: " + (err.message || "Unknown error. Check your API key and try again."));
     }
-    setL("translate",false);
+    setL("translate", false);
   };
 
   // ── CAREERS ───────────────────────────────────────────────────────────────
   const findCareers = async () => {
     if (!isApiKeySet()) { setApiError("Please add your Anthropic API key to the HTML file to enable AI features."); return; }
     setApiError("");
+    setCareerError("");
     setL("careers",true);
     setCareers(null);
     setSelectedCareer(null);
     setCareerDetail(null);
     const summary = buildExpSummary();
-    const prompt = `A veteran has this background:\n${summary||"general military service"}\n\nTarget: ${target.title||"open"} | Industry: ${target.industry||"any"} | Keywords: ${target.keywords||"none"}\n\nReturn ONLY a valid JSON array of exactly 15 career objects. Start with [ and end with ]. No markdown, no backticks.\nInclude the FULL SPECTRUM: entry-level practical roles (truck driver CDL, electrician, welder, security officer, EMT, firefighter, corrections officer, postal worker, forklift operator) AND mid-level (project manager, law enforcement officer, logistics manager) AND senior/professional (intelligence analyst, operations director, IT manager). Include civilian, government, and defense/intel. Be realistic — veterans qualify for skilled trades, not just office jobs.\nEach object: {"title":"string","sector":"Civilian or Government or Defense/Intel","industry":"string","salaryRange":"$X-$Y","outlook":"High Growth or Stable or Emerging","match":"Excellent or Strong or Good","description":"2 sentences","whyFit":"1 sentence referencing their MOS/quals","topSkills":["s1","s2","s3"],"nextStep":"one concrete specific action step","clearanceBonus":false}`;
+    const prompt = "A veteran has this background:
+" + (summary||"general military service") +
+      "
+
+Target: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + " | Keywords: " + (target.keywords||"none") +
+      "
+
+Return ONLY a valid JSON array of 12 career objects. Start with [ end with ]. No markdown, no backticks, no extra text." +
+      "
+Include a realistic mix: entry-level trades (CDL truck driver, electrician, welder, security officer, EMT, firefighter), mid-level (project manager, logistics manager, law enforcement), and senior (intelligence analyst, operations director, IT manager). Civilian, government, AND defense/intel." +
+      '
+Each object must have exactly these keys: title, sector (Civilian or Government or Defense/Intel), industry, salaryRange, outlook (High Growth or Stable or Emerging), match (Excellent or Strong or Good), description, whyFit, topSkills (array of 3), nextStep, clearanceBonus (boolean)';
     try {
       const raw = await callClaude(prompt,"You are a career analyst for military-to-civilian transitions. Return ONLY a valid JSON array starting with [ and ending with ]. Include civilian, government, and defense/intel roles. No markdown.");
       const start = raw.indexOf("[");
@@ -1153,7 +1216,10 @@ function App() {
       if (start === -1 || end === -1) throw new Error("No JSON array");
       const parsed = JSON.parse(raw.slice(start, end + 1));
       setCareers(parsed);
-    } catch {
+    } catch(err) {
+      console.error("findCareers error:", err);
+      setCareerError("Career match failed: " + (err.message||"Check API key and try again."));
+      // Show fallback careers so UI isn't broken
       setCareers([
         {title:"Operations Manager",sector:"Civilian",industry:"Logistics / Supply Chain",salaryRange:"$65,000–$95,000",outlook:"Stable",match:"Excellent",description:"Oversees day-to-day business operations, manages teams, and ensures organizational efficiency. Military veterans excel here due to leadership and mission execution experience.",whyFit:"Command experience maps directly to managing civilian teams and operations.",topSkills:["Team Leadership","Process Improvement","Logistics"],nextStep:"Search 'Operations Manager veteran' on LinkedIn and Indeed.",clearanceBonus:false},
         {title:"Federal Law Enforcement Officer",sector:"Government",industry:"Federal Agency",salaryRange:"$55,000–$85,000",outlook:"Stable",match:"Strong",description:"Enforces federal laws and protects national interests at agencies like FBI, DEA, CBP, or Secret Service. Prior military service is a major hiring advantage.",whyFit:"Military training, discipline, and security background align with federal law enforcement.",topSkills:["Physical Fitness","Investigative Skills","Legal Knowledge"],nextStep:"Visit USAJOBS.gov and filter by law enforcement positions.",clearanceBonus:true},
@@ -1250,8 +1316,30 @@ Use this exact structure:
         creative: "CREATIVE FORMAT: Use tasteful formatting with section color accents (use ASCII/text characters to simulate). Clear visual hierarchy. Creative but readable. Appropriate for design, media, and branding roles.",
       };
       const formatGuide = formatInstructions[resumeFormat] || formatInstructions.ats_chrono;
-      const prompt = `Create a complete professional resume for this veteran.\n\nFORMAT: ${formatGuide}\n\nCONTACT: ${personal.name} | ${personal.email} | ${personal.phone} | ${personal.location}${personal.linkedin?" | "+personal.linkedin:""}\nTARGET ROLE: ${target.title||"open"} | Industry: ${target.industry||"any"} | Keywords: ${target.keywords||"leadership, operations"}\n\nFULL EXPERIENCE:\n${expText}\n\nEDUCATION:\n${eduText}\n\nSKILLS: ${skills.technical}\nLEADERSHIP: ${skills.leadership}\nLANGUAGES: ${skills.languages}\nCERTIFICATIONS: ${skills.certs}\n\nCRITICAL INSTRUCTIONS:\n1. Translate ALL military jargon, MOS codes, ASIs, SQIs into civilian language\n2. ASIs and SQIs = advanced specialized training — each is a competitive differentiator, name them in civilian terms\n3. Additional duty qualifications = extra competencies — convert each to a civilian function\n4. Active security clearances = PREMIUM ASSET — feature prominently in header and skills section\n5. Reserve/Guard service concurrent with civilian job = dual-career professional with exceptional time management — highlight this strength\n6. Quantify EVERYTHING possible: team sizes, budgets, equipment values, mission counts, personnel trained\n7. Use powerful action verbs: Led, Commanded, Directed, Managed, Coordinated, Trained, Deployed, Maintained, Secured\n8. Make it ATS-friendly with relevant keywords for: ${target.title||"operations management, leadership, logistics"}\n9. Follow the specified format precisely\n\nWrite the complete ready-to-use resume now:`;
-      const out = await callClaude(
+      const contact = (personal.name||"") + " | " + (personal.email||"") + " | " + (personal.phone||"") + " | " + (personal.location||"") + (personal.linkedin ? " | " + personal.linkedin : "");
+      const targetStr = (target.title||"open") + " | Industry: " + (target.industry||"any") + " | Keywords: " + (target.keywords||"leadership, operations");
+      const prompt = "Create a complete professional resume for this veteran.\n\n" +
+        "FORMAT: " + formatGuide + "\n\n" +
+        "CONTACT: " + contact + "\n" +
+        "TARGET ROLE: " + targetStr + "\n\n" +
+        "FULL EXPERIENCE:\n" + (expText||"Not provided") + "\n\n" +
+        "EDUCATION:\n" + (eduText||"Not provided") + "\n\n" +
+        "SKILLS: " + (skills.technical||"") + "\n" +
+        "LEADERSHIP: " + (skills.leadership||"") + "\n" +
+        "LANGUAGES: " + (skills.languages||"") + "\n" +
+        "CERTIFICATIONS: " + (skills.certs||"") + "\n\n" +
+        "CRITICAL INSTRUCTIONS:\n" +
+        "1. Translate ALL military jargon, MOS codes, ASIs, SQIs into plain civilian language\n" +
+        "2. Each ASI and SQI = specialized competitive credential, highlight by civilian name\n" +
+        "3. Additional duties = extra competencies, convert each to civilian function\n" +
+        "4. Active security clearances = PREMIUM ASSET, feature prominently\n" +
+        "5. Reserve/Guard concurrent with civilian work = dual-career professional, highlight\n" +
+        "6. Quantify everything: team sizes, budgets, equipment values, mission counts\n" +
+        "7. Strong action verbs: Led, Commanded, Managed, Coordinated, Trained, Deployed\n" +
+        "8. ATS-optimized with keywords for: " + (target.title||"operations, leadership, logistics") + "\n" +
+        "9. Follow the specified format precisely\n\n" +
+        "Write the complete ready-to-use resume now:";
+            const out = await callClaude(
         prompt,
         "You are a top-tier military-to-civilian resume writer. You have expert knowledge of military qualifications, ASIs, SQIs, and how to translate them into compelling civilian credentials.",
         3000
@@ -1951,11 +2039,18 @@ Use this exact structure:
             </div>
 
             {/* Translate button */}
-            <button className="btn-primary" onClick={translateMOS} disabled={loading.translate||milExperiences.length===0||!milExperiences.some(e=>e.mos||e.duties)}>
+            <button className="btn-primary" onClick={translateMOS} disabled={loading.translate||milExperiences.length===0}>
               {loading.translate?"Translating Your Service...":"🔄  Translate My Military Experience to Civilian Language"}
             </button>
 
-            {loading.translate&&<div className="loading"><div className="spin"/><span>Analyzing MOS, ASIs, SQIs, and qualifications...</span></div>}
+            {loading.translate&&<div className="loading"><div className="spin"/><span>Analyzing your service record...</span></div>}
+            {mosOut&&!loading.translate&&(
+              <div style={{background:"rgba(224,85,85,.12)",border:"1px solid rgba(224,85,85,.35)",borderRadius:"4px",padding:"1rem 1.2rem",marginTop:"1rem",fontSize:".88rem",color:"#f0a0a0",lineHeight:"1.6"}}>
+                <strong style={{display:"block",marginBottom:".3rem"}}>⚠ Could not complete translation</strong>
+                {mosOut}
+                <div style={{marginTop:".5rem",fontSize:".8rem",opacity:.8}}>Make sure your API key is set correctly and try again.</div>
+              </div>
+            )}
             {translationData&&!loading.translate&&(
               <div>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:".5rem",marginBottom:".75rem",marginTop:"1rem"}}>
@@ -2332,7 +2427,12 @@ Use this exact structure:
               {loading.careers?"Analyzing Your Full Qualifications Profile...":"🔍  Find My Best Career Matches"}
             </button>
 
-            {loading.careers&&<div className="loading"><div className="spin"/><span>Matching your MOS, clearances, ASIs, SQIs, and duties to civilian careers...</span></div>}
+            {loading.careers&&<div className="loading"><div className="spin"/><span>Analyzing your qualifications and finding career matches...</span></div>}
+            {careerError&&!loading.careers&&(
+              <div style={{background:"rgba(224,85,85,.12)",border:"1px solid rgba(224,85,85,.35)",borderRadius:"4px",padding:"1rem 1.2rem",marginTop:"1rem",fontSize:".88rem",color:"#f0a0a0"}}>
+                <strong>Career match error: </strong>{careerError}
+              </div>
+            )}
 
             {careers&&!loading.careers&&!selectedCareer&&(<>
               <div style={{marginTop:"1.1rem",marginBottom:".75rem",display:"flex",justifyContent:"space-between",alignItems:"flex-end",flexWrap:"wrap",gap:".5rem"}}>
@@ -2623,7 +2723,7 @@ Use this exact structure:
             <button className="btn-primary" onClick={genResume} disabled={loading.resume||!personal.name}>
               {loading.resume?"Crafting Your Resume...":`📄  Generate My ${RESUME_FORMATS.find(f=>f.id===resumeFormat)?.label||"Professional"} Resume`}
             </button>
-            {loading.resume&&<div className="loading"><div className="spin"/><span>Converting your full service record into a civilian resume...</span></div>}
+            {loading.resume&&<div className="loading"><div className="spin"/><span>Generating your resume — this may take 15-30 seconds...</span></div>}
             {resume&&!loading.resume&&(
               <div style={{marginTop:"1rem"}}>
                 <div className="resume-out">

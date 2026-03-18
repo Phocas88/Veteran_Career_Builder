@@ -17,6 +17,28 @@
     #root { min-height: 100vh; }
     body { margin: 0; background: #1e2d4e; }
   </style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase Config — REPLACE with your new config after rotating your key -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "REPLACE_WITH_YOUR_NEW_API_KEY",
+      authDomain: "veteran-career-builder.firebaseapp.com",
+      projectId: "veteran-career-builder",
+      storageBucket: "veteran-career-builder.firebasestorage.app",
+      messagingSenderId: "664123627374",
+      appId: "REPLACE_WITH_YOUR_NEW_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Firebase helpers used throughout the app
+    const fbAuth = firebase.auth();
+    const fbDb   = firebase.firestore();
+  </script>
+
 </head>
 <body>
   <div id="root"></div>
@@ -24,11 +46,11 @@
   <script type="text/babel" data-presets="react">
     const { useState, useEffect, useRef } = React;
 
-    // ── API KEY CONFIG ────────────────────────────────────────────────
-    // IMPORTANT: Before deploying publicly, replace this with your
-    // Vercel /api/chat proxy endpoint to keep your key secure.
-    // For local testing only: you can temporarily paste your key here.
-    const API_ENDPOINT = "/api/chat"; // Change to your proxy URL when deployed
+    // ── API ENDPOINT ─────────────────────────────────────────────────
+    // After deploying Firebase Functions, replace this URL with yours:
+    // "https://us-central1-veteran-career-builder.cloudfunctions.net/chat"
+    // For local testing with Firebase Emulator: "http://localhost:5001/veteran-career-builder/us-central1/chat"
+    const API_ENDPOINT = "https://us-central1-veteran-career-builder.cloudfunctions.net/chat";
     // ─────────────────────────────────────────────────────────────────
 
 // ─── STATIC DATA ─────────────────────────────────────────────────────────────
@@ -199,14 +221,14 @@ const MOS_DATA = {
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&display=swap');
 :root {
-  --gold:#c9a84c; --gold-light:#e8c97a; --gold-dim:rgba(201,168,76,0.32);
-  --navy:#1e2d4e; --navy2:#243560; --navy3:#2a3d70;
-  --slate:#a8b8d0; --text:#f2eedf; --dim:#90a0b8;
+  --gold:#c9a84c; --gold-light:#e8c97a; --gold-dim:rgba(201,168,76,0.35);
+  --navy:#2a3f6f; --navy2:#314878; --navy3:#3a5490;
+  --slate:#b8cce0; --text:#f8f4e8; --dim:#98adc4;
   --green:#4caf82; --red:#e05555; --blue:#5b9bd5; --purple:#a07cd6; --orange:#e09040;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#1e2d4e;font-family:'Crimson Pro',serif;color:var(--text);}
-.app{min-height:100vh;background:linear-gradient(160deg,#1e2d4e 0%,#243560 55%,#1e3530 100%);}
+body{background:#2a3f6f;font-family:'Crimson Pro',serif;color:var(--text);}
+.app{min-height:100vh;background:linear-gradient(160deg,#2a3f6f 0%,#314878 55%,#2a4a40 100%);}
 
 /* HEADER */
 .hdr{text-align:center;padding:2.2rem 1rem 1.8rem;position:relative;}
@@ -233,7 +255,7 @@ body{background:#1e2d4e;font-family:'Crimson Pro',serif;color:var(--text);}
 @keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 
 /* CARDS */
-.card{background:rgba(255,255,255,.07);border:1px solid var(--gold-dim);border-radius:4px;margin-bottom:1.1rem;overflow:hidden;}
+.card{background:rgba(255,255,255,.12);border:1px solid var(--gold-dim);border-radius:4px;margin-bottom:1.1rem;overflow:hidden;}
 .ch{background:rgba(201,168,76,.12);border-bottom:1px solid var(--gold-dim);padding:.75rem 1.1rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
 .ch h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.92rem;color:var(--gold);}
 .ch-sub{font-size:.68rem;color:var(--dim);letter-spacing:.07em;text-transform:uppercase;}
@@ -247,7 +269,7 @@ body{background:#1e2d4e;font-family:'Crimson Pro',serif;color:var(--text);}
 /* FIELDS */
 .field{display:flex;flex-direction:column;gap:.3rem;margin-bottom:.65rem;}
 .field label{font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--slate);font-weight:600;}
-.field input,.field select,.field textarea{background:rgba(255,255,255,.09);border:1px solid rgba(201,168,76,.32);border-radius:3px;color:var(--text);padding:.58rem .8rem;font-family:'Crimson Pro',serif;font-size:.93rem;transition:border-color .2s,background .2s;width:100%;}
+.field input,.field select,.field textarea{background:rgba(255,255,255,.14);border:1px solid rgba(201,168,76,.32);border-radius:3px;color:var(--text);padding:.58rem .8rem;font-family:'Crimson Pro',serif;font-size:.93rem;transition:border-color .2s,background .2s;width:100%;}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);background:rgba(201,168,76,.04);}
 .field select option{background:#0e1830;}
 .field textarea{resize:vertical;min-height:80px;line-height:1.65;}
@@ -262,7 +284,7 @@ body{background:#1e2d4e;font-family:'Crimson Pro',serif;color:var(--text);}
 @media(max-width:780px){.g3{grid-template-columns:1fr 1fr;}.g4{grid-template-columns:1fr 1fr;}}
 
 /* ENTRY */
-.entry{border:1px solid rgba(201,168,76,.14);border-radius:3px;padding:1rem;margin-bottom:.9rem;background:rgba(255,255,255,.05);}
+.entry{border:1px solid rgba(201,168,76,.14);border-radius:3px;padding:1rem;margin-bottom:.9rem;background:rgba(255,255,255,.14);}
 .etop{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;}
 .badge{font-size:.65rem;padding:.18rem .6rem;border-radius:2px;text-transform:uppercase;letter-spacing:.09em;font-weight:600;}
 .bm{background:rgba(91,155,213,.14);color:#7eb8f5;border:1px solid rgba(91,155,213,.28);}
@@ -291,7 +313,7 @@ body{background:#1e2d4e;font-family:'Crimson Pro',serif;color:var(--text);}
 .duty-chip .dx{cursor:pointer;color:var(--red);font-size:.78rem;opacity:.7;}
 .duty-chip .dx:hover{opacity:1;}
 .duty-suggest{display:flex;flex-wrap:wrap;gap:.28rem;margin-bottom:.4rem;}
-.duty-suggest-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:var(--dim);padding:.2rem .5rem;border-radius:2px;font-size:.7rem;cursor:pointer;transition:all .15s;font-family:'Crimson Pro',serif;}
+.duty-suggest-btn{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.1);color:var(--dim);padding:.2rem .5rem;border-radius:2px;font-size:.7rem;cursor:pointer;transition:all .15s;font-family:'Crimson Pro',serif;}
 .duty-suggest-btn:hover{border-color:rgba(160,124,214,.4);color:#c4a0f5;}
 
 /* CLEARANCE BLOCK */
@@ -319,14 +341,14 @@ body{background:#1e2d4e;font-family:'Crimson Pro',serif;color:var(--text);}
 .nav-row{display:flex;justify-content:space-between;margin-top:1.1rem;}
 
 /* OUTPUT */
-.out-box{background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.28);border-radius:4px;margin-top:1.1rem;overflow:hidden;}
+.out-box{background:rgba(255,255,255,.12);border:1px solid rgba(201,168,76,.28);border-radius:4px;margin-top:1.1rem;overflow:hidden;}
 .out-head{background:rgba(201,168,76,.14);border-bottom:1px solid rgba(201,168,76,.25);padding:.78rem 1.1rem;display:flex;justify-content:space-between;align-items:center;}
 .out-head h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.92rem;color:var(--gold);}
 .out-body{padding:1.4rem;white-space:pre-wrap;font-size:.88rem;line-height:1.88;color:#d0c8b8;}
 
 /* CAREER CARDS */
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:.9rem;margin-top:.9rem;}
-.ccard{background:rgba(255,255,255,.08);border:1px solid var(--gold-dim);border-radius:4px;padding:1rem;transition:border-color .2s,transform .2s;}
+.ccard{background:rgba(255,255,255,.13);border:1px solid var(--gold-dim);border-radius:4px;padding:1rem;transition:border-color .2s,transform .2s;}
 .ccard:hover{border-color:rgba(201,168,76,.48);transform:translateY(-2px);}
 .ccard h4{font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;font-size:.98rem;color:var(--gold-light);margin-bottom:.35rem;}
 .salary{font-size:1.05rem;font-weight:600;color:var(--green);margin:.25rem 0;}
@@ -363,7 +385,7 @@ body{background:#1e2d4e;font-family:'Crimson Pro',serif;color:var(--text);}
 .auth-head h2{font-family:'Bebas Neue',sans-serif;letter-spacing:.12em;font-size:1.5rem;background:linear-gradient(135deg,var(--gold),var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .auth-head p{font-size:.78rem;color:var(--slate);margin-top:.25rem;}
 .auth-body{padding:1.5rem;}
-.auth-toggle{display:flex;background:rgba(255,255,255,.08);border:1px solid var(--gold-dim);border-radius:3px;margin-bottom:1.2rem;overflow:hidden;}
+.auth-toggle{display:flex;background:rgba(255,255,255,.13);border:1px solid var(--gold-dim);border-radius:3px;margin-bottom:1.2rem;overflow:hidden;}
 .auth-toggle button{flex:1;padding:.5rem;background:transparent;border:none;color:var(--slate);font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.85rem;cursor:pointer;transition:all .2s;}
 .auth-toggle button.on{background:rgba(201,168,76,.15);color:var(--gold-light);}
 .auth-err{background:rgba(224,85,85,.1);border:1px solid rgba(224,85,85,.28);border-radius:3px;padding:.6rem .85rem;font-size:.82rem;color:#e08080;margin-bottom:.8rem;}
@@ -384,7 +406,7 @@ body{background:#1e2d4e;font-family:'Crimson Pro',serif;color:var(--text);}
 .prof-avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--navy);flex-shrink:0;}
 .prof-hero h2{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:1.2rem;color:var(--gold-light);}
 .prof-hero p{font-size:.8rem;color:var(--dim);margin-top:.1rem;}
-.saved-card{background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.28);border-radius:4px;padding:.9rem 1.1rem;margin-bottom:.6rem;transition:border-color .2s;}
+.saved-card{background:rgba(255,255,255,.12);border:1px solid rgba(201,168,76,.28);border-radius:4px;padding:.9rem 1.1rem;margin-bottom:.6rem;transition:border-color .2s;}
 .saved-card:hover{border-color:rgba(201,168,76,.38);}
 .saved-card h4{font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;font-size:.92rem;color:var(--gold-light);margin-bottom:.2rem;}
 .saved-card p{font-size:.78rem;color:var(--dim);line-height:1.45;}
@@ -396,25 +418,25 @@ body{background:#1e2d4e;font-family:'Crimson Pro',serif;color:var(--text);}
 .unsaved{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--orange);margin-left:.3rem;vertical-align:middle;}
 /* DATE PICKER */
 .date-picker{position:relative;}
-.date-display{background:rgba(255,255,255,.1);border:1px solid rgba(201,168,76,.32);border-radius:3px;color:var(--text);padding:.58rem .8rem;font-family:'Crimson Pro',serif;font-size:.93rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.date-display{background:rgba(255,255,255,.16);border:1px solid rgba(201,168,76,.32);border-radius:3px;color:var(--text);padding:.58rem .8rem;font-family:'Crimson Pro',serif;font-size:.93rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
 .date-display:hover{border-color:var(--gold);}
-.date-dropdown{position:absolute;top:calc(100% + 3px);left:0;background:#243560;border:1px solid rgba(201,168,76,.45);border-radius:4px;z-index:200;width:280px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.5);}
+.date-dropdown{position:absolute;top:calc(100% + 3px);left:0;background:#314878;border:1px solid rgba(201,168,76,.45);border-radius:4px;z-index:200;width:280px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.5);}
 .date-dropdown-head{background:rgba(201,168,76,.14);padding:.55rem .8rem;display:flex;justify-content:space-between;align-items:center;}
 .date-dropdown-head span{font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;color:var(--gold-light);font-size:.9rem;}
 .date-nav-btn{background:transparent;border:1px solid rgba(201,168,76,.32);color:var(--gold);padding:.18rem .5rem;border-radius:2px;cursor:pointer;font-size:.78rem;}
 .date-nav-btn:hover{background:rgba(201,168,76,.12);}
 .year-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.3rem;padding:.65rem;}
 .month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem;padding:.65rem;}
-.year-btn,.month-btn{background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.15);color:var(--text);padding:.38rem;border-radius:2px;cursor:pointer;font-size:.77rem;text-align:center;transition:all .15s;font-family:'Crimson Pro',serif;}
+.year-btn,.month-btn{background:rgba(255,255,255,.12);border:1px solid rgba(201,168,76,.15);color:var(--text);padding:.38rem;border-radius:2px;cursor:pointer;font-size:.77rem;text-align:center;transition:all .15s;font-family:'Crimson Pro',serif;}
 .year-btn:hover,.month-btn:hover{background:rgba(201,168,76,.14);border-color:rgba(201,168,76,.4);}
 .year-btn.sel,.month-btn.sel{background:rgba(201,168,76,.22);border-color:var(--gold);color:var(--gold-light);font-weight:600;}
 /* AUTOCOMPLETE */
-.autocomplete-list{position:absolute;top:100%;left:0;right:0;background:#243560;border:1px solid rgba(201,168,76,.42);border-top:none;border-radius:0 0 3px 3px;max-height:195px;overflow-y:auto;z-index:200;}
+.autocomplete-list{position:absolute;top:100%;left:0;right:0;background:#314878;border:1px solid rgba(201,168,76,.42);border-top:none;border-radius:0 0 3px 3px;max-height:195px;overflow-y:auto;z-index:200;}
 .autocomplete-item{padding:.48rem .8rem;font-size:.87rem;color:var(--text);cursor:pointer;transition:background .12s;}
 .autocomplete-item:hover{background:rgba(201,168,76,.16);}
 /* RESUME FORMAT PICKER */
 .format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:.55rem;margin-bottom:.75rem;}
-.format-card{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);border-radius:3px;padding:.7rem .85rem;cursor:pointer;transition:all .18s;}
+.format-card{background:rgba(255,255,255,.15);border:1px solid rgba(201,168,76,.2);border-radius:3px;padding:.7rem .85rem;cursor:pointer;transition:all .18s;}
 .format-card:hover{border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.07);}
 .format-card.sel{border-color:var(--gold);background:rgba(201,168,76,.13);}
 .format-card h4{font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;font-size:.86rem;color:var(--gold-light);margin-bottom:.22rem;}
@@ -428,7 +450,7 @@ body{background:#1e2d4e;font-family:'Crimson Pro',serif;color:var(--text);}
 .resume-out-head{background:#f5f2ea;border-bottom:1px solid #d8d0b8;padding:.7rem 1.1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.45rem;}
 .resume-out-head h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.9rem;color:#444;}
 /* TRANSLATION SECTIONS */
-.trans-section{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.22);border-radius:4px;margin-bottom:.85rem;overflow:hidden;}
+.trans-section{background:rgba(255,255,255,.15);border:1px solid rgba(201,168,76,.22);border-radius:4px;margin-bottom:.85rem;overflow:hidden;}
 .trans-section-head{background:rgba(91,155,213,.1);border-bottom:1px solid rgba(91,155,213,.2);padding:.62rem 1rem;display:flex;align-items:center;gap:.55rem;}
 .trans-section-head h4{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.87rem;color:#7eb8f5;}
 .trans-section-body{padding:.95rem;}
@@ -599,12 +621,159 @@ function UniversityInput({ value, onChange, placeholder }) {
 
 
 
+// ── AWARDS LIBRARY ──────────────────────────────────────────────────────────
+const AWARDS_LIBRARY = {
+  "Army": [
+    "Medal of Honor","Distinguished Service Cross","Silver Star","Defense Superior Service Medal",
+    "Legion of Merit","Soldier's Medal","Bronze Star Medal","Bronze Star Medal with Valor",
+    "Purple Heart","Meritorious Service Medal","Army Commendation Medal",
+    "Army Commendation Medal with Valor","Army Achievement Medal",
+    "Army Good Conduct Medal","National Defense Service Medal",
+    "Global War on Terrorism Expeditionary Medal","Global War on Terrorism Service Medal",
+    "Afghanistan Campaign Medal","Iraq Campaign Medal","Korean Defense Service Medal",
+    "Armed Forces Expeditionary Medal","Humanitarian Service Medal",
+    "Army Service Ribbon","Overseas Service Ribbon","Army Reserve Components Achievement Medal",
+    "Combat Infantryman Badge","Combat Action Badge","Combat Medical Badge",
+    "Expert Infantryman Badge","Expert Field Medical Badge","Air Assault Badge",
+    "Airborne Badge","Master Parachutist Badge","Ranger Tab","Special Forces Tab",
+    "Sapper Tab","Presidential Unit Citation","Valorous Unit Award",
+    "Army Superior Unit Award","Meritorious Unit Commendation",
+  ],
+  "Navy": [
+    "Medal of Honor","Navy Cross","Defense Superior Service Medal","Legion of Merit",
+    "Navy and Marine Corps Medal","Bronze Star Medal","Bronze Star Medal with Valor",
+    "Purple Heart","Meritorious Service Medal","Navy and Marine Corps Commendation Medal",
+    "Navy and Marine Corps Achievement Medal","Navy Good Conduct Medal",
+    "National Defense Service Medal","Global War on Terrorism Expeditionary Medal",
+    "Global War on Terrorism Service Medal","Afghanistan Campaign Medal","Iraq Campaign Medal",
+    "Armed Forces Expeditionary Medal","Navy Expeditionary Medal","Sea Service Deployment Ribbon",
+    "Navy and Marine Corps Overseas Service Ribbon","Naval Reserve Meritorious Service Medal",
+    "Combat Action Ribbon","Presidential Unit Citation","Navy Unit Commendation",
+    "Meritorious Unit Commendation","Navy E Ribbon","Enlisted Surface Warfare Specialist",
+    "Enlisted Aviation Warfare Specialist","Special Warfare Insignia (SEAL Trident)",
+    "Explosive Ordnance Disposal Badge","Diving Officer Insignia",
+  ],
+  "Marine Corps": [
+    "Medal of Honor","Navy Cross","Defense Superior Service Medal","Legion of Merit",
+    "Navy and Marine Corps Medal","Bronze Star Medal","Bronze Star Medal with Valor",
+    "Purple Heart","Meritorious Service Medal","Navy and Marine Corps Commendation Medal",
+    "Navy and Marine Corps Achievement Medal","Marine Corps Good Conduct Medal",
+    "National Defense Service Medal","Global War on Terrorism Expeditionary Medal",
+    "Afghanistan Campaign Medal","Iraq Campaign Medal","Combat Action Ribbon",
+    "Sea Service Deployment Ribbon","Marine Corps Overseas Service Ribbon",
+    "Presidential Unit Citation","Navy Unit Commendation","Meritorious Unit Commendation",
+    "Combat Infantryman Badge equivalent","Parachutist Badge","Combatant Diver Badge",
+    "Reconnaissance Diver Badge","Force Reconnaissance Badge",
+  ],
+  "Air Force": [
+    "Medal of Honor","Air Force Cross","Defense Superior Service Medal","Legion of Merit",
+    "Airman's Medal","Bronze Star Medal","Bronze Star Medal with Valor","Purple Heart",
+    "Meritorious Service Medal","Air Force Commendation Medal","Air Force Achievement Medal",
+    "Air Force Good Conduct Medal","National Defense Service Medal",
+    "Global War on Terrorism Expeditionary Medal","Global War on Terrorism Service Medal",
+    "Afghanistan Campaign Medal","Iraq Campaign Medal","Armed Forces Expeditionary Medal",
+    "Air Force Expeditionary Service Ribbon","Air Force Overseas Ribbon",
+    "Air Force Longevity Service Award","Air Force Training Ribbon",
+    "Combat Readiness Medal","Air and Space Campaign Medal",
+    "Presidential Unit Citation","Air Force Outstanding Unit Award",
+    "Air Force Organizational Excellence Award","Air Force Recognition Ribbon",
+    "Aerial Achievement Medal","Air Medal","Distinguished Flying Cross",
+  ],
+  "Space Force": [
+    "Medal of Honor","Legion of Merit","Bronze Star Medal","Purple Heart",
+    "Meritorious Service Medal","Space Force Commendation Medal","Space Force Achievement Medal",
+    "Space Force Good Conduct Medal","National Defense Service Medal",
+    "Global War on Terrorism Service Medal","Space Force Training Ribbon",
+    "Presidential Unit Citation","Space Force Unit Citation",
+  ],
+  "Coast Guard": [
+    "Medal of Honor","Coast Guard Cross","Defense Superior Service Medal","Legion of Merit",
+    "Coast Guard Medal","Bronze Star Medal","Purple Heart","Meritorious Service Medal",
+    "Coast Guard Commendation Medal","Coast Guard Achievement Medal",
+    "Coast Guard Good Conduct Medal","National Defense Service Medal",
+    "Global War on Terrorism Expeditionary Medal","Global War on Terrorism Service Medal",
+    "Afghanistan Campaign Medal","Iraq Campaign Medal","Armed Forces Expeditionary Medal",
+    "Coast Guard Expeditionary Medal","Coast Guard Sea Service Ribbon",
+    "Coast Guard Overseas Service Ribbon","Presidential Unit Citation",
+    "Coast Guard Unit Commendation","Coast Guard Meritorious Unit Commendation",
+    "Coast Guard Award","Rescue and Survival Swimmer Badge",
+  ],
+  "All Branches": [
+    "Defense Meritorious Service Medal","Joint Service Commendation Medal",
+    "Joint Service Achievement Medal","Joint Meritorious Unit Award",
+    "Prisoner of War Medal","Armed Forces Service Medal","Military Outstanding Volunteer Service Medal",
+    "NATO Medal","United Nations Medal","Multinational Force and Observers Medal",
+    "Inter-American Defense Board Medal",
+  ],
+};
+
+// ── SKILLS LIBRARY ──────────────────────────────────────────────────────────
+const SKILLS_LIBRARY = {
+  technical: [
+    "Weapons Qualification (Rifle/Pistol)","Vehicle Operation (wheeled)","Vehicle Operation (tracked)",
+    "Radio/Communications Systems","SINCGARS Radio","Satellite Communications",
+    "Night Vision Devices (NVDs)","Land Navigation","GPS/Digital Navigation",
+    "IED Detection/Counter-IED","Explosives Handling","Demolitions",
+    "Medical Triage/Combat First Aid","TCCC (Tactical Combat Casualty Care)",
+    "HAZMAT Handling","CBRN/NBC Detection","Forklift Operation","Crane Operation",
+    "Aircraft Ground Support","UAS/Drone Operation","Cybersecurity","Network Administration",
+    "IT Systems Administration","Programming/Software Development","Signal Intelligence (SIGINT)",
+    "Human Intelligence (HUMINT)","All-Source Intelligence Analysis","Geospatial Analysis",
+    "OSINT (Open Source Intelligence)","Imagery Analysis","Electronic Warfare",
+    "Fire Support/Artillery","Mortar Systems","Sniper/Long Range Marksmanship",
+    "Close Air Support (CAS)","Medevac/CASEVAC Procedures","Petroleum Operations",
+    "Supply Chain Management","Inventory Management Systems","Microsoft Office Suite",
+    "SharePoint","Geographic Information Systems (GIS)","AutoCAD","Adobe Suite",
+  ],
+  leadership: [
+    "Team Leadership (squad/team level)","Platoon Leadership","Company Leadership",
+    "Staff Officer Experience","Mission Planning","Operations Planning (OPORD)",
+    "Training Development and Delivery","Performance Counseling","Mentoring",
+    "Conflict Resolution","Cross-Cultural Communication","Negotiation",
+    "Budget Management","Resource Allocation","Risk Management","Crisis Management",
+    "Decision Making Under Pressure","Public Speaking/Briefing","Technical Writing",
+    "Project Management","Personnel Management","Scheduling and Coordination",
+    "Physical Fitness Training Leadership","Safety Management","Quality Control",
+    "Logistics Coordination","Emergency Management","Disaster Response",
+  ],
+};
+
+const CERTS_LIBRARY = [
+  "EMT-Basic (NREMT-B)","EMT-Intermediate","Paramedic (NREMT-P)",
+  "CompTIA Security+","CompTIA A+","CompTIA Network+","CompTIA CySA+",
+  "Certified Information Systems Security Professional (CISSP)",
+  "Certified Ethical Hacker (CEH)","AWS Certified Cloud Practitioner",
+  "Project Management Professional (PMP)","CAPM (Certified Associate PM)",
+  "Lean Six Sigma Green Belt","Lean Six Sigma Black Belt",
+  "CDL Class A (Commercial Driver's License)","CDL Class B",
+  "FAA Part 107 (UAS/Drone Pilot)","Private Pilot License","HAZMAT Endorsement",
+  "OSHA 10-Hour","OSHA 30-Hour","Certified Safety Professional (CSP)",
+  "Certified Protection Professional (CPP)","Physical Security Professional (PSP)",
+  "Certified Information Privacy Professional (CIPP)",
+  "Certified Fraud Examiner (CFE)","Certified Public Accountant (CPA)",
+  "Certified Financial Planner (CFP)","Real Estate License",
+  "Certified Government Financial Manager (CGFM)",
+  "Defense Acquisition Workforce Improvement Act (DAWIA) Level I/II/III",
+  "Contracting Officer Representative (COR) Certification",
+  "Secret Clearance","Top Secret Clearance","TS/SCI Clearance",
+  "DoD 8570 IAT Level I/II/III","DoD 8570 IAM Level I/II/III",
+  "Forklift Operator Certification","Crane Operator Certification",
+  "Welding Certification (AWS)","Electrician License",
+  "HVAC Certification","Plumbing License",
+  "Certified Nursing Assistant (CNA)","Licensed Practical Nurse (LPN)",
+  "Registered Nurse (RN)","Combat Medic Certification (68W)",
+];
+
 function newMilExp() {
-  return { id:Date.now(), type:"Military Service", branch:"Army", rank:"", mos:"", mosTitle:"", serviceType:"Active Duty",
-    unit:"", startDate:"", endDate:"", current:false, tos:"", duties:"", deployments:"", awards:"",
+  return { 
+    id:Date.now(), type:"Military Service", branch:"Army", rank:"", mos:"", mosTitle:"", serviceType:"Active Duty",
+    unit:"", startDate:"", endDate:"", current:false, tos:"", duties:"",
+    mosRoles:[], // sub-roles held within this MOS
+    deployments:"", awards:[], customAward:"",
     clearanceLevel:"None", clearanceStatus:"Active", sciAccess:false, polygraph:"None",
     asi:[], sqi:[], additionalDuties:[], customDuty:"", customAsiCode:"", customAsiDesc:"", customSqiCode:"", customSqiDesc:"",
-    employer:"", jobTitle:"" };
+    employer:"", jobTitle:"" 
+  };
 }
 function newCivExp() {
   return { id:Date.now(), type:"Civilian Employment", branch:"", rank:"", mos:"", mosTitle:"", serviceType:"",
@@ -620,7 +789,10 @@ function App() {
   // ── APP STATE (must be declared first) ──
   const [tab, setTab] = useState(0);
   const [personal, setPersonal] = useState({ name:"", email:"", phone:"", location:"", linkedin:"" });
-  const [experiences, setExperiences] = useState([newMilExp()]);
+  const [milExperiences, setMilExperiences] = useState([newMilExp()]);
+  const [civExperiences, setCivExperiences] = useState([]);
+  // Keep a unified "experiences" for backwards compatibility with AI prompts
+  const experiences = [...milExperiences, ...civExperiences];
   const [education, setEducation] = useState([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
   const [skills, setSkills] = useState({ technical:"", leadership:"", languages:"", certs:"" });
   const [target, setTarget] = useState({ title:"", industry:"", keywords:"" });
@@ -648,150 +820,147 @@ function App() {
   const [savedResumes, setSavedResumes] = useState([]);
   const [viewingResume, setViewingResume] = useState(null);
 
-  // ── STORAGE HELPERS ──
-  const storageKey = (user, key) => `vcb_${user}_${key}`;
-
-  const loadProfile = (username) => {
-    try {
-      const raw = localStorage.getItem(storageKey(username, "profile"));
-      return raw ? JSON.parse(raw) : null;
-    } catch { return null; }
-  };
-
-  const saveProfile = (username, data) => {
-    try { localStorage.setItem(storageKey(username, "profile"), JSON.stringify(data)); return true; }
-    catch { return false; }
-  };
-
-  const loadResumes = (username) => {
-    try {
-      const raw = localStorage.getItem(storageKey(username, "resumes"));
-      return raw ? JSON.parse(raw) : [];
-    } catch { return []; }
-  };
-
-  const saveResumesToStorage = (username, list) => {
-    try { localStorage.setItem(storageKey(username, "resumes"), JSON.stringify(list)); return true; }
-    catch { return false; }
-  };
-
-  const getUserRecord = (username) => {
-    try {
-      const raw = localStorage.getItem(`vcb_user_${username}`);
-      return raw ? JSON.parse(raw) : null;
-    } catch { return null; }
-  };
-
-  const setUserRecord = (username, record) => {
-    try { localStorage.setItem(`vcb_user_${username}`, JSON.stringify(record)); }
-    catch {}
-  };
+  // ── FIREBASE STORAGE HELPERS ────────────────────────────────────────────────
 
   const showToast = (msg) => {
     setSaveToast(msg);
     setTimeout(() => setSaveToast(""), 2800);
   };
 
-  // ── LOAD SAVED SESSION (safe — all state declared above) ──
+  // ── LISTEN FOR FIREBASE AUTH STATE ──
   useEffect(() => {
-    try {
-      const sess = localStorage.getItem("vcb_session");
-      if (sess) {
-        const { username, name } = JSON.parse(sess);
-        const initials = name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
-        setCurrentUser({ username, name, initials });
-        const profile = loadProfile(username);
-        if (profile) {
-          if (profile.personal) setPersonal(profile.personal);
-          if (profile.experiences?.length) setExperiences(profile.experiences);
-          if (profile.education?.length) setEducation(profile.education);
-          if (profile.skills) setSkills(profile.skills);
-          if (profile.target) setTarget(profile.target);
-        }
-        setSavedResumes(loadResumes(username));
+    const unsubscribe = fbAuth.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        // User is signed in
+        const initials = (firebaseUser.displayName || firebaseUser.email)
+          .split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+        const user = {
+          uid: firebaseUser.uid,
+          name: firebaseUser.displayName || firebaseUser.email.split("@")[0],
+          email: firebaseUser.email,
+          initials,
+        };
+        setCurrentUser(user);
+        setHasUnsaved(false);
+        // Load their saved profile
+        try {
+          const doc = await fbDb.collection("profiles").doc(firebaseUser.uid).get();
+          if (doc.exists) {
+            const data = doc.data();
+            if (data.personal) setPersonal(data.personal);
+            if (data.milExperiences?.length) setMilExperiences(data.milExperiences);
+          if (data.civExperiences?.length) setCivExperiences(data.civExperiences);
+          // backwards compat
+          if (!data.milExperiences && data.experiences?.length) setMilExperiences(data.experiences);
+            if (data.education?.length) setEducation(data.education);
+            if (data.skills) setSkills(data.skills);
+            if (data.target) setTarget(data.target);
+          }
+          // Load saved resumes
+          const resumesSnap = await fbDb.collection("profiles").doc(firebaseUser.uid)
+            .collection("resumes").orderBy("createdAt","desc").limit(20).get();
+          setSavedResumes(resumesSnap.docs.map(d => d.data()));
+        } catch(e) { console.warn("Profile load error:", e); }
+      } else {
+        setCurrentUser(null);
+        setSavedResumes([]);
       }
-    } catch {}
+    });
+    return () => unsubscribe();
   }, []);
 
-  // Mark unsaved when key fields change (only if logged in)
+  // Mark unsaved when key fields change
   useEffect(() => { if (currentUser) setHasUnsaved(true); }, [personal, experiences, education, skills]);
 
-  // ── AUTH HANDLERS ──
-  const handleRegister = () => {
+  // ── AUTH HANDLERS (Firebase) ──
+  const handleRegister = async () => {
     setAuthErr(""); setAuthOk("");
-    if (!authForm.username.trim()) return setAuthErr("Username is required.");
     if (!authForm.name.trim()) return setAuthErr("Full name is required.");
+    if (!authForm.username.trim()) return setAuthErr("Email is required.");
     if (authForm.password.length < 6) return setAuthErr("Password must be at least 6 characters.");
     if (authForm.password !== authForm.confirmPassword) return setAuthErr("Passwords do not match.");
-    if (getUserRecord(authForm.username.toLowerCase())) return setAuthErr("That username is already taken.");
-    const username = authForm.username.toLowerCase().trim();
-    setUserRecord(username, { username, name: authForm.name.trim(), passwordHash: btoa(authForm.password) });
-    setAuthOk("Account created! You can now sign in.");
-    setAuthMode("login");
-    setAuthForm(f => ({ ...f, confirmPassword:"", password:"" }));
-  };
-
-  const handleLogin = () => {
-    setAuthErr(""); setAuthOk("");
-    const username = authForm.username.toLowerCase().trim();
-    const record = getUserRecord(username);
-    if (!record) return setAuthErr("Username not found.");
-    if (btoa(authForm.password) !== record.passwordHash) return setAuthErr("Incorrect password.");
-    const initials = record.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
-    const user = { username, name: record.name, initials };
-    setCurrentUser(user);
-    localStorage.setItem("vcb_session", JSON.stringify(user));
-    const profile = loadProfile(username);
-    if (profile) {
-      if (profile.personal) setPersonal(profile.personal);
-      if (profile.experiences?.length) setExperiences(profile.experiences);
-      if (profile.education?.length) setEducation(profile.education);
-      if (profile.skills) setSkills(profile.skills);
-      if (profile.target) setTarget(profile.target);
+    try {
+      const cred = await fbAuth.createUserWithEmailAndPassword(authForm.username.trim(), authForm.password);
+      await cred.user.updateProfile({ displayName: authForm.name.trim() });
+      setAuthOk("Account created! Signing you in...");
+      setShowAuth(false);
+      showToast("Welcome, " + authForm.name.split(" ")[0] + "! ✓");
+      setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
+    } catch(e) {
+      if (e.code === "auth/email-already-in-use") setAuthErr("An account with this email already exists.");
+      else if (e.code === "auth/invalid-email") setAuthErr("Please enter a valid email address.");
+      else setAuthErr(e.message);
     }
-    setSavedResumes(loadResumes(username));
-    setShowAuth(false);
-    setHasUnsaved(false);
-    setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
-    showToast("Welcome back, " + record.name.split(" ")[0] + "! ✓");
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("vcb_session");
+  const handleLogin = async () => {
+    setAuthErr(""); setAuthOk("");
+    try {
+      await fbAuth.signInWithEmailAndPassword(authForm.username.trim(), authForm.password);
+      setShowAuth(false);
+      setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
+    } catch(e) {
+      if (e.code === "auth/user-not-found") setAuthErr("No account found with that email.");
+      else if (e.code === "auth/wrong-password") setAuthErr("Incorrect password.");
+      else if (e.code === "auth/invalid-email") setAuthErr("Please enter a valid email address.");
+      else setAuthErr(e.message);
+    }
+  };
+
+  const handleLogout = async () => {
+    await fbAuth.signOut();
     setCurrentUser(null);
     setSavedResumes([]);
     setHasUnsaved(false);
+    // Reset form fields
+    setPersonal({ name:"", email:"", phone:"", location:"", linkedin:"" });
+    setExperiences([newMilExp()]);
+    setEducation([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
+    setSkills({ technical:"", leadership:"", languages:"", certs:"" });
   };
 
-  const handleSaveProfile = () => {
+  const handleSaveProfile = async () => {
     if (!currentUser) { setShowAuth(true); return; }
-    const ok = saveProfile(currentUser.username, { personal, experiences, education, skills, target });
-    if (ok) { showToast("Profile saved ✓"); setHasUnsaved(false); }
+    try {
+      await fbDb.collection("profiles").doc(currentUser.uid).set({
+        personal, milExperiences, civExperiences, education, skills, target,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+      showToast("Profile saved ✓");
+      setHasUnsaved(false);
+    } catch(e) { showToast("Save failed — check connection"); }
   };
 
-  const handleSaveResume = () => {
+  const handleSaveResume = async () => {
     if (!currentUser) { setShowAuth(true); return; }
     if (!resume) return;
-    const list = loadResumes(currentUser.username);
-    const entry = {
-      id: Date.now(),
-      title: target.title || "Untitled Resume",
-      industry: target.industry || "",
-      date: new Date().toLocaleDateString("en-US", { year:"numeric", month:"short", day:"numeric" }),
-      preview: resume.slice(0, 120) + "...",
-      content: resume,
-    };
-    const updated = [entry, ...list].slice(0, 20);
-    saveResumesToStorage(currentUser.username, updated);
-    setSavedResumes(updated);
-    showToast("Resume saved ✓");
+    try {
+      const id = Date.now().toString();
+      const entry = {
+        id,
+        title: target.title || "Untitled Resume",
+        industry: target.industry || "",
+        format: resumeFormat,
+        date: new Date().toLocaleDateString("en-US", { year:"numeric", month:"short", day:"numeric" }),
+        preview: resume.slice(0, 120) + "...",
+        content: resume,
+        createdAt: new Date().toISOString(),
+      };
+      await fbDb.collection("profiles").doc(currentUser.uid)
+        .collection("resumes").doc(id).set(entry);
+      setSavedResumes(prev => [entry, ...prev].slice(0, 20));
+      showToast("Resume saved to your profile ✓");
+    } catch(e) { showToast("Save failed — check connection"); }
   };
 
-  const handleDeleteResume = (id) => {
+  const handleDeleteResume = async (id) => {
     if (!currentUser) return;
-    const updated = savedResumes.filter(r => r.id !== id);
-    saveResumesToStorage(currentUser.username, updated);
-    setSavedResumes(updated);
+    try {
+      await fbDb.collection("profiles").doc(currentUser.uid)
+        .collection("resumes").doc(id.toString()).delete();
+      setSavedResumes(prev => prev.filter(r => r.id !== id));
+      showToast("Resume deleted");
+    } catch(e) { showToast("Delete failed"); }
   };
 
   const handleLoadResume = (r) => {
@@ -806,9 +975,16 @@ function App() {
   const setL = (k,v) => setLoading(l=>({...l,[k]:v}));
   const upP = (k,v) => setPersonal(p=>({...p,[k]:v}));
   const upT = (k,v) => setTarget(p=>({...p,[k]:v}));
-  const upExp = (id,k,v) => setExperiences(es=>es.map(e=>e.id===id
+  const upMilExp = (id,k,v) => setMilExperiences(es=>es.map(e=>e.id===id
     ? {...e,[k]:v,...(k==="mos"?{mosTitle:MOS_DATA[v.toUpperCase()]?.title||""}:{})}
     : e));
+  const upCivExp = (id,k,v) => setCivExperiences(es=>es.map(e=>e.id===id
+    ? {...e,[k]:v}
+    : e));
+  const upExp = (id,k,v) => {
+    if (milExperiences.find(e=>e.id===id)) upMilExp(id,k,v);
+    else upCivExp(id,k,v);
+  };
 
   // ASI helpers
   const addAsi = (id) => {
@@ -855,31 +1031,46 @@ function App() {
   };
   const rmDuty = (id,d) => { const exp=experiences.find(e=>e.id===id); upExp(id,"additionalDuties",exp.additionalDuties.filter(x=>x!==d)); };
 
-  const addExp = () => setExperiences(es=>[...es,newCivExp()]);
-  const rmExp = id => setExperiences(es=>es.filter(e=>e.id!==id));
+  const addMilExp = () => setMilExperiences(es=>[...es,newMilExp()]);
+  const addCivExp = () => setCivExperiences(es=>[...es,newCivExp()]);
+  const addExp = () => setCivExperiences(es=>[...es,newCivExp()]);
+  const rmExp = id => {
+    setMilExperiences(es=>es.filter(e=>e.id!==id));
+    setCivExperiences(es=>es.filter(e=>e.id!==id));
+  };
   const upEdu = (id,k,v) => setEducation(eds=>eds.map(e=>e.id===id?{...e,[k]:v}:e));
   const addEdu = () => setEducation(eds=>[...eds,{id:Date.now(),institution:"",degree:"",field:"",year:"",pme:""}]);
   const rmEdu = id => setEducation(eds=>eds.filter(e=>e.id!==id));
   const toggleCollapse = id => setCollapsed(c=>({...c,[id]:!c[id]}));
 
   // ── BUILD SUMMARIES ────────────────────────────────────────────────────────
-  const buildExpSummary = () => experiences.map(e=>{
-    const isMil = e.type==="Military Service"||e.type==="Reserve/Guard (concurrent with civilian)";
-    const qualStr = [
-      e.asi.length?`ASIs: ${e.asi.map(a=>`${a.code}(${a.desc})`).join(", ")}`:null,
-      e.sqi.length?`SQIs: ${e.sqi.map(s=>`${s.code}(${s.desc})`).join(", ")}`:null,
-      e.additionalDuties.length?`Additional Duties: ${e.additionalDuties.join(", ")}`:null,
-    ].filter(Boolean).join(" | ");
-    const clearStr = e.clearanceLevel!=="None"
-      ? `Clearance: ${e.clearanceLevel} (${e.clearanceStatus})${e.polygraph!=="None"?` + ${e.polygraph} Poly`:""}`
-      : "No clearance";
-    if (isMil) return `[${e.type}] ${e.branch} | ${e.rank} | MOS/Rate: ${e.mos}${e.mosTitle?` (${e.mosTitle})`:""} | ${e.serviceType} | Unit: ${e.unit} | TOS: ${e.tos||"not listed"} | ${e.startDate}–${e.current?"Present":e.endDate} | ${clearStr}${qualStr?` | ${qualStr}`:""} | Duties: ${e.duties}${e.deployments?` | Deployments: ${e.deployments}`:""}${e.awards?` | Awards: ${e.awards}`:""}`;
-    return `[${e.type}] ${e.jobTitle||e.rank} at ${e.employer||e.unit} | ${e.startDate}–${e.current?"Present":e.endDate} | ${clearStr} | Duties: ${e.duties}`;
-  }).join("\n");
+  const buildExpSummary = () => {
+    const milParts = milExperiences.map(e=>{
+      const rolesStr = (e.mosRoles||[]).length
+        ? `Sub-roles: ${e.mosRoles.map(r=>`${r.title} (${r.duration})`).join(", ")}`
+        : "";
+      const awardsStr = (e.awards||[]).length ? `Awards: ${(e.awards||[]).join(", ")}` : "";
+      const qualStr = [
+        e.asi?.length?`ASIs: ${e.asi.map(a=>`${a.code}(${a.desc})`).join(", ")}`:null,
+        e.sqi?.length?`SQIs: ${e.sqi.map(s=>`${s.code}(${s.desc})`).join(", ")}`:null,
+        e.additionalDuties?.length?`Additional Duties: ${e.additionalDuties.join(", ")}`:null,
+      ].filter(Boolean).join(" | ");
+      const clearStr = e.clearanceLevel!=="None"
+        ? `Clearance: ${e.clearanceLevel} (${e.clearanceStatus})${e.polygraph!=="None"?` + ${e.polygraph} Poly`:""}`
+        : "No clearance";
+      return `[MILITARY] ${e.branch} | ${e.rank} | MOS: ${e.mos}${e.mosTitle?` (${e.mosTitle})`:""} | ${e.serviceType} | Unit: ${e.unit} | TOS: ${e.tos||"not listed"} | ${e.startDate||"?"}–${e.current?"Present":e.endDate||"?"} | ${clearStr}${qualStr?` | ${qualStr}`:""} | Duties: ${e.duties||"not listed"}${rolesStr?` | ${rolesStr}`:""}${awardsStr?` | ${awardsStr}`:""}${e.deployments?` | Deployments: ${e.deployments}`:""}`;
+    });
+    const civParts = civExperiences.map(e=>{
+      const clearStr = (e.clearanceLevel&&e.clearanceLevel!=="None")
+        ? `Clearance: ${e.clearanceLevel}`:"";
+      return `[${e.type.toUpperCase()}] ${e.jobTitle||"Role"} at ${e.employer||"Unknown"} | ${e.startDate||"?"}–${e.current?"Present":e.endDate||"?"} | Duties: ${e.duties||"not listed"}${clearStr?` | ${clearStr}`:""}`;
+    });
+    return [...milParts,...civParts].join("\n");
+  };
 
   // ── TRANSLATE ──────────────────────────────────────────────────────────────
   const translateMOS = async () => {
-    const milExp = experiences.filter(e=>isMilType(e.type));
+    const milExp = milExperiences;
     if (!milExp.length) return;
     setL("translate",true);
     setTranslationData(null);
@@ -1035,7 +1226,7 @@ Use this exact structure:
               <div className="auth-head">
                 <div className="star">⭐</div>
                 <h2>Veteran Career Builder</h2>
-                <p>Save your profile, resumes, and career matches</p>
+                <p>Free account — save your profile, resumes &amp; career matches across any device</p>
               </div>
               <div className="auth-body">
                 <div className="auth-toggle">
@@ -1052,8 +1243,8 @@ Use this exact structure:
                   </div>
                 )}
                 <div className="field">
-                  <label>Username</label>
-                  <input placeholder="Choose a username" value={authForm.username} onChange={e=>setAuthForm(f=>({...f,username:e.target.value}))} onKeyDown={e=>e.key==="Enter"&&(authMode==="login"?handleLogin():handleRegister())}/>
+                  <label>Email Address</label>
+                  <input placeholder="your@email.com" value={authForm.username} onChange={e=>setAuthForm(f=>({...f,username:e.target.value}))} onKeyDown={e=>e.key==="Enter"&&(authMode==="login"?handleLogin():handleRegister())}/>
                 </div>
                 <div className="field">
                   <label>Password</label>
@@ -1067,6 +1258,33 @@ Use this exact structure:
                 )}
                 <button className="btn-primary" style={{marginTop:".5rem"}} onClick={authMode==="login"?handleLogin:handleRegister}>
                   {authMode==="login"?"Sign In →":"Create My Account →"}
+                </button>
+                {authMode==="login"&&(
+                  <div style={{textAlign:"center",marginTop:".6rem"}}>
+                    <button style={{background:"transparent",border:"none",color:"var(--dim)",fontSize:".76rem",cursor:"pointer",textDecoration:"underline",fontFamily:"'Crimson Pro',serif"}}
+                      onClick={async()=>{
+                        if(!authForm.username.trim()){setAuthErr("Enter your email first.");return;}
+                        try{
+                          await fbAuth.sendPasswordResetEmail(authForm.username.trim());
+                          setAuthOk("Password reset email sent! Check your inbox.");
+                        }catch(e){setAuthErr("Could not send reset email. Check the address.");}
+                      }}>Forgot password?</button>
+                  </div>
+                )}
+                <div style={{display:"flex",alignItems:"center",gap:".5rem",margin:".9rem 0 .5rem"}}>
+                  <div style={{flex:1,height:"1px",background:"rgba(255,255,255,.1)"}}/>
+                  <span style={{fontSize:".72rem",color:"var(--dim)",letterSpacing:".06em"}}>OR</span>
+                  <div style={{flex:1,height:"1px",background:"rgba(255,255,255,.1)"}}/>
+                </div>
+                <button style={{width:"100%",padding:".6rem",background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",borderRadius:"3px",color:"var(--text)",cursor:"pointer",fontSize:".88rem",fontFamily:"'Crimson Pro',serif",display:"flex",alignItems:"center",justifyContent:"center",gap:".5rem",transition:"all .2s"}}
+                  onClick={async()=>{
+                    try{
+                      const provider = new firebase.auth.GoogleAuthProvider();
+                      await fbAuth.signInWithPopup(provider);
+                      setShowAuth(false);
+                    }catch(e){setAuthErr("Google sign-in failed. Try email instead.");}
+                  }}>
+                  <span style={{fontSize:"1rem"}}>G</span> Continue with Google
                 </button>
                 <div className="auth-skip">
                   <button onClick={()=>setShowAuth(false)}>Continue without an account</button>
@@ -1125,7 +1343,7 @@ Use this exact structure:
           {/* ══ TAB 0: PROFILE ══ */}
           <div className={`panel ${tab===0?"on":""}`}>
             <div className="intro">
-              <strong>Welcome.</strong> Enter your service history below. Don't worry about translating military language — describe your duties in your own words and let the AI handle the translation. Fill in as much as you know; every field helps the AI build a better resume and career match.
+              <strong>Your service matters.</strong> Fill in your background below — your military experience, civilian work, education, and skills. The more you add, the better your career matches and resume will be. Take your time and be as detailed as you like.
             </div>
 
             {/* Personal */}
@@ -1145,282 +1363,433 @@ Use this exact structure:
               </div>}
             </div>
 
-            {/* Experience entries */}
-            <div className="card">
-              <div className="ch">
-                <h3>Service & Work History</h3>
-                <span className="ch-sub">Military · Reserve/Guard · Civilian · DoD</span>
+            
+            {/* ── MILITARY SERVICE SECTION ── */}
+            <div className="card" style={{borderColor:"rgba(91,155,213,.35)"}}>
+              <div className="ch" style={{background:"rgba(91,155,213,.1)"}}>
+                <h3 style={{color:"#7eb8f5"}}>Military Service History</h3>
+                <span className="ch-sub">All Branches Served</span>
               </div>
               <div className="cb">
-                {experiences.map((exp)=>(
+                {milExperiences.map((exp)=>(
+                  <div className="entry" key={exp.id}>
+                    <div className="etop">
+                      <span className="badge bm">{exp.branch||"Military Service"} · {exp.serviceType||"Active Duty"}</span>
+                      {milExperiences.length>1&&<button className="btn-rm" onClick={()=>rmExp(exp.id)}>Remove</button>}
+                    </div>
+
+                    {/* Branch / Rank / Service type */}
+                    <div className="g3">
+                      <div className="field">
+                        <label>Branch of Service</label>
+                        <select value={exp.branch} onChange={e=>upMilExp(exp.id,"branch",e.target.value)}>
+                          {BRANCHES.map(b=><option key={b}>{b}</option>)}
+                        </select>
+                      </div>
+                      <div className="field">
+                        <label>Rank at Separation / Current</label>
+                        <select value={exp.rank} onChange={e=>upMilExp(exp.id,"rank",e.target.value)}>
+                          <option value="">Select Rank</option>
+                          {(RANKS[exp.branch]||[]).map(r=><option key={r}>{r}</option>)}
+                        </select>
+                      </div>
+                      <div className="field">
+                        <label>Service Status</label>
+                        <select value={exp.serviceType} onChange={e=>upMilExp(exp.id,"serviceType",e.target.value)}>
+                          {SERVICE_TYPES.map(s=><option key={s}>{s}</option>)}
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* MOS / TOS / Unit */}
+                    <div className="g3">
+                      <div className="field">
+                        <label>Primary MOS / Rate / AFSC</label>
+                        <input placeholder="e.g. 11B, 68W, HM, 3D0" value={exp.mos}
+                          onChange={e=>upMilExp(exp.id,"mos",e.target.value.toUpperCase())}/>
+                        {exp.mosTitle&&<span className="mos-pill">↳ {exp.mosTitle}</span>}
+                        <span className="hint">Don't know the code? Type your job title.</span>
+                      </div>
+                      <div className="field">
+                        <label>Total Time in Service (TOS)</label>
+                        <input placeholder="e.g. 8 years, 2003–2011" value={exp.tos}
+                          onChange={e=>upMilExp(exp.id,"tos",e.target.value)}/>
+                      </div>
+                      <div className="field">
+                        <label>Unit / Command</label>
+                        <input placeholder="e.g. 1st Cav Div, VFA-103" value={exp.unit}
+                          onChange={e=>upMilExp(exp.id,"unit",e.target.value)}/>
+                      </div>
+                    </div>
+
+                    {/* Dates */}
+                    <div className="g2">
+                      <div className="field"><label>Start Date</label>
+                        <DatePicker value={exp.startDate} onChange={v=>upMilExp(exp.id,"startDate",v)} placeholder="Select start date"/>
+                      </div>
+                      <div className="field"><label>End Date</label>
+                        {exp.current
+                          ? <div style={{padding:".58rem .8rem",background:"rgba(255,255,255,.08)",borderRadius:"3px",fontSize:".88rem",color:"var(--dim)"}}>Present</div>
+                          : <DatePicker value={exp.endDate} onChange={v=>upMilExp(exp.id,"endDate",v)} placeholder="Select end date"/>
+                        }
+                      </div>
+                    </div>
+                    <div className="field" style={{flexDirection:"row",alignItems:"center",gap:".5rem",marginTop:"-.3rem",marginBottom:".6rem"}}>
+                      <input type="checkbox" id={"cur-"+exp.id} checked={exp.current}
+                        onChange={e=>upMilExp(exp.id,"current",e.target.checked)} style={{width:"auto"}}/>
+                      <label htmlFor={"cur-"+exp.id} style={{textTransform:"none",fontSize:".83rem",letterSpacing:"0",color:"var(--text)"}}>Currently serving</label>
+                    </div>
+
+                    <hr className="sdiv"/>
+
+                    {/* ── MOS SUB-ROLES ── */}
+                    <div className="qual-section">
+                      <span className="qual-label">Roles Held Under This MOS</span>
+                      <div className="hint" style={{marginBottom:".5rem"}}>
+                        Many veterans hold multiple official roles within their MOS — Truck Master, OPS Clerk, Motor Sergeant, Training NCO, etc. Add each role you held and how long.
+                      </div>
+                      {(exp.mosRoles||[]).map((role,ri)=>(
+                        <div key={ri} style={{display:"flex",gap:".5rem",alignItems:"flex-end",marginBottom:".4rem",background:"rgba(255,255,255,.05)",padding:".6rem .7rem",borderRadius:"3px",border:"1px solid rgba(201,168,76,.18)"}}>
+                          <div className="field" style={{flex:2,marginBottom:0}}>
+                            <label>Role / Position</label>
+                            <input placeholder="e.g. Truck Master, OPS Clerk, Motor Sergeant, Training NCO..."
+                              value={role.title}
+                              onChange={e=>{
+                                const updated=[...(exp.mosRoles||[])];
+                                updated[ri]={...updated[ri],title:e.target.value};
+                                upMilExp(exp.id,"mosRoles",updated);
+                              }}/>
+                          </div>
+                          <div className="field" style={{flex:1,marginBottom:0}}>
+                            <label>Duration</label>
+                            <input placeholder="e.g. 2 years, 6 months"
+                              value={role.duration}
+                              onChange={e=>{
+                                const updated=[...(exp.mosRoles||[])];
+                                updated[ri]={...updated[ri],duration:e.target.value};
+                                upMilExp(exp.id,"mosRoles",updated);
+                              }}/>
+                          </div>
+                          <button className="btn-rm" style={{marginBottom:".05rem"}}
+                            onClick={()=>{
+                              const updated=(exp.mosRoles||[]).filter((_,i)=>i!==ri);
+                              upMilExp(exp.id,"mosRoles",updated);
+                            }}>✕</button>
+                        </div>
+                      ))}
+                      <button className="btn-chip" style={{width:"100%",marginTop:".3rem"}}
+                        onClick={()=>upMilExp(exp.id,"mosRoles",[...(exp.mosRoles||[]),{title:"",duration:""}])}>
+                        + Add Role / Position Held
+                      </button>
+                    </div>
+
+                    <hr className="sdiv"/>
+
+                    {/* ── CLEARANCES ── */}
+                    <div className="clearance-block">
+                      <h4>🔐 Security Clearance</h4>
+                      <div className="g3">
+                        <div className="field">
+                          <label>Clearance Level</label>
+                          <select value={exp.clearanceLevel} onChange={e=>upMilExp(exp.id,"clearanceLevel",e.target.value)}>
+                            {CLEARANCE_LEVELS.map(c=><option key={c}>{c}</option>)}
+                          </select>
+                          {exp.clearanceLevel!=="None"&&<span className={getClearanceBadge(exp.clearanceLevel)} style={{marginTop:".3rem"}}>{exp.clearanceLevel}</span>}
+                        </div>
+                        <div className="field">
+                          <label>Status</label>
+                          <select value={exp.clearanceStatus} onChange={e=>upMilExp(exp.id,"clearanceStatus",e.target.value)}>
+                            {CLEARANCE_STATUS.map(s=><option key={s}>{s}</option>)}
+                          </select>
+                        </div>
+                        <div className="field">
+                          <label>Polygraph</label>
+                          <select value={exp.polygraph} onChange={e=>upMilExp(exp.id,"polygraph",e.target.value)}>
+                            {["None","Counterintelligence (CI) Poly","Full Scope (Lifestyle) Poly"].map(p=><option key={p}>{p}</option>)}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr className="sdiv"/>
+
+                    {/* ── ASI ── */}
+                    <div className="qual-section">
+                      <span className="qual-label">Additional Skill Identifiers (ASI)</span>
+                      <div className="duty-suggest">
+                        {COMMON_ASI.map(a=>(
+                          <button key={a.code} className="duty-suggest-btn"
+                            onClick={()=>{
+                              if(!(exp.asi||[]).find(x=>x.code===a.code))
+                                upMilExp(exp.id,"asi",[...(exp.asi||[]),a]);
+                            }}>{a.code} – {a.desc}</button>
+                        ))}
+                      </div>
+                      {(exp.asi||[]).length>0&&<div className="qual-grid">
+                        {(exp.asi||[]).map(a=>(
+                          <span className="qual-chip" key={a.code}>
+                            <span className="qcode">{a.code}</span><span>{a.desc}</span>
+                            <span className="qx" onClick={()=>upMilExp(exp.id,"asi",(exp.asi||[]).filter(x=>x.code!==a.code))}>✕</span>
+                          </span>
+                        ))}
+                      </div>}
+                      <div className="qual-add-row">
+                        <div className="field" style={{marginBottom:0}}>
+                          <label>ASI Code</label>
+                          <input placeholder="e.g. P1" value={exp.customAsiCode||""}
+                            onChange={e=>upMilExp(exp.id,"customAsiCode",e.target.value)} style={{maxWidth:"100px"}}/>
+                        </div>
+                        <div className="field" style={{marginBottom:0,flex:1}}>
+                          <label>Description</label>
+                          <input placeholder="e.g. Master Parachutist" value={exp.customAsiDesc||""}
+                            onChange={e=>upMilExp(exp.id,"customAsiDesc",e.target.value)}/>
+                        </div>
+                        <button className="btn-chip" onClick={()=>{
+                          const code=(exp.customAsiCode||"").trim().toUpperCase();
+                          const desc=(exp.customAsiDesc||"").trim();
+                          if(!code) return;
+                          if(!(exp.asi||[]).find(a=>a.code===code))
+                            upMilExp(exp.id,"asi",[...(exp.asi||[]),{code,desc}]);
+                          upMilExp(exp.id,"customAsiCode","");
+                          upMilExp(exp.id,"customAsiDesc","");
+                        }}>+ Add ASI</button>
+                      </div>
+                    </div>
+
+                    <hr className="sdiv"/>
+
+                    {/* ── SQI ── */}
+                    <div className="qual-section">
+                      <span className="qual-label">Skill Qualification Identifiers (SQI)</span>
+                      <div className="duty-suggest">
+                        {COMMON_SQI.map(s=>(
+                          <button key={s.code} className="duty-suggest-btn"
+                            onClick={()=>{
+                              if(!(exp.sqi||[]).find(x=>x.code===s.code))
+                                upMilExp(exp.id,"sqi",[...(exp.sqi||[]),s]);
+                            }}>{s.code} – {s.desc}</button>
+                        ))}
+                      </div>
+                      {(exp.sqi||[]).length>0&&<div className="qual-grid">
+                        {(exp.sqi||[]).map(s=>(
+                          <span className="qual-chip" key={s.code}>
+                            <span className="qcode">{s.code}</span><span>{s.desc}</span>
+                            <span className="qx" onClick={()=>upMilExp(exp.id,"sqi",(exp.sqi||[]).filter(x=>x.code!==s.code))}>✕</span>
+                          </span>
+                        ))}
+                      </div>}
+                    </div>
+
+                    <hr className="sdiv"/>
+
+                    {/* ── ADDITIONAL DUTIES ── */}
+                    <div className="qual-section">
+                      <span className="qual-label">Additional Duty Qualifications</span>
+                      <div className="duty-suggest">
+                        {COMMON_ADDL_DUTIES.map(d=>(
+                          <button key={d} className="duty-suggest-btn"
+                            onClick={()=>{
+                              if(!(exp.additionalDuties||[]).includes(d))
+                                upMilExp(exp.id,"additionalDuties",[...(exp.additionalDuties||[]),d]);
+                            }}>{d}</button>
+                        ))}
+                      </div>
+                      {(exp.additionalDuties||[]).length>0&&<div className="duty-grid">
+                        {(exp.additionalDuties||[]).map(d=>(
+                          <span className="duty-chip" key={d}>{d}
+                            <span className="dx" onClick={()=>upMilExp(exp.id,"additionalDuties",(exp.additionalDuties||[]).filter(x=>x!==d))}>✕</span>
+                          </span>
+                        ))}
+                      </div>}
+                      <div className="qual-add-row">
+                        <div className="field" style={{marginBottom:0,flex:1}}>
+                          <label>Custom Duty</label>
+                          <input placeholder="Add a duty not listed above..."
+                            value={exp.customDuty||""}
+                            onChange={e=>upMilExp(exp.id,"customDuty",e.target.value)}
+                            onKeyDown={e=>{
+                              if(e.key==="Enter"&&(exp.customDuty||"").trim()){
+                                upMilExp(exp.id,"additionalDuties",[...(exp.additionalDuties||[]),exp.customDuty.trim()]);
+                                upMilExp(exp.id,"customDuty","");
+                              }
+                            }}/>
+                        </div>
+                        <button className="btn-chip" onClick={()=>{
+                          if(!(exp.customDuty||"").trim()) return;
+                          upMilExp(exp.id,"additionalDuties",[...(exp.additionalDuties||[]),exp.customDuty.trim()]);
+                          upMilExp(exp.id,"customDuty","");
+                        }}>+ Add</button>
+                      </div>
+                    </div>
+
+                    <hr className="sdiv"/>
+
+                    {/* ── AWARDS ── */}
+                    <div className="qual-section">
+                      <span className="qual-label">Awards & Decorations</span>
+                      <div className="hint" style={{marginBottom:".5rem"}}>
+                        Select from the library or type your own. Awards are pulled from the {exp.branch} awards list.
+                      </div>
+                      {/* Awards library dropdown */}
+                      <div className="field" style={{marginBottom:".5rem"}}>
+                        <label>Add from Awards Library</label>
+                        <select value="" onChange={e=>{
+                          if(!e.target.value) return;
+                          if(!(exp.awards||[]).includes(e.target.value))
+                            upMilExp(exp.id,"awards",[...(exp.awards||[]),e.target.value]);
+                        }}>
+                          <option value="">-- Select an award to add --</option>
+                          {[...(AWARDS_LIBRARY[exp.branch]||[]),...(AWARDS_LIBRARY["All Branches"]||[])].map(a=>(
+                            <option key={a} value={a}>{a}</option>
+                          ))}
+                        </select>
+                      </div>
+                      {/* Selected awards chips */}
+                      {(exp.awards||[]).length>0&&(
+                        <div className="duty-grid" style={{marginBottom:".5rem"}}>
+                          {(exp.awards||[]).map((a,i)=>(
+                            <span className="duty-chip" key={i} style={{background:"rgba(201,168,76,.1)",border:"1px solid rgba(201,168,76,.28)",color:"var(--gold-light)"}}>
+                              🎖 {a}
+                              <span className="dx" onClick={()=>upMilExp(exp.id,"awards",(exp.awards||[]).filter((_,j)=>j!==i))}>✕</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {/* Custom award */}
+                      <div className="qual-add-row">
+                        <div className="field" style={{marginBottom:0,flex:1}}>
+                          <label>Add Unlisted Award</label>
+                          <input placeholder="Type an award not in the library..."
+                            value={exp.customAward||""}
+                            onChange={e=>upMilExp(exp.id,"customAward",e.target.value)}
+                            onKeyDown={e=>{
+                              if(e.key==="Enter"&&(exp.customAward||"").trim()){
+                                upMilExp(exp.id,"awards",[...(exp.awards||[]),exp.customAward.trim()]);
+                                upMilExp(exp.id,"customAward","");
+                              }
+                            }}/>
+                        </div>
+                        <button className="btn-chip" onClick={()=>{
+                          if(!(exp.customAward||"").trim()) return;
+                          upMilExp(exp.id,"awards",[...(exp.awards||[]),exp.customAward.trim()]);
+                          upMilExp(exp.id,"customAward","");
+                        }}>+ Add</button>
+                      </div>
+                    </div>
+
+                    <hr className="sdiv"/>
+
+                    {/* Deployments */}
+                    <div className="field">
+                      <label>Deployments / Operations (optional)</label>
+                      <textarea style={{minHeight:"55px"}}
+                        placeholder="e.g. OIF 2006–07, OEF 2011, EUCOM rotation..."
+                        value={exp.deployments||""} onChange={e=>upMilExp(exp.id,"deployments",e.target.value)}/>
+                    </div>
+
+                    {/* General Duties */}
+                    <div className="field">
+                      <label>General Duties & Responsibilities</label>
+                      <textarea style={{minHeight:"90px"}}
+                        placeholder="Describe your overall duties, team size, equipment managed, key missions, what a typical day looked like..."
+                        value={exp.duties||""} onChange={e=>upMilExp(exp.id,"duties",e.target.value)}/>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Add another branch button */}
+                <button className="btn-add" style={{borderColor:"rgba(91,155,213,.4)",color:"#7eb8f5"}}
+                  onClick={addMilExp}>
+                  + Add Other Military Branch / Service Period
+                </button>
+              </div>
+            </div>
+
+            {/* ── CIVILIAN, DOD & GOVERNMENT SECTION ── */}
+            <div className="card" style={{borderColor:"rgba(76,175,130,.28)"}}>
+              <div className="ch" style={{background:"rgba(76,175,130,.08)"}}>
+                <h3 style={{color:"#6fcf97"}}>Civilian, DoD & Government Employment</h3>
+                <span className="ch-sub">Include part-time, contract, and federal work</span>
+              </div>
+              <div className="cb">
+                {civExperiences.length===0&&(
+                  <div style={{textAlign:"center",padding:"1.2rem",color:"var(--dim)",fontSize:".88rem"}}>
+                    No civilian employment added yet. Click below to add a position.
+                  </div>
+                )}
+                {civExperiences.map((exp)=>(
                   <div className="entry" key={exp.id}>
                     <div className="etop">
                       <span className={getBadge(exp.type)}>{exp.type}</span>
-                      {experiences.length>1&&<button className="btn-rm" onClick={()=>rmExp(exp.id)}>Remove</button>}
+                      <button className="btn-rm" onClick={()=>rmExp(exp.id)}>Remove</button>
                     </div>
-
-                    {/* Type selector */}
                     <div className="field">
-                      <label>Experience Type</label>
-                      <select value={exp.type} onChange={e=>upExp(exp.id,"type",e.target.value)}>
-                        {EXP_TYPES.map(t=><option key={t}>{t}</option>)}
+                      <label>Employment Type</label>
+                      <select value={exp.type} onChange={e=>upCivExp(exp.id,"type",e.target.value)}>
+                        {["Civilian Employment","DoD/Government Contractor","Other Government (Federal/State)","Reserve/Guard (concurrent with civilian)"].map(t=><option key={t}>{t}</option>)}
                       </select>
                     </div>
-
-                    {/* ── MILITARY / RESERVE FIELDS ── */}
-                    {isMilType(exp.type) && (<>
-                      {exp.type==="Reserve/Guard (concurrent with civilian)" && (
-                        <div className="intro" style={{marginBottom:".7rem",fontSize:".82rem"}}>
-                          💡 <strong>Reserve/Guard tip:</strong> Balancing a civilian career and military service simultaneously is a major asset — the AI will highlight it as exceptional dedication and dual expertise.
-                        </div>
-                      )}
-                    {exp.type==="Military Service" && experiences.filter(e=>e.type==="Military Service").length===1 && (
-                        <div style={{fontSize:".75rem",color:"var(--dim)",marginBottom:".6rem",padding:".5rem .7rem",background:"rgba(255,255,255,.04)",borderRadius:"3px",border:"1px solid rgba(255,255,255,.08)"}}>
-                          💡 Served in more than one branch? (e.g. Air Force then Army, or Active Duty then Reserves) Use the <strong style={{color:"var(--gold-light)"}}>+ Add Another Role</strong> button below to add each service period separately.
-                        </div>
-                      )}
-
-                      {/* Branch / Rank / Service type */}
-                      <div className="g3">
-                        <div className="field">
-                          <label>Branch of Service</label>
-                          <select value={exp.branch} onChange={e=>upExp(exp.id,"branch",e.target.value)}>
-                            <option value="">Select</option>
-                            {BRANCHES.map(b=><option key={b}>{b}</option>)}
-                          </select>
-                        </div>
-                        <div className="field">
-                          <label>Rank at Separation / Current</label>
-                          <select value={exp.rank} onChange={e=>upExp(exp.id,"rank",e.target.value)}>
-                            <option value="">Select Rank</option>
-                            {(RANKS[exp.branch]||[]).map(r=><option key={r}>{r}</option>)}
-                          </select>
-                        </div>
-                        <div className="field">
-                          <label>Service Status</label>
-                          <select value={exp.serviceType} onChange={e=>upExp(exp.id,"serviceType",e.target.value)}>
-                            <option value="">Select</option>
-                            {SERVICE_TYPES.map(s=><option key={s}>{s}</option>)}
-                          </select>
-                        </div>
+                    <div className="g2">
+                      <div className="field"><label>Employer / Agency</label>
+                        <input placeholder="Company or organization name" value={exp.employer||""}
+                          onChange={e=>upCivExp(exp.id,"employer",e.target.value)}/>
                       </div>
-
-                      {/* MOS / TOS / Unit */}
-                      <div className="g3">
-                        <div className="field">
-                          <label>Primary MOS / Rate / AFSC</label>
-                          <input placeholder="e.g. 11B, 68W, HM, 3D0" value={exp.mos} onChange={e=>upExp(exp.id,"mos",e.target.value.toUpperCase())}/>
-                          {exp.mosTitle && <span className="mos-pill">↳ {exp.mosTitle}</span>}
-                          <span className="hint">Don't know the code? Type your job title instead.</span>
-                        </div>
-                        <div className="field">
-                          <label>Total Time in Service (TOS)</label>
-                          <input placeholder="e.g. 8 years, 2003–2011" value={exp.tos} onChange={e=>upExp(exp.id,"tos",e.target.value)}/>
-                          {exp.tos && <span className="tos-badge">🎖 {exp.tos}</span>}
-                        </div>
-                        <div className="field">
-                          <label>Unit / Command</label>
-                          <input placeholder="e.g. 1st Cav Div, VFA-103, 3rd SFG" value={exp.unit} onChange={e=>upExp(exp.id,"unit",e.target.value)}/>
-                        </div>
+                      <div className="field"><label>Your Job Title</label>
+                        <input placeholder="e.g. Logistics Manager, Security Analyst" value={exp.jobTitle||""}
+                          onChange={e=>upCivExp(exp.id,"jobTitle",e.target.value)}/>
                       </div>
-
-                      {/* Dates */}
-                      <div className="g2">
-                        <div className="field"><label>Start Date</label><DatePicker value={exp.startDate} onChange={v=>upExp(exp.id,"startDate",v)} placeholder="Select start date"/></div>
-                        <div className="field"><label>End Date</label>{exp.current ? <div style={{padding:".58rem .8rem",background:"rgba(255,255,255,.05)",borderRadius:"3px",fontSize:".88rem",color:"var(--dim)"}}>Present</div> : <DatePicker value={exp.endDate} onChange={v=>upExp(exp.id,"endDate",v)} placeholder="Select end date"/>}</div>
+                    </div>
+                    <div className="g2">
+                      <div className="field"><label>Start Date</label>
+                        <DatePicker value={exp.startDate} onChange={v=>upCivExp(exp.id,"startDate",v)} placeholder="Select start date"/>
                       </div>
-                      <div className="field" style={{flexDirection:"row",alignItems:"center",gap:".5rem",marginTop:"-.3rem",marginBottom:".6rem"}}>
-                        <input type="checkbox" id={`cur-${exp.id}`} checked={exp.current} onChange={e=>upExp(exp.id,"current",e.target.checked)} style={{width:"auto"}}/>
-                        <label htmlFor={`cur-${exp.id}`} style={{textTransform:"none",fontSize:".83rem",letterSpacing:"0",color:"var(--text)"}}>Currently serving</label>
+                      <div className="field"><label>End Date</label>
+                        {exp.current
+                          ? <div style={{padding:".58rem .8rem",background:"rgba(255,255,255,.08)",borderRadius:"3px",fontSize:".88rem",color:"var(--dim)"}}>Present</div>
+                          : <DatePicker value={exp.endDate} onChange={v=>upCivExp(exp.id,"endDate",v)} placeholder="Select end date"/>
+                        }
                       </div>
-
-                      <hr className="sdiv"/>
-
-                      {/* ── CLEARANCES ── */}
-                      <div className="clearance-block">
-                        <h4>🔐 Security Clearances & Access</h4>
-                        <div className="g3">
+                    </div>
+                    <div className="field" style={{flexDirection:"row",alignItems:"center",gap:".5rem",marginTop:"-.3rem",marginBottom:".5rem"}}>
+                      <input type="checkbox" id={"curc-"+exp.id} checked={exp.current||false}
+                        onChange={e=>upCivExp(exp.id,"current",e.target.checked)} style={{width:"auto"}}/>
+                      <label htmlFor={"curc-"+exp.id} style={{textTransform:"none",fontSize:".83rem",letterSpacing:"0",color:"var(--text)"}}>Currently employed here</label>
+                    </div>
+                    {(exp.clearanceLevel&&exp.clearanceLevel!=="None")&&(
+                      <div className="clearance-block" style={{marginBottom:".5rem"}}>
+                        <h4>🔐 Clearance for this Role</h4>
+                        <div className="g2">
                           <div className="field">
                             <label>Clearance Level</label>
-                            <select value={exp.clearanceLevel} onChange={e=>upExp(exp.id,"clearanceLevel",e.target.value)}>
-                              {CLEARANCE_LEVELS.map(c=><option key={c}>{c}</option>)}
-                            </select>
-                            {exp.clearanceLevel!=="None"&&<span className={getClearanceBadge(exp.clearanceLevel)} style={{marginTop:".3rem"}}>{exp.clearanceLevel}</span>}
-                          </div>
-                          <div className="field">
-                            <label>Clearance Status</label>
-                            <select value={exp.clearanceStatus} onChange={e=>upExp(exp.id,"clearanceStatus",e.target.value)}>
-                              {CLEARANCE_STATUS.map(s=><option key={s}>{s}</option>)}
-                            </select>
-                          </div>
-                          <div className="field">
-                            <label>Polygraph</label>
-                            <select value={exp.polygraph} onChange={e=>upExp(exp.id,"polygraph",e.target.value)}>
-                              {["None","Counterintelligence (CI) Poly","Full Scope (Lifestyle) Poly"].map(p=><option key={p}>{p}</option>)}
-                            </select>
-                          </div>
-                        </div>
-                        <div className="hint">Active TS/SCI or higher clearances are a significant hiring advantage — especially in defense, intelligence, and federal contracting.</div>
-                      </div>
-
-                      <hr className="sdiv"/>
-
-                      {/* ── ASI ── */}
-                      <div className="qual-section">
-                        <span className="qual-label">Additional Skill Identifiers (ASI) — Army / specialized qualifications</span>
-                        <div className="hint" style={{marginBottom:".5rem"}}>ASIs represent additional training beyond your primary MOS — Airborne, Ranger, Linguist, Master Gunner, etc. These are significant civilian differentiators.</div>
-
-                        {/* Common ASI quick-add */}
-                        <div className="duty-suggest">
-                          {COMMON_ASI.map(a=>(
-                            <button key={a.code} className="duty-suggest-btn" onClick={()=>addAsiCommon(exp.id,a)}>{a.code} – {a.desc}</button>
-                          ))}
-                        </div>
-
-                        {/* Current ASIs */}
-                        {exp.asi.length>0&&<div className="qual-grid">
-                          {exp.asi.map(a=>(
-                            <span className="qual-chip" key={a.code}>
-                              <span className="qcode">{a.code}</span>
-                              <span>{a.desc}</span>
-                              <span className="qx" onClick={()=>rmAsi(exp.id,a.code)}>✕</span>
-                            </span>
-                          ))}
-                        </div>}
-
-                        {/* Custom ASI */}
-                        <div className="qual-add-row">
-                          <div className="field" style={{marginBottom:0}}>
-                            <label>ASI Code</label>
-                            <input placeholder="e.g. P1" value={exp.customAsiCode} onChange={e=>upExp(exp.id,"customAsiCode",e.target.value)} style={{maxWidth:"100px"}}/>
-                          </div>
-                          <div className="field" style={{marginBottom:0,flex:1}}>
-                            <label>Description (optional)</label>
-                            <input placeholder="e.g. Master Parachutist" value={exp.customAsiDesc} onChange={e=>upExp(exp.id,"customAsiDesc",e.target.value)}/>
-                          </div>
-                          <button className="btn-chip" onClick={()=>addAsi(exp.id)}>+ Add ASI</button>
-                        </div>
-                      </div>
-
-                      <hr className="sdiv"/>
-
-                      {/* ── SQI ── */}
-                      <div className="qual-section">
-                        <span className="qual-label">Skill Qualification Identifiers (SQI)</span>
-                        <div className="hint" style={{marginBottom:".5rem"}}>SQIs indicate specialized roles: Special Forces (F/Q), Parachutist (P), Ranger (R), Instructor (X), Aviation (V), etc.</div>
-                        <div className="duty-suggest">
-                          {COMMON_SQI.map(s=>(
-                            <button key={s.code} className="duty-suggest-btn" onClick={()=>addSqiCommon(exp.id,s)}>{s.code} – {s.desc}</button>
-                          ))}
-                        </div>
-                        {exp.sqi.length>0&&<div className="qual-grid">
-                          {exp.sqi.map(s=>(
-                            <span className="qual-chip" key={s.code}>
-                              <span className="qcode">{s.code}</span>
-                              <span>{s.desc}</span>
-                              <span className="qx" onClick={()=>rmSqi(exp.id,s.code)}>✕</span>
-                            </span>
-                          ))}
-                        </div>}
-                        <div className="qual-add-row">
-                          <div className="field" style={{marginBottom:0}}>
-                            <label>SQI Code</label>
-                            <input placeholder="e.g. X" value={exp.customSqiCode} onChange={e=>upExp(exp.id,"customSqiCode",e.target.value)} style={{maxWidth:"100px"}}/>
-                          </div>
-                          <div className="field" style={{marginBottom:0,flex:1}}>
-                            <label>Description (optional)</label>
-                            <input placeholder="e.g. Instructor" value={exp.customSqiDesc} onChange={e=>upExp(exp.id,"customSqiDesc",e.target.value)}/>
-                          </div>
-                          <button className="btn-chip" onClick={()=>addSqi(exp.id)}>+ Add SQI</button>
-                        </div>
-                      </div>
-
-                      <hr className="sdiv"/>
-
-                      {/* ── ADDITIONAL DUTIES ── */}
-                      <div className="qual-section">
-                        <span className="qual-label">Additional Duty Qualifications</span>
-                        <div className="hint" style={{marginBottom:".5rem"}}>These are duties performed beyond your primary MOS — Armorer, Safety Officer, SHARP Coordinator, COR, UPL, etc. They show range and responsibility.</div>
-                        <div className="duty-suggest">
-                          {COMMON_ADDL_DUTIES.map(d=>(
-                            <button key={d} className="duty-suggest-btn" onClick={()=>addDuty(exp.id,d)}>{d}</button>
-                          ))}
-                        </div>
-                        {exp.additionalDuties.length>0&&<div className="duty-grid">
-                          {exp.additionalDuties.map(d=>(
-                            <span className="duty-chip" key={d}>{d}<span className="dx" onClick={()=>rmDuty(exp.id,d)}>✕</span></span>
-                          ))}
-                        </div>}
-                        <div className="qual-add-row">
-                          <div className="field" style={{marginBottom:0,flex:1}}>
-                            <label>Custom Duty</label>
-                            <input placeholder="Type a duty not listed above..." value={exp.customDuty} onChange={e=>upExp(exp.id,"customDuty",e.target.value)} onKeyDown={e=>e.key==="Enter"&&addDuty(exp.id,exp.customDuty)}/>
-                          </div>
-                          <button className="btn-chip" onClick={()=>addDuty(exp.id,exp.customDuty)}>+ Add</button>
-                        </div>
-                      </div>
-
-                      <hr className="sdiv"/>
-                    </>)}
-
-                    {/* ── CIVILIAN / DOD FIELDS ── */}
-                    {!isMilType(exp.type)&&(<>
-                      <div className="g2">
-                        <div className="field"><label>Employer / Agency</label><input placeholder="Company or organization name" value={exp.employer||""} onChange={e=>upExp(exp.id,"employer",e.target.value)}/></div>
-                        <div className="field"><label>Your Job Title</label><input placeholder="e.g. Logistics Manager, Security Analyst" value={exp.jobTitle||""} onChange={e=>upExp(exp.id,"jobTitle",e.target.value)}/></div>
-                      </div>
-                      <div className="g2">
-                        <div className="field"><label>Start Date</label><DatePicker value={exp.startDate} onChange={v=>upExp(exp.id,"startDate",v)} placeholder="Select start date"/></div>
-                        <div className="field"><label>End Date</label>{exp.current?<div style={{padding:".58rem .8rem",background:"rgba(255,255,255,.05)",borderRadius:"3px",fontSize:".88rem",color:"var(--dim)"}}>Present</div>:<DatePicker value={exp.endDate} onChange={v=>upExp(exp.id,"endDate",v)} placeholder="Select end date"/>}</div>
-                      </div>
-                      {/* Clearance for civilian/DoD roles */}
-                      <div className="clearance-block">
-                        <h4>🔐 Clearance for this Role (if applicable)</h4>
-                        <div className="g3">
-                          <div className="field">
-                            <label>Clearance Level</label>
-                            <select value={exp.clearanceLevel} onChange={e=>upExp(exp.id,"clearanceLevel",e.target.value)}>
+                            <select value={exp.clearanceLevel} onChange={e=>upCivExp(exp.id,"clearanceLevel",e.target.value)}>
                               {CLEARANCE_LEVELS.map(c=><option key={c}>{c}</option>)}
                             </select>
                           </div>
                           <div className="field">
                             <label>Status</label>
-                            <select value={exp.clearanceStatus} onChange={e=>upExp(exp.id,"clearanceStatus",e.target.value)}>
+                            <select value={exp.clearanceStatus||"Active"} onChange={e=>upCivExp(exp.id,"clearanceStatus",e.target.value)}>
                               {CLEARANCE_STATUS.map(s=><option key={s}>{s}</option>)}
-                            </select>
-                          </div>
-                          <div className="field">
-                            <label>Polygraph</label>
-                            <select value={exp.polygraph} onChange={e=>upExp(exp.id,"polygraph",e.target.value)}>
-                              {["None","CI Poly","Full Scope Poly"].map(p=><option key={p}>{p}</option>)}
                             </select>
                           </div>
                         </div>
                       </div>
-                    </>)}
-
-                    {/* Duties (all types) */}
-                    <div className="field" style={{marginTop:".5rem"}}>
-                      <label>What did you do? (your own words — don't translate, just describe)</label>
-                      <textarea
-                        placeholder={isMilType(exp.type)
-                          ? "Example: I led a 12-person team conducting route clearance and IED detection operations. I trained soldiers on vehicle maintenance, weapons qualification, and convoy procedures. We ran 150+ missions with zero casualties over a 9-month deployment..."
-                          : "Describe your main responsibilities, team size, projects, outcomes, anything you're proud of..."}
-                        value={exp.duties} onChange={e=>upExp(exp.id,"duties",e.target.value)} style={{minHeight:"95px"}}/>
+                    )}
+                    <div className="field" style={{marginBottom:".35rem"}}>
+                      <label style={{fontSize:".65rem",color:"var(--dim)",cursor:"pointer"}}
+                        onClick={()=>upCivExp(exp.id,"clearanceLevel",exp.clearanceLevel==="None"?"Secret":"None")}>
+                        + Add clearance for this role
+                      </label>
                     </div>
-                    {isMilType(exp.type)&&<div className="g2">
-                      <div className="field">
-                        <label>Deployments / Operations (optional)</label>
-                        <textarea style={{minHeight:"55px"}} placeholder="e.g. OIF 2006–07, OEF 2011, EUCOM rotation..." value={exp.deployments} onChange={e=>upExp(exp.id,"deployments",e.target.value)}/>
-                      </div>
-                      <div className="field">
-                        <label>Awards & Decorations (optional)</label>
-                        <textarea style={{minHeight:"55px"}} placeholder="e.g. Army Commendation Medal (x3), Combat Infantryman Badge, Meritorious Service Medal..." value={exp.awards} onChange={e=>upExp(exp.id,"awards",e.target.value)}/>
-                      </div>
-                    </div>}
+                    <div className="field">
+                      <label>Key Duties & Achievements</label>
+                      <textarea placeholder="Describe your main responsibilities, team size, projects, outcomes, accomplishments..."
+                        value={exp.duties||""} onChange={e=>upCivExp(exp.id,"duties",e.target.value)} style={{minHeight:"80px"}}/>
+                    </div>
                   </div>
                 ))}
-                <button className="btn-add" onClick={addExp}>+ Add Another Role</button>
+                <button className="btn-add" onClick={addCivExp}>
+                  + Add Civilian / DoD / Government Position
+                </button>
               </div>
             </div>
 
@@ -1448,17 +1817,76 @@ Use this exact structure:
             <div className="card">
               <div className="ch" onClick={()=>toggleCollapse("skills")}><h3>Skills & Certifications</h3><span className="chevron">▼</span></div>
               {!collapsed.skills&&<div className="cb">
-                <div className="g2">
-                  <div className="field"><label>Technical Skills</label><textarea placeholder="Weapons qualification, vehicle operation, medical procedures, radio/comms systems, IT tools, drone operation, logistics software..." value={skills.technical} onChange={e=>setSkills(s=>({...s,technical:e.target.value}))}/></div>
-                  <div className="field"><label>Leadership & Soft Skills</label><textarea placeholder="Team leadership, mission planning, training development, high-pressure decision-making, cross-cultural communication, budget management..." value={skills.leadership} onChange={e=>setSkills(s=>({...s,leadership:e.target.value}))}/></div>
-                  <div className="field"><label>Languages</label><input placeholder="Spanish (conversational), Arabic (basic), Pashto (DLPT 2/2)..." value={skills.languages} onChange={e=>setSkills(s=>({...s,languages:e.target.value}))}/></div>
-                  <div className="field"><label>Licenses & Civilian Certifications</label><input placeholder="EMT-B, CompTIA Sec+, PMP, CDL Class A, FAA Part 107, HAZMAT..." value={skills.certs} onChange={e=>setSkills(s=>({...s,certs:e.target.value}))}/></div>
+
+                {/* Technical Skills */}
+                <div className="field" style={{marginBottom:"1rem"}}>
+                  <label>Technical Skills</label>
+                  <div className="hint" style={{marginBottom:".4rem"}}>Click to add from common military technical skills, or type your own below.</div>
+                  <div className="duty-suggest">
+                    {(SKILLS_LIBRARY.technical||[]).map(s=>(
+                      <button key={s} className="duty-suggest-btn"
+                        onClick={()=>{
+                          if(!skills.technical.includes(s))
+                            setSkills(sk=>({...sk,technical:sk.technical?(sk.technical+", "+s):s}));
+                        }}>{s}</button>
+                    ))}
+                  </div>
+                  <textarea style={{marginTop:".4rem"}}
+                    placeholder="Your technical skills will appear here as you select them, or type your own..."
+                    value={skills.technical}
+                    onChange={e=>setSkills(s=>({...s,technical:e.target.value}))}/>
                 </div>
+
+                {/* Leadership Skills */}
+                <div className="field" style={{marginBottom:"1rem"}}>
+                  <label>Leadership & Soft Skills</label>
+                  <div className="hint" style={{marginBottom:".4rem"}}>Click to add from common military leadership skills.</div>
+                  <div className="duty-suggest">
+                    {(SKILLS_LIBRARY.leadership||[]).map(s=>(
+                      <button key={s} className="duty-suggest-btn"
+                        onClick={()=>{
+                          if(!skills.leadership.includes(s))
+                            setSkills(sk=>({...sk,leadership:sk.leadership?(sk.leadership+", "+s):s}));
+                        }}>{s}</button>
+                    ))}
+                  </div>
+                  <textarea style={{marginTop:".4rem"}}
+                    placeholder="Your leadership skills will appear here as you select them, or type your own..."
+                    value={skills.leadership}
+                    onChange={e=>setSkills(s=>({...s,leadership:e.target.value}))}/>
+                </div>
+
+                <div className="g2">
+                  <div className="field"><label>Languages</label>
+                    <input placeholder="e.g. Spanish (conversational), Arabic (basic), Pashto DLPT 2/2..."
+                      value={skills.languages} onChange={e=>setSkills(s=>({...s,languages:e.target.value}))}/>
+                  </div>
+                </div>
+
+                {/* Certifications */}
+                <div className="field">
+                  <label>Licenses & Certifications</label>
+                  <div className="hint" style={{marginBottom:".4rem"}}>Click to add common certifications held by veterans, or type your own.</div>
+                  <div className="duty-suggest">
+                    {CERTS_LIBRARY.map(c=>(
+                      <button key={c} className="duty-suggest-btn"
+                        onClick={()=>{
+                          if(!skills.certs.includes(c))
+                            setSkills(sk=>({...sk,certs:sk.certs?(sk.certs+", "+c):c}));
+                        }}>{c}</button>
+                    ))}
+                  </div>
+                  <input style={{marginTop:".4rem"}}
+                    placeholder="Selected certifications appear here, or type your own..."
+                    value={skills.certs}
+                    onChange={e=>setSkills(s=>({...s,certs:e.target.value}))}/>
+                </div>
+
               </div>}
             </div>
 
             {/* Translate button */}
-            <button className="btn-primary" onClick={translateMOS} disabled={loading.translate||!experiences.some(e=>isMilType(e.type))}>
+            <button className="btn-primary" onClick={translateMOS} disabled={loading.translate||milExperiences.length===0||!milExperiences.some(e=>e.mos||e.duties)}>
               {loading.translate?"Translating Your Service...":"🔄  Translate My Military Experience to Civilian Language"}
             </button>
 
@@ -1639,7 +2067,7 @@ Use this exact structure:
             </div>
 
             {/* ── QUALIFICATIONS PROFILE CARD ── */}
-            {experiences.filter(e=>isMilType(e.type)).map(exp=>(
+            {milExperiences.map(exp=>(
               <div className="card" key={exp.id} style={{borderColor:"rgba(201,168,76,.35)"}}>
                 <div className="ch" style={{background:"rgba(201,168,76,.1)"}}>
                   <h3>🎖️ {exp.branch} {exp.rank ? `— ${exp.rank}` : ""}</h3>
@@ -1788,7 +2216,7 @@ Use this exact structure:
                         <div style={{fontSize:".83rem",color:"var(--text)"}}>{exp.deployments}</div>
                         <div style={{fontSize:".73rem",color:"var(--dim)",marginTop:".3rem",fontStyle:"italic"}}>Demonstrates: adaptability, crisis leadership, cross-cultural operations, mission execution under pressure</div>
                       </div>}
-                      {exp.awards&&<div style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".65rem .85rem"}}>
+                      {(exp.awards||[]).length>0&&<div style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".65rem .85rem"}}>
                         <div style={{fontSize:".68rem",letterSpacing:".12em",textTransform:"uppercase",color:"var(--slate)",marginBottom:".3rem"}}>Awards & Decorations</div>
                         <div style={{fontSize:".83rem",color:"var(--text)"}}>{exp.awards}</div>
                         <div style={{fontSize:".73rem",color:"var(--dim)",marginTop:".3rem",fontStyle:"italic"}}>Demonstrates: recognized performance, leadership, valor, and professional excellence</div>
@@ -1801,7 +2229,7 @@ Use this exact structure:
             ))}
 
             {/* civilian/DoD entries summary */}
-            {experiences.filter(e=>!isMilType(e.type)).map(exp=>(
+            {civExperiences.map(exp=>(
               <div className="card" key={exp.id} style={{borderColor:"rgba(76,175,130,.25)"}}>
                 <div className="ch" style={{background:"rgba(76,175,130,.07)"}}>
                   <h3>💼 {exp.type}</h3>

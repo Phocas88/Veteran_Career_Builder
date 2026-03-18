@@ -3035,8 +3035,19 @@ Use this exact structure:
   );
 }
 
-    ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
-    hideLoading();
+    try {
+      ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+      hideLoading();
+    } catch(err) {
+      document.getElementById("loading").innerHTML =
+        '<div style="padding:2rem;max-width:600px;text-align:left;">' +
+        '<img src="' + (window.VCB_LOGO||'') + '" style="width:120px;margin-bottom:1rem;display:block;mix-blend-mode:screen"/>' +
+        '<h2 style="color:#e8c97a;font-family:Georgia,serif;margin-bottom:1rem;">Veteran Career Builder</h2>' +
+        '<div style="background:rgba(224,85,85,.15);border:1px solid rgba(224,85,85,.4);border-radius:4px;padding:1rem;color:#f0a0a0;font-size:.9rem;font-family:monospace;word-break:break-word;margin-bottom:1rem;">' +
+        'Error: ' + (err.message||String(err)) + '</div>' +
+        '<p style="color:#a0b8d0;font-size:.85rem;">Please open browser DevTools (F12) and check the Console tab for details, then share the error message.</p>' +
+        '</div>';
+    }
   </script>
 
 </body>

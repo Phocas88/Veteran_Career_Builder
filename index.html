@@ -127,7 +127,7 @@
   <!-- 4. Firebase Config — PASTE YOUR VALUES HERE -->
   <script>
     try {
-    const firebaseConfig = {
+ const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -1243,30 +1243,15 @@ function App() {
           (e.clearanceLevel&&e.clearanceLevel!=="None") ? "Clearance: " + e.clearanceLevel + " " + (e.clearanceStatus||"Active") : null,
           "Duties: " + (e.duties||"not described"),
         ];
-        return parts.filter(Boolean).join("
-");
-      }).join("
+        return parts.filter(Boolean).join("\n");
+      }).join("\n\n---\n\n");
 
----
-
-");
-
-      const prompt = "A veteran has this military background:
-
-" + lines + "
-
-" +
-        "Please provide a detailed civilian translation. Return ONLY a JSON object with NO markdown, no backticks, no extra text. Start with { and end with }.
-
-" +
-        "The JSON must have these exact keys:
-" +
-        "summary: a 3-sentence professional civilian summary paragraph
-" +
-        "roles: array of objects, one per military role, each with: mos (string), title (string), whatYouDid (string, 2-3 plain English sentences), transferableSkills (array of 6 strings), resumeBullets (array of 4 strong resume bullet points starting with action verbs)
-" +
-        "qualifications: array of objects for each ASI/SQI, each with: code, name, civilianMeaning, unlocks
-" +
+      const prompt = "A veteran has this military background:\n\n" + lines + "\n\n" +
+        "Please provide a detailed civilian translation. Return ONLY a JSON object with NO markdown, no backticks, no extra text. Start with { and end with }.\n\n" +
+        "The JSON must have these exact keys:\n" +
+        "summary: a 3-sentence professional civilian summary paragraph\n" +
+        "roles: array of objects, one per military role, each with: mos (string), title (string), whatYouDid (string, 2-3 plain English sentences), transferableSkills (array of 6 strings), resumeBullets (array of 4 strong resume bullet points starting with action verbs)\n" +
+        "qualifications: array of objects for each ASI/SQI, each with: code, name, civilianMeaning, unlocks\n" +
         "additionalDuties: array of objects for each additional duty, each with: duty, civilianEquivalent, value";
 
       const raw = await callClaude(
@@ -1309,18 +1294,11 @@ function App() {
     setSelectedCareer(null);
     setCareerDetail(null);
     const summary = buildExpSummary();
-    const prompt = "A veteran has this background:
-" + (summary||"general military service") +
-      "
-
-Target: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + " | Keywords: " + (target.keywords||"none") +
-      "
-
-Return ONLY a valid JSON array of 12 career objects. Start with [ end with ]. No markdown, no backticks, no extra text." +
-      "
-Include a realistic mix: entry-level trades (CDL truck driver, electrician, welder, security officer, EMT, firefighter), mid-level (project manager, logistics manager, law enforcement), and senior (intelligence analyst, operations director, IT manager). Civilian, government, AND defense/intel." +
-      '
-Each object must have exactly these keys: title, sector (Civilian or Government or Defense/Intel), industry, salaryRange, outlook (High Growth or Stable or Emerging), match (Excellent or Strong or Good), description, whyFit, topSkills (array of 3), nextStep, clearanceBonus (boolean)';
+    const prompt = "A veteran has this background:\n" + (summary||"general military service") +
+      "\n\nTarget: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + " | Keywords: " + (target.keywords||"none") +
+      "\n\nReturn ONLY a valid JSON array of 12 career objects. Start with [ end with ]. No markdown, no backticks, no extra text." +
+      "\nInclude a realistic mix: entry-level trades (CDL truck driver, electrician, welder, security officer, EMT, firefighter), mid-level (project manager, logistics manager, law enforcement), and senior (intelligence analyst, operations director, IT manager). Civilian, government, AND defense/intel." +
+      "\nEach object must have exactly these keys: title, sector (Civilian or Government or Defense/Intel), industry, salaryRange, outlook (High Growth or Stable or Emerging), match (Excellent or Strong or Good), description, whyFit, topSkills (array of 3), nextStep, clearanceBonus (boolean)";
     try {
       const raw = await callClaude(prompt,"You are a career analyst for military-to-civilian transitions. Return ONLY a valid JSON array starting with [ and ending with ]. Include civilian, government, and defense/intel roles. No markdown.");
       const start = raw.indexOf("[");

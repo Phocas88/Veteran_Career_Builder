@@ -3,28 +3,63 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Veteran Career Builder — Translate your military service into civilian career success"/>
+  <meta name="description" content="Veteran to Civilian Career Transitions"/>
   <title>Veteran to Civilian — Career Transitions</title>
-  <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nOz9d7xs2VXY+/5mWKHSDif0Od2to1a3JEABEYRBlo3e..." type="image/png"/>
+  <style>
+    body { margin: 0; background: #2e4880; }
+    #root { min-height: 100vh; }
+    #admin-btn {
+      position: fixed; bottom: 16px; right: 16px; z-index: 9999;
+      background: linear-gradient(135deg,#c9a84c,#e8c97a);
+      color: #1a1a2e; border: none; padding: 9px 16px;
+      border-radius: 4px; cursor: pointer; font-weight: bold;
+      font-size: 13px; box-shadow: 0 4px 16px rgba(0,0,0,.4);
+    }
+    #admin-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.9); z-index: 10000;
+      align-items: center; justify-content: center; padding: 16px;
+    }
+    #admin-overlay.open { display: flex; }
+    #admin-box {
+      background: #1e2d4e; border: 1px solid #c9a84c;
+      border-radius: 8px; padding: 24px; max-width: 460px;
+      width: 100%; color: #f0ead8; font-family: Georgia, serif;
+    }
+    #admin-box h2 { color: #e8c97a; margin: 0 0 8px; font-size: 1.3rem; }
+    #admin-box p { font-size: 13px; color: #a0b8d0; margin: 0 0 14px; line-height: 1.6; }
+    #admin-key-input {
+      width: 100%; padding: 10px; border-radius: 4px;
+      border: 1.5px solid #c9a84c; background: white;
+      color: #1a1a2e; font-size: 14px; margin-bottom: 12px;
+      box-sizing: border-box; font-family: monospace;
+    }
+    .admin-btn-row { display: flex; gap: 8px; }
+    .admin-save-btn {
+      flex: 1; padding: 10px; background: linear-gradient(135deg,#c9a84c,#e8c97a);
+      border: none; border-radius: 4px; color: #1a1a2e;
+      font-weight: bold; cursor: pointer; font-size: 14px;
+    }
+    .admin-cancel-btn {
+      padding: 10px 16px; background: transparent;
+      border: 1px solid #666; border-radius: 4px;
+      color: #aaa; cursor: pointer; font-size: 14px;
+    }
+    #admin-status { font-size: 12px; color: #6fcf97; margin-top: 10px; min-height: 16px; }
+  </style>
 
-  <!-- React + Babel (loaded from CDN, no build step needed) -->
+  <!-- React -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <style>
-    /* Prevent flash of unstyled content */
-    #root { min-height: 100vh; }
-    body { margin: 0; background: #1e2d4e; }
-  </style>
-  <!-- Firebase SDK -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-
-  <!-- Firebase Config — REPLACE with your new config after rotating your key -->
   <script>
-const firebaseConfig = {
+    // PASTE YOUR FIREBASE CONFIG HERE
+ const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -32,75 +67,72 @@ const firebaseConfig = {
   messagingSenderId: "664123627374",
   appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
 };
-    firebase.initializeApp(firebaseConfig);
-
-    // Firebase helpers used throughout the app
-    const fbAuth = firebase.auth();
-    const fbDb   = firebase.firestore();
+    try {
+      firebase.initializeApp(firebaseConfig);
+      var fbAuth = firebase.auth();
+      var fbDb   = firebase.firestore();
+    } catch(e) {
+      console.warn("Firebase not configured:", e.message);
+      var fbAuth = null;
+      var fbDb   = null;
+    }
   </script>
-
 </head>
 <body>
   <div id="root"></div>
-  <!-- Fallback admin button - always visible even if React hasn't loaded yet -->
-  <div id="admin-fallback" style="position:fixed;bottom:16px;right:16px;z-index:9999;">
-    <button onclick="document.getElementById('admin-modal-fallback').style.display='flex'"
-      style="background:linear-gradient(135deg,#c9a84c,#e8c97a);color:#1a1a2e;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:bold;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.4);">
-      &#9881; ADMIN SETUP
-    </button>
-  </div>
 
-  <!-- Fallback admin modal -->
-  <div id="admin-modal-fallback" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:10000;align-items:center;justify-content:center;padding:16px;">
-    <div style="background:#1e2d4e;border:1px solid #c9a84c;border-radius:8px;padding:24px;max-width:440px;width:100%;color:#f0ead8;">
-      <h2 style="font-family:Georgia,serif;color:#e8c97a;margin-bottom:8px;font-size:1.3rem;">&#9881; Admin Setup</h2>
-      <p style="font-size:13px;color:#a0b8d0;margin-bottom:16px;line-height:1.6;">
+  <!-- Admin Setup Button (always visible) -->
+  <button id="admin-btn" onclick="document.getElementById('admin-overlay').classList.add('open')">
+    ADMIN SETUP
+  </button>
+
+  <!-- Admin Setup Modal -->
+  <div id="admin-overlay">
+    <div id="admin-box">
+      <h2>Admin Setup</h2>
+      <p>
         Enter your Anthropic API key to enable AI features.<br>
-        Get a key at <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:#e8c97a;">console.anthropic.com</a>
+        Get one free at <a href="https://console.anthropic.com/settings/keys"
+          target="_blank" style="color:#e8c97a;">console.anthropic.com</a>
       </p>
-      <input id="admin-key-input" type="password" placeholder="sk-ant-api03-..."
-        style="width:100%;padding:10px;border-radius:4px;border:1px solid #c9a84c;background:white;color:#1a1a2e;font-size:14px;margin-bottom:12px;box-sizing:border-box;"/>
-      <div style="display:flex;gap:8px;">
-        <button onclick="
-          var k=document.getElementById('admin-key-input').value.trim();
-          if(k.length<20){alert('That does not look like a valid API key.');return;}
-          localStorage.setItem('vcb_admin_key',k);
-          document.getElementById('admin-modal-fallback').style.display='none';
-          alert('API key saved! Refresh the page to activate AI features.');
-        " style="flex:1;padding:10px;background:linear-gradient(135deg,#c9a84c,#e8c97a);border:none;border-radius:4px;color:#1a1a2e;font-weight:bold;cursor:pointer;font-size:14px;">
-          Save Key
-        </button>
-        <button onclick="document.getElementById('admin-modal-fallback').style.display='none'"
-          style="padding:10px 16px;background:transparent;border:1px solid #666;border-radius:4px;color:#aaa;cursor:pointer;">
-          Cancel
-        </button>
+      <input id="admin-key-input" type="password" placeholder="sk-ant-api03-..."/>
+      <div class="admin-btn-row">
+        <button class="admin-save-btn" onclick="saveAdminKey()">Save API Key</button>
+        <button class="admin-cancel-btn" onclick="document.getElementById('admin-overlay').classList.remove('open')">Cancel</button>
       </div>
-      <p id="current-key-status" style="font-size:12px;color:#6fcf97;margin-top:10px;"></p>
-      <script>
-        var existing = localStorage.getItem("vcb_admin_key");
-        if(existing && existing.length > 20) {
-          document.getElementById("current-key-status").textContent = "✓ API key is currently saved (" + existing.slice(0,12) + "...)";
-        }
-      </script>
+      <div id="admin-status"></div>
     </div>
   </div>
 
+  <script>
+    function saveAdminKey() {
+      var k = document.getElementById('admin-key-input').value.trim();
+      if (k.length < 20) { alert('That does not look like a valid API key.'); return; }
+      localStorage.setItem('vcb_admin_key', k);
+      document.getElementById('admin-status').textContent = 'Saved! Refresh page to activate.';
+      document.getElementById('admin-key-input').value = '';
+      setTimeout(function(){ window.location.reload(); }, 1500);
+    }
+    // Show status on open
+    document.getElementById('admin-btn').addEventListener('click', function() {
+      var k = localStorage.getItem('vcb_admin_key') || '';
+      var st = document.getElementById('admin-status');
+      st.textContent = k.length > 20 ? 'API key is saved: ' + k.slice(0,14) + '...' : 'No API key saved yet.';
+    });
+  </script>
+
+  <!-- App -->
   <script type="text/babel" data-presets="react">
+    const { useState, useEffect, useRef } = React;
+
+
     const { useState, useEffect, useRef } = React;
 
     // ── API ENDPOINT ─────────────────────────────────────────────────
     // After deploying Firebase Functions, replace this URL with yours:
     // "https://us-central1-veteran-career-builder.cloudfunctions.net/chat"
     // For local testing with Firebase Emulator: "http://localhost:5001/veteran-career-builder/us-central1/chat"
-    // ── API CONFIGURATION ────────────────────────────────────────────
-    // API key is stored securely in the browser via the Admin Setup panel.
-    // As the site owner, click the gear icon (⚙) to enter your key once.
-    // It saves to localStorage and is never shown to regular users.
-    function getApiKey() {
-      return localStorage.getItem("vcb_admin_key") || "";
-    }
-    const ANTHROPIC_API_KEY = getApiKey();
-    // ─────────────────────────────────────────────────────────────────
+    // API key loaded via Admin Setup panel
 
 // ─── STATIC DATA ─────────────────────────────────────────────────────────────
 const BRANCHES = ["Army","Navy","Marine Corps","Air Force","Space Force","Coast Guard"];
@@ -540,10 +572,6 @@ function getClearanceBadge(lvl) {
 }
 
 // ── API KEY CHECK ───────────────────────────────────────────────────────────
-function isApiKeySet() {
-  const key = localStorage.getItem("vcb_admin_key") || "";
-  return key.length > 20;
-}
 function getStoredApiKey() {
   return localStorage.getItem("vcb_admin_key") || "";
 }
@@ -869,6 +897,17 @@ function newCivExp() {
     clearanceLevel:"None", clearanceStatus:"Active", sciAccess:false, polygraph:"None",
     asi:[], sqi:[], additionalDuties:[], customDuty:"", customAsiCode:"", customAsiDesc:"", customSqiCode:"", customSqiDesc:"",
     employer:"", jobTitle:"" };
+}
+
+// ─── API HELPERS ─────────────────────────────────────────────────────────────
+function getApiKey() {
+  return localStorage.getItem("vcb_admin_key") || "";
+}
+function isApiKeySet() {
+  return getApiKey().length > 20;
+}
+function getStoredApiKey() {
+  return getApiKey();
 }
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
@@ -1426,7 +1465,7 @@ Use this exact structure:
               <div className="auth-head">
                 <div className="star">⭐</div>
                 <h2>Veteran Career Builder</h2>
-                <p>Free account — save your profile, resumes &amp; career matches across any device</p>
+                <p>Free account — save your profile, resumes & career matches across any device</p>
               </div>
               <div className="auth-body">
                 <div className="auth-toggle">
@@ -3019,6 +3058,7 @@ Use this exact structure:
     // Mount the app
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(React.createElement(App));
+  
   </script>
 </body>
 </html>

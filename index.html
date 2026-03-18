@@ -127,14 +127,14 @@
   <!-- 4. Firebase Config — PASTE YOUR VALUES HERE -->
   <script>
     try {
- const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+      const firebaseConfig = {
+        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+        authDomain: "veteran-career-builder.firebaseapp.com",
+        projectId: "veteran-career-builder",
+        storageBucket: "veteran-career-builder.firebasestorage.app",
+        messagingSenderId: "REPLACE_SENDER_ID",
+        appId: "REPLACE_APP_ID"
+      };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb   = firebase.firestore();
@@ -631,7 +631,7 @@ async function callClaude(prompt, system = "", maxTokens = 2000) {
     }
 
     const d = await r.json();
-    return (d.content ? d.content.map(b => b.text || "").join("") || "";
+    return d.content ? d.content.map(b => b.text || "").join("") : "";
   } catch(e) {
     console.error("callClaude error:", e);
     throw e;

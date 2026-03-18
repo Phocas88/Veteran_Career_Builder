@@ -25,12 +25,12 @@
   <!-- Firebase Config — REPLACE with your new config after rotating your key -->
   <script>
     const firebaseConfig = {
-      apiKey: "REPLACE_WITH_YOUR_NEW_API_KEY",
-      authDomain: "veteran-career-builder.firebaseapp.com",
-      projectId: "veteran-career-builder",
-      storageBucket: "veteran-career-builder.firebasestorage.app",
-      messagingSenderId: "664123627374",
-      appId: "REPLACE_WITH_YOUR_NEW_APP_ID"
+      apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
+  authDomain: "veteran-career-builder.firebaseapp.com",
+  projectId: "veteran-career-builder",
+  storageBucket: "veteran-career-builder.firebasestorage.app",
+  messagingSenderId: "664123627374",
+  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
     };
     firebase.initializeApp(firebaseConfig);
 
@@ -50,7 +50,10 @@
     // After deploying Firebase Functions, replace this URL with yours:
     // "https://us-central1-veteran-career-builder.cloudfunctions.net/chat"
     // For local testing with Firebase Emulator: "http://localhost:5001/veteran-career-builder/us-central1/chat"
-    const API_ENDPOINT = "https://us-central1-veteran-career-builder.cloudfunctions.net/chat";
+    // ── API CONFIGURATION ────────────────────────────────────────────
+    // Paste your Anthropic API key below to enable AI features.
+    // When you deploy to Firebase, move this to a Cloud Function for security.
+    const ANTHROPIC_API_KEY = "YOUR_ANTHROPIC_API_KEY_HERE";
     // ─────────────────────────────────────────────────────────────────
 
 // ─── STATIC DATA ─────────────────────────────────────────────────────────────
@@ -490,12 +493,43 @@ function getClearanceBadge(lvl) {
   return "cl-badge cl-c";
 }
 
-async function callClaude(prompt, system = "") {
-  const body = { model:"claude-sonnet-4-20250514", max_tokens:1000, messages:[{ role:"user", content:prompt }] };
-  if (system) body.system = system;
-  const r = await fetch(API_ENDPOINT, { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(body) });
-  const d = await r.json();
-  return d.content?.map(b => b.text||"").join("") || "";
+// ── API KEY CHECK ───────────────────────────────────────────────────────────
+function isApiKeySet() {
+  return ANTHROPIC_API_KEY && ANTHROPIC_API_KEY !== "YOUR_ANTHROPIC_API_KEY_HERE";
+}
+
+async function callClaude(prompt, system = "", maxTokens = 2000) {
+  try {
+    const body = {
+      model: "claude-sonnet-4-20250514",
+      max_tokens: maxTokens,
+      messages: [{ role: "user", content: prompt }]
+    };
+    if (system) body.system = system;
+
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!r.ok) {
+      const err = await r.json();
+      console.error("Anthropic API error:", err);
+      throw new Error(err?.error?.message || "API request failed with status " + r.status);
+    }
+
+    const d = await r.json();
+    return d.content?.map(b => b.text || "").join("") || "";
+  } catch(e) {
+    console.error("callClaude error:", e);
+    throw e;
+  }
 }
 // ── DATE PICKER COMPONENT ─────────────────────────────────────────────────────
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -810,6 +844,7 @@ function App() {
   const [resumeFormat, setResumeFormat] = useState("ats_chrono");
   const [translationData, setTranslationData] = useState(null);
   const [loading, setLoading] = useState({ translate:false, careers:false, resume:false, careerDetail:false });
+  const [apiError, setApiError] = useState("");
   const [copied, setCopied] = useState(false);
 
   // ── AUTH STATE ──
@@ -1074,8 +1109,10 @@ function App() {
 
   // ── TRANSLATE ──────────────────────────────────────────────────────────────
   const translateMOS = async () => {
+    if (!isApiKeySet()) { setApiError("Please add your Anthropic API key to the HTML file to enable AI features."); return; }
     const milExp = milExperiences;
     if (!milExp.length) return;
+    setApiError("");
     setL("translate",true);
     setTranslationData(null);
     const lines = milExp.map(e=>[
@@ -1101,6 +1138,8 @@ function App() {
 
   // ── CAREERS ───────────────────────────────────────────────────────────────
   const findCareers = async () => {
+    if (!isApiKeySet()) { setApiError("Please add your Anthropic API key to the HTML file to enable AI features."); return; }
+    setApiError("");
     setL("careers",true);
     setCareers(null);
     setSelectedCareer(null);
@@ -1191,28 +1230,39 @@ Use this exact structure:
 
   // ── RESUME ─────────────────────────────────────────────────────────────────
   const genResume = async () => {
+    if (!isApiKeySet()) { setApiError("Please add your Anthropic API key to the HTML file to enable AI features."); return; }
+    setApiError("");
     setL("resume",true);
+    setResume("");
     const expText = buildExpSummary();
     const eduText = education.map(e=>`${e.degree} in ${e.field} — ${e.institution} (${e.year})${e.pme?` | PME/Military Schools: ${e.pme}`:""}`).join("\n");
-    const formatInstructions = {
-      ats_chrono: "ATS CHRONOLOGICAL FORMAT: Simple clean layout. Standard section headers (Summary, Experience, Education, Skills, Certifications). Reverse chronological work history. No tables, no text boxes, no columns. Keyword-rich. ATS-safe fonts and structure.",
-      ats_combo: "ATS COMBINATION FORMAT: Open with a Skills Summary section listing 8-10 core competencies as keywords. Then reverse-chronological experience. Then education. ATS-optimized throughout with no tables or columns.",
-      traditional: "TRADITIONAL FORMAT: Conservative black and white. Clean serif-style formatting. Standard sections. No color, no design elements. Appropriate for government, legal, and formal industries.",
-      modern: "MODERN PROFESSIONAL FORMAT: Clean contemporary layout. Use subtle section dividers (——). Bold role titles. Clean hierarchy. Professional but polished. Suitable for corporate and private sector.",
-      executive: "EXECUTIVE FORMAT: Open with a strong executive profile paragraph. Follow with Core Competencies as two columns of keywords. Then Career Highlights with 3-4 major achievements with metrics. Then abbreviated experience. Emphasize leadership scope, P&L, team size, and strategic impact.",
-      federal: "FEDERAL/USAJOBS FORMAT: Extremely detailed. Include GS pay scale equivalent where applicable. List all positions with full addresses of employers, hours per week, supervisor names. Include detailed KSAs. Often 3-5 pages. List all training, awards, and certifications in full.",
-      harvard: "HARVARD STYLE: Single column, clean conservative layout. Name and contact centered at top with a line beneath. Section headers in small caps or bold with a line rule. Clean consistent formatting with strong use of white space.",
-      wharton: "WHARTON/MBA STYLE: Name bold and prominent. One-line title/brand statement. Experience entries lead with company and bold achievement metrics. Emphasis on quantified results, revenue impact, team sizes, and scope. Sharp and results-focused.",
-      minimalist: "MINIMALIST FORMAT: Maximum white space. Simple clean typography. Minimal use of dividers. Let content breathe. Easy to scan. Clean hierarchy with role, company, dates on one line.",
-      creative: "CREATIVE FORMAT: Use tasteful formatting with section color accents (use ASCII/text characters to simulate). Clear visual hierarchy. Creative but readable. Appropriate for design, media, and branding roles.",
-    };
-    const formatGuide = formatInstructions[resumeFormat] || formatInstructions.ats_chrono;
-    const prompt = `Create a complete professional resume for this veteran.\n\nFORMAT: ${formatGuide}\n\nCONTACT: ${personal.name} | ${personal.email} | ${personal.phone} | ${personal.location}${personal.linkedin?` | ${personal.linkedin}`:""}\nTARGET ROLE: ${target.title||"open"} | Industry: ${target.industry||"any"} | Keywords: ${target.keywords||"leadership, operations"}\n\nFULL EXPERIENCE:\n${expText}\n\nEDUCATION:\n${eduText}\n\nSKILLS: ${skills.technical}\nLEADERSHIP: ${skills.leadership}\nLANGUAGES: ${skills.languages}\nCERTIFICATIONS: ${skills.certs}\n\nCRITICAL INSTRUCTIONS:\n1. Translate ALL military jargon, MOS codes, ASIs, SQIs into civilian language\n2. ASIs and SQIs = advanced specialized training — each is a competitive differentiator, name them in civilian terms\n3. Additional duty qualifications = extra competencies — convert each to a civilian function\n4. Active security clearances = PREMIUM ASSET — feature prominently in header and skills section\n5. Reserve/Guard service concurrent with civilian job = dual-career professional with exceptional time management — highlight this strength\n6. Quantify EVERYTHING possible: team sizes, budgets, equipment values, mission counts, personnel trained\n7. Use powerful action verbs: Led, Commanded, Directed, Managed, Coordinated, Trained, Deployed, Maintained, Secured\n8. Make it ATS-friendly with relevant keywords for: ${target.title||"operations management, leadership, logistics"}\n9. Follow the specified format precisely\n\nWrite the complete ready-to-use resume now:`;
-    const out = await callClaude(prompt,"You are a top-tier military-to-civilian resume writer. You have expert knowledge of military qualifications, ASIs, SQIs, and how to translate them into compelling civilian credentials.");
-    setResume(out);
-    setL("resume",false);
-  };
-
+    try {
+      const formatInstructions = {
+        ats_chrono: "ATS CHRONOLOGICAL FORMAT: Simple clean layout. Standard section headers (Summary, Experience, Education, Skills, Certifications). Reverse chronological work history. No tables, no text boxes, no columns. Keyword-rich. ATS-safe fonts and structure.",
+        ats_combo: "ATS COMBINATION FORMAT: Open with a Skills Summary section listing 8-10 core competencies as keywords. Then reverse-chronological experience. Then education. ATS-optimized throughout with no tables or columns.",
+        traditional: "TRADITIONAL FORMAT: Conservative black and white. Clean serif-style formatting. Standard sections. No color, no design elements. Appropriate for government, legal, and formal industries.",
+        modern: "MODERN PROFESSIONAL FORMAT: Clean contemporary layout. Use subtle section dividers (——). Bold role titles. Clean hierarchy. Professional but polished. Suitable for corporate and private sector.",
+        executive: "EXECUTIVE FORMAT: Open with a strong executive profile paragraph. Follow with Core Competencies as two columns of keywords. Then Career Highlights with 3-4 major achievements with metrics. Then abbreviated experience. Emphasize leadership scope, P&L, team size, and strategic impact.",
+        federal: "FEDERAL/USAJOBS FORMAT: Extremely detailed. Include GS pay scale equivalent where applicable. List all positions with full addresses of employers, hours per week, supervisor names. Include detailed KSAs. Often 3-5 pages. List all training, awards, and certifications in full.",
+        harvard: "HARVARD STYLE: Single column, clean conservative layout. Name and contact centered at top with a line beneath. Section headers in small caps or bold with a line rule. Clean consistent formatting with strong use of white space.",
+        wharton: "WHARTON/MBA STYLE: Name bold and prominent. One-line title/brand statement. Experience entries lead with company and bold achievement metrics. Emphasis on quantified results, revenue impact, team sizes, and scope. Sharp and results-focused.",
+        minimalist: "MINIMALIST FORMAT: Maximum white space. Simple clean typography. Minimal use of dividers. Let content breathe. Easy to scan. Clean hierarchy with role, company, dates on one line.",
+        creative: "CREATIVE FORMAT: Use tasteful formatting with section color accents (use ASCII/text characters to simulate). Clear visual hierarchy. Creative but readable. Appropriate for design, media, and branding roles.",
+      };
+      const formatGuide = formatInstructions[resumeFormat] || formatInstructions.ats_chrono;
+      const prompt = `Create a complete professional resume for this veteran.\n\nFORMAT: ${formatGuide}\n\nCONTACT: ${personal.name} | ${personal.email} | ${personal.phone} | ${personal.location}${personal.linkedin?` | ${personal.linkedin}`:""}\nTARGET ROLE: ${target.title||"open"} | Industry: ${target.industry||"any"} | Keywords: ${target.keywords||"leadership, operations"}\n\nFULL EXPERIENCE:\n${expText}\n\nEDUCATION:\n${eduText}\n\nSKILLS: ${skills.technical}\nLEADERSHIP: ${skills.leadership}\nLANGUAGES: ${skills.languages}\nCERTIFICATIONS: ${skills.certs}\n\nCRITICAL INSTRUCTIONS:\n1. Translate ALL military jargon, MOS codes, ASIs, SQIs into civilian language\n2. ASIs and SQIs = advanced specialized training — each is a competitive differentiator, name them in civilian terms\n3. Additional duty qualifications = extra competencies — convert each to a civilian function\n4. Active security clearances = PREMIUM ASSET — feature prominently in header and skills section\n5. Reserve/Guard service concurrent with civilian job = dual-career professional with exceptional time management — highlight this strength\n6. Quantify EVERYTHING possible: team sizes, budgets, equipment values, mission counts, personnel trained\n7. Use powerful action verbs: Led, Commanded, Directed, Managed, Coordinated, Trained, Deployed, Maintained, Secured\n8. Make it ATS-friendly with relevant keywords for: ${target.title||"operations management, leadership, logistics"}\n9. Follow the specified format precisely\n\nWrite the complete ready-to-use resume now:`;
+      const out = await callClaude(
+        prompt,
+        "You are a top-tier military-to-civilian resume writer. You have expert knowledge of military qualifications, ASIs, SQIs, and how to translate them into compelling civilian credentials.",
+        3000
+      );
+      setResume(out);
+      setL("resume",false);
+    } catch(e) {
+      console.error("Resume generation failed:", e);
+      setResume("Error generating resume: " + (e.message || "Please check your API key and try again."));
+      setL("resume",false);
+    }
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
 
   const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","My Profile"];
@@ -1295,6 +1345,15 @@ Use this exact structure:
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ── API KEY MISSING NOTICE ── */}
+        {apiError && (
+          <div style={{background:"rgba(224,85,85,.15)",border:"1px solid rgba(224,85,85,.4)",padding:".7rem 1.3rem",display:"flex",alignItems:"center",gap:".75rem",flexWrap:"wrap"}}>
+            <span style={{fontSize:".85rem",color:"#f0a0a0"}}>⚠️ {apiError}</span>
+            <a href="https://console.anthropic.com/settings/keys" target="_blank"
+              style={{fontSize:".78rem",color:"#ff9090",textDecoration:"underline"}}>Get API key →</a>
           </div>
         )}
 

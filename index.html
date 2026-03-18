@@ -22,7 +22,7 @@
     }
     #admin-overlay.open { display: flex; }
     #admin-box {
-      background: #1e2d4e; border: 1px solid #c9a84c;
+      background: #1e2d4e; border: 2px solid #c9a84c;
       border-radius: 8px; padding: 24px; max-width: 460px;
       width: 100%; color: #f0ead8; font-family: Georgia, serif;
     }
@@ -34,32 +34,21 @@
       color: #1a1a2e; font-size: 14px; margin-bottom: 12px;
       box-sizing: border-box; font-family: monospace;
     }
-    .admin-btn-row { display: flex; gap: 8px; }
-    .admin-save-btn {
-      flex: 1; padding: 10px; background: linear-gradient(135deg,#c9a84c,#e8c97a);
-      border: none; border-radius: 4px; color: #1a1a2e;
-      font-weight: bold; cursor: pointer; font-size: 14px;
-    }
-    .admin-cancel-btn {
-      padding: 10px 16px; background: transparent;
-      border: 1px solid #666; border-radius: 4px;
-      color: #aaa; cursor: pointer; font-size: 14px;
-    }
+    .admin-row { display: flex; gap: 8px; }
+    .admin-save { flex: 1; padding: 10px; background: linear-gradient(135deg,#c9a84c,#e8c97a); border: none; border-radius: 4px; color: #1a1a2e; font-weight: bold; cursor: pointer; font-size: 14px; }
+    .admin-cancel { padding: 10px 16px; background: transparent; border: 1px solid #666; border-radius: 4px; color: #aaa; cursor: pointer; font-size: 14px; }
     #admin-status { font-size: 12px; color: #6fcf97; margin-top: 10px; min-height: 16px; }
   </style>
 
-  <!-- React -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
   <script>
-    // PASTE YOUR FIREBASE CONFIG HERE
- const firebaseConfig = {
+    const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -72,7 +61,7 @@
       var fbAuth = firebase.auth();
       var fbDb   = firebase.firestore();
     } catch(e) {
-      console.warn("Firebase not configured:", e.message);
+      console.warn("Firebase init error:", e.message);
       var fbAuth = null;
       var fbDb   = null;
     }
@@ -81,58 +70,48 @@
 <body>
   <div id="root"></div>
 
-  <!-- Admin Setup Button (always visible) -->
-  <button id="admin-btn" onclick="document.getElementById('admin-overlay').classList.add('open')">
-    ADMIN SETUP
-  </button>
+  <button id="admin-btn" onclick="openAdmin()">ADMIN SETUP</button>
 
-  <!-- Admin Setup Modal -->
   <div id="admin-overlay">
     <div id="admin-box">
       <h2>Admin Setup</h2>
-      <p>
-        Enter your Anthropic API key to enable AI features.<br>
-        Get one free at <a href="https://console.anthropic.com/settings/keys"
-          target="_blank" style="color:#e8c97a;">console.anthropic.com</a>
+      <p>Enter your Anthropic API key to enable AI features.<br>
+        Get one free at <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:#e8c97a;">console.anthropic.com</a>
       </p>
-      <input id="admin-key-input" type="password" placeholder="sk-ant-api03-..."/>
-      <div class="admin-btn-row">
-        <button class="admin-save-btn" onclick="saveAdminKey()">Save API Key</button>
-        <button class="admin-cancel-btn" onclick="document.getElementById('admin-overlay').classList.remove('open')">Cancel</button>
+      <input id="admin-key-input" type="password" placeholder="sk-ant-api03-..." />
+      <div class="admin-row">
+        <button class="admin-save" onclick="saveKey()">Save API Key</button>
+        <button class="admin-cancel" onclick="closeAdmin()">Cancel</button>
       </div>
       <div id="admin-status"></div>
     </div>
   </div>
 
   <script>
-    function saveAdminKey() {
-      var k = document.getElementById('admin-key-input').value.trim();
-      if (k.length < 20) { alert('That does not look like a valid API key.'); return; }
-      localStorage.setItem('vcb_admin_key', k);
-      document.getElementById('admin-status').textContent = 'Saved! Refresh page to activate.';
-      document.getElementById('admin-key-input').value = '';
-      setTimeout(function(){ window.location.reload(); }, 1500);
+    function openAdmin() {
+      document.getElementById("admin-overlay").classList.add("open");
+      var k = localStorage.getItem("vcb_admin_key") || "";
+      document.getElementById("admin-status").textContent = k.length > 20
+        ? "Key saved: " + k.slice(0,14) + "..." : "No key saved yet.";
     }
-    // Show status on open
-    document.getElementById('admin-btn').addEventListener('click', function() {
-      var k = localStorage.getItem('vcb_admin_key') || '';
-      var st = document.getElementById('admin-status');
-      st.textContent = k.length > 20 ? 'API key is saved: ' + k.slice(0,14) + '...' : 'No API key saved yet.';
-    });
+    function closeAdmin() {
+      document.getElementById("admin-overlay").classList.remove("open");
+    }
+    function saveKey() {
+      var k = document.getElementById("admin-key-input").value.trim();
+      if (k.length < 20) { alert("That does not look like a valid key."); return; }
+      localStorage.setItem("vcb_admin_key", k);
+      document.getElementById("admin-status").textContent = "Saved! Reloading...";
+      setTimeout(function(){ window.location.reload(); }, 1200);
+    }
   </script>
 
-  <!-- App -->
   <script type="text/babel" data-presets="react">
     const { useState, useEffect, useRef } = React;
 
-
-    const { useState, useEffect, useRef } = React;
-
-    // ── API ENDPOINT ─────────────────────────────────────────────────
-    // After deploying Firebase Functions, replace this URL with yours:
-    // "https://us-central1-veteran-career-builder.cloudfunctions.net/chat"
-    // For local testing with Firebase Emulator: "http://localhost:5001/veteran-career-builder/us-central1/chat"
-    // API key loaded via Admin Setup panel
+    function getApiKey() { return localStorage.getItem("vcb_admin_key") || ""; }
+    function isApiKeySet() { return getApiKey().length > 20; }
+    function getStoredApiKey() { return getApiKey(); }
 
 // ─── STATIC DATA ─────────────────────────────────────────────────────────────
 const BRANCHES = ["Army","Navy","Marine Corps","Air Force","Space Force","Coast Guard"];
@@ -572,6 +551,10 @@ function getClearanceBadge(lvl) {
 }
 
 // ── API KEY CHECK ───────────────────────────────────────────────────────────
+function isApiKeySet() {
+  const key = localStorage.getItem("vcb_admin_key") || "";
+  return key.length > 20;
+}
 function getStoredApiKey() {
   return localStorage.getItem("vcb_admin_key") || "";
 }
@@ -897,17 +880,6 @@ function newCivExp() {
     clearanceLevel:"None", clearanceStatus:"Active", sciAccess:false, polygraph:"None",
     asi:[], sqi:[], additionalDuties:[], customDuty:"", customAsiCode:"", customAsiDesc:"", customSqiCode:"", customSqiDesc:"",
     employer:"", jobTitle:"" };
-}
-
-// ─── API HELPERS ─────────────────────────────────────────────────────────────
-function getApiKey() {
-  return localStorage.getItem("vcb_admin_key") || "";
-}
-function isApiKeySet() {
-  return getApiKey().length > 20;
-}
-function getStoredApiKey() {
-  return getApiKey();
 }
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
@@ -3055,10 +3027,7 @@ Use this exact structure:
   );
 }
 
-    // Mount the app
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(React.createElement(App));
-  
+    ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
   </script>
 </body>
 </html>

@@ -24,14 +24,14 @@
 
   <!-- Firebase Config — REPLACE with your new config after rotating your key -->
   <script>
-    const firebaseConfig = {
-      apiKey: "REPLACE_WITH_YOUR_NEW_API_KEY",
-      authDomain: "veteran-career-builder.firebaseapp.com",
-      projectId: "veteran-career-builder",
-      storageBucket: "veteran-career-builder.firebasestorage.app",
-      messagingSenderId: "664123627374",
-      appId: "REPLACE_WITH_YOUR_NEW_APP_ID"
-    };
+  const firebaseConfig = {
+  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
+  authDomain: "veteran-career-builder.firebaseapp.com",
+  projectId: "veteran-career-builder",
+  storageBucket: "veteran-career-builder.firebasestorage.app",
+  messagingSenderId: "664123627374",
+  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
+};
     firebase.initializeApp(firebaseConfig);
 
     // Firebase helpers used throughout the app
@@ -42,6 +42,48 @@
 </head>
 <body>
   <div id="root"></div>
+  <!-- Fallback admin button - always visible even if React hasn't loaded yet -->
+  <div id="admin-fallback" style="position:fixed;bottom:16px;right:16px;z-index:9999;">
+    <button onclick="document.getElementById('admin-modal-fallback').style.display='flex'"
+      style="background:linear-gradient(135deg,#c9a84c,#e8c97a);color:#1a1a2e;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:bold;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.4);">
+      &#9881; ADMIN SETUP
+    </button>
+  </div>
+
+  <!-- Fallback admin modal -->
+  <div id="admin-modal-fallback" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:10000;align-items:center;justify-content:center;padding:16px;">
+    <div style="background:#1e2d4e;border:1px solid #c9a84c;border-radius:8px;padding:24px;max-width:440px;width:100%;color:#f0ead8;">
+      <h2 style="font-family:Georgia,serif;color:#e8c97a;margin-bottom:8px;font-size:1.3rem;">&#9881; Admin Setup</h2>
+      <p style="font-size:13px;color:#a0b8d0;margin-bottom:16px;line-height:1.6;">
+        Enter your Anthropic API key to enable AI features.<br>
+        Get a key at <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:#e8c97a;">console.anthropic.com</a>
+      </p>
+      <input id="admin-key-input" type="password" placeholder="sk-ant-api03-..."
+        style="width:100%;padding:10px;border-radius:4px;border:1px solid #c9a84c;background:white;color:#1a1a2e;font-size:14px;margin-bottom:12px;box-sizing:border-box;"/>
+      <div style="display:flex;gap:8px;">
+        <button onclick="
+          var k=document.getElementById('admin-key-input').value.trim();
+          if(k.length<20){alert('That does not look like a valid API key.');return;}
+          localStorage.setItem('vcb_admin_key',k);
+          document.getElementById('admin-modal-fallback').style.display='none';
+          alert('API key saved! Refresh the page to activate AI features.');
+        " style="flex:1;padding:10px;background:linear-gradient(135deg,#c9a84c,#e8c97a);border:none;border-radius:4px;color:#1a1a2e;font-weight:bold;cursor:pointer;font-size:14px;">
+          Save Key
+        </button>
+        <button onclick="document.getElementById('admin-modal-fallback').style.display='none'"
+          style="padding:10px 16px;background:transparent;border:1px solid #666;border-radius:4px;color:#aaa;cursor:pointer;">
+          Cancel
+        </button>
+      </div>
+      <p id="current-key-status" style="font-size:12px;color:#6fcf97;margin-top:10px;"></p>
+      <script>
+        var existing = localStorage.getItem("vcb_admin_key");
+        if(existing && existing.length > 20) {
+          document.getElementById("current-key-status").textContent = "✓ API key is currently saved (" + existing.slice(0,12) + "...)";
+        }
+      </script>
+    </div>
+  </div>
 
   <script type="text/babel" data-presets="react">
     const { useState, useEffect, useRef } = React;
@@ -51,9 +93,13 @@
     // "https://us-central1-veteran-career-builder.cloudfunctions.net/chat"
     // For local testing with Firebase Emulator: "http://localhost:5001/veteran-career-builder/us-central1/chat"
     // ── API CONFIGURATION ────────────────────────────────────────────
-    // Paste your Anthropic API key below to enable AI features.
-    // When you deploy to Firebase, move this to a Cloud Function for security.
-    const ANTHROPIC_API_KEY = "YOUR_ANTHROPIC_API_KEY_HERE";
+    // API key is stored securely in the browser via the Admin Setup panel.
+    // As the site owner, click the gear icon (⚙) to enter your key once.
+    // It saves to localStorage and is never shown to regular users.
+    function getApiKey() {
+      return localStorage.getItem("vcb_admin_key") || "";
+    }
+    const ANTHROPIC_API_KEY = getApiKey();
     // ─────────────────────────────────────────────────────────────────
 
 // ─── STATIC DATA ─────────────────────────────────────────────────────────────
@@ -495,7 +541,11 @@ function getClearanceBadge(lvl) {
 
 // ── API KEY CHECK ───────────────────────────────────────────────────────────
 function isApiKeySet() {
-  return ANTHROPIC_API_KEY && ANTHROPIC_API_KEY !== "YOUR_ANTHROPIC_API_KEY_HERE";
+  const key = localStorage.getItem("vcb_admin_key") || "";
+  return key.length > 20;
+}
+function getStoredApiKey() {
+  return localStorage.getItem("vcb_admin_key") || "";
 }
 
 async function callClaude(prompt, system = "", maxTokens = 2000) {
@@ -511,7 +561,7 @@ async function callClaude(prompt, system = "", maxTokens = 2000) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
+        "x-api-key": getStoredApiKey(),
         "anthropic-version": "2023-06-01",
         "anthropic-dangerous-direct-browser-access": "true"
       },
@@ -845,6 +895,12 @@ function App() {
   const [translationData, setTranslationData] = useState(null);
   const [loading, setLoading] = useState({ translate:false, careers:false, resume:false, careerDetail:false });
   const [apiError, setApiError] = useState("");
+  const [showAdminSetup, setShowAdminSetup] = useState(false);
+  const [adminKeyInput, setAdminKeyInput] = useState("");
+  const [adminKeySet, setAdminKeySet] = useState(() => {
+    const k = localStorage.getItem("vcb_admin_key")||"";
+    return k.length > 20;
+  });
   const [careerError, setCareerError] = useState("");
   const [resumeError, setResumeError] = useState("");
   const [copied, setCopied] = useState(false);
@@ -1111,7 +1167,7 @@ function App() {
 
   // ── TRANSLATE ──────────────────────────────────────────────────────────────
   const translateMOS = async () => {
-    if (!isApiKeySet()) { setApiError("Please add your Anthropic API key to the HTML file to enable AI features."); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
     if (!milExperiences.length) return;
     setApiError("");
     setTranslationData(null);
@@ -1189,7 +1245,7 @@ function App() {
 
   // ── CAREERS ───────────────────────────────────────────────────────────────
   const findCareers = async () => {
-    if (!isApiKeySet()) { setApiError("Please add your Anthropic API key to the HTML file to enable AI features."); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
     setApiError("");
     setCareerError("");
     setL("careers",true);
@@ -1296,7 +1352,7 @@ Use this exact structure:
 
   // ── RESUME ─────────────────────────────────────────────────────────────────
   const genResume = async () => {
-    if (!isApiKeySet()) { setApiError("Please add your Anthropic API key to the HTML file to enable AI features."); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
     setApiError("");
     setL("resume",true);
     setResume("");
@@ -1438,12 +1494,66 @@ Use this exact structure:
           </div>
         )}
 
-        {/* ── API KEY MISSING NOTICE ── */}
-        {apiError && (
-          <div style={{background:"rgba(224,85,85,.15)",border:"1px solid rgba(224,85,85,.4)",padding:".7rem 1.3rem",display:"flex",alignItems:"center",gap:".75rem",flexWrap:"wrap"}}>
-            <span style={{fontSize:".85rem",color:"#f0a0a0"}}>⚠️ {apiError}</span>
-            <a href="https://console.anthropic.com/settings/keys" target="_blank"
-              style={{fontSize:".78rem",color:"#ff9090",textDecoration:"underline"}}>Get API key →</a>
+
+
+        {/* ── ADMIN SETUP MODAL ── */}
+        {showAdminSetup&&(
+          <div style={{position:"fixed",inset:0,background:"rgba(8,12,24,.97)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}}>
+            <div style={{background:"linear-gradient(160deg,#243560,#1e3530)",border:"1px solid rgba(201,168,76,.35)",borderRadius:"6px",width:"100%",maxWidth:"460px",overflow:"hidden"}}>
+              <div style={{background:"rgba(201,168,76,.12)",borderBottom:"1px solid rgba(201,168,76,.22)",padding:"1.2rem 1.4rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".12em",fontSize:"1.2rem",color:"var(--gold-light)"}}>⚙ Site Owner Setup</div>
+                  <div style={{fontSize:".76rem",color:"var(--slate)",marginTop:".2rem"}}>This panel is only for the site owner — not visible to users</div>
+                </div>
+                <button onClick={()=>setShowAdminSetup(false)} style={{background:"transparent",border:"none",color:"var(--slate)",fontSize:"1.2rem",cursor:"pointer"}}>✕</button>
+              </div>
+              <div style={{padding:"1.5rem"}}>
+                {adminKeySet?(
+                  <div style={{background:"rgba(76,175,130,.1)",border:"1px solid rgba(76,175,130,.3)",borderRadius:"3px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".88rem",color:"var(--green)"}}>
+                    ✓ API key is configured — AI features are enabled
+                  </div>
+                ):(
+                  <div style={{background:"rgba(201,168,76,.08)",border:"1px solid rgba(201,168,76,.25)",borderRadius:"3px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".85rem",color:"var(--slate)",lineHeight:"1.6"}}>
+                    To enable AI features, enter your Anthropic API key below. Get one free at <a href="https://console.anthropic.com/settings/keys" target="_blank" style={{color:"var(--gold-light)"}}>console.anthropic.com</a>. Your key is saved only in this browser.
+                  </div>
+                )}
+                <div style={{marginBottom:"1rem"}}>
+                  <label style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,display:"block",marginBottom:".4rem"}}>Anthropic API Key</label>
+                  <input
+                    type="password"
+                    placeholder="sk-ant-api03-..."
+                    value={adminKeyInput}
+                    onChange={e=>setAdminKeyInput(e.target.value)}
+                    style={{width:"100%",background:"rgba(255,255,255,.92)",border:"1.5px solid rgba(201,168,76,.5)",borderRadius:"3px",color:"#1a1a2e",padding:".65rem .85rem",fontFamily:"monospace",fontSize:".9rem"}}
+                  />
+                </div>
+                <button
+                  style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,var(--gold),var(--gold-light))",border:"none",borderRadius:"3px",color:"var(--navy)",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".12em",fontSize:"1rem",cursor:"pointer"}}
+                  onClick={()=>{
+                    const k = adminKeyInput.trim();
+                    if(k.length < 20){ alert("That doesn't look like a valid API key."); return; }
+                    localStorage.setItem("vcb_admin_key", k);
+                    setAdminKeySet(true);
+                    setAdminKeyInput("");
+                    setShowAdminSetup(false);
+                    alert("API key saved! AI features are now enabled.");
+                  }}>
+                  Save API Key
+                </button>
+                {adminKeySet&&(
+                  <button
+                    style={{width:"100%",marginTop:".6rem",padding:".5rem",background:"transparent",border:"1px solid rgba(224,85,85,.3)",borderRadius:"3px",color:"#cc5555",fontFamily:"'Crimson Pro',serif",fontSize:".82rem",cursor:"pointer"}}
+                    onClick={()=>{
+                      if(window.confirm("Remove the API key? AI features will stop working.")){
+                        localStorage.removeItem("vcb_admin_key");
+                        setAdminKeySet(false);
+                      }
+                    }}>
+                    Remove API Key
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -1463,14 +1573,18 @@ Use this exact structure:
                 My Resumes ({savedResumes.length})
               </button>
               <button className="btn-danger" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleLogout}>Sign Out</button>
+              <button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>&#9881; SETUP</button>
             </div>
           </div>
         ):(
           <div className="user-bar">
             <span style={{fontSize:".8rem",color:"var(--dim)"}}>Not signed in — your progress won't be saved</span>
-            <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>setShowAuth(true)}>
-              🔑 Sign In / Create Account
-            </button>
+            <div style={{display:"flex",gap:".4rem",alignItems:"center"}}>
+              <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>setShowAuth(true)}>
+                🔑 Sign In / Create Account
+              </button>
+              <button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>&#9881; SETUP</button>
+            </div>
           </div>
         )}
 

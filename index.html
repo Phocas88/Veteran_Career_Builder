@@ -127,7 +127,7 @@
   <!-- 4. Firebase Config — PASTE YOUR VALUES HERE -->
   <script>
     try {
- const firebaseConfig = {
+   const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -552,10 +552,12 @@ body{background:#2e4880;font-family:'Crimson Pro',serif;color:var(--text);}
 .format-card p{font-size:.72rem;color:var(--dim);line-height:1.4;}
 .format-card.sel h4{color:var(--gold);}
 /* STYLED RESUME OUTPUT */
-.resume-out{background:#fff;border-radius:4px;overflow:hidden;box-shadow:0 4px 28px rgba(0,0,0,.35);}
+.resume-out{background:#e8e4dc;border-radius:4px;overflow:hidden;box-shadow:0 4px 28px rgba(0,0,0,.35);}
 .resume-out-inner{padding:2.4rem 2.8rem;font-family:'Arial',sans-serif;font-size:10pt;line-height:1.5;color:#1a1a1a;max-height:650px;overflow-y:auto;}
 .resume-out-inner h1{font-size:17pt;margin-bottom:3pt;color:#1a1a1a;font-family:'Arial',sans-serif;}
 .resume-out-inner h2{font-size:10pt;border-bottom:1.5px solid #333;padding-bottom:2pt;margin:13pt 0 5pt;text-transform:uppercase;letter-spacing:.06em;color:#1a1a1a;font-family:'Arial',sans-serif;}
+#resume-render a{text-decoration:none;}
+@media print{#loading,#admin-btn,#admin-overlay,.user-bar,.app-header,.tabs,.nav-row,.card:not(#resume-print-area){display:none!important;}#resume-render{max-height:none!important;overflow:visible!important;}}
 .resume-out-head{background:#f5f2ea;border-bottom:1px solid #d8d0b8;padding:.7rem 1.1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.45rem;}
 .resume-out-head h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.9rem;color:#444;}
 /* TRANSLATION SECTIONS */
@@ -958,6 +960,9 @@ function App() {
     return k.length > 20;
   });
   const [careerError, setCareerError] = useState("");
+  const [resumeData, setResumeData] = useState(null);
+  const [resumeTemplate, setResumeTemplate] = useState("modern");
+  const [targetLocation, setTargetLocation] = useState("");
   const [resumeError, setResumeError] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -1390,8 +1395,21 @@ Use this exact structure:
     setApiError("");
     setL("resume",true);
     setResume("");
+    setResumeData(null);
     const expText = buildExpSummary();
-    const eduText = education.map(e=>`${e.degree} in ${e.field} — ${e.institution} (${e.year})${e.pme?" | PME/Military Schools: "+e.pme:""}`).join("\n");
+    const milSum = milExperiences.map(e =>
+      (e.branch||"Military") + " " + (e.rank||"") + " MOS:" + (e.mos||"") + " " + (e.mosTitle||"") +
+      " TOS:" + (e.tos||"unknown") +
+      ((e.asi&&e.asi.length) ? " ASIs:"+e.asi.map(a=>a.code+"-"+a.desc).join(",") : "") +
+      ((e.sqi&&e.sqi.length) ? " SQIs:"+e.sqi.map(s=>s.code+"-"+s.desc).join(",") : "") +
+      ((e.awards&&e.awards.length) ? " Awards:"+e.awards.join(",") : "") +
+      ((e.additionalDuties&&e.additionalDuties.length) ? " Duties:"+e.additionalDuties.join(",") : "") +
+      ((e.mosRoles&&e.mosRoles.length) ? " Roles:"+e.mosRoles.map(r=>r.title+"("+r.duration+")").join(",") : "") +
+      " Clearance:" + (e.clearanceLevel||"None") +
+      " Unit:" + (e.unit||"") +
+      " Duties:" + (e.duties||"not described")
+    ).join(" | ");
+    const eduText = education.map(e => e.degree + " " + e.field + " " + e.institution + " " + e.year).join("; ");
     try {
       const formatInstructions = {
         ats_chrono: "ATS CHRONOLOGICAL FORMAT: Simple clean layout. Standard section headers (Summary, Experience, Education, Skills, Certifications). Reverse chronological work history. No tables, no text boxes, no columns. Keyword-rich. ATS-safe fonts and structure.",
@@ -1405,36 +1423,41 @@ Use this exact structure:
         minimalist: "MINIMALIST FORMAT: Maximum white space. Simple clean typography. Minimal use of dividers. Let content breathe. Easy to scan. Clean hierarchy with role, company, dates on one line.",
         creative: "CREATIVE FORMAT: Use tasteful formatting with section color accents (use ASCII/text characters to simulate). Clear visual hierarchy. Creative but readable. Appropriate for design, media, and branding roles.",
       };
-      const formatGuide = formatInstructions[resumeFormat] || formatInstructions.ats_chrono;
-      const contact = (personal.name||"") + " | " + (personal.email||"") + " | " + (personal.phone||"") + " | " + (personal.location||"") + (personal.linkedin ? " | " + personal.linkedin : "");
-      const targetStr = (target.title||"open") + " | Industry: " + (target.industry||"any") + " | Keywords: " + (target.keywords||"leadership, operations");
-      const prompt = "Create a complete professional resume for this veteran.\n\n" +
-        "FORMAT: " + formatGuide + "\n\n" +
-        "CONTACT: " + contact + "\n" +
-        "TARGET ROLE: " + targetStr + "\n\n" +
-        "FULL EXPERIENCE:\n" + (expText||"Not provided") + "\n\n" +
-        "EDUCATION:\n" + (eduText||"Not provided") + "\n\n" +
+      const prompt =
+        "You are an expert military-to-civilian resume writer. Create a complete, professionally designed resume.\n\n" +
+        "VETERAN PROFILE:\n" + milSum + "\n\n" +
+        "CIVILIAN EXPERIENCE:\n" + expText + "\n\n" +
+        "EDUCATION:\n" + eduText + "\n\n" +
         "SKILLS: " + (skills.technical||"") + "\n" +
         "LEADERSHIP: " + (skills.leadership||"") + "\n" +
         "LANGUAGES: " + (skills.languages||"") + "\n" +
         "CERTIFICATIONS: " + (skills.certs||"") + "\n\n" +
+        "TARGET: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + "\n\n" +
+        "CONTACT: " + (personal.name||"") + " | " + (personal.email||"") + " | " + (personal.phone||"") + " | " + (personal.location||"") + (personal.linkedin ? " | " + personal.linkedin : "") + "\n\n" +
         "CRITICAL INSTRUCTIONS:\n" +
-        "1. Translate ALL military jargon, MOS codes, ASIs, SQIs into plain civilian language\n" +
-        "2. Each ASI and SQI = specialized competitive credential, highlight by civilian name\n" +
-        "3. Additional duties = extra competencies, convert each to civilian function\n" +
-        "4. Active security clearances = PREMIUM ASSET, feature prominently\n" +
-        "5. Reserve/Guard concurrent with civilian work = dual-career professional, highlight\n" +
-        "6. Quantify everything: team sizes, budgets, equipment values, mission counts\n" +
-        "7. Strong action verbs: Led, Commanded, Managed, Coordinated, Trained, Deployed\n" +
-        "8. ATS-optimized with keywords for: " + (target.title||"operations, leadership, logistics") + "\n" +
-        "9. Follow the specified format precisely\n\n" +
-        "Write the complete ready-to-use resume now:";
-            const out = await callClaude(
-        prompt,
-        "You are a top-tier military-to-civilian resume writer. You have expert knowledge of military qualifications, ASIs, SQIs, and how to translate them into compelling civilian credentials.",
-        3000
-      );
-      setResume(out);
+        "1. Translate ALL military jargon, MOS codes, ASIs, SQIs, ranks into compelling civilian language\n" +
+        "2. Even if duty descriptions are minimal, use the MOS code, rank, awards, and qualifications to infer and describe duties professionally\n" +
+        "3. Security clearances = premium asset, feature prominently\n" +
+        "4. Each award = proof of exceptional performance, reference specifically\n" +
+        "5. Quantify everything: team sizes, budgets, equipment values, mission counts\n" +
+        "6. Strong action verbs: Led, Directed, Managed, Coordinated, Executed, Optimized\n\n" +
+        "Return ONLY a valid JSON object, no markdown, no backticks, starting with { and ending with }.\n" +
+        "Use exactly these keys:\n" +
+        "name, contact (string), summary (2-3 sentence professional summary paragraph), " +
+        "experience (array of {employer, title, dates, bullets: [4-6 strong bullet strings]}), " +
+        "education (array of {degree, school, year}), " +
+        "skills (array of skill strings, max 12), " +
+        "certifications (array of strings), " +
+        "clearance (string or null), " +
+        "awards (array of strings)";
+
+      const raw = await callClaude(prompt, "Return ONLY valid JSON. No markdown. No backticks. Start with { end with }.", 3500);
+      const start = raw.indexOf("{");
+      const end = raw.lastIndexOf("}");
+      if (start === -1 || end === -1) throw new Error("Could not parse resume JSON from AI response");
+      const rd = JSON.parse(raw.slice(start, end + 1));
+      setResumeData(rd);
+      setResume(raw); // keep raw for copy/PDF fallback
       setL("resume",false);
     } catch(e) {
       console.error("Resume generation failed:", e);
@@ -2567,6 +2590,7 @@ Use this exact structure:
                   <div className="field"><label>Target Job Title</label><input placeholder="e.g. Project Manager, Paramedic" value={target.title} onChange={e=>upT("title",e.target.value)}/></div>
                   <div className="field"><label>Preferred Industry</label><input placeholder="e.g. Healthcare, Defense, Tech, Finance" value={target.industry} onChange={e=>upT("industry",e.target.value)}/></div>
                   <div className="field"><label>Priorities / Keywords</label><input placeholder="e.g. remote work, leadership role, outdoors" value={target.keywords} onChange={e=>upT("keywords",e.target.value)}/></div>
+                  <div className="field"><label>Preferred Work Location</label><input placeholder="e.g. Norfolk VA, Remote, Dallas TX..." value={targetLocation} onChange={e=>setTargetLocation(e.target.value)}/></div>
                 </div>
               </div>
             </div>
@@ -2824,6 +2848,38 @@ Use this exact structure:
                       style={{marginTop:".25rem"}}>
                       📄 Use This Career to Build My Resume →
                     </button>
+
+                    {/* ── JOB SEARCH LINKS ── */}
+                    <div style={{marginTop:"1rem",padding:"1rem",background:"rgba(255,255,255,.05)",border:"1px solid rgba(201,168,76,.2)",borderRadius:"4px"}}>
+                      <div style={{fontSize:".72rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--gold)",fontWeight:700,marginBottom:".6rem"}}>
+                        Find Open Jobs {targetLocation ? "near " + targetLocation : ""}
+                      </div>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:".5rem"}}>
+                        {[
+                          {label:"Indeed", icon:"🔍",
+                            url:"https://www.indeed.com/jobs?q=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
+                          {label:"LinkedIn", icon:"💼",
+                            url:"https://www.linkedin.com/jobs/search/?keywords=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
+                          {label:"USAJobs", icon:"🏛",
+                            url:"https://www.usajobs.gov/search/results/?k=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
+                          {label:"ZipRecruiter", icon:"⚡",
+                            url:"https://www.ziprecruiter.com/jobs-search?search=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
+                          {label:"Hire Heroes USA", icon:"🎖",
+                            url:"https://www.hireheroesusa.org/"},
+                          {label:"Veteran Jobs Mission", icon:"🇺🇸",
+                            url:"https://www.veteranjobsmission.com/find-a-job"},
+                        ].map(site=>(
+                          <a key={site.label} href={site.url} target="_blank" rel="noopener noreferrer"
+                            style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".4rem .85rem",background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",borderRadius:"3px",color:"var(--text)",textDecoration:"none",fontSize:".8rem",transition:"all .2s"}}>
+                            {site.icon} {site.label} →
+                          </a>
+                        ))}
+                      </div>
+                      <div style={{fontSize:".72rem",color:"var(--dim)",marginTop:".5rem"}}>
+                        Links open real job listings for "{selectedCareer.title}" {targetLocation ? "in " + targetLocation : "nationwide"}
+                      </div>
+                    </div>
+
                   </div>
                 )}
               </div>
@@ -2875,176 +2931,262 @@ Use this exact structure:
             {resume&&!loading.resume&&(
               <div style={{marginTop:"1rem"}}>
                 <div className="resume-out">
-                  <div className="resume-out-head">
-                    <h3>Your {(RESUME_FORMATS.find(f=>f.id===resumeFormat) ? RESUME_FORMATS.find(f=>f.id===resumeFormat).label : "Professional")||"Professional"} Resume</h3>
-                    <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
-                      <button className="btn-sec" style={{color:"#333",borderColor:"#aaa"}} onClick={handleSaveResume}>💾 Save</button>
-                      <button className="btn-sec" style={{color:"#333",borderColor:"#aaa"}} onClick={copy}>{copied?"✓ Copied!":"Copy Text"}</button>
-                      <button className="btn-sec" style={{color:"#333",borderColor:"#aaa"}} onClick={()=>{
-                        const jsPDFScript = document.createElement("script");
-                        jsPDFScript.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
-                        document.head.appendChild(jsPDFScript);
-                        jsPDFScript.onload = () => {
-                          const {jsPDF} = window.jspdf;
-                          const doc = new jsPDF({unit:"pt",format:"letter"});
-                          const lines = resume.split("\n");
-                          let y = 50;
-                          doc.setFont("helvetica","normal");
-                          lines.forEach(line => {
-                            if(y > 720){doc.addPage(); y=50;}
-                            const trimmed = line.trim();
-                            if(!trimmed){y+=8;return;}
-                            // Detect headers (ALL CAPS lines or lines ending with :)
-                            const isHeader = trimmed === trimmed.toUpperCase() && trimmed.length > 3 && trimmed.length < 50;
-                            const isName = y < 100;
-                            if(isName && y===50){
-                              doc.setFontSize(16); doc.setFont("helvetica","bold");
-                            } else if(isHeader){
-                              doc.setFontSize(10); doc.setFont("helvetica","bold");
-                              doc.setDrawColor(80,80,80);
-                              doc.line(40, y+3, 570, y+3);
-                              y+=5;
-                            } else if(trimmed.startsWith("•")||trimmed.startsWith("-")){
-                              doc.setFontSize(9.5); doc.setFont("helvetica","normal");
-                            } else {
-                              doc.setFontSize(10); doc.setFont("helvetica","normal");
-                            }
-                            const wrapped = doc.splitTextToSize(trimmed, 510);
-                            doc.text(wrapped, 40, y);
-                            y += wrapped.length * (doc.getFontSize() * 1.35);
-                            doc.setFontSize(10); doc.setFont("helvetica","normal");
-                          });
-                          doc.save(`${personal.name||"veteran"}-resume.pdf`);
-                        };
-                      }}>Export PDF</button>
+
+                  {/* ── TEMPLATE SELECTOR ── */}
+                  <div style={{background:"#f5f2ea",borderBottom:"1px solid #ddd",padding:".75rem 1.2rem",display:"flex",gap:".5rem",flexWrap:"wrap",alignItems:"center"}}>
+                    <span style={{fontSize:".72rem",letterSpacing:".1em",textTransform:"uppercase",color:"#666",fontWeight:600,marginRight:".3rem"}}>Template:</span>
+                    {[
+                      {id:"modern",label:"Modern"},
+                      {id:"classic",label:"Classic"},
+                      {id:"executive",label:"Executive"},
+                      {id:"federal",label:"Federal/USAJobs"},
+                      {id:"minimal",label:"Minimal"},
+                    ].map(t=>(
+                      <button key={t.id}
+                        style={{padding:".3rem .85rem",borderRadius:"3px",border:"1.5px solid",fontSize:".75rem",cursor:"pointer",fontWeight:resumeTemplate===t.id?700:400,
+                          background:resumeTemplate===t.id?"#1e2d4e":"#fff",
+                          color:resumeTemplate===t.id?"#fff":"#444",
+                          borderColor:resumeTemplate===t.id?"#1e2d4e":"#ccc"}}
+                        onClick={()=>setResumeTemplate(t.id)}>{t.label}</button>
+                    ))}
+                    <div style={{marginLeft:"auto",display:"flex",gap:".4rem"}}>
+                      <button style={{padding:".3rem .8rem",fontSize:".75rem",background:"#1e2d4e",color:"#fff",border:"none",borderRadius:"3px",cursor:"pointer"}} onClick={copy}>Copy Text</button>
+                      <button style={{padding:".3rem .8rem",fontSize:".75rem",background:"#c9a84c",color:"#1a1a2e",border:"none",borderRadius:"3px",cursor:"pointer",fontWeight:600}} onClick={exportPDF}>Download PDF</button>
                     </div>
                   </div>
-                  <div className="resume-out-inner">
-                    {resume.split("\n").map((line,i)=>{
-                      const t = line.trim();
-                      if(!t) return <div key={i} style={{height:"6pt"}}/>;
-                      const isAllCaps = t===t.toUpperCase() && t.length>3 && t.length<60 && !/[0-9@|]/.test(t);
-                      const isBullet = t.startsWith("•") || t.startsWith("-") || t.startsWith("·");
-                      const isContact = i < 5 && (t.includes("@")||t.includes("|")||t.includes("("));
-                      if(i===0) return <h1 key={i}>{t}</h1>;
-                      if(i<4 && isContact) return <p key={i} style={{fontSize:"9pt",color:"#444",marginBottom:"1pt"}}>{t}</p>;
-                      if(isAllCaps) return <h2 key={i}>{t}</h2>;
-                      if(isBullet) return <p key={i} style={{paddingLeft:"12pt",marginBottom:"2pt",fontSize:"9.5pt"}}>
-                        <span style={{marginLeft:"-12pt",marginRight:"4pt"}}>•</span>{t.replace(/^[•\-·]\s*/,"")}
-                      </p>;
-                      return <p key={i} style={{marginBottom:"2pt"}}>{t}</p>;
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-            <div className="nav-row"><button className="btn-sec" onClick={()=>setTab(1)}>← Career Pathways</button><div/></div>
-          </div>
 
-          {/* ══ TAB 3: MY PROFILE ══ */}
-          <div className={`panel ${tab===3?"on":""}`}>
-            {!currentUser?(
-              <div style={{textAlign:"center",padding:"3rem 1rem"}}>
-                <div style={{fontSize:"3rem",marginBottom:"1rem"}}>🔒</div>
-                <h3 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",color:"var(--gold-light)",fontSize:"1.2rem",marginBottom:".5rem"}}>Sign In to Access Your Profile</h3>
-                <p style={{color:"var(--dim)",fontSize:".88rem",marginBottom:"1.5rem",lineHeight:"1.65"}}>Create a free account to save your service profile, store multiple resumes, and pick up right where you left off.</p>
-                <button className="btn-primary" style={{maxWidth:"280px",margin:"0 auto"}} onClick={()=>setShowAuth(true)}>🔑 Sign In / Create Account</button>
-              </div>
-            ):(
-              <>
-                {/* Profile hero */}
-                <div className="prof-hero">
-                  <div className="prof-avatar">{currentUser.initials}</div>
-                  <div style={{flex:1}}>
-                    <h2>{currentUser.name}</h2>
-                    <p>@{currentUser.username} · {savedResumes.length} saved resume{savedResumes.length!==1?"s":""}</p>
-                  </div>
-                  <button className="btn-primary" style={{width:"auto",padding:".6rem 1.3rem",fontSize:".85rem"}} onClick={handleSaveProfile}>
-                    💾 Save Profile{hasUnsaved?" *":""}
-                  </button>
-                </div>
-
-                {/* Saved Resumes */}
-                <div className="card">
-                  <div className="ch" style={{justifyContent:"space-between"}}>
-                    <h3>Saved Resumes</h3>
-                    {resume&&<button className="btn-sec" style={{fontSize:".72rem",padding:".28rem .7rem"}} onClick={handleSaveResume}>+ Save Current Resume</button>}
-                  </div>
-                  <div className="cb">
-                    {savedResumes.length===0?(
-                      <div style={{textAlign:"center",padding:"1.5rem",color:"var(--dim)",fontSize:".88rem"}}>
-                        <div style={{fontSize:"2rem",marginBottom:".5rem"}}>📄</div>
-                        No saved resumes yet. Generate a resume on the Build Resume tab and save it here.
-                      </div>
-                    ):(
-                      <>
-                        {viewingResume?(
-                          <>
-                            <button className="btn-sec" style={{marginBottom:"1rem",fontSize:".75rem"}} onClick={()=>setViewingResume(null)}>← Back to List</button>
-                            <div style={{marginBottom:".5rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:".5rem"}}>
-                              <div>
-                                <div style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",color:"var(--gold-light)",fontSize:"1rem"}}>{viewingResume.title}</div>
-                                <div style={{fontSize:".75rem",color:"var(--dim)"}}>{viewingResume.date} {viewingResume.industry&&`· ${viewingResume.industry}`}</div>
-                              </div>
-                              <div style={{display:"flex",gap:".35rem"}}>
-                                <button className="btn-sec" style={{fontSize:".72rem"}} onClick={()=>{navigator.clipboard.writeText(viewingResume.content);showToast("Copied ✓");}}>Copy</button>
-                                <button className="btn-sec" style={{fontSize:".72rem"}} onClick={()=>handleLoadResume(viewingResume)}>Load into Builder</button>
-                              </div>
+                  {/* ── RESUME RENDERER ── */}
+                  <div id="resume-render" style={{overflowY:"auto",maxHeight:"700px",background:"#e8e4dc",padding:"1.5rem",display:"flex",justifyContent:"center"}}>
+                    {resumeData ? (
+                      <div style={{width:"100%",maxWidth:"780px",background:"#fff",boxShadow:"0 4px 24px rgba(0,0,0,.18)"}}>
+                        {resumeTemplate==="modern" && (
+                          <div style={{fontFamily:"'Arial',sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
+                            {/* Modern Header - colored bar */}
+                            <div style={{background:"linear-gradient(135deg,#1e2d4e,#2a4070)",color:"#fff",padding:"2rem 2.4rem 1.5rem"}}>
+                              <div style={{fontSize:"22pt",fontWeight:700,letterSpacing:".03em",marginBottom:".3rem"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"9pt",opacity:.85,letterSpacing:".04em"}}>{resumeData.contact||personal.email}</div>
+                              {resumeData.clearance&&<div style={{marginTop:".6rem",display:"inline-block",background:"rgba(201,168,76,.9)",color:"#1a1a2e",padding:".15rem .7rem",borderRadius:"2px",fontSize:"8pt",fontWeight:700,letterSpacing:".08em"}}>🔐 {resumeData.clearance}</div>}
                             </div>
-                            <div style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.15)",borderRadius:"3px",padding:"1.2rem",whiteSpace:"pre-wrap",fontSize:".85rem",lineHeight:"1.85",color:"#d0c8b8",maxHeight:"500px",overflowY:"auto"}}>{viewingResume.content}</div>
-                          </>
-                        ):(
-                          savedResumes.map(r=>(
-                            <div className="saved-card" key={r.id}>
-                              <div className="saved-card-row">
-                                <div style={{flex:1,minWidth:0}}>
-                                  <h4>{r.title}</h4>
-                                  <p>{r.date}{r.industry?` · ${r.industry}`:""}</p>
-                                  <p style={{marginTop:".3rem",fontStyle:"italic",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:"380px"}}>{r.preview}</p>
+                            <div style={{padding:"1.6rem 2.4rem"}}>
+                              {resumeData.summary&&<div style={{marginBottom:"1.2rem",paddingBottom:"1rem",borderBottom:"2px solid #1e2d4e"}}>
+                                <div style={{fontSize:"9pt",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#1e2d4e",marginBottom:".4rem"}}>Professional Summary</div>
+                                <div style={{fontSize:"10pt",lineHeight:1.6,color:"#333"}}>{resumeData.summary}</div>
+                              </div>}
+                              {(resumeData.experience||[]).map((job,i)=>(
+                                <div key={i} style={{marginBottom:"1rem",paddingBottom:"1rem",borderBottom:"1px solid #eee"}}>
+                                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:".2rem"}}>
+                                    <div style={{fontWeight:700,fontSize:"10.5pt",color:"#1e2d4e"}}>{job.title}</div>
+                                    <div style={{fontSize:"9pt",color:"#666"}}>{job.dates}</div>
+                                  </div>
+                                  <div style={{fontSize:"9.5pt",color:"#444",marginBottom:".4rem",fontStyle:"italic"}}>{job.employer}</div>
+                                  {(job.bullets||[]).map((b,j)=><div key={j} style={{fontSize:"9.5pt",lineHeight:1.55,paddingLeft:"1rem",position:"relative",color:"#333",marginBottom:".15rem"}}>
+                                    <span style={{position:"absolute",left:0,color:"#c9a84c",fontWeight:700}}>▸</span>{b}
+                                  </div>)}
                                 </div>
-                                <div className="card-actions">
-                                  <button className="btn-sec" style={{fontSize:".7rem",padding:".28rem .6rem"}} onClick={()=>setViewingResume(r)}>View</button>
-                                  <button className="btn-sec" style={{fontSize:".7rem",padding:".28rem .6rem"}} onClick={()=>handleLoadResume(r)}>Load</button>
-                                  <button className="btn-danger" onClick={()=>handleDeleteResume(r.id)}>Delete</button>
+                              ))}
+                              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.2rem",marginTop:".5rem"}}>
+                                <div>
+                                  <div style={{fontSize:"9pt",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#1e2d4e",marginBottom:".5rem",paddingBottom:".2rem",borderBottom:"2px solid #1e2d4e"}}>Education</div>
+                                  {(resumeData.education||[]).map((e,i)=><div key={i} style={{marginBottom:".5rem",fontSize:"9.5pt"}}>
+                                    <div style={{fontWeight:600}}>{e.degree}</div>
+                                    <div style={{color:"#555"}}>{e.school}</div>
+                                    <div style={{color:"#888",fontSize:"8.5pt"}}>{e.year}</div>
+                                  </div>)}
+                                </div>
+                                <div>
+                                  <div style={{fontSize:"9pt",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#1e2d4e",marginBottom:".5rem",paddingBottom:".2rem",borderBottom:"2px solid #1e2d4e"}}>Core Competencies</div>
+                                  <div style={{display:"flex",flexWrap:"wrap",gap:".3rem"}}>
+                                    {(resumeData.skills||[]).map((s,i)=><span key={i} style={{background:"#f0f4fa",border:"1px solid #c5d0e0",borderRadius:"2px",padding:".15rem .5rem",fontSize:"8.5pt",color:"#1e2d4e"}}>{s}</span>)}
+                                  </div>
+                                  {(resumeData.certifications||[]).length>0&&<div style={{marginTop:".7rem"}}>
+                                    <div style={{fontSize:"8.5pt",fontWeight:700,color:"#666",marginBottom:".3rem",textTransform:"uppercase",letterSpacing:".08em"}}>Certifications</div>
+                                    {(resumeData.certifications||[]).map((c,i)=><div key={i} style={{fontSize:"9pt",color:"#333"}}>• {c}</div>)}
+                                  </div>}
+                                  {(resumeData.awards||[]).length>0&&<div style={{marginTop:".7rem"}}>
+                                    <div style={{fontSize:"8.5pt",fontWeight:700,color:"#666",marginBottom:".3rem",textTransform:"uppercase",letterSpacing:".08em"}}>Awards & Honors</div>
+                                    {(resumeData.awards||[]).map((a,i)=><div key={i} style={{fontSize:"9pt",color:"#333"}}>🎖 {a}</div>)}
+                                  </div>}
                                 </div>
                               </div>
                             </div>
-                          ))
+                          </div>
                         )}
-                      </>
+
+                        {resumeTemplate==="classic" && (
+                          <div style={{fontFamily:"'Georgia',serif",fontSize:"10pt",color:"#1a1a1a",padding:"2.2rem 2.6rem"}}>
+                            <div style={{textAlign:"center",borderBottom:"2px solid #1a1a1a",paddingBottom:"1rem",marginBottom:"1rem"}}>
+                              <div style={{fontSize:"20pt",fontWeight:700,letterSpacing:".05em",textTransform:"uppercase"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"9pt",color:"#444",marginTop:".3rem"}}>{resumeData.contact||personal.email}</div>
+                              {resumeData.clearance&&<div style={{fontSize:"8.5pt",fontWeight:700,color:"#1a1a1a",marginTop:".3rem"}}>Security Clearance: {resumeData.clearance}</div>}
+                            </div>
+                            {resumeData.summary&&<div style={{marginBottom:"1rem"}}>
+                              <div style={{fontSize:"9pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #999",paddingBottom:"2pt",marginBottom:".5rem"}}>Professional Summary</div>
+                              <div style={{fontSize:"10pt",lineHeight:1.65,color:"#333",textAlign:"justify"}}>{resumeData.summary}</div>
+                            </div>}
+                            {(resumeData.experience||[]).map((job,i)=>(
+                              <div key={i} style={{marginBottom:".9rem"}}>
+                                <div style={{display:"flex",justifyContent:"space-between"}}>
+                                  <span style={{fontWeight:700,fontSize:"10.5pt"}}>{job.title}</span>
+                                  <span style={{fontSize:"9pt",color:"#555",fontStyle:"italic"}}>{job.dates}</span>
+                                </div>
+                                <div style={{fontStyle:"italic",color:"#444",fontSize:"9.5pt",marginBottom:".3rem"}}>{job.employer}</div>
+                                {(job.bullets||[]).map((b,j)=><div key={j} style={{fontSize:"9.5pt",lineHeight:1.55,paddingLeft:"1rem",marginBottom:".1rem"}}>• {b}</div>)}
+                              </div>
+                            ))}
+                            <div style={{fontSize:"9pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #999",paddingBottom:"2pt",margin:"1rem 0 .5rem"}}>Education</div>
+                            {(resumeData.education||[]).map((e,i)=><div key={i} style={{marginBottom:".4rem",fontSize:"9.5pt"}}>
+                              <strong>{e.degree}</strong> — {e.school} {e.year&&"("+e.year+")"}
+                            </div>)}
+                            <div style={{fontSize:"9pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #999",paddingBottom:"2pt",margin:"1rem 0 .5rem"}}>Skills & Qualifications</div>
+                            <div style={{fontSize:"9.5pt",lineHeight:1.7}}>{(resumeData.skills||[]).join(" • ")}</div>
+                            {(resumeData.awards||[]).length>0&&<div>
+                              <div style={{fontSize:"9pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #999",paddingBottom:"2pt",margin:"1rem 0 .5rem"}}>Awards & Recognition</div>
+                              {(resumeData.awards||[]).map((a,i)=><div key={i} style={{fontSize:"9.5pt"}}>• {a}</div>)}
+                            </div>}
+                          </div>
+                        )}
+
+                        {resumeTemplate==="executive" && (
+                          <div style={{fontFamily:"'Arial',sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
+                            <div style={{background:"#0a0a0a",color:"#fff",padding:"2.2rem 2.6rem"}}>
+                              <div style={{fontSize:"24pt",fontWeight:300,letterSpacing:".08em",textTransform:"uppercase"}}>{resumeData.name||personal.name}</div>
+                              <div style={{height:"2px",background:"#c9a84c",width:"60px",margin:".8rem 0"}}/>
+                              <div style={{fontSize:"9pt",letterSpacing:".06em",color:"#aaa"}}>{resumeData.contact||personal.email}</div>
+                              {resumeData.clearance&&<div style={{marginTop:".7rem",color:"#c9a84c",fontSize:"9pt",fontWeight:600,letterSpacing:".08em"}}>SECURITY CLEARANCE: {resumeData.clearance.toUpperCase()}</div>}
+                            </div>
+                            <div style={{padding:"1.8rem 2.6rem"}}>
+                              {resumeData.summary&&<div style={{marginBottom:"1.5rem",paddingBottom:"1.5rem",borderBottom:"1px solid #e0e0e0"}}>
+                                <div style={{fontSize:"8pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#c9a84c",marginBottom:".5rem"}}>Executive Profile</div>
+                                <div style={{fontSize:"10.5pt",lineHeight:1.7,color:"#222",fontWeight:300}}>{resumeData.summary}</div>
+                              </div>}
+                              <div style={{marginBottom:"1.5rem"}}>
+                                <div style={{fontSize:"8pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#c9a84c",marginBottom:".8rem"}}>Core Competencies</div>
+                                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:".3rem"}}>
+                                  {(resumeData.skills||[]).map((s,i)=><div key={i} style={{fontSize:"9pt",padding:".25rem .6rem",background:"#f8f8f8",borderLeft:"3px solid #c9a84c",color:"#222"}}>{s}</div>)}
+                                </div>
+                              </div>
+                              {(resumeData.experience||[]).map((job,i)=>(
+                                <div key={i} style={{marginBottom:"1.2rem",paddingBottom:"1.2rem",borderBottom:"1px solid #f0f0f0"}}>
+                                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+                                    <div style={{fontWeight:700,fontSize:"11pt",color:"#0a0a0a"}}>{job.title}</div>
+                                    <div style={{fontSize:"8.5pt",color:"#888",fontStyle:"italic"}}>{job.dates}</div>
+                                  </div>
+                                  <div style={{fontSize:"9.5pt",color:"#c9a84c",fontWeight:600,marginBottom:".5rem",letterSpacing:".03em"}}>{job.employer}</div>
+                                  {(job.bullets||[]).map((b,j)=><div key={j} style={{fontSize:"9.5pt",lineHeight:1.6,paddingLeft:"1.2rem",position:"relative",color:"#333",marginBottom:".2rem"}}>
+                                    <span style={{position:"absolute",left:0,color:"#c9a84c",fontWeight:700}}>›</span>{b}
+                                  </div>)}
+                                </div>
+                              ))}
+                              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.5rem",marginTop:"1rem"}}>
+                                <div>
+                                  <div style={{fontSize:"8pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#c9a84c",marginBottom:".5rem"}}>Education</div>
+                                  {(resumeData.education||[]).map((e,i)=><div key={i} style={{marginBottom:".4rem",fontSize:"9.5pt"}}>
+                                    <div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#666"}}>{e.school} {e.year}</div>
+                                  </div>)}
+                                </div>
+                                <div>
+                                  <div style={{fontSize:"8pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#c9a84c",marginBottom:".5rem"}}>Certifications & Awards</div>
+                                  {(resumeData.certifications||[]).map((c,i)=><div key={i} style={{fontSize:"9pt",color:"#333",marginBottom:".2rem"}}>✓ {c}</div>)}
+                                  {(resumeData.awards||[]).map((a,i)=><div key={i} style={{fontSize:"9pt",color:"#333",marginBottom:".2rem"}}>★ {a}</div>)}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {resumeTemplate==="minimal" && (
+                          <div style={{fontFamily:"'Arial',sans-serif",fontSize:"10pt",color:"#1a1a1a",padding:"3rem"}}>
+                            <div style={{marginBottom:"2rem"}}>
+                              <div style={{fontSize:"26pt",fontWeight:700,color:"#1a1a1a",marginBottom:".2rem"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"9pt",color:"#888"}}>{resumeData.contact||personal.email}</div>
+                              {resumeData.clearance&&<div style={{fontSize:"9pt",color:"#333",marginTop:".3rem",fontWeight:600}}>{resumeData.clearance}</div>}
+                            </div>
+                            {resumeData.summary&&<div style={{marginBottom:"2rem",paddingBottom:"2rem",borderBottom:"1px solid #eee"}}>
+                              <div style={{fontSize:"10pt",lineHeight:1.8,color:"#444"}}>{resumeData.summary}</div>
+                            </div>}
+                            {(resumeData.experience||[]).map((job,i)=>(
+                              <div key={i} style={{marginBottom:"1.8rem"}}>
+                                <div style={{display:"flex",justifyContent:"space-between"}}>
+                                  <div style={{fontWeight:700,fontSize:"11pt"}}>{job.title}</div>
+                                  <div style={{fontSize:"9pt",color:"#999"}}>{job.dates}</div>
+                                </div>
+                                <div style={{color:"#666",fontSize:"9.5pt",marginBottom:".5rem"}}>{job.employer}</div>
+                                {(job.bullets||[]).map((b,j)=><div key={j} style={{fontSize:"9.5pt",lineHeight:1.6,paddingLeft:"1rem",borderLeft:"2px solid #eee",marginBottom:".3rem",color:"#333"}}>{b}</div>)}
+                              </div>
+                            ))}
+                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"2rem",marginTop:"1rem",paddingTop:"1.5rem",borderTop:"1px solid #eee"}}>
+                              <div>
+                                <div style={{fontSize:"8pt",letterSpacing:".15em",textTransform:"uppercase",color:"#999",fontWeight:700,marginBottom:".7rem"}}>Education</div>
+                                {(resumeData.education||[]).map((e,i)=><div key={i} style={{marginBottom:".5rem",fontSize:"9.5pt"}}>
+                                  <div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#777"}}>{e.school}</div>
+                                </div>)}
+                              </div>
+                              <div>
+                                <div style={{fontSize:"8pt",letterSpacing:".15em",textTransform:"uppercase",color:"#999",fontWeight:700,marginBottom:".7rem"}}>Skills</div>
+                                <div style={{fontSize:"9.5pt",color:"#444",lineHeight:1.8}}>{(resumeData.skills||[]).join(" · ")}</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {resumeTemplate==="federal" && (
+                          <div style={{fontFamily:"'Arial',sans-serif",fontSize:"9.5pt",color:"#000",padding:"1.8rem 2.2rem"}}>
+                            <div style={{borderBottom:"3px double #000",paddingBottom:"1rem",marginBottom:"1rem"}}>
+                              <div style={{fontSize:"16pt",fontWeight:700}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"9pt",color:"#333",marginTop:".3rem"}}>{resumeData.contact||personal.email}</div>
+                              {resumeData.clearance&&<div style={{fontSize:"9pt",fontWeight:700,marginTop:".3rem"}}>SECURITY CLEARANCE: {resumeData.clearance}</div>}
+                            </div>
+                            <div style={{marginBottom:"1rem"}}>
+                              <div style={{fontWeight:700,fontSize:"10pt",textDecoration:"underline",marginBottom:".4rem"}}>PROFESSIONAL SUMMARY</div>
+                              <div style={{lineHeight:1.7}}>{resumeData.summary}</div>
+                            </div>
+                            <div style={{fontWeight:700,fontSize:"10pt",textDecoration:"underline",marginBottom:".6rem"}}>WORK EXPERIENCE</div>
+                            {(resumeData.experience||[]).map((job,i)=>(
+                              <div key={i} style={{marginBottom:"1.2rem",paddingLeft:"1rem",borderLeft:"3px solid #000"}}>
+                                <div style={{fontWeight:700}}>{job.title}</div>
+                                <div style={{fontWeight:600,color:"#333"}}>{job.employer}</div>
+                                <div style={{color:"#555",fontSize:"9pt",marginBottom:".4rem"}}>{job.dates}</div>
+                                {(job.bullets||[]).map((b,j)=><div key={j} style={{lineHeight:1.65,paddingLeft:".8rem",marginBottom:".2rem"}}>• {b}</div>)}
+                              </div>
+                            ))}
+                            <div style={{fontWeight:700,fontSize:"10pt",textDecoration:"underline",margin:"1rem 0 .6rem"}}>EDUCATION</div>
+                            {(resumeData.education||[]).map((e,i)=><div key={i} style={{marginBottom:".5rem"}}>
+                              <strong>{e.degree}</strong><br/>{e.school}, {e.year}
+                            </div>)}
+                            <div style={{fontWeight:700,fontSize:"10pt",textDecoration:"underline",margin:"1rem 0 .6rem"}}>SKILLS & CERTIFICATIONS</div>
+                            <div style={{lineHeight:1.8}}>{(resumeData.skills||[]).join(" | ")}</div>
+                            {(resumeData.certifications||[]).length>0&&<div style={{marginTop:".5rem"}}>{(resumeData.certifications||[]).join(" | ")}</div>}
+                            {(resumeData.awards||[]).length>0&&<div>
+                              <div style={{fontWeight:700,fontSize:"10pt",textDecoration:"underline",margin:"1rem 0 .6rem"}}>AWARDS & RECOGNITION</div>
+                              {(resumeData.awards||[]).map((a,i)=><div key={i}>• {a}</div>)}
+                            </div>}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div style={{width:"100%",maxWidth:"780px",background:"#fff",boxShadow:"0 4px 24px rgba(0,0,0,.18)",padding:"2.4rem 2.8rem"}}>
+                        {resume.split("\n").map((line,i)=>{
+                          const t = line.trim();
+                          if(!t) return <div key={i} style={{height:"6pt"}}/>;
+                          const isHeader = t.startsWith("##") || (t===t.toUpperCase()&&t.length>3&&t.length<60&&!/[0-9@|]/.test(t));
+                          const isBullet = t.startsWith("•")||t.startsWith("-")||t.startsWith("*");
+                          const cleaned = t.replace(/^#+\s*/,"").replace(/\*\*/g,"");
+                          if(i===0) return <div key={i} style={{fontSize:"18pt",fontWeight:700,marginBottom:"4pt"}}>{cleaned}</div>;
+                          if(isHeader) return <div key={i} style={{fontSize:"10pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1.5px solid #333",paddingBottom:"2pt",margin:"13pt 0 5pt"}}>{cleaned}</div>;
+                          if(isBullet) return <div key={i} style={{paddingLeft:"1rem",marginBottom:"2pt",lineHeight:1.55}}>• {cleaned.replace(/^[•\-\*]\s*/,"")}</div>;
+                          return <div key={i} style={{lineHeight:1.55,marginBottom:"1pt"}}>{cleaned}</div>;
+                        })}
+                      </div>
                     )}
                   </div>
                 </div>
 
-                {/* Account Actions */}
-                <div className="card">
-                  <div className="ch"><h3>Account</h3></div>
-                  <div className="cb" style={{display:"flex",gap:".6rem",flexWrap:"wrap"}}>
-                    <button className="btn-sec" onClick={handleSaveProfile}>💾 Save Profile & Qualifications</button>
-                    <button className="btn-danger" onClick={()=>{if(window.confirm("Sign out?")) handleLogout();}}>Sign Out</button>
-                    <button className="btn-danger" onClick={()=>{
-                      if(window.confirm("Delete all your saved data? This cannot be undone.")) {
-                        localStorage.removeItem(`vcb_user_${currentUser.username}`);
-                        localStorage.removeItem(storageKey(currentUser.username,"profile"));
-                        localStorage.removeItem(storageKey(currentUser.username,"resumes"));
-                        handleLogout();
-                      }
-                    }}>Delete Account</button>
-                  </div>
-                </div>
+            </div>
 
-                <div className="nav-row">
-                  <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
-                  <button className="btn-sec" onClick={()=>setTab(0)}>Back to Top →</button>
-                </div>
-              </>
-            )}
           </div>
-
         </div>
       </div>
 
-      {/* SAVE TOAST */}
       {saveToast&&<div className="save-toast">{saveToast}</div>}
     </>
   );

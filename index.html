@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- VCB v2.1 - updated 2026-03-19 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -6,8 +7,8 @@
   <title>Veteran to Civilian — Career Transitions</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{background:#2e4880;font-family:Georgia,serif;}
-    #loading{position:fixed;inset:0;background:#2e4880;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:999;}
+    body{background:linear-gradient(145deg,#1c4a8c 0%,#1e5299 50%,#1a4a7a 100%);min-height:100vh;font-family:Georgia,serif;}
+    #loading{position:fixed;inset:0;background:linear-gradient(145deg,#1c4a8c,#1e5299);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:999;}
     #loading img{width:160px;height:160px;object-fit:contain;}
     #loading p{color:#e8c97a;letter-spacing:.15em;font-size:1rem;}
     .spin{width:44px;height:44px;border:3px solid rgba(201,168,76,.25);border-top-color:#c9a84c;border-radius:50%;animation:sp .8s linear infinite;}
@@ -127,14 +128,14 @@
   <!-- 4. Firebase Config — PASTE YOUR VALUES HERE -->
   <script>
     try {
-      const firebaseConfig = {
-        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
-        authDomain: "veteran-career-builder.firebaseapp.com",
-        projectId: "veteran-career-builder",
-        storageBucket: "veteran-career-builder.firebasestorage.app",
-        messagingSenderId: "REPLACE_SENDER_ID",
-        appId: "REPLACE_APP_ID"
-      };
+     const firebaseConfig = {
+  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
+  authDomain: "veteran-career-builder.firebaseapp.com",
+  projectId: "veteran-career-builder",
+  storageBucket: "veteran-career-builder.firebasestorage.app",
+  messagingSenderId: "664123627374",
+  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
+};
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb   = firebase.firestore();
@@ -159,6 +160,66 @@
     const fbDb   = window.fbDb;
 
 // ─── STATIC DATA ─────────────────────────────────────────────────────────────
+
+// ── MILITARY JARGON TRANSLATOR ─────────────────────────────────────────────
+// Used to pre-process veteran input before sending to AI
+const MIL_JARGON = {
+  "NCOIC":"Team Supervisor / Operations Lead",
+  "OIC":"Department Manager / Program Lead",
+  "CDR":"Commander / Director",
+  "XO":"Deputy Director / Operations Manager",
+  "1SG":"Senior Operations Supervisor",
+  "CSM":"Senior Advisor / Chief of Staff",
+  "PSG":"Team Lead / Operations Supervisor",
+  "NCO":"Team Leader / Supervisor",
+  "SNCO":"Senior Team Leader",
+  "AO":"Area of Operations",
+  "AOR":"Area of Responsibility / Region of Operations",
+  "OPORD":"Operations Plan",
+  "FRAGO":"Change Order / Updated Operations Plan",
+  "SITREP":"Status Report",
+  "AAR":"Post-Project Review / Lessons Learned",
+  "SOP":"Standard Operating Procedure",
+  "TTP":"Best Practices / Operational Procedures",
+  "PMCS":"Preventive Maintenance Program",
+  "GCSS":"Enterprise Resource Planning (ERP) System",
+  "CIF":"Equipment Issue Facility",
+  "MHE":"Material Handling Equipment",
+  "PLL":"Inventory Management / Parts Catalog",
+  "SSA":"Supply Chain / Distribution Center",
+  "PBO":"Property / Asset Manager",
+  "FOB":"Remote Operations Site",
+  "TOC":"Operations Center / Command Center",
+  "COP":"Common Operating Picture / Dashboard",
+  "ISR":"Intelligence / Surveillance Operations",
+  "C2":"Command and Control / Leadership",
+  "OPTEMPO":"Operational Tempo / Workload",
+  "Battle Rhythm":"Recurring Operating Cadence",
+  "Tasker":"Action Item / Work Order",
+  "Deadlined":"Out of Service / Non-Operational",
+  "PCS":"Relocation",
+  "TDY":"Temporary Business Travel",
+  "TAD":"Temporary Duty Assignment",
+  "PME":"Professional Development / Leadership Training",
+  "PT":"Physical Fitness Training",
+  "MOB":"Deployment / Mobilization",
+  "DEMOB":"Redeployment / Stand-Down",
+  "MOS":"Career Specialty",
+  "AFSC":"Career Specialty Code",
+  "Rate":"Career Specialty (Navy/Coast Guard)",
+  "NEC":"Navy Job Classification",
+  "LES":"Pay Statement / Earnings Record",
+  "Chain of Command":"Reporting Structure / Leadership Hierarchy",
+  "Unit Cohesion":"Team Unity / Team Effectiveness",
+  "Force Multiplier":"Efficiency Improvement / Capability Enhancement",
+  "Mission Essential":"Business Critical",
+  "Hooah":"(remove - military slang)",
+  "Oorah":"(remove - military slang)",
+  "Roger":"Understood / Acknowledged",
+  "Hard Charger":"High Performer / Self-Starter",
+  "In the Weeds":"Detail-Oriented / Granular Focus",
+};
+
 const BRANCHES = ["Army","Navy","Marine Corps","Air Force","Space Force","Coast Guard"];
 
 const RANKS = {
@@ -326,14 +387,14 @@ const MOS_DATA = {
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&display=swap');
 :root {
-  --gold:#c9a84c; --gold-light:#e8c97a; --gold-dim:rgba(201,168,76,0.35);
-  --navy:#2a3f6f; --navy2:#314878; --navy3:#3a5490;
-  --slate:#b8cce0; --text:#f8f4e8; --dim:#98adc4;
-  --green:#4caf82; --red:#e05555; --blue:#5b9bd5; --purple:#a07cd6; --orange:#e09040;
+  --gold:#e0b84a; --gold-light:#f5d060; --gold-dim:rgba(224,184,74,0.35);
+  --navy:#1e4a8a; --navy2:#2456a0; --navy3:#2c62b4;
+  --slate:#d0e4f8; --text:#ffffff; --dim:#b0cce8;
+  --green:#3dba7a; --red:#e05555; --blue:#4db8f0; --purple:#a07cd6; --orange:#e8953a;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#2e4880;font-family:'Crimson Pro',serif;color:var(--text);}
-.app{min-height:100vh;background:linear-gradient(160deg,#2e4880 0%,#365290 55%,#2e5248 100%);}
+body{background:#1a3a6b;font-family:'Crimson Pro',serif;color:var(--text);}
+.app{min-height:100vh;background:transparent;}
 
 /* HEADER */
 .hdr{text-align:center;padding:2.2rem 1rem 1.8rem;position:relative;}
@@ -360,7 +421,7 @@ body{background:#2e4880;font-family:'Crimson Pro',serif;color:var(--text);}
 @keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 
 /* CARDS */
-.card{background:rgba(255,255,255,.1);border:1px solid var(--gold-dim);border-radius:4px;margin-bottom:1.1rem;overflow:hidden;}
+.card{background:rgba(255,255,255,.18);border:1px solid rgba(224,184,74,.45);border-radius:4px;margin-bottom:1.1rem;overflow:hidden;}
 .ch{background:rgba(201,168,76,.18);border-bottom:1px solid var(--gold-dim);padding:.75rem 1.1rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
 .ch h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.92rem;color:var(--gold);}
 .ch-sub{font-size:.68rem;color:#b0c8e0;letter-spacing:.07em;text-transform:uppercase;}
@@ -374,7 +435,7 @@ body{background:#2e4880;font-family:'Crimson Pro',serif;color:var(--text);}
 /* FIELDS */
 .field{display:flex;flex-direction:column;gap:.3rem;margin-bottom:.65rem;}
 .field label{font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:#d4e4f0;font-weight:700;}
-.field input,.field select,.field textarea{background:rgba(255,255,255,.92);border:1.5px solid rgba(201,168,76,.5);border-radius:3px;color:#1a1a2e;padding:.58rem .8rem;font-family:'Crimson Pro',serif;font-size:.95rem;transition:border-color .2s,background .2s;width:100%;}
+.field input,.field select,.field textarea{background:rgba(255,255,255,.96);border:1.5px solid rgba(224,184,74,.6);border-radius:3px;color:#0d1f3c;padding:.58rem .8rem;font-family:'Crimson Pro',serif;font-size:.95rem;transition:border-color .2s,background .2s;width:100%;}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 2px rgba(201,168,76,.25);}
 .field select option{background:#f0f0f0;color:#1a1a2e;}
 .field textarea{resize:vertical;min-height:80px;line-height:1.65;}
@@ -941,7 +1002,7 @@ function App() {
   const experiences = [...milExperiences, ...civExperiences];
   const [education, setEducation] = useState([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
   const [skills, setSkills] = useState({ technical:"", leadership:"", languages:"", certs:"" });
-  const [target, setTarget] = useState({ title:"", industry:"", keywords:"" });
+  const [target, setTarget] = useState({ title:"", industry:"", keywords:"", interests:"", openTo:"" });
   const [collapsed, setCollapsed] = useState({});
   const [mosOut, setMosOut] = useState("");
   const [careers, setCareers] = useState(null);
@@ -1261,7 +1322,7 @@ function App() {
 
       const raw = await callClaude(
         prompt,
-        "You are an expert military-to-civilian career transition coach. You translate military experience into compelling civilian language. Always respond with valid JSON only — no markdown, no backticks, no explanation text before or after the JSON.",
+        "You are an expert military-to-civilian career transition coach with deep knowledge of all military branches, MOS codes, ASIs, SQIs, awards, and how to translate them into compelling civilian language. IMPORTANT: Translate ALL military jargon and acronyms into plain civilian language. ASIs and SQIs represent advanced specialized training certifications — each one is a competitive advantage. Awards like ARCOM or MSM prove exceptional performance. Security clearances are premium assets. Always respond with valid JSON only — no markdown, no backticks.",
         2000
       );
 
@@ -1300,8 +1361,224 @@ function App() {
     setCareerDetail(null);
     const summary = buildExpSummary();
     const prompt = "A veteran has this background:\n" + (summary||"general military service") +
-      "\n\nTarget: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + " | Keywords: " + (target.keywords||"none") +
-      "\n\nReturn ONLY a valid JSON array of 12 career objects. Start with [ end with ]. No markdown, no backticks, no extra text." +
+      "\n\nTarget Role: " + (target.title||"open") +
+      " | Industry: " + (target.industry||"any") +
+      " | Keywords: " + (target.keywords||"none") +
+      (target.interests ? "\nInterests & Hobbies: " + target.interests : "") +
+      (target.openTo ? "\nOpen to exploring: " + target.openTo : "") +
+      (targetLocation ? "\nPreferred location: " + targetLocation : "") +
+      "\n\nIMPORTANT: Use their interests and hobbies to suggest careers they may never have considered." +
+      " A veteran who loves coaching youth sports might love corporate training or athletic director roles." +
+      " A veteran who loves motorcycles might love fleet management or automotive careers." +
+      " Think broadly and creatively, not just based on MOS.\n\n" +
+      "Return ONLY a valid JSON array of 12 career objects. Start with [ end with ]. No markdown, no backticks, no extra text." +
+      "\nInclude a realistic mix: entry-level trades (CDL truck driver, electrician, welder, security officer, EMT, firefighter), mid-level (project manager, logistics manager, law enforcement), and senior (intelligence analyst, operations director, IT manager). Civilian, government, AND defense/intel." +
+      "\nEach object must have exactly these keys: title, sector (Civilian or Government or Defense/Intel), industry, salaryRange, outlook (High Growth or Stable or Emerging), match (Excellent or Strong or Good), description, whyFit, topSkills (array of 3), nextStep, clearanceBonus (boolean)";
+    try {
+      const raw = await callClaude(prompt,"You are a career analyst for military-to-civilian transitions. Return ONLY a valid JSON array starting with [ and ending with ]. Include civilian, government, and defense/intel roles. No markdown.");
+      const start = raw.indexOf("[");
+      const end = raw.lastIndexOf("]");
+      if (start === -1 || end === -1) throw new Error("No JSON array");
+      const parsed = JSON.parse(raw.slice(start, end + 1));
+      setCareers(parsed);
+    } catch(err) {
+      console.error("findCareers error:", err);
+      setCareerError("Career match failed: " + (err.message||"Check API key and try again."));
+      // Show fallback careers so UI isn't broken
+      setCareers([
+        {title:"Operations Manager",sector:"Civilian",industry:"Logistics / Supply Chain",salaryRange:"$65,000–$95,000",outlook:"Stable",match:"Excellent",description:"Oversees day-to-day business operations, manages teams, and ensures organizational efficiency. Military veterans excel here due to leadership and mission execution experience.",whyFit:"Command experience maps directly to managing civilian teams and operations.",topSkills:["Team Leadership","Process Improvement","Logistics"],nextStep:"Search 'Operations Manager veteran' on LinkedIn and Indeed.",clearanceBonus:false},
+        {title:"Federal Law Enforcement Officer",sector:"Government",industry:"Federal Agency",salaryRange:"$55,000–$85,000",outlook:"Stable",match:"Strong",description:"Enforces federal laws and protects national interests at agencies like FBI, DEA, CBP, or Secret Service. Prior military service is a major hiring advantage.",whyFit:"Military training, discipline, and security background align with federal law enforcement.",topSkills:["Physical Fitness","Investigative Skills","Legal Knowledge"],nextStep:"Visit USAJOBS.gov and filter by law enforcement positions.",clearanceBonus:true},
+        {title:"Project Manager",sector:"Civilian",industry:"Technology / Construction / Healthcare",salaryRange:"$70,000–$110,000",outlook:"High Growth",match:"Strong",description:"Plans and executes projects managing scope, budget, and teams from initiation to completion. Veterans' mission planning experience is a direct foundation.",whyFit:"Military mission planning and resource coordination translate directly to civilian project management.",topSkills:["Project Planning","Budget Management","Stakeholder Communication"],nextStep:"Pursue PMP certification — many veterans qualify for fee waivers.",clearanceBonus:false},
+        {title:"Intelligence Analyst",sector:"Defense/Intel",industry:"Defense / Intelligence Community",salaryRange:"$70,000–$115,000",outlook:"Stable",match:"Strong",description:"Analyzes and synthesizes information to produce actionable intelligence for government or defense clients. Security clearance is required and highly valuable.",whyFit:"Military intelligence training and clearance eligibility make this a natural transition.",topSkills:["Analytical Thinking","Report Writing","OSINT/SIGINT"],nextStep:"Search cleared intelligence analyst roles on ClearanceJobs.com.",clearanceBonus:true},
+        {title:"Emergency Management Specialist",sector:"Government",industry:"State / Federal Emergency Management",salaryRange:"$55,000–$85,000",outlook:"High Growth",match:"Strong",description:"Plans and coordinates responses to natural disasters, emergencies, and crises. Veterans' crisis leadership and logistics experience are ideal qualifications.",whyFit:"Military emergency response and operational planning experience translate directly to this role.",topSkills:["Crisis Management","Logistics","Interagency Coordination"],nextStep:"Search FEMA and state emergency management agency job postings.",clearanceBonus:false},
+        {title:"Cybersecurity Analyst",sector:"Civilian",industry:"Technology / Finance / Healthcare",salaryRange:"$75,000–$120,000",outlook:"High Growth",match:"Good",description:"Protects computer systems and networks from cyber threats, monitors for intrusions, and responds to incidents. High demand across all industries.",whyFit:"Military signals, IT, or intelligence background provides a strong foundation for cyber careers.",topSkills:["Network Security","Threat Analysis","Security Tools"],nextStep:"Pursue CompTIA Security+ certification — a key entry credential for cyber careers.",clearanceBonus:true},
+      ]);
+    }
+    setL("careers",false);
+  };
+
+  // ── CAREER DETAIL ──────────────────────────────────────────────────────────
+  const openCareerDetail = async (career) => {
+    setSelectedCareer(career);
+    setCareerDetail(null);
+    setL("careerDetail",true);
+    const summary = buildExpSummary();
+    const prompt = `A veteran with this background: ${summary || "general military service"}
+is considering the career: "${career.title}" in the ${career.sector} sector.
+
+You MUST return ONLY a valid JSON object. No text before or after. No markdown. No backticks. Start your response with { and end with }.
+
+Use this exact structure:
+{"about":"3-4 sentences about this career","salaryBreakdown":{"entry":"$X – $Y","mid":"$X – $Y","senior":"$X – $Y","cleared":"$X – $Y or null","notes":"what drives salary variation"},"careerPath":[{"title":"Job Title","salary":"$X – $Y","description":"one sentence","timeframe":"Years 0-2"},{"title":"Next Role","salary":"$X – $Y","description":"one sentence","timeframe":"Years 2-5"},{"title":"Senior Role","salary":"$X – $Y","description":"one sentence","timeframe":"Years 5-10"},{"title":"Expert/Leadership","salary":"$X – $Y","description":"one sentence","timeframe":"Years 10+"}],"whyYouFit":["reason 1","reason 2","reason 3","reason 4"],"requiredSkills":["skill 1","skill 2","skill 3","skill 4","skill 5"],"gaps":["gap 1","gap 2"],"certifications":["cert 1","cert 2","cert 3"],"actionSteps":["step 1","step 2","step 3","step 4","step 5"]}`;
+
+    try {
+      const raw = await callClaude(prompt, "You are a military career transition expert. Return ONLY valid JSON starting with { and ending with }. Never include markdown, backticks, or explanatory text outside the JSON.");
+
+      // Robust JSON extraction — find first { to last }
+      const start = raw.indexOf("{");
+      const end = raw.lastIndexOf("}");
+      if (start === -1 || end === -1) throw new Error("No JSON found");
+      const jsonStr = raw.slice(start, end + 1);
+      const parsed = JSON.parse(jsonStr);
+
+      // Ensure all expected fields exist with fallbacks
+      setCareerDetail({
+        about: parsed.about || `${career.title} is a ${career.sector} career well-suited for veterans.`,
+        salaryBreakdown: {
+          entry: (parsed.salaryBreakdown && parsed.salaryBreakdown.entry) || career.salaryRange,
+          mid: (parsed.salaryBreakdown && parsed.salaryBreakdown.mid) || "",
+          senior: (parsed.salaryBreakdown && parsed.salaryBreakdown.senior) || "",
+          cleared: (parsed.salaryBreakdown && parsed.salaryBreakdown.cleared) || null,
+          notes: (parsed.salaryBreakdown && parsed.salaryBreakdown.notes) || "",
+        },
+        careerPath: Array.isArray(parsed.careerPath) ? parsed.careerPath : [],
+        whyYouFit: Array.isArray(parsed.whyYouFit) ? parsed.whyYouFit : [career.whyFit || "Your military background is directly transferable."],
+        requiredSkills: Array.isArray(parsed.requiredSkills) ? parsed.requiredSkills : (career.topSkills || []),
+        gaps: Array.isArray(parsed.gaps) ? parsed.gaps : [],
+        certifications: Array.isArray(parsed.certifications) ? parsed.certifications : [],
+        actionSteps: Array.isArray(parsed.actionSteps) ? parsed.actionSteps : [career.nextStep || "Research this career field further."],
+      });
+    } catch(err) {
+      // Fallback: build a useful detail view from the data we already have
+      setCareerDetail({
+        about: `${career.title} is a ${career.sector} role in ${career.industry || "multiple industries"}. ${career.description || ""} Veterans are well-positioned for this career due to their disciplined work ethic, leadership experience, and mission-focused mindset.`,
+        salaryBreakdown: { entry: career.salaryRange, mid: "", senior: "", cleared: null, notes: "Salary varies by location, experience, and certifications." },
+        careerPath: [
+          { title: `Entry-Level ${career.title}`, salary: career.salaryRange, description: "Build foundational civilian experience and professional network.", timeframe: "Years 0–2" },
+          { title: `Mid-Level ${career.title}`, salary: "", description: "Take on increased responsibility and specialize in a sub-field.", timeframe: "Years 2–5" },
+          { title: `Senior ${career.title}`, salary: "", description: "Lead teams, mentor junior staff, manage larger programs.", timeframe: "Years 5–10" },
+          { title: "Director / Principal", salary: "", description: "Strategic leadership, executive decision-making, organizational impact.", timeframe: "Years 10+" },
+        ],
+        whyYouFit: [career.whyFit || "Your military background provides strong transferable skills.", "Veterans bring leadership and discipline that civilian employers highly value.", "Your service demonstrates mission focus and the ability to perform under pressure."],
+        requiredSkills: career.topSkills || [],
+        gaps: ["Consider gaining civilian industry certifications to complement your military training.", "Building a professional civilian network through LinkedIn and industry events will accelerate your transition."],
+        certifications: ["Research industry-specific certifications for this field.", "Consider PMP (Project Management Professional) as a broad credential.", "Check if your military training credits toward any civilian licenses."],
+        actionSteps: [career.nextStep || "Research job postings in this field on USAJOBS, LinkedIn, and Indeed.", "Update your resume to target this specific role using the Resume tab.", "Connect with veterans already working in this field through LinkedIn.", "Research employers who actively recruit veterans in this sector.", "Schedule informational interviews with professionals in this career."],
+      });
+    }
+    setL("careerDetail",false);
+  };
+
+  // ── RESUME ─────────────────────────────────────────────────────────────────
+  const genResume = async () => {
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    setApiError("");
+    setL("resume",true);
+    setResume("");
+    setResumeData(null);
+    const expText = buildExpSummary();
+    const milSum = milExperiences.map(e =>
+      (e.branch||"Military") + " " + (e.rank||"") + " MOS:" + (e.mos||"") + " " + (e.mosTitle||"") +
+      " TOS:" + (e.tos||"unknown") +
+      ((e.asi&&e.asi.length) ? " ASIs:"+e.asi.map(a=>a.code+"-"+a.desc).join(",") : "") +
+      ((e.sqi&&e.sqi.length) ? " SQIs:"+e.sqi.map(s=>s.code+"-"+s.desc).join(",") : "") +
+      ((e.awards&&e.awards.length) ? " Awards:"+e.awards.join(",") : "") +
+      ((e.additionalDuties&&e.additionalDuties.length) ? " Duties:"+e.additionalDuties.join(",") : "") +
+      ((e.mosRoles&&e.mosRoles.length) ? " Roles:"+e.mosRoles.map(r=>r.title+"("+r.duration+")").join(",") : "") +
+      " Clearance:" + (e.clearanceLevel||"None") +
+      " Unit:" + (e.unit||"") +
+      " Duties:" + (e.duties||"not described")
+    ).join(" | ");
+    const eduText = education.map(e => e.degree + " " + e.field + " " + e.institution + " " + e.year).join("; ");
+    try {
+      const formatInstructions = {
+        ats_chrono: "ATS CHRONOLOGICAL FORMAT: Simple clean layout. Standard section headers (Summary, Experience, Education, Skills, Certifications). Reverse chronological work history. No tables, no text boxes, no columns. Keyword-rich. ATS-safe fonts and structure.",
+        ats_combo: "ATS COMBINATION FORMAT: Open with a Skills Summary section listing 8-10 core competencies as keywords. Then reverse-chronological experience. Then education. ATS-optimized throughout with no tables or columns.",
+        traditional: "TRADITIONAL FORMAT: Conservative black and white. Clean serif-style formatting. Standard sections. No color, no design elements. Appropriate for government, legal, and formal industries.",
+        modern: "MODERN PROFESSIONAL FORMAT: Clean contemporary layout. Use subtle section dividers (——). Bold role titles. Clean hierarchy. Professional but polished. Suitable for corporate and private sector.",
+        executive: "EXECUTIVE FORMAT: Open with a strong executive profile paragraph. Follow with Core Competencies as two columns of keywords. Then Career Highlights with 3-4 major achievements with metrics. Then abbreviated experience. Emphasize leadership scope, P&L, team size, and strategic impact.",
+        federal: "FEDERAL/USAJOBS FORMAT: Extremely detailed. Include GS pay scale equivalent where applicable. List all positions with full addresses of employers, hours per week, supervisor names. Include detailed KSAs. Often 3-5 pages. List all training, awards, and certifications in full.",
+        harvard: "HARVARD STYLE: Single column, clean conservative layout. Name and contact centered at top with a line beneath. Section headers in small caps or bold with a line rule. Clean consistent formatting with strong use of white space.",
+        wharton: "WHARTON/MBA STYLE: Name bold and prominent. One-line title/brand statement. Experience entries lead with company and bold achievement metrics. Emphasis on quantified results, revenue impact, team sizes, and scope. Sharp and results-focused.",
+        minimalist: "MINIMALIST FORMAT: Maximum white space. Simple clean typography. Minimal use of dividers. Let content breathe. Easy to scan. Clean hierarchy with role, company, dates on one line.",
+        creative: "CREATIVE FORMAT: Use tasteful formatting with section color accents (use ASCII/text characters to simulate). Clear visual hierarchy. Creative but readable. Appropriate for design, media, and branding roles.",
+      };
+      const prompt =
+        "You are an expert military-to-civilian resume writer. Create a complete, professionally designed resume.\n\n" +
+        "VETERAN PROFILE:\n" + milSum + "\n\n" +
+        "CIVILIAN EXPERIENCE:\n" + expText + "\n\n" +
+        "EDUCATION:\n" + eduText + "\n\n" +
+        "SKILLS: " + (skills.technical||"") + "\n" +
+        "LEADERSHIP: " + (skills.leadership||"") + "\n" +
+        "LANGUAGES: " + (skills.languages||"") + "\n" +
+        "CERTIFICATIONS: " + (skills.certs||"") + "\n\n" +
+        "TARGET: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + "\n\n" +
+        "CONTACT: " + (personal.name||"") + " | " + (personal.email||"") + " | " + (personal.phone||"") + " | " + (personal.location||"") + (personal.linkedin ? " | " + personal.linkedin : "") + "\n\n" +
+        "CRITICAL INSTRUCTIONS:\n" +
+        ""CRITICAL RULES - USE ALL VETERAN DATA:\\n" +
+        "1. Every MOS/AFSC/Rate = civilian career specialty. Translate fully, never leave codes unexplained.\\n" +
+        "2. ASIs = Advanced specialist certifications (8A=Airborne, P1=Master Parachutist, W1=SERE Trained). Each is a unique competitive credential.\\n" +
+        "3. SQIs = Elite qualifications (F=Special Forces, R=Ranger, X=Certified Instructor). Feature prominently.\\n" +
+        "4. Additional duties = extra proven competencies: Armorer=weapons/inventory control, SHARP=HR compliance, UPL=drug testing program manager, COR=contract oversight.\\n" +
+        "5. Awards matter: ARCOM=proven performer under pressure, MSM=exceptional manager, CIB/CAB=combat-tested. Reference each one.\\n" +
+        "6. Security clearances = premium salary asset, always feature in header and skills.\\n" +
+        "7. Sub-roles (Truck Master, OPS Clerk, Motor Sergeant, Training NCO) = progressive career growth within same role.\\n" +
+        "8. Deployments = proven in high-stakes environments. Mention specific operations if provided.\\n" +
+        "9. Jargon translation: NCOIC=Team Supervisor, OIC=Dept Manager, TOC=Operations Center, SITREP=Status Report, AAR=Lessons Learned, PMCS=Preventive Maintenance, PBO=Asset Manager.\\n" +
+        "10. Civilian experience + military = powerful dual-career profile. Integrate both seamlessly.\\n" +
+        "11. Education + certifications = showcase even in-progress degrees and all certs.\\n" +
+        "12. Interests/hobbies can reveal hidden skills (coaching=training ability, mechanics=technical aptitude).\\n" +
+        "13. Quantify EVERYTHING: team sizes, equipment values ($), budgets managed, personnel trained, accuracy rates.\\n" +
+        "14. ATS keywords for: " + (target.title||"operations, leadership, logistics") + "\\n\\n" + lines + "\n\n" +
+        "Please provide a detailed civilian translation. Return ONLY a JSON object with NO markdown, no backticks, no extra text. Start with { and end with }.\n\n" +
+        "The JSON must have these exact keys:\n" +
+        "summary: a 3-sentence professional civilian summary paragraph\n" +
+        "roles: array of objects, one per military role, each with: mos (string), title (string), whatYouDid (string, 2-3 plain English sentences), transferableSkills (array of 6 strings), resumeBullets (array of 4 strong resume bullet points starting with action verbs)\n" +
+        "qualifications: array of objects for each ASI/SQI, each with: code, name, civilianMeaning, unlocks\n" +
+        "additionalDuties: array of objects for each additional duty, each with: duty, civilianEquivalent, value";
+
+      const raw = await callClaude(
+        prompt,
+        "You are an expert military-to-civilian career transition coach with deep knowledge of all military branches, MOS codes, ASIs, SQIs, awards, and how to translate them into compelling civilian language. IMPORTANT: Translate ALL military jargon and acronyms into plain civilian language. ASIs and SQIs represent advanced specialized training certifications — each one is a competitive advantage. Awards like ARCOM or MSM prove exceptional performance. Security clearances are premium assets. Always respond with valid JSON only — no markdown, no backticks.",
+        2000
+      );
+
+      // Robust JSON extraction
+      const start = raw.indexOf("{");
+      const end = raw.lastIndexOf("}");
+      if (start === -1 || end === -1) {
+        throw new Error("Response did not contain valid JSON. Raw: " + raw.slice(0,200));
+      }
+      const parsed = JSON.parse(raw.slice(start, end + 1));
+      
+      // Ensure required fields exist with fallbacks
+      const result = {
+        summary: parsed.summary || "Your military background demonstrates strong leadership, discipline, and mission-focused expertise.",
+        roles: Array.isArray(parsed.roles) ? parsed.roles : [],
+        qualifications: Array.isArray(parsed.qualifications) ? parsed.qualifications : [],
+        additionalDuties: Array.isArray(parsed.additionalDuties) ? parsed.additionalDuties : [],
+      };
+      setTranslationData(result);
+
+    } catch(err) {
+      console.error("translateMOS error:", err);
+      setMosOut("Translation failed: " + (err.message || "Unknown error. Check your API key and try again."));
+    }
+    setL("translate", false);
+  };
+
+  // ── CAREERS ───────────────────────────────────────────────────────────────
+  const findCareers = async () => {
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    setApiError("");
+    setCareerError("");
+    setL("careers",true);
+    setCareers(null);
+    setSelectedCareer(null);
+    setCareerDetail(null);
+    const summary = buildExpSummary();
+    const prompt = "A veteran has this background:\n" + (summary||"general military service") +
+      "\n\nTarget Role: " + (target.title||"open") +
+      " | Industry: " + (target.industry||"any") +
+      " | Keywords: " + (target.keywords||"none") +
+      (target.interests ? "\nInterests & Hobbies: " + target.interests : "") +
+      (target.openTo ? "\nOpen to exploring: " + target.openTo : "") +
+      (targetLocation ? "\nPreferred location: " + targetLocation : "") +
+      "\n\nIMPORTANT: Use their interests and hobbies to suggest careers they may never have considered." +
+      " A veteran who loves coaching youth sports might love corporate training or athletic director roles." +
+      " A veteran who loves motorcycles might love fleet management or automotive careers." +
+      " Think broadly and creatively, not just based on MOS.\n\n" +
+      "Return ONLY a valid JSON array of 12 career objects. Start with [ end with ]. No markdown, no backticks, no extra text." +
       "\nInclude a realistic mix: entry-level trades (CDL truck driver, electrician, welder, security officer, EMT, firefighter), mid-level (project manager, logistics manager, law enforcement), and senior (intelligence analyst, operations director, IT manager). Civilian, government, AND defense/intel." +
       "\nEach object must have exactly these keys: title, sector (Civilian or Government or Defense/Intel), industry, salaryRange, outlook (High Growth or Stable or Emerging), match (Excellent or Strong or Good), description, whyFit, topSkills (array of 3), nextStep, clearanceBonus (boolean)";
     try {
@@ -2591,6 +2868,27 @@ Use this exact structure:
                   <div className="field"><label>Preferred Industry</label><input placeholder="e.g. Healthcare, Defense, Tech, Finance" value={target.industry} onChange={e=>upT("industry",e.target.value)}/></div>
                   <div className="field"><label>Priorities / Keywords</label><input placeholder="e.g. remote work, leadership role, outdoors" value={target.keywords} onChange={e=>upT("keywords",e.target.value)}/></div>
                   <div className="field"><label>Preferred Work Location</label><input placeholder="e.g. Norfolk VA, Remote, Dallas TX..." value={targetLocation} onChange={e=>setTargetLocation(e.target.value)}/></div>
+                  <div className="field"><label>Interests & Hobbies</label>
+                    <input placeholder="e.g. technology, coaching youth sports, woodworking, motorcycles, hunting, cooking..." value={target.interests||""} onChange={e=>upT("interests",e.target.value)}/>
+                    <span className="hint">Help us find careers that match your passions — not just your resume</span>
+                  </div>
+                  <div className="field"><label>Open To Exploring</label>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:".4rem",marginTop:".3rem"}}>
+                      {["Entrepreneurship","Government / Federal","Defense / Intel","Tech / Cybersecurity","Trades / Skilled Labor","Healthcare","Law Enforcement","Education / Coaching","Nonprofit / Veteran Services","Remote Work","Part-time / Flexible"].map(opt=>(
+                        <button key={opt}
+                          style={{padding:".28rem .7rem",borderRadius:"20px",border:"1.5px solid",fontSize:".75rem",cursor:"pointer",transition:"all .2s",
+                            background:(target.openTo||"").includes(opt)?"var(--gold)":"rgba(255,255,255,.1)",
+                            color:(target.openTo||"").includes(opt)?"#1a1a2e":"var(--slate)",
+                            borderColor:(target.openTo||"").includes(opt)?"var(--gold)":"rgba(255,255,255,.25)"}}
+                          onClick={()=>{
+                            const current = (target.openTo||"").split(",").map(s=>s.trim()).filter(Boolean);
+                            const updated = current.includes(opt) ? current.filter(x=>x!==opt) : [...current,opt];
+                            upT("openTo", updated.join(", "));
+                          }}>{opt}</button>
+                      ))}
+                    </div>
+                    <span className="hint" style={{marginTop:".4rem",display:"block"}}>Click to select — these help expand your career matches beyond your MOS</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2850,33 +3148,120 @@ Use this exact structure:
                     </button>
 
                     {/* ── JOB SEARCH LINKS ── */}
-                    <div style={{marginTop:"1rem",padding:"1rem",background:"rgba(255,255,255,.05)",border:"1px solid rgba(201,168,76,.2)",borderRadius:"4px"}}>
+                    <div style={{marginTop:"1rem",padding:"1rem",background:"rgba(255,255,255,.08)",border:"1px solid rgba(224,184,74,.3)",borderRadius:"4px"}}>
                       <div style={{fontSize:".72rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--gold)",fontWeight:700,marginBottom:".6rem"}}>
-                        Find Open Jobs {targetLocation ? "near " + targetLocation : ""}
+                        Find Open Jobs {targetLocation ? "near " + targetLocation : "Nationwide"}
                       </div>
-                      <div style={{display:"flex",flexWrap:"wrap",gap:".5rem"}}>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:".4rem",marginBottom:".75rem"}}>
                         {[
-                          {label:"Indeed", icon:"🔍",
-                            url:"https://www.indeed.com/jobs?q=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
-                          {label:"LinkedIn", icon:"💼",
-                            url:"https://www.linkedin.com/jobs/search/?keywords=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
-                          {label:"USAJobs", icon:"🏛",
-                            url:"https://www.usajobs.gov/search/results/?k=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
-                          {label:"ZipRecruiter", icon:"⚡",
-                            url:"https://www.ziprecruiter.com/jobs-search?search=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
-                          {label:"Hire Heroes USA", icon:"🎖",
-                            url:"https://www.hireheroesusa.org/"},
-                          {label:"Veteran Jobs Mission", icon:"🇺🇸",
-                            url:"https://www.veteranjobsmission.com/find-a-job"},
+                          {label:"Indeed", icon:"🔍", url:"https://www.indeed.com/jobs?q=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
+                          {label:"LinkedIn Jobs", icon:"💼", url:"https://www.linkedin.com/jobs/search/?keywords=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
+                          {label:"USAJobs (Federal)", icon:"🏛", url:"https://www.usajobs.gov/search/results/?k=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
+                          {label:"ZipRecruiter", icon:"⚡", url:"https://www.ziprecruiter.com/jobs-search?search=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
+                          {label:"Hire Heroes USA", icon:"🎖", url:"https://www.hireheroesusa.org/"},
+                          {label:"Veteran Jobs Mission", icon:"🇺🇸", url:"https://www.veteranjobsmission.com/find-a-job"},
+                          {label:"RecruitMilitary", icon:"⭐", url:"https://recruitmilitary.com/job-seeker"},
+                          {label:"Clearance Jobs", icon:"🔐", url:"https://www.clearancejobs.com/jobs?q=" + encodeURIComponent(selectedCareer.title)},
                         ].map(site=>(
                           <a key={site.label} href={site.url} target="_blank" rel="noopener noreferrer"
-                            style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".4rem .85rem",background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",borderRadius:"3px",color:"var(--text)",textDecoration:"none",fontSize:".8rem",transition:"all .2s"}}>
-                            {site.icon} {site.label} →
+                            style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"rgba(255,255,255,.12)",border:"1px solid rgba(255,255,255,.25)",borderRadius:"20px",color:"var(--text)",textDecoration:"none",fontSize:".77rem",transition:"all .2s"}}>
+                            {site.icon} {site.label}
                           </a>
                         ))}
                       </div>
-                      <div style={{fontSize:".72rem",color:"var(--dim)",marginTop:".5rem"}}>
-                        Links open real job listings for "{selectedCareer.title}" {targetLocation ? "in " + targetLocation : "nationwide"}
+
+                      {/* SkillBridge */}
+                      <div style={{borderTop:"1px solid rgba(255,255,255,.1)",paddingTop:".75rem",marginTop:".5rem"}}>
+                        <div style={{fontSize:".72rem",letterSpacing:".1em",textTransform:"uppercase",color:"#4db8f0",fontWeight:700,marginBottom:".5rem"}}>
+                          SkillBridge Programs (Train while still serving)
+                        </div>
+                        <div style={{fontSize:".82rem",color:"var(--slate)",marginBottom:".5rem",lineHeight:1.6}}>
+                          SkillBridge lets active duty members work with civilian employers during their last 180 days of service — you keep full military pay and benefits while gaining civilian experience.
+                        </div>
+                        <div style={{display:"flex",flexWrap:"wrap",gap:".4rem"}}>
+                          {[
+                            {label:"DOD SkillBridge Directory", url:"https://skillbridge.osd.mil/programs.htm"},
+                            {label:"SkillBridge Jobs (by career)", url:"https://www.skillbridge.com/jobs?q=" + encodeURIComponent(selectedCareer.title)},
+                            {label:"Corporate Gray SkillBridge", url:"https://www.corporategray.com/skillbridge"},
+                          ].map(s=>(
+                            <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer"
+                              style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"rgba(77,184,240,.12)",border:"1px solid rgba(77,184,240,.35)",borderRadius:"20px",color:"#4db8f0",textDecoration:"none",fontSize:".77rem"}}>
+                              🔗 {s.label}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* GI Bill Schools */}
+                      <div style={{borderTop:"1px solid rgba(255,255,255,.1)",paddingTop:".75rem",marginTop:".75rem"}}>
+                        <div style={{fontSize:".72rem",letterSpacing:".1em",textTransform:"uppercase",color:"#3dba7a",fontWeight:700,marginBottom:".5rem"}}>
+                          Education & GI Bill Programs
+                        </div>
+                        <div style={{fontSize:".82rem",color:"var(--slate)",marginBottom:".5rem",lineHeight:1.6}}>
+                          Use your GI Bill benefits to get certified or degreed in this field. Search schools approved for VA education benefits.
+                        </div>
+                        <div style={{display:"flex",flexWrap:"wrap",gap:".4rem"}}>
+                          {[
+                            {label:"VA GI Bill School Finder", url:"https://www.va.gov/gi-bill-comparison-tool?category=school&search=" + encodeURIComponent(selectedCareer.title) + (targetLocation?"&name="+encodeURIComponent(targetLocation):"")},
+                            {label:"Coursera Veteran Courses", url:"https://www.coursera.org/search?query=" + encodeURIComponent(selectedCareer.title) + "&productDifficultyLevel=Beginner"},
+                            {label:"Community College Finder", url:"https://www.petersons.com/college-search/programs/results/?q=" + encodeURIComponent(selectedCareer.title)},
+                            {label:"VA Education Benefits", url:"https://www.va.gov/education/"},
+                          ].map(s=>(
+                            <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer"
+                              style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"rgba(61,186,122,.12)",border:"1px solid rgba(61,186,122,.35)",borderRadius:"20px",color:"#3dba7a",textDecoration:"none",fontSize:".77rem"}}>
+                              🎓 {s.label}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Print Career Path */}
+                      <div style={{borderTop:"1px solid rgba(255,255,255,.1)",paddingTop:".75rem",marginTop:".75rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:".5rem"}}>
+                        <span style={{fontSize:".78rem",color:"var(--dim)"}}>
+                          Save or share this career roadmap
+                        </span>
+                        <button
+                          style={{padding:".45rem 1.1rem",background:"rgba(255,255,255,.15)",border:"1px solid rgba(255,255,255,.3)",borderRadius:"3px",color:"var(--text)",cursor:"pointer",fontSize:".8rem",display:"flex",alignItems:"center",gap:".4rem"}}
+                          onClick={()=>{
+                            const win = window.open("","_blank");
+                            const c = selectedCareer;
+                            const cd = careerDetail;
+                            win.document.write(
+                              "<html><head><title>" + c.title + " Career Path</title>" +
+                              "<style>body{font-family:Arial,sans-serif;max-width:800px;margin:2rem auto;color:#1a1a1a;line-height:1.6;}h1{color:#1e2d4e;border-bottom:3px solid #c9a84c;padding-bottom:.5rem;}h2{color:#1e2d4e;margin-top:1.5rem;font-size:1rem;text-transform:uppercase;letter-spacing:.08em;}p{margin:.4rem 0;}ul{margin:.4rem 0 .4rem 1.2rem;}li{margin:.2rem 0;}.badge{display:inline-block;background:#f0f4fa;border:1px solid #c5d0e0;border-radius:3px;padding:.1rem .5rem;font-size:.85rem;margin:.1rem;}.header-info{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;background:#f8f8f8;padding:1rem;border-radius:4px;margin:1rem 0;}.print-btn{display:none;}@media print{.print-btn{display:none;}}</style>" +
+                              "</head><body>" +
+                              "<h1>" + c.title + "</h1>" +
+                              "<div class='header-info'>" +
+                              "<div><strong>Sector:</strong> " + (c.sector||"") + "</div>" +
+                              "<div><strong>Industry:</strong> " + (c.industry||"") + "</div>" +
+                              "<div><strong>Salary Range:</strong> " + (c.salaryRange||"") + "</div>" +
+                              "<div><strong>Job Outlook:</strong> " + (c.outlook||"") + "</div>" +
+                              "<div><strong>Your Match:</strong> " + (c.match||"") + "</div>" +
+                              (c.clearanceBonus?"<div><strong>Clearance:</strong> Premium advantage</div>":"") +
+                              "</div>" +
+                              (cd ? (
+                                "<h2>About This Career</h2><p>" + (cd.about||c.description||"") + "</p>" +
+                                "<h2>Why You're Qualified</h2><p>" + (cd.whyYouFit||c.whyFit||"") + "</p>" +
+                                "<h2>Career Progression</h2><p>" + (cd.careerPath||"") + "</p>" +
+                                "<h2>Required Skills & Certs</h2><ul>" + (cd.requiredSkills||[]).map(function(s){return "<li>"+s+"</li>";}).join("") + "</ul>" +
+                                "<h2>Gaps to Address</h2><ul>" + (cd.gaps||[]).map(function(s){return "<li>"+s+"</li>";}).join("") + "</ul>" +
+                                "<h2>Recommended Certifications</h2><ul>" + (cd.certifications||[]).map(function(s){return "<li>"+s+"</li>";}).join("") + "</ul>" +
+                                "<h2>Your Action Plan</h2><ul>" + (cd.actionSteps||[]).map(function(s){return "<li>"+s+"</li>";}).join("") + "</ul>"
+                              ) : "<p>" + (c.description||"") + "</p><p><strong>Next Step:</strong> " + (c.nextStep||"") + "</p>") +
+                              "<h2>Find Jobs & Programs</h2>" +
+                              "<p><strong>Job Search:</strong> <a href='https://www.indeed.com/jobs?q=" + encodeURIComponent(c.title) + "'>Indeed</a> | " +
+                              "<a href='https://www.usajobs.gov/search/results/?k=" + encodeURIComponent(c.title) + "'>USAJobs</a> | " +
+                              "<a href='https://www.linkedin.com/jobs/search/?keywords=" + encodeURIComponent(c.title) + "'>LinkedIn</a></p>" +
+                              "<p><strong>SkillBridge:</strong> <a href='https://skillbridge.osd.mil/programs.htm'>DOD SkillBridge Directory</a></p>" +
+                              "<p><strong>Education:</strong> <a href='https://www.va.gov/gi-bill-comparison-tool'>VA GI Bill School Finder</a></p>" +
+                              "<p style='margin-top:2rem;font-size:.8rem;color:#888;'>Generated by Veteran Career Builder &bull; veterancivilian.com</p>" +
+                              "</body></html>"
+                            );
+                            win.document.close();
+                            win.print();
+                          }}>
+                          🖨 Print / Save Career Path
+                        </button>
                       </div>
                     </div>
 
@@ -3182,8 +3567,11 @@ Use this exact structure:
                 </div>
 
             </div>
+            )}
 
           </div>
+        </div>
+      </div>
 
       {saveToast&&<div className="save-toast">{saveToast}</div>}
     </>

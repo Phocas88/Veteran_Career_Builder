@@ -23,12 +23,13 @@
     .acancel{padding:10px 16px;background:transparent;border:1px solid #aaa;border-radius:4px;color:#666;cursor:pointer;}
     #astatus{font-size:12px;color:#1a7a40;margin-top:10px;min-height:16px;}
   </style>
+  <script src="https://js.stripe.com/v3/"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js" crossorigin="anonymous"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js" crossorigin="anonymous"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-   const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -44,6 +45,7 @@
       window.fbAuth = null; window.fbDb = null;
     }
   </script>
+  <script>window.VCB_STRIPE_PK="pk_test_51TDAB4I88XNO7Y7PHRn7rhUBd9R6a06uT1IiYlJPHkGtGd2Dk2nSnIADrA1Qev4cVLa2WMz0E1qFIgTJXb1eTSSN00gzgmEdDp";</script>
   <script>window.VCB_LOGO="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png";</script>
 </head>
 <body>
@@ -82,6 +84,22 @@
       document.getElementById("astatus").textContent="Saved! Reloading...";
       setTimeout(function(){window.location.reload();},1200);
     }
+    function checkStripeReturn(){
+      // Check if returning from successful Stripe checkout
+      const params = new URLSearchParams(window.location.search);
+      const session = params.get("session_id");
+      const success = params.get("stripe_success");
+      if (success === "1" && session) {
+        // Grant 31 days access (slight buffer over 30)
+        const expiry = Date.now() + 31 * 24 * 60 * 60 * 1000;
+        localStorage.setItem("vcb_access", JSON.stringify({ 
+          type:"paid", expiry, plan:"monthly", session 
+        }));
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+    checkStripeReturn();
     function hideLoading(){
       var el=document.getElementById("loading");
       if(el){el.style.opacity="0";el.style.transition="opacity 0.4s";setTimeout(function(){el.style.display="none";},400);}
@@ -1500,14 +1518,56 @@ function App() {
   const [viewingResume, setViewingResume] = useState(null);
 
   // ── PAYWALL STATE ─────────────────────────────────────────────────────────
-  const ACCESS_CODES = ["VET2025","ALPHA100","BRAVO100","CHARLIE100","DELTA100","ECHO100","FOXTROT100","GOLF100","HOTEL100","INDIA100"];
+  // ── ACCESS CODE SYSTEM ──────────────────────────────────────────────────────
+  // Format: CODE -> expiry timestamp (ms). 0 = never expires.
+  // Add new codes here. Date.UTC(year, month-1, day) for expiry.
+  // Example: Date.UTC(2026, 3, 20) = April 20 2026
+  const ACCESS_CODES = {
+    // Permanent codes (site owner / admin)
+    "OWNER2025":          0,
+    // 30-day tester codes — add expiry date when you hand them out
+    "ALPHA30":            Date.UTC(2026, 3, 20),
+    "BRAVO30":            Date.UTC(2026, 3, 20),
+    "CHARLIE30":          Date.UTC(2026, 3, 20),
+    "DELTA30":            Date.UTC(2026, 3, 20),
+    "ECHO30":             Date.UTC(2026, 3, 20),
+    "FOXTROT30":          Date.UTC(2026, 3, 20),
+    "GOLF30":             Date.UTC(2026, 3, 20),
+    "HOTEL30":            Date.UTC(2026, 3, 20),
+    "INDIA30":            Date.UTC(2026, 3, 20),
+    "JULIET30":           Date.UTC(2026, 3, 20),
+    // Special named codes (give to specific people)
+    "VETTEST1":           Date.UTC(2026, 4, 20),
+    "VETTEST2":           Date.UTC(2026, 4, 20),
+    "VETTEST3":           Date.UTC(2026, 4, 20),
+    "VETTEST4":           Date.UTC(2026, 4, 20),
+    "VETTEST5":           Date.UTC(2026, 4, 20),
+    "Amon26":           Date.UTC(2026, 5, 21),
+    "Daquan26":           Date.UTC(2026, 5, 21),
+  };
+
+  const isCodeValid = (code) => {
+    if (!(code in ACCESS_CODES)) return { valid: false, reason: "invalid" };
+    const expiry = ACCESS_CODES[code];
+    if (expiry === 0) return { valid: true, reason: "permanent" };
+    if (Date.now() > expiry) return { valid: false, reason: "expired" };
+    return { valid: true, reason: "timed", expiry };
+  };
+
   const checkAccess = () => {
     const stored = localStorage.getItem("vcb_access");
     if (!stored) return false;
     try {
       const { type, expiry, code } = JSON.parse(stored);
-      if (type === "code") return ACCESS_CODES.includes(code);
       if (type === "paid" && expiry > Date.now()) return true;
+      if (type === "code" && code) {
+        const check = isCodeValid(code);
+        if (!check.valid) {
+          localStorage.removeItem("vcb_access"); // auto-clear expired
+          return false;
+        }
+        return true;
+      }
       return false;
     } catch(e) { return false; }
   };
@@ -1520,11 +1580,18 @@ function App() {
 
   const redeemCode = () => {
     const code = pwCode.trim().toUpperCase();
-    if (ACCESS_CODES.includes(code)) {
+    const check = isCodeValid(code);
+    if (check.valid) {
       localStorage.setItem("vcb_access", JSON.stringify({ type:"code", code }));
+      const expMsg = check.reason === "permanent"
+        ? "✓ Code accepted! You have permanent access."
+        : "✓ Code accepted! Access expires " + new Date(check.expiry).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}) + ".";
       setPwCodeStatus("valid");
-      setPwCodeMsg("✓ Code accepted! Welcome to Veteran Career Builder.");
+      setPwCodeMsg(expMsg);
       setTimeout(() => { setHasAccess(true); setShowPaywall(false); }, 900);
+    } else if (check.reason === "expired") {
+      setPwCodeStatus("invalid");
+      setPwCodeMsg("This code has expired. Please subscribe or contact support for a new code.");
     } else {
       setPwCodeStatus("invalid");
       setPwCodeMsg("That code isn't valid. Check spelling or contact support.");
@@ -2290,26 +2357,16 @@ Return this exact JSON structure:
                 <p>AI-powered tools to translate your service into a civilian career</p>
               </div>
 
-              <div className="pw-plans">
-                <div className={"pw-plan"+(pwPlan==="monthly"?" selected":"")} onClick={()=>setPwPlan("monthly")}>
-                  <div className="plan-name">Monthly</div>
-                  <div className="price">$9<span>/mo</span></div>
-                  <ul>
-                    <li>Full career analysis</li>
-                    <li>AI resume builder</li>
-                    <li>5 resume templates</li>
-                    <li>Career gap analysis</li>
-                  </ul>
-                </div>
-                <div className={"pw-plan"+(pwPlan==="annual"?" selected":"")} onClick={()=>setPwPlan("annual")}>
-                  <div className="plan-name">Annual <span className="pw-badge">SAVE 44%</span></div>
-                  <div className="price">$5<span>/mo</span></div>
-                  <ul>
-                    <li>Everything in Monthly</li>
-                    <li>Saved resumes (cloud)</li>
-                    <li>Priority support</li>
-                    <li>New features first</li>
-                  </ul>
+              <div style={{padding:"1.2rem 1.5rem 0"}}>
+                <div style={{border:"2.5px solid #1a3a6b",borderRadius:"10px",padding:"1.2rem",background:"linear-gradient(135deg,#f0f4ff,#e8edf5)",textAlign:"center"}}>
+                  <div style={{fontSize:".72rem",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#8aa0b8",marginBottom:".3rem"}}>Founding Member Price</div>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.8rem",color:"#1a3a6b",lineHeight:1}}>$14<span style={{fontSize:"1.4rem"}}>.99</span><span style={{fontSize:".9rem",fontWeight:400,color:"#5a7090"}}>/mo</span></div>
+                  <div style={{fontSize:".75rem",color:"#c0392b",fontWeight:700,margin:".3rem 0 .8rem",letterSpacing:".04em"}}>🔒 Price locks in for life — rises to $19.99 after 500 members</div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".3rem .8rem",textAlign:"left",fontSize:".78rem",color:"#2a4a6a"}}>
+                    {["AI Career Match (24 paths)","Military Language Translator","AI Resume Builder","5 Resume Templates","Cover Letter Generator","Resume Score & Review","Job Application Tracker","Interview Prep Generator","Follow-Up Email Generator","Transition Timeline","Weekly Progress Dashboard","Veteran Resources Hub"].map((f,i)=>(
+                      <div key={i} style={{display:"flex",gap:".3rem",alignItems:"center"}}><span style={{color:"#1a7a40",fontWeight:700,fontSize:".8rem"}}>✓</span>{f}</div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -2334,14 +2391,26 @@ Return this exact JSON structure:
               )}
 
               <div className="pw-footer">
-                <button className="pw-cta" onClick={()=>grantPaidAccess(pwPlan==="monthly"?1:12)}>
-                  {pwPlan==="monthly"?"Start for $9 / month →":"Start for $60 / year →"}
+                <button className="pw-cta" onClick={()=>{
+                  // REPLACE_WITH_YOUR_STRIPE_PAYMENT_LINK below
+                  // Get it from: Stripe Dashboard -> Payment Links -> Create
+                  // Set success URL to: https://veterancareerpath.com?stripe_success=1&session_id={CHECKOUT_SESSION_ID}
+                  const stripeLink = "REPLACE_WITH_STRIPE_PAYMENT_LINK";
+                  if (stripeLink === "REPLACE_WITH_STRIPE_PAYMENT_LINK") {
+                    // Fallback: grant temp access until Stripe is connected
+                    grantPaidAccess(1);
+                    alert("Payment system coming soon! Access granted for now.");
+                  } else {
+                    window.location.href = stripeLink;
+                  }
+                }}>
+                  Start for $14.99 / month →
                 </button>
                 <div style={{textAlign:"center",fontSize:".72rem",color:"#8aa0b8",margin:"-.1rem 0 .2rem"}}>
-                  Secure checkout · Cancel anytime · 7-day refund guarantee
+                  Cancel anytime · No contracts · 7-day money-back guarantee
                 </div>
                 <button className="pw-skip" onClick={()=>{setShowPaywall(false);setHasAccess(false);}}>
-                  Browse features without AI (limited preview)
+                  Not ready yet? Browse the app first (AI features locked)
                 </button>
               </div>
             </div>
@@ -2528,7 +2597,7 @@ Return this exact JSON structure:
               <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>setTab(3)}>
                 My Resumes ({savedResumes.length})
               </button>
-              {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>⭐ UPGRADE</button>}
+              {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>⭐ $14.99/mo</button>}
               <button className="btn-danger" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleLogout}>Sign Out</button>
               {window.location.search.indexOf("admin=1")>-1&&<button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>SETUP</button>}
             </div>
@@ -4945,11 +5014,11 @@ Return this exact JSON structure:
                     {hasAccess?(
                       <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".4rem .75rem",fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>
                         ✓ Full Access Active
-                        <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>{localStorage.removeItem("vcb_access");setHasAccess(false);setShowPaywall(true);}}>Manage</button>
+                        <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>window.open("https://billing.stripe.com/p/login/test_REPLACE_WITH_PORTAL_LINK","_blank")}>Manage Subscription ↗</button>
                       </div>
                     ):(
                       <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>
-                        ⭐ Upgrade to Full Access
+                        ⭐ Subscribe — $14.99/mo
                       </button>
                     )}
                     <button className="btn-sec" onClick={handleSaveProfile}>💾 Save All Progress</button>

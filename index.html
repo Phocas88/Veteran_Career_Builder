@@ -28,7 +28,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-     const firebaseConfig = {
+   const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -1771,42 +1771,88 @@ function App() {
   const findCareers = async () => {
     if (!hasAccess) { setShowPaywall(true); return; }
     if (!isApiKeySet()) { setShowAdminSetup(true); return; }
-    setApiError("");
-    setCareerError("");
-    setL("careers",true);
-    setCareers(null);
-    setSelectedCareer(null);
-    setCareerDetail(null);
+    setApiError(""); setCareerError(""); setL("careers",true); setCareers(null); setSelectedCareer(null); setCareerDetail(null);
     const summary = buildExpSummary();
-    const prompt = "A veteran has this background:\n" + (summary||"general military service") +
-      "\n\nTarget Role: " + (target.title||"open") +
-      " | Industry: " + (target.industry||"any") +
-      " | Keywords: " + (target.keywords||"none") +
-      (target.interests ? "\nInterests & Hobbies: " + target.interests : "") +
-      (target.openTo ? "\nOpen to exploring: " + target.openTo : "") +
-      (targetLocation ? "\nPreferred location: " + targetLocation : "") +
-      "\\nUse their interests/hobbies to suggest careers they may never have considered. Think broadly beyond their MOS." +
-      "\\n\\nReturn ONLY a valid JSON array of 12 career objects. Start with [ end with ]. No markdown, no backticks, no extra text." +
-      "\\nInclude a realistic mix: entry-level trades (CDL truck driver, electrician, welder, security officer, EMT, firefighter), mid-level (project manager, logistics manager, law enforcement), and senior (intelligence analyst, operations director, IT manager). Civilian, government, AND defense/intel." +
-      "\\nEach object must have exactly these keys: title, sector (Civilian or Government or Defense/Intel), industry, salaryRange, outlook (High Growth or Stable or Emerging), match (Excellent or Strong or Good), description, whyFit, topSkills (array of 3), nextStep, clearanceBonus (boolean)";
+    const branch = (milExperiences[0]||{}).branch||"Army";
+    const mos = (milExperiences[0]||{}).mos||"";
+    const rank = (milExperiences[0]||{}).rank||"";
+    const tos = (milExperiences[0]||{}).tos||"";
+    const clearance = (milExperiences[0]||{}).clearanceLevel||"None";
+    const hasClearance = clearance && clearance!=="None";
+    const system = "You are the world's best military-to-civilian career counselor with deep knowledge of EVERY job sector. Return ONLY valid minified JSON. No markdown, no backticks, no line breaks inside strings, no trailing commas. The JSON must parse with JSON.parse() on the first try.";
+    const prompt = `A veteran needs career guidance. Give them 24 realistic, diverse career options they can actually get within 1-2 years of leaving service.
+
+VETERAN BACKGROUND:
+- Branch: ${branch} | MOS/Rate: ${mos} | Rank: ${rank} | Service: ${tos}
+- Security Clearance: ${clearance}
+- Full profile: ${(summary||"general military service").slice(0,600)}
+- Target role: ${target.title||"open"} | Industry: ${target.industry||"any"}
+- Interests: ${target.interests||"none"} | Open to: ${target.openTo||"anything"}
+- Location preference: ${targetLocation||"flexible"}
+
+CRITICAL RULES:
+1. Return EXACTLY 24 career objects in a JSON array
+2. Be SPECIFIC with titles - not "Manager" but "Warehouse Operations Manager" or "Fleet Manager"
+3. Include ALL of these categories (at least 2 per category):
+   - TRADES: electrician, plumber, HVAC tech, welder, diesel mechanic, pipefitter, carpenter, ironworker, heavy equipment operator
+   - TRANSPORTATION: CDL truck driver, dispatcher, logistics coordinator, port operations, freight broker
+   - LAW ENFORCEMENT & SECURITY: police officer, border patrol, federal agent (FBI/DEA/ATF), corrections officer, private investigator, corporate security manager, armed security
+   - GOVERNMENT & FEDERAL: postal inspector, TSA officer, customs officer, VA counselor, FEMA specialist, park ranger, government contractor, DoD civilian
+   - HEALTHCARE: EMT, paramedic, surgical tech, medical equipment tech, healthcare administrator, VA nurse (if qualified), combat medic to physician assistant
+   - TECHNOLOGY & CYBER: cybersecurity analyst, network admin, IT systems admin, drone operator, GIS analyst, intelligence analyst
+   - MANAGEMENT & BUSINESS: operations manager, project manager, supply chain coordinator, HR recruiter (veteran-focused), training specialist, safety manager
+   - SKILLED & SPECIALIZED: firefighter, explosives technician, dive operations, K9 handler, private military contractor, flight instructor (if aviator)
+4. Match to their actual MOS and background - a 68W should see healthcare paths, an 11B should see law enforcement, a 25U should see IT
+5. salaryRange must use format "$XX,000-$XX,000" with no special characters
+6. Return minified JSON - no newlines inside the array, no extra spaces
+
+Return this EXACT structure (24 objects):
+[{"title":"Job Title","sector":"Civilian","industry":"Industry Name","salaryRange":"$45,000-$65,000","match":"Excellent","outlook":"High Growth","why":"One sentence why their military background fits","clearanceBonus":false,"entryPath":"How to get this job in 12 months","education":"None required / CDL / OSHA cert / Bachelor's"}]`;
+
     try {
-      const raw = await callClaude(prompt, "You are a career analyst for military-to-civilian transitions. Return ONLY a valid JSON array starting with [ and ending with ]. Include civilian, government, and defense/intel roles. No markdown.", 2000);
-      const start = raw.indexOf("[");
-      const end = raw.lastIndexOf("]");
-      if (start === -1 || end === -1) throw new Error("No JSON array");
-      const parsed = JSON.parse(raw.slice(start, end + 1));
+      const raw = await callClaude(prompt, system, 4000);
+      // Aggressively clean the response
+      let cleaned = raw
+        .replace(/```json/gi,"").replace(/```/g,"")
+        .replace(/,\s*}/g,"}").replace(/,\s*]/g,"]")
+        .trim();
+      const arrStart = cleaned.indexOf("[");
+      const arrEnd = cleaned.lastIndexOf("]");
+      if (arrStart === -1 || arrEnd === -1) throw new Error("No JSON array found");
+      cleaned = cleaned.slice(arrStart, arrEnd + 1);
+      // Fix common JSON issues
+      const parsed = JSON.parse(cleaned);
+      if (!Array.isArray(parsed) || parsed.length === 0) throw new Error("Empty array");
       setCareers(parsed);
     } catch(err) {
       console.error("findCareers error:", err);
-      setCareerError("Career match failed: " + (err.message||"Check API key and try again."));
-      // Show fallback careers so UI isn't broken
+      setCareerError("Career match failed: " + (err.message||"Try again."));
+      // Rich fallback covering all sectors
       setCareers([
-        {title:"Operations Manager",sector:"Civilian",industry:"Logistics / Supply Chain",salaryRange:"$65,000–$95,000",outlook:"Stable",match:"Excellent",description:"Oversees day-to-day business operations, manages teams, and ensures organizational efficiency. Military veterans excel here due to leadership and mission execution experience.",whyFit:"Command experience maps directly to managing civilian teams and operations.",topSkills:["Team Leadership","Process Improvement","Logistics"],nextStep:"Search 'Operations Manager veteran' on LinkedIn and Indeed.",clearanceBonus:false},
-        {title:"Federal Law Enforcement Officer",sector:"Government",industry:"Federal Agency",salaryRange:"$55,000–$85,000",outlook:"Stable",match:"Strong",description:"Enforces federal laws and protects national interests at agencies like FBI, DEA, CBP, or Secret Service. Prior military service is a major hiring advantage.",whyFit:"Military training, discipline, and security background align with federal law enforcement.",topSkills:["Physical Fitness","Investigative Skills","Legal Knowledge"],nextStep:"Visit USAJOBS.gov and filter by law enforcement positions.",clearanceBonus:true},
-        {title:"Project Manager",sector:"Civilian",industry:"Technology / Construction / Healthcare",salaryRange:"$70,000–$110,000",outlook:"High Growth",match:"Strong",description:"Plans and executes projects managing scope, budget, and teams from initiation to completion. Veterans' mission planning experience is a direct foundation.",whyFit:"Military mission planning and resource coordination translate directly to civilian project management.",topSkills:["Project Planning","Budget Management","Stakeholder Communication"],nextStep:"Pursue PMP certification — many veterans qualify for fee waivers.",clearanceBonus:false},
-        {title:"Intelligence Analyst",sector:"Defense/Intel",industry:"Defense / Intelligence Community",salaryRange:"$70,000–$115,000",outlook:"Stable",match:"Strong",description:"Analyzes and synthesizes information to produce actionable intelligence for government or defense clients. Security clearance is required and highly valuable.",whyFit:"Military intelligence training and clearance eligibility make this a natural transition.",topSkills:["Analytical Thinking","Report Writing","OSINT/SIGINT"],nextStep:"Search cleared intelligence analyst roles on ClearanceJobs.com.",clearanceBonus:true},
-        {title:"Emergency Management Specialist",sector:"Government",industry:"State / Federal Emergency Management",salaryRange:"$55,000–$85,000",outlook:"High Growth",match:"Strong",description:"Plans and coordinates responses to natural disasters, emergencies, and crises. Veterans' crisis leadership and logistics experience are ideal qualifications.",whyFit:"Military emergency response and operational planning experience translate directly to this role.",topSkills:["Crisis Management","Logistics","Interagency Coordination"],nextStep:"Search FEMA and state emergency management agency job postings.",clearanceBonus:false},
-        {title:"Cybersecurity Analyst",sector:"Civilian",industry:"Technology / Finance / Healthcare",salaryRange:"$75,000–$120,000",outlook:"High Growth",match:"Good",description:"Protects computer systems and networks from cyber threats, monitors for intrusions, and responds to incidents. High demand across all industries.",whyFit:"Military signals, IT, or intelligence background provides a strong foundation for cyber careers.",topSkills:["Network Security","Threat Analysis","Security Tools"],nextStep:"Pursue CompTIA Security+ certification — a key entry credential for cyber careers.",clearanceBonus:true},
+        {title:"CDL Truck Driver",sector:"Civilian",industry:"Transportation / Logistics",salaryRange:"$55,000-$90,000",match:"Excellent",outlook:"High Growth",why:"Military discipline and vehicle operation translate directly. CDL license obtainable in 4-8 weeks.",clearanceBonus:false,entryPath:"Enroll in CDL school using GI Bill or Helmets to Hardhats",education:"CDL-A License"},
+        {title:"Police Officer",sector:"Government",industry:"Law Enforcement",salaryRange:"$55,000-$85,000",match:"Excellent",outlook:"Stable",why:"Military veterans are preferred candidates at most agencies. Physical fitness and command presence are direct assets.",clearanceBonus:false,entryPath:"Apply to local or federal agency, most waive written exam for veterans",education:"Police Academy (3-6 months)"},
+        {title:"Electrician Apprentice",sector:"Civilian",industry:"Skilled Trades / Construction",salaryRange:"$48,000-$95,000",match:"Excellent",outlook:"High Growth",why:"High demand, strong union wages, GI Bill covers apprenticeship programs.",clearanceBonus:false,entryPath:"Register with IBEW or IEC apprenticeship program",education:"4-year apprenticeship"},
+        {title:"Firefighter",sector:"Government",industry:"Fire & Emergency Services",salaryRange:"$52,000-$80,000",match:"Excellent",outlook:"Stable",why:"Military teamwork, physical fitness, and emergency response experience are exactly what fire departments seek.",clearanceBonus:false,entryPath:"Apply to local fire department, use veterans preference points",education:"Fire Academy + EMT cert"},
+        {title:"Federal Law Enforcement Officer",sector:"Government",industry:"Federal Agency",salaryRange:"$60,000-$100,000",match:"Strong",outlook:"Stable",why:"FBI, DEA, CBP, Secret Service all actively recruit veterans with military police or combat experience.",clearanceBonus:true,entryPath:"Apply via USAJobs.gov with veterans preference",education:"Agency-specific training"},
+        {title:"Operations Manager",sector:"Civilian",industry:"Logistics / Manufacturing",salaryRange:"$65,000-$100,000",match:"Strong",outlook:"Stable",why:"Military NCOs and officers run complex operations daily — this is the same skill set.",clearanceBonus:false,entryPath:"Translate leadership experience on resume, target Walmart, Amazon, FedEx hiring programs",education:"PMP cert helpful"},
+        {title:"HVAC Technician",sector:"Civilian",industry:"Skilled Trades",salaryRange:"$50,000-$85,000",match:"Strong",outlook:"High Growth",why:"Strong demand, excellent wages, military mechanical experience is valued.",clearanceBonus:false,entryPath:"Enroll in HVAC program via GI Bill, apprenticeship or trade school",education:"EPA 608 Cert"},
+        {title:"Cybersecurity Analyst",sector:"Civilian",industry:"Technology / Defense",salaryRange:"$70,000-$115,000",match:"Strong",outlook:"High Growth",why:"DOD cybersecurity experience and clearances are extremely valuable in the private sector.",clearanceBonus:true,entryPath:"CompTIA Security+ certification (study 2-3 months), apply to defense contractors",education:"Security+ / CEH cert"},
+        {title:"Government Contractor (DoD)",sector:"Defense/Intel",industry:"Defense Contracting",salaryRange:"$75,000-$130,000",match:"Excellent",outlook:"Stable",why:"Your military experience and clearance make you immediately valuable to Booz Allen, SAIC, Leidos, and others.",clearanceBonus:true,entryPath:"Apply directly to major defense contractors on LinkedIn or ClearanceJobs.com",education:"Clearance required"},
+        {title:"EMT / Paramedic",sector:"Civilian",industry:"Emergency Medical Services",salaryRange:"$38,000-$65,000",match:"Strong",outlook:"High Growth",why:"Combat medics (68W, HM, 18D) can often test out of EMT requirements.",clearanceBonus:false,entryPath:"Enroll in EMT-Basic course, advance to Paramedic in 1-2 years",education:"EMT-B cert (4-8 weeks)"},
+        {title:"Project Manager",sector:"Civilian",industry:"Construction / Technology / Healthcare",salaryRange:"$70,000-$110,000",match:"Strong",outlook:"High Growth",why:"Military planning experience maps directly to project management.",clearanceBonus:false,entryPath:"Earn PMP certification, target companies with veteran hiring programs",education:"PMP Certification"},
+        {title:"TSA Officer / Border Patrol",sector:"Government",industry:"Homeland Security",salaryRange:"$45,000-$75,000",match:"Excellent",outlook:"Stable",why:"Direct pipeline from military service, veterans preference applies.",clearanceBonus:false,entryPath:"Apply on USAJobs.gov, process takes 3-6 months",education:"Federal training provided"},
+        {title:"Welder",sector:"Civilian",industry:"Manufacturing / Oil & Gas / Shipbuilding",salaryRange:"$48,000-$80,000",match:"Strong",outlook:"Stable",why:"High demand across shipbuilding, pipeline, and manufacturing. Overtime opportunities are substantial.",clearanceBonus:false,entryPath:"AWS welding cert via trade school or community college using GI Bill",education:"AWS Certification"},
+        {title:"Intelligence Analyst",sector:"Defense/Intel",industry:"Intelligence Community",salaryRange:"$70,000-$115,000",match:"Strong",outlook:"Stable",why:"Military intelligence experience and clearances are the #1 requirement for these roles.",clearanceBonus:true,entryPath:"Apply to CIA, NSA, DIA or defense contractors via ClearanceJobs.com",education:"Clearance + BA preferred"},
+        {title:"Heavy Equipment Operator",sector:"Civilian",industry:"Construction / Mining / Oil & Gas",salaryRange:"$55,000-$90,000",match:"Strong",outlook:"Stable",why:"Military combat engineers and motor transport operators have directly transferable skills.",clearanceBonus:false,entryPath:"NCCER certification via apprenticeship or Helmets to Hardhats program",education:"NCCER Operator Cert"},
+        {title:"Logistics Coordinator",sector:"Civilian",industry:"Supply Chain / Freight",salaryRange:"$50,000-$75,000",match:"Excellent",outlook:"High Growth",why:"Military logistics (92A, 88M, Storekeeper) is identical to civilian supply chain work.",clearanceBonus:false,entryPath:"Apply to Amazon, FedEx, UPS, or freight brokerages",education:"None required"},
+        {title:"Diesel Mechanic",sector:"Civilian",industry:"Transportation / Fleet Maintenance",salaryRange:"$52,000-$80,000",match:"Strong",outlook:"Stable",why:"Military vehicle mechanics (91B, 63 series, DC) are highly sought after.",clearanceBonus:false,entryPath:"ASE certification, apply to trucking companies or transit agencies",education:"ASE Cert"},
+        {title:"Safety Manager / EHS Specialist",sector:"Civilian",industry:"Construction / Manufacturing / Oil & Gas",salaryRange:"$60,000-$95,000",match:"Strong",outlook:"High Growth",why:"Military safety protocols and risk management experience are directly valuable.",clearanceBonus:false,entryPath:"OSHA 30 cert + CSP or CHST certification",education:"OSHA 30 cert"},
+        {title:"Corrections Officer",sector:"Government",industry:"State / Federal Corrections",salaryRange:"$45,000-$70,000",match:"Strong",outlook:"Stable",why:"Military discipline and physical fitness are exactly what the correctional system needs.",clearanceBonus:false,entryPath:"Apply to state DOC or Bureau of Prisons, veterans preference applies",education:"Academy training provided"},
+        {title:"IT Systems Administrator",sector:"Civilian",industry:"Technology",salaryRange:"$60,000-$95,000",match:"Strong",outlook:"High Growth",why:"Military IT and communications (25 series, IT rating) translates directly.",clearanceBonus:false,entryPath:"CompTIA A+ and Network+ certs, apply to IT staffing firms",education:"CompTIA A+ / Network+"},
+        {title:"Plumber / Pipefitter",sector:"Civilian",industry:"Skilled Trades",salaryRange:"$55,000-$100,000",match:"Strong",outlook:"High Growth",why:"Extremely high demand, strong union wages, GI Bill covers apprenticeship.",clearanceBonus:false,entryPath:"UA Plumbers & Pipefitters apprenticeship via Helmets to Hardhats",education:"5-year apprenticeship"},
+        {title:"Training Specialist / Instructional Designer",sector:"Civilian",industry:"Corporate / Government",salaryRange:"$55,000-$85,000",match:"Excellent",outlook:"Stable",why:"Military instructors (Drill Sergeants, MOS trainers) are natural training specialists.",clearanceBonus:false,entryPath:"ATD certification, apply to corporate L&D departments or government training contractors",education:"ATD cert helpful"},
+        {title:"Postal Inspector / Mail Carrier",sector:"Government",industry:"United States Postal Service",salaryRange:"$50,000-$85,000",match:"Strong",outlook:"Stable",why:"USPS offers veterans preference and career advancement paths.",clearanceBonus:false,entryPath:"Apply at usps.com/careers, veterans preference gives significant advantage",education:"None required"},
+        {title:"Real Estate Agent",sector:"Civilian",industry:"Real Estate",salaryRange:"$45,000-$120,000",match:"Good",outlook:"High Growth",why:"Veterans understand the military relocation process and connect well with the 1.3M military families moving annually.",clearanceBonus:false,entryPath:"State real estate license (3-6 months), target military communities near bases",education:"State RE License"}
       ]);
     }
     setL("careers",false);
@@ -4264,9 +4310,7 @@ Return this exact JSON structure:
       <span style="color:#3a5070;">|</span>
       <a href="#" onclick="event.preventDefault();alert('Terms of Service: This tool provides guidance only.')" style="color:#a0b8d0;text-decoration:none;margin:0 .75rem;">Terms of Service</a>
       <span style="color:#3a5070;">|</span>
-      <a href="mailto:support@veterancivilian.com" style="color:#a0b8d0;text-decoration:none;margin:0 .75rem;">Contact Us</a>
+      <a href="/cdn-cgi/l/email-protection#0e7d7b7e7e617c7a4e786b7a6b7c6f606d67786762676f60206d6163" style="color:#a0b8d0;text-decoration:none;margin:0 .75rem;">Contact Us</a>
     </div>
-    <div style="color:#3a5070;font-size:.72rem;">&copy; 2025 Veteran Career Builder &bull; Not affiliated with the U.S. Department of Defense</div>
-  </footer>
-</body>
+    <div style="color:#3a5070;font-size:.72rem;">&copy; 2025 Veteran Career Builder &bull; Not affiliated with the U.S. Depar
 </html>

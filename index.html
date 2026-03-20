@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- VCB v4.0 clean rebuild -->
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -8,7 +7,7 @@
   <style>
     body{margin:0;background:#f4f6fa;}
     #loading{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999;}
-    #loading img{width:160px;height:160px;object-fit:contain;}
+    #loading img{width:200px;height:200px;object-fit:contain;mix-blend-mode:screen;}
     #loading p{color:#f0c040;letter-spacing:.15em;font-size:1rem;font-family:Georgia,serif;}
     .spin{width:36px;height:36px;border:3px solid rgba(240,192,64,.25);border-top-color:#f0c040;border-radius:50%;animation:sp .8s linear infinite;}
     @keyframes sp{to{transform:rotate(360deg)}}
@@ -16,9 +15,9 @@
     #admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;align-items:center;justify-content:center;padding:16px;}
     #admin-overlay.open{display:flex;}
     #admin-box{background:#fff;border:2px solid #1a3a6b;border-radius:8px;padding:24px;max-width:460px;width:100%;color:#1a2a3a;}
-    #admin-box h2{color:#1a3a6b;margin:0 0 8px;font-size:1.2rem;font-family:Georgia,serif;}
+    #admin-box h2{color:#1a3a6b;margin:0 0 8px;font-size:1.2rem;}
     #admin-box p{font-size:13px;color:#3a5070;margin:0 0 14px;line-height:1.6;}
-    #admin-key-input{width:100%;padding:10px;border-radius:4px;border:1.5px solid #1a3a6b;background:#fff;color:#1a2a3a;font-size:14px;margin-bottom:12px;font-family:monospace;box-sizing:border-box;}
+    #admin-key-input{width:100%;padding:10px;border-radius:4px;border:1.5px solid #1a3a6b;font-size:14px;margin-bottom:12px;font-family:monospace;box-sizing:border-box;}
     .arow{display:flex;gap:8px;}
     .asave{flex:1;padding:10px;background:#1a3a6b;border:none;border-radius:4px;color:#fff;font-weight:bold;cursor:pointer;font-size:14px;}
     .acancel{padding:10px 16px;background:transparent;border:1px solid #aaa;border-radius:4px;color:#666;cursor:pointer;}
@@ -29,7 +28,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-    const firebaseConfig = {
+     const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -45,10 +44,11 @@
       window.fbAuth = null; window.fbDb = null;
     }
   </script>
+  <script>window.VCB_LOGO="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png";</script>
 </head>
 <body>
   <div id="loading">
-    <img id="loading-logo" src="https://raw.githubusercontent.com/phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Builder"/>
+    <img id="loading-logo" src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Builder"/>
     <p>VETERAN CAREER BUILDER</p>
     <div class="spin"></div>
   </div>
@@ -93,16 +93,63 @@
     function getStoredApiKey(){return getApiKey();}
     window.onerror=function(msg,src,line,col,err){
       var el=document.getElementById("loading");
-      if(el) el.innerHTML='<div style="padding:2rem;max-width:560px;"><img src="https://raw.githubusercontent.com/phocas88/Veteran_Career_Builder/main/logo.png" style="width:80px;margin-bottom:1rem;display:block;"/><h2 style="color:#f0c040;font-family:Georgia,serif;margin-bottom:.75rem;">App Error</h2><div style="background:rgba(255,100,100,.15);border:1px solid rgba(255,100,100,.4);border-radius:4px;padding:.85rem;color:#ffc0c0;font-size:.85rem;font-family:monospace;word-break:break-all;">'+msg+' (line '+line+')</div><p style="color:#a0b8d8;font-size:.82rem;margin-top:.75rem;">Press F12 and check Console for details.</p></div>';
+      if(el) el.innerHTML='<div style="padding:2rem;max-width:560px;"><img src="'+window.VCB_LOGO+'" style="width:80px;margin-bottom:1rem;display:block;mix-blend-mode:normal;"/><h2 style="color:#f0c040;font-family:Georgia,serif;margin-bottom:.75rem;">App Error</h2><div style="background:rgba(255,100,100,.15);border:1px solid rgba(255,100,100,.4);border-radius:4px;padding:.85rem;color:#ffc0c0;font-size:.85rem;font-family:monospace;word-break:break-all;">'+msg+' (line '+line+')</div><p style="color:#a0b8d8;font-size:.82rem;margin-top:.75rem;">Press F12 and check Console for details.</p></div>';
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.5/babel.min.js" crossorigin="anonymous"></script>
   <script type="text/babel" data-presets="react,env">
-    const { useState, useEffect, useRef } = React;
+const { useState, useEffect, useRef } = React;
     const fbAuth = window.fbAuth;
     const fbDb = window.fbDb;
+
+
+
+// ─── STATIC DATA ─────────────────────────────────────────────────────────────
+// ── MILITARY JARGON TRANSLATOR ─────────────────────────────────────────────
+const MIL_JARGON = {
+  "NCOIC":"Team Supervisor / Operations Lead",
+  "OIC":"Department Manager / Program Lead",
+  "CDR":"Commander / Director",
+  "XO":"Deputy Director / Operations Manager",
+  "1SG":"Senior Operations Supervisor",
+  "CSM":"Senior Advisor / Chief of Staff",
+  "NCO":"Team Leader / Supervisor",
+  "SNCO":"Senior Team Leader",
+  "AO":"Area of Operations",
+  "AOR":"Area of Responsibility",
+  "OPORD":"Operations Plan",
+  "SITREP":"Status Report",
+  "AAR":"Post-Project Review / Lessons Learned",
+  "SOP":"Standard Operating Procedure",
+  "PMCS":"Preventive Maintenance Program",
+  "TOC":"Operations Center",
+  "COP":"Operations Dashboard / Common Picture",
+  "OPTEMPO":"Operational Tempo / Workload Intensity",
+  "TDY":"Temporary Business Travel",
+  "TAD":"Temporary Duty Assignment",
+  "PME":"Professional Development / Leadership Training",
+  "PCS":"Relocation",
+  "MOB":"Deployment / Mobilization",
+  "MOS":"Career Specialty",
+  "AFSC":"Career Specialty Code",
+  "NEC":"Navy Job Classification",
+  "PBO":"Asset / Property Manager",
+  "SSA":"Supply Chain / Distribution Center",
+  "MHE":"Material Handling Equipment / Forklifts",
+  "Chain of Command":"Reporting Structure",
+  "Unit Cohesion":"Team Unity",
+  "Battle Rhythm":"Recurring Operating Cadence",
+  "Tasker":"Action Item / Work Order",
+  "Deadlined":"Equipment Out of Service",
+  "Force Multiplier":"Efficiency / Capability Enhancement",
+  "Hooah":"(omit - military slang)",
+  "Oorah":"(omit - military slang)",
+  "Hard Charger":"High Performer / Self-Starter",
+};
+
+const BRANCHES = ["Army","Navy","Marine Corps","Air Force","Space Force","Coast Guard"];
 
 // ── RANK DATA BY BRANCH ──────────────────────────────────────────────────────
 const RANKS = {
@@ -315,7 +362,13 @@ const BRANCH_EMBLEMS = {
   "Space Force": "🛸",
   "Coast Guard": "🔱"
 };
+const SERVICE_TYPES = ["Active Duty","Reserve","National Guard","Active Guard Reserve (AGR)","Retired","Separated/Veteran","Discharged"];
+const EXP_TYPES = ["Military Service","Reserve/Guard (concurrent with civilian)","Civilian Employment","DoD/Government Contractor","Other Government (Federal/State)"];
 
+const CLEARANCE_LEVELS = ["None","Public Trust","Confidential","Secret","Top Secret","Top Secret/SCI","TS/SCI with CI Poly","TS/SCI with Full Scope Poly","Q Clearance (DOE)","L Clearance (DOE)"];
+const CLEARANCE_STATUS = ["Active","Inactive","Expired","Pending","Unknown"];
+
+// Branch-specific ASI/SQI/NEC/AFSC additional qualifiers
 const BRANCH_QUALS = {
   "Army": {
     label: "Additional Skill Identifiers (ASI)",
@@ -666,84 +719,9 @@ const BRANCH_QUALS = {
     ]
   },
 };
-
-// ─── STATIC DATA ─────────────────────────────────────────────────────────────
-// ── MILITARY JARGON TRANSLATOR ─────────────────────────────────────────────
-const MIL_JARGON = {
-  "NCOIC":"Team Supervisor / Operations Lead",
-  "OIC":"Department Manager / Program Lead",
-  "CDR":"Commander / Director",
-  "XO":"Deputy Director / Operations Manager",
-  "1SG":"Senior Operations Supervisor",
-  "CSM":"Senior Advisor / Chief of Staff",
-  "NCO":"Team Leader / Supervisor",
-  "SNCO":"Senior Team Leader",
-  "AO":"Area of Operations",
-  "AOR":"Area of Responsibility",
-  "OPORD":"Operations Plan",
-  "SITREP":"Status Report",
-  "AAR":"Post-Project Review / Lessons Learned",
-  "SOP":"Standard Operating Procedure",
-  "PMCS":"Preventive Maintenance Program",
-  "TOC":"Operations Center",
-  "COP":"Operations Dashboard / Common Picture",
-  "OPTEMPO":"Operational Tempo / Workload Intensity",
-  "TDY":"Temporary Business Travel",
-  "TAD":"Temporary Duty Assignment",
-  "PME":"Professional Development / Leadership Training",
-  "PCS":"Relocation",
-  "MOB":"Deployment / Mobilization",
-  "MOS":"Career Specialty",
-  "AFSC":"Career Specialty Code",
-  "NEC":"Navy Job Classification",
-  "PBO":"Asset / Property Manager",
-  "SSA":"Supply Chain / Distribution Center",
-  "MHE":"Material Handling Equipment / Forklifts",
-  "Chain of Command":"Reporting Structure",
-  "Unit Cohesion":"Team Unity",
-  "Battle Rhythm":"Recurring Operating Cadence",
-  "Tasker":"Action Item / Work Order",
-  "Deadlined":"Equipment Out of Service",
-  "Force Multiplier":"Efficiency / Capability Enhancement",
-  "Hooah":"(omit - military slang)",
-  "Oorah":"(omit - military slang)",
-  "Hard Charger":"High Performer / Self-Starter",
-};
-
-const BRANCHES = ["Army","Navy","Marine Corps","Air Force","Space Force","Coast Guard"];
-
-
-const SERVICE_TYPES = ["Active Duty","Reserve","National Guard","Active Guard Reserve (AGR)","Retired","Separated/Veteran","Discharged"];
-const EXP_TYPES = ["Military Service","Reserve/Guard (concurrent with civilian)","Civilian Employment","DoD/Government Contractor","Other Government (Federal/State)"];
-
-const CLEARANCE_LEVELS = ["None","Public Trust","Confidential","Secret","Top Secret","Top Secret/SCI","TS/SCI with CI Poly","TS/SCI with Full Scope Poly","Q Clearance (DOE)","L Clearance (DOE)"];
-const CLEARANCE_STATUS = ["Active","Inactive","Expired","Pending","Unknown"];
-
-const COMMON_ASI = [
-  { code:"2S", desc:"Ranger Qualified" },
-  { code:"5Q", desc:"Maneuver Senior / Master Gunner" },
-  { code:"8A", desc:"Airborne" },
-  { code:"B3", desc:"Linguist" },
-  { code:"G2", desc:"Combatives Level II" },
-  { code:"G3", desc:"Combatives Level III" },
-  { code:"G4", desc:"Combatives Level IV (Instructor)" },
-  { code:"P1", desc:"Master Parachutist" },
-  { code:"V5", desc:"Battle Staff Operations" },
-  { code:"W1", desc:"SERE Trained" },
-  { code:"X3", desc:"Military Instructor" },
-  { code:"Y9", desc:"Nuclear Weapons Technical" },
-];
-
-const COMMON_SQI = [
-  { code:"F", desc:"Special Forces" },
-  { code:"P", desc:"Parachutist (Basic)" },
-  { code:"Q", desc:"Special Forces Enlisted" },
-  { code:"R", desc:"Ranger" },
-  { code:"S", desc:"Special Operations Support" },
-  { code:"V", desc:"Aviation" },
-  { code:"X", desc:"Instructor / Faculty" },
-  { code:"Z", desc:"Senior Sergeant / Leadership" },
-];
+// Fallback for unknown branches
+const COMMON_ASI = BRANCH_QUALS["Army"].items;
+const COMMON_SQI = BRANCH_QUALS["Army"].sqi;
 
 const COMMON_ADDL_DUTIES = [
   "Unit Armorer","NBC/CBRN Officer","Equal Opportunity Leader","Safety Officer/NCO","Master Driver","Unit Prevention Leader (UPL/Drug Testing)","Retention NCO","Casualty Notification Officer","Family Readiness Officer/NCO","Sexual Harassment/Assault Response (SHARP) Coordinator","Records Management","Information Security Officer","Operations Security (OPSEC) Coordinator","Physical Security Officer","Inspector General Representative","Unit Fund Custodian","Training Room NCO","Supply Sergeant (additional duty)","Contracting Officer Representative (COR)","Property Book Officer","Master Gunner","Battle Staff NCO","Recruiter/Career Counselor","Casualty Liaison Officer",
@@ -869,255 +847,161 @@ const MOS_DATA = {
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&display=swap');
 :root {
-  --gold:#c9a84c; --gold-light:#e8c97a; --gold-dim:rgba(201,168,76,0.35);
-  --navy:#2a3f6f; --navy2:#314878; --navy3:#3a5490;
-  --slate:#b8cce0; --text:#f8f4e8; --dim:#98adc4;
-  --green:#4caf82; --red:#e05555; --blue:#5b9bd5; --purple:#a07cd6; --orange:#e09040;
+  --gold:#b8860b; --gold-light:#d4a017; --gold-dim:rgba(184,134,11,0.2);
+  --navy:#1a3a6b; --navy2:#1e4a8a; --navy3:#2456a0;
+  --slate:#3a5070; --text:#0d1f3c; --dim:#4a6080;
+  --green:#1a7a40; --red:#c0392b; --blue:#1a5c9a; --purple:#6a3d9a; --orange:#c4520a;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#2e4880;font-family:'Crimson Pro',serif;color:var(--text);}
-.app{min-height:100vh;background:linear-gradient(160deg,#2e4880 0%,#365290 55%,#2e5248 100%);}
+body{background:#f4f6fa;font-family:'Crimson Pro',serif;color:#0d1f3c;}
+.app{min-height:100vh;background:#f4f6fa;}
 
 /* HEADER */
-.hdr{text-align:center;padding:2.2rem 1rem 1.8rem;position:relative;}
-.hdr::after{content:'';position:absolute;bottom:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-.hdr-star{font-size:2.2rem;margin-bottom:.6rem;filter:drop-shadow(0 0 18px rgba(201,168,76,.55));}
-.hdr h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5.5vw,3.6rem);letter-spacing:.14em;background:linear-gradient(135deg,var(--gold),var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hdr p{color:var(--slate);font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;margin-top:.35rem;font-weight:300;}
-
-/* TABS */
-.tabs{display:flex;justify-content:center;gap:.4rem;padding:1.4rem 1rem .4rem;flex-wrap:wrap;}
-.tab{font-family:'Bebas Neue',sans-serif;letter-spacing:.11em;font-size:.9rem;padding:.5rem 1.2rem;border-radius:3px;border:1px solid var(--gold-dim);background:transparent;color:var(--slate);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.35rem;}
-.tab:hover{border-color:rgba(201,168,76,.5);color:var(--gold-light);}
-.tab.active{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);border-color:transparent;}
-.tab-n{display:inline-flex;align-items:center;justify-content:center;width:1.15rem;height:1.15rem;border-radius:50%;background:rgba(255,255,255,.15);font-size:.65rem;}
-.tab.active .tab-n{background:rgba(0,0,0,.2);}
-.steps{display:flex;justify-content:center;gap:.3rem;margin:.5rem 0 1.2rem;}
-.sdot{width:7px;height:7px;border-radius:50%;background:rgba(201,168,76,.2);transition:background .3s;}
-.sdot.on{background:var(--gold);}
-
-/* LAYOUT */
-.wrap{max-width:880px;margin:0 auto;padding:.75rem 1.1rem 4rem;}
-.panel{display:none;}
-.panel.on{display:block;animation:fadeUp .3s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-
-/* CARDS */
-.card{background:rgba(255,255,255,.1);border:1px solid var(--gold-dim);border-radius:4px;margin-bottom:1.1rem;overflow:hidden;}
-.ch{background:rgba(201,168,76,.18);border-bottom:1px solid var(--gold-dim);padding:.75rem 1.1rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
-.ch h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.92rem;color:var(--gold);}
-.ch-sub{font-size:.68rem;color:#b0c8e0;letter-spacing:.07em;text-transform:uppercase;}
-.cb{padding:1.1rem;}
-
-/* COLLAPSIBLE */
-.collapsed .cb{display:none;}
-.chevron{font-size:.7rem;color:var(--slate);transition:transform .2s;}
-.collapsed .chevron{transform:rotate(-90deg);}
-
-/* FIELDS */
-.field{display:flex;flex-direction:column;gap:.3rem;margin-bottom:.65rem;}
-.field label{font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:#d4e4f0;font-weight:700;}
-.field input,.field select,.field textarea{background:rgba(255,255,255,.92);border:1.5px solid rgba(201,168,76,.5);border-radius:3px;color:#1a1a2e;padding:.58rem .8rem;font-family:'Crimson Pro',serif;font-size:.95rem;transition:border-color .2s,background .2s;width:100%;}
-.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 2px rgba(201,168,76,.25);}
-.field select option{background:#f0f0f0;color:#1a1a2e;}
-.field textarea{resize:vertical;min-height:80px;line-height:1.65;}
-
-.field input::placeholder,.field textarea::placeholder{color:#8090a8;}
-.field select{cursor:pointer;}
-.date-display:hover{border-color:var(--gold);background:#fff;}
-.hint{font-size:.74rem;color:#a0b8d0;margin-top:.22rem;font-style:italic;line-height:1.4;}
-.mos-pill{display:inline-block;background:rgba(91,155,213,.28);border:1px solid rgba(91,155,213,.6);color:#b0d8ff;font-size:.72rem;padding:.18rem .6rem;border-radius:2px;margin-top:.28rem;}
-
-/* GRIDS */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
-.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.75rem;}
-@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr;}}
-@media(max-width:780px){.g3{grid-template-columns:1fr 1fr;}.g4{grid-template-columns:1fr 1fr;}}
-
-/* ENTRY */
-.entry{border:1px solid rgba(201,168,76,.28);border-radius:3px;padding:1rem;margin-bottom:.9rem;background:rgba(20,35,70,.4);}
-.etop{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;}
-.badge{font-size:.65rem;padding:.18rem .6rem;border-radius:2px;text-transform:uppercase;letter-spacing:.09em;font-weight:600;}
-.bm{background:rgba(91,155,213,.14);color:#7eb8f5;border:1px solid rgba(91,155,213,.28);}
-.bc{background:rgba(76,175,130,.12);color:#6fcf97;border:1px solid rgba(76,175,130,.25);}
-.bd{background:rgba(160,124,214,.12);color:#c4a0f5;border:1px solid rgba(160,124,214,.25);}
-.br{background:rgba(230,160,60,.12);color:#e8b84b;border:1px solid rgba(230,160,60,.25);}
-.bg{background:rgba(180,180,180,.1);color:#aaa;border:1px solid rgba(180,180,180,.2);}
-
-/* QUAL SECTION */
-.qual-section{margin-top:.75rem;}
-.qual-label{font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:#c8ddf0;font-weight:700;margin-bottom:.45rem;display:block;}
-.qual-grid{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.5rem;}
-.qual-chip{display:flex;align-items:center;gap:.3rem;background:rgba(201,168,76,.22);border:1px solid rgba(201,168,76,.55);border-radius:3px;padding:.25rem .55rem;font-size:.75rem;color:var(--text);}
-.qual-chip .qcode{font-weight:600;color:var(--gold-light);}
-.qual-chip .qx{cursor:pointer;color:var(--red);font-size:.8rem;margin-left:.2rem;opacity:.7;}
-.qual-chip .qx:hover{opacity:1;}
-.qual-add-row{display:flex;gap:.5rem;align-items:flex-end;}
-.qual-add-row input{flex:1;}
-.qual-add-row select{flex:1.2;}
-.btn-chip{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold);padding:.45rem .9rem;border-radius:3px;cursor:pointer;font-size:.78rem;letter-spacing:.06em;white-space:nowrap;font-family:'Crimson Pro',serif;transition:all .2s;}
-.btn-chip:hover{background:rgba(201,168,76,.28);}
-
-/* DUTY CHIPS */
-.duty-grid{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.5rem;}
-.duty-chip{display:flex;align-items:center;gap:.25rem;background:rgba(160,124,214,.1);border:1px solid rgba(160,124,214,.25);border-radius:3px;padding:.22rem .5rem;font-size:.73rem;color:#c4a0f5;}
-.duty-chip .dx{cursor:pointer;color:var(--red);font-size:.78rem;opacity:.7;}
-.duty-chip .dx:hover{opacity:1;}
-.duty-suggest{display:flex;flex-wrap:wrap;gap:.28rem;margin-bottom:.4rem;}
-.duty-suggest-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);color:#d8eaf8;padding:.2rem .5rem;border-radius:2px;font-size:.7rem;cursor:pointer;transition:all .15s;font-family:'Crimson Pro',serif;}
-.duty-suggest-btn:hover{border-color:rgba(160,124,214,.4);color:#c4a0f5;}
-
-/* CLEARANCE BLOCK */
-.clearance-block{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:3px;padding:.85rem;margin-top:.5rem;}
-.clearance-block h4{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.82rem;color:var(--gold-light);margin-bottom:.6rem;}
-.cl-badge{display:inline-block;padding:.2rem .65rem;border-radius:2px;font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;}
-.cl-ts-sci{background:rgba(224,80,80,.15);color:#e08080;border:1px solid rgba(224,80,80,.3);}
-.cl-ts{background:rgba(224,144,60,.15);color:#e8a860;border:1px solid rgba(224,144,60,.3);}
-.cl-s{background:rgba(91,155,213,.15);color:#7eb8f5;border:1px solid rgba(91,155,213,.28);}
-.cl-c{background:rgba(76,175,130,.12);color:#6fcf97;border:1px solid rgba(76,175,130,.25);}
-.cl-none{background:rgba(120,120,120,.1);color:#999;border:1px solid rgba(120,120,120,.2);}
-
-/* BUTTONS */
-.btn-add{background:transparent;border:1px dashed rgba(201,168,76,.33);color:var(--gold);padding:.5rem 1rem;border-radius:3px;cursor:pointer;font-family:'Crimson Pro',serif;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;width:100%;margin-top:.65rem;}
-.btn-add:hover{background:rgba(201,168,76,.12);border-color:var(--gold);}
-.btn-rm{background:transparent;border:1px solid rgba(224,85,85,.28);color:#cc5555;padding:.25rem .6rem;border-radius:3px;cursor:pointer;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;font-family:'Crimson Pro',serif;}
-.btn-rm:hover{background:rgba(224,85,85,.1);}
-.btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);padding:.85rem 2rem;border:none;border-radius:3px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.12em;transition:all .2s;width:100%;margin-top:.7rem;}
-.btn-primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 7px 26px rgba(201,168,76,.3);}
-.btn-primary:disabled{opacity:.42;cursor:not-allowed;}
-.btn-sec{background:transparent;border:1px solid rgba(201,168,76,.38);color:var(--gold);padding:.42rem .95rem;border-radius:3px;cursor:pointer;font-family:'Crimson Pro',serif;font-size:.8rem;letter-spacing:.07em;text-transform:uppercase;transition:all .2s;}
-.btn-sec:hover{background:rgba(201,168,76,.14);}
-
-/* NAV */
-.nav-row{display:flex;justify-content:space-between;margin-top:1.1rem;}
-
-/* OUTPUT */
-.out-box{background:rgba(255,255,255,.12);border:1px solid rgba(201,168,76,.28);border-radius:4px;margin-top:1.1rem;overflow:hidden;}
-.out-head{background:rgba(201,168,76,.14);border-bottom:1px solid rgba(201,168,76,.25);padding:.78rem 1.1rem;display:flex;justify-content:space-between;align-items:center;}
-.out-head h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.92rem;color:var(--gold);}
-.out-body{padding:1.4rem;white-space:pre-wrap;font-size:.88rem;line-height:1.88;color:#d0c8b8;}
-
-/* CAREER CARDS */
-.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:.9rem;margin-top:.9rem;}
-.ccard{background:rgba(255,255,255,.13);border:1px solid var(--gold-dim);border-radius:4px;padding:1rem;transition:border-color .2s,transform .2s;}
-.ccard:hover{border-color:rgba(201,168,76,.48);transform:translateY(-2px);}
-.ccard h4{font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;font-size:.98rem;color:var(--gold-light);margin-bottom:.35rem;}
-.salary{font-size:1.05rem;font-weight:600;color:var(--green);margin:.25rem 0;}
-.outlook-high{color:var(--green);font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;}
-.outlook-med{color:var(--gold);font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;}
-.outlook-low{color:var(--orange);font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;}
-.ccard p{font-size:.83rem;color:var(--dim);line-height:1.55;margin-top:.35rem;}
-.why{font-size:.81rem;color:var(--gold-light);font-style:italic;margin-top:.35rem;}
-.skill-tags{display:flex;flex-wrap:wrap;gap:.28rem;margin-top:.45rem;}
-.stag{font-size:.66rem;padding:.14rem .48rem;border-radius:2px;background:rgba(91,155,213,.1);border:1px solid rgba(91,155,213,.22);color:#7eb8f5;}
-.next{font-size:.78rem;color:var(--slate);margin-top:.5rem;}
-.next strong{color:var(--dim);}
-
-/* LOADING */
-.loading{display:flex;align-items:center;justify-content:center;gap:.9rem;padding:2.5rem;color:var(--slate);font-size:.92rem;letter-spacing:.04em;}
-.spin{width:20px;height:20px;border:2px solid rgba(201,168,76,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .75s linear infinite;flex-shrink:0;}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* INTRO */
-.intro{background:rgba(201,168,76,.055);border:1px solid rgba(201,168,76,.28);border-radius:4px;padding:.9rem 1.1rem;margin-bottom:1.1rem;font-size:.87rem;color:var(--slate);line-height:1.65;}
-.intro strong{color:var(--gold-light);}
-
-/* SECTION DIVIDER */
-.sdiv{border:none;border-top:1px solid rgba(201,168,76,.1);margin:.75rem 0;}
-
-/* TOS BADGE */
-.tos-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(91,155,213,.1);border:1px solid rgba(91,155,213,.25);border-radius:3px;padding:.3rem .7rem;font-size:.78rem;color:#7eb8f5;margin-top:.3rem;}
-
-/* AUTH OVERLAY */
-.auth-overlay{position:fixed;inset:0;background:rgba(8,12,24,.97);z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem;}
-.auth-box{background:linear-gradient(160deg,#1e2e50,#1a2c28);border:1px solid rgba(201,168,76,.3);border-radius:6px;width:100%;max-width:420px;overflow:hidden;animation:fadeUp .3s ease;}
-.auth-head{background:rgba(201,168,76,.14);border-bottom:1px solid rgba(201,168,76,.2);padding:1.4rem;text-align:center;}
-.auth-head .star{font-size:1.8rem;margin-bottom:.4rem;}
-.auth-head h2{font-family:'Bebas Neue',sans-serif;letter-spacing:.12em;font-size:1.5rem;background:linear-gradient(135deg,var(--gold),var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.auth-head p{font-size:.78rem;color:var(--slate);margin-top:.25rem;}
-.auth-body{padding:1.5rem;}
-.auth-toggle{display:flex;background:rgba(255,255,255,.13);border:1px solid var(--gold-dim);border-radius:3px;margin-bottom:1.2rem;overflow:hidden;}
-.auth-toggle button{flex:1;padding:.5rem;background:transparent;border:none;color:var(--slate);font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.85rem;cursor:pointer;transition:all .2s;}
-.auth-toggle button.on{background:rgba(201,168,76,.15);color:var(--gold-light);}
-.auth-err{background:rgba(224,85,85,.1);border:1px solid rgba(224,85,85,.28);border-radius:3px;padding:.6rem .85rem;font-size:.82rem;color:#e08080;margin-bottom:.8rem;}
-.auth-ok{background:rgba(76,175,130,.1);border:1px solid rgba(76,175,130,.25);border-radius:3px;padding:.6rem .85rem;font-size:.82rem;color:var(--green);margin-bottom:.8rem;}
-.auth-skip{text-align:center;margin-top:.9rem;}
-.auth-skip button{background:transparent;border:none;color:var(--dim);font-size:.78rem;cursor:pointer;text-decoration:underline;font-family:'Crimson Pro',serif;}
-.auth-skip button:hover{color:var(--slate);}
+.hdr{text-align:center;padding:2.5rem 1rem 2rem;background:linear-gradient(135deg,#0d2040,#1a3a6b,#1e4a8a);position:relative;}
+.hdr h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:.14em;color:#f5d060;margin-bottom:.2rem;text-shadow:0 2px 12px rgba(0,0,0,.3);}
+.hdr p{font-size:.95rem;color:#d0e8ff;letter-spacing:.06em;font-weight:600;}
+.tagline{font-size:.78rem;color:#90aad0;margin-top:.15rem;font-style:italic;}
 
 /* USER BAR */
-.user-bar{background:rgba(201,168,76,.1);border-bottom:1px solid rgba(201,168,76,.15);padding:.5rem 1.4rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;}
-.user-bar-left{display:flex;align-items:center;gap:.6rem;}
-.user-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.85rem;color:var(--navy);flex-shrink:0;}
-.user-bar span{font-size:.8rem;color:var(--slate);}
-.user-bar strong{color:var(--gold-light);}
+.user-bar{background:#1a3a6b;border-bottom:1px solid #2456a0;padding:.45rem 1.2rem;display:flex;align-items:center;justify-content:space-between;font-size:.78rem;color:#d0e4f8;}
+.user-bar button{background:transparent;border:1px solid rgba(255,255,255,.3);color:#d0e4f8;border-radius:3px;padding:.2rem .6rem;cursor:pointer;font-size:.72rem;}
 
-/* PROFILE TAB */
-.prof-hero{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);border-radius:4px;padding:1.2rem 1.4rem;margin-bottom:1.1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
-.prof-avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--navy);flex-shrink:0;}
-.prof-hero h2{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:1.2rem;color:var(--gold-light);}
-.prof-hero p{font-size:.8rem;color:var(--dim);margin-top:.1rem;}
-.saved-card{background:rgba(255,255,255,.12);border:1px solid rgba(201,168,76,.28);border-radius:4px;padding:.9rem 1.1rem;margin-bottom:.6rem;transition:border-color .2s;}
-.saved-card:hover{border-color:rgba(201,168,76,.38);}
-.saved-card h4{font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;font-size:.92rem;color:var(--gold-light);margin-bottom:.2rem;}
-.saved-card p{font-size:.78rem;color:var(--dim);line-height:1.45;}
-.saved-card-row{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem;flex-wrap:wrap;}
-.card-actions{display:flex;gap:.35rem;flex-shrink:0;}
-.btn-danger{background:transparent;border:1px solid rgba(224,85,85,.28);color:#cc5555;padding:.28rem .6rem;border-radius:3px;cursor:pointer;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-family:'Crimson Pro',serif;transition:all .2s;}
-.btn-danger:hover{background:rgba(224,85,85,.1);}
-.save-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);padding:.6rem 1.2rem;border-radius:3px;font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.82rem;z-index:200;animation:fadeUp .3s ease;box-shadow:0 6px 24px rgba(201,168,76,.35);}
-.unsaved{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--orange);margin-left:.3rem;vertical-align:middle;}
+/* TABS */
+.tabs{display:flex;border-bottom:2px solid #1a3a6b;background:#ffffff;padding:0;}
+.tab{flex:1;padding:.7rem .5rem;background:transparent;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:.9rem;color:#3a5070;letter-spacing:.1em;transition:all .2s;}
+.tab.on{color:#1a3a6b;border-bottom-color:#1a3a6b;background:#f0f4fa;font-weight:700;}
+.tab:hover:not(.on){color:#1a3a6b;background:#f0f4fa;}
+.tab-n{font-size:.6rem;display:block;opacity:.7;margin-top:.1rem;}
+
+/* PANELS */
+.panel{display:none;animation:fadeIn .25s;}
+.panel.on{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* WRAP */
+.wrap{max-width:960px;margin:0 auto;padding:1.2rem 1rem;}
+
+/* CARDS */
+.card{background:#ffffff;border:1px solid #d0daea;border-radius:6px;margin-bottom:1.1rem;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.06);}
+.ch{background:#f0f4fa;border-bottom:1px solid #d0daea;padding:.7rem 1.1rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+.ch h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:1rem;color:#1a3a6b;}
+.cb{padding:1.1rem;}
+.collapsed .cb{display:none;}
+.chevron{font-size:.7rem;color:#4a6080;transition:transform .25s;}
+.collapsed .chevron{transform:rotate(-90deg);}
+
+/* ENTRIES */
+.entry{border:1px solid #d8e4f0;border-radius:4px;padding:1rem;margin-bottom:.9rem;background:#fafcff;}
+.entry-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.4rem;}
+.entry-badge{background:#1a3a6b;color:#ffffff;border:none;border-radius:3px;padding:.2rem .75rem;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
+
+/* FORM */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.85rem;}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr;}}
+.field{margin-bottom:.65rem;}
+.field label{font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:#1a3a6b;font-weight:700;display:block;margin-bottom:.3rem;}
+.field input,.field select,.field textarea{background:#ffffff;border:1.5px solid #c0d0e4;border-radius:4px;color:#0d1f3c;padding:.52rem .75rem;width:100%;font-family:'Crimson Pro',serif;font-size:.95rem;transition:border-color .2s;}
+.field input:focus,.field select,.field textarea:focus{outline:none;border-color:#1a3a6b;}
+.field input::placeholder,.field textarea::placeholder{color:#8aa0b8;}
+.hint{font-size:.74rem;color:#5a7090;margin-top:.22rem;font-style:italic;line-height:1.4;}
+
 /* DATE PICKER */
 .date-picker{position:relative;}
-.date-display{background:rgba(255,255,255,.92);border:1.5px solid rgba(201,168,76,.5);border-radius:3px;color:#1a1a2e;padding:.58rem .8rem;font-family:'Crimson Pro',serif;font-size:.93rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
-.date-display:hover{border-color:var(--gold);}
-.date-dropdown{position:absolute;top:calc(100% + 3px);left:0;background:#314878;border:1px solid rgba(201,168,76,.45);border-radius:4px;z-index:200;width:280px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.5);}
-.date-dropdown-head{background:rgba(201,168,76,.14);padding:.55rem .8rem;display:flex;justify-content:space-between;align-items:center;}
-.date-dropdown-head span{font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;color:var(--gold-light);font-size:.9rem;}
-.date-nav-btn{background:transparent;border:1px solid rgba(201,168,76,.32);color:var(--gold);padding:.18rem .5rem;border-radius:2px;cursor:pointer;font-size:.78rem;}
-.date-nav-btn:hover{background:rgba(201,168,76,.12);}
-.year-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.3rem;padding:.65rem;}
-.month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem;padding:.65rem;}
-.year-btn,.month-btn{background:rgba(255,255,255,.12);border:1px solid rgba(201,168,76,.15);color:var(--text);padding:.38rem;border-radius:2px;cursor:pointer;font-size:.77rem;text-align:center;transition:all .15s;font-family:'Crimson Pro',serif;}
-.year-btn:hover,.month-btn:hover{background:rgba(201,168,76,.2);border-color:var(--gold);color:#1a1a2e;}
-.year-btn.sel,.month-btn.sel{background:var(--gold);border-color:var(--gold);color:#1a1a2e;font-weight:700;}
-/* AUTOCOMPLETE */
-.autocomplete-list{position:absolute;top:100%;left:0;right:0;background:#314878;border:1px solid rgba(201,168,76,.42);border-top:none;border-radius:0 0 3px 3px;max-height:195px;overflow-y:auto;z-index:200;}
-.autocomplete-item{padding:.48rem .8rem;font-size:.87rem;color:#1a1a2e;cursor:pointer;transition:background .12s;}
-.autocomplete-item:hover{background:rgba(201,168,76,.25);}
-/* RESUME FORMAT PICKER */
-.format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:.55rem;margin-bottom:.75rem;}
-.format-card{background:rgba(255,255,255,.15);border:1px solid rgba(201,168,76,.2);border-radius:3px;padding:.7rem .85rem;cursor:pointer;transition:all .18s;}
-.format-card:hover{border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.07);}
-.format-card.sel{border-color:var(--gold);background:rgba(201,168,76,.13);}
-.format-card h4{font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;font-size:.86rem;color:var(--gold-light);margin-bottom:.22rem;}
-.format-card p{font-size:.72rem;color:var(--dim);line-height:1.4;}
-.format-card.sel h4{color:var(--gold);}
-/* STYLED RESUME OUTPUT */
-.resume-out{background:#fff;border-radius:4px;overflow:hidden;box-shadow:0 4px 28px rgba(0,0,0,.35);}
-.resume-out-inner{padding:2.4rem 2.8rem;font-family:'Arial',sans-serif;font-size:10pt;line-height:1.5;color:#1a1a1a;max-height:650px;overflow-y:auto;}
-.resume-out-inner h1{font-size:17pt;margin-bottom:3pt;color:#1a1a1a;font-family:'Arial',sans-serif;}
-.resume-out-inner h2{font-size:10pt;border-bottom:1.5px solid #333;padding-bottom:2pt;margin:13pt 0 5pt;text-transform:uppercase;letter-spacing:.06em;color:#1a1a1a;font-family:'Arial',sans-serif;}
-.resume-out-head{background:#f5f2ea;border-bottom:1px solid #d8d0b8;padding:.7rem 1.1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.45rem;}
-.resume-out-head h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.9rem;color:#444;}
-/* TRANSLATION SECTIONS */
-.trans-section{background:rgba(255,255,255,.15);border:1px solid rgba(201,168,76,.22);border-radius:4px;margin-bottom:.85rem;overflow:hidden;}
-.trans-section-head{background:rgba(91,155,213,.1);border-bottom:1px solid rgba(91,155,213,.2);padding:.62rem 1rem;display:flex;align-items:center;gap:.55rem;}
-.trans-section-head h4{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:.87rem;color:#7eb8f5;}
-.trans-section-body{padding:.95rem;}
-.trans-block{margin-bottom:.75rem;padding-bottom:.75rem;border-bottom:1px solid rgba(255,255,255,.06);}
-.trans-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
-.trans-block-label{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-bottom:.28rem;font-weight:600;}
-.trans-block-text{font-size:.87rem;line-height:1.75;color:var(--text);}
-.trans-bullet{display:flex;gap:.55rem;margin-bottom:.32rem;align-items:flex-start;}
-.trans-bullet-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.44rem;}
-.trans-bullet-text{font-size:.87rem;line-height:1.65;color:var(--text);}
-.intro{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.45);border-radius:4px;padding:.9rem 1.1rem;margin-bottom:1.1rem;font-size:.87rem;color:var(--slate);line-height:1.65;}
-.intro strong{color:var(--gold-light);}
-.sdiv{border:none;border-top:1px solid rgba(201,168,76,.25);margin:.75rem 0;}
-.tos-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(91,155,213,.22);border:1px solid rgba(91,155,213,.5);border-radius:3px;padding:.3rem .7rem;font-size:.78rem;color:#b0d8ff;margin-top:.3rem;}
+.date-display{background:#ffffff;border:1.5px solid #c0d0e4;border-radius:4px;color:#0d1f3c;padding:.52rem .8rem;font-family:'Crimson Pro',serif;font-size:.95rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;transition:border-color .2s;}
+.date-display:hover{border-color:#1a3a6b;}
+.date-display.placeholder{color:#8aa0b8;}
+.date-dropdown{position:absolute;top:calc(100% + 3px);left:0;background:#ffffff;border:1.5px solid #c0d0e4;border-radius:4px;z-index:200;width:280px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.12);}
+.month-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:6px;}
+.month-grid button{background:transparent;border:1px solid transparent;border-radius:3px;padding:5px 2px;font-size:.75rem;cursor:pointer;color:#0d1f3c;transition:all .15s;}
+.month-grid button:hover{background:#e8edf5;border-color:#c0d0e4;}
+.month-grid button.sel{background:#1a3a6b;color:#fff;border-color:#1a3a6b;}
+.year-row{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-bottom:1px solid #e0e8f0;background:#f0f4fa;}
+.year-row button{background:transparent;border:none;color:#1a3a6b;font-size:1.1rem;cursor:pointer;padding:0 6px;font-weight:700;}
+.year-row span{font-size:.85rem;font-weight:700;color:#0d1f3c;}
 
+/* BUTTONS */
+.btn-primary{display:block;width:100%;padding:.8rem;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);color:#fff;border:none;border-radius:4px;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.12em;cursor:pointer;margin:.8rem 0;transition:opacity .2s;}
+.btn-primary:hover{opacity:.9;}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+.btn-sec{background:#ffffff;border:1.5px solid #1a3a6b;color:#1a3a6b;border-radius:4px;padding:.4rem .9rem;font-family:'Crimson Pro',serif;font-size:.85rem;cursor:pointer;transition:all .2s;}
+.btn-sec:hover{background:#1a3a6b;color:#fff;}
+
+/* CAREER CARDS */
+.career-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.85rem;}
+.career-card{background:#ffffff;border:1px solid #d0daea;border-radius:6px;padding:1rem;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.career-card:hover{border-color:#1a3a6b;box-shadow:0 4px 12px rgba(26,58,107,.15);transform:translateY(-2px);}
+.career-card h4{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.08em;color:#1a3a6b;margin-bottom:.3rem;}
+
+/* RESUME OUT */
+.resume-out{border:1px solid #d0daea;border-radius:6px;overflow:hidden;background:#f0f4fa;}
+
+/* LOADING */
+.loading{text-align:center;padding:2.5rem;color:#4a6080;}
+.spin{width:36px;height:36px;border:3px solid #d0daea;border-top-color:#1a3a6b;border-radius:50%;animation:sp .7s linear infinite;margin:.8rem auto;}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* MISC */
+.save-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a3a6b;color:#fff;padding:.6rem 1.4rem;border-radius:20px;font-size:.85rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);}
+.api-err{background:#fff0f0;border:1px solid #e0b0b0;color:#a00;border-radius:4px;padding:.6rem .9rem;font-size:.82rem;margin:.5rem 0;}
+.intro{background:#fff8e8;border:1px solid rgba(184,134,11,.35);border-radius:4px;padding:.75rem 1rem;margin-bottom:.9rem;font-size:.88rem;color:#3a3000;line-height:1.65;}
+.nav-row{display:flex;justify-content:space-between;margin-top:1rem;padding-top:.75rem;border-top:1px solid #e0e8f0;}
+.qual-chip{display:flex;align-items:center;gap:.3rem;background:#e8edf5;border:1px solid #1a3a6b;border-radius:3px;padding:.25rem .55rem;font-size:.75rem;color:#1a3a6b;}
+.qual-chip button{background:transparent;border:none;color:#c0392b;cursor:pointer;font-size:.85rem;padding:0 .1rem;}
+.duty-suggest-btn{background:#e8edf5;border:1px solid #b0c4d8;color:#2a4a6a;border-radius:3px;padding:.22rem .55rem;font-size:.72rem;cursor:pointer;transition:background .15s;}
+.duty-suggest-btn:hover{background:#d0ddf0;}
+.mos-pill{display:inline-block;background:rgba(184,134,11,.15);border:1px solid rgba(184,134,11,.4);border-radius:2px;padding:.12rem .45rem;font-size:.72rem;color:#6a4a00;margin:.1rem;}
+.format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin-bottom:.75rem;}
+.format-card{border:1.5px solid #d0daea;border-radius:4px;padding:.65rem .8rem;cursor:pointer;transition:all .2s;background:#fff;}
+.format-card.selected{border-color:#1a3a6b;background:#e8edf5;}
+.format-card h4{font-size:.82rem;font-weight:700;color:#1a3a6b;margin-bottom:.2rem;}
+.format-card p{font-size:.72rem;color:#4a6080;line-height:1.4;}
+.prof-hero{background:linear-gradient(135deg,#1a3a6b,#1e4a8a);color:#fff;border-radius:6px;padding:1.2rem 1.4rem;margin-bottom:1rem;}
+
+/* SKILLS LIBRARY */
+.skills-lib button{background:#e8edf5;border:1px solid #b0c4d8;color:#2a4a6a;border-radius:3px;padding:.22rem .55rem;font-size:.72rem;cursor:pointer;margin:.15rem;transition:background .15s;}
+.skills-lib button:hover{background:#d0ddf0;}
+
+/* STEP DOTS */
+.sdot{width:6px;height:6px;border-radius:50%;background:rgba(184,134,11,.2);display:inline-block;margin:0 2px;transition:background .3s;}
+.sdot.on{background:#1a3a6b;}
+/* PAYWALL */
+.pw-overlay{position:fixed;inset:0;background:rgba(10,20,50,.92);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.pw-box{background:#fff;border-radius:10px;width:100%;max-width:480px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.4);}
+.pw-head{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);padding:2rem 1.8rem 1.4rem;text-align:center;}
+.pw-head h2{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.12em;color:#f0c040;margin:0 0 .3rem;}
+.pw-head p{color:#b0cce8;font-size:.85rem;margin:0;}
+.pw-plans{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;padding:1.2rem 1.5rem;}
+.pw-plan{border:2px solid #d0daea;border-radius:8px;padding:1rem;cursor:pointer;transition:all .2s;text-align:center;}
+.pw-plan:hover,.pw-plan.selected{border-color:#1a3a6b;background:#f0f4ff;}
+.pw-plan .price{font-size:1.6rem;font-weight:800;color:#1a3a6b;line-height:1;}
+.pw-plan .price span{font-size:.8rem;font-weight:400;color:#5a7090;}
+.pw-plan .plan-name{font-weight:700;font-size:.85rem;color:#1a3a6b;margin-bottom:.2rem;}
+.pw-plan ul{list-style:none;padding:0;margin:.5rem 0 0;font-size:.75rem;color:#3a5070;text-align:left;}
+.pw-plan ul li::before{content:"✓ ";color:#1a7a40;font-weight:700;}
+.pw-divider{display:flex;align-items:center;gap:.6rem;padding:0 1.5rem;margin-bottom:.75rem;}
+.pw-divider div{flex:1;height:1px;background:#e0e8f0;}
+.pw-divider span{font-size:.72rem;color:#8aa0b8;letter-spacing:.06em;}
+.pw-code-row{padding:0 1.5rem .75rem;display:flex;gap:.5rem;}
+.pw-code-row input{flex:1;padding:.55rem .8rem;border:1.5px solid #d0daea;border-radius:6px;font-size:.88rem;}
+.pw-code-row input.valid{border-color:#1a7a40;background:#f0fff4;}
+.pw-code-row input.invalid{border-color:#c0392b;background:#fff5f5;}
+.pw-code-btn{padding:.55rem 1rem;background:#1a3a6b;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-size:.85rem;}
+.pw-footer{padding:.75rem 1.5rem 1.4rem;display:flex;flex-direction:column;gap:.5rem;}
+.pw-cta{width:100%;padding:.8rem;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);color:#fff;border:none;border-radius:6px;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;cursor:pointer;}
+.pw-skip{background:transparent;border:none;color:#8aa0b8;font-size:.78rem;cursor:pointer;padding:.3rem;}
+.pw-badge{display:inline-block;background:#f0c040;color:#0d1f3c;font-size:.65rem;font-weight:800;padding:.1rem .4rem;border-radius:3px;margin-left:.4rem;vertical-align:middle;}
+/* SCORE RING */
+.score-ring{display:flex;align-items:center;justify-content:center;flex-direction:column;width:110px;height:110px;border-radius:50%;border:6px solid #1a3a6b;background:#f0f4ff;margin:0 auto 1rem;}
+.score-num{font-size:2rem;font-weight:800;color:#1a3a6b;line-height:1;}
+.score-lbl{font-size:.65rem;color:#5a7090;letter-spacing:.06em;text-transform:uppercase;}
+.grade-bar{height:7px;border-radius:4px;background:#e0e8f0;margin-top:.3rem;}
+.grade-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#1a3a6b,#2a7aef);transition:width .6s;}
+.review-item{padding:.7rem .9rem;border-radius:6px;margin-bottom:.5rem;border-left:3px solid;}
+.review-high{background:#fff5f5;border-color:#c0392b;}
+.review-med{background:#fffbf0;border-color:#e67e22;}
+.review-low{background:#f0fff4;border-color:#1a7a40;}
+.cl-output{background:#fff;border:1px solid #d0daea;border-radius:6px;padding:1.2rem 1.4rem;font-size:.9rem;line-height:1.8;color:#1a2a3a;white-space:pre-wrap;min-height:200px;}
 `;
 
 
@@ -1214,7 +1098,7 @@ function DatePicker({ value, onChange, placeholder = "Select date" }) {
     <div className="date-picker" ref={ref}>
       <div className="date-display" onClick={() => { setOpen(o => !o); setMode("year"); }}>
         <span style={{color: parsed ? "var(--text)" : "var(--dim)"}}>{display}</span>
-        <span style={{fontSize:".7rem",color:"var(--slate)"}}>▼</span>
+        <span style={{fontSize:".7rem",color:"#3a5070"}}>&#9660;</span>
       </div>
       {open && (
         <div className="date-dropdown">
@@ -1487,6 +1371,13 @@ function App() {
   const [mosOut, setMosOut] = useState("");
   const [careers, setCareers] = useState(null);
   const [serviceRecords, setServiceRecords] = useState([{ id:1, branch:"Army", rank:"", status:"Veteran" }]);
+  const [coverLetter, setCoverLetter] = useState("");
+  const [coverLetterJob, setCoverLetterJob] = useState({ title:"", company:"", description:"" });
+  const [resumeScore, setResumeScore] = useState(null);
+  const [resumeReview, setResumeReview] = useState(null);
+  const [coverLetterLoading, setCoverLetterLoading] = useState(false);
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [copiedCL, setCopiedCL] = useState(false);
   const [selectedCareer, setSelectedCareer] = useState(null);
   const [careerDetail, setCareerDetail] = useState(null);
   const [careerFilter, setCareerFilter] = useState("All");
@@ -1519,6 +1410,45 @@ function App() {
   const [hasUnsaved, setHasUnsaved] = useState(false);
   const [savedResumes, setSavedResumes] = useState([]);
   const [viewingResume, setViewingResume] = useState(null);
+
+  // ── PAYWALL STATE ─────────────────────────────────────────────────────────
+  const ACCESS_CODES = ["VET2025","ALPHA100","BRAVO100","CHARLIE100","DELTA100","ECHO100","FOXTROT100","GOLF100","HOTEL100","INDIA100"];
+  const checkAccess = () => {
+    const stored = localStorage.getItem("vcb_access");
+    if (!stored) return false;
+    try {
+      const { type, expiry, code } = JSON.parse(stored);
+      if (type === "code") return ACCESS_CODES.includes(code);
+      if (type === "paid" && expiry > Date.now()) return true;
+      return false;
+    } catch(e) { return false; }
+  };
+  const [hasAccess, setHasAccess] = useState(() => checkAccess());
+  const [showPaywall, setShowPaywall] = useState(() => !checkAccess());
+  const [pwPlan, setPwPlan] = useState("monthly");
+  const [pwCode, setPwCode] = useState("");
+  const [pwCodeStatus, setPwCodeStatus] = useState("idle");
+  const [pwCodeMsg, setPwCodeMsg] = useState("");
+
+  const redeemCode = () => {
+    const code = pwCode.trim().toUpperCase();
+    if (ACCESS_CODES.includes(code)) {
+      localStorage.setItem("vcb_access", JSON.stringify({ type:"code", code }));
+      setPwCodeStatus("valid");
+      setPwCodeMsg("✓ Code accepted! Welcome to Veteran Career Builder.");
+      setTimeout(() => { setHasAccess(true); setShowPaywall(false); }, 900);
+    } else {
+      setPwCodeStatus("invalid");
+      setPwCodeMsg("That code isn't valid. Check spelling or contact support.");
+    }
+  };
+
+  const grantPaidAccess = (planMonths) => {
+    const expiry = Date.now() + planMonths * 30 * 24 * 60 * 60 * 1000;
+    localStorage.setItem("vcb_access", JSON.stringify({ type:"paid", expiry, plan: planMonths===1?"monthly":"annual" }));
+    setHasAccess(true);
+    setShowPaywall(false);
+  };
 
   // ── FIREBASE STORAGE HELPERS ────────────────────────────────────────────────
 
@@ -1595,16 +1525,20 @@ function App() {
   };
 
   const handleLogin = async () => {
+    if (!fbAuth) { setAuthErr("Authentication is not configured yet. Contact the site owner."); return; }
     setAuthErr(""); setAuthOk("");
+    if (!authForm.username.trim()) { setAuthErr("Please enter your email address."); return; }
+    if (!authForm.password) { setAuthErr("Please enter your password."); return; }
     try {
       await fbAuth.signInWithEmailAndPassword(authForm.username.trim(), authForm.password);
       setShowAuth(false);
       setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
     } catch(e) {
-      if (e.code === "auth/user-not-found") setAuthErr("No account found with that email.");
-      else if (e.code === "auth/wrong-password") setAuthErr("Incorrect password.");
+      if (e.code === "auth/user-not-found" || e.code === "auth/invalid-credential") setAuthErr("No account found. Check your email or create an account.");
+      else if (e.code === "auth/wrong-password") setAuthErr("Incorrect password. Try again or reset it below.");
       else if (e.code === "auth/invalid-email") setAuthErr("Please enter a valid email address.");
-      else setAuthErr(e.message);
+      else if (e.code === "auth/too-many-requests") setAuthErr("Too many attempts. Please wait a moment and try again.");
+      else setAuthErr("Sign in failed: " + (e.message||"Unknown error"));
     }
   };
 
@@ -1771,6 +1705,7 @@ function App() {
 
   // ── TRANSLATE ──────────────────────────────────────────────────────────────
   const translateMOS = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
     if (!isApiKeySet()) { setShowAdminSetup(true); return; }
     if (!milExperiences.length) return;
     setApiError("");
@@ -1834,6 +1769,7 @@ function App() {
 
   // ── CAREERS ───────────────────────────────────────────────────────────────
   const findCareers = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
     if (!isApiKeySet()) { setShowAdminSetup(true); return; }
     setApiError("");
     setCareerError("");
@@ -1878,6 +1814,7 @@ function App() {
 
   // ── CAREER DETAIL ──────────────────────────────────────────────────────────
   const openCareerDetail = async (career) => {
+    if (!hasAccess) { setShowPaywall(true); return; }
     setSelectedCareer(career);
     setCareerDetail(null);
     setL("careerDetail",true);
@@ -1940,6 +1877,7 @@ Use this exact structure:
 
   // ── RESUME ─────────────────────────────────────────────────────────────────
   const genResume = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
     if (!isApiKeySet()) { setShowAdminSetup(true); return; }
     setApiError("");
     setL("resume",true);
@@ -2031,9 +1969,98 @@ Use this exact structure:
     }
   };
 
+
+  // ── COVER LETTER GENERATOR ────────────────────────────────────────────────
+  const genCoverLetter = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!resume && !resumeData) { alert("Generate your resume first on the Build Resume tab, then come back to create a cover letter."); return; }
+    setCoverLetterLoading(true);
+    setCoverLetter("");
+    const milSummary = milExperiences.map(e=>`${e.branch} ${e.rank} (${e.tos}), MOS: ${e.mos}`).join("; ");
+    const resumeText = resume || (resumeData ? `${resumeData.name} - ${(resumeData.experience||[]).map(j=>j.title+" at "+j.employer).join(", ")}` : "");
+    const prompt = `You are an expert military-to-civilian career counselor writing a compelling cover letter.
+
+VETERAN PROFILE:
+- Service: ${milSummary}
+- Name: ${personal.name||"[Name]"}
+
+TARGET JOB:
+- Title: ${coverLetterJob.title||"[Position]"}
+- Company: ${coverLetterJob.company||"[Company]"}
+- Job Description: ${coverLetterJob.description||"Not provided"}
+
+RESUME SUMMARY:
+${resumeText.slice(0,1500)}
+
+Write a professional, warm, and compelling 3-paragraph cover letter that:
+1. Opens with a strong hook connecting military service to the role
+2. Highlights 2-3 specific achievements from their service that directly apply
+3. Closes with confidence and a clear call to action
+4. Translates ALL military jargon into civilian language
+5. Is addressed to the hiring manager (use "Dear Hiring Manager" if no name given)
+6. Is between 250-350 words
+
+Return ONLY the cover letter text, no subject line, no extra commentary.`;
+    try {
+      const raw = await callClaude(prompt, "You are a professional cover letter writer specializing in military-to-civilian transitions.", 1500);
+      setCoverLetter(raw);
+    } catch(e) {
+      setCoverLetter("Error generating cover letter. Please try again.");
+    }
+    setCoverLetterLoading(false);
+  };
+
+  // ── RESUME REVIEW / SCORE ─────────────────────────────────────────────────
+  const runResumeReview = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!resume && !resumeData) { alert("Generate your resume first on the Build Resume tab."); return; }
+    setReviewLoading(true);
+    setResumeScore(null);
+    setResumeReview(null);
+    const resumeText = resume || JSON.stringify(resumeData||{});
+    const prompt = `You are an expert resume reviewer for military-to-civilian career transitions. Analyze this resume and return ONLY valid JSON.
+
+RESUME:
+${resumeText.slice(0,2000)}
+
+TARGET JOB: ${target.title||"General civilian role"}
+
+Return this exact JSON structure:
+{
+  "overallScore": 82,
+  "grades": {
+    "impact": { "score": 85, "label": "Impact & Achievements" },
+    "clarity": { "score": 78, "label": "Clarity & Civilian Language" },
+    "keywords": { "score": 80, "label": "Keywords & ATS" },
+    "formatting": { "score": 88, "label": "Format & Length" },
+    "military": { "score": 72, "label": "Military Translation" }
+  },
+  "strengths": ["strength 1", "strength 2", "strength 3"],
+  "improvements": [
+    { "priority": "HIGH", "issue": "Issue title", "fix": "Specific fix to make" },
+    { "priority": "MEDIUM", "issue": "Issue title", "fix": "Specific fix to make" },
+    { "priority": "LOW", "issue": "Issue title", "fix": "Specific fix to make" }
+  ],
+  "missingKeywords": ["keyword1", "keyword2", "keyword3"],
+  "verdict": "One sentence overall assessment"
+}`;
+    try {
+      const raw = await callClaude(prompt, "You are an expert resume reviewer. Return ONLY valid JSON, no markdown, no commentary.", 1500);
+      const clean = raw.replace(/```json|```/g,"").trim();
+      const data = JSON.parse(clean);
+      setResumeScore(data.overallScore);
+      setResumeReview(data);
+    } catch(e) {
+      setResumeReview({ error: "Could not analyze resume. Make sure your resume is generated first." });
+    }
+    setReviewLoading(false);
+  };
+
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
 
-  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","My Profile"];
+  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","My Profile"];
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
 
   return (
@@ -2042,74 +2069,170 @@ Use this exact structure:
       <div className="app">
 
         {/* ── AUTH OVERLAY ── */}
-        {showAuth&&(
-          <div className="auth-overlay" onClick={e=>e.target===e.currentTarget&&setShowAuth(false)}>
-            <div className="auth-box">
-              <div className="auth-head">
-                <div className="star">⭐</div>
+        {/* ══ PAYWALL MODAL ══ */}
+        {showPaywall&&(
+          <div className="pw-overlay" onClick={e=>e.target===e.currentTarget&&null}>
+            <div className="pw-box">
+              <div className="pw-head">
+                <div style={{fontSize:"2.2rem",marginBottom:".4rem"}}>🎖</div>
                 <h2>Veteran Career Builder</h2>
-                <p>Free account — save your profile, resumes & career matches across any device</p>
+                <p>AI-powered tools to translate your service into a civilian career</p>
               </div>
-              <div className="auth-body">
-                <div className="auth-toggle">
-                  <button className={authMode==="login"?"on":""} onClick={()=>{setAuthMode("login");setAuthErr("");setAuthOk("");}}>Sign In</button>
-                  <button className={authMode==="register"?"on":""} onClick={()=>{setAuthMode("register");setAuthErr("");setAuthOk("");}}>Create Account</button>
+
+              <div className="pw-plans">
+                <div className={"pw-plan"+(pwPlan==="monthly"?" selected":"")} onClick={()=>setPwPlan("monthly")}>
+                  <div className="plan-name">Monthly</div>
+                  <div className="price">$9<span>/mo</span></div>
+                  <ul>
+                    <li>Full career analysis</li>
+                    <li>AI resume builder</li>
+                    <li>5 resume templates</li>
+                    <li>Career gap analysis</li>
+                  </ul>
                 </div>
-                {authErr&&<div className="auth-err">{authErr}</div>}
-                {authOk&&<div className="auth-ok">{authOk}</div>}
+                <div className={"pw-plan"+(pwPlan==="annual"?" selected":"")} onClick={()=>setPwPlan("annual")}>
+                  <div className="plan-name">Annual <span className="pw-badge">SAVE 44%</span></div>
+                  <div className="price">$5<span>/mo</span></div>
+                  <ul>
+                    <li>Everything in Monthly</li>
+                    <li>Saved resumes (cloud)</li>
+                    <li>Priority support</li>
+                    <li>New features first</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="pw-divider">
+                <div/><span>OR ENTER ACCESS CODE</span><div/>
+              </div>
+              <div className="pw-code-row">
+                <input
+                  placeholder="e.g. VET2025"
+                  value={pwCode}
+                  className={pwCodeStatus==="valid"?"valid":pwCodeStatus==="invalid"?"invalid":""}
+                  onChange={e=>{setPwCode(e.target.value.toUpperCase());setPwCodeStatus("idle");setPwCodeMsg("");}}
+                  onKeyDown={e=>e.key==="Enter"&&redeemCode()}
+                  style={{textTransform:"uppercase",letterSpacing:".1em",fontWeight:600}}
+                />
+                <button className="pw-code-btn" onClick={redeemCode}>Apply</button>
+              </div>
+              {pwCodeMsg&&(
+                <div style={{padding:"0 1.5rem .5rem",fontSize:".8rem",color:pwCodeStatus==="valid"?"#1a7a40":"#c0392b",fontWeight:600}}>
+                  {pwCodeMsg}
+                </div>
+              )}
+
+              <div className="pw-footer">
+                <button className="pw-cta" onClick={()=>grantPaidAccess(pwPlan==="monthly"?1:12)}>
+                  {pwPlan==="monthly"?"Start for $9 / month →":"Start for $60 / year →"}
+                </button>
+                <div style={{textAlign:"center",fontSize:".72rem",color:"#8aa0b8",margin:"-.1rem 0 .2rem"}}>
+                  Secure checkout · Cancel anytime · 7-day refund guarantee
+                </div>
+                <button className="pw-skip" onClick={()=>{setShowPaywall(false);setHasAccess(false);}}>
+                  Browse features without AI (limited preview)
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showAuth&&(
+          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}}
+            onClick={e=>e.target===e.currentTarget&&setShowAuth(false)}>
+            <div style={{background:"#ffffff",borderRadius:"10px",width:"100%",maxWidth:"420px",boxShadow:"0 20px 60px rgba(0,0,0,.3)",overflow:"hidden"}}>
+
+              <div style={{background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",padding:"1.6rem 1.8rem 1.2rem",textAlign:"center",position:"relative"}}>
+                <button onClick={()=>setShowAuth(false)} style={{position:"absolute",top:".8rem",right:".8rem",background:"transparent",border:"none",color:"rgba(255,255,255,.7)",fontSize:"1.4rem",cursor:"pointer",lineHeight:1}}>✕</button>
+                <div style={{fontSize:"2rem",marginBottom:".4rem"}}>🎖</div>
+                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.4rem",letterSpacing:".1em",color:"#f0c040"}}>Veteran Career Builder</div>
+                <div style={{fontSize:".82rem",color:"#b8d0f0",marginTop:".3rem"}}>Free account — save your profile and resumes</div>
+              </div>
+
+              <div style={{display:"flex",borderBottom:"2px solid #e8edf5",background:"#f8fafc"}}>
+                <button onClick={()=>{setAuthMode("login");setAuthErr("");setAuthOk("");}}
+                  style={{flex:1,padding:".7rem",background:"transparent",border:"none",borderBottom:authMode==="login"?"2.5px solid #1a3a6b":"2.5px solid transparent",marginBottom:"-2px",cursor:"pointer",fontWeight:authMode==="login"?700:400,color:authMode==="login"?"#1a3a6b":"#5a7090",fontSize:".9rem"}}>
+                  Sign In
+                </button>
+                <button onClick={()=>{setAuthMode("register");setAuthErr("");setAuthOk("");}}
+                  style={{flex:1,padding:".7rem",background:"transparent",border:"none",borderBottom:authMode==="register"?"2.5px solid #1a3a6b":"2.5px solid transparent",marginBottom:"-2px",cursor:"pointer",fontWeight:authMode==="register"?700:400,color:authMode==="register"?"#1a3a6b":"#5a7090",fontSize:".9rem"}}>
+                  Create Account
+                </button>
+              </div>
+
+              <div style={{padding:"1.4rem 1.8rem 1.6rem"}}>
+                {authErr&&<div style={{background:"#fff0f0",border:"1px solid #f0c0c0",borderRadius:"4px",padding:".55rem .8rem",fontSize:".82rem",color:"#a00",marginBottom:".75rem"}}>{authErr}</div>}
+                {authOk&&<div style={{background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".55rem .8rem",fontSize:".82rem",color:"#1a7a40",marginBottom:".75rem"}}>{authOk}</div>}
+
+                <button
+                  style={{width:"100%",padding:".7rem",background:"#ffffff",border:"1.5px solid #d0daea",borderRadius:"6px",cursor:"pointer",fontSize:".9rem",fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",gap:".7rem",color:"#1a2a3a",marginBottom:"1rem",boxShadow:"0 1px 4px rgba(0,0,0,.06)"}}
+                  onClick={async()=>{
+                    if(!fbAuth){setAuthErr("Firebase not configured. Contact the site owner.");return;}
+                    try{
+                      const provider=new firebase.auth.GoogleAuthProvider();
+                      await fbAuth.signInWithPopup(provider);
+                      setShowAuth(false);
+                    }catch(e){
+                      if(e.code==="auth/popup-closed-by-user") return;
+                      if(e.code==="auth/popup-blocked") setAuthErr("Popup blocked — allow popups for this site.");
+                      else setAuthErr("Google sign-in failed: "+(e.message||"Unknown error"));
+                    }
+                  }}>
+                  <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.66l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+                  Continue with Google
+                </button>
+
+                <div style={{display:"flex",alignItems:"center",gap:".6rem",marginBottom:"1rem"}}>
+                  <div style={{flex:1,height:"1px",background:"#e0e8f0"}}/><span style={{fontSize:".72rem",color:"#8aa0b8",letterSpacing:".06em"}}>OR EMAIL</span><div style={{flex:1,height:"1px",background:"#e0e8f0"}}/>
+                </div>
 
                 {authMode==="register"&&(
-                  <div className="field">
+                  <div className="field" style={{marginBottom:".6rem"}}>
                     <label>Full Name</label>
                     <input placeholder="First Last" value={authForm.name} onChange={e=>setAuthForm(f=>({...f,name:e.target.value}))}/>
                   </div>
                 )}
-                <div className="field">
-                  <label>Email Address</label>
-                  <input placeholder="your@email.com" value={authForm.username} onChange={e=>setAuthForm(f=>({...f,username:e.target.value}))} onKeyDown={e=>e.key==="Enter"&&(authMode==="login"?handleLogin():handleRegister())}/>
+                <div className="field" style={{marginBottom:".6rem"}}>
+                  <label>Email</label>
+                  <input placeholder="your@email.com" type="email" value={authForm.username}
+                    onChange={e=>setAuthForm(f=>({...f,username:e.target.value}))}
+                    onKeyDown={e=>e.key==="Enter"&&(authMode==="login"?handleLogin():handleRegister())}/>
                 </div>
-                <div className="field">
+                <div className="field" style={{marginBottom:".8rem"}}>
                   <label>Password</label>
-                  <input type="password" placeholder="Password" value={authForm.password} onChange={e=>setAuthForm(f=>({...f,password:e.target.value}))} onKeyDown={e=>e.key==="Enter"&&(authMode==="login"?handleLogin():handleRegister())}/>
+                  <input type="password" placeholder="Password" value={authForm.password}
+                    onChange={e=>setAuthForm(f=>({...f,password:e.target.value}))}
+                    onKeyDown={e=>e.key==="Enter"&&(authMode==="login"?handleLogin():handleRegister())}/>
                 </div>
                 {authMode==="register"&&(
-                  <div className="field">
+                  <div className="field" style={{marginBottom:".8rem"}}>
                     <label>Confirm Password</label>
-                    <input type="password" placeholder="Re-enter password" value={authForm.confirmPassword} onChange={e=>setAuthForm(f=>({...f,confirmPassword:e.target.value}))} onKeyDown={e=>e.key==="Enter"&&handleRegister()}/>
+                    <input type="password" placeholder="Re-enter password" value={authForm.confirmPassword}
+                      onChange={e=>setAuthForm(f=>({...f,confirmPassword:e.target.value}))}/>
                   </div>
                 )}
-                <button className="btn-primary" style={{marginTop:".5rem"}} onClick={authMode==="login"?handleLogin:handleRegister}>
-                  {authMode==="login"?"Sign In →":"Create My Account →"}
+                <button style={{width:"100%",padding:".72rem",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",border:"none",borderRadius:"6px",cursor:"pointer",fontSize:".95rem",fontWeight:700,fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em"}}
+                  onClick={authMode==="login"?handleLogin:handleRegister}>
+                  {authMode==="login"?"Sign In →":"Create Free Account →"}
                 </button>
+
                 {authMode==="login"&&(
                   <div style={{textAlign:"center",marginTop:".6rem"}}>
-                    <button style={{background:"transparent",border:"none",color:"var(--dim)",fontSize:".76rem",cursor:"pointer",textDecoration:"underline",fontFamily:"'Crimson Pro',serif"}}
+                    <button style={{background:"transparent",border:"none",color:"#8aa0b8",fontSize:".78rem",cursor:"pointer",textDecoration:"underline"}}
                       onClick={async()=>{
-                        if(!authForm.username.trim()){setAuthErr("Enter your email first.");return;}
+                        if(!fbAuth||!authForm.username.trim()){setAuthErr("Enter your email first.");return;}
                         try{
                           await fbAuth.sendPasswordResetEmail(authForm.username.trim());
-                          setAuthOk("Password reset email sent! Check your inbox.");
-                        }catch(e){setAuthErr("Could not send reset email. Check the address.");}
+                          setAuthOk("Reset email sent — check your inbox.");
+                        }catch(e){setAuthErr("Could not send reset email.");}
                       }}>Forgot password?</button>
                   </div>
                 )}
-                <div style={{display:"flex",alignItems:"center",gap:".5rem",margin:".9rem 0 .5rem"}}>
-                  <div style={{flex:1,height:"1px",background:"rgba(255,255,255,.1)"}}/>
-                  <span style={{fontSize:".72rem",color:"var(--dim)",letterSpacing:".06em"}}>OR</span>
-                  <div style={{flex:1,height:"1px",background:"rgba(255,255,255,.1)"}}/>
-                </div>
-                <button style={{width:"100%",padding:".6rem",background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",borderRadius:"3px",color:"var(--text)",cursor:"pointer",fontSize:".88rem",fontFamily:"'Crimson Pro',serif",display:"flex",alignItems:"center",justifyContent:"center",gap:".5rem",transition:"all .2s"}}
-                  onClick={async()=>{
-                    try{
-                      const provider = new firebase.auth.GoogleAuthProvider();
-                      await fbAuth.signInWithPopup(provider);
-                      setShowAuth(false);
-                    }catch(e){setAuthErr("Google sign-in failed. Try email instead.");}
-                  }}>
-                  <span style={{fontSize:"1rem"}}>G</span> Continue with Google
-                </button>
-                <div className="auth-skip">
-                  <button onClick={()=>setShowAuth(false)}>Continue without an account</button>
+
+                <div style={{textAlign:"center",marginTop:"1rem",paddingTop:".75rem",borderTop:"1px solid #e8edf5"}}>
+                  <button style={{background:"transparent",border:"none",color:"#8aa0b8",fontSize:".8rem",cursor:"pointer"}} onClick={()=>setShowAuth(false)}>
+                    Continue without an account
+                  </button>
                 </div>
               </div>
             </div>
@@ -2194,19 +2317,20 @@ Use this exact structure:
               <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>setTab(3)}>
                 My Resumes ({savedResumes.length})
               </button>
+              {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>⭐ UPGRADE</button>}
               <button className="btn-danger" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleLogout}>Sign Out</button>
-              <button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>SETUP</button>
+              {window.location.search.indexOf("admin=1")>-1&&<button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>SETUP</button>}
             </div>
           </div>
         ):(
-          <div className="user-bar">
-            <span style={{fontSize:".8rem",color:"var(--dim)"}}>Not signed in — your progress won't be saved</span>
-            <div style={{display:"flex",gap:".4rem",alignItems:"center"}}>
-              <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>setShowAuth(true)}>
-                🔑 Sign In / Create Account
-              </button>
-              <button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>SETUP</button>
-            </div>
+          <div style={{background:"#1a3a6b",borderBottom:"1px solid #2456a0",padding:".45rem 1.2rem",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <span style={{fontSize:".78rem",color:"#90b8e0",letterSpacing:".02em"}}>
+              Not signed in — <span style={{color:"#b8d0f0"}}>your progress won't be saved</span>
+            </span>
+            <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".32rem .9rem",fontSize:".78rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em"}}
+              onClick={()=>setShowAuth(true)}>
+              Sign In / Create Account
+            </button>
           </div>
         )}
 
@@ -2214,7 +2338,7 @@ Use this exact structure:
           <img
             src={window.VCB_LOGO}
             alt="Veteran to Civilian Career Transitions"
-            style={{display:"block",margin:"0 auto",width:"260px",height:"260px",objectFit:"contain",mixBlendMode:"screen",filter:"drop-shadow(0 2px 12px rgba(201,168,76,.2))"}}
+            style={{display:"block",margin:"0 auto",width:"300px",height:"260px",objectFit:"contain",mixBlendMode:"screen",filter:"drop-shadow(0 2px 12px rgba(201,168,76,.2))"}}
           />
           <p style={{marginTop:".5rem"}}>From Service to Civilian Success</p>
         </div>
@@ -2419,107 +2543,129 @@ Use this exact structure:
                     <hr className="sdiv"/>
 
                     {/* ── ASI ── */}
-                    <div className="qual-section">
-                      <span className="qual-label">Additional Skill Identifiers (ASI)</span>
-                      <div className="duty-suggest">
-                        {COMMON_ASI.map(a=>(
-                          <button key={a.code} className="duty-suggest-btn"
-                            onClick={()=>{
-                              if(!(exp.asi||[]).find(x=>x.code===a.code))
-                                upMilExp(exp.id,"asi",[...(exp.asi||[]),a]);
-                            }}>{a.code} – {a.desc}</button>
-                        ))}
+                    <div style={{marginBottom:"1rem"}}>
+                      <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".5rem"}}>
+                        {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).label}
                       </div>
-                      {(exp.asi||[]).length>0&&<div className="qual-grid">
-                        {(exp.asi||[]).map(a=>(
-                          <span className="qual-chip" key={a.code}>
-                            <span className="qcode">{a.code}</span><span>{a.desc}</span>
-                            <span className="qx" onClick={()=>upMilExp(exp.id,"asi",(exp.asi||[]).filter(x=>x.code!==a.code))}>✕</span>
-                          </span>
-                        ))}
-                      </div>}
-                      <div className="qual-add-row">
-                        <div className="field" style={{marginBottom:0}}>
-                          <label>ASI Code</label>
-                          <input placeholder="e.g. P1" value={exp.customAsiCode||""}
-                            onChange={e=>upMilExp(exp.id,"customAsiCode",e.target.value)} style={{maxWidth:"100px"}}/>
+                      <details style={{border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff",marginBottom:".6rem"}}>
+                        <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                          Browse common qualifiers <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).items.length} options ›</span>
+                        </summary>
+                        <div style={{padding:".5rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                          {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).items.map(a=>(
+                            <button key={a.code}
+                              style={{background:(exp.asi||[]).find(x=>x.code===a.code)?"#1a3a6b":"#e8edf5",color:(exp.asi||[]).find(x=>x.code===a.code)?"#fff":"#1a3a6b",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".22rem .6rem",fontSize:".78rem",cursor:"pointer"}}
+                              onClick={()=>{ if(!(exp.asi||[]).find(x=>x.code===a.code)) upMilExp(exp.id,"asi",[...(exp.asi||[]),a]); }}>
+                              <strong>{a.code}</strong> — {a.desc}
+                            </button>
+                          ))}
                         </div>
-                        <div className="field" style={{marginBottom:0,flex:1}}>
-                          <label>Description</label>
-                          <input placeholder="e.g. Master Parachutist" value={exp.customAsiDesc||""}
-                            onChange={e=>upMilExp(exp.id,"customAsiDesc",e.target.value)}/>
+                      </details>
+                      {(exp.asi||[]).length>0&&(
+                        <div style={{display:"flex",flexWrap:"wrap",gap:".3rem",marginBottom:".5rem"}}>
+                          {(exp.asi||[]).map(a=>(
+                            <span key={a.code} style={{display:"inline-flex",alignItems:"center",gap:".3rem",background:"#e8edf5",border:"1px solid #1a3a6b",borderRadius:"3px",padding:".22rem .55rem",fontSize:".78rem",color:"#1a3a6b"}}>
+                              <strong>{a.code}</strong> {a.desc}
+                              <span style={{cursor:"pointer",color:"#c0392b",marginLeft:".2rem",fontWeight:700}} onClick={()=>upMilExp(exp.id,"asi",(exp.asi||[]).filter(x=>x.code!==a.code))}>✕</span>
+                            </span>
+                          ))}
                         </div>
-                        <button className="btn-chip" onClick={()=>{
+                      )}
+                      <div style={{display:"flex",gap:".5rem",alignItems:"flex-end"}}>
+                        <div className="field" style={{marginBottom:0,width:"90px"}}><label>Code</label>
+                          <input placeholder="e.g. P1" value={exp.customAsiCode||""} onChange={e=>upMilExp(exp.id,"customAsiCode",e.target.value)}/>
+                        </div>
+                        <div className="field" style={{marginBottom:0,flex:1}}><label>Description (optional)</label>
+                          <input placeholder="e.g. Master Parachutist" value={exp.customAsiDesc||""} onChange={e=>upMilExp(exp.id,"customAsiDesc",e.target.value)}/>
+                        </div>
+                        <button style={{padding:".5rem .9rem",background:"#1a3a6b",color:"#fff",border:"none",borderRadius:"4px",cursor:"pointer",fontSize:".82rem",whiteSpace:"nowrap"}} onClick={()=>{
                           const code=(exp.customAsiCode||"").trim().toUpperCase();
                           const desc=(exp.customAsiDesc||"").trim();
                           if(!code) return;
-                          if(!(exp.asi||[]).find(a=>a.code===code))
-                            upMilExp(exp.id,"asi",[...(exp.asi||[]),{code,desc}]);
-                          upMilExp(exp.id,"customAsiCode","");
-                          upMilExp(exp.id,"customAsiDesc","");
-                        }}>+ Add ASI</button>
+                          if(!(exp.asi||[]).find(a=>a.code===code)) upMilExp(exp.id,"asi",[...(exp.asi||[]),{code,desc}]);
+                          upMilExp(exp.id,"customAsiCode",""); upMilExp(exp.id,"customAsiDesc","");
+                        }}>+ Add</button>
                       </div>
                     </div>
 
                     <hr className="sdiv"/>
 
                     {/* ── SQI ── */}
-                    <div className="qual-section">
-                      <span className="qual-label">Skill Qualification Identifiers (SQI)</span>
-                      <div className="duty-suggest">
-                        {COMMON_SQI.map(s=>(
-                          <button key={s.code} className="duty-suggest-btn"
-                            onClick={()=>{
-                              if(!(exp.sqi||[]).find(x=>x.code===s.code))
-                                upMilExp(exp.id,"sqi",[...(exp.sqi||[]),s]);
-                            }}>{s.code} – {s.desc}</button>
-                        ))}
+                    <div style={{marginBottom:"1rem"}}>
+                      <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".5rem"}}>
+                        {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).sqiLabel}
                       </div>
-                      {(exp.sqi||[]).length>0&&<div className="qual-grid">
-                        {(exp.sqi||[]).map(s=>(
-                          <span className="qual-chip" key={s.code}>
-                            <span className="qcode">{s.code}</span><span>{s.desc}</span>
-                            <span className="qx" onClick={()=>upMilExp(exp.id,"sqi",(exp.sqi||[]).filter(x=>x.code!==s.code))}>✕</span>
-                          </span>
-                        ))}
-                      </div>}
+                      <details style={{border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff",marginBottom:".6rem"}}>
+                        <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                          Browse qualifiers <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).sqi.length} options ›</span>
+                        </summary>
+                        <div style={{padding:".5rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                          {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).sqi.map(s=>(
+                            <button key={s.code}
+                              style={{background:(exp.sqi||[]).find(x=>x.code===s.code)?"#1a3a6b":"#e8edf5",color:(exp.sqi||[]).find(x=>x.code===s.code)?"#fff":"#1a3a6b",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".22rem .6rem",fontSize:".78rem",cursor:"pointer"}}
+                              onClick={()=>{ if(!(exp.sqi||[]).find(x=>x.code===s.code)) upMilExp(exp.id,"sqi",[...(exp.sqi||[]),s]); }}>
+                              <strong>{s.code}</strong> — {s.desc}
+                            </button>
+                          ))}
+                        </div>
+                      </details>
+                      {(exp.sqi||[]).length>0&&(
+                        <div style={{display:"flex",flexWrap:"wrap",gap:".3rem"}}>
+                          {(exp.sqi||[]).map(s=>(
+                            <span key={s.code} style={{display:"inline-flex",alignItems:"center",gap:".3rem",background:"#e8edf5",border:"1px solid #1a3a6b",borderRadius:"3px",padding:".22rem .55rem",fontSize:".78rem",color:"#1a3a6b"}}>
+                              <strong>{s.code}</strong> {s.desc}
+                              <span style={{cursor:"pointer",color:"#c0392b",marginLeft:".2rem",fontWeight:700}} onClick={()=>upMilExp(exp.id,"sqi",(exp.sqi||[]).filter(x=>x.code!==s.code))}>✕</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     <hr className="sdiv"/>
 
                     {/* ── ADDITIONAL DUTIES ── */}
-                    <div className="qual-section">
-                      <span className="qual-label">Additional Duty Qualifications</span>
-                      <div className="duty-suggest">
-                        {COMMON_ADDL_DUTIES.map(d=>(
-                          <button key={d} className="duty-suggest-btn"
-                            onClick={()=>{
-                              if(!(exp.additionalDuties||[]).includes(d))
-                                upMilExp(exp.id,"additionalDuties",[...(exp.additionalDuties||[]),d]);
-                            }}>{d}</button>
-                        ))}
-                      </div>
-                      {(exp.additionalDuties||[]).length>0&&<div className="duty-grid">
-                        {(exp.additionalDuties||[]).map(d=>(
-                          <span className="duty-chip" key={d}>{d}
-                            <span className="dx" onClick={()=>upMilExp(exp.id,"additionalDuties",(exp.additionalDuties||[]).filter(x=>x!==d))}>✕</span>
-                          </span>
-                        ))}
-                      </div>}
-                      <div className="qual-add-row">
-                        <div className="field" style={{marginBottom:0,flex:1}}>
-                          <label>Custom Duty</label>
+                    <div style={{marginBottom:"1rem"}}>
+                      <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".5rem"}}>Additional Duty Qualifications</div>
+                      {[
+                        {cat:"Command & Admin",items:["Unit Armorer","Unit Fund Custodian","Property Book Officer","Inspector General Representative","Records Management","Battle Staff NCO"]},
+                        {cat:"Training & Safety",items:["Training Room NCO","Safety Officer/NCO","Master Driver","Master Gunner","Physical Fitness Leader","NBC/CBRN Officer"]},
+                        {cat:"Personnel & HR",items:["Equal Opportunity Leader","Sexual Harassment/Assault Response (SHARP) Coordinator","Casualty Notification Officer","Family Readiness Officer/NCO","Retention NCO","Recruiter/Career Counselor"]},
+                        {cat:"Operations",items:["Operations Security (OPSEC) Coordinator","Information Security Officer","Physical Security Officer","Supply Sergeant (additional duty)","Contracting Officer Representative (COR)","Unit Prevention Leader (UPL/Drug Testing)"]},
+                        {cat:"Community & Liaison",items:["Casualty Liaison Officer","Community Outreach Coordinator","Voting Assistance Officer","Religious Affairs NCO"]},
+                      ].map(grp=>(
+                        <details key={grp.cat} style={{marginBottom:".3rem",border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff"}}>
+                          <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                            {grp.cat} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{grp.items.length} options ›</span>
+                          </summary>
+                          <div style={{padding:".4rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                            {grp.items.map(d=>(
+                              <button key={d}
+                                style={{background:(exp.additionalDuties||[]).includes(d)?"#1a3a6b":"#e8edf5",color:(exp.additionalDuties||[]).includes(d)?"#fff":"#1a3a6b",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".22rem .55rem",fontSize:".78rem",cursor:"pointer"}}
+                                onClick={()=>{ if(!(exp.additionalDuties||[]).includes(d)) upMilExp(exp.id,"additionalDuties",[...(exp.additionalDuties||[]),d]); }}>
+                                + {d}
+                              </button>
+                            ))}
+                          </div>
+                        </details>
+                      ))}
+                      {(exp.additionalDuties||[]).length>0&&(
+                        <div style={{display:"flex",flexWrap:"wrap",gap:".3rem",margin:".5rem 0"}}>
+                          {(exp.additionalDuties||[]).map(d=>(
+                            <span key={d} style={{display:"inline-flex",alignItems:"center",gap:".3rem",background:"#e8edf5",border:"1px solid #1a3a6b",borderRadius:"3px",padding:".22rem .55rem",fontSize:".78rem",color:"#1a3a6b"}}>
+                              {d}
+                              <span style={{cursor:"pointer",color:"#c0392b",marginLeft:".2rem",fontWeight:700}} onClick={()=>upMilExp(exp.id,"additionalDuties",(exp.additionalDuties||[]).filter(x=>x!==d))}>✕</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <div style={{display:"flex",gap:".5rem",alignItems:"flex-end",marginTop:".4rem"}}>
+                        <div className="field" style={{marginBottom:0,flex:1}}><label>Custom Duty</label>
                           <input placeholder="Add a duty not listed above..."
                             value={exp.customDuty||""}
                             onChange={e=>upMilExp(exp.id,"customDuty",e.target.value)}
-                            onKeyDown={e=>{
-                              if(e.key==="Enter"&&(exp.customDuty||"").trim()){
-                                upMilExp(exp.id,"additionalDuties",[...(exp.additionalDuties||[]),exp.customDuty.trim()]);
-                                upMilExp(exp.id,"customDuty","");
-                              }
-                            }}/>
+                            onKeyDown={e=>{ if(e.key==="Enter"&&(exp.customDuty||"").trim()){ upMilExp(exp.id,"additionalDuties",[...(exp.additionalDuties||[]),exp.customDuty.trim()]); upMilExp(exp.id,"customDuty",""); }}}/>
                         </div>
-                        <button className="btn-chip" onClick={()=>{
+                        <button style={{padding:".5rem .9rem",background:"#1a3a6b",color:"#fff",border:"none",borderRadius:"4px",cursor:"pointer",fontSize:".82rem",whiteSpace:"nowrap"}} onClick={()=>{
                           if(!(exp.customDuty||"").trim()) return;
                           upMilExp(exp.id,"additionalDuties",[...(exp.additionalDuties||[]),exp.customDuty.trim()]);
                           upMilExp(exp.id,"customDuty","");
@@ -2527,7 +2673,6 @@ Use this exact structure:
                       </div>
                     </div>
 
-                    <hr className="sdiv"/>
 
                     {/* ── AWARDS ── */}
                     <div className="qual-section">
@@ -2611,9 +2756,9 @@ Use this exact structure:
             </div>
 
             {/* ── CIVILIAN, DOD & GOVERNMENT SECTION ── */}
-            <div className="card" style={{borderColor:"rgba(76,175,130,.28)"}}>
-              <div className="ch" style={{background:"rgba(76,175,130,.08)"}}>
-                <h3 style={{color:"#6fcf97"}}>Civilian, DoD & Government Employment</h3>
+            <div className="card">
+              <div className="ch">
+                <h3>Civilian, DoD & Government Employment</h3>
                 <span className="ch-sub">Include part-time, contract, and federal work</span>
               </div>
               <div className="cb">
@@ -2726,16 +2871,31 @@ Use this exact structure:
                 {/* Technical Skills */}
                 <div className="field" style={{marginBottom:"1rem"}}>
                   <label>Technical Skills</label>
-                  <div className="hint" style={{marginBottom:".4rem"}}>Click to add from common military technical skills, or type your own below.</div>
-                  <div className="duty-suggest">
-                    {(SKILLS_LIBRARY.technical||[]).map(s=>(
-                      <button key={s} className="duty-suggest-btn"
-                        onClick={()=>{
-                          if(!skills.technical.includes(s))
-                            setSkills(sk=>({...sk,technical:sk.technical?(sk.technical+", "+s):s}));
-                        }}>{s}</button>
-                    ))}
-                  </div>
+                  <div className="hint" style={{marginBottom:".5rem"}}>Type your own, or click a category to expand common options.</div>
+                  {[
+                    {cat:"Weapons & Combat",items:["Weapons Qualification (Rifle/Pistol)","Crew-Served Weapons","Close Quarter Combat","Explosive Ordnance","Fire Support/Artillery","Sniper/Long Range Marksmanship"]},
+                    {cat:"Vehicles & Equipment",items:["Vehicle Operation (Wheeled)","Vehicle Operation (Tracked)","Aircraft Ground Support","UAS/Drone Operation","Crane Operation","Forklift Operation","Material Handling Equipment"]},
+                    {cat:"Communications & IT",items:["Radio/Communications Systems","SINCGARS Radio","Satellite Communications","Network Administration","IT Systems Administration","Programming/Software Development","Cybersecurity"]},
+                    {cat:"Intelligence & Surveillance",items:["Signal Intelligence (SIGINT)","Human Intelligence (HUMINT)","All-Source Intelligence Analysis","Geospatial Analysis","OSINT (Open Source Intelligence)","Imagery Analysis","Electronic Warfare"]},
+                    {cat:"Medical & Safety",items:["Medical Triage/Combat First Aid","TCCC (Tactical Combat Casualty Care)","HAZMAT Handling","CBRN/NBC Detection","Medevac/CASEVAC Procedures","Demolitions"]},
+                    {cat:"Logistics & Supply",items:["Supply Chain Management","Inventory Management Systems","Petroleum Operations","GCSS-Army / ERP Systems","Property Book Management","Contracting Officer Representative (COR)"]},
+                    {cat:"Navigation & Recon",items:["Land Navigation","GPS/Digital Navigation","Night Vision Devices (NVDs)","IED Detection/Counter-IED","Explosives Handling"]},
+                    {cat:"Software & Office",items:["Microsoft Office Suite","SharePoint","Geographic Information Systems (GIS)","AutoCAD","Adobe Suite"]},
+                  ].map(grp=>(
+                    <details key={grp.cat} style={{marginBottom:".3rem",border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff"}}>
+                      <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                        {grp.cat} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{grp.items.length} options ›</span>
+                      </summary>
+                      <div style={{padding:".4rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                        {grp.items.map(s=>(
+                          <button key={s} style={{background:"#e8edf5",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".2rem .55rem",fontSize:".78rem",cursor:"pointer",color:"#1a3a6b",transition:"all .15s"}}
+                            onClick={()=>{if(!skills.technical.includes(s)) setSkills(sk=>({...sk,technical:sk.technical?(sk.technical+", "+s):s}));}}>
+                            + {s}
+                          </button>
+                        ))}
+                      </div>
+                    </details>
+                  ))}
                   <textarea style={{marginTop:".4rem"}}
                     placeholder="Your technical skills will appear here as you select them, or type your own..."
                     value={skills.technical}
@@ -2745,16 +2905,28 @@ Use this exact structure:
                 {/* Leadership Skills */}
                 <div className="field" style={{marginBottom:"1rem"}}>
                   <label>Leadership & Soft Skills</label>
-                  <div className="hint" style={{marginBottom:".4rem"}}>Click to add from common military leadership skills.</div>
-                  <div className="duty-suggest">
-                    {(SKILLS_LIBRARY.leadership||[]).map(s=>(
-                      <button key={s} className="duty-suggest-btn"
-                        onClick={()=>{
-                          if(!skills.leadership.includes(s))
-                            setSkills(sk=>({...sk,leadership:sk.leadership?(sk.leadership+", "+s):s}));
-                        }}>{s}</button>
-                    ))}
-                  </div>
+                  <div className="hint" style={{marginBottom:".5rem"}}>Click a category to expand options.</div>
+                  {[
+                    {cat:"Leadership & Management",items:["Team Leadership (squad/team level)","Platoon Leadership","Company Leadership","Staff Officer Experience","Personnel Management","Scheduling and Coordination"]},
+                    {cat:"Training & Development",items:["Training Development and Delivery","Performance Counseling","Mentoring","Coaching","Instructor / Facilitator"]},
+                    {cat:"Operations & Planning",items:["Mission Planning","Operations Planning (OPORD)","Crisis Management","Decision Making Under Pressure","Emergency Management","Disaster Response"]},
+                    {cat:"Communication",items:["Public Speaking/Briefing","Technical Writing","Cross-Cultural Communication","Negotiation","Conflict Resolution"]},
+                    {cat:"Business & Finance",items:["Budget Management","Resource Allocation","Risk Management","Project Management","Logistics Coordination","Quality Control"]},
+                  ].map(grp=>(
+                    <details key={grp.cat} style={{marginBottom:".3rem",border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff"}}>
+                      <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                        {grp.cat} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{grp.items.length} options ›</span>
+                      </summary>
+                      <div style={{padding:".4rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                        {grp.items.map(s=>(
+                          <button key={s} style={{background:"#e8edf5",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".2rem .55rem",fontSize:".78rem",cursor:"pointer",color:"#1a3a6b",transition:"all .15s"}}
+                            onClick={()=>{if(!skills.leadership.includes(s)) setSkills(sk=>({...sk,leadership:sk.leadership?(sk.leadership+", "+s):s}));}}>
+                            + {s}
+                          </button>
+                        ))}
+                      </div>
+                    </details>
+                  ))}
                   <textarea style={{marginTop:".4rem"}}
                     placeholder="Your leadership skills will appear here as you select them, or type your own..."
                     value={skills.leadership}
@@ -2771,16 +2943,31 @@ Use this exact structure:
                 {/* Certifications */}
                 <div className="field">
                   <label>Licenses & Certifications</label>
-                  <div className="hint" style={{marginBottom:".4rem"}}>Click to add common certifications held by veterans, or type your own.</div>
-                  <div className="duty-suggest">
-                    {CERTS_LIBRARY.map(c=>(
-                      <button key={c} className="duty-suggest-btn"
-                        onClick={()=>{
-                          if(!skills.certs.includes(c))
-                            setSkills(sk=>({...sk,certs:sk.certs?(sk.certs+", "+c):c}));
-                        }}>{c}</button>
-                    ))}
-                  </div>
+                  <div className="hint" style={{marginBottom:".5rem"}}>Click a category to expand certifications.</div>
+                  {[
+                    {cat:"Medical & Emergency",items:["EMT-Basic (NREMT-B)","EMT-Intermediate","Paramedic (NREMT-P)","Combat Lifesaver (CLS)","TCCC Certified","Registered Nurse (RN)","Licensed Practical Nurse (LPN)","Certified Nursing Assistant (CNA)"]},
+                    {cat:"IT & Cybersecurity",items:["CompTIA Security+","CompTIA A+","CompTIA Network+","CompTIA CySA+","CISSP","CEH (Certified Ethical Hacker)","AWS Cloud Practitioner","DoD 8570 IAT Level I/II/III","DoD 8570 IAM Level I/II/III"]},
+                    {cat:"Project & Business",items:["PMP (Project Management Professional)","CAPM","Lean Six Sigma Green Belt","Lean Six Sigma Black Belt","Certified Government Financial Manager (CGFM)","Certified Public Accountant (CPA)"]},
+                    {cat:"Trades & Operations",items:["CDL Class A","CDL Class B","Forklift Operator Certification","Crane Operator Certification","OSHA 10-Hour","OSHA 30-Hour","Welding Certification (AWS)","HVAC Certification","Electrician License","Plumbing License"]},
+                    {cat:"Aviation & Unmanned",items:["FAA Part 107 (UAS/Drone Pilot)","Private Pilot License","HAZMAT Endorsement","Aircraft Ground Support Certification"]},
+                    {cat:"Security & Clearance",items:["Secret Clearance","Top Secret Clearance","TS/SCI Clearance","Physical Security Professional (PSP)","Certified Protection Professional (CPP)","Contracting Officer Representative (COR) Certification"]},
+                    {cat:"Safety & Professional",items:["Certified Safety Professional (CSP)","DAWIA Level I/II/III","Certified Fraud Examiner (CFE)","Certified Information Privacy Professional (CIPP)"]},
+                  ].map(grp=>(
+                    <details key={grp.cat} style={{marginBottom:".3rem",border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff"}}>
+                      <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                        {grp.cat} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{grp.items.length} options ›</span>
+                      </summary>
+                      <div style={{padding:".4rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                        {grp.items.map(c=>(
+                          <button key={c} style={{background:"#e8edf5",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".2rem .55rem",fontSize:".78rem",cursor:"pointer",color:"#1a3a6b",transition:"all .15s"}}
+                            onClick={()=>{if(!skills.certs.includes(c)) setSkills(sk=>({...sk,certs:sk.certs?(sk.certs+", "+c):c}));}}>
+                            + {c}
+                          </button>
+                        ))}
+                      </div>
+                    </details>
+                  ))}
+
                   <input style={{marginTop:".4rem"}}
                     placeholder="Selected certifications appear here, or type your own..."
                     value={skills.certs}
@@ -2791,7 +2978,7 @@ Use this exact structure:
             </div>
 
             {/* Translate button */}
-            <button className="btn-primary" onClick={translateMOS} disabled={loading.translate||milExperiences.length===0}>
+            <button className="btn-primary" onClick={translateMOS} style={{position:"relative"}} disabled={loading.translate||milExperiences.length===0}>
               {loading.translate?"Translating Your Service...":"🔄  Translate My Military Experience to Civilian Language"}
             </button>
 
@@ -2904,7 +3091,7 @@ Use this exact structure:
                           <div className="trans-block-label">Transferable Civilian Skills</div>
                           <div style={{display:"flex",flexWrap:"wrap",gap:".35rem",marginTop:".3rem"}}>
                             {(r.transferableSkills||[]).map((s,j)=>(
-                              <span key={j} style={{background:"rgba(76,175,130,.12)",border:"1px solid rgba(76,175,130,.28)",borderRadius:"2px",padding:".18rem .55rem",fontSize:".78rem",color:"#6fcf97"}}>{s}</span>
+                              <span key={j} style={{background:"rgba(76,175,130,.12)",border:"1px solid rgba(76,175,130,.28)",borderRadius:"2px",padding:".18rem .55rem",fontSize:".78rem",color:"#1a3a6b"}}>{s}</span>
                             ))}
                           </div>
                         </div>
@@ -3096,7 +3283,7 @@ Use this exact structure:
                       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:".45rem"}}>
                         {exp.additionalDuties.map(d=>(
                           <div key={d} style={{background:"rgba(76,175,130,.06)",border:"1px solid rgba(76,175,130,.18)",borderRadius:"3px",padding:".55rem .75rem"}}>
-                            <div style={{fontSize:".8rem",color:"#6fcf97",fontWeight:600,marginBottom:".2rem"}}>{d}</div>
+                            <div style={{fontSize:".8rem",color:"#1a3a6b",fontWeight:600,marginBottom:".2rem"}}>{d}</div>
                             <div style={{fontSize:".72rem",color:"var(--dim)",lineHeight:"1.45"}}>
                               {d.includes("Armorer") ? "Maps to: Firearms compliance, asset management, inventory control" :
                                d.includes("Safety") ? "Maps to: EHS Officer, Workplace Safety Manager, OSHA compliance" :
@@ -3198,7 +3385,7 @@ Use this exact structure:
               </div>
             </div>
 
-            <button className="btn-primary" onClick={findCareers} disabled={loading.careers}>
+            <button className="btn-primary" onClick={findCareers} style={{position:"relative"}} disabled={loading.careers}>
               {loading.careers?"Analyzing Your Full Qualifications Profile...":"🔍  Find My Best Career Matches"}
             </button>
 
@@ -3542,7 +3729,7 @@ Use this exact structure:
           {/* ══ TAB 2: RESUME ══ */}
           <div className={`panel ${tab===2?"on":""}`}>
             <div className="intro">
-              <strong>Generate Your Resume.</strong> The AI will translate your entire profile — MOS, ASIs, SQIs, additional duties, clearances, TOS, and all experience — into a polished, ATS-ready civilian resume.
+              <strong>Generate Your Resume.</strong> Your complete military profile — MOS, ASIs, SQIs, additional duties, clearances, service history, and all experience — will be translated into a polished, ATS-optimized civilian resume.
             </div>
             <div className="card">
               <div className="ch"><h3>Target This Resume To</h3></div>
@@ -3572,13 +3759,15 @@ Use this exact structure:
               </div>
             </div>
 
-            <button className="btn-primary" onClick={genResume} disabled={loading.resume||!personal.name}>
+            <button className="btn-primary" onClick={genResume} style={{position:"relative"}} disabled={loading.resume||!personal.name}>
               {loading.resume?"Crafting Your Resume...":`📄  Generate My ${(RESUME_FORMATS.find(f=>f.id===resumeFormat) ? RESUME_FORMATS.find(f=>f.id===resumeFormat).label : "Professional")||"Professional"} Resume`}
             </button>
             {loading.resume&&<div className="loading"><div className="spin"/><span>Generating your resume — this may take 15-30 seconds...</span></div>}
             {resume&&!loading.resume&&(
               <div style={{marginTop:"1rem"}}>
                 <div className="resume-out">
+
+                  {/* Template selector */}
                   <div style={{background:"#f0f2f8",borderBottom:"1px solid #d0d8e8",padding:".65rem 1rem",display:"flex",gap:".4rem",flexWrap:"wrap",alignItems:"center"}}>
                     <span style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#3a5070",marginRight:".2rem"}}>Template:</span>
                     {[{id:"modern",l:"Modern"},{id:"classic",l:"Classic"},{id:"executive",l:"Executive"},{id:"federal",l:"Federal/USAJobs"},{id:"minimal",l:"Minimal"}].map(t=>(
@@ -3595,21 +3784,24 @@ Use this exact structure:
                       <button style={{padding:".28rem .75rem",fontSize:".74rem",background:"#1a3a6b",color:"#fff",border:"none",borderRadius:"3px",cursor:"pointer",fontWeight:600}} onClick={exportPDF}>PDF</button>
                     </div>
                   </div>
-                  <div id="resume-render" style={{overflowY:"auto",maxHeight:"680px",background:"#e8edf5",padding:"1.2rem",display:"flex",justifyContent:"center"}}>
+
+                  {/* Resume display */}
+                  <div id="resume-render" style={{overflowY:"auto",maxHeight:"680px",background:"#f0f4fa",padding:"1.2rem",display:"flex",justifyContent:"center"}}>
                     {resumeData ? (
                       <div style={{width:"100%",maxWidth:"760px",background:"#fff",boxShadow:"0 4px 20px rgba(0,0,0,.15)"}}>
+
                         {resumeTemplate==="modern"&&(
                           <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
                             <div style={{background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",padding:"1.8rem 2.2rem 1.4rem"}}>
                               <div style={{fontSize:"20pt",fontWeight:700,marginBottom:".3rem"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"8.5pt",opacity:.85}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&<div style={{marginTop:".5rem",display:"inline-block",background:"#b8860b",color:"#fff",padding:".12rem .6rem",borderRadius:"2px",fontSize:"7.5pt",fontWeight:700,letterSpacing:".08em"}}>CLEARANCE: {resumeData.clearance}</div>}
+                              {resumeData.clearance&&(<div style={{marginTop:".5rem",display:"inline-block",background:"#b8860b",color:"#fff",padding:".12rem .6rem",borderRadius:"2px",fontSize:"7.5pt",fontWeight:700,letterSpacing:".08em"}}>CLEARANCE: {resumeData.clearance}</div>)}
                             </div>
                             <div style={{padding:"1.4rem 2.2rem"}}>
-                              {resumeData.summary&&<div style={{marginBottom:"1rem",paddingBottom:".8rem",borderBottom:"2px solid #1a3a6b"}}>
+                              {resumeData.summary&&(<div style={{marginBottom:"1rem",paddingBottom:".8rem",borderBottom:"2px solid #1a3a6b"}}>
                                 <div style={{fontSize:"8pt",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".3rem"}}>Professional Summary</div>
                                 <div style={{fontSize:"9.5pt",lineHeight:1.65,color:"#2a2a2a"}}>{resumeData.summary}</div>
-                              </div>}
+                              </div>)}
                               {(resumeData.experience||[]).map((job,i)=>(
                                 <div key={i} style={{marginBottom:".85rem",paddingBottom:".85rem",borderBottom:"1px solid #eee"}}>
                                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:".15rem"}}>
@@ -3617,202 +3809,284 @@ Use this exact structure:
                                     <div style={{fontSize:"8.5pt",color:"#666"}}>{job.dates}</div>
                                   </div>
                                   <div style={{fontSize:"9pt",color:"#444",fontStyle:"italic",marginBottom:".3rem"}}>{job.employer}</div>
-                                  {(job.bullets||[]).map((b,j)=><div key={j} style={{fontSize:"9pt",lineHeight:1.55,paddingLeft:".9rem",position:"relative",color:"#333",marginBottom:".12rem"}}>
-                                    <span style={{position:"absolute",left:0,color:"#b8860b",fontWeight:700}}>▸</span>{b}
-                                  </div>)}
+                                  {(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",lineHeight:1.55,paddingLeft:".9rem",position:"relative",color:"#333",marginBottom:".12rem"}}><span style={{position:"absolute",left:0,color:"#b8860b",fontWeight:700}}>&#9658;</span>{b}</div>))}
                                 </div>
                               ))}
                               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginTop:".4rem"}}>
                                 <div>
                                   <div style={{fontSize:"8pt",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".4rem",paddingBottom:".15rem",borderBottom:"2px solid #1a3a6b"}}>Education</div>
-                                  {(resumeData.education||[]).map((e,i)=><div key={i} style={{marginBottom:".4rem",fontSize:"9pt"}}>
-                                    <div style={{fontWeight:600}}>{e.degree}</div>
-                                    <div style={{color:"#555"}}>{e.school}</div>
-                                    <div style={{color:"#888",fontSize:"8pt"}}>{e.year}</div>
-                                  </div>)}
+                                  {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{marginBottom:".4rem",fontSize:"9pt"}}><div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#555"}}>{e.school}</div><div style={{color:"#888",fontSize:"8pt"}}>{e.year}</div></div>))}
                                 </div>
                                 <div>
                                   <div style={{fontSize:"8pt",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".4rem",paddingBottom:".15rem",borderBottom:"2px solid #1a3a6b"}}>Core Skills</div>
                                   <div style={{display:"flex",flexWrap:"wrap",gap:".25rem",marginBottom:".5rem"}}>
-                                    {(resumeData.skills||[]).map((s,i)=><span key={i} style={{background:"#e8edf5",border:"1px solid #b8c8d8",borderRadius:"2px",padding:".1rem .4rem",fontSize:"8pt",color:"#1a3a6b"}}>{s}</span>)}
+                                    {(resumeData.skills||[]).map((s,i)=>(<span key={i} style={{background:"#e8edf5",border:"1px solid #b8c8d8",borderRadius:"2px",padding:".1rem .4rem",fontSize:"8pt",color:"#1a3a6b"}}>{s}</span>))}
                                   </div>
-                                  {(resumeData.certifications||[]).length>0&&<div>
-                                    <div style={{fontSize:"8pt",fontWeight:700,color:"#666",marginBottom:".2rem",textTransform:"uppercase"}}>Certifications</div>
-                                    {(resumeData.certifications||[]).map((c,i)=><div key={i} style={{fontSize:"8.5pt",color:"#333"}}>• {c}</div>)}
-                                  </div>}
-                                  {(resumeData.awards||[]).length>0&&<div style={{marginTop:".5rem"}}>
-                                    <div style={{fontSize:"8pt",fontWeight:700,color:"#666",marginBottom:".2rem",textTransform:"uppercase"}}>Awards</div>
-                                    {(resumeData.awards||[]).map((a,i)=><div key={i} style={{fontSize:"8.5pt",color:"#333"}}>• {a}</div>)}
-                                  </div>}
+                                  {(resumeData.certifications||[]).length>0&&(<div><div style={{fontSize:"8pt",fontWeight:700,color:"#666",marginBottom:".2rem",textTransform:"uppercase"}}>Certifications</div>{(resumeData.certifications||[]).map((c,i)=>(<div key={i} style={{fontSize:"8.5pt",color:"#333"}}>&#8226; {c}</div>))}</div>)}
+                                  {(resumeData.awards||[]).length>0&&(<div style={{marginTop:".5rem"}}><div style={{fontSize:"8pt",fontWeight:700,color:"#666",marginBottom:".2rem",textTransform:"uppercase"}}>Awards</div>{(resumeData.awards||[]).map((a,i)=>(<div key={i} style={{fontSize:"8.5pt",color:"#333"}}>&#8226; {a}</div>))}</div>)}
                                 </div>
                               </div>
                             </div>
                           </div>
                         )}
+
                         {resumeTemplate==="classic"&&(
                           <div style={{fontFamily:"Georgia,serif",fontSize:"10pt",color:"#1a1a1a",padding:"2rem 2.4rem"}}>
                             <div style={{textAlign:"center",borderBottom:"2px solid #1a1a1a",paddingBottom:".8rem",marginBottom:".8rem"}}>
                               <div style={{fontSize:"18pt",fontWeight:700,letterSpacing:".04em",textTransform:"uppercase"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"8.5pt",color:"#444",marginTop:".25rem"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&<div style={{fontSize:"8.5pt",fontWeight:700,marginTop:".2rem"}}>Security Clearance: {resumeData.clearance}</div>}
+                              {resumeData.clearance&&(<div style={{fontSize:"8.5pt",fontWeight:700,marginTop:".2rem"}}>Security Clearance: {resumeData.clearance}</div>)}
                             </div>
-                            {resumeData.summary&&<div style={{marginBottom:".9rem"}}>
-                              <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",marginBottom:".4rem"}}>Professional Summary</div>
-                              <div style={{fontSize:"9.5pt",lineHeight:1.65,color:"#222",textAlign:"justify"}}>{resumeData.summary}</div>
-                            </div>}
+                            {resumeData.summary&&(<div style={{marginBottom:".9rem"}}><div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",marginBottom:".4rem"}}>Professional Summary</div><div style={{fontSize:"9.5pt",lineHeight:1.65,color:"#222",textAlign:"justify"}}>{resumeData.summary}</div></div>)}
                             <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",marginBottom:".5rem"}}>Experience</div>
-                            {(resumeData.experience||[]).map((job,i)=>(
-                              <div key={i} style={{marginBottom:".8rem"}}>
-                                <div style={{display:"flex",justifyContent:"space-between"}}>
-                                  <span style={{fontWeight:700,fontSize:"10pt"}}>{job.title}</span>
-                                  <span style={{fontSize:"8.5pt",color:"#555",fontStyle:"italic"}}>{job.dates}</span>
-                                </div>
-                                <div style={{fontStyle:"italic",color:"#444",fontSize:"9pt",marginBottom:".25rem"}}>{job.employer}</div>
-                                {(job.bullets||[]).map((b,j)=><div key={j} style={{fontSize:"9pt",lineHeight:1.55,paddingLeft:".9rem",marginBottom:".1rem"}}>• {b}</div>)}
-                              </div>
-                            ))}
+                            {(resumeData.experience||[]).map((job,i)=>(<div key={i} style={{marginBottom:".8rem"}}><div style={{display:"flex",justifyContent:"space-between"}}><span style={{fontWeight:700,fontSize:"10pt"}}>{job.title}</span><span style={{fontSize:"8.5pt",color:"#555",fontStyle:"italic"}}>{job.dates}</span></div><div style={{fontStyle:"italic",color:"#444",fontSize:"9pt",marginBottom:".25rem"}}>{job.employer}</div>{(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",lineHeight:1.55,paddingLeft:".9rem",marginBottom:".1rem"}}>&#8226; {b}</div>))}</div>))}
                             <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",margin:".8rem 0 .4rem"}}>Education</div>
-                            {(resumeData.education||[]).map((e,i)=><div key={i} style={{fontSize:"9pt",marginBottom:".3rem"}}><strong>{e.degree}</strong> — {e.school} {e.year&&"("+e.year+")"}</div>)}
-                            <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",margin:".8rem 0 .4rem"}}>Skills & Certifications</div>
-                            <div style={{fontSize:"9pt",lineHeight:1.7}}>{(resumeData.skills||[]).concat(resumeData.certifications||[]).join(" • ")}</div>
-                            {(resumeData.awards||[]).length>0&&<div>
-                              <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",margin:".8rem 0 .4rem"}}>Awards</div>
-                              {(resumeData.awards||[]).map((a,i)=><div key={i} style={{fontSize:"9pt"}}>• {a}</div>)}
-                            </div>}
+                            {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:".3rem"}}><strong>{e.degree}</strong> &#8212; {e.school} {e.year&&"("+e.year+")"}</div>))}
+                            <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",margin:".8rem 0 .4rem"}}>Skills</div>
+                            <div style={{fontSize:"9pt",lineHeight:1.7}}>{(resumeData.skills||[]).concat(resumeData.certifications||[]).join(" \u2022 ")}</div>
+                            {(resumeData.awards||[]).length>0&&(<div><div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",margin:".8rem 0 .4rem"}}>Awards</div>{(resumeData.awards||[]).map((a,i)=>(<div key={i} style={{fontSize:"9pt"}}>&#8226; {a}</div>))}</div>)}
                           </div>
                         )}
+
                         {resumeTemplate==="executive"&&(
                           <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
                             <div style={{background:"#0a0a0a",color:"#fff",padding:"2rem 2.4rem"}}>
                               <div style={{fontSize:"22pt",fontWeight:300,letterSpacing:".08em",textTransform:"uppercase"}}>{resumeData.name||personal.name}</div>
                               <div style={{height:"2px",background:"#b8860b",width:"50px",margin:".6rem 0"}}/>
                               <div style={{fontSize:"8.5pt",color:"#aaa",letterSpacing:".05em"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&<div style={{marginTop:".5rem",color:"#b8860b",fontSize:"8.5pt",fontWeight:600}}>CLEARANCE: {resumeData.clearance.toUpperCase()}</div>}
+                              {resumeData.clearance&&(<div style={{marginTop:".5rem",color:"#b8860b",fontSize:"8.5pt",fontWeight:600}}>CLEARANCE: {resumeData.clearance.toUpperCase()}</div>)}
                             </div>
                             <div style={{padding:"1.5rem 2.4rem"}}>
-                              {resumeData.summary&&<div style={{marginBottom:"1.2rem",paddingBottom:"1.2rem",borderBottom:"1px solid #e8e8e8"}}>
-                                <div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".4rem"}}>Executive Profile</div>
-                                <div style={{fontSize:"10pt",lineHeight:1.7,color:"#222",fontWeight:300}}>{resumeData.summary}</div>
-                              </div>}
-                              <div style={{marginBottom:"1.2rem"}}>
-                                <div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".6rem"}}>Core Competencies</div>
-                                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:".25rem"}}>
-                                  {(resumeData.skills||[]).map((s,i)=><div key={i} style={{fontSize:"8.5pt",padding:".2rem .5rem",background:"#f8f8f8",borderLeft:"3px solid #b8860b",color:"#222"}}>{s}</div>)}
-                                </div>
-                              </div>
-                              {(resumeData.experience||[]).map((job,i)=>(
-                                <div key={i} style={{marginBottom:"1rem",paddingBottom:"1rem",borderBottom:"1px solid #f0f0f0"}}>
-                                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
-                                    <div style={{fontWeight:700,fontSize:"10.5pt"}}>{job.title}</div>
-                                    <div style={{fontSize:"8pt",color:"#888",fontStyle:"italic"}}>{job.dates}</div>
-                                  </div>
-                                  <div style={{fontSize:"9pt",color:"#b8860b",fontWeight:600,marginBottom:".4rem"}}>{job.employer}</div>
-                                  {(job.bullets||[]).map((b,j)=><div key={j} style={{fontSize:"9pt",lineHeight:1.6,paddingLeft:"1rem",position:"relative",color:"#333",marginBottom:".18rem"}}>
-                                    <span style={{position:"absolute",left:0,color:"#b8860b",fontWeight:700}}>›</span>{b}
-                                  </div>)}
-                                </div>
-                              ))}
+                              {resumeData.summary&&(<div style={{marginBottom:"1.2rem",paddingBottom:"1.2rem",borderBottom:"1px solid #e8e8e8"}}><div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".4rem"}}>Executive Profile</div><div style={{fontSize:"10pt",lineHeight:1.7,color:"#222",fontWeight:300}}>{resumeData.summary}</div></div>)}
+                              <div style={{marginBottom:"1.2rem"}}><div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".6rem"}}>Core Competencies</div><div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:".25rem"}}>{(resumeData.skills||[]).map((s,i)=>(<div key={i} style={{fontSize:"8.5pt",padding:".2rem .5rem",background:"#f8f8f8",borderLeft:"3px solid #b8860b",color:"#222"}}>{s}</div>))}</div></div>
+                              {(resumeData.experience||[]).map((job,i)=>(<div key={i} style={{marginBottom:"1rem",paddingBottom:"1rem",borderBottom:"1px solid #f0f0f0"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}><div style={{fontWeight:700,fontSize:"10.5pt"}}>{job.title}</div><div style={{fontSize:"8pt",color:"#888",fontStyle:"italic"}}>{job.dates}</div></div><div style={{fontSize:"9pt",color:"#b8860b",fontWeight:600,marginBottom:".4rem"}}>{job.employer}</div>{(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",lineHeight:1.6,paddingLeft:"1rem",position:"relative",color:"#333",marginBottom:".18rem"}}><span style={{position:"absolute",left:0,color:"#b8860b",fontWeight:700}}>&#8250;</span>{b}</div>))}</div>))}
                               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.2rem"}}>
-                                <div>
-                                  <div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".4rem"}}>Education</div>
-                                  {(resumeData.education||[]).map((e,i)=><div key={i} style={{marginBottom:".35rem",fontSize:"9pt"}}><div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#666"}}>{e.school} {e.year}</div></div>)}
-                                </div>
-                                <div>
-                                  <div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".4rem"}}>Certifications & Awards</div>
-                                  {(resumeData.certifications||[]).map((c,i)=><div key={i} style={{fontSize:"8.5pt",color:"#333",marginBottom:".18rem"}}>✓ {c}</div>)}
-                                  {(resumeData.awards||[]).map((a,i)=><div key={i} style={{fontSize:"8.5pt",color:"#333",marginBottom:".18rem"}}>★ {a}</div>)}
-                                </div>
+                                <div><div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".4rem"}}>Education</div>{(resumeData.education||[]).map((e,i)=>(<div key={i} style={{marginBottom:".35rem",fontSize:"9pt"}}><div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#666"}}>{e.school} {e.year}</div></div>))}</div>
+                                <div><div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".4rem"}}>Certifications & Awards</div>{(resumeData.certifications||[]).map((c,i)=>(<div key={i} style={{fontSize:"8.5pt",color:"#333",marginBottom:".18rem"}}>&#10003; {c}</div>))}{(resumeData.awards||[]).map((a,i)=>(<div key={i} style={{fontSize:"8.5pt",color:"#333",marginBottom:".18rem"}}>&#9733; {a}</div>))}</div>
                               </div>
                             </div>
                           </div>
                         )}
+
                         {resumeTemplate==="minimal"&&(
                           <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a",padding:"2.5rem"}}>
                             <div style={{marginBottom:"1.8rem"}}>
                               <div style={{fontSize:"24pt",fontWeight:700,marginBottom:".15rem"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"8.5pt",color:"#888"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&<div style={{fontSize:"8.5pt",fontWeight:600,color:"#333",marginTop:".2rem"}}>{resumeData.clearance}</div>}
+                              {resumeData.clearance&&(<div style={{fontSize:"8.5pt",fontWeight:600,color:"#333",marginTop:".2rem"}}>{resumeData.clearance}</div>)}
                             </div>
-                            {resumeData.summary&&<div style={{marginBottom:"1.8rem",paddingBottom:"1.8rem",borderBottom:"1px solid #eee"}}>
-                              <div style={{fontSize:"10pt",lineHeight:1.8,color:"#444"}}>{resumeData.summary}</div>
-                            </div>}
-                            {(resumeData.experience||[]).map((job,i)=>(
-                              <div key={i} style={{marginBottom:"1.6rem"}}>
-                                <div style={{display:"flex",justifyContent:"space-between"}}>
-                                  <div style={{fontWeight:700,fontSize:"10.5pt"}}>{job.title}</div>
-                                  <div style={{fontSize:"8.5pt",color:"#999"}}>{job.dates}</div>
-                                </div>
-                                <div style={{color:"#666",fontSize:"9pt",marginBottom:".4rem"}}>{job.employer}</div>
-                                {(job.bullets||[]).map((b,j)=><div key={j} style={{fontSize:"9pt",lineHeight:1.6,paddingLeft:".9rem",borderLeft:"2px solid #eee",marginBottom:".25rem",color:"#333"}}>{b}</div>)}
-                              </div>
-                            ))}
+                            {resumeData.summary&&(<div style={{marginBottom:"1.8rem",paddingBottom:"1.8rem",borderBottom:"1px solid #eee"}}><div style={{fontSize:"10pt",lineHeight:1.8,color:"#444"}}>{resumeData.summary}</div></div>)}
+                            {(resumeData.experience||[]).map((job,i)=>(<div key={i} style={{marginBottom:"1.6rem"}}><div style={{display:"flex",justifyContent:"space-between"}}><div style={{fontWeight:700,fontSize:"10.5pt"}}>{job.title}</div><div style={{fontSize:"8.5pt",color:"#999"}}>{job.dates}</div></div><div style={{color:"#666",fontSize:"9pt",marginBottom:".4rem"}}>{job.employer}</div>{(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",lineHeight:1.6,paddingLeft:".9rem",borderLeft:"2px solid #eee",marginBottom:".25rem",color:"#333"}}>{b}</div>))}</div>))}
                             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.8rem",paddingTop:"1.5rem",borderTop:"1px solid #eee"}}>
-                              <div>
-                                <div style={{fontSize:"7.5pt",letterSpacing:".15em",textTransform:"uppercase",color:"#999",fontWeight:700,marginBottom:".6rem"}}>Education</div>
-                                {(resumeData.education||[]).map((e,i)=><div key={i} style={{fontSize:"9pt",marginBottom:".4rem"}}><div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#777"}}>{e.school}</div></div>)}
-                              </div>
-                              <div>
-                                <div style={{fontSize:"7.5pt",letterSpacing:".15em",textTransform:"uppercase",color:"#999",fontWeight:700,marginBottom:".6rem"}}>Skills</div>
-                                <div style={{fontSize:"9pt",color:"#444",lineHeight:1.8}}>{(resumeData.skills||[]).join(" · ")}</div>
-                              </div>
+                              <div><div style={{fontSize:"7.5pt",letterSpacing:".15em",textTransform:"uppercase",color:"#999",fontWeight:700,marginBottom:".6rem"}}>Education</div>{(resumeData.education||[]).map((e,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:".4rem"}}><div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#777"}}>{e.school}</div></div>))}</div>
+                              <div><div style={{fontSize:"7.5pt",letterSpacing:".15em",textTransform:"uppercase",color:"#999",fontWeight:700,marginBottom:".6rem"}}>Skills</div><div style={{fontSize:"9pt",color:"#444",lineHeight:1.8}}>{(resumeData.skills||[]).join(" \u00b7 ")}</div></div>
                             </div>
                           </div>
                         )}
+
                         {resumeTemplate==="federal"&&(
                           <div style={{fontFamily:"Arial,sans-serif",fontSize:"9.5pt",color:"#000",padding:"1.6rem 2rem"}}>
                             <div style={{borderBottom:"3px double #000",paddingBottom:".8rem",marginBottom:".8rem"}}>
                               <div style={{fontSize:"15pt",fontWeight:700}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"8.5pt",color:"#333",marginTop:".2rem"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&<div style={{fontSize:"8.5pt",fontWeight:700,marginTop:".2rem"}}>SECURITY CLEARANCE: {resumeData.clearance}</div>}
+                              {resumeData.clearance&&(<div style={{fontSize:"8.5pt",fontWeight:700,marginTop:".2rem"}}>SECURITY CLEARANCE: {resumeData.clearance}</div>)}
                             </div>
-                            <div style={{marginBottom:".8rem"}}>
-                              <div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",marginBottom:".3rem"}}>PROFESSIONAL SUMMARY</div>
-                              <div style={{lineHeight:1.7}}>{resumeData.summary}</div>
-                            </div>
+                            {resumeData.summary&&(<div style={{marginBottom:".8rem"}}><div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",marginBottom:".3rem"}}>PROFESSIONAL SUMMARY</div><div style={{lineHeight:1.7}}>{resumeData.summary}</div></div>)}
                             <div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",marginBottom:".5rem"}}>WORK EXPERIENCE</div>
-                            {(resumeData.experience||[]).map((job,i)=>(
-                              <div key={i} style={{marginBottom:"1rem",paddingLeft:".9rem",borderLeft:"3px solid #000"}}>
-                                <div style={{fontWeight:700}}>{job.title}</div>
-                                <div style={{fontWeight:600,color:"#333"}}>{job.employer}</div>
-                                <div style={{color:"#555",fontSize:"8.5pt",marginBottom:".3rem"}}>{job.dates}</div>
-                                {(job.bullets||[]).map((b,j)=><div key={j} style={{lineHeight:1.65,paddingLeft:".7rem",marginBottom:".15rem"}}>• {b}</div>)}
-                              </div>
-                            ))}
+                            {(resumeData.experience||[]).map((job,i)=>(<div key={i} style={{marginBottom:"1rem",paddingLeft:".9rem",borderLeft:"3px solid #000"}}><div style={{fontWeight:700}}>{job.title}</div><div style={{fontWeight:600,color:"#333"}}>{job.employer}</div><div style={{color:"#555",fontSize:"8.5pt",marginBottom:".3rem"}}>{job.dates}</div>{(job.bullets||[]).map((b,j)=>(<div key={j} style={{lineHeight:1.65,paddingLeft:".7rem",marginBottom:".15rem"}}>&#8226; {b}</div>))}</div>))}
                             <div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",margin:".8rem 0 .5rem"}}>EDUCATION</div>
-                            {(resumeData.education||[]).map((e,i)=><div key={i} style={{marginBottom:".4rem"}}><strong>{e.degree}</strong><br/>{e.school}{e.year&&", "+e.year}</div>)}
+                            {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{marginBottom:".4rem"}}><strong>{e.degree}</strong><br/>{e.school}{e.year&&", "+e.year}</div>))}
                             <div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",margin:".8rem 0 .5rem"}}>SKILLS & CERTIFICATIONS</div>
                             <div style={{lineHeight:1.8}}>{(resumeData.skills||[]).concat(resumeData.certifications||[]).join(" | ")}</div>
-                            {(resumeData.awards||[]).length>0&&<div>
-                              <div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",margin:".8rem 0 .5rem"}}>AWARDS & RECOGNITION</div>
-                              {(resumeData.awards||[]).map((a,i)=><div key={i}>• {a}</div>)}
-                            </div>}
+                            {(resumeData.awards||[]).length>0&&(<div><div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",margin:".8rem 0 .5rem"}}>AWARDS</div>{(resumeData.awards||[]).map((a,i)=>(<div key={i}>&#8226; {a}</div>))}</div>)}
                           </div>
                         )}
+
                       </div>
-                    ) : resume ? (
+                    ) : (
                       <div style={{width:"100%",maxWidth:"760px",background:"#fff",boxShadow:"0 4px 20px rgba(0,0,0,.15)",padding:"2rem 2.4rem",fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
-                        {resume.split("\n").map((line,i)=>{
+                        {resume.split("\\n").map((line,i)=>{
                           const t=line.trim();
                           if(!t) return <div key={i} style={{height:"6pt"}}/>;
-                          const isHdr=t===t.toUpperCase()&&t.length>3&&t.length<60&&!/[0-9@|]/.test(t);
-                          const isBul=t.startsWith("•")||t.startsWith("-");
+                          const isH=t===t.toUpperCase()&&t.length>3&&t.length<60&&!/[0-9@|]/.test(t);
+                          const isB=t.startsWith("\u2022")||t.startsWith("-");
                           const clean=t.replace(/^#+\s*/,"").replace(/\*\*/g,"");
                           if(i===0) return <div key={i} style={{fontSize:"18pt",fontWeight:700,marginBottom:"4pt"}}>{clean}</div>;
-                          if(isHdr) return <div key={i} style={{fontSize:"9.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1.5px solid #333",paddingBottom:"2pt",margin:"12pt 0 4pt"}}>{clean}</div>;
-                          if(isBul) return <div key={i} style={{paddingLeft:".9rem",marginBottom:"2pt",lineHeight:1.55}}>• {clean.replace(/^[•\-]\s*/,"")}</div>;
+                          if(isH) return <div key={i} style={{fontSize:"9.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1.5px solid #333",paddingBottom:"2pt",margin:"12pt 0 4pt"}}>{clean}</div>;
+                          if(isB) return <div key={i} style={{paddingLeft:".9rem",marginBottom:"2pt",lineHeight:1.55}}>{clean}</div>;
                           return <div key={i} style={{lineHeight:1.55,marginBottom:"1pt"}}>{clean}</div>;
                         })}
                       </div>
-                    ) : null}
+                    )}
                   </div>
+
                 </div>
               </div>
             )}
             <div className="nav-row"><button className="btn-sec" onClick={()=>setTab(1)}>← Career Pathways</button><div/></div>
           </div>
 
-          {/* ══ TAB 3: MY PROFILE ══ */}
+          {/* ══ TAB 3: COVER LETTER & REVIEW ══ */}
           <div className={`panel ${tab===3?"on":""}`}>
+            <div className="intro"><strong>Cover Letter Builder & Resume Review.</strong> Generate a tailored cover letter and get AI-powered feedback on your resume.</div>
+
+            {(!resume&&!resumeData)&&(
+              <div style={{background:"#fff8e0",border:"1px solid #f0c040",borderRadius:"6px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".88rem",color:"#5a3a00",display:"flex",alignItems:"center",gap:".6rem"}}>
+                <span style={{fontSize:"1.2rem"}}>💡</span>
+                <span>Generate your resume on the <button style={{background:"none",border:"none",color:"#1a3a6b",fontWeight:700,cursor:"pointer",padding:0,textDecoration:"underline"}} onClick={()=>setTab(2)}>Build Resume tab</button> first to unlock the best results.</span>
+              </div>
+            )}
+
+            {/* ── COVER LETTER ── */}
+            <div className="card" style={{marginBottom:"1.2rem"}}>
+              <div className="ch"><h3>✉ Cover Letter Builder</h3></div>
+              <div className="cb">
+                <div className="g3" style={{marginBottom:"1rem"}}>
+                  <div className="field">
+                    <label>Job Title Applying For</label>
+                    <input placeholder="e.g. Operations Manager" value={coverLetterJob.title}
+                      onChange={e=>setCoverLetterJob(j=>({...j,title:e.target.value}))}/>
+                  </div>
+                  <div className="field">
+                    <label>Company Name</label>
+                    <input placeholder="e.g. Amazon, Booz Allen, VA" value={coverLetterJob.company}
+                      onChange={e=>setCoverLetterJob(j=>({...j,company:e.target.value}))}/>
+                  </div>
+                </div>
+                <div className="field" style={{marginBottom:"1rem"}}>
+                  <label>Job Description <span style={{fontWeight:400,color:"var(--dim)"}}>(paste key requirements for best results)</span></label>
+                  <textarea rows={4} placeholder="Paste the job description or key requirements here..." value={coverLetterJob.description}
+                    onChange={e=>setCoverLetterJob(j=>({...j,description:e.target.value}))}
+                    style={{width:"100%",resize:"vertical",padding:".55rem .75rem",border:"1.5px solid #c0d0e4",borderRadius:"4px",fontFamily:"inherit",fontSize:".88rem",boxSizing:"border-box"}}/>
+                </div>
+                <button className="btn-primary" onClick={genCoverLetter} disabled={coverLetterLoading}
+                  style={{marginBottom:"1rem"}}>
+                  {coverLetterLoading?"✍ Writing your cover letter...":"✉ Generate Cover Letter"}
+                </button>
+                {coverLetter&&(
+                  <>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem"}}>
+                      <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b"}}>Your Cover Letter</div>
+                      <div style={{display:"flex",gap:".4rem"}}>
+                        <button className="btn-sec" style={{fontSize:".75rem"}} onClick={()=>{
+                          navigator.clipboard.writeText(coverLetter);
+                          setCopiedCL(true); setTimeout(()=>setCopiedCL(false),2000);
+                        }}>{copiedCL?"✓ Copied!":"Copy"}</button>
+                        <button className="btn-sec" style={{fontSize:".75rem"}} onClick={()=>{
+                          const blob=new Blob([coverLetter],{type:"text/plain"});
+                          const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+                          a.download=(personal.name||"veteran")+"-cover-letter.txt"; a.click();
+                        }}>Download</button>
+                      </div>
+                    </div>
+                    <div className="cl-output">{coverLetter}</div>
+                    <button className="btn-sec" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={genCoverLetter}>
+                      ↺ Regenerate
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* ── RESUME REVIEW ── */}
+            <div className="card">
+              <div className="ch"><h3>📊 Resume Score & Review</h3></div>
+              <div className="cb">
+                <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>
+                  Get an AI-powered score and actionable feedback on your resume — just like a recruiter would see it.
+                </p>
+                <button className="btn-primary" onClick={runResumeReview} disabled={reviewLoading} style={{marginBottom:"1rem"}}>
+                  {reviewLoading?"🔍 Analyzing your resume...":"📊 Score My Resume"}
+                </button>
+
+                {resumeReview&&resumeReview.error&&(
+                  <div style={{background:"#fff5f5",border:"1px solid #f0c0c0",borderRadius:"4px",padding:".75rem",color:"#a00",fontSize:".85rem"}}>{resumeReview.error}</div>
+                )}
+
+                {resumeReview&&!resumeReview.error&&(
+                  <>
+                    {/* Score ring */}
+                    <div style={{textAlign:"center",padding:"1rem 0 .5rem"}}>
+                      <div className="score-ring" style={{borderColor:resumeScore>=80?"#1a7a40":resumeScore>=65?"#e67e22":"#c0392b"}}>
+                        <div className="score-num" style={{color:resumeScore>=80?"#1a7a40":resumeScore>=65?"#e67e22":"#c0392b"}}>{resumeScore}</div>
+                        <div className="score-lbl">out of 100</div>
+                      </div>
+                      <div style={{fontWeight:700,fontSize:"1rem",color:"#1a3a6b",marginBottom:".2rem"}}>
+                        {resumeScore>=85?"Excellent Resume 🏆":resumeScore>=75?"Strong Resume ✅":resumeScore>=65?"Good — Needs Polish ⚡":"Needs Work 🔧"}
+                      </div>
+                      <div style={{fontSize:".82rem",color:"var(--dim)",maxWidth:"400px",margin:"0 auto"}}>{resumeReview.verdict}</div>
+                    </div>
+
+                    {/* Grade breakdown */}
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem",margin:"1rem 0"}}>
+                      {Object.values(resumeReview.grades||{}).map((g,i)=>(
+                        <div key={i} style={{background:"#f8fafc",border:"1px solid #e0e8f0",borderRadius:"6px",padding:".7rem .9rem"}}>
+                          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".3rem"}}>
+                            <div style={{fontSize:".78rem",fontWeight:600,color:"#1a3a6b"}}>{g.label}</div>
+                            <div style={{fontSize:".85rem",fontWeight:800,color:g.score>=80?"#1a7a40":g.score>=65?"#e67e22":"#c0392b"}}>{g.score}</div>
+                          </div>
+                          <div className="grade-bar">
+                            <div className="grade-fill" style={{width:g.score+"%",background:g.score>=80?"#1a7a40":g.score>=65?"#e67e22":"#c0392b"}}/>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Strengths */}
+                    {(resumeReview.strengths||[]).length>0&&(
+                      <div style={{marginBottom:"1rem"}}>
+                        <div style={{fontWeight:700,fontSize:".85rem",color:"#1a7a40",marginBottom:".4rem"}}>✅ What's Working</div>
+                        {(resumeReview.strengths||[]).map((s,i)=>(
+                          <div key={i} style={{fontSize:".83rem",color:"#2a5a3a",padding:".3rem 0 .3rem .8rem",borderLeft:"2px solid #1a7a40",marginBottom:".3rem"}}>{s}</div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Improvements */}
+                    {(resumeReview.improvements||[]).length>0&&(
+                      <div style={{marginBottom:"1rem"}}>
+                        <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",marginBottom:".5rem"}}>🔧 Improvements</div>
+                        {(resumeReview.improvements||[]).map((item,i)=>(
+                          <div key={i} className={"review-item "+(item.priority==="HIGH"?"review-high":item.priority==="MEDIUM"?"review-med":"review-low")}>
+                            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".2rem"}}>
+                              <div style={{fontWeight:700,fontSize:".82rem"}}>{item.issue}</div>
+                              <span style={{fontSize:".65rem",fontWeight:700,padding:".1rem .4rem",borderRadius:"3px",background:item.priority==="HIGH"?"#c0392b":item.priority==="MEDIUM"?"#e67e22":"#1a7a40",color:"#fff"}}>{item.priority}</span>
+                            </div>
+                            <div style={{fontSize:".8rem",color:"#3a5070",lineHeight:1.5}}>{item.fix}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Missing keywords */}
+                    {(resumeReview.missingKeywords||[]).length>0&&(
+                      <div>
+                        <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",marginBottom:".4rem"}}>🔑 Add These Keywords</div>
+                        <div style={{display:"flex",flexWrap:"wrap",gap:".35rem"}}>
+                          {(resumeReview.missingKeywords||[]).map((kw,i)=>(
+                            <span key={i} style={{background:"#e8edf5",border:"1px solid #1a3a6b",borderRadius:"3px",padding:".2rem .55rem",fontSize:".78rem",color:"#1a3a6b",fontWeight:600}}>{kw}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <button className="btn-sec" style={{marginTop:"1rem",fontSize:".8rem"}} onClick={runResumeReview}>
+                      ↺ Re-analyze
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="nav-row">
+              <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
+              <button className="btn-sec" onClick={()=>setTab(4)}>My Profile →</button>
+            </div>
+          </div>
+
+
+          {/* ══ TAB 4: MY PROFILE ══ */}
+          <div className={`panel ${tab===4?"on":""}`}>
             {!currentUser?(
               <div style={{textAlign:"center",padding:"3rem 1rem"}}>
                 <div style={{fontSize:"3rem",marginBottom:"1rem"}}>🔒</div>
@@ -3825,7 +4099,6 @@ Use this exact structure:
             ):(
               <div style={{padding:"1rem"}}>
 
-                {/* Service Hero */}
                 <div style={{background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",borderRadius:"8px",padding:"1.5rem",color:"#fff",marginBottom:"1.2rem"}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:".75rem",marginBottom:"1.2rem"}}>
                     <div>
@@ -3863,7 +4136,7 @@ Use this exact structure:
                                 <option key={r.abbr+r.grade} value={r.abbr} style={{background:"#1a3a6b"}}>{r.grade} {r.title} ({r.abbr})</option>
                               ))}
                             </optgroup>
-                            {((RANKS[rec.branch]||RANKS["Army"]).warrant.length>0)&&(
+                            {((RANKS[rec.branch]||RANKS["Army"]).warrant||[]).length>0&&(
                               <optgroup label="Warrant Officers" style={{background:"#1a3a6b"}}>
                                 {(RANKS[rec.branch]||RANKS["Army"]).warrant.map(r=>(
                                   <option key={r.abbr+r.grade} value={r.abbr} style={{background:"#1a3a6b"}}>{r.grade} {r.title} ({r.abbr})</option>
@@ -3895,7 +4168,6 @@ Use this exact structure:
                   </div>
                 </div>
 
-                {/* Career Matches */}
                 {careers&&careers.length>0&&(
                   <div className="card" style={{marginBottom:"1.2rem"}}>
                     <div className="ch" style={{justifyContent:"space-between"}}>
@@ -3921,7 +4193,6 @@ Use this exact structure:
                   </div>
                 )}
 
-                {/* Saved Resumes */}
                 <div className="card">
                   <div className="ch" style={{justifyContent:"space-between"}}>
                     <h3>Saved Resumes</h3>
@@ -3931,7 +4202,7 @@ Use this exact structure:
                     {savedResumes.length===0?(
                       <div style={{textAlign:"center",padding:"1.5rem",color:"var(--dim)",fontSize:".88rem"}}>
                         <div style={{fontSize:"2rem",marginBottom:".5rem"}}>📄</div>
-                        No saved resumes yet.
+                        No saved resumes yet. Generate one on the Build Resume tab.
                       </div>
                     ):(
                       savedResumes.map(r=>(
@@ -3950,10 +4221,19 @@ Use this exact structure:
                   </div>
                 </div>
 
-                {/* Account */}
                 <div className="card">
                   <div className="ch"><h3>Account</h3></div>
                   <div className="cb" style={{display:"flex",gap:".6rem",flexWrap:"wrap"}}>
+                    {hasAccess?(
+                      <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".4rem .75rem",fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>
+                        ✓ Full Access Active
+                        <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>{localStorage.removeItem("vcb_access");setHasAccess(false);setShowPaywall(true);}}>Manage</button>
+                      </div>
+                    ):(
+                      <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>
+                        ⭐ Upgrade to Full Access
+                      </button>
+                    )}
                     <button className="btn-sec" onClick={handleSaveProfile}>💾 Save All Progress</button>
                     <button className="btn-danger" onClick={()=>{if(window.confirm("Sign out?")) handleLogout();}}>Sign Out</button>
                   </div>
@@ -3969,13 +4249,11 @@ Use this exact structure:
         </div>
       </div>
 
-
       {/* SAVE TOAST */}
       {saveToast&&<div className="save-toast">{saveToast}</div>}
     </>
   );
 }
-
     ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
     hideLoading();
   </script>

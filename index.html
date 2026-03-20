@@ -28,7 +28,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-     const firebaseConfig = {
+   const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -993,6 +993,27 @@ body{background:#f4f6fa;font-family:'Crimson Pro',serif;color:#0d1f3c;}
 .pw-badge{display:inline-block;background:#f0c040;color:#0d1f3c;font-size:.65rem;font-weight:800;padding:.1rem .4rem;border-radius:3px;margin-left:.4rem;vertical-align:middle;}
 /* SCORE RING */
 
+/* VETERAN RESOURCES */
+.res-section{margin-bottom:1.8rem;}
+.res-section-title{font-family:"Bebas Neue",sans-serif;font-size:1.1rem;letter-spacing:.1em;color:#1a3a6b;border-bottom:2px solid #1a3a6b;padding-bottom:.35rem;margin-bottom:.8rem;}
+.res-card{display:flex;align-items:flex-start;gap:.9rem;padding:.85rem 1rem;background:#fff;border:1px solid #e0e8f0;border-radius:8px;margin-bottom:.55rem;transition:box-shadow .15s;}
+.res-card:hover{box-shadow:0 3px 12px rgba(26,58,107,.1);}
+.res-icon{font-size:1.6rem;flex-shrink:0;margin-top:.1rem;}
+.res-body{flex:1;}
+.res-name{font-weight:700;font-size:.9rem;color:#1a3a6b;margin-bottom:.15rem;}
+.res-desc{font-size:.8rem;color:#3a5070;line-height:1.55;margin-bottom:.35rem;}
+.res-contact{display:inline-flex;align-items:center;gap:.35rem;background:#1a3a6b;color:#fff;padding:.28rem .75rem;border-radius:4px;font-size:.75rem;font-weight:700;text-decoration:none;cursor:pointer;border:none;}
+.res-contact.green{background:#1a7a40;}
+.res-contact.red{background:#c0392b;}
+.res-contact.gold{background:#8a6000;color:#fff;}
+.crisis-banner{background:linear-gradient(135deg,#c0392b,#8b0000);color:#fff;border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:1.5rem;display:flex;gap:1rem;align-items:flex-start;}
+.crisis-banner h3{margin:0 0 .3rem;font-family:"Bebas Neue",sans-serif;font-size:1.3rem;letter-spacing:.08em;}
+.crisis-banner p{margin:0 0 .7rem;font-size:.85rem;opacity:.92;line-height:1.6;}
+.res-tag{display:inline-block;background:#e8edf5;color:#1a3a6b;font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:3px;margin-right:.3rem;letter-spacing:.04em;}
+.res-filter-bar{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.res-filter-btn{padding:.35rem .8rem;border-radius:20px;border:1.5px solid #d0daea;background:#fff;color:#3a5070;font-size:.8rem;cursor:pointer;transition:all .15s;}
+.res-filter-btn.active{background:#1a3a6b;color:#fff;border-color:#1a3a6b;font-weight:700;}
+
 /* JOB TRACKER */
 .tracker-table{width:100%;border-collapse:collapse;font-size:.82rem;}
 .tracker-table th{background:#1a3a6b;color:#fff;padding:.5rem .7rem;text-align:left;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;}
@@ -1444,6 +1465,7 @@ function App() {
 
   // Dashboard tab sub-view
   const [retentionTab, setRetentionTab] = useState("tracker");
+  const [resFilter, setResFilter] = useState("All");
   const [selectedCareer, setSelectedCareer] = useState(null);
   const [careerDetail, setCareerDetail] = useState(null);
   const [careerFilter, setCareerFilter] = useState("All");
@@ -2249,7 +2271,7 @@ Return this exact JSON structure:
 
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
 
-  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","My Profile"];
+  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Vet Resources","My Profile"];
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
 
   return (
@@ -4271,7 +4293,7 @@ Return this exact JSON structure:
 
             <div className="nav-row">
               <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
-              <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
+              <button className="btn-sec" onClick={()=>setTab(6)}>My Profile →</button>
             </div>
           </div>
 
@@ -4617,13 +4639,172 @@ Return this exact JSON structure:
 
             <div className="nav-row" style={{marginTop:"1.5rem"}}>
               <button className="btn-sec" onClick={()=>setTab(3)}>← Cover Letter</button>
-              <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
+              <button className="btn-sec" onClick={()=>setTab(6)}>My Profile →</button>
             </div>
           </div>
 
 
-          {/* ══ TAB 5: MY PROFILE ══ */}
+          {/* ══ TAB 5: VETERAN RESOURCES ══ */}
           <div className={`panel ${tab===5?"on":""}`}>
+
+            {/* Crisis Banner - always at top */}
+            <div className="crisis-banner">
+              <div style={{fontSize:"2rem",flexShrink:0}}>🆘</div>
+              <div style={{flex:1}}>
+                <h3>If You Are in Crisis — You Are Not Alone</h3>
+                <p>The transition out of service is one of the hardest things a veteran faces. If you are struggling — mentally, emotionally, or financially — real help is available right now, 24/7, from people who understand military service.</p>
+                <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+                  <a href="tel:988" className="res-contact red">📞 Call or Text 988 (Veterans Press 1)</a>
+                  <a href="https://www.veteranscrisisline.net/get-help-now/chat/" target="_blank" className="res-contact red">💬 Chat Online</a>
+                  <a href="sms:838255" className="res-contact red">📱 Text 838255</a>
+                </div>
+                <div style={{fontSize:".75rem",marginTop:".5rem",opacity:.85}}>Veterans Crisis Line · Free · Confidential · Available 24/7/365</div>
+              </div>
+            </div>
+
+            {/* Filter bar */}
+            <div className="res-filter-bar">
+              {["All","Mental Health","Benefits & VA","Financial","Education","Employment","Housing","Legal","Family","Substance Use"].map(f=>(
+                <button key={f} className={"res-filter-btn"+(resFilter===f?" active":"")} onClick={()=>setResFilter(f)}>{f}</button>
+              ))}
+            </div>
+
+            {[
+              {
+                category:"Mental Health & Crisis Support",
+                tag:"Mental Health",
+                icon:"🧠",
+                resources:[
+                  {name:"Veterans Crisis Line",desc:"Free, confidential support for veterans in crisis. Call 988 and press 1, text 838255, or chat online. Available 24/7. Staffed by VA-trained responders, many of whom are veterans themselves.",contact:"Call 988 → Press 1",href:"tel:988",color:"red",tags:["Mental Health","Crisis"]},
+                  {name:"Make the Connection",desc:"Real stories from veterans who have faced mental health challenges. Find local VA mental health services, peer support, and community programs across the country.",contact:"maketheconnection.net",href:"https://www.maketheconnection.net",color:"green",tags:["Mental Health"]},
+                  {name:"VA Mental Health Services",desc:"VA offers free mental health care to veterans including therapy, medication, PTSD treatment, depression, anxiety, military sexual trauma (MST) counseling, and more. You do NOT need a service-connected disability rating to access mental health care.",contact:"va.gov/mental-health",href:"https://www.va.gov/health-care/health-needs-conditions/mental-health/",color:"green",tags:["Mental Health","Benefits & VA"]},
+                  {name:"Headstrong (Free Mental Health for Post-9/11 Vets)",desc:"Free, stigma-free mental health treatment for post-9/11 veterans and their families. No VA enrollment required. Works with private therapists across the country. Completely confidential.",contact:"giveanhourhq.org/headstrong",href:"https://www.giveanhourhq.org/headstrong",color:"green",tags:["Mental Health"]},
+                  {name:"Team Red White & Blue",desc:"Connects veterans to their community through physical and social activity. Chapters nationwide. Research shows social connection through physical activity is one of the most effective tools against veteran isolation and depression.",contact:"teamrwb.org",href:"https://www.teamrwb.org",color:"green",tags:["Mental Health"]},
+                  {name:"PTSD Coach App (VA)",desc:"Free app developed by VA to help veterans manage PTSD symptoms with tools, education, and self-assessments. Available on iOS and Android.",contact:"ptsd.va.gov/appvid/mobile/ptsdcoach.asp",href:"https://www.ptsd.va.gov/appvid/mobile/ptsdcoach.asp",color:"green",tags:["Mental Health"]},
+                ]
+              },
+              {
+                category:"VA Benefits & Claims",
+                tag:"Benefits & VA",
+                icon:"🏛",
+                resources:[
+                  {name:"VA.gov — Benefits Hub",desc:"Official hub for all VA benefits: disability compensation, pension, education (GI Bill), home loans, life insurance, health care enrollment, and more.",contact:"va.gov",href:"https://www.va.gov",color:"green",tags:["Benefits & VA"]},
+                  {name:"Disabled American Veterans (DAV)",desc:"Free VSO (Veterans Service Organization) that helps veterans file and appeal VA disability claims. A DAV accredited claims agent can significantly increase your rating and get back pay you are owed.",contact:"dav.org",href:"https://www.dav.org",color:"green",tags:["Benefits & VA"]},
+                  {name:"VFW Veterans Benefits Center",desc:"Free VSO with accredited claims agents nationwide. They have helped veterans recover billions in retroactive disability pay. No cost ever.",contact:"vfw.org/assistance",href:"https://www.vfw.org/assistance/va-claims-separation-benefits",color:"green",tags:["Benefits & VA"]},
+                  {name:"VA Vocational Rehabilitation (VR&E / Chapter 31)",desc:"If you have a service-connected disability, VA may pay 100% of education or job training costs, provide job placement assistance, and a monthly subsistence allowance while you train.",contact:"va.gov/careers-employment/vocational-rehabilitation",href:"https://www.va.gov/careers-employment/vocational-rehabilitation/",color:"green",tags:["Benefits & VA","Education","Employment"]},
+                  {name:"Benefits.gov — Federal Benefits Finder",desc:"Search all federal benefits you may be eligible for based on your situation — veterans, family, low income, disability, housing and more.",contact:"benefits.gov",href:"https://www.benefits.gov",color:"green",tags:["Benefits & VA"]},
+                ]
+              },
+              {
+                category:"Financial Assistance",
+                tag:"Financial",
+                icon:"💰",
+                resources:[
+                  {name:"Operation Homefront — Emergency Assistance",desc:"Provides emergency financial assistance to active duty, Guard, Reserve, and veterans. Helps with rent, utilities, food, auto repair, and more. No repayment required.",contact:"operationhomefront.org",href:"https://www.operationhomefront.org/get-help/programs/",color:"gold",tags:["Financial"]},
+                  {name:"USA Cares",desc:"Emergency financial assistance for post-9/11 veterans and military families facing hardship. Helps with rent, mortgage, utilities, and basic needs.",contact:"usacares.org",href:"https://usacares.org",color:"gold",tags:["Financial"]},
+                  {name:"VA Pension — Low Income Veterans",desc:"If you served during wartime and have limited income, you may qualify for VA Pension — a monthly payment regardless of disability rating.",contact:"va.gov/pension",href:"https://www.va.gov/pension/",color:"green",tags:["Financial","Benefits & VA"]},
+                  {name:"SNAP (Food Assistance)",desc:"Veterans facing food insecurity may qualify for SNAP benefits. Many veterans are surprised to learn they qualify. Apply through your state's social services agency.",contact:"fns.usda.gov/snap",href:"https://www.fns.usda.gov/snap/recipient/eligibility",color:"gold",tags:["Financial"]},
+                  {name:"VFW Emergency Loans & Grants",desc:"VFW offers interest-free emergency loans and unrepayable grants to veterans in financial crisis through their National Veterans Service program.",contact:"vfw.org",href:"https://www.vfw.org",color:"green",tags:["Financial"]},
+                ]
+              },
+              {
+                category:"Education & Training",
+                tag:"Education",
+                icon:"🎓",
+                resources:[
+                  {name:"GI Bill (Chapter 33 / Post-9/11)",desc:"Covers tuition, housing allowance (BAH at E-5 rate), and $1,000/year for books. Use it for college, trade school, flight training, on-the-job training, and more. Transfer to dependents is possible.",contact:"va.gov/education/about-gi-bill-benefits",href:"https://www.va.gov/education/about-gi-bill-benefits/",color:"green",tags:["Education","Benefits & VA"]},
+                  {name:"DoD SkillBridge",desc:"Work at a civilian company for up to 180 days before ETS while still receiving military pay and benefits. Over 10,000 partner companies including Amazon, Microsoft, and hundreds of trades programs.",contact:"skillbridge.defense.gov",href:"https://skillbridge.osd.mil",color:"green",tags:["Education","Employment"]},
+                  {name:"Helmets to Hardhats",desc:"Connects veterans to registered apprenticeships in the construction trades — electrical, plumbing, pipefitting, ironwork, and more. Union wages, free training, lifetime career.",contact:"helmetstohardhats.org",href:"https://www.helmetstohardhats.org",color:"gold",tags:["Education","Employment"]},
+                  {name:"MyCAA Scholarship (Military Spouses)",desc:"Up to $4,000 in scholarships for military spouses pursuing portable career training, licenses, or degrees.",contact:"mycaa.com",href:"https://mycaa.com",color:"green",tags:["Education"]},
+                  {name:"Troops to Teachers",desc:"Helps veterans and transitioning service members become certified teachers — covering certification fees and offering bonuses in high-need schools.",contact:"proudtoserveagain.com",href:"https://www.proudtoserveagain.com",color:"green",tags:["Education","Employment"]},
+                ]
+              },
+              {
+                category:"Employment & Hiring",
+                tag:"Employment",
+                icon:"💼",
+                resources:[
+                  {name:"Hire Heroes USA",desc:"Free career coaching, resume writing, and job placement services for veterans and military spouses. Their coaches are veterans themselves. Average salary for placed veterans: $62,000+.",contact:"hireheroesusa.org",href:"https://www.hireheroesusa.org",color:"green",tags:["Employment"]},
+                  {name:"USAJobs.gov — Federal Employment",desc:"All federal government jobs. Veterans get 5-10 point preference. Many roles are set aside exclusively for veterans. Create a profile and upload your resume.",contact:"usajobs.gov",href:"https://www.usajobs.gov",color:"green",tags:["Employment"]},
+                  {name:"RecruitMilitary",desc:"Job fairs and online job board specifically for veterans. Top employers attend specifically to hire veterans — Walmart, Home Depot, defense contractors, law enforcement agencies.",contact:"recruitmilitary.com",href:"https://recruitmilitary.com",color:"green",tags:["Employment"]},
+                  {name:"ClearanceJobs",desc:"Job board for cleared professionals. If you hold or held a security clearance, your value in the defense contractor market is significant — often $80K-$150K+ roles.",contact:"clearancejobs.com",href:"https://www.clearancejobs.com",color:"gold",tags:["Employment"]},
+                  {name:"American Corporate Partners (ACP)",desc:"Free one-on-one mentorship pairing veterans with executives from major corporations. Get career advice, networking, and guidance from senior leaders.",contact:"acp-usa.org",href:"https://www.acp-usa.org",color:"green",tags:["Employment"]},
+                ]
+              },
+              {
+                category:"Housing Assistance",
+                tag:"Housing",
+                icon:"🏠",
+                resources:[
+                  {name:"VA Home Loan",desc:"No down payment required, no private mortgage insurance, competitive interest rates. One of the most powerful benefits earned through service. Available for purchase, refinance, or adapted housing.",contact:"va.gov/housing-assistance/home-loans",href:"https://www.va.gov/housing-assistance/home-loans/",color:"green",tags:["Housing","Benefits & VA"]},
+                  {name:"HUD-VASH (Veteran Housing Vouchers)",desc:"If you are homeless or at risk of homelessness, HUD-VASH provides housing vouchers and VA case management. Call your local VA or 988 (Press 1) to access.",contact:"va.gov/homeless",href:"https://www.va.gov/homeless/hud-vash.asp",color:"red",tags:["Housing"]},
+                  {name:"National Call Center for Homeless Veterans",desc:"24/7 hotline connecting homeless or at-risk veterans to housing services, case management, and emergency assistance.",contact:"Call 877-4AID-VET",href:"tel:18774243838",color:"red",tags:["Housing"]},
+                  {name:"Operation Homefront — Housing",desc:"Transitional and permanent housing programs for veterans and military families in need.",contact:"operationhomefront.org",href:"https://www.operationhomefront.org",color:"gold",tags:["Housing","Financial"]},
+                ]
+              },
+              {
+                category:"Legal Assistance",
+                tag:"Legal",
+                icon:"⚖️",
+                resources:[
+                  {name:"Veterans Legal Services",desc:"Free legal help for veterans with VA disability appeals, discharge upgrades, benefits denials, and more. Upgrading a discharge can unlock thousands in back pay and benefits.",contact:"veteranslegalservices.org",href:"https://www.veteranslegalservices.org",color:"green",tags:["Legal"]},
+                  {name:"National Veterans Legal Services Program",desc:"Provides free legal representation for veterans in VA benefit appeals. Has won millions in back benefits for veterans who were wrongly denied.",contact:"nvlsp.org",href:"https://www.nvlsp.org",color:"green",tags:["Legal"]},
+                  {name:"Discharge Upgrade",desc:"If you received less than honorable discharge and believe it was unjust, you can apply for an upgrade. An upgraded discharge can restore VA benefits worth tens of thousands of dollars.",contact:"militaryonesource.mil",href:"https://www.militaryonesource.mil/legal/military-legal-matters/discharge-upgrade-applications/",color:"gold",tags:["Legal","Benefits & VA"]},
+                ]
+              },
+              {
+                category:"Family & Caregiver Support",
+                tag:"Family",
+                icon:"👨‍👩‍👧",
+                resources:[
+                  {name:"VA Caregiver Support Program",desc:"If you care for a veteran with a serious injury or illness, you may qualify for a monthly stipend, health insurance, and mental health services through the Program of Comprehensive Assistance for Family Caregivers (PCAFC).",contact:"va.gov/family-member-benefits/comprehensive-assistance-for-family-caregivers",href:"https://www.va.gov/family-member-benefits/comprehensive-assistance-for-family-caregivers/",color:"green",tags:["Family","Benefits & VA"]},
+                  {name:"Military OneSource",desc:"Free 24/7 support for service members and their families — counseling, financial coaching, tax prep, legal services, relocation assistance, and more. Available up to 365 days after separation.",contact:"militaryonesource.mil",href:"https://www.militaryonesource.mil",color:"green",tags:["Family"]},
+                  {name:"TAPS — Tragedy Assistance Program for Survivors",desc:"Support for families who have lost a loved one in military service. Grief counseling, peer mentors, and survivor benefits guidance.",contact:"taps.org",href:"https://www.taps.org",color:"red",tags:["Family","Mental Health"]},
+                ]
+              },
+              {
+                category:"Substance Use & Recovery",
+                tag:"Substance Use",
+                icon:"💙",
+                resources:[
+                  {name:"VA Substance Use Disorder Treatment",desc:"Free inpatient and outpatient treatment for alcohol and drug dependency. VA treats substance use as a medical condition, not a moral failing. Call your local VA or the Veterans Crisis Line.",contact:"va.gov/health-care/health-needs-conditions/substance-use-problems",href:"https://www.va.gov/health-care/health-needs-conditions/substance-use-problems/",color:"green",tags:["Substance Use","Mental Health","Benefits & VA"]},
+                  {name:"SAMHSA National Helpline",desc:"Free, confidential, 24/7 treatment referral and information service for substance use disorders. Call 1-800-662-4357.",contact:"Call 1-800-662-4357",href:"tel:18006624357",color:"red",tags:["Substance Use"]},
+                  {name:"Veteran Recovery Centers",desc:"Residential and outpatient recovery programs specifically for veterans. Peer support from fellow veterans in recovery who understand military culture.",contact:"va.gov/find-locations/?facilityType=benefits",href:"https://www.va.gov/find-locations/?facilityType=benefits",color:"green",tags:["Substance Use"]},
+                ]
+              },
+            ].filter(section => resFilter==="All" || section.tag===resFilter).map((section,si)=>(
+              <div key={si} className="res-section">
+                <div className="res-section-title">{section.icon} {section.category}</div>
+                {section.resources.filter(r => resFilter==="All" || r.tags.includes(resFilter)).map((r,ri)=>(
+                  <div key={ri} className="res-card">
+                    <div className="res-body">
+                      <div style={{display:"flex",alignItems:"center",gap:".5rem",marginBottom:".2rem",flexWrap:"wrap"}}>
+                        <div className="res-name">{r.name}</div>
+                        {r.tags.map(t=><span key={t} className="res-tag">{t}</span>)}
+                      </div>
+                      <div className="res-desc">{r.desc}</div>
+                      <a href={r.href} target={r.href.startsWith("tel:")||r.href.startsWith("sms:")?"_self":"_blank"} className={"res-contact "+r.color}>
+                        {r.href.startsWith("tel:")?"📞 ":r.href.startsWith("sms:")?"📱 ":"🔗 "}{r.contact}
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+
+            <div style={{background:"#f0f4ff",border:"1px solid #c0d0e4",borderRadius:"8px",padding:"1rem 1.2rem",marginTop:"1rem",fontSize:".82rem",color:"#3a5070",lineHeight:1.7}}>
+              <strong style={{color:"#1a3a6b"}}>📌 A note from Veteran Career Builder:</strong> This resource page exists because we know the transition is more than just a job search. You served. You sacrificed. And you deserve support in every area of your life — not just your career. If you know a veteran who needs help, please share these resources with them.
+            </div>
+
+            <div className="nav-row" style={{marginTop:"1.5rem"}}>
+              <button className="btn-sec" onClick={()=>setTab(4)}>← Job Search Hub</button>
+              <button className="btn-sec" onClick={()=>setTab(6)}>My Profile →</button>
+            </div>
+          </div>
+
+
+          {/* ══ TAB 6: MY PROFILE ══ */}
+          <div className={`panel ${tab===6?"on":""}`}>
             {!currentUser?(
               <div style={{textAlign:"center",padding:"3rem 1rem"}}>
                 <div style={{fontSize:"3rem",marginBottom:"1rem"}}>🔒</div>

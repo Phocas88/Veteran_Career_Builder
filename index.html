@@ -28,7 +28,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-   const firebaseConfig = {
+     const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -934,7 +934,7 @@ body{background:#f4f6fa;font-family:'Crimson Pro',serif;color:#0d1f3c;}
 .career-card h4{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.08em;color:#1a3a6b;margin-bottom:.3rem;}
 
 /* RESUME OUT */
-.resume-out{border:1px solid #d0daea;border-radius:6px;overflow:hidden;background:#f0f4fa;}
+.resume-out{border:1px solid #d0daea;border-radius:6px;background:#f0f4fa;}
 
 /* LOADING */
 .loading{text-align:center;padding:2.5rem;color:#4a6080;}
@@ -953,7 +953,7 @@ body{background:#f4f6fa;font-family:'Crimson Pro',serif;color:#0d1f3c;}
 .mos-pill{display:inline-block;background:rgba(184,134,11,.15);border:1px solid rgba(184,134,11,.4);border-radius:2px;padding:.12rem .45rem;font-size:.72rem;color:#6a4a00;margin:.1rem;}
 .format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin-bottom:.75rem;}
 .format-card{border:1.5px solid #d0daea;border-radius:4px;padding:.65rem .8rem;cursor:pointer;transition:all .2s;background:#fff;}
-.format-card.selected{border-color:#1a3a6b;background:#e8edf5;}
+.format-card.selected{border-color:#1a3a6b;background:#e8edf5;box-shadow:0 0 0 2px #1a3a6b;}
 .format-card h4{font-size:.82rem;font-weight:700;color:#1a3a6b;margin-bottom:.2rem;}
 .format-card p{font-size:.72rem;color:#4a6080;line-height:1.4;}
 .prof-hero{background:linear-gradient(135deg,#1a3a6b,#1e4a8a);color:#fff;border-radius:6px;padding:1.2rem 1.4rem;margin-bottom:1rem;}
@@ -992,6 +992,36 @@ body{background:#f4f6fa;font-family:'Crimson Pro',serif;color:#0d1f3c;}
 .pw-skip{background:transparent;border:none;color:#8aa0b8;font-size:.78rem;cursor:pointer;padding:.3rem;}
 .pw-badge{display:inline-block;background:#f0c040;color:#0d1f3c;font-size:.65rem;font-weight:800;padding:.1rem .4rem;border-radius:3px;margin-left:.4rem;vertical-align:middle;}
 /* SCORE RING */
+
+/* JOB TRACKER */
+.tracker-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+.tracker-table th{background:#1a3a6b;color:#fff;padding:.5rem .7rem;text-align:left;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;}
+.tracker-table td{padding:.55rem .7rem;border-bottom:1px solid #eef0f5;vertical-align:middle;}
+.tracker-table tr:hover td{background:#f8fafc;}
+.status-pill{display:inline-block;padding:.15rem .55rem;border-radius:20px;font-size:.7rem;font-weight:700;letter-spacing:.04em;}
+.sp-applied{background:#e8edf5;color:#1a3a6b;}
+.sp-interview{background:#fff8e0;color:#8a6000;}
+.sp-offer{background:#e8f8ee;color:#1a7a40;}
+.sp-rejected{background:#fff0f0;color:#c0392b;}
+.sp-withdrawn{background:#f0f0f0;color:#666;}
+/* INTERVIEW PREP */
+.prep-card{background:#f8fafc;border:1px solid #e0e8f0;border-radius:6px;padding:.9rem 1rem;margin-bottom:.6rem;}
+.prep-q{font-weight:700;font-size:.88rem;color:#1a3a6b;margin-bottom:.4rem;}
+.prep-a{font-size:.83rem;color:#3a5070;line-height:1.65;}
+.prep-tip{font-size:.75rem;color:#1a7a40;margin-top:.35rem;font-style:italic;}
+/* TIMELINE */
+.tl-item{display:flex;gap:.8rem;margin-bottom:.9rem;align-items:flex-start;}
+.tl-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;margin-top:.1rem;}
+.tl-done{background:#1a7a40;color:#fff;}
+.tl-active{background:#1a3a6b;color:#fff;box-shadow:0 0 0 3px rgba(26,58,107,.2);}
+.tl-pending{background:#e0e8f0;color:#5a7090;}
+.tl-content h4{font-size:.88rem;font-weight:700;color:#1a3a6b;margin:0 0 .15rem;}
+.tl-content p{font-size:.78rem;color:#5a7090;margin:0;line-height:1.5;}
+/* CHECKIN */
+.stat-card{background:#f8fafc;border:1px solid #e0e8f0;border-radius:8px;padding:1rem;text-align:center;}
+.stat-num{font-size:2rem;font-weight:800;color:#1a3a6b;line-height:1;}
+.stat-lbl{font-size:.72rem;color:#5a7090;letter-spacing:.05em;text-transform:uppercase;margin-top:.2rem;}
+
 .score-ring{display:flex;align-items:center;justify-content:center;flex-direction:column;width:110px;height:110px;border-radius:50%;border:6px solid #1a3a6b;background:#f0f4ff;margin:0 auto 1rem;}
 .score-num{font-size:2rem;font-weight:800;color:#1a3a6b;line-height:1;}
 .score-lbl{font-size:.65rem;color:#5a7090;letter-spacing:.06em;text-transform:uppercase;}
@@ -1378,6 +1408,42 @@ function App() {
   const [coverLetterLoading, setCoverLetterLoading] = useState(false);
   const [reviewLoading, setReviewLoading] = useState(false);
   const [copiedCL, setCopiedCL] = useState(false);
+
+  // ── RETENTION FEATURE STATE ───────────────────────────────────────────────
+  // Job Tracker
+  const [jobApps, setJobApps] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("vcb_jobs")||"[]"); } catch(e){ return []; }
+  });
+  const [newJob, setNewJob] = useState({ company:"", title:"", date:"", status:"Applied", notes:"", link:"" });
+  const [showAddJob, setShowAddJob] = useState(false);
+  const saveJobs = (jobs) => {
+    setJobApps(jobs);
+    localStorage.setItem("vcb_jobs", JSON.stringify(jobs));
+  };
+
+  // Interview Prep
+  const [prepJob, setPrepJob] = useState({ title:"", company:"", type:"behavioral" });
+  const [prepQuestions, setPrepQuestions] = useState([]);
+  const [prepLoading, setPrepLoading] = useState(false);
+
+  // Follow-up Email
+  const [followupCtx, setFollowupCtx] = useState({ company:"", role:"", interviewerName:"", date:"", outcome:"thank-you" });
+  const [followupEmail, setFollowupEmail] = useState("");
+  const [followupLoading, setFollowupLoading] = useState(false);
+  const [copiedFollowup, setCopiedFollowup] = useState(false);
+
+  // Transition Timeline
+  const [tlChecks, setTlChecks] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("vcb_timeline")||"{}"); } catch(e){ return {}; }
+  });
+  const saveTl = (key, val) => {
+    const updated = {...tlChecks, [key]: val};
+    setTlChecks(updated);
+    localStorage.setItem("vcb_timeline", JSON.stringify(updated));
+  };
+
+  // Dashboard tab sub-view
+  const [retentionTab, setRetentionTab] = useState("tracker");
   const [selectedCareer, setSelectedCareer] = useState(null);
   const [careerDetail, setCareerDetail] = useState(null);
   const [careerFilter, setCareerFilter] = useState("All");
@@ -2057,6 +2123,83 @@ Return ONLY the cover letter text, no subject line, no extra commentary.`;
     setCoverLetterLoading(false);
   };
 
+
+  // ── INTERVIEW PREP GENERATOR ──────────────────────────────────────────────
+  const genInterviewPrep = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    setPrepLoading(true); setPrepQuestions([]);
+    const milSummary = milExperiences.map(e=>`${e.branch} ${e.rank} MOS ${e.mos} (${e.tos})`).join("; ");
+    const prompt = `You are an elite interview coach for military veterans transitioning to civilian careers.
+
+VETERAN: ${milSummary}
+APPLYING FOR: ${prepJob.title||"a civilian role"} at ${prepJob.company||"a company"}
+INTERVIEW TYPE: ${prepJob.type}
+
+Generate 8 interview questions they will likely be asked, with a tailored answer strategy using their military background. Return ONLY valid JSON array:
+[{
+  "question": "Tell me about yourself.",
+  "whyAsked": "Sets the tone, they want your career story",
+  "answerStrategy": "Start with military service, bridge to civilian value, end with why this role",
+  "starExample": "Situation: As a [rank] in [branch]... Task: I was responsible for... Action: I implemented... Result: This led to...",
+  "tip": "Keep it under 2 minutes. Practice out loud."
+}]
+
+Make answers specific to their MOS and rank. Use the STAR method. Translate all military jargon.`;
+    try {
+      const raw = await callClaude(prompt, "You are an interview coach. Return ONLY valid minified JSON array. No markdown.", 3000);
+      const clean = raw.replace(/```json|```/g,"").trim();
+      const s = clean.indexOf("["); const e = clean.lastIndexOf("]");
+      if(s===-1||e===-1) throw new Error("No array");
+      setPrepQuestions(JSON.parse(clean.slice(s,e+1)));
+    } catch(err) {
+      setPrepQuestions([{
+        question:"Tell me about yourself.",
+        whyAsked:"Opens the interview and sets the tone",
+        answerStrategy:"Lead with your military service, highlight your top 2-3 skills, connect to this specific role, end with your excitement about the opportunity.",
+        starExample:"I served "+milSummary+". I built strong skills in leadership and operations that I am excited to bring to this role.",
+        tip:"Practice this until it feels natural. This is your elevator pitch."
+      }]);
+    }
+    setPrepLoading(false);
+  };
+
+  // ── FOLLOW-UP EMAIL GENERATOR ─────────────────────────────────────────────
+  const genFollowupEmail = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    setFollowupLoading(true); setFollowupEmail("");
+    const milSum = milExperiences.map(e=>`${e.branch} ${e.rank}`).join(", ");
+    const emailTypes = {
+      "thank-you": "a warm, professional thank-you email after an interview",
+      "follow-up": "a polite follow-up email checking on application status after 1 week of silence",
+      "negotiation": "a professional salary negotiation email asking for a higher offer",
+      "withdraw": "a gracious email withdrawing from consideration while keeping the door open"
+    };
+    const prompt = `Write ${emailTypes[followupCtx.outcome]||"a professional email"}.
+
+Veteran: ${personal.name||"[Name]"} | Service: ${milSum}
+Role: ${followupCtx.role||"the position"} at ${followupCtx.company||"your company"}
+Interviewer: ${followupCtx.interviewerName||"Hiring Manager"}
+Interview date: ${followupCtx.date||"recently"}
+
+Write a genuine, professional email that:
+- Is NOT overly formal or stiff
+- References something specific from the conversation if possible (be generic if no details)
+- Subtly reinforces their military background as an asset
+- Is under 150 words
+- Has a clear subject line on the first line starting with "Subject: "
+
+Return ONLY the email text including the subject line. No extra commentary.`;
+    try {
+      const raw = await callClaude(prompt, "You are a professional career coach. Write concise, genuine emails.", 800);
+      setFollowupEmail(raw.trim());
+    } catch(err) {
+      setFollowupEmail("Subject: Thank You - " + (followupCtx.role||"Position") + " Interview\n\nDear " + (followupCtx.interviewerName||"Hiring Manager") + ",\n\nThank you for taking the time to meet with me regarding the " + (followupCtx.role||"position") + " role at " + (followupCtx.company||"your organization") + ". I enjoyed learning more about the team and am excited about the opportunity to bring my military leadership experience to your organization.\n\nPlease let me know if you need any additional information.\n\nBest regards,\n" + (personal.name||"[Your Name]"));
+    }
+    setFollowupLoading(false);
+  };
+
   // ── RESUME REVIEW / SCORE ─────────────────────────────────────────────────
   const runResumeReview = async () => {
     if (!hasAccess) { setShowPaywall(true); return; }
@@ -2106,7 +2249,7 @@ Return this exact JSON structure:
 
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
 
-  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","My Profile"];
+  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","My Profile"];
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
 
   return (
@@ -3793,7 +3936,7 @@ Return this exact JSON structure:
               <div className="cb">
                 <div className="format-grid">
                   {RESUME_FORMATS.map(f=>(
-                    <div key={f.id} className={`format-card ${resumeFormat===f.id?"sel":""}`} onClick={()=>setResumeFormat(f.id)}>
+                    <div key={f.id} className={`format-card ${resumeFormat===f.id?"selected":""}`} onClick={()=>setResumeFormat(f.id)}>
                       <h4>{f.label}</h4>
                       <p>{f.desc}</p>
                     </div>
@@ -3821,7 +3964,9 @@ Return this exact JSON structure:
                         style={{padding:".28rem .75rem",borderRadius:"3px",border:"1.5px solid",fontSize:".74rem",cursor:"pointer",fontWeight:resumeTemplate===t.id?700:400,
                           background:resumeTemplate===t.id?"#1a3a6b":"#fff",
                           color:resumeTemplate===t.id?"#fff":"#3a5070",
-                          borderColor:resumeTemplate===t.id?"#1a3a6b":"#c0d0e4"}}>
+                          borderColor:resumeTemplate===t.id?"#1a3a6b":"#c0d0e4",
+                          fontWeight:resumeTemplate===t.id?700:400,
+                          boxShadow:resumeTemplate===t.id?"0 0 0 2px #4a7aef":"none"}}>
                         {t.l}
                       </button>
                     ))}
@@ -3832,7 +3977,7 @@ Return this exact JSON structure:
                   </div>
 
                   {/* Resume display */}
-                  <div id="resume-render" style={{overflowY:"auto",maxHeight:"680px",background:"#f0f4fa",padding:"1.2rem",display:"flex",justifyContent:"center"}}>
+                  <div id="resume-render" style={{overflowY:"auto",maxHeight:"none",background:"#f0f4fa",padding:"1.2rem",display:"flex",justifyContent:"center"}}>
                     {resumeData ? (
                       <div style={{width:"100%",maxWidth:"760px",background:"#fff",boxShadow:"0 4px 20px rgba(0,0,0,.15)"}}>
 
@@ -4126,13 +4271,359 @@ Return this exact JSON structure:
 
             <div className="nav-row">
               <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
-              <button className="btn-sec" onClick={()=>setTab(4)}>My Profile →</button>
+              <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
             </div>
           </div>
 
 
-          {/* ══ TAB 4: MY PROFILE ══ */}
+          {/* ══ TAB 4: JOB SEARCH HUB ══ */}
           <div className={`panel ${tab===4?"on":""}`}>
+
+            {/* Sub-nav */}
+            <div style={{display:"flex",gap:".4rem",flexWrap:"wrap",marginBottom:"1.2rem",borderBottom:"2px solid #e0e8f0",paddingBottom:".7rem"}}>
+              {[
+                {id:"tracker",label:"📋 Job Tracker"},
+                {id:"interview",label:"🎤 Interview Prep"},
+                {id:"followup",label:"📧 Follow-Up Emails"},
+                {id:"timeline",label:"🗓 Transition Timeline"},
+                {id:"checkin",label:"📊 Weekly Check-In"},
+              ].map(t=>(
+                <button key={t.id} onClick={()=>setRetentionTab(t.id)}
+                  style={{padding:".45rem .9rem",borderRadius:"20px",border:"1.5px solid",cursor:"pointer",fontSize:".82rem",fontWeight:retentionTab===t.id?700:400,
+                    background:retentionTab===t.id?"#1a3a6b":"#fff",
+                    color:retentionTab===t.id?"#fff":"#3a5070",
+                    borderColor:retentionTab===t.id?"#1a3a6b":"#d0daea"}}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            {/* ── 1. JOB TRACKER ── */}
+            {retentionTab==="tracker"&&(
+              <div>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1rem",flexWrap:"wrap",gap:".5rem"}}>
+                  <div>
+                    <h3 style={{margin:0,color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem"}}>Job Application Tracker</h3>
+                    <div style={{fontSize:".78rem",color:"var(--dim)"}}>{jobApps.length} applications tracked</div>
+                  </div>
+                  <button className="btn-primary" style={{width:"auto",padding:".45rem 1rem"}} onClick={()=>setShowAddJob(s=>!s)}>
+                    {showAddJob?"✕ Cancel":"+ Add Application"}
+                  </button>
+                </div>
+
+                {showAddJob&&(
+                  <div style={{background:"#f0f4ff",border:"1.5px solid #1a3a6b",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".6rem",marginBottom:".6rem"}}>
+                      <div className="field" style={{marginBottom:0}}><label>Company</label>
+                        <input placeholder="e.g. Amazon, Booz Allen" value={newJob.company} onChange={e=>setNewJob(j=>({...j,company:e.target.value}))}/>
+                      </div>
+                      <div className="field" style={{marginBottom:0}}><label>Job Title</label>
+                        <input placeholder="e.g. Operations Manager" value={newJob.title} onChange={e=>setNewJob(j=>({...j,title:e.target.value}))}/>
+                      </div>
+                      <div className="field" style={{marginBottom:0}}><label>Date Applied</label>
+                        <input type="date" value={newJob.date} onChange={e=>setNewJob(j=>({...j,date:e.target.value}))}/>
+                      </div>
+                      <div className="field" style={{marginBottom:0}}><label>Status</label>
+                        <select value={newJob.status} onChange={e=>setNewJob(j=>({...j,status:e.target.value}))}>
+                          {["Applied","Interview Scheduled","Interview Done","Offer Received","Accepted","Rejected","Withdrawn"].map(s=>(
+                            <option key={s}>{s}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="field" style={{marginBottom:".6rem"}}><label>Job Posting URL (optional)</label>
+                      <input placeholder="https://..." value={newJob.link} onChange={e=>setNewJob(j=>({...j,link:e.target.value}))}/>
+                    </div>
+                    <div className="field" style={{marginBottom:".6rem"}}><label>Notes</label>
+                      <input placeholder="Recruiter name, salary range, next steps..." value={newJob.notes} onChange={e=>setNewJob(j=>({...j,notes:e.target.value}))}/>
+                    </div>
+                    <button className="btn-primary" style={{width:"auto"}} onClick={()=>{
+                      if(!newJob.company||!newJob.title) return;
+                      saveJobs([...jobApps,{...newJob,id:Date.now(),date:newJob.date||new Date().toISOString().slice(0,10)}]);
+                      setNewJob({company:"",title:"",date:"",status:"Applied",notes:"",link:""});
+                      setShowAddJob(false);
+                    }}>Save Application</button>
+                  </div>
+                )}
+
+                {jobApps.length===0?(
+                  <div style={{textAlign:"center",padding:"3rem 1rem",color:"var(--dim)"}}>
+                    <div style={{fontSize:"3rem",marginBottom:"1rem"}}>📋</div>
+                    <div style={{fontWeight:700,marginBottom:".5rem",color:"#1a3a6b"}}>Track every application</div>
+                    <div style={{fontSize:".85rem"}}>Add your first job application to start tracking your search progress.</div>
+                  </div>
+                ):(
+                  <>
+                    {/* Stats row */}
+                    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(110px,1fr))",gap:".6rem",marginBottom:"1rem"}}>
+                      {[
+                        {label:"Applied",val:jobApps.length,color:"#1a3a6b"},
+                        {label:"Interviews",val:jobApps.filter(j=>j.status.includes("Interview")).length,color:"#e67e22"},
+                        {label:"Offers",val:jobApps.filter(j=>j.status==="Offer Received"||j.status==="Accepted").length,color:"#1a7a40"},
+                        {label:"Response Rate",val:Math.round((jobApps.filter(j=>j.status!=="Applied"&&j.status!=="Rejected").length/Math.max(1,jobApps.length))*100)+"%",color:"#1a3a6b"},
+                      ].map((s,i)=>(
+                        <div key={i} className="stat-card">
+                          <div className="stat-num" style={{color:s.color}}>{s.val}</div>
+                          <div className="stat-lbl">{s.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{overflowX:"auto"}}>
+                      <table className="tracker-table">
+                        <thead><tr>
+                          <th>Company</th><th>Role</th><th>Date</th><th>Status</th><th>Notes</th><th></th>
+                        </tr></thead>
+                        <tbody>
+                          {[...jobApps].sort((a,b)=>b.id-a.id).map(job=>(
+                            <tr key={job.id}>
+                              <td><strong>{job.company}</strong>{job.link&&<a href={job.link} target="_blank" style={{marginLeft:".4rem",fontSize:".72rem",color:"#1a3a6b"}}>↗</a>}</td>
+                              <td>{job.title}</td>
+                              <td style={{whiteSpace:"nowrap",fontSize:".78rem",color:"var(--dim)"}}>{job.date}</td>
+                              <td>
+                                <select value={job.status}
+                                  onChange={e=>saveJobs(jobApps.map(j=>j.id===job.id?{...j,status:e.target.value}:j))}
+                                  style={{fontSize:".75rem",padding:".2rem .4rem",border:"1px solid #d0daea",borderRadius:"4px",cursor:"pointer"}}>
+                                  {["Applied","Interview Scheduled","Interview Done","Offer Received","Accepted","Rejected","Withdrawn"].map(s=>(
+                                    <option key={s}>{s}</option>
+                                  ))}
+                                </select>
+                              </td>
+                              <td style={{fontSize:".78rem",color:"#3a5070",maxWidth:"180px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{job.notes}</td>
+                              <td><button onClick={()=>saveJobs(jobApps.filter(j=>j.id!==job.id))} style={{background:"none",border:"none",color:"#c0392b",cursor:"pointer",fontSize:".85rem"}}>✕</button></td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* ── 2. INTERVIEW PREP ── */}
+            {retentionTab==="interview"&&(
+              <div>
+                <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Interview Prep</h3>
+                <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>Get AI-generated questions and answer strategies tailored to your military background and target role.</p>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".6rem",marginBottom:".6rem"}}>
+                  <div className="field" style={{marginBottom:0}}><label>Job Title Interviewing For</label>
+                    <input placeholder="e.g. Operations Manager" value={prepJob.title} onChange={e=>setPrepJob(j=>({...j,title:e.target.value}))}/>
+                  </div>
+                  <div className="field" style={{marginBottom:0}}><label>Company</label>
+                    <input placeholder="e.g. Amazon, VA, Booz Allen" value={prepJob.company} onChange={e=>setPrepJob(j=>({...j,company:e.target.value}))}/>
+                  </div>
+                </div>
+                <div className="field" style={{marginBottom:"1rem"}}><label>Interview Type</label>
+                  <select value={prepJob.type} onChange={e=>setPrepJob(j=>({...j,type:e.target.value}))}>
+                    <option value="behavioral">Behavioral (Tell me about a time...)</option>
+                    <option value="technical">Technical / Skills-Based</option>
+                    <option value="government">Government / Federal (USAJobs / STAR format)</option>
+                    <option value="executive">Leadership / Executive Panel</option>
+                    <option value="phone">Phone Screen / Initial Recruiter Call</option>
+                  </select>
+                </div>
+                <button className="btn-primary" onClick={genInterviewPrep} disabled={prepLoading} style={{marginBottom:"1rem"}}>
+                  {prepLoading?"🎤 Preparing your questions...":"🎤 Generate Interview Questions"}
+                </button>
+                {prepQuestions.length>0&&(
+                  <>
+                    <div style={{fontWeight:700,fontSize:".82rem",color:"var(--dim)",marginBottom:".75rem",letterSpacing:".06em",textTransform:"uppercase"}}>
+                      {prepQuestions.length} Questions for {prepJob.title||"your interview"} {prepJob.company?"at "+prepJob.company:""}
+                    </div>
+                    {prepQuestions.map((q,i)=>(
+                      <div key={i} className="prep-card">
+                        <div className="prep-q">Q{i+1}: {q.question}</div>
+                        {q.whyAsked&&<div style={{fontSize:".74rem",color:"#8aa0b8",marginBottom:".4rem",fontStyle:"italic"}}>Why they ask: {q.whyAsked}</div>}
+                        <div className="prep-a">{q.answerStrategy}</div>
+                        {q.starExample&&(
+                          <div style={{background:"#f0f4ff",border:"1px solid #d0daea",borderRadius:"4px",padding:".5rem .7rem",marginTop:".5rem",fontSize:".78rem",color:"#3a5070",lineHeight:1.6}}>
+                            <strong style={{color:"#1a3a6b"}}>STAR Example: </strong>{q.starExample}
+                          </div>
+                        )}
+                        {q.tip&&<div className="prep-tip">💡 {q.tip}</div>}
+                      </div>
+                    ))}
+                    <button className="btn-sec" style={{fontSize:".8rem",marginTop:".5rem"}} onClick={genInterviewPrep}>↺ Regenerate</button>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* ── 3. FOLLOW-UP EMAILS ── */}
+            {retentionTab==="followup"&&(
+              <div>
+                <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Follow-Up Email Generator</h3>
+                <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>Professional emails for every stage of the hiring process — thank-you, check-in, negotiation, or withdrawal.</p>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".6rem",marginBottom:".6rem"}}>
+                  <div className="field" style={{marginBottom:0}}><label>Company</label>
+                    <input placeholder="e.g. Lockheed Martin" value={followupCtx.company} onChange={e=>setFollowupCtx(f=>({...f,company:e.target.value}))}/>
+                  </div>
+                  <div className="field" style={{marginBottom:0}}><label>Role</label>
+                    <input placeholder="e.g. Systems Engineer" value={followupCtx.role} onChange={e=>setFollowupCtx(f=>({...f,role:e.target.value}))}/>
+                  </div>
+                  <div className="field" style={{marginBottom:0}}><label>Interviewer / Recruiter Name</label>
+                    <input placeholder="e.g. Sarah Johnson" value={followupCtx.interviewerName} onChange={e=>setFollowupCtx(f=>({...f,interviewerName:e.target.value}))}/>
+                  </div>
+                  <div className="field" style={{marginBottom:0}}><label>Interview / Last Contact Date</label>
+                    <input type="date" value={followupCtx.date} onChange={e=>setFollowupCtx(f=>({...f,date:e.target.value}))}/>
+                  </div>
+                </div>
+                <div className="field" style={{marginBottom:"1rem"}}><label>Email Type</label>
+                  <select value={followupCtx.outcome} onChange={e=>setFollowupCtx(f=>({...f,outcome:e.target.value}))}>
+                    <option value="thank-you">Thank-You After Interview</option>
+                    <option value="follow-up">Follow-Up (No Response After 1 Week)</option>
+                    <option value="negotiation">Salary Negotiation</option>
+                    <option value="withdraw">Withdraw Application</option>
+                  </select>
+                </div>
+                <button className="btn-primary" onClick={genFollowupEmail} disabled={followupLoading} style={{marginBottom:"1rem"}}>
+                  {followupLoading?"✍ Writing your email...":"📧 Generate Email"}
+                </button>
+                {followupEmail&&(
+                  <>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem"}}>
+                      <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b"}}>Your Email</div>
+                      <div style={{display:"flex",gap:".4rem"}}>
+                        <button className="btn-sec" style={{fontSize:".75rem"}} onClick={()=>{navigator.clipboard.writeText(followupEmail);setCopiedFollowup(true);setTimeout(()=>setCopiedFollowup(false),2000);}}>
+                          {copiedFollowup?"✓ Copied!":"Copy"}
+                        </button>
+                        <button className="btn-sec" style={{fontSize:".75rem"}} onClick={genFollowupEmail}>↺ Regenerate</button>
+                      </div>
+                    </div>
+                    <div className="cl-output">{followupEmail}</div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* ── 4. TRANSITION TIMELINE ── */}
+            {retentionTab==="timeline"&&(
+              <div>
+                <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Transition Timeline</h3>
+                <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>Your complete military-to-civilian transition checklist. Check off each step as you complete it.</p>
+                {[
+                  {phase:"6-12 Months Before ETS",color:"#c0392b",items:[
+                    {id:"tap",label:"Complete TAP (Transition Assistance Program)",desc:"Mandatory program — covers resume writing, VA benefits, job search basics"},
+                    {id:"dd214",label:"Request DD-214 and service records",desc:"You will need these for VA claims, hiring preferences, and education benefits"},
+                    {id:"varating",label:"File VA disability claim",desc:"Start early — the process takes 3-6 months on average"},
+                    {id:"gibill",label:"Apply for GI Bill (Chapter 33 or 30)",desc:"Covers tuition, housing allowance, and books for school or certifications"},
+                  ]},
+                  {phase:"3-6 Months Before ETS",color:"#e67e22",items:[
+                    {id:"linkedin",label:"Create or update LinkedIn profile",desc:"Connect with veteran hiring programs and recruiters proactively"},
+                    {id:"resume",label:"Build your civilian resume",desc:"Use this tool to generate and refine your resume"},
+                    {id:"network",label:"Start networking — veteran groups, LinkedIn, base programs",desc:"80% of jobs are filled through connections, not job postings"},
+                    {id:"skillbridge",label:"Apply for SkillBridge or DoD Internship",desc:"Work at a civilian company while still in uniform — paid by DoD"},
+                    {id:"clearance",label:"Document your security clearance",desc:"Get a clearance verification letter from your security manager"},
+                  ]},
+                  {phase:"1-3 Months Before ETS",color:"#1a3a6b",items:[
+                    {id:"applying",label:"Apply to 5+ jobs per week",desc:"Use USAJobs for government roles, LinkedIn and Indeed for civilian"},
+                    {id:"benefits",label:"Sign up for TRICARE and other transitioning benefits",desc:"Healthcare coverage continues for a period after separation"},
+                    {id:"housing",label:"Confirm housing plan post-separation",desc:"BAH ends at separation — plan ahead for rent/mortgage"},
+                    {id:"references",label:"Line up 3 professional references",desc:"Officers, NCOs, or civilians who can speak to your leadership"},
+                  ]},
+                  {phase:"After ETS",color:"#1a7a40",items:[
+                    {id:"unemployment",label:"File for unemployment if needed",desc:"You may qualify — visit your state workforce agency"},
+                    {id:"voc_rehab",label:"Explore Vocational Rehabilitation (Chapter 31)",desc:"If you have a service-connected disability, VR&E can fund your education or training"},
+                    {id:"interview_ready",label:"Use Interview Prep for every callback",desc:"Prepare specifically for each company and role"},
+                    {id:"hired",label:"Accept your offer and celebrate 🎖",desc:"You earned this. The skills you built will serve you for life."},
+                  ]},
+                ].map((phase,pi)=>(
+                  <div key={pi} style={{marginBottom:"1.5rem"}}>
+                    <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:phase.color,marginBottom:".6rem",paddingBottom:".3rem",borderBottom:"2px solid "+phase.color}}>{phase.phase}</div>
+                    {phase.items.map((item,ii)=>(
+                      <div key={item.id} className="tl-item" style={{cursor:"pointer"}} onClick={()=>saveTl(item.id,!tlChecks[item.id])}>
+                        <div className={"tl-dot "+(tlChecks[item.id]?"tl-done":"tl-pending")}>
+                          {tlChecks[item.id]?"✓":"○"}
+                        </div>
+                        <div className="tl-content" style={{opacity:tlChecks[item.id]?.6:1}}>
+                          <h4 style={{textDecoration:tlChecks[item.id]?"line-through":"none"}}>{item.label}</h4>
+                          <p>{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* ── 5. WEEKLY CHECK-IN ── */}
+            {retentionTab==="checkin"&&(
+              <div>
+                <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Weekly Progress Check-In</h3>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))",gap:".75rem",marginBottom:"1.5rem"}}>
+                  {[
+                    {label:"Jobs Applied",val:jobApps.length,icon:"📋",color:"#1a3a6b"},
+                    {label:"Interviews",val:jobApps.filter(j=>j.status.includes("Interview")).length,icon:"🎤",color:"#e67e22"},
+                    {label:"Offers",val:jobApps.filter(j=>j.status==="Offer Received"||j.status==="Accepted").length,icon:"🏆",color:"#1a7a40"},
+                    {label:"Timeline Done",val:Object.values(tlChecks).filter(Boolean).length+"/16",icon:"🗓",color:"#8a6000"},
+                    {label:"Resumes Built",val:savedResumes.length,icon:"📄",color:"#1a3a6b"},
+                  ].map((s,i)=>(
+                    <div key={i} className="stat-card">
+                      <div style={{fontSize:"1.5rem",marginBottom:".3rem"}}>{s.icon}</div>
+                      <div className="stat-num" style={{color:s.color,fontSize:"1.6rem"}}>{s.val}</div>
+                      <div className="stat-lbl">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Insights */}
+                <div className="card">
+                  <div className="ch"><h3>📊 Your Job Search Health</h3></div>
+                  <div className="cb">
+                    {jobApps.length===0&&(
+                      <div style={{color:"var(--dim)",fontSize:".88rem"}}>Start tracking your applications on the Job Tracker to see your search health score here.</div>
+                    )}
+                    {jobApps.length>0&&(
+                      <div style={{display:"flex",flexDirection:"column",gap:".8rem"}}>
+                        {jobApps.filter(j=>j.status.includes("Interview")).length===0&&jobApps.length>=5&&(
+                          <div style={{background:"#fff8e0",border:"1px solid #f0c040",borderRadius:"6px",padding:".75rem",fontSize:".85rem",color:"#5a3a00"}}>
+                            ⚡ <strong>Low response rate.</strong> You have {jobApps.length} applications but no interviews yet. Consider tailoring your resume more specifically to each job posting, or try the Resume Review tool.
+                          </div>
+                        )}
+                        {jobApps.filter(j=>j.status.includes("Interview")).length>0&&jobApps.filter(j=>j.status==="Offer Received"||j.status==="Accepted").length===0&&(
+                          <div style={{background:"#e8f8ee",border:"1px solid #b0e0c0",borderRadius:"6px",padding:".75rem",fontSize:".85rem",color:"#1a5a30"}}>
+                            ✅ <strong>Getting interviews!</strong> Use the Interview Prep tool before each one. Focus on translating your military experience into business outcomes.
+                          </div>
+                        )}
+                        {jobApps.filter(j=>j.status==="Offer Received"||j.status==="Accepted").length>0&&(
+                          <div style={{background:"#f0f8ff",border:"1px solid #1a3a6b",borderRadius:"6px",padding:".75rem",fontSize:".85rem",color:"#1a3a6b"}}>
+                            🏆 <strong>Offer on the table!</strong> Use the Follow-Up Email generator to send a professional negotiation email. Most veterans leave $5,000-$15,000 on the table by not negotiating.
+                          </div>
+                        )}
+                        <div style={{fontSize:".82rem",color:"var(--dim)"}}>
+                          🎯 Goal: Apply to <strong>5 jobs per week</strong> · Response rate target: <strong>15%+</strong> · Average veteran job search: <strong>3-5 months</strong>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="card" style={{marginTop:"1rem"}}>
+                  <div className="ch"><h3>🔗 Quick Actions</h3></div>
+                  <div className="cb" style={{display:"flex",flexWrap:"wrap",gap:".5rem"}}>
+                    {[
+                      {label:"+ Log Application",action:()=>{setRetentionTab("tracker");setShowAddJob(true);}},
+                      {label:"🎤 Prep for Interview",action:()=>setRetentionTab("interview")},
+                      {label:"📧 Write Follow-Up",action:()=>setRetentionTab("followup")},
+                      {label:"📋 Resume Builder",action:()=>setTab(2)},
+                      {label:"✉ Cover Letter",action:()=>setTab(3)},
+                    ].map((a,i)=>(
+                      <button key={i} className="btn-sec" style={{fontSize:".82rem"}} onClick={a.action}>{a.label}</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="nav-row" style={{marginTop:"1.5rem"}}>
+              <button className="btn-sec" onClick={()=>setTab(3)}>← Cover Letter</button>
+              <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
+            </div>
+          </div>
+
+
+          {/* ══ TAB 5: MY PROFILE ══ */}
+          <div className={`panel ${tab===5?"on":""}`}>
             {!currentUser?(
               <div style={{textAlign:"center",padding:"3rem 1rem"}}>
                 <div style={{fontSize:"3rem",marginBottom:"1rem"}}>🔒</div>

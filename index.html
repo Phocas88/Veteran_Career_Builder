@@ -1214,7 +1214,7 @@ function DatePicker({ value, onChange, placeholder = "Select date" }) {
 
   const parsed = value ? { year: value.split("-")[0], month: value.split("-")[1] } : null;
   const display = parsed
-    ? (MONTHS[parseInt(parsed.month) - 1])++" "+parsed.year
+    ? (MONTHS[parseInt(parsed.month) - 1])+" "+parsed.year
     : placeholder;
 
   const pickYear = (y) => { setSelYear(y); setMode("month"); };

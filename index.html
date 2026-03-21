@@ -30,13 +30,13 @@
   <script>
     try {
       const firebaseConfig = {
-        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
-        authDomain: "veteran-career-builder.firebaseapp.com",
-        projectId: "veteran-career-builder",
-        storageBucket: "veteran-career-builder.firebasestorage.app",
-        messagingSenderId: "REPLACE_SENDER_ID",
-        appId: "REPLACE_APP_ID"
-      };
+  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
+  authDomain: "veteran-career-builder.firebaseapp.com",
+  projectId: "veteran-career-builder",
+  storageBucket: "veteran-career-builder.firebasestorage.app",
+  messagingSenderId: "664123627374",
+  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
+};
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -1797,7 +1797,7 @@ function CareerDetailView({selectedCareer,setSelectedCareer,careerDetail,loading
   </div>);
 }
 
-function CareerTab({careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector}) {
+function CareerTab({careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector}) {
   return (<div className={"panel "+(tab===1?"on":"")}>
 
         <div className="intro">
@@ -4071,7 +4071,7 @@ Return this exact JSON structure:
 
 
 
-          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector} />
+          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector} />
 
 
 

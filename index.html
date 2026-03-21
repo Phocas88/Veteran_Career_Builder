@@ -31,7 +31,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-   const firebaseConfig = {
+     const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -1811,7 +1811,7 @@ function CareerDetailView(props) {
 }
 
 function CareerTab(props) {
-  const {careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector,hasAccess,setShowPaywall,skills,personal} = props;
+  const {careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,RG,filterCareers,matchesSector,hasAccess,setShowPaywall,skills,personal} = props;
   return (<div className={"panel "+(tab===1?"on":"")}>
 
         <div className="intro">
@@ -4455,7 +4455,7 @@ Return this exact JSON structure:
 
 
 
-          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} education={education} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector}  hasAccess={hasAccess} setShowPaywall={setShowPaywall}  skills={skills} personal={personal} />
+          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} education={education} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector}  hasAccess={hasAccess} RG={RG} setShowPaywall={setShowPaywall}  skills={skills} personal={personal} />
 
 
 
@@ -5476,7 +5476,7 @@ Return this exact JSON structure:
     hideLoading();
   </script>
 
-  <footer style="background:#0d1f3c;color:#a0b8d0;text-align:center;padding:1.5rem 1rem;font-size:.78rem;margin-top:2rem;">
+  <footer style="background:#0d1f3c;color:#a0b8d0;text-align:center;padding:1.5rem 1rem;font-size:.78rem;margin-top:2rem;word-wrap:break-word;">
     <div style="margin-bottom:.6rem;">
       <a href="#" onclick="event.preventDefault();alert('Privacy Policy: We do not sell or share your personal data.')" style="color:#a0b8d0;text-decoration:none;margin:0 .75rem;">Privacy Policy</a>
       <span style="color:#3a5070;">|</span>
@@ -5484,5 +5484,5 @@ Return this exact JSON structure:
       <span style="color:#3a5070;">|</span>
       <a href="/cdn-cgi/l/email-protection#0e7d7b7e7e617c7a4e786b7a6b7c6f606d67786762676f60206d6163" style="color:#a0b8d0;text-decoration:none;margin:0 .75rem;">Contact Us</a>
     </div>
-    <div style="color:#3a5070;font-size:.72rem;">&copy; 2025 Veteran Career Builder &bull; Not affiliated with the U.S. Depar
+    <div style="color:#3a5070;font-size:.72rem;">&copy; 2025 Veteran Career Builder &bull; Not affiliated with the U.S. Department of Defense or the Department of Veterans Affairs
 </html>

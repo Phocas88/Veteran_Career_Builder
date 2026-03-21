@@ -92,9 +92,9 @@
       const session = params.get("session_id");
       const success = params.get("stripe_success");
       if (success === "1" && session) {
-        // Grant 31 days access (slight buffer over 30)
+        // Grant 31 days  (slight buffer over 30)
         const expiry = Date.now() + 31 * 24 * 60 * 60 * 1000;
-        localStorage.setItem("vcb_access", JSON.stringify({ 
+        localStorage.setItem("vcb_", JSON.stringify({ 
           type:"paid", expiry, plan:"monthly", session 
         }));
         // Clean URL
@@ -1177,7 +1177,7 @@ async function callClaude(prompt, system = "", maxTokens = 2000) {
         "Content-Type": "application/json",
         "x-api-key": getStoredApiKey(),
         "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
+        "anthropic-dangerous-direct-browser-": "true"
       },
       body: JSON.stringify(body)
     });
@@ -1472,7 +1472,7 @@ function newMilExp() {
     unit:"", startDate:"", endDate:"", current:false, tos:"", duties:"",
     mosRoles:[], // sub-roles held within this MOS
     deployments:"", awards:[], customAward:"",
-    clearanceLevel:"None", clearanceStatus:"Active", sciAccess:false, polygraph:"None",
+    clearanceLevel:"None", clearanceStatus:"Active", sci:false, polygraph:"None",
     asi:[], sqi:[], additionalDuties:[], customDuty:"", customAsiCode:"", customAsiDesc:"", customSqiCode:"", customSqiDesc:"",
     employer:"", jobTitle:"" 
   };
@@ -1480,7 +1480,7 @@ function newMilExp() {
 function newCivExp() {
   return { id:Date.now(), type:"Civilian Employment", branch:"", rank:"", mos:"", mosTitle:"", serviceType:"",
     unit:"", startDate:"", endDate:"", current:false, tos:"", duties:"", deployments:"", awards:"",
-    clearanceLevel:"None", clearanceStatus:"Active", sciAccess:false, polygraph:"None",
+    clearanceLevel:"None", clearanceStatus:"Active", sci:false, polygraph:"None",
     asi:[], sqi:[], additionalDuties:[], customDuty:"", customAsiCode:"", customAsiDesc:"", customSqiCode:"", customSqiDesc:"",
     employer:"", jobTitle:"" };
 }
@@ -1589,7 +1589,7 @@ function App() {
   const [viewingResume, setViewingResume] = useState(null);
 
   // ── PAYWALL STATE ─────────────────────────────────────────────────────────
-  // ── ACCESS CODE SYSTEM ──────────────────────────────────────────────────────
+  // ──  CODE SYSTEM ──────────────────────────────────────────────────────
   // Format: CODE -> expiry timestamp (ms). 0 = never expires.
   // Add new codes here. Date.UTC(year, month-1, day) for expiry.
   // Example: Date.UTC(2026, 3, 20) = April 20 2026
@@ -1608,7 +1608,7 @@ function App() {
     "INDIA30":            Date.UTC(2026, 3, 20),
     "JULIET30":           Date.UTC(2026, 3, 20),
     // Special named codes (give to specific people)
-    "Amon26":           Date.UTC(2026, 4, 20),
+    "Amon26":           Date.UTC(2026, 4, 25),
     "VETTEST2":           Date.UTC(2026, 4, 20),
     "VETTEST3":           Date.UTC(2026, 4, 20),
     "VETTEST4":           Date.UTC(2026, 4, 20),
@@ -4058,8 +4058,6 @@ Return this exact JSON structure:
                           ))}
                         </div>
                       </div>
-
-                      <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:".5rem"}}>
                       <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",display:"flex",gap:".5rem",flexWrap:"wrap",alignItems:"center",justifyContent:"flex-end"}}>
                         <button style={{padding:".4rem .9rem",background:"transparent",border:"1px solid #d0daea",borderRadius:"4px",color:"#3a5070",fontSize:".8rem",cursor:"pointer"}}
                           onClick={()=>{
@@ -4087,7 +4085,6 @@ Return this exact JSON structure:
                           💾 Save Career Path
                         </button>
                       </div>
-                    </div>
 
                   </div>
                 )}

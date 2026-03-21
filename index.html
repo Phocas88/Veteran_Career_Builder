@@ -29,7 +29,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-    const firebaseConfig = {
+  const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -3388,9 +3388,9 @@ Return this exact JSON structure:
                   // Set success URL to: https://veterancareerpath.com?stripe_success=1&session_id={CHECKOUT_SESSION_ID}
                   const stripeLink = "REPLACE_WITH_STRIPE_PAYMENT_LINK";
                   if (stripeLink === "REPLACE_WITH_STRIPE_PAYMENT_LINK") {
-                    // Fallback: grant temp access until Stripe is connected
+                    // Stripe not yet connected — grant 31-day trial access
                     grantPaidAccess(1);
-                    alert("Payment system coming soon! Access granted for now.");
+
                   } else {
                     window.location.href = stripeLink;
                   }
@@ -5428,6 +5428,10 @@ Return this exact JSON structure:
 
 
 
+      {!hasAccess&&<div style={{position:"fixed",bottom:0,left:0,right:0,background:"linear-gradient(135deg,#1a3a6b,#0d1f3c)",color:"#fff",padding:".6rem 1rem",display:"flex",justifyContent:"space-between",alignItems:"center",zIndex:9998,boxShadow:"0 -2px 12px rgba(0,0,0,.3)"}}>
+        <span style={{fontSize:".8rem",color:"#b8d0f0"}}>🔒 AI features locked — upgrade to unlock Career Match, Resume Builder & more</span>
+        <button onClick={()=>setShowPaywall(true)} style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",fontWeight:700,fontSize:".8rem",padding:".35rem .9rem",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Upgrade $14.99/mo</button>
+      </div>}
       {saveToast&&<div className="save-toast">{saveToast}</div>}
     </>
   );

@@ -31,7 +31,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-    const firebaseConfig = {
+     const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -910,7 +910,7 @@ body{background:#f4f6fa;font-family:'Crimson Pro',serif;color:#0d1f3c;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
 /* WRAP */
-.wrap{max-width:960px;margin:0 auto;padding:1.2rem 1rem 5rem;}
+.wrap{max-width:960px;margin:0 auto;padding:1.2rem 1rem;}
 
 /* CARDS */
 .card{background:#ffffff;border:1px solid #d0daea;border-radius:6px;margin-bottom:1.1rem;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.06);}
@@ -1166,11 +1166,11 @@ function getClearanceBadge(lvl) {
 
 // ── API KEY CHECK ───────────────────────────────────────────────────────────
 function isApiKeySet() {
-  const key = localStorage.getItem("vcb_admin_key") || (typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key")) || (document.cookie.match(/vcb_ak=([^;]+)/)||[])[1]||"";
+  const key = localStorage.getItem("vcb_admin_key") || (typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key")) || "";
   return key.length > 20;
 }
 function getStoredApiKey() {
-  return localStorage.getItem("vcb_admin_key") || (typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key")) || (document.cookie.match(/vcb_ak=([^;]+)/)||[])[1]||"";
+  return localStorage.getItem("vcb_admin_key") || (typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key")) || "";
 }
 
 async function callClaude(prompt, system = "", maxTokens = 2000) {
@@ -1811,7 +1811,7 @@ function CareerDetailView(props) {
 }
 
 function CareerTab(props) {
-  const {careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector,hasAccess,setShowPaywall,skills,personal} = props;
+  const {careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector,hasAccess,setShowPaywall} = props;
   return (<div className={"panel "+(tab===1?"on":"")}>
 
         <div className="intro">
@@ -2623,7 +2623,7 @@ function App() {
       const cred = await fbAuth.createUserWithEmailAndPassword(authForm.username.trim(), authForm.password);
       await cred.user.updateProfile({ displayName: authForm.name.trim() });
       setAuthOk("Account created! Signing you in...");
-      setShowAuth(false); if(!checkAccess()){setShowPaywall(true);}
+      setShowAuth(false);
       showToast("Welcome, " + authForm.name.split(" ")[0] + "! ✓");
       setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
     } catch(e) {
@@ -2640,7 +2640,7 @@ function App() {
     if (!authForm.password) { setAuthErr("Please enter your password."); return; }
     try {
       await fbAuth.signInWithEmailAndPassword(authForm.username.trim(), authForm.password);
-      setShowAuth(false); if(!checkAccess()){setShowPaywall(true);}
+      setShowAuth(false);
       setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
     } catch(e) {
       if (e.code === "auth/user-not-found" || e.code === "auth/invalid-credential") setAuthErr("No account found. Check your email or create an account.");
@@ -3400,7 +3400,7 @@ Return this exact JSON structure:
                 <div style={{textAlign:"center",fontSize:".72rem",color:"#8aa0b8",margin:"-.1rem 0 .2rem"}}>
                   Cancel anytime · No contracts
                 </div>
-                <button className="pw-skip" onClick={()=>{setShowPaywall(false);}}>
+                <button className="pw-skip" onClick={()=>{setShowPaywall(false);setHasAccess(false);}}>
                   Not ready yet? Browse the app first (AI features locked)
                 </button>
                 <div style={{textAlign:"center",marginTop:".75rem",paddingBottom:".5rem",fontSize:".82rem",color:"#8aa0b8"}}>
@@ -3555,7 +3555,7 @@ Return this exact JSON structure:
                   onClick={()=>{
                     const k = adminKeyInput.trim();
                     if(k.length < 20){ alert("That doesn't look like a valid API key."); return; }
-                    localStorage.setItem("vcb_admin_key", k); try{sessionStorage.setItem("vcb_admin_key", k);}catch(e){} document.cookie="vcb_ak="+k+";max-age=31536000;path=/;SameSite=Strict";
+                    localStorage.setItem("vcb_admin_key", k); try{sessionStorage.setItem("vcb_admin_key", k);}catch(e){}
                     setAdminKeySet(true);
                     setAdminKeyInput("");
                     setShowAdminSetup(false);
@@ -4439,7 +4439,7 @@ Return this exact JSON structure:
 
 
 
-          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} education={education} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector}  hasAccess={hasAccess} setShowPaywall={setShowPaywall}  skills={skills} personal={personal} />
+          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} education={education} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector}  hasAccess={hasAccess} setShowPaywall={setShowPaywall} />
 
 
 
@@ -5448,7 +5448,7 @@ Return this exact JSON structure:
 
 
 
-      {!hasAccess&&<div style={{position:"fixed",bottom:0,left:0,right:0,background:"linear-gradient(135deg,#1a3a6b,#0d1f3c)",color:"#fff",padding:".6rem 1rem",display:"flex",justifyContent:"space-between",alignItems:"center",zIndex:99999,boxShadow:"0 -2px 12px rgba(0,0,0,.3)"}}>
+      {!hasAccess&&<div style={{position:"fixed",bottom:0,left:0,right:0,background:"linear-gradient(135deg,#1a3a6b,#0d1f3c)",color:"#fff",padding:".6rem 1rem",display:"flex",justifyContent:"space-between",alignItems:"center",zIndex:9998,boxShadow:"0 -2px 12px rgba(0,0,0,.3)"}}>
         <span style={{fontSize:".8rem",color:"#b8d0f0"}}>🔒 AI features locked — upgrade to unlock Career Match, Resume Builder & more</span>
         <button onClick={()=>setShowPaywall(true)} style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",fontWeight:700,fontSize:".8rem",padding:".35rem .9rem",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Upgrade $14.99/mo</button>
       </div>}

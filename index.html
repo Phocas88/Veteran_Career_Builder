@@ -1214,7 +1214,7 @@ function DatePicker({ value, onChange, placeholder = "Select date" }) {
 
   const parsed = value ? { year: value.split("-")[0], month: value.split("-")[1] } : null;
   const display = parsed
-    ? (MONTHS[parseInt(parsed.month) - 1])+" ${parsed.year}"
+    ? (MONTHS[parseInt(parsed.month) - 1])++" "+parsed.year
     : placeholder;
 
   const pickYear = (y) => { setSelYear(y); setMode("month"); };
@@ -2666,7 +2666,7 @@ Use this exact structure:
 
       // Ensure all expected fields exist with fallbacks
       setCareerDetail({
-        about: parsed.about || (career.title)+" is a ${career.sector} career well-suited for veterans.",
+        about: parsed.about || (career.title)+" is a "+(career.sector||"")+" career well-suited for veterans.",
         salaryBreakdown: {
           entry: (parsed.salaryBreakdown && parsed.salaryBreakdown.entry) || career.salaryRange,
           mid: (parsed.salaryBreakdown && parsed.salaryBreakdown.mid) || "",
@@ -2684,7 +2684,7 @@ Use this exact structure:
     } catch(err) {
       // Fallback: build a useful detail view from the data we already have
       setCareerDetail({
-        about: (career.title)+" is a ${career.sector} role in ${career.industry || "multiple industries"}. ${career.description || ""} Veterans are well-positioned for this career due to their disciplined work ethic, leadership experience, and mission-focused mindset.",
+        about: (career.title)+" is a "+(career.sector||"")+" role in "+(career.industry||"multiple industries")+". "+(career.description||"")+" Veterans are well-positioned for this career due to their disciplined work ethic, leadership experience, and mission-focused mindset.",
         salaryBreakdown: { entry: career.salaryRange, mid: "", senior: "", cleared: null, notes: "Salary varies by location, experience, and certifications." },
         careerPath: [
           { title: "Entry-Level "+(career.title), salary: career.salaryRange, description: "Build foundational civilian experience and professional network.", timeframe: "Years 0–2" },
@@ -2723,7 +2723,7 @@ Use this exact structure:
       " Deployments:" + (e.deployments||"none") +
       " Duties:" + (e.duties||"not described")
     ).join(" | ");
-    const eduText = education.map(e=>(e.degree)+" in ${e.field} — ${e.institution} (${e.year})${e.pme?" | PME/Military Schools: "+e.pme:""}").join("\n");
+    const eduText = education.map(e=>(e.degree)+" in "+(e.field||"")+" — "+(e.institution||"")+" ("+(e.year||"")+")").join("; ");
     try {
       const formatInstructions = {
         ats_chrono: "ATS CHRONOLOGICAL FORMAT: Simple clean layout. Standard section headers (Summary, Experience, Education, Skills, Certifications). Reverse chronological work history. No tables, no text boxes, no columns. Keyword-rich. ATS-safe fonts and structure.",
@@ -2804,8 +2804,8 @@ Use this exact structure:
     if (!resume && !resumeData && !uploadedResumeText) { alert("Generate your resume first on the Build Resume tab, or upload your existing resume above."); return; }
     setCoverLetterLoading(true);
     setCoverLetter("");
-    const milSummary = milExperiences.map(e=>(e.branch)+" ${e.rank} (${e.tos}), MOS: ${e.mos}").join("; ");
-    const resumeText = resume || (resumeData ? (resumeData.name)+" - ${(resumeData.experience||[]).map(j=>j.title+" at "+j.employer).join(", ")}" : "");
+    const milSummary = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")+" ("+(e.tos||"")+"), MOS: "+(e.mos||"")).join("; ");
+    const resumeText = resume || (resumeData ? (resumeData.name)+" resume" : "");
     const prompt = `You are an expert military-to-civilian career counselor writing a compelling cover letter.
 
 VETERAN PROFILE:
@@ -2844,7 +2844,7 @@ Return ONLY the cover letter text, no subject line, no extra commentary.`;
     if (!hasAccess) { setShowPaywall(true); return; }
     if (!isApiKeySet()) { setShowAdminSetup(true); return; }
     setPrepLoading(true); setPrepQuestions([]);
-    const milSummary = milExperiences.map(e=>(e.branch)+" ${e.rank} MOS ${e.mos} (${e.tos})").join("; ");
+    const milSummary = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")+" MOS "+(e.mos||"")+" ("+(e.tos||"")+")").join("; ");
     const prompt = `You are an elite interview coach for military veterans transitioning to civilian careers.
 
 VETERAN: ${milSummary}
@@ -2884,7 +2884,7 @@ Make answers specific to their MOS and rank. Use the STAR method. Translate all 
     if (!hasAccess) { setShowPaywall(true); return; }
     if (!isApiKeySet()) { setShowAdminSetup(true); return; }
     setFollowupLoading(true); setFollowupEmail("");
-    const milSum = milExperiences.map(e=>(e.branch)+" ${e.rank}").join(", ");
+    const milSum = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")).join(", ");
     const emailTypes = {
       "thank-you": "a warm, professional thank-you email after an interview",
       "follow-up": "a polite follow-up email checking on application status after 1 week of silence",
@@ -3911,7 +3911,7 @@ Return this exact JSON structure:
                         translationData.summary||"",
                         "",
                         ...(translationData.roles||[]).flatMap(r=>[
-                          (r.mos)+" — ${r.title}",
+                          (r.mos)+" — "+(r.title||""),
                           r.whatYouDid||"",
                           "Transferable Skills: " + (r.transferableSkills||[]).join(", "),
                           "Resume Bullets:",
@@ -3919,7 +3919,7 @@ Return this exact JSON structure:
                           ""
                         ]),
                         ...(translationData.qualifications||[]).flatMap(q=>[
-                          (q.code)+" — ${q.name}: ${q.civilianMeaning}",
+                          (q.code)+" — "+(q.name||"")+": "+(q.civilianMeaning||""),
                           "Opens doors to: "+(q.unlocks),""
                         ]),
                       ].join("\n");
@@ -3947,7 +3947,7 @@ Return this exact JSON structure:
                         addLine("PROFESSIONAL SUMMARY", 11, true); y+=2;
                         addLine(translationData.summary||""); y+=4;
                         (translationData.roles||[]).forEach(r=>{
-                          addLine((r.mos)+" — ${r.title}", 11, true); y+=1;
+                          addLine((r.mos)+" — "+(r.title||""), 11, true); y+=1;
                           addLine(r.whatYouDid||""); y+=2;
                           addLine("TRANSFERABLE SKILLS", 9, true);
                           addLine((r.transferableSkills||[]).join(" • ")); y+=2;
@@ -3957,7 +3957,7 @@ Return this exact JSON structure:
                         if((translationData.qualifications||[]).length){
                           addLine("QUALIFICATIONS & WHAT THEY UNLOCK", 11, true); y+=2;
                           (translationData.qualifications||[]).forEach(q=>{
-                            addLine((q.code)+" — ${q.name}", 10, true);
+                            addLine((q.code)+" — "+(q.name||""), 10, true);
                             addLine(q.civilianMeaning||"");
                             addLine("Opens: "+(q.unlocks||"")); y+=2;
                           });
@@ -3965,7 +3965,7 @@ Return this exact JSON structure:
                         if((translationData.additionalDuties||[]).length){
                           addLine("ADDITIONAL DUTY QUALIFICATIONS", 11, true); y+=2;
                           (translationData.additionalDuties||[]).forEach(d=>{
-                            addLine((d.duty)+" → ${d.civilianEquivalent}", 10, true);
+                            addLine((d.duty)+" → "+(d.civilianEquivalent||""), 10, true);
                             addLine(d.value||""); y+=2;
                           });
                         }

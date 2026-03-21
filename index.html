@@ -1811,7 +1811,7 @@ function CareerDetailView(props) {
 }
 
 function CareerTab(props) {
-  const {careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector} = props;
+  const {careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector} = props,hasAccess,setShowPaywall} = props;
   return (<div className={"panel "+(tab===1?"on":"")}>
 
         <div className="intro">
@@ -4439,7 +4439,7 @@ Return this exact JSON structure:
 
 
 
-          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} education={education} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector} />
+          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} education={education} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector}  hasAccess={hasAccess} setShowPaywall={setShowPaywall} />
 
 
 

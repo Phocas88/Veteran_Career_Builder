@@ -2970,8 +2970,8 @@ Return this exact JSON structure:
       <style>{css}</style>
       <div className="app">
 
-        {/* ── AUTH OVERLAY ── */}
-        {/* ══ PAYWALL MODAL ══ */}
+
+
         {showPaywall&&(
           <div className="pw-overlay" onClick={e=>e.target===e.currentTarget&&null}>
             <div className="pw-box">
@@ -3145,7 +3145,7 @@ Return this exact JSON structure:
 
 
 
-        {/* ── ADMIN SETUP MODAL ── */}
+
         {showAdminSetup&&(
           <div style={{position:"fixed",inset:0,background:"rgba(8,12,24,.97)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}}>
             <div style={{background:"linear-gradient(160deg,#243560,#1e3530)",border:"1px solid rgba(201,168,76,.35)",borderRadius:"6px",width:"100%",maxWidth:"460px",overflow:"hidden"}}>
@@ -3206,7 +3206,7 @@ Return this exact JSON structure:
           </div>
         )}
 
-        {/* ── USER BAR ── */}
+
         {currentUser?(
           <div className="user-bar">
             <div className="user-bar-left">
@@ -3257,13 +3257,13 @@ Return this exact JSON structure:
 
         <div className="wrap">
 
-          {/* ══ TAB 0: PROFILE ══ */}
+
           <div className={"panel "+(tab===0?"on":"")}>
             <div className="intro">
               <strong>Your service matters.</strong> Fill in your background below — your military experience, civilian work, education, and skills. The more you add, the better your career matches and resume will be. Take your time and be as detailed as you like.
             </div>
 
-            {/* Personal */}
+
             <div className="card">
               <div className="ch" onClick={()=>toggleCollapse("personal")}>
                 <h3>Personal Information</h3>
@@ -3281,7 +3281,7 @@ Return this exact JSON structure:
             </div>
 
             
-            {/* ── MILITARY SERVICE SECTION ── */}
+
             <div className="card" style={{borderColor:"rgba(91,155,213,.35)"}}>
               <div className="ch" style={{background:"rgba(91,155,213,.1)"}}>
                 <h3 style={{color:"#7eb8f5"}}>Military Service History</h3>
@@ -3295,7 +3295,7 @@ Return this exact JSON structure:
                       {milExperiences.length>1&&<button className="btn-rm" onClick={()=>rmExp(exp.id)}>Remove</button>}
                     </div>
 
-                    {/* Branch / Rank / Service type */}
+
                     <div className="g3">
                       <div className="field">
                         <label>Branch of Service</label>
@@ -3334,7 +3334,7 @@ Return this exact JSON structure:
                       </div>
                     </div>
 
-                    {/* MOS / TOS / Unit */}
+
                     <div className="g3">
                       <div className="field">
                         <label>Primary MOS / Rate / AFSC</label>
@@ -3355,7 +3355,7 @@ Return this exact JSON structure:
                       </div>
                     </div>
 
-                    {/* Dates */}
+
                     <div className="g2">
                       <div className="field"><label>Start Date</label>
                         <DatePicker value={exp.startDate} onChange={v=>upMilExp(exp.id,"startDate",v)} placeholder="Select start date"/>
@@ -3375,7 +3375,7 @@ Return this exact JSON structure:
 
                     <hr className="sdiv"/>
 
-                    {/* ── MOS SUB-ROLES ── */}
+
                     <div className="qual-section">
                       <span className="qual-label">Roles Held Under This MOS</span>
                       <div className="hint" style={{marginBottom:".5rem"}}>
@@ -3418,7 +3418,7 @@ Return this exact JSON structure:
 
                     <hr className="sdiv"/>
 
-                    {/* ── CLEARANCES ── */}
+
                     <div className="clearance-block">
                       <h4>🔐 Security Clearance</h4>
                       <div className="g3">
@@ -3446,7 +3446,7 @@ Return this exact JSON structure:
 
                     <hr className="sdiv"/>
 
-                    {/* ── ASI ── */}
+
                     <div style={{marginBottom:"1rem"}}>
                       <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".5rem"}}>
                         {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).label}
@@ -3494,7 +3494,7 @@ Return this exact JSON structure:
 
                     <hr className="sdiv"/>
 
-                    {/* ── SQI ── */}
+
                     <div style={{marginBottom:"1rem"}}>
                       <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".5rem"}}>
                         {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).sqiLabel}
@@ -3527,7 +3527,7 @@ Return this exact JSON structure:
 
                     <hr className="sdiv"/>
 
-                    {/* ── ADDITIONAL DUTIES ── */}
+
                     <div style={{marginBottom:"1rem"}}>
                       <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".5rem"}}>Additional Duty Qualifications</div>
                       {[
@@ -3578,13 +3578,13 @@ Return this exact JSON structure:
                     </div>
 
 
-                    {/* ── AWARDS ── */}
+
                     <div className="qual-section">
                       <span className="qual-label">Awards & Decorations</span>
                       <div className="hint" style={{marginBottom:".5rem"}}>
                         Select from the library or type your own. Awards are pulled from the {exp.branch} awards list.
                       </div>
-                      {/* Awards library dropdown */}
+
                       <div className="field" style={{marginBottom:".5rem"}}>
                         <label>Add from Awards Library</label>
                         <select value="" onChange={e=>{
@@ -3598,7 +3598,7 @@ Return this exact JSON structure:
                           ))}
                         </select>
                       </div>
-                      {/* Selected awards chips */}
+
                       {(exp.awards||[]).length>0&&(
                         <div className="duty-grid" style={{marginBottom:".5rem"}}>
                           {(exp.awards||[]).map((a,i)=>(
@@ -3609,7 +3609,7 @@ Return this exact JSON structure:
                           ))}
                         </div>
                       )}
-                      {/* Custom award */}
+
                       <div className="qual-add-row">
                         <div className="field" style={{marginBottom:0,flex:1}}>
                           <label>Add Unlisted Award</label>
@@ -3633,7 +3633,7 @@ Return this exact JSON structure:
 
                     <hr className="sdiv"/>
 
-                    {/* Deployments */}
+
                     <div className="field">
                       <label>Deployments / Operations (optional)</label>
                       <textarea style={{minHeight:"55px"}}
@@ -3641,7 +3641,7 @@ Return this exact JSON structure:
                         value={exp.deployments||""} onChange={e=>upMilExp(exp.id,"deployments",e.target.value)}/>
                     </div>
 
-                    {/* General Duties */}
+
                     <div className="field">
                       <label>General Duties & Responsibilities</label>
                       <textarea style={{minHeight:"90px"}}
@@ -3651,7 +3651,7 @@ Return this exact JSON structure:
                   </div>
                 ))}
 
-                {/* Add another branch button */}
+
                 <button className="btn-add" style={{borderColor:"rgba(91,155,213,.4)",color:"#7eb8f5"}}
                   onClick={addMilExp}>
                   + Add Other Military Branch / Service Period
@@ -3659,7 +3659,7 @@ Return this exact JSON structure:
               </div>
             </div>
 
-            {/* ── CIVILIAN, DOD & GOVERNMENT SECTION ── */}
+
             <div className="card">
               <div className="ch">
                 <h3>Civilian, DoD & Government Employment</h3>
@@ -3747,7 +3747,7 @@ Return this exact JSON structure:
               </div>
             </div>
 
-            {/* Education */}
+
             <div className="card">
               <div className="ch" onClick={()=>toggleCollapse("edu")}><h3>Education & Military Training</h3><span className="chevron">▼</span></div>
               {!collapsed.edu&&<div className="cb">
@@ -3767,12 +3767,12 @@ Return this exact JSON structure:
               </div>}
             </div>
 
-            {/* Skills */}
+
             <div className="card">
               <div className="ch" onClick={()=>toggleCollapse("skills")}><h3>Skills & Certifications</h3><span className="chevron">▼</span></div>
               {!collapsed.skills&&<div className="cb">
 
-                {/* Technical Skills */}
+
                 <div className="field" style={{marginBottom:"1rem"}}>
                   <label>Technical Skills</label>
                   <div className="hint" style={{marginBottom:".5rem"}}>Type your own, or click a category to expand common options.</div>
@@ -3806,7 +3806,7 @@ Return this exact JSON structure:
                     onChange={e=>setSkills(s=>({...s,technical:e.target.value}))}/>
                 </div>
 
-                {/* Leadership Skills */}
+
                 <div className="field" style={{marginBottom:"1rem"}}>
                   <label>Leadership & Soft Skills</label>
                   <div className="hint" style={{marginBottom:".5rem"}}>Click a category to expand options.</div>
@@ -3844,7 +3844,7 @@ Return this exact JSON structure:
                   </div>
                 </div>
 
-                {/* Certifications */}
+
                 <div className="field">
                   <label>Licenses & Certifications</label>
                   <div className="hint" style={{marginBottom:".5rem"}}>Click a category to expand certifications.</div>
@@ -3881,7 +3881,7 @@ Return this exact JSON structure:
               </div>}
             </div>
 
-            {/* Translate button */}
+
             <button className="btn-primary" onClick={translateMOS} style={{position:"relative"}} disabled={loading.translate||milExperiences.length===0}>
               {loading.translate?"Translating Your Service...":"🔄  Translate My Military Experience to Civilian Language"}
             </button>
@@ -3969,7 +3969,7 @@ Return this exact JSON structure:
                   </div>
                 </div>
 
-                {/* Professional Summary */}
+
                 {translationData.summary&&(
                   <div className="trans-section">
                     <div className="trans-section-head"><h4>Professional Summary</h4></div>
@@ -3979,7 +3979,7 @@ Return this exact JSON structure:
                   </div>
                 )}
 
-                {/* Roles */}
+
                 {(translationData.roles||[]).map((r,i)=>(
                   <div className="trans-section" key={i}>
                     <div className="trans-section-head">
@@ -4015,7 +4015,7 @@ Return this exact JSON structure:
                   </div>
                 ))}
 
-                {/* Qualifications */}
+
                 {(translationData.qualifications||[]).length>0&&(
                   <div className="trans-section">
                     <div className="trans-section-head" style={{background:"rgba(160,124,214,.1)",borderBottom:"1px solid rgba(160,124,214,.2)"}}>
@@ -4038,7 +4038,7 @@ Return this exact JSON structure:
                   </div>
                 )}
 
-                {/* Additional Duties */}
+
                 {(translationData.additionalDuties||[]).length>0&&(
                   <div className="trans-section">
                     <div className="trans-section-head" style={{background:"rgba(230,160,60,.08)",borderBottom:"1px solid rgba(230,160,60,.2)"}}>
@@ -4063,12 +4063,12 @@ Return this exact JSON structure:
             <div className="nav-row"><div/><button className="btn-sec" onClick={()=>setTab(1)}>Next: Career Pathways →</button></div>
           </div>
 
-          {/* ══ TAB 1: CAREERS ══ */}
-          {/* ══ TAB 1: CAREERS ══ */}
+
+
           <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector} />
 
 
-          {/* ══ TAB 2: RESUME ══ */}
+
           <div className={"panel "+(tab===2?"on":"")}>
             <div className="intro">
               <strong>Generate Your Resume.</strong> Your complete military profile — MOS, ASIs, SQIs, additional duties, clearances, service history, and all experience — will be translated into a polished, ATS-optimized civilian resume.
@@ -4083,7 +4083,7 @@ Return this exact JSON structure:
                 </div>
               </div>
             </div>
-            {/* RESUME FORMAT PICKER */}
+
             <div className="card">
               <div className="ch"><h3>Choose Your Resume Format</h3><span className="ch-sub">Select before generating</span></div>
               <div className="cb">
@@ -4109,7 +4109,7 @@ Return this exact JSON structure:
               <div style={{marginTop:"1rem"}}>
                 <div className="resume-out">
 
-                  {/* Template selector */}
+
                   <div style={{background:"#f0f2f8",borderBottom:"1px solid #d0d8e8",padding:".65rem 1rem",display:"flex",gap:".4rem",flexWrap:"wrap",alignItems:"center"}}>
                     <span style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#3a5070",marginRight:".2rem"}}>Template:</span>
                     {[{id:"modern",l:"Modern"},{id:"classic",l:"Classic"},{id:"executive",l:"Executive"},{id:"federal",l:"Federal/USAJobs"},{id:"minimal",l:"Minimal"}].map(t=>(
@@ -4139,7 +4139,7 @@ Return this exact JSON structure:
                     </div>
                   </div>
 
-                  {/* Resume display */}
+
                   <div id="resume-render" style={{overflowY:"auto",maxHeight:"none",background:"#f0f4fa",padding:"1.2rem",display:"flex",justifyContent:"center"}}>
                     {resumeData ? (
                       <div style={{width:"100%",maxWidth:"760px",background:"#fff",boxShadow:"0 4px 20px rgba(0,0,0,.15)"}}>
@@ -4291,7 +4291,7 @@ Return this exact JSON structure:
             <div className="nav-row"><button className="btn-sec" onClick={()=>setTab(1)}>← Career Pathways</button><div/></div>
           </div>
 
-          {/* ══ TAB 3: COVER LETTER & REVIEW ══ */}
+
           <div className={"panel "+(tab===3?"on":"")}>
             <div className="intro"><strong>Cover Letter Builder & Resume Review.</strong> Generate a tailored cover letter and get AI-powered feedback on your resume.</div>
 
@@ -4302,7 +4302,7 @@ Return this exact JSON structure:
               </div>
             )}
 
-            {/* ── COVER LETTER ── */}
+
             <div className="card" style={{marginBottom:"1.2rem"}}>
               <div className="ch"><h3>✉ Cover Letter Builder</h3></div>
               <div className="cb">
@@ -4353,7 +4353,7 @@ Return this exact JSON structure:
               </div>
             </div>
 
-            {/* ── RESUME REVIEW ── */}
+
             <div className="card">
               <div className="ch"><h3>📊 Resume Score & Review</h3></div>
               <div className="cb">
@@ -4361,7 +4361,7 @@ Return this exact JSON structure:
                   Get an AI-powered score and actionable feedback on your resume — just like a recruiter would see it. Use your generated resume below, or upload an existing one.
                 </p>
 
-                {/* Upload section */}
+
                 <div style={{background:"#f8fafc",border:"1.5px dashed #b0c4d8",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
                   <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",marginBottom:".4rem"}}>📎 Upload Your Resume (optional)</div>
                   <div style={{fontSize:".78rem",color:"var(--dim)",marginBottom:".6rem"}}>Accepts PDF, Word (.docx), or plain text (.txt)</div>
@@ -4436,7 +4436,7 @@ Return this exact JSON structure:
                       <strong style={{color:"#1a3a6b"}}>Preview:</strong> {uploadedResumeText.slice(0,300)}...
                     </div>
                   )}
-                  {/* Paste fallback */}
+
                   {!uploadedResumeText&&(
                     <div style={{marginTop:".6rem"}}>
                       <div style={{fontSize:".75rem",color:"var(--dim)",marginBottom:".3rem"}}>Or paste your resume text directly:</div>
@@ -4463,7 +4463,7 @@ Return this exact JSON structure:
 
                 {resumeReview&&!resumeReview.error&&(
                   <>
-                    {/* Score ring */}
+
                     <div style={{textAlign:"center",padding:"1rem 0 .5rem"}}>
                       <div className="score-ring" style={{borderColor:resumeScore>=80?"#1a7a40":resumeScore>=65?"#e67e22":"#c0392b"}}>
                         <div className="score-num" style={{color:resumeScore>=80?"#1a7a40":resumeScore>=65?"#e67e22":"#c0392b"}}>{resumeScore}</div>
@@ -4475,7 +4475,7 @@ Return this exact JSON structure:
                       <div style={{fontSize:".82rem",color:"var(--dim)",maxWidth:"400px",margin:"0 auto"}}>{resumeReview.verdict}</div>
                     </div>
 
-                    {/* Grade breakdown */}
+
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem",margin:"1rem 0"}}>
                       {Object.values(resumeReview.grades||{}).map((g,i)=>(
                         <div key={i} style={{background:"#f8fafc",border:"1px solid #e0e8f0",borderRadius:"6px",padding:".7rem .9rem"}}>
@@ -4490,7 +4490,7 @@ Return this exact JSON structure:
                       ))}
                     </div>
 
-                    {/* Strengths */}
+
                     {(resumeReview.strengths||[]).length>0&&(
                       <div style={{marginBottom:"1rem"}}>
                         <div style={{fontWeight:700,fontSize:".85rem",color:"#1a7a40",marginBottom:".4rem"}}>✅ What's Working</div>
@@ -4500,7 +4500,7 @@ Return this exact JSON structure:
                       </div>
                     )}
 
-                    {/* Improvements */}
+
                     {(resumeReview.improvements||[]).length>0&&(
                       <div style={{marginBottom:"1rem"}}>
                         <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",marginBottom:".5rem"}}>🔧 Improvements</div>
@@ -4516,7 +4516,7 @@ Return this exact JSON structure:
                       </div>
                     )}
 
-                    {/* Missing keywords */}
+
                     {(resumeReview.missingKeywords||[]).length>0&&(
                       <div>
                         <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",marginBottom:".4rem"}}>🔑 Add These Keywords</div>
@@ -4543,10 +4543,10 @@ Return this exact JSON structure:
           </div>
 
 
-          {/* ══ TAB 4: JOB SEARCH HUB ══ */}
+
           <div className={"panel "+(tab===4?"on":"")}>
 
-            {/* Sub-nav */}
+
             <div style={{display:"flex",gap:".4rem",flexWrap:"wrap",marginBottom:"1.2rem",borderBottom:"2px solid #e0e8f0",paddingBottom:".7rem"}}>
               {[
                 {id:"tracker",label:"📋 Job Tracker"},
@@ -4565,7 +4565,7 @@ Return this exact JSON structure:
               ))}
             </div>
 
-            {/* ── 1. JOB TRACKER ── */}
+
             {retentionTab==="tracker"&&(
               <div>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1rem",flexWrap:"wrap",gap:".5rem"}}>
@@ -4621,7 +4621,7 @@ Return this exact JSON structure:
                   </div>
                 ):(
                   <>
-                    {/* Stats row */}
+
                     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(110px,1fr))",gap:".6rem",marginBottom:"1rem"}}>
                       {[
                         {label:"Applied",val:jobApps.length,color:"#1a3a6b"},
@@ -4667,7 +4667,7 @@ Return this exact JSON structure:
               </div>
             )}
 
-            {/* ── 2. INTERVIEW PREP ── */}
+
             {retentionTab==="interview"&&(
               <div>
                 <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Interview Prep</h3>
@@ -4716,7 +4716,7 @@ Return this exact JSON structure:
               </div>
             )}
 
-            {/* ── 3. FOLLOW-UP EMAILS ── */}
+
             {retentionTab==="followup"&&(
               <div>
                 <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Follow-Up Email Generator</h3>
@@ -4763,7 +4763,7 @@ Return this exact JSON structure:
               </div>
             )}
 
-            {/* ── 4. TRANSITION TIMELINE ── */}
+
             {retentionTab==="timeline"&&(
               <div>
                 <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Transition Timeline</h3>
@@ -4813,7 +4813,7 @@ Return this exact JSON structure:
               </div>
             )}
 
-            {/* ── 5. WEEKLY CHECK-IN ── */}
+
             {retentionTab==="checkin"&&(
               <div>
                 <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Weekly Progress Check-In</h3>
@@ -4833,7 +4833,7 @@ Return this exact JSON structure:
                   ))}
                 </div>
 
-                {/* Insights */}
+
                 <div className="card">
                   <div className="ch"><h3>📊 Your Job Search Health</h3></div>
                   <div className="cb">
@@ -4889,10 +4889,10 @@ Return this exact JSON structure:
           </div>
 
 
-          {/* ══ TAB 5: VETERAN RESOURCES ══ */}
+
           <div className={"panel "+(tab===5?"on":"")}>
 
-            {/* Crisis Banner - always at top */}
+
             <div className="crisis-banner">
               <div style={{fontSize:"2rem",flexShrink:0}}>🆘</div>
               <div style={{flex:1}}>
@@ -4907,7 +4907,7 @@ Return this exact JSON structure:
               </div>
             </div>
 
-            {/* Filter bar */}
+
             <div className="res-filter-bar">
               {["All","Mental Health","Benefits & VA","Financial","Education","Employment","Housing","Legal","Family","Substance Use"].map(f=>(
                 <button key={f} className={"res-filter-btn"+(resFilter===f?" active":"")} onClick={()=>setResFilter(f)}>{f}</button>
@@ -5048,7 +5048,7 @@ Return this exact JSON structure:
           </div>
 
 
-          {/* ══ TAB 6: MY PROFILE ══ */}
+
           <div className={"panel "+(tab===6?"on":"")}>
             {!currentUser?(
               <div style={{textAlign:"center",padding:"3rem 1rem"}}>
@@ -5212,7 +5212,7 @@ Return this exact JSON structure:
         </div>
       </div>
 
-      {/* SAVE TOAST */}
+
       {saveToast&&<div className="save-toast">{saveToast}</div>}
     </>
   );

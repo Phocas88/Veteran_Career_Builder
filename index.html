@@ -2090,6 +2090,216 @@ function RankInsignia({branch,grade,color}) {
 }
 
 
+
+function MyProfileContent({tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall}) {
+  return (<div style={{padding:"1rem"}}>
+    
+    <div style={{background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",borderRadius:"8px",padding:"1.5rem",color:"#fff",marginBottom:"1.2rem"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:".75rem",marginBottom:"1.2rem"}}>
+        <div>
+          <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".12em",color:"#f0c040"}}>{personal.name||currentUser.name||"Veteran"}</div>
+          <div style={{fontSize:".85rem",color:"#b0cce8",marginTop:".15rem"}}>{personal.email||currentUser.email}</div>
+        </div>
+        <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".82rem",fontWeight:700,cursor:"pointer"}} onClick={handleSaveProfile}>
+          {hasUnsaved?"⏳ Saving…":"✓ Profile Saved"}
+        </button>
+      </div>
+    
+      <div style={{fontSize:".7rem",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#9bb5d0",marginBottom:".5rem"}}>Service Record</div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:".75rem"}}>
+        {milExperiences.filter(e=>e.branch).map((exp,ri)=>{
+          const bRanks = RANKS[exp.branch]||RANKS["Army"];
+          const allR = [...(bRanks.enlisted||[]),...(bRanks.warrant||[]),...(bRanks.officer||[])];
+          const rankObj = allR.find(r=>r.abbr===exp.rank)||null;
+          const bColor = BRANCH_COLORS[exp.branch]||BRANCH_COLORS["Army"];
+          return (
+            <div key={exp.id} style={{background:bColor.bg,border:"1px solid rgba(255,255,255,.2)",borderRadius:"10px",padding:".85rem 1rem",minWidth:"155px",flex:"1 1 155px",maxWidth:"210px"}}>
+              <div style={{display:"flex",alignItems:"center",gap:".45rem",marginBottom:".5rem"}}>
+                <span style={{fontSize:"1.5rem"}}>{BRANCH_EMBLEMS[exp.branch]||"⭐"}</span>
+                <span style={{fontWeight:700,fontSize:".82rem",color:"#fff",letterSpacing:".05em",textTransform:"uppercase"}}>{exp.branch}</span>
+              </div>
+              {rankObj ? (
+                <div style={{marginBottom:".4rem",display:"flex",alignItems:"center",gap:".5rem"}}>
+                  <RankInsignia branch={exp.branch} grade={rankObj.grade} color={bColor.accent}/>
+                  <div>
+                    <div style={{fontWeight:800,fontSize:".95rem",color:bColor.accent,lineHeight:1.1}}>{rankObj.abbr}</div>
+                    <div style={{fontSize:".68rem",color:"rgba(255,255,255,.75)"}}>{rankObj.name}</div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{fontSize:".75rem",color:"rgba(255,255,255,.4)",fontStyle:"italic",marginBottom:".4rem"}}>Rank in Profile tab</div>
+              )}
+              <div style={{display:"flex",gap:".35rem",flexWrap:"wrap"}}>
+                <span style={{fontSize:".68rem",background:"rgba(0,0,0,.3)",borderRadius:"3px",padding:".15rem .45rem",color:"rgba(255,255,255,.85)"}}>{exp.serviceType||"Veteran"}</span>
+                {exp.tos&&<span style={{fontSize:".68rem",background:"rgba(0,0,0,.2)",borderRadius:"3px",padding:".15rem .45rem",color:"rgba(255,255,255,.7)"}}>⏱ {exp.tos}</span>}
+              </div>
+            </div>
+          );
+        })}
+        {milExperiences.filter(e=>e.branch).length===0&&(
+          <div style={{color:"rgba(255,255,255,.4)",fontSize:".85rem",fontStyle:"italic",padding:".5rem 0"}}>Add service history in Profile &amp; Qualifications to see your record here.</div>
+        )}
+      </div>
+    
+    {careers&&careers.length>0&&(
+      <div className="card" style={{marginBottom:"1.2rem"}}>
+        <div className="ch" style={{justifyContent:"space-between"}}>
+          <h3>Your Career Matches</h3>
+          <span style={{fontSize:".75rem",color:"var(--dim)"}}>{careers.length} matches · click any to explore</span>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))"}}>
+          {careers.map((c,ci)=>(
+            <div key={ci} style={{padding:".8rem 1rem",borderBottom:"1px solid #eef0f5",borderRight:"1px solid #eef0f5",cursor:"pointer"}}
+              onClick={()=>{setTab(1);setTimeout(()=>openCareerDetail(c),100);}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:".3rem",marginBottom:".2rem"}}>
+                <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",lineHeight:1.3}}>{c.title}</div>
+                <span style={{background:c.match==="Excellent"?"#1a7a40":c.match==="Strong"?"#1a3a6b":"#4a6080",color:"#fff",borderRadius:"3px",padding:".05rem .35rem",fontSize:".65rem",fontWeight:700,flexShrink:0}}>{c.match}</span>
+              </div>
+              <div style={{fontSize:".75rem",color:"#5a7090"}}>{c.industry}</div>
+              <div style={{fontSize:".78rem",color:"#1a7a40",fontWeight:600}}>{c.salaryRange}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{padding:".6rem 1rem",borderTop:"1px solid #eef0f5",textAlign:"center"}}>
+          <button className="btn-sec" style={{fontSize:".8rem"}} onClick={()=>setTab(1)}>View Full Career Pathways →</button>
+        </div>
+      </div>
+    )}
+    
+    <div className="card">
+      <div className="ch" style={{justifyContent:"space-between"}}>
+        <h3>Saved Resumes</h3>
+        {resume&&<button className="btn-sec" style={{fontSize:".72rem",padding:".28rem .7rem"}} onClick={handleSaveResume}>+ Save Current</button>}
+      </div>
+      <div className="cb">
+        {savedResumes.length===0?(
+          <div style={{textAlign:"center",padding:"1.5rem",color:"var(--dim)",fontSize:".88rem"}}>
+            <div style={{fontSize:"2rem",marginBottom:".5rem"}}>📄</div>
+            No saved resumes yet. Generate one on the Build Resume tab.
+          </div>
+        ):(
+          savedResumes.map(r=>(
+            <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".7rem 0",borderBottom:"1px solid #eef0f5",gap:"1rem"}}>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.title}</div>
+                <div style={{fontSize:".75rem",color:"var(--dim)"}}>{r.date}{r.industry?" · "+r.industry:""}</div>
+              </div>
+              <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
+                <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{setResume(r.content);setTab(2);showToast("Resume loaded ✓ — update profile and regenerate to edit");}}>View</button>
+                <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm('Delete this saved resume? Cannot be undone.'))handleDeleteResume(r.id);}}>🗑</button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+    
+    <div className="card">
+      <div className="ch" style={{justifyContent:"space-between"}}>
+        <h3>📝 Saved Cover Letters</h3>
+        <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedCoverLetters.length} saved</span>
+      </div>
+      <div className="cb">
+        {savedCoverLetters.length===0?(
+          <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved cover letters yet. Generate one on the Cover Letter tab.</div>
+        ):(
+          savedCoverLetters.map(r=>(
+            <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.job}{r.company?" @ "+r.company:""}</div>
+                <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
+              </div>
+              <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
+                <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{navigator.clipboard.writeText(r.content);showToast("Copied ✓");}}>Copy</button>
+                <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="cover-letter-"+r.date.split("/").join("-")+".txt";a.click();}}>↓</button>
+                <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this cover letter?"))handleDeleteSaved("cl",r.id);}}>🗑</button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+    
+    <div className="card">
+      <div className="ch" style={{justifyContent:"space-between"}}>
+        <h3>✉️ Saved Emails</h3>
+        <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedEmails.length} saved</span>
+      </div>
+      <div className="cb">
+        {savedEmails.length===0?(
+          <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved emails yet. Generate follow-up emails on the Job Search tab.</div>
+        ):(
+          savedEmails.map(r=>(
+            <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b"}}>{r.type}</div>
+                <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
+              </div>
+              <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
+                <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{navigator.clipboard.writeText(r.content);showToast("Copied ✓");}}>Copy</button>
+                <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="email-"+r.date.split("/").join("-")+".txt";a.click();}}>↓</button>
+                <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this email?"))handleDeleteSaved("em",r.id);}}>🗑</button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+    
+    <div className="card">
+      <div className="ch" style={{justifyContent:"space-between"}}>
+        <h3>📊 Saved Score Reports</h3>
+        <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedScores.length} saved</span>
+      </div>
+      <div className="cb">
+        {savedScores.length===0?(
+          <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved scores yet. Score your resume on the Cover Letter & Review tab.</div>
+        ):(
+          savedScores.map(r=>(
+            <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
+              <div style={{flex:1}}>
+                <div style={{display:"flex",alignItems:"center",gap:".5rem"}}>
+                  <span style={{fontWeight:800,fontSize:"1.1rem",color:r.score>=80?"#1a7a40":r.score>=65?"#e67e22":"#c0392b"}}>{r.score}</span>
+                  <span style={{fontWeight:700,fontSize:".82rem",color:"#1a3a6b"}}>{r.label}</span>
+                </div>
+                <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
+              </div>
+              <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this score report?"))handleDeleteSaved("sc",r.id);}}>🗑</button>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+    
+    
+    
+    
+    
+    <div className="card">
+      <div className="ch"><h3>Account</h3></div>
+      <div className="cb" style={{display:"flex",gap:".6rem",flexWrap:"wrap"}}>
+        {hasAccess?(
+          <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".4rem .75rem",fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>
+            ✓ Full Access Active
+            <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>window.open("https://billing.stripe.com/p/login/test_REPLACE_WITH_PORTAL_LINK","_blank")}>Manage Subscription ↗</button>
+          </div>
+        ):(
+          <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>
+            ⭐ Subscribe — $14.99/mo
+          </button>
+        )}
+        <button className="btn-sec" onClick={handleSaveProfile}>💾 Save All Progress</button>
+        <button className="btn-danger" onClick={()=>{if(window.confirm("Sign out?")) handleLogout();}}>Sign Out</button>
+      </div>
+    </div>
+    <div className="nav-row">
+      <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
+      <button className="btn-sec" onClick={()=>setTab(0)}>Back to Top →</button>
+    </div>
+    
+  </div>);
+}
+
 function MyProfileTab({tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall}) {
   return (<div className={"panel "+(tab===6?"on":"")}>
     {!currentUser?(
@@ -2102,212 +2312,7 @@ function MyProfileTab({tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved
         </button>
       </div>
     ):(
-      <div style={{padding:"1rem"}}>
-  
-        <div style={{background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",borderRadius:"8px",padding:"1.5rem",color:"#fff",marginBottom:"1.2rem"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:".75rem",marginBottom:"1.2rem"}}>
-            <div>
-              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".12em",color:"#f0c040"}}>{personal.name||currentUser.name||"Veteran"}</div>
-              <div style={{fontSize:".85rem",color:"#b0cce8",marginTop:".15rem"}}>{personal.email||currentUser.email}</div>
-            </div>
-            <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".82rem",fontWeight:700,cursor:"pointer"}} onClick={handleSaveProfile}>
-              {hasUnsaved?"⏳ Saving…":"✓ Profile Saved"}
-            </button>
-          </div>
-  
-          <div style={{fontSize:".7rem",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#9bb5d0",marginBottom:".5rem"}}>Service Record</div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:".75rem"}}>
-            {milExperiences.filter(e=>e.branch).map((exp,ri)=>{
-              const bRanks = RANKS[exp.branch]||RANKS["Army"];
-              const allR = [...(bRanks.enlisted||[]),...(bRanks.warrant||[]),...(bRanks.officer||[])];
-              const rankObj = allR.find(r=>r.abbr===exp.rank)||null;
-              const bColor = BRANCH_COLORS[exp.branch]||BRANCH_COLORS["Army"];
-              return (
-                <div key={exp.id} style={{background:bColor.bg,border:"1px solid rgba(255,255,255,.2)",borderRadius:"10px",padding:".85rem 1rem",minWidth:"155px",flex:"1 1 155px",maxWidth:"210px"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:".45rem",marginBottom:".5rem"}}>
-                    <span style={{fontSize:"1.5rem"}}>{BRANCH_EMBLEMS[exp.branch]||"⭐"}</span>
-                    <span style={{fontWeight:700,fontSize:".82rem",color:"#fff",letterSpacing:".05em",textTransform:"uppercase"}}>{exp.branch}</span>
-                  </div>
-                  {rankObj ? (
-                    <div style={{marginBottom:".4rem",display:"flex",alignItems:"center",gap:".5rem"}}>
-                      <RankInsignia branch={exp.branch} grade={rankObj.grade} color={bColor.accent}/>
-                      <div>
-                        <div style={{fontWeight:800,fontSize:".95rem",color:bColor.accent,lineHeight:1.1}}>{rankObj.abbr}</div>
-                        <div style={{fontSize:".68rem",color:"rgba(255,255,255,.75)"}}>{rankObj.name}</div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div style={{fontSize:".75rem",color:"rgba(255,255,255,.4)",fontStyle:"italic",marginBottom:".4rem"}}>Rank in Profile tab</div>
-                  )}
-                  <div style={{display:"flex",gap:".35rem",flexWrap:"wrap"}}>
-                    <span style={{fontSize:".68rem",background:"rgba(0,0,0,.3)",borderRadius:"3px",padding:".15rem .45rem",color:"rgba(255,255,255,.85)"}}>{exp.serviceType||"Veteran"}</span>
-                    {exp.tos&&<span style={{fontSize:".68rem",background:"rgba(0,0,0,.2)",borderRadius:"3px",padding:".15rem .45rem",color:"rgba(255,255,255,.7)"}}>⏱ {exp.tos}</span>}
-                  </div>
-                </div>
-              );
-            })}
-            {milExperiences.filter(e=>e.branch).length===0&&(
-              <div style={{color:"rgba(255,255,255,.4)",fontSize:".85rem",fontStyle:"italic",padding:".5rem 0"}}>Add service history in Profile &amp; Qualifications to see your record here.</div>
-            )}
-          </div>
-  
-        {careers&&careers.length>0&&(
-          <div className="card" style={{marginBottom:"1.2rem"}}>
-            <div className="ch" style={{justifyContent:"space-between"}}>
-              <h3>Your Career Matches</h3>
-              <span style={{fontSize:".75rem",color:"var(--dim)"}}>{careers.length} matches · click any to explore</span>
-            </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))"}}>
-              {careers.map((c,ci)=>(
-                <div key={ci} style={{padding:".8rem 1rem",borderBottom:"1px solid #eef0f5",borderRight:"1px solid #eef0f5",cursor:"pointer"}}
-                  onClick={()=>{setTab(1);setTimeout(()=>openCareerDetail(c),100);}}>
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:".3rem",marginBottom:".2rem"}}>
-                    <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",lineHeight:1.3}}>{c.title}</div>
-                    <span style={{background:c.match==="Excellent"?"#1a7a40":c.match==="Strong"?"#1a3a6b":"#4a6080",color:"#fff",borderRadius:"3px",padding:".05rem .35rem",fontSize:".65rem",fontWeight:700,flexShrink:0}}>{c.match}</span>
-                  </div>
-                  <div style={{fontSize:".75rem",color:"#5a7090"}}>{c.industry}</div>
-                  <div style={{fontSize:".78rem",color:"#1a7a40",fontWeight:600}}>{c.salaryRange}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{padding:".6rem 1rem",borderTop:"1px solid #eef0f5",textAlign:"center"}}>
-              <button className="btn-sec" style={{fontSize:".8rem"}} onClick={()=>setTab(1)}>View Full Career Pathways →</button>
-            </div>
-          </div>
-        )}
-  
-        <div className="card">
-          <div className="ch" style={{justifyContent:"space-between"}}>
-            <h3>Saved Resumes</h3>
-            {resume&&<button className="btn-sec" style={{fontSize:".72rem",padding:".28rem .7rem"}} onClick={handleSaveResume}>+ Save Current</button>}
-          </div>
-          <div className="cb">
-            {savedResumes.length===0?(
-              <div style={{textAlign:"center",padding:"1.5rem",color:"var(--dim)",fontSize:".88rem"}}>
-                <div style={{fontSize:"2rem",marginBottom:".5rem"}}>📄</div>
-                No saved resumes yet. Generate one on the Build Resume tab.
-              </div>
-            ):(
-              savedResumes.map(r=>(
-                <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".7rem 0",borderBottom:"1px solid #eef0f5",gap:"1rem"}}>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.title}</div>
-                    <div style={{fontSize:".75rem",color:"var(--dim)"}}>{r.date}{r.industry?" · "+r.industry:""}</div>
-                  </div>
-                  <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
-                    <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{setResume(r.content);setTab(2);showToast("Resume loaded ✓ — update profile and regenerate to edit");}}>View</button>
-                    <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm('Delete this saved resume? Cannot be undone.'))handleDeleteResume(r.id);}}>🗑</button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-  
-        <div className="card">
-          <div className="ch" style={{justifyContent:"space-between"}}>
-            <h3>📝 Saved Cover Letters</h3>
-            <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedCoverLetters.length} saved</span>
-          </div>
-          <div className="cb">
-            {savedCoverLetters.length===0?(
-              <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved cover letters yet. Generate one on the Cover Letter tab.</div>
-            ):(
-              savedCoverLetters.map(r=>(
-                <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.job}{r.company?" @ "+r.company:""}</div>
-                    <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
-                  </div>
-                  <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
-                    <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{navigator.clipboard.writeText(r.content);showToast("Copied ✓");}}>Copy</button>
-                    <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="cover-letter-"+r.date.split("/").join("-")+".txt";a.click();}}>↓</button>
-                    <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this cover letter?"))handleDeleteSaved("cl",r.id);}}>🗑</button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-  
-        <div className="card">
-          <div className="ch" style={{justifyContent:"space-between"}}>
-            <h3>✉️ Saved Emails</h3>
-            <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedEmails.length} saved</span>
-          </div>
-          <div className="cb">
-            {savedEmails.length===0?(
-              <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved emails yet. Generate follow-up emails on the Job Search tab.</div>
-            ):(
-              savedEmails.map(r=>(
-                <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b"}}>{r.type}</div>
-                    <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
-                  </div>
-                  <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
-                    <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{navigator.clipboard.writeText(r.content);showToast("Copied ✓");}}>Copy</button>
-                    <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="email-"+r.date.split("/").join("-")+".txt";a.click();}}>↓</button>
-                    <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this email?"))handleDeleteSaved("em",r.id);}}>🗑</button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-  
-        <div className="card">
-          <div className="ch" style={{justifyContent:"space-between"}}>
-            <h3>📊 Saved Score Reports</h3>
-            <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedScores.length} saved</span>
-          </div>
-          <div className="cb">
-            {savedScores.length===0?(
-              <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved scores yet. Score your resume on the Cover Letter & Review tab.</div>
-            ):(
-              savedScores.map(r=>(
-                <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
-                  <div style={{flex:1}}>
-                    <div style={{display:"flex",alignItems:"center",gap:".5rem"}}>
-                      <span style={{fontWeight:800,fontSize:"1.1rem",color:r.score>=80?"#1a7a40":r.score>=65?"#e67e22":"#c0392b"}}>{r.score}</span>
-                      <span style={{fontWeight:700,fontSize:".82rem",color:"#1a3a6b"}}>{r.label}</span>
-                    </div>
-                    <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
-                  </div>
-                  <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this score report?"))handleDeleteSaved("sc",r.id);}}>🗑</button>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-  
-  
-  
-  
-  
-        <div className="card">
-          <div className="ch"><h3>Account</h3></div>
-          <div className="cb" style={{display:"flex",gap:".6rem",flexWrap:"wrap"}}>
-            {hasAccess?(
-              <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".4rem .75rem",fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>
-                ✓ Full Access Active
-                <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>window.open("https://billing.stripe.com/p/login/test_REPLACE_WITH_PORTAL_LINK","_blank")}>Manage Subscription ↗</button>
-              </div>
-            ):(
-              <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>
-                ⭐ Subscribe — $14.99/mo
-              </button>
-            )}
-            <button className="btn-sec" onClick={handleSaveProfile}>💾 Save All Progress</button>
-            <button className="btn-danger" onClick={()=>{if(window.confirm("Sign out?")) handleLogout();}}>Sign Out</button>
-          </div>
-        </div>
-        <div className="nav-row">
-          <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
-          <button className="btn-sec" onClick={()=>setTab(0)}>Back to Top →</button>
-        </div>
-  
-      </div>
+      <MyProfileContent tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
     )}
 
   </div>);

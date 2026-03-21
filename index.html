@@ -3188,7 +3188,7 @@ Use this exact structure:
     setCoverLetterLoading(true);
     setCoverLetter("");
     const milSummary = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")+" ("+(e.tos||"")+"), MOS: "+(e.mos||"")).join("; ");
-    const resumeText = resume || (resumeData ? (resumeData.name)+" resume" : "");
+    const resumeText = uploadedResumeText || resume || (resumeData ? JSON.stringify(resumeData) : "");
     const prompt = `You are an expert military-to-civilian career counselor writing a compelling cover letter.
 
 VETERAN PROFILE:
@@ -3302,7 +3302,7 @@ Return ONLY the email text including the subject line. No extra commentary.`;
   const runResumeReview = async () => {
     if (!hasAccess) { setShowPaywall(true); return; }
     if (!isApiKeySet()) { setShowAdminSetup(true); return; }
-    if (!resume && !resumeData) { alert("Generate your resume first on the Build Resume tab."); return; }
+    if (!resume && !resumeData && !uploadedResumeText) { alert("Please upload a resume file or generate one first."); return; }
     setReviewLoading(true);
     setResumeScore(null);
     setResumeReview(null);

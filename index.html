@@ -29,7 +29,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-const firebaseConfig = {
+     const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -47,6 +47,8 @@ const firebaseConfig = {
   </script>
   <script>window.VCB_STRIPE_PK="pk_test_51TDAB4I88XNO7Y7PHRn7rhUBd9R6a06uT1IiYlJPHkGtGd2Dk2nSnIADrA1Qev4cVLa2WMz0E1qFIgTJXb1eTSSN00gzgmEdDp";</script>
   <script>window.VCB_LOGO="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png";</script>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
 </head>
 <body>
   <div id="loading">
@@ -1546,6 +1548,12 @@ function App() {
 
   // Dashboard tab sub-view
   const [retentionTab, setRetentionTab] = useState("tracker");
+  const [savedPaths, setSavedPaths] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]"); } catch(e){ return []; }
+  });
+  const refreshSavedPaths = () => {
+    try { setSavedPaths(JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]")); } catch(e){}
+  };
   const [resFilter, setResFilter] = useState("All");
   const [selectedCareer, setSelectedCareer] = useState(null);
   const [careerDetail, setCareerDetail] = useState(null);
@@ -1600,7 +1608,7 @@ function App() {
     "INDIA30":            Date.UTC(2026, 3, 20),
     "JULIET30":           Date.UTC(2026, 3, 20),
     // Special named codes (give to specific people)
-    "Amon26":           Date.UTC(2026, 4, 25),
+    "Amon26":           Date.UTC(2026, 4, 20),
     "VETTEST2":           Date.UTC(2026, 4, 20),
     "VETTEST3":           Date.UTC(2026, 4, 20),
     "VETTEST4":           Date.UTC(2026, 4, 20),
@@ -1995,7 +2003,7 @@ function App() {
     const tos = (milExperiences[0]||{}).tos||"";
     const clearance = (milExperiences[0]||{}).clearanceLevel||"None";
     const hasClearance = clearance && clearance!=="None";
-    const system = "You are the world's best military-to-civilian career counselor with deep knowledge of EVERY job sector. Return ONLY valid minified JSON. No markdown, no backticks, no line breaks inside strings, no trailing commas. The JSON must parse with JSON.parse() on the first try.";
+    const system = "You are the world's best military-to-civilian career counselor. You know EVERY civilian job sector including skilled trades, retail management, transportation, agriculture, maritime, aviation, hospitality, fitness, education, social work, nonprofits, entrepreneurship, real estate, financial services, and more. Return ONLY valid minified JSON. No markdown, no backticks, no line breaks inside strings, no trailing commas. The JSON must parse with JSON.parse() on the first try.";
     const prompt = `A veteran needs career guidance. Give them 24 realistic, diverse career options they can actually get within 1-2 years of leaving service.
 
 VETERAN BACKGROUND:
@@ -3757,6 +3765,22 @@ Return this exact JSON structure:
               </div>
 
               {/* CAREER LIST */}
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem",flexWrap:"wrap",gap:".4rem"}}>
+                <div style={{fontSize:".78rem",color:"var(--dim)"}}>{careers.filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter==="Defense/Intel"&&c.sector==="Defense/Intel")||(careerFilter==="Civilian"&&c.sector==="Civilian")).length} career matches</div>
+                <button style={{padding:".35rem .8rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".78rem",cursor:"pointer",fontWeight:600}}
+                  onClick={()=>{
+                    if(!currentUser){setShowAuth(true);return;}
+                    const visible=careers.filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter==="Defense/Intel"&&c.sector==="Defense/Intel")||(careerFilter==="Civilian"&&c.sector==="Civilian"));
+                    const entries=visible.map(c=>({id:Date.now().toString()+c.title,title:c.title,sector:c.sector,industry:c.industry,salary:c.salaryRange,match:c.match,date:new Date().toLocaleDateString("en-US",{year:"numeric",month:"short",day:"numeric"})}));
+                    const prev=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");
+                    const titles=entries.map(e=>e.title);
+                    const updated=[...entries,...prev.filter(p=>!titles.includes(p.title))].slice(0,50);
+                    localStorage.setItem("vcb_saved_paths",JSON.stringify(updated));
+                    showToast("✓ Saved "+entries.length+" career paths to your profile");
+                  }}>
+                  💾 Save All Visible Paths
+                </button>
+              </div>
               <div style={{display:"flex",flexDirection:"column",gap:".55rem"}}>
                 {careers
                   .filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter==="Defense/Intel"&&c.sector==="Defense/Intel")||(careerFilter==="Civilian"&&c.sector==="Civilian"))
@@ -4036,22 +4060,31 @@ Return this exact JSON structure:
                       </div>
 
                       <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:".5rem"}}>
-                        <span style={{fontSize:".78rem",color:"#5a7090"}}>Save this career roadmap</span>
-                        <button style={{padding:".45rem 1.1rem",background:"#1a3a6b",color:"#ffffff",border:"none",borderRadius:"4px",cursor:"pointer",fontSize:".8rem",fontWeight:600}}
+                      <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",display:"flex",gap:".5rem",flexWrap:"wrap",alignItems:"center",justifyContent:"flex-end"}}>
+                        <button style={{padding:".4rem .9rem",background:"transparent",border:"1px solid #d0daea",borderRadius:"4px",color:"#3a5070",fontSize:".8rem",cursor:"pointer"}}
                           onClick={()=>{
                             const win=window.open("","_blank");
-                            const c=selectedCareer;
-                            const cd=careerDetail;
-                            win.document.write("<html><head><title>"+c.title+" Career Path</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:2rem auto;color:#1a1a1a;line-height:1.6;}h1{color:#1a3a6b;border-bottom:3px solid #b8860b;padding-bottom:.5rem;}h2{color:#1a3a6b;margin-top:1.5rem;font-size:.95rem;text-transform:uppercase;letter-spacing:.08em;}p{margin:.4rem 0;}ul{margin:.4rem 0 .4rem 1.2rem;}li{margin:.2rem 0;}.info{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;background:#f8f8f8;padding:1rem;border-radius:4px;margin:1rem 0;font-size:.9rem;}</style></head><body>"+
-                              "<h1>"+c.title+"</h1>"+
-                              "<div class='info'><div><b>Sector:</b> "+(c.sector||"")+"</div><div><b>Industry:</b> "+(c.industry||"")+"</div><div><b>Salary:</b> "+(c.salaryRange||"")+"</div><div><b>Outlook:</b> "+(c.outlook||"")+"</div><div><b>Match:</b> "+(c.match||"")+"</div>"+(c.clearanceBonus?"<div><b>Clearance Bonus</b></div>":"")+"</div>"+
-                              (cd?"<h2>About</h2><p>"+(cd.about||c.description||"")+"</p><h2>Why You Qualify</h2><p>"+(cd.whyYouFit||"")+"</p><h2>Career Path</h2><p>"+(cd.careerPath||"")+"</p><h2>Skills Needed</h2><ul>"+(cd.requiredSkills||[]).map(function(s){return"<li>"+s+"</li>";}).join("")+"</ul><h2>Gaps to Address</h2><ul>"+(cd.gaps||[]).map(function(s){return"<li>"+s+"</li>";}).join("")+"</ul><h2>Action Steps</h2><ul>"+(cd.actionSteps||[]).map(function(s){return"<li>"+s+"</li>";}).join("")+"</ul>":"<p>"+c.description+"</p>")+
-                              "<h2>Resources</h2><p><a href='https://www.indeed.com/jobs?q="+encodeURIComponent(c.title)+"'>Indeed Jobs</a> | <a href='https://www.usajobs.gov/search/results/?k="+encodeURIComponent(c.title)+"'>USAJobs</a> | <a href='https://skillbridge.osd.mil/programs.htm'>DOD SkillBridge</a> | <a href='https://www.va.gov/gi-bill-comparison-tool'>GI Bill Schools</a></p>"+
-                              "<p style='margin-top:2rem;font-size:.8rem;color:#888;'>Generated by VeteranCareerPath.com<eer Builder</p></body></html>");
+                            const c=selectedCareer; const cd=careerDetail;
+                            const footer="<p style=margin-top:2rem;font-size:8pt;color:#aaa>Generated by VeteranCareerPath.com</p>";
+                            win.document.write("<html><head><title>"+c.title+"</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:2cm auto;font-size:11pt;}h1,h2{color:#1a3a6b;}@media print{body{margin:1cm;}}</style></head><body>");
+                            win.document.write("<h1>"+c.title+"</h1><p><b>Sector:</b> "+(c.sector||"")+" | <b>Industry:</b> "+(c.industry||"")+" | <b>Salary:</b> "+(c.salaryRange||"")+"</p>");
+                            if(cd&&cd.about) win.document.write("<h2>About</h2><p>"+(cd.about||"")+"</p>");
+                            win.document.write(footer);
+                            win.document.write("<scr"+"ipt>window.onload=function(){window.print();}<\/scr"+"ipt></body></html>");
                             win.document.close();
-                            win.print();
                           }}>
-                          Print / Save Career Path
+                          🖨 Print Career Path
+                        </button>
+                        <button style={{padding:".4rem .9rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".8rem",cursor:"pointer",fontWeight:600}}
+                          onClick={()=>{
+                            if(!currentUser){setShowAuth(true);return;}
+                            const entry={id:Date.now().toString(),title:selectedCareer.title,sector:selectedCareer.sector,industry:selectedCareer.industry,salary:selectedCareer.salaryRange,match:selectedCareer.match,date:new Date().toLocaleDateString("en-US",{year:"numeric",month:"short",day:"numeric"})};
+                            const prev=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");
+                            const updated=[entry,...prev.filter(p=>p.title!==entry.title)].slice(0,20);
+                            localStorage.setItem("vcb_saved_paths",JSON.stringify(updated));
+                            showToast("✓ "+selectedCareer.title+" saved to your profile");
+                          }}>
+                          💾 Save Career Path
                         </button>
                       </div>
                     </div>
@@ -4274,6 +4307,17 @@ Return this exact JSON structure:
                   </div>
 
                 </div>
+              </div>
+            )}
+            {(resume||resumeData)&&(
+              <div style={{display:"flex",justifyContent:"center",margin:".5rem 0 1rem"}}>
+                <button className="btn-primary" style={{width:"auto",padding:".6rem 1.6rem",fontSize:".9rem"}}
+                  onClick={()=>{
+                    if(!currentUser){setShowAuth(true);return;}
+                    handleSaveResume();
+                  }}>
+                  💾 Save Resume to Profile
+                </button>
               </div>
             )}
             <div className="nav-row"><button className="btn-sec" onClick={()=>setTab(1)}>← Career Pathways</button><div/></div>
@@ -5163,7 +5207,7 @@ Return this exact JSON structure:
                             <div style={{fontSize:".75rem",color:"var(--dim)"}}>{r.date}{r.industry?" · "+r.industry:""}</div>
                           </div>
                           <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
-                            <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{setResume(r.content);setTab(2);}}>Edit</button>
+                            <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{setResume(r.content);setTab(2);showToast("Resume loaded ✓ — update profile and regenerate to edit");}}>View</button>
                             <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>handleDeleteResume(r.id)}>✕</button>
                           </div>
                         </div>

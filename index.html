@@ -5300,7 +5300,7 @@ Return this exact JSON structure:
                           </div>
                           <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
                             <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{navigator.clipboard.writeText(r.content);showToast("Copied ✓");}}>Copy</button>
-                            <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="cover-letter-"+r.date.replace(/\/g,"-")+".txt";a.click();}}>↓</button>
+                            <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="cover-letter-"+r.date.split("/").join("-")+".txt";a.click();}}>↓</button>
                             <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this cover letter?"))handleDeleteSaved("cl",r.id);}}>🗑</button>
                           </div>
                         </div>
@@ -5326,7 +5326,7 @@ Return this exact JSON structure:
                           </div>
                           <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
                             <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{navigator.clipboard.writeText(r.content);showToast("Copied ✓");}}>Copy</button>
-                            <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="email-"+r.date.replace(/\/g,"-")+".txt";a.click();}}>↓</button>
+                            <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="email-"+r.date.split("/").join("-")+".txt";a.click();}}>↓</button>
                             <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this email?"))handleDeleteSaved("em",r.id);}}>🗑</button>
                           </div>
                         </div>

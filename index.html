@@ -1790,7 +1790,7 @@ function CareerDetailView({selectedCareer,setSelectedCareer,careerDetail,loading
     
 
     {loading.careerDetail&&<div className="loading"><div className="spin"/><span>Loading full career profile...</span></div>}
-    {careerDetail&&!loading.careerDetail&&(
+
     {careerDetail&&!loading.careerDetail&&(
       <CareerDetailBody careerDetail={careerDetail} selectedCareer={selectedCareer} currentUser={currentUser} setShowAuth={setShowAuth} showToast={showToast} tab={tab} setTab={setTab} target={target} targetLocation={targetLocation} upT={upT} DI={DI} setSelectedCareer={setSelectedCareer} />
     )}

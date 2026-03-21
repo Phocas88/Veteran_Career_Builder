@@ -22,14 +22,16 @@
     .asave{flex:1;padding:10px;background:#1a3a6b;border:none;border-radius:4px;color:#fff;font-weight:bold;cursor:pointer;font-size:14px;}
     .acancel{padding:10px 16px;background:transparent;border:1px solid #aaa;border-radius:4px;color:#666;cursor:pointer;}
     #astatus{font-size:12px;color:#1a7a40;margin-top:10px;min-height:16px;}
-  </style>
+  
+.btn-upgrade{width:100%;padding:.75rem;background:linear-gradient(135deg,#f0c040,#e0a820);border:none;border-radius:6px;color:#0d1f3c;font-weight:700;font-size:.95rem;cursor:pointer;letter-spacing:.03em;}
+</style>
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js" crossorigin="anonymous"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js" crossorigin="anonymous"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-      const firebaseConfig = {
+     const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -119,7 +121,8 @@
   <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.5/babel.min.js" crossorigin="anonymous"></script>
-  <script type="text/babel" data-presets="react,env">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script type="text/babel" data-presets="react,env">
 const { useState, useEffect, useRef } = React;
     const fbAuth = window.fbAuth;
     const fbDb = window.fbDb;
@@ -365,13 +368,21 @@ const RANKS = {
   }
 };
 
+
+
+
+
+
+
+
+
 const BRANCH_COLORS = {
-  "Army": "#4a6741",
-  "Marine Corps": "#8b1a1a", 
-  "Navy": "#1a2a5a",
-  "Air Force": "#1a3a6b",
-  "Space Force": "#0d1f3c",
-  "Coast Guard": "#c0392b"
+  "Army": {bg:"linear-gradient(135deg,#3a4a1a,#556b2f)",accent:"#c8a951"},
+  "Marine Corps": {bg:"linear-gradient(135deg,#6a0000,#a00000)",accent:"#c8a951"},
+  "Navy": {bg:"linear-gradient(135deg,#000060,#000d9a)",accent:"#c8a951"},
+  "Air Force": {bg:"linear-gradient(135deg,#001a5e,#003087)",accent:"#7fb2f0"},
+  "Space Force": {bg:"linear-gradient(135deg,#0d1520,#1c2951)",accent:"#a0b8d8"},
+  "Coast Guard": {bg:"linear-gradient(135deg,#002a5c,#003f87)",accent:"#e8111a"}
 };
 
 const BRANCH_EMBLEMS = {
@@ -1155,11 +1166,11 @@ function getClearanceBadge(lvl) {
 
 // ── API KEY CHECK ───────────────────────────────────────────────────────────
 function isApiKeySet() {
-  const key = localStorage.getItem("vcb_admin_key") || "";
+  const key = localStorage.getItem("vcb_admin_key") || (typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key")) || "";
   return key.length > 20;
 }
 function getStoredApiKey() {
-  return localStorage.getItem("vcb_admin_key") || "";
+  return localStorage.getItem("vcb_admin_key") || (typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key")) || "";
 }
 
 async function callClaude(prompt, system = "", maxTokens = 2000) {
@@ -1490,7 +1501,8 @@ function newCivExp() {
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 
 
-function CareerListView({careers,careerFilter,setCareerFilter,openCareerDetail,findCareers,loading,careerError,milExperiences,target,upT,currentUser,setShowAuth,showToast,DI,filterCareers,matchesSector,setSelectedCareer}) {
+function CareerListView(props) {
+  const {careers,careerFilter,setCareerFilter,openCareerDetail,findCareers,loading,careerError,milExperiences,target,upT,currentUser,setShowAuth,showToast,DI,filterCareers,matchesSector,setSelectedCareer} = props;
   return (<>
   <div style={{marginTop:"1.1rem",marginBottom:".75rem",display:"flex",justifyContent:"space-between",alignItems:"flex-end",flexWrap:"wrap",gap:".5rem"}}>
     <div>
@@ -1760,7 +1772,8 @@ function CareerDetailBody({careerDetail,selectedCareer,currentUser,setShowAuth,s
   </div>);
 }
 
-function CareerDetailView({selectedCareer,setSelectedCareer,careerDetail,loading,currentUser,setShowAuth,showToast,tab,setTab,target,targetLocation,upT,DI}) {
+function CareerDetailView(props) {
+  const {selectedCareer,setSelectedCareer,careerDetail,loading,currentUser,setShowAuth,showToast,tab,setTab,target,targetLocation,upT,DI} = props;
   if (!selectedCareer||loading.careers) return null;
   return (<div style={{marginTop:"1rem"}}>
     <button className="btn-sec" onClick={()=>{setSelectedCareer(null);setCareerDetail("");}} style={{marginBottom:"1rem",display:"flex",alignItems:"center",gap:".4rem"}}>
@@ -1797,7 +1810,8 @@ function CareerDetailView({selectedCareer,setSelectedCareer,careerDetail,loading
   </div>);
 }
 
-function CareerTab({careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector}) {
+function CareerTab(props) {
+  const {careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector,hasAccess,setShowPaywall,skills,personal} = props;
   return (<div className={"panel "+(tab===1?"on":"")}>
 
         <div className="intro">
@@ -2016,9 +2030,13 @@ function CareerTab({careers,careerFilter,setCareerFilter,selectedCareer,setSelec
           </div>
         </div>
       
-        <button className="btn-primary" onClick={findCareers} style={{position:"relative"}} disabled={loading.careers}>
-          {loading.careers?"Analyzing Your Full Qualifications Profile...":"🔍  Find My Best Career Matches"}
-        </button>
+                {hasAccess?(
+          <button className="btn-primary" onClick={findCareers} style={{position:"relative"}} disabled={loading.careers}>
+            {loading.careers?"Analyzing Your Full Qualifications Profile...":"🔍  Find My Best Career Matches"}
+          </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Features — Upgrade to Full Access</button>
+                )}
       
         {loading.careers&&<div className="loading"><div className="spin"/><span>Analyzing your qualifications and finding career matches...</span></div>}
         {careerError&&!loading.careers&&(
@@ -2041,6 +2059,293 @@ function CareerTab({careers,careerFilter,setCareerFilter,selectedCareer,setSelec
 
 }
 
+
+
+function RankInsignia({branch,grade,color}) {
+  const c = color||"#c8a951";
+  const g = grade||"";
+  if (g.startsWith("E-")) {
+    const n = parseInt(g.slice(2))||1;
+    const chevs = n<=3?n:n<=6?3:n<=8?3:3;
+    const rockers = n>=7?n-6:0;
+    const hasDiamond = n===8;
+    const stars = n>=9?n-8:0;
+    const h = 36;
+    const paths = [];
+    for(let ci=0;ci<chevs;ci++) paths.push(React.createElement("path",{key:"c"+ci,d:"M3,"+(h-8-(ci*8))+" L18,"+(h-18-(ci*8))+" L33,"+(h-8-(ci*8)),fill:"none",stroke:c,strokeWidth:2.5,strokeLinecap:"round"}));
+    for(let ri=0;ri<rockers;ri++) paths.push(React.createElement("path",{key:"r"+ri,d:"M3,"+(h-2-(ri*5))+" Q18,"+(h+5-(ri*5))+" 33,"+(h-2-(ri*5)),fill:"none",stroke:c,strokeWidth:2.5}));
+    if(hasDiamond) paths.push(React.createElement("polygon",{key:"d",points:"18,4 23,9 18,14 13,9",fill:c}));
+    for(let si=0;si<stars;si++) paths.push(React.createElement("text",{key:"s"+si,x:18-(si*8),y:12,textAnchor:"middle",fontSize:10,fill:c},"★"));
+    return React.createElement("svg",{viewBox:"0 0 36 "+h,width:32,height:h,style:{flexShrink:0}},...paths);
+  }
+  if (g.startsWith("W-")) {
+    const n = parseInt(g.slice(2))||1;
+    const bars = Array.from({length:n}).map((_,bi)=>React.createElement("rect",{key:bi,x:2+(bi*7),y:8,width:5,height:14,rx:1,fill:bi%2===0?c:"rgba(255,255,255,.2)"}));
+    return React.createElement("svg",{viewBox:"0 0 36 24",width:32,height:24,style:{flexShrink:0}},
+      React.createElement("rect",{x:2,y:18,width:32,height:4,rx:1,fill:c}),...bars);
+  }
+  if (g.startsWith("O-")) {
+    const n = parseInt(g.slice(2))||1;
+    if(n===1) return React.createElement("svg",{viewBox:"0 0 36 14",width:32,height:14,style:{flexShrink:0}},React.createElement("rect",{x:4,y:3,width:28,height:8,rx:2,fill:c}));
+    if(n===2) return React.createElement("svg",{viewBox:"0 0 36 14",width:32,height:14,style:{flexShrink:0}},React.createElement("rect",{x:4,y:3,width:28,height:8,rx:2,fill:"#d8d8d8"}));
+    if(n===3) return React.createElement("svg",{viewBox:"0 0 36 14",width:32,height:14,style:{flexShrink:0}},React.createElement("rect",{x:2,y:3,width:13,height:8,rx:2,fill:"#d8d8d8"}),React.createElement("rect",{x:21,y:3,width:13,height:8,rx:2,fill:"#d8d8d8"}));
+    if(n<=5) return React.createElement("svg",{viewBox:"0 0 36 20",width:32,height:20,style:{flexShrink:0}},React.createElement("path",{d:"M18,2 C11,2 5,7 5,13 C5,17 8,19 12,18 L18,22 L24,18 C28,19 31,17 31,13 C31,7 25,2 18,2Z",fill:n===4?c:"#d8d8d8"}));
+    if(n===6) return React.createElement("svg",{viewBox:"0 0 36 22",width:32,height:22,style:{flexShrink:0}},React.createElement("ellipse",{cx:18,cy:14,rx:5,ry:4,fill:c}),React.createElement("path",{d:"M4,12 L18,5 L32,12",fill:"none",stroke:c,strokeWidth:2.5}),React.createElement("polygon",{points:"18,2 20,7 18,6 16,7",fill:c}));
+    const ns = n-6;
+    const sp = [{x:18,y:11},{x:10,y:16},{x:26,y:16},{x:8,y:8},{x:28,y:8}].slice(0,ns);
+    return React.createElement("svg",{viewBox:"0 0 36 22",width:32,height:22,style:{flexShrink:0}},...sp.map((p,si)=>React.createElement("text",{key:si,x:p.x,y:p.y,textAnchor:"middle",fontSize:11,fill:c},"★")));
+  }
+  return React.createElement("span",{style:{fontSize:"1.2rem"}},BRANCH_EMBLEMS[branch]||"⭐");
+}
+
+
+
+
+function MyProfileHero(props) {
+  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
+  return (<>
+  
+  <div style={{background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",borderRadius:"8px",padding:"1.5rem",color:"#fff",marginBottom:"1.2rem"}}>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:".75rem",marginBottom:"1.2rem"}}>
+      <div>
+        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".12em",color:"#f0c040"}}>{personal.name||currentUser.name||"Veteran"}</div>
+        <div style={{fontSize:".85rem",color:"#b0cce8",marginTop:".15rem"}}>{personal.email||currentUser.email}</div>
+      </div>
+      <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".82rem",fontWeight:700,cursor:"pointer"}} onClick={handleSaveProfile}>
+        {hasUnsaved?"⏳ Saving…":"✓ Profile Saved"}
+      </button>
+    </div>
+  
+    <div style={{fontSize:".7rem",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#9bb5d0",marginBottom:".5rem"}}>Service Record</div>
+    <div style={{display:"flex",flexWrap:"wrap",gap:".75rem"}}>
+      {milExperiences.filter(e=>e.branch).map((exp,ri)=>{
+        const bRanks = RANKS[exp.branch]||RANKS["Army"];
+        const allR = [...(bRanks.enlisted||[]),...(bRanks.warrant||[]),...(bRanks.officer||[])];
+        const rankObj = allR.find(r=>r.abbr===exp.rank)||null;
+        const bColor = BRANCH_COLORS[exp.branch]||BRANCH_COLORS["Army"];
+        return (
+          <div key={exp.id} style={{background:bColor.bg,border:"1px solid rgba(255,255,255,.2)",borderRadius:"10px",padding:".85rem 1rem",minWidth:"155px",flex:"1 1 155px",maxWidth:"210px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:".45rem",marginBottom:".5rem"}}>
+              <span style={{fontSize:"1.5rem"}}>{BRANCH_EMBLEMS[exp.branch]||"⭐"}</span>
+              <span style={{fontWeight:700,fontSize:".82rem",color:"#fff",letterSpacing:".05em",textTransform:"uppercase"}}>{exp.branch}</span>
+            </div>
+            {rankObj ? (
+              <div style={{marginBottom:".4rem",display:"flex",alignItems:"center",gap:".5rem"}}>
+                <RankInsignia branch={exp.branch} grade={rankObj.grade} color={bColor.accent}/>
+                <div>
+                  <div style={{fontWeight:800,fontSize:".95rem",color:bColor.accent,lineHeight:1.1}}>{rankObj.abbr}</div>
+                  <div style={{fontSize:".68rem",color:"rgba(255,255,255,.75)"}}>{rankObj.name}</div>
+                </div>
+              </div>
+            ) : (
+              <div style={{fontSize:".75rem",color:"rgba(255,255,255,.4)",fontStyle:"italic",marginBottom:".4rem"}}>Rank in Profile tab</div>
+            )}
+            <div style={{display:"flex",gap:".35rem",flexWrap:"wrap"}}>
+              <span style={{fontSize:".68rem",background:"rgba(0,0,0,.3)",borderRadius:"3px",padding:".15rem .45rem",color:"rgba(255,255,255,.85)"}}>{exp.serviceType||"Veteran"}</span>
+              {exp.tos&&<span style={{fontSize:".68rem",background:"rgba(0,0,0,.2)",borderRadius:"3px",padding:".15rem .45rem",color:"rgba(255,255,255,.7)"}}>⏱ {exp.tos}</span>}
+            </div>
+          </div>
+        );
+      })}
+      {milExperiences.filter(e=>e.branch).length===0&&(
+        <div style={{color:"rgba(255,255,255,.4)",fontSize:".85rem",fontStyle:"italic",padding:".5rem 0"}}>Add service history in Profile &amp; Qualifications to see your record here.</div>
+      )}
+    </div>
+  
+  </div>
+  {careers&&careers.length>0&&(
+    <div className="card" style={{marginBottom:"1.2rem"}}>
+      <div className="ch" style={{justifyContent:"space-between"}}>
+        <h3>Your Career Matches</h3>
+        <span style={{fontSize:".75rem",color:"var(--dim)"}}>{careers.length} matches · click any to explore</span>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))"}}>
+        {careers.map((c,ci)=>(
+          <div key={ci} style={{padding:".8rem 1rem",borderBottom:"1px solid #eef0f5",borderRight:"1px solid #eef0f5",cursor:"pointer"}}
+            onClick={()=>{setTab(1);setTimeout(()=>openCareerDetail(c),100);}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:".3rem",marginBottom:".2rem"}}>
+              <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",lineHeight:1.3}}>{c.title}</div>
+              <span style={{background:c.match==="Excellent"?"#1a7a40":c.match==="Strong"?"#1a3a6b":"#4a6080",color:"#fff",borderRadius:"3px",padding:".05rem .35rem",fontSize:".65rem",fontWeight:700,flexShrink:0}}>{c.match}</span>
+            </div>
+            <div style={{fontSize:".75rem",color:"#5a7090"}}>{c.industry}</div>
+            <div style={{fontSize:".78rem",color:"#1a7a40",fontWeight:600}}>{c.salaryRange}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{padding:".6rem 1rem",borderTop:"1px solid #eef0f5",textAlign:"center"}}>
+        <button className="btn-sec" style={{fontSize:".8rem"}} onClick={()=>setTab(1)}>View Full Career Pathways →</button>
+      </div>
+    </div>
+  )}
+  
+  </>);
+}
+
+
+function MyProfileSaved(props) {
+  const {tab,hasAccess,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
+  return (<>
+  <div className="card">
+    <div className="ch" style={{justifyContent:"space-between"}}>
+      <h3>Saved Resumes</h3>
+      {resume&&<button className="btn-sec" style={{fontSize:".72rem",padding:".28rem .7rem"}} onClick={handleSaveResume}>+ Save Current</button>}
+    </div>
+    <div className="cb">
+      {savedResumes.length===0?(
+        <div style={{textAlign:"center",padding:"1.5rem",color:"var(--dim)",fontSize:".88rem"}}>
+          <div style={{fontSize:"2rem",marginBottom:".5rem"}}>📄</div>
+          No saved resumes yet. Generate one on the Build Resume tab.
+        </div>
+      ):(
+        savedResumes.map(r=>(
+          <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".7rem 0",borderBottom:"1px solid #eef0f5",gap:"1rem"}}>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.title}</div>
+              <div style={{fontSize:".75rem",color:"var(--dim)"}}>{r.date}{r.industry?" · "+r.industry:""}</div>
+            </div>
+            <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{setResume(r.content);setTab(2);showToast("Resume loaded ✓ — update profile and regenerate to edit");}}>View</button>
+              <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm('Delete this saved resume? Cannot be undone.'))handleDeleteResume(r.id);}}>🗑</button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+  
+  <div className="card">
+    <div className="ch" style={{justifyContent:"space-between"}}>
+      <h3>📝 Saved Cover Letters</h3>
+      <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedCoverLetters.length} saved</span>
+    </div>
+    <div className="cb">
+      {savedCoverLetters.length===0?(
+        <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved cover letters yet. Generate one on the Cover Letter tab.</div>
+      ):(
+        savedCoverLetters.map(r=>(
+          <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.job}{r.company?" @ "+r.company:""}</div>
+              <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
+            </div>
+            <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{navigator.clipboard.writeText(r.content);showToast("Copied ✓");}}>Copy</button>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="cover-letter-"+r.date.split("/").join("-")+".txt";a.click();}}>↓</button>
+              <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this cover letter?"))handleDeleteSaved("cl",r.id);}}>🗑</button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+  
+  <div className="card">
+    <div className="ch" style={{justifyContent:"space-between"}}>
+      <h3>✉️ Saved Emails</h3>
+      <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedEmails.length} saved</span>
+    </div>
+    <div className="cb">
+      {savedEmails.length===0?(
+        <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved emails yet. Generate follow-up emails on the Job Search tab.</div>
+      ):(
+        savedEmails.map(r=>(
+          <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b"}}>{r.type}</div>
+              <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
+            </div>
+            <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{navigator.clipboard.writeText(r.content);showToast("Copied ✓");}}>Copy</button>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="email-"+r.date.split("/").join("-")+".txt";a.click();}}>↓</button>
+              <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this email?"))handleDeleteSaved("em",r.id);}}>🗑</button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+  
+  <div className="card">
+    <div className="ch" style={{justifyContent:"space-between"}}>
+      <h3>📊 Saved Score Reports</h3>
+      <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedScores.length} saved</span>
+    </div>
+    <div className="cb">
+      {savedScores.length===0?(
+        <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved scores yet. Score your resume on the Cover Letter & Review tab.</div>
+      ):(
+        savedScores.map(r=>(
+          <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
+            <div style={{flex:1}}>
+              <div style={{display:"flex",alignItems:"center",gap:".5rem"}}>
+                <span style={{fontWeight:800,fontSize:"1.1rem",color:r.score>=80?"#1a7a40":r.score>=65?"#e67e22":"#c0392b"}}>{r.score}</span>
+                <span style={{fontWeight:700,fontSize:".82rem",color:"#1a3a6b"}}>{r.label}</span>
+              </div>
+              <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
+            </div>
+            <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this score report?"))handleDeleteSaved("sc",r.id);}}>🗑</button>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+  
+  
+  
+  
+  
+  <div className="card">
+    <div className="ch"><h3>Account</h3></div>
+    <div className="cb" style={{display:"flex",gap:".6rem",flexWrap:"wrap"}}>
+      {hasAccess?(
+        <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".4rem .75rem",fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>
+          ✓ Full Access Active
+          <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>window.open("https://billing.stripe.com/p/login/bpc_1TDTCaEYZOEiIlw4CXXx3IbD","_blank")}>Manage Subscription ↗</button>
+        </div>
+      ):(
+        <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>
+          ⭐ Subscribe — $14.99/mo
+        </button>
+      )}
+      <button className="btn-sec" onClick={handleSaveProfile}>💾 Save All Progress</button>
+      <button className="btn-danger" onClick={()=>{if(window.confirm("Sign out?")) handleLogout();}}>Sign Out</button>
+    </div>
+  </div>
+  <div className="nav-row">
+    <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
+    <button className="btn-sec" onClick={()=>setTab(0)}>Back to Top →</button>
+  </div>
+  
+
+  </>);
+}
+
+function MyProfileContent(props) {
+  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
+  return (<div style={{padding:"1rem"}}>
+    <MyProfileHero tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
+    <MyProfileSaved tab={tab} hasAccess={hasAccess} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
+  </div>);
+}
+
+function MyProfileTab(props) {
+  const {tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
+  return (<div className={"panel "+(tab===6?"on":"")}>
+    {!currentUser?(
+      <div style={{textAlign:"center",padding:"3rem 1rem"}}>
+        <div style={{fontSize:"3rem",marginBottom:"1rem"}}>🔒</div>
+        <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",marginBottom:".75rem"}}>SIGN IN TO ACCESS YOUR PROFILE</h3>
+        <p style={{color:"#5a7090",fontSize:".9rem",margin:"0 auto 1.5rem",maxWidth:"360px",lineHeight:1.7}}>Save your service profile, resumes, and career matches across any device.</p>
+        <button className="btn-primary" style={{maxWidth:"280px",margin:"0 auto"}} onClick={()=>setShowAuth(true)}>
+          🔑 Sign In / Create Account
+        </button>
+      </div>
+    ):(
+      <MyProfileContent tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
+    )}
+
+  </div>);
+}
 
 function App() {
 
@@ -2122,7 +2427,7 @@ function App() {
   const [showAdminSetup, setShowAdminSetup] = useState(false);
   const [adminKeyInput, setAdminKeyInput] = useState("");
   const [adminKeySet, setAdminKeySet] = useState(() => {
-    const k = localStorage.getItem("vcb_admin_key")||"";
+    const k = localStorage.getItem("vcb_admin_key")||(typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key"))||"";
     return k.length > 20;
   });
   const [careerError, setCareerError] = useState("");
@@ -2142,6 +2447,9 @@ function App() {
   const [saveToast, setSaveToast] = useState("");
   const [hasUnsaved, setHasUnsaved] = useState(false);
   const [savedResumes, setSavedResumes] = useState([]);
+  const [savedCoverLetters, setSavedCoverLetters] = useState([]);
+  const [savedEmails, setSavedEmails] = useState([]);
+  const [savedScores, setSavedScores] = useState([]);
   const [viewingResume, setViewingResume] = useState(null);
 
   // ── PAYWALL STATE ─────────────────────────────────────────────────────────
@@ -2272,17 +2580,37 @@ function App() {
           const resumesSnap = await fbDb.collection("profiles").doc(firebaseUser.uid)
             .collection("resumes").orderBy("createdAt","desc").limit(20).get();
           setSavedResumes(resumesSnap.docs.map(d => d.data()));
+          const clSnap = await fbDb.collection("profiles").doc(firebaseUser.uid).collection("coverLetters").orderBy("id","desc").limit(20).get();
+          setSavedCoverLetters(clSnap.docs.map(d=>d.data()));
+          const emSnap = await fbDb.collection("profiles").doc(firebaseUser.uid).collection("emails").orderBy("id","desc").limit(20).get();
+          setSavedEmails(emSnap.docs.map(d=>d.data()));
+          const scSnap = await fbDb.collection("profiles").doc(firebaseUser.uid).collection("scores").orderBy("id","desc").limit(10).get();
+          setSavedScores(scSnap.docs.map(d=>d.data()));
         } catch(e) { console.warn("Profile load error:", e); }
       } else {
         setCurrentUser(null);
         setSavedResumes([]);
+        setSavedCoverLetters([]); setSavedEmails([]); setSavedScores([]);
       }
     });
     return () => unsubscribe();
   }, []);
 
   // Mark unsaved when key fields change
-  useEffect(() => { if (currentUser) setHasUnsaved(true); }, [personal, experiences, education, skills]);
+  useEffect(() => {
+    if (!currentUser || !fbDb) { setHasUnsaved(false); return; }
+    setHasUnsaved(true);
+    const timer = setTimeout(async () => {
+      try {
+        await fbDb.collection("profiles").doc(currentUser.uid).set({
+          personal, milExperiences, civExperiences, education, skills, target,
+          serviceRecords, targetLocation, updatedAt: Date.now()
+        }, { merge: true });
+        setHasUnsaved(false);
+      } catch(e) { /* silent fail */ }
+    }, 1800);
+    return () => clearTimeout(timer);
+  }, [personal, milExperiences, civExperiences, education, skills, target, targetLocation, serviceRecords]);
 
   // ── AUTH HANDLERS (Firebase) ──
   const handleRegister = async () => {
@@ -2377,6 +2705,39 @@ function App() {
       setSavedResumes(prev => prev.filter(r => r.id !== id));
       showToast("Resume deleted");
     } catch(e) { showToast("Delete failed"); }
+  };
+
+  const saveCoverLetter = async () => {
+    const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
+      job:coverLetterJob.title||"Cover Letter", company:coverLetterJob.company||"", content:coverLetter};
+    setSavedCoverLetters(prev=>[entry,...prev].slice(0,20));
+    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc(currentUser.uid).collection("coverLetters").doc(entry.id.toString()).set(entry);}catch(e){}}
+    showToast("Cover letter saved to My Profile ✓");
+  };
+  const saveEmail = async () => {
+    const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
+      type:followupType||"Follow-Up Email", content:followupEmail};
+    setSavedEmails(prev=>[entry,...prev].slice(0,20));
+    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc(currentUser.uid).collection("emails").doc(entry.id.toString()).set(entry);}catch(e){}}
+    showToast("Email saved to My Profile ✓");
+  };
+  const saveScore = async () => {
+    const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
+      score:resumeScore, label:resumeScore>=85?"Excellent":resumeScore>=75?"Strong":resumeScore>=65?"Good":"Needs Work",
+      summary:resumeReview.summary||"", grades:resumeReview.grades||{}};
+    setSavedScores(prev=>[entry,...prev].slice(0,10));
+    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc(currentUser.uid).collection("scores").doc(entry.id.toString()).set(entry);}catch(e){}}
+    showToast("Score report saved to My Profile ✓");
+  };
+  const handleDeleteSaved = async (type,id) => {
+    if(type==="cl") setSavedCoverLetters(prev=>prev.filter(x=>x.id!==id));
+    else if(type==="em") setSavedEmails(prev=>prev.filter(x=>x.id!==id));
+    else if(type==="sc") setSavedScores(prev=>prev.filter(x=>x.id!==id));
+    if(currentUser&&fbDb){
+      const col=type==="cl"?"coverLetters":type==="em"?"emails":"scores";
+      try{await fbDb.collection("profiles").doc(currentUser.uid).collection(col).doc(id.toString()).delete();}catch(e){}
+    }
+    showToast("Deleted");
   };
 
   const handleLoadResume = (r) => {
@@ -2561,34 +2922,40 @@ function App() {
     const clearance = (milExperiences[0]||{}).clearanceLevel||"None";
     const hasClearance = clearance && clearance!=="None";
     const system = "You are the world's best military-to-civilian career counselor. You know EVERY civilian job sector including skilled trades, retail management, transportation, agriculture, maritime, aviation, hospitality, fitness, education, social work, nonprofits, entrepreneurship, real estate, financial services, and more. Return ONLY valid minified JSON. No markdown, no backticks, no line breaks inside strings, no trailing commas. The JSON must parse with JSON.parse() on the first try.";
-    const prompt = `A veteran needs career guidance. Give them 24 realistic, diverse career options they can actually get within 1-2 years of leaving service.
+    const mosDetail = milExperiences.map(e=>(e.mos||(e.branch+' service'))+(e.mosTitle?' ('+e.mosTitle+')':'')+', '+e.branch+(e.rank?' '+e.rank:'')+', '+(e.tos||'unknown TIS')+' TIS').join('; ');
+    const civDetail = civExperiences.filter(e=>e.jobTitle).map(e=>e.jobTitle+(e.employer?' at '+e.employer:'')).join(', ');
+    const awardsDetail = milExperiences.flatMap(e=>e.awards||[]).slice(0,6).join(', ');
+    const asiDetail = milExperiences.flatMap(e=>(e.asi||[]).map(a=>a.code+': '+a.desc)).slice(0,4).join('; ');
+    const clearances = milExperiences.map(e=>e.clearanceLevel).filter(c=>c&&c!=='None').join(', ');
+    const dutiesDetail = milExperiences.flatMap(e=>e.duties?[e.duties.slice(0,100)]:[]).join(' | ').slice(0,300);
+    const eduDetail = education.map(e=>e.degree+' '+e.field).filter(Boolean).join(', ');
+    const prompt = `You are an expert military transition counselor. Generate 24 PERSONALIZED career paths for this specific veteran.
 
-VETERAN BACKGROUND:
-- Branch: ${branch} | MOS/Rate: ${mos} | Rank: ${rank} | Service: ${tos}
-- Security Clearance: ${clearance}
-- Full profile: ${(summary||"general military service").slice(0,600)}
-- Target role: ${target.title||"open"} | Industry: ${target.industry||"any"}
-- Interests: ${target.interests||"none"} | Open to: ${target.openTo||"anything"}
-- Location preference: ${targetLocation||"flexible"}
+THIS VETERAN'S ACTUAL BACKGROUND:
+Military: ${mosDetail||'military background'}
+Civilian Work: ${civDetail||'none yet'}
+Duties/Responsibilities: ${dutiesDetail||'standard military duties'}
+Specialty Quals: ${asiDetail||'none listed'}
+Awards: ${awardsDetail||'none listed'}
+Clearance: ${clearances||'None'}
+Education: ${eduDetail||'military training'}
+Career Goal: ${target.title||'open'} in ${target.industry||'any sector'}
+Interests & Hobbies: ${target.interests||'not specified'}
+Open To: ${target.openTo||'flexible'}
+Location: ${targetLocation||'flexible'}
 
-CRITICAL RULES:
-1. Return EXACTLY 24 career objects in a JSON array
-2. Be SPECIFIC with titles - not "Manager" but "Warehouse Operations Manager" or "Fleet Manager"
-3. Include ALL of these categories (at least 2 per category):
-   - TRADES: electrician, plumber, HVAC tech, welder, diesel mechanic, pipefitter, carpenter, ironworker, heavy equipment operator
-   - TRANSPORTATION: CDL truck driver, dispatcher, logistics coordinator, port operations, freight broker
-   - LAW ENFORCEMENT & SECURITY: police officer, border patrol, federal agent (FBI/DEA/ATF), corrections officer, private investigator, corporate security manager, armed security
-   - GOVERNMENT & FEDERAL: postal inspector, TSA officer, customs officer, VA counselor, FEMA specialist, park ranger, government contractor, DoD civilian
-   - HEALTHCARE: EMT, paramedic, surgical tech, medical equipment tech, healthcare administrator, VA nurse (if qualified), combat medic to physician assistant
-   - TECHNOLOGY & CYBER: cybersecurity analyst, network admin, IT systems admin, drone operator, GIS analyst, intelligence analyst
-   - MANAGEMENT & BUSINESS: operations manager, project manager, supply chain coordinator, HR recruiter (veteran-focused), training specialist, safety manager
-   - SKILLED & SPECIALIZED: firefighter, explosives technician, dive operations, K9 handler, private military contractor, flight instructor (if aviator)
-4. Match to their actual MOS and background - a 68W should see healthcare paths, an 11B should see law enforcement, a 25U should see IT
-5. salaryRange must use format "$XX,000-$XX,000" with no special characters
-6. Return minified JSON - no newlines inside the array, no extra spaces
+RULES — follow strictly:
+1. Top 8 paths must directly match their MOS/rate and civilian work history
+2. Use their interests/hobbies to find 3-4 meaningful career connections
+3. Clearances unlock intel, defense contractor, and federal roles — include them
+4. ASI/SQI specialties must appear directly in titles and whyFit
+5. Include entry-level ($40k-$60k) AND senior paths ($80k+)
+6. NO generic roles unless directly tied to their specific background
+7. whyFit MUST cite something specific from their profile — not generic veteran praise
+8. salaryRange format: '$XX,000-$XX,000' only, no special chars
+9. Return ONLY minified JSON, no markdown
 
-Return this EXACT structure (24 objects):
-[{"title":"Job Title","sector":"Civilian","industry":"Industry Name","salaryRange":"$45,000-$65,000","match":"Excellent","outlook":"High Growth","why":"One sentence why their military background fits","clearanceBonus":false,"entryPath":"How to get this job in 12 months","education":"None required / CDL / OSHA cert / Bachelor's"}]`;
+[{"title":"Specific Title","sector":"Civilian|Government|Defense\/Intel","industry":"Field","salaryRange":"$X-$Y","match":"Excellent|Strong|Good","whyFit":"cite specific background","topSkills":["s1","s2","s3"],"nextStep":"first action"}]`
 
     try {
       const raw = await callClaude(prompt, system, 4000);
@@ -3005,7 +3372,7 @@ Return this exact JSON structure:
               </div>
               <div className="pw-code-row">
                 <input
-                  placeholder="e.g. VET2025"
+                  placeholder="Access Code"
                   value={pwCode}
                   className={pwCodeStatus==="valid"?"valid":pwCodeStatus==="invalid"?"invalid":""}
                   onChange={e=>{setPwCode(e.target.value.toUpperCase());setPwCodeStatus("idle");setPwCodeMsg("");}}
@@ -3025,23 +3392,24 @@ Return this exact JSON structure:
                   // REPLACE_WITH_YOUR_STRIPE_PAYMENT_LINK below
                   // Get it from: Stripe Dashboard -> Payment Links -> Create
                   // Set success URL to: https://veterancareerpath.com?stripe_success=1&session_id={CHECKOUT_SESSION_ID}
-                  const stripeLink = "REPLACE_WITH_STRIPE_PAYMENT_LINK";
-                  if (stripeLink === "REPLACE_WITH_STRIPE_PAYMENT_LINK") {
-                    // Fallback: grant temp access until Stripe is connected
-                    grantPaidAccess(1);
-                    alert("Payment system coming soon! Access granted for now.");
-                  } else {
-                    window.location.href = stripeLink;
-                  }
+                  const stripeLink = "https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00";
+                  window.location.href = stripeLink;
                 }}>
                   Start for $14.99 / month →
                 </button>
                 <div style={{textAlign:"center",fontSize:".72rem",color:"#8aa0b8",margin:"-.1rem 0 .2rem"}}>
-                  Cancel anytime · No contracts · 7-day money-back guarantee
+                  Cancel anytime · No contracts
                 </div>
                 <button className="pw-skip" onClick={()=>{setShowPaywall(false);setHasAccess(false);}}>
                   Not ready yet? Browse the app first (AI features locked)
                 </button>
+                <div style={{textAlign:"center",marginTop:".75rem",paddingBottom:".5rem",fontSize:".82rem",color:"#8aa0b8"}}>
+                  Already have an account?{"  "}
+                  <button style={{background:"none",border:"none",color:"#1a3a6b",fontWeight:700,cursor:"pointer",textDecoration:"underline",fontSize:".82rem",padding:0}}
+                    onClick={()=>{setShowPaywall(false);setShowAuth(true);setAuthMode("login");}}>
+                    Sign In →
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -3187,7 +3555,7 @@ Return this exact JSON structure:
                   onClick={()=>{
                     const k = adminKeyInput.trim();
                     if(k.length < 20){ alert("That doesn't look like a valid API key."); return; }
-                    localStorage.setItem("vcb_admin_key", k);
+                    localStorage.setItem("vcb_admin_key", k); try{sessionStorage.setItem("vcb_admin_key", k);}catch(e){}
                     setAdminKeySet(true);
                     setAdminKeyInput("");
                     setShowAdminSetup(false);
@@ -3222,7 +3590,7 @@ Return this exact JSON structure:
             </div>
             <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
               <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleSaveProfile}>
-                💾 Save Profile{hasUnsaved?" *":""}
+                {hasUnsaved?"⏳ Saving…":"✓ Profile Saved"}
               </button>
               <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>setTab(3)}>
                 My Resumes ({savedResumes.length})
@@ -4071,7 +4439,7 @@ Return this exact JSON structure:
 
 
 
-          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector} />
+          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} education={education} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector}  hasAccess={hasAccess} setShowPaywall={setShowPaywall}  skills={skills} personal={personal} />
 
 
 
@@ -4107,9 +4475,13 @@ Return this exact JSON structure:
               </div>
             </div>
 
-            <button className="btn-primary" onClick={genResume} style={{position:"relative"}} disabled={loading.resume||!personal.name}>
-              {loading.resume?"Crafting Your Resume...":`📄  Generate My ${(RESUME_FORMATS.find(f=>f.id===resumeFormat) ? RESUME_FORMATS.find(f=>f.id===resumeFormat).label : "Professional")||"Professional"} Resume`}
-            </button>
+                {hasAccess?(
+              <button className="btn-primary" onClick={genResume} style={{position:"relative"}} disabled={loading.resume||!personal.name}>
+                {loading.resume?"Crafting Your Resume...":`📄  Generate My ${(RESUME_FORMATS.find(f=>f.id===resumeFormat) ? RESUME_FORMATS.find(f=>f.id===resumeFormat).label : "Professional")||"Professional"} Resume`}
+              </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Features — Upgrade to Full Access</button>
+                )}
             {loading.resume&&<div className="loading"><div className="spin"/><span>Generating your resume — this may take 15-30 seconds...</span></div>}
             {resume&&!loading.resume&&(
               <div style={{marginTop:"1rem"}}>
@@ -4330,10 +4702,14 @@ Return this exact JSON structure:
                     onChange={e=>setCoverLetterJob(j=>({...j,description:e.target.value}))}
                     style={{width:"100%",resize:"vertical",padding:".55rem .75rem",border:"1.5px solid #c0d0e4",borderRadius:"4px",fontFamily:"inherit",fontSize:".88rem",boxSizing:"border-box"}}/>
                 </div>
-                <button className="btn-primary" onClick={genCoverLetter} disabled={coverLetterLoading}
-                  style={{marginBottom:"1rem"}}>
-                  {coverLetterLoading?"✍ Writing your cover letter...":"✉ Generate Cover Letter"}
-                </button>
+                {hasAccess?(
+                  <button className="btn-primary" onClick={genCoverLetter} disabled={coverLetterLoading}
+                    style={{marginBottom:"1rem"}}>
+                    {coverLetterLoading?"✍ Writing your cover letter...":"✉ Generate Cover Letter"}
+                  </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Features — Upgrade to Full Access</button>
+                )}
                 {coverLetter&&(
                   <>
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem"}}>
@@ -4352,6 +4728,7 @@ Return this exact JSON structure:
                     </div>
                     <div className="cl-output">{coverLetter}</div>
                     <button className="btn-sec" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={genCoverLetter}>
+                    <button className="btn-primary" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={saveCoverLetter}>💾 Save Cover Letter</button>
                       ↺ Regenerate
                     </button>
                   </>
@@ -4378,50 +4755,46 @@ Return this exact JSON structure:
                       if(!file) return;
                       setUploadProcessing(true);
                       setUploadedFileName(file.name);
+                      const finalize = (txt) => { setUploadedResumeText(txt); setUploadProcessing(false); };
                       try {
-                        if(file.type==="text/plain" || file.name.endsWith(".txt")) {
-                          const text = await file.text();
-                          setUploadedResumeText(text);
+                        if(file.type==="text/plain"||file.name.endsWith(".txt")) {
+                          finalize(await file.text());
                         } else if(file.name.endsWith(".pdf")) {
-                          // Read as ArrayBuffer for PDF
+                          const reader = new FileReader();
+                          reader.onload = (ev)=>{
+                            try {
+                              const arr = new Uint8Array(ev.target.result);
+                              const raw = new TextDecoder("utf-8","ignore").decode(arr);
+                              // Extract readable text runs from PDF binary stream
+                              const runs = (raw.match(/[\x20-\x7E\n\r\t]{6,}/g)||[])
+                                .filter(s=>{ const t=s.trim(); return t.length>5 && t.split(" ").length>1 && !/^[\d\.\s\-\/\(\)]+$/.test(t) && !/^[A-Z0-9]{15,}/.test(t); })
+                                .join(" ").replace(/\s+/g," ").trim().slice(0,6000);
+                              finalize(runs.length>120 ? runs : "[PDF text could not be auto-extracted. Please COPY all text from your PDF (Ctrl+A, Ctrl+C) and paste it into the text box below for scoring.]");
+                            } catch(e) { finalize("[Could not read PDF — please paste your resume text in the box below.]"); }
+                          };
+                          reader.readAsArrayBuffer(file);
+                        } else if(file.name.endsWith(".docx")||file.name.endsWith(".doc")) {
                           const reader = new FileReader();
                           reader.onload = async(ev)=>{
                             try {
-                              // Use PDF.js from CDN if available, otherwise extract text from dataURL
-                              const arr = new Uint8Array(ev.target.result);
-                              // Simple text extraction: find text between stream markers
-                              let text = "";
-                              const str = new TextDecoder("utf-8").decode(arr);
-                              // Extract readable strings (heuristic)
-                              const matches = str.match(/[\x20-\x7E\n\r]{4,}/g)||[];
-                              text = matches.filter(s=>s.trim().length>3&&!/^[0-9\.\s]+$/.test(s)).join(" ").slice(0,5000);
-                              setUploadedResumeText(text||"[PDF uploaded — text extraction limited. For best results, paste your resume text below or use the Resume Builder.]");
-                            } catch(err) { setUploadedResumeText("[Could not extract PDF text. Try a .txt or .docx file.]"); }
-                            setUploadProcessing(false);
+                              if(typeof mammoth!=="undefined") {
+                                const result = await mammoth.extractRawText({arrayBuffer:ev.target.result});
+                                const txt = (result.value||"").replace(/\s+/g," ").trim();
+                                finalize(txt.length>80 ? txt.slice(0,6000) : "[Word doc appears empty or is heavily formatted. Try File > Save As > Plain Text (.txt) in Word, then upload that.]");
+                              } else {
+                                // Fallback without mammoth
+                                const arr = new Uint8Array(ev.target.result);
+                                const raw = new TextDecoder("utf-8","ignore").decode(arr);
+                                const runs = (raw.match(/[a-zA-Z][a-zA-Z ,\.]{8,}/g)||[]).filter(t=>t.split(" ").length>2).join(" ").slice(0,4000);
+                                finalize(runs.length>80 ? runs : "[Could not extract Word doc text. Please paste your resume in the text box below.]");
+                              }
+                            } catch(e) { finalize("[Could not read Word doc — paste your resume text below.]"); }
                           };
                           reader.readAsArrayBuffer(file);
-                          return;
-                        } else if(file.name.endsWith(".docx")) {
-                          const reader = new FileReader();
-                          reader.onload = async(ev)=>{
-                            try {
-                              const arr = new Uint8Array(ev.target.result);
-                              const str = new TextDecoder("utf-8").decode(arr);
-                              // Extract text from docx XML (word/document.xml is zipped inside)
-                              const matches = str.match(/<w:t[^>]*>([^<]+)<\/w:t>/g)||[];
-                              const text = matches.map(m=>m.replace(/<[^>]+>/g,"")).join(" ").slice(0,5000);
-                              setUploadedResumeText(text||"[DOCX uploaded — limited extraction. For best results use .txt or copy-paste.]");
-                            } catch(err) { setUploadedResumeText("[Could not read DOCX. Try saving as .txt]"); }
-                            setUploadProcessing(false);
-                          };
-                          reader.readAsArrayBuffer(file);
-                          return;
                         } else {
-                          const text = await file.text();
-                          setUploadedResumeText(text);
+                          finalize(await file.text());
                         }
-                      } catch(err) { setUploadedResumeText("[Could not read file. Try a .txt file.]"); }
-                      setUploadProcessing(false);
+                      } catch(err) { finalize("[Could not read file — paste your resume text below.]"); }
                     }}
                   />
                   <div style={{display:"flex",gap:".5rem",alignItems:"center",flexWrap:"wrap"}}>
@@ -4439,7 +4812,7 @@ Return this exact JSON structure:
                   </div>
                   {uploadedResumeText&&(
                     <div style={{marginTop:".6rem",background:"#fff",border:"1px solid #d0daea",borderRadius:"4px",padding:".5rem .7rem",fontSize:".75rem",color:"#3a5070",maxHeight:"80px",overflowY:"auto",lineHeight:1.5}}>
-                      <strong style={{color:"#1a3a6b"}}>Preview:</strong> {uploadedResumeText.slice(0,300)}...
+                      <strong style={{color:"#1a3a6b"}}>Preview</strong> <span style={{color:"var(--dim)",fontSize:".7rem"}}>({uploadedResumeText.length} chars extracted)</span><br/>{uploadedResumeText.slice(0,300)}...
                     </div>
                   )}
 
@@ -4459,9 +4832,13 @@ Return this exact JSON structure:
                   </div>
                 )}
 
-                <button className="btn-primary" onClick={runResumeReview} disabled={reviewLoading||(!resume&&!resumeData&&!uploadedResumeText)} style={{marginBottom:"1rem"}}>
-                  {reviewLoading?"🔍 Analyzing your resume...":"📊 Score My Resume"}
-                </button>
+                {hasAccess?(
+                  <button className="btn-primary" onClick={runResumeReview} disabled={reviewLoading||(!resume&&!resumeData&&!uploadedResumeText)} style={{marginBottom:"1rem"}}>
+                    {reviewLoading?"🔍 Analyzing your resume...":"📊 Score My Resume"}
+                  </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Features — Upgrade to Full Access</button>
+                )}
 
                 {resumeReview&&resumeReview.error&&(
                   <div style={{background:"#fff5f5",border:"1px solid #f0c0c0",borderRadius:"4px",padding:".75rem",color:"#a00",fontSize:".85rem"}}>{resumeReview.error}</div>
@@ -4537,6 +4914,7 @@ Return this exact JSON structure:
                     <button className="btn-sec" style={{marginTop:"1rem",fontSize:".8rem"}} onClick={runResumeReview}>
                       ↺ Re-analyze
                     </button>
+                    <button className="btn-primary" style={{marginLeft:".5rem",fontSize:".8rem"}} onClick={saveScore}>💾 Save Score Report</button>
                   </>
                 )}
               </div>
@@ -4695,9 +5073,13 @@ Return this exact JSON structure:
                     <option value="phone">Phone Screen / Initial Recruiter Call</option>
                   </select>
                 </div>
-                <button className="btn-primary" onClick={genInterviewPrep} disabled={prepLoading} style={{marginBottom:"1rem"}}>
-                  {prepLoading?"🎤 Preparing your questions...":"🎤 Generate Interview Questions"}
-                </button>
+                {hasAccess?(
+                  <button className="btn-primary" onClick={genInterviewPrep} disabled={prepLoading} style={{marginBottom:"1rem"}}>
+                    {prepLoading?"🎤 Preparing your questions...":"🎤 Generate Interview Questions"}
+                  </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Features — Upgrade to Full Access</button>
+                )}
                 {prepQuestions.length>0&&(
                   <>
                     <div style={{fontWeight:700,fontSize:".82rem",color:"var(--dim)",marginBottom:".75rem",letterSpacing:".06em",textTransform:"uppercase"}}>
@@ -4749,9 +5131,13 @@ Return this exact JSON structure:
                     <option value="withdraw">Withdraw Application</option>
                   </select>
                 </div>
-                <button className="btn-primary" onClick={genFollowupEmail} disabled={followupLoading} style={{marginBottom:"1rem"}}>
-                  {followupLoading?"✍ Writing your email...":"📧 Generate Email"}
-                </button>
+                {hasAccess?(
+                  <button className="btn-primary" onClick={genFollowupEmail} disabled={followupLoading} style={{marginBottom:"1rem"}}>
+                    {followupLoading?"✍ Writing your email...":"📧 Generate Email"}
+                  </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Features — Upgrade to Full Access</button>
+                )}
                 {followupEmail&&(
                   <>
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem"}}>
@@ -4764,6 +5150,7 @@ Return this exact JSON structure:
                       </div>
                     </div>
                     <div className="cl-output">{followupEmail}</div>
+                    <button className="btn-primary" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={saveEmail}>💾 Save Email</button>
                   </>
                 )}
               </div>
@@ -5055,170 +5442,16 @@ Return this exact JSON structure:
 
 
 
-          <div className={"panel "+(tab===6?"on":"")}>
-            {!currentUser?(
-              <div style={{textAlign:"center",padding:"3rem 1rem"}}>
-                <div style={{fontSize:"3rem",marginBottom:"1rem"}}>🔒</div>
-                <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",marginBottom:".75rem"}}>SIGN IN TO ACCESS YOUR PROFILE</h3>
-                <p style={{color:"#5a7090",fontSize:".9rem",margin:"0 auto 1.5rem",maxWidth:"360px",lineHeight:1.7}}>Save your service profile, resumes, and career matches across any device.</p>
-                <button className="btn-primary" style={{maxWidth:"280px",margin:"0 auto"}} onClick={()=>setShowAuth(true)}>
-                  🔑 Sign In / Create Account
-                </button>
-              </div>
-            ):(
-              <div style={{padding:"1rem"}}>
-
-                <div style={{background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",borderRadius:"8px",padding:"1.5rem",color:"#fff",marginBottom:"1.2rem"}}>
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:".75rem",marginBottom:"1.2rem"}}>
-                    <div>
-                      <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".12em",color:"#f0c040"}}>{personal.name||currentUser.name||"Veteran"}</div>
-                      <div style={{fontSize:".85rem",color:"#b0cce8",marginTop:".15rem"}}>{personal.email||currentUser.email}</div>
-                    </div>
-                    <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".82rem",fontWeight:700,cursor:"pointer"}} onClick={handleSaveProfile}>
-                      💾 Save Profile{hasUnsaved?" *":""}
-                    </button>
-                  </div>
-
-                  <div style={{fontSize:".7rem",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#90b0d0",marginBottom:".6rem"}}>Service Record{serviceRecords.length>1?"s":""}</div>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:".6rem"}}>
-                    {serviceRecords.map((rec,ri)=>{
-                      const bRanks = RANKS[rec.branch]||RANKS["Army"];
-                      const allR = [...(bRanks.enlisted||[]),...(bRanks.warrant||[]),...(bRanks.officer||[])];
-                      const rankObj = allR.find(r=>r.abbr===rec.rank)||null;
-                      return (
-                        <div key={rec.id} style={{background:"rgba(255,255,255,.12)",border:"1px solid rgba(255,255,255,.2)",borderRadius:"6px",padding:".75rem",minWidth:"160px",flex:1,maxWidth:"260px"}}>
-                          <div style={{display:"flex",justifyContent:"space-between",marginBottom:".4rem"}}>
-                            <span style={{fontSize:"1.2rem"}}>{BRANCH_EMBLEMS[rec.branch]||"⭐"}</span>
-                            {ri>0&&<span style={{cursor:"pointer",color:"rgba(255,255,255,.5)",fontSize:".8rem"}} onClick={()=>setServiceRecords(s=>s.filter((_,idx)=>idx!==ri))}>✕</span>}
-                          </div>
-                          <select value={rec.branch} onChange={e=>setServiceRecords(s=>s.map((r,idx)=>idx===ri?{...r,branch:e.target.value,rank:""}:r))}
-                            style={{width:"100%",background:"rgba(0,0,0,.3)",border:"1px solid rgba(255,255,255,.3)",borderRadius:"4px",color:"#fff",padding:".3rem .5rem",fontSize:".8rem",marginBottom:".35rem"}}>
-                            {["Army","Marine Corps","Navy","Air Force","Space Force","Coast Guard"].map(b=>(
-                              <option key={b} value={b} style={{background:"#1a3a6b"}}>{b}</option>
-                            ))}
-                          </select>
-                          <select value={rec.rank} onChange={e=>setServiceRecords(s=>s.map((r,idx)=>idx===ri?{...r,rank:e.target.value}:r))}
-                            style={{width:"100%",background:"rgba(0,0,0,.3)",border:"1px solid rgba(255,255,255,.3)",borderRadius:"4px",color:"#fff",padding:".3rem .5rem",fontSize:".8rem",marginBottom:".35rem"}}>
-                            <option value="" style={{background:"#1a3a6b"}}>Select Rank...</option>
-                            <optgroup label="Enlisted" style={{background:"#1a3a6b"}}>
-                              {(RANKS[rec.branch]||RANKS["Army"]).enlisted.map(r=>(
-                                <option key={r.abbr+r.grade} value={r.abbr} style={{background:"#1a3a6b"}}>{r.grade} {r.title} ({r.abbr})</option>
-                              ))}
-                            </optgroup>
-                            {((RANKS[rec.branch]||RANKS["Army"]).warrant||[]).length>0&&(
-                              <optgroup label="Warrant Officers" style={{background:"#1a3a6b"}}>
-                                {(RANKS[rec.branch]||RANKS["Army"]).warrant.map(r=>(
-                                  <option key={r.abbr+r.grade} value={r.abbr} style={{background:"#1a3a6b"}}>{r.grade} {r.title} ({r.abbr})</option>
-                                ))}
-                              </optgroup>
-                            )}
-                            <optgroup label="Officers" style={{background:"#1a3a6b"}}>
-                              {(RANKS[rec.branch]||RANKS["Army"]).officer.map(r=>(
-                                <option key={r.abbr+r.grade} value={r.abbr} style={{background:"#1a3a6b"}}>{r.grade} {r.title} ({r.abbr})</option>
-                              ))}
-                            </optgroup>
-                          </select>
-                          {rankObj&&<div style={{fontSize:".8rem",color:"#f0c040",fontWeight:600,marginBottom:".3rem"}}>{rankObj.insignia} {rankObj.title} ({rankObj.grade})</div>}
-                          <select value={rec.status} onChange={e=>setServiceRecords(s=>s.map((r,idx)=>idx===ri?{...r,status:e.target.value}:r))}
-                            style={{width:"100%",background:"rgba(0,0,0,.2)",border:"1px solid rgba(255,255,255,.2)",borderRadius:"4px",color:"#c0d8f0",padding:".28rem .5rem",fontSize:".75rem"}}>
-                            {["Veteran","Active Duty","Reserve","National Guard","Retired","Honorably Discharged"].map(s=>(
-                              <option key={s} value={s} style={{background:"#1a3a6b"}}>{s}</option>
-                            ))}
-                          </select>
-                        </div>
-                      );
-                    })}
-                    {serviceRecords.length<4&&(
-                      <button onClick={()=>setServiceRecords(s=>[...s,{id:Date.now(),branch:"Army",rank:"",status:"Veteran"}])}
-                        style={{background:"rgba(255,255,255,.08)",border:"1.5px dashed rgba(255,255,255,.3)",borderRadius:"6px",padding:".75rem",minWidth:"100px",color:"rgba(255,255,255,.6)",cursor:"pointer",fontSize:".82rem",display:"flex",flexDirection:"column",alignItems:"center",gap:".3rem"}}>
-                        <span style={{fontSize:"1.4rem"}}>+</span><span>Add Branch</span>
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {careers&&careers.length>0&&(
-                  <div className="card" style={{marginBottom:"1.2rem"}}>
-                    <div className="ch" style={{justifyContent:"space-between"}}>
-                      <h3>Your Career Matches</h3>
-                      <span style={{fontSize:".75rem",color:"var(--dim)"}}>{careers.length} matches · click any to explore</span>
-                    </div>
-                    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))"}}>
-                      {careers.map((c,ci)=>(
-                        <div key={ci} style={{padding:".8rem 1rem",borderBottom:"1px solid #eef0f5",borderRight:"1px solid #eef0f5",cursor:"pointer"}}
-                          onClick={()=>{setTab(1);setTimeout(()=>openCareerDetail(c),100);}}>
-                          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:".3rem",marginBottom:".2rem"}}>
-                            <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",lineHeight:1.3}}>{c.title}</div>
-                            <span style={{background:c.match==="Excellent"?"#1a7a40":c.match==="Strong"?"#1a3a6b":"#4a6080",color:"#fff",borderRadius:"3px",padding:".05rem .35rem",fontSize:".65rem",fontWeight:700,flexShrink:0}}>{c.match}</span>
-                          </div>
-                          <div style={{fontSize:".75rem",color:"#5a7090"}}>{c.industry}</div>
-                          <div style={{fontSize:".78rem",color:"#1a7a40",fontWeight:600}}>{c.salaryRange}</div>
-                        </div>
-                      ))}
-                    </div>
-                    <div style={{padding:".6rem 1rem",borderTop:"1px solid #eef0f5",textAlign:"center"}}>
-                      <button className="btn-sec" style={{fontSize:".8rem"}} onClick={()=>setTab(1)}>View Full Career Pathways →</button>
-                    </div>
-                  </div>
-                )}
-
-                <div className="card">
-                  <div className="ch" style={{justifyContent:"space-between"}}>
-                    <h3>Saved Resumes</h3>
-                    {resume&&<button className="btn-sec" style={{fontSize:".72rem",padding:".28rem .7rem"}} onClick={handleSaveResume}>+ Save Current</button>}
-                  </div>
-                  <div className="cb">
-                    {savedResumes.length===0?(
-                      <div style={{textAlign:"center",padding:"1.5rem",color:"var(--dim)",fontSize:".88rem"}}>
-                        <div style={{fontSize:"2rem",marginBottom:".5rem"}}>📄</div>
-                        No saved resumes yet. Generate one on the Build Resume tab.
-                      </div>
-                    ):(
-                      savedResumes.map(r=>(
-                        <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".7rem 0",borderBottom:"1px solid #eef0f5",gap:"1rem"}}>
-                          <div style={{flex:1,minWidth:0}}>
-                            <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.title}</div>
-                            <div style={{fontSize:".75rem",color:"var(--dim)"}}>{r.date}{r.industry?" · "+r.industry:""}</div>
-                          </div>
-                          <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
-                            <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{setResume(r.content);setTab(2);showToast("Resume loaded ✓ — update profile and regenerate to edit");}}>View</button>
-                            <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>handleDeleteResume(r.id)}>✕</button>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-
-                <div className="card">
-                  <div className="ch"><h3>Account</h3></div>
-                  <div className="cb" style={{display:"flex",gap:".6rem",flexWrap:"wrap"}}>
-                    {hasAccess?(
-                      <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".4rem .75rem",fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>
-                        ✓ Full Access Active
-                        <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>window.open("https://billing.stripe.com/p/login/test_REPLACE_WITH_PORTAL_LINK","_blank")}>Manage Subscription ↗</button>
-                      </div>
-                    ):(
-                      <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>
-                        ⭐ Subscribe — $14.99/mo
-                      </button>
-                    )}
-                    <button className="btn-sec" onClick={handleSaveProfile}>💾 Save All Progress</button>
-                    <button className="btn-danger" onClick={()=>{if(window.confirm("Sign out?")) handleLogout();}}>Sign Out</button>
-                  </div>
-                </div>
-                <div className="nav-row">
-                  <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
-                  <button className="btn-sec" onClick={()=>setTab(0)}>Back to Top →</button>
-                </div>
-
-              </div>
-            )}
-          </div>
+          <MyProfileTab tab={tab} currentUser={currentUser} setShowAuth={setShowAuth} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
         </div>
       </div>
 
 
+
+      {!hasAccess&&<div style={{position:"fixed",bottom:0,left:0,right:0,background:"linear-gradient(135deg,#1a3a6b,#0d1f3c)",color:"#fff",padding:".6rem 1rem",display:"flex",justifyContent:"space-between",alignItems:"center",zIndex:9998,boxShadow:"0 -2px 12px rgba(0,0,0,.3)"}}>
+        <span style={{fontSize:".8rem",color:"#b8d0f0"}}>🔒 AI features locked — upgrade to unlock Career Match, Resume Builder & more</span>
+        <button onClick={()=>setShowPaywall(true)} style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",fontWeight:700,fontSize:".8rem",padding:".35rem .9rem",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Upgrade $14.99/mo</button>
+      </div>}
       {saveToast&&<div className="save-toast">{saveToast}</div>}
     </>
   );

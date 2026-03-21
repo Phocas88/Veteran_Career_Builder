@@ -31,14 +31,14 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-     const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+      const firebaseConfig = {
+        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+        authDomain: "veteran-career-builder.firebaseapp.com",
+        projectId: "veteran-career-builder",
+        storageBucket: "veteran-career-builder.firebasestorage.app",
+        messagingSenderId: "REPLACE_SENDER_ID",
+        appId: "REPLACE_APP_ID"
+      };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -51,7 +51,13 @@
   <script>window.VCB_LOGO="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png";</script>
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
   <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
-</head>
+
+<style>
+@media print {
+  @page { margin: 1.5cm; }
+  /* Suppress browser print headers/footers */
+}
+</style></head>
 <body>
   <div id="loading">
     <img id="loading-logo" src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Builder"/>
@@ -1215,7 +1221,7 @@ function DatePicker({ value, onChange, placeholder = "Select date" }) {
   const ref = useRef(null);
   const now = new Date();
   const currentYear = now.getFullYear();
-  const years = Array.from({length: 50}, (_, i) => currentYear - i);
+  const years = Array.from({length: 77}, (_, i) => currentYear - i);
 
   useEffect(() => {
     const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
@@ -1725,7 +1731,7 @@ function CareerDetailBody({careerDetail,selectedCareer,currentUser,setShowAuth,s
           {l:"ZipRecruiter",i:"⚡",u:"https://www.ziprecruiter.com/jobs-search?search="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
           {l:"Hire Heroes USA",i:"🎖",u:"https://www.hireheroesusa.org/"},
           {l:"RecruitMilitary",i:"⭐",u:"https://recruitmilitary.com/job-seeker"},
-          {l:"ClearanceJobs",i:"🔐",u:"https://www.clearancejobs.com/jobs?q="+encodeURIComponent(selectedCareer.title)},
+          {l:"ClearanceJobs",i:"🔐",u:"https://www.clearancejobs.com/jobs?q="+encodeURIComponent((selectedCareer&&selectedCareer.title)||target.title||"")},
         ].map(s=>(
           <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#ffffff",border:"1px solid #c0d0e4",borderRadius:"20px",color:"#1a3a6b",textDecoration:"none",fontSize:".77rem",fontWeight:500}}>
             {s.i} {s.l}
@@ -1740,7 +1746,7 @@ function CareerDetailBody({careerDetail,selectedCareer,currentUser,setShowAuth,s
           {[
             {l:"DOD SkillBridge Directory",u:"https://skillbridge.osd.mil/programs.htm"},
             {l:"SkillBridge by Career",u:"https://www.skillbridge.com/jobs?q="+encodeURIComponent(selectedCareer.title)},
-            {l:"Corporate Gray",u:"https://www.corporategray.com/skillbridge"},
+
           ].map(s=>(
             <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#e8f4fc",border:"1px solid #b0d4ec",borderRadius:"20px",color:"#1a5c9a",textDecoration:"none",fontSize:".77rem"}}>
               🔗 {s.l}
@@ -2012,7 +2018,7 @@ function CareerTab(props) {
               <div className="field"><label>Preferred Industry</label><input placeholder="e.g. Healthcare, Defense, Tech, Finance" value={target.industry} onChange={e=>upT("industry",e.target.value)}/></div>
               <div className="field"><label>Priorities / Keywords</label><input placeholder="e.g. remote work, leadership role, outdoors" value={target.keywords} onChange={e=>upT("keywords",e.target.value)}/></div>
               <div className="field"><label>Preferred Work Location</label>
-                <input placeholder="e.g. Norfolk VA, Remote, Dallas TX..." value={targetLocation} onChange={e=>setTargetLocation(e.target.value)}/>
+                <input placeholder="e.g. Norfolk VA, Remote, Dallas TX..." value={targetLocation} onChange={e=>setTargetLocation(e.target.value)} style={{width:"100%"}} />
               </div>
               <div className="field"><label>Interests & Hobbies</label>
                 <input placeholder="e.g. technology, coaching youth sports, woodworking, motorcycles, hunting, cooking, fitness..." value={target.interests||""} onChange={e=>upT("interests",e.target.value)}/>
@@ -2129,17 +2135,17 @@ function MyProfileHero(props) {
               <span style={{fontSize:"1.5rem"}}>{BRANCH_EMBLEMS[exp.branch]||"⭐"}</span>
               <span style={{fontWeight:700,fontSize:".82rem",color:"#fff",letterSpacing:".05em",textTransform:"uppercase"}}>{exp.branch}</span>
             </div>
-            {rankObj ? (
-              <div style={{marginBottom:".4rem",display:"flex",alignItems:"center",gap:".5rem"}}>
-                <RankInsignia branch={exp.branch} grade={rankObj.grade} color={bColor.accent}/>
-                <div>
-                  <div style={{fontWeight:800,fontSize:".95rem",color:bColor.accent,lineHeight:1.1}}>{rankObj.abbr}</div>
-                  <div style={{fontSize:".68rem",color:"rgba(255,255,255,.75)"}}>{rankObj.name}</div>
-                </div>
-              </div>
-            ) : (
-              <div style={{fontSize:".75rem",color:"rgba(255,255,255,.4)",fontStyle:"italic",marginBottom:".4rem"}}>Rank in Profile tab</div>
-            )}
+
+
+
+
+
+
+
+
+
+
+
             <div style={{display:"flex",gap:".35rem",flexWrap:"wrap"}}>
               <span style={{fontSize:".68rem",background:"rgba(0,0,0,.3)",borderRadius:"3px",padding:".15rem .45rem",color:"rgba(255,255,255,.85)"}}>{exp.serviceType||"Veteran"}</span>
               {exp.tos&&<span style={{fontSize:".68rem",background:"rgba(0,0,0,.2)",borderRadius:"3px",padding:".15rem .45rem",color:"rgba(255,255,255,.7)"}}>⏱ {exp.tos}</span>}
@@ -2201,10 +2207,12 @@ function MyProfileSaved(props) {
           <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".7rem 0",borderBottom:"1px solid #eef0f5",gap:"1rem"}}>
             <div style={{flex:1,minWidth:0}}>
               <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.title}</div>
+            <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.title||r.job||"Saved Resume"}</div>
               <div style={{fontSize:".75rem",color:"var(--dim)"}}>{r.date}{r.industry?" · "+r.industry:""}</div>
             </div>
             <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
-              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{setResume(r.content);setTab(2);showToast("Resume loaded ✓ — update profile and regenerate to edit");}}>View</button>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const w=window.open("","_blank");w.document.write("<html><head><title>"+(r.title||r.job||"Resume")+"</title><style>body{font-family:Arial,sans-serif;margin:1.5cm;font-size:10pt;}@page{margin:1.5cm;}</style></head><body>"+r.content.replace(/\n/g,"<br>")+"</body></html>");w.document.close();}}>👁 View</button>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const w=window.open("","_blank");w.document.write("<html><head><title>"+( r.title||"Resume")+"</title><style>body{font-family:Arial,sans-serif;margin:1.5cm;font-size:10pt;}@page{margin:1.5cm;}@media print{@page{margin:1.5cm;}}</style></head><body>"+r.content.replace(/\n/g,"<br>")+"<script>window.onload=function(){window.print();}<\/script></body></html>");w.document.close();}}>🖨 Print</button>
               <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm('Delete this saved resume? Cannot be undone.'))handleDeleteResume(r.id);}}>🗑</button>
             </div>
           </div>
@@ -2379,7 +2387,7 @@ function App() {
   const [jobApps, setJobApps] = useState(() => {
     try { return JSON.parse(localStorage.getItem("vcb_jobs")||"[]"); } catch(e){ return []; }
   });
-  const [newJob, setNewJob] = useState({ company:"", title:"", date:"", status:"Applied", notes:"", link:"" });
+  const [newJob, setNewJob] = useState({ company:"", title:"", date:"", status:"Applied", notes:"", link:"",source:"" });
   const [showAddJob, setShowAddJob] = useState(false);
   const saveJobs = (jobs) => {
     setJobApps(jobs);
@@ -2394,6 +2402,7 @@ function App() {
   // Follow-up Email
   const [followupCtx, setFollowupCtx] = useState({ company:"", role:"", interviewerName:"", date:"", outcome:"thank-you" });
   const [followupEmail, setFollowupEmail] = useState("");
+  const [followupJob, setFollowupJob] = useState({title:"",company:""});
   const [followupLoading, setFollowupLoading] = useState(false);
   const [copiedFollowup, setCopiedFollowup] = useState(false);
 
@@ -2695,10 +2704,11 @@ function App() {
     if (!currentUser) { setShowAuth(true); return; }
     if (!resume) return;
     try {
+      const resumeTitle = window.prompt("Give this resume a name so you can find it later:", target.title || "My Resume") || target.title || "Saved Resume";
       const id = Date.now().toString();
       const entry = {
         id,
-        title: target.title || "Untitled Resume",
+        title: resumeTitle,
         industry: target.industry || "",
         format: resumeFormat,
         date: new Date().toLocaleDateString("en-US", { year:"numeric", month:"short", day:"numeric" }),
@@ -3373,8 +3383,8 @@ Return this exact JSON structure:
               <div style={{padding:"1.2rem 1.5rem 0"}}>
                 <div style={{border:"2.5px solid #1a3a6b",borderRadius:"10px",padding:"1.2rem",background:"linear-gradient(135deg,#f0f4ff,#e8edf5)",textAlign:"center"}}>
                   <div style={{fontSize:".72rem",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#8aa0b8",marginBottom:".3rem"}}>Founding Member Price</div>
-                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.8rem",color:"#1a3a6b",lineHeight:1}}>$14<span style={{fontSize:"1.4rem"}}>.99</span><span style={{fontSize:".9rem",fontWeight:400,color:"#5a7090"}}>/mo</span></div>
-                  <div style={{fontSize:".75rem",color:"#c0392b",fontWeight:700,margin:".3rem 0 .8rem",letterSpacing:".04em"}}>🔒 Price locks in for life — rises to $19.99 after 500 members</div>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.8rem",color:"#1a3a6b",lineHeight:1}}>$4.99<span style={{fontSize:"1.4rem"}}>.99</span><span style={{fontSize:".9rem",fontWeight:400,color:"#5a7090"}}>/mo</span></div>
+                  <div style={{fontSize:".75rem",color:"#c0392b",fontWeight:700,margin:".3rem 0 .8rem",letterSpacing:".04em"}}>🔒 Price locks in for life — then $14.99/month after trial</div>
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".3rem .8rem",textAlign:"left",fontSize:".78rem",color:"#2a4a6a"}}>
                     {["AI Career Match (24 paths)","Military Language Translator","AI Resume Builder","5 Resume Templates","Cover Letter Generator","Resume Score & Review","Job Application Tracker","Interview Prep Generator","Follow-Up Email Generator","Transition Timeline","Weekly Progress Dashboard","Veteran Resources Hub"].map((f,i)=>(
                       <div key={i} style={{display:"flex",gap:".3rem",alignItems:"center"}}><span style={{color:"#1a7a40",fontWeight:700,fontSize:".8rem"}}>✓</span>{f}</div>
@@ -3411,10 +3421,10 @@ Return this exact JSON structure:
                   const stripeLink = "https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00";
                   window.location.href = stripeLink;
                 }}>
-                  Start for $14.99 / month →
+                  Start 7-Day Trial — $4.99 →
                 </button>
                 <div style={{textAlign:"center",fontSize:".72rem",color:"#8aa0b8",margin:"-.1rem 0 .2rem"}}>
-                  Cancel anytime · No contracts
+                  Cancel anytime · No contracts · 7-day trial $4.99
                 </div>
                 <button className="pw-skip" onClick={()=>{setShowPaywall(false);}}>
                   Not ready yet? Browse the app first (AI features locked)
@@ -4082,6 +4092,10 @@ Return this exact JSON structure:
                         <input placeholder="e.g. Logistics Manager, Security Analyst" value={exp.jobTitle||""}
                           onChange={e=>upCivExp(exp.id,"jobTitle",e.target.value)}/>
                       </div>
+                      <div className="field"><label>City / State</label>
+                        <input placeholder="e.g. Norfolk, VA or Remote" value={exp.location||""}
+                          onChange={e=>upCivExp(exp.id,"location",e.target.value)}/>
+                      </div>
                     </div>
                     <div className="g2">
                       <div className="field"><label>Start Date</label>
@@ -4527,7 +4541,7 @@ Return this exact JSON structure:
                           if(!el) return;
                           const name=(resumeData&&resumeData.name)||personal.name||"Veteran";
                           const w=window.open("","_blank");
-                          w.document.write("<html><head><title>"+name+" Resume</title><style>body{font-family:Arial,sans-serif;margin:2cm;font-size:10pt;}@media print{body{margin:1cm;}}</style></head><body>"+el.innerHTML+"<div style=\"margin-top:2rem;font-size:8pt;color:#aaa;border-top:1px solid #eee;padding-top:.5rem;\">Generated by VeteranCareerPath.com<\/div><script>window.onload=function(){window.print();}<\/script><\/body><\/html>");
+                          w.document.write("<html><head><title>Resume</title><style>html,body{margin:0;padding:0;background:#fff;}body{font-family:Arial,sans-serif;font-size:10pt;color:#111;padding:1.5cm;}@page{margin:0;size:letter;}@media print{  html,body{margin:0;padding:1.5cm;}  @page{margin:0;}  * {-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}  .no-print{display:none!important;}}.resume-wrapper,.resume-page{box-shadow:none!important;border:none!important;margin:0!important;padding:0!important;}</style><script>window.onload=function(){  document.title=" ";  window.print();}<\/script></head><body>"+el.innerHTML+"<div style=\"margin-top:2rem;font-size:8pt;color:#aaa;border-top:1px solid #eee;padding-top:.5rem;\">Generated by VeteranCareerPath.com<\/div><script>window.onload=function(){window.print();}<\/script><\/body><\/html>");
                           w.document.close();
                         }}>PDF</button>
                     </div>
@@ -5002,6 +5016,19 @@ Return this exact JSON structure:
                       <input placeholder="https://..." value={newJob.link} onChange={e=>setNewJob(j=>({...j,link:e.target.value}))}/>
                     </div>
                     <div className="field" style={{marginBottom:".6rem"}}><label>Notes</label>
+                      <div className="field" style={{marginBottom:0}}><label>Source</label>
+                        <select value={newJob.source||""} onChange={e=>setNewJob(j=>({...j,source:e.target.value}))} style={{width:"100%"}}>
+                          <option value="">-- Select Board --</option>
+                          <option value="Indeed">Indeed</option>
+                          <option value="ZipRecruiter">ZipRecruiter</option>
+                          <option value="LinkedIn">LinkedIn</option>
+                          <option value="USAJobs">USAJobs</option>
+                          <option value="ClearanceJobs">ClearanceJobs</option>
+                          <option value="Handshake">Handshake</option>
+                          <option value="Direct">Direct / Company Site</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
                       <input placeholder="Recruiter name, salary range, next steps..." value={newJob.notes} onChange={e=>setNewJob(j=>({...j,notes:e.target.value}))}/>
                     </div>
                     <button className="btn-primary" style={{width:"auto"}} onClick={()=>{
@@ -5056,6 +5083,12 @@ Return this exact JSON structure:
                                 </select>
                               </td>
                               <td style={{fontSize:".78rem",color:"#3a5070",maxWidth:"180px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{job.notes}</td>
+                              <td style={{whiteSpace:"nowrap"}}>
+                                <button style={{fontSize:".65rem",padding:".2rem .4rem",background:"#e8f0fe",border:"1px solid #1a3a6b",borderRadius:"4px",color:"#1a3a6b",cursor:"pointer",marginRight:".2rem"}}
+                                  onClick={()=>{setPrepJob({title:job.title,company:job.company,type:"behavioral"});setRetentionTab("interview");}}>🎤 Interview</button>
+                                <button style={{fontSize:".65rem",padding:".2rem .4rem",background:"#e8f0fe",border:"1px solid #1a3a6b",borderRadius:"4px",color:"#1a3a6b",cursor:"pointer",marginRight:".2rem"}}
+                                  onClick={()=>{setFollowupJob({title:job.title,company:job.company});setRetentionTab("followup");}}>✉ Email</button>
+                              </td>
                               <td><button onClick={()=>saveJobs(jobApps.filter(j=>j.id!==job.id))} style={{background:"none",border:"none",color:"#c0392b",cursor:"pointer",fontSize:".85rem"}}>✕</button></td>
                             </tr>
                           ))}
@@ -5179,7 +5212,7 @@ Return this exact JSON structure:
                 <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>Your complete military-to-civilian transition checklist. Check off each step as you complete it.</p>
                 {[
                   {phase:"6-12 Months Before ETS",color:"#c0392b",items:[
-                    {id:"tap",label:"Complete TAP (Transition Assistance Program)",desc:"Mandatory program — covers resume writing, VA benefits, job search basics"},
+                    {id:"tap",label:"Complete TAP (Transition Assistance Program)",desc:"Mandatory 5-day program. Must complete at least 90 days before ETS. Includes resume, job search, VA benefits, and financial planning modules.me writing, VA benefits, job search basics"},
                     {id:"dd214",label:"Request DD-214 and service records",desc:"You will need these for VA claims, hiring preferences, and education benefits"},
                     {id:"varating",label:"File VA disability claim",desc:"Start early — the process takes 3-6 months on average"},
                     {id:"gibill",label:"Apply for GI Bill (Chapter 33 or 30)",desc:"Covers tuition, housing allowance, and books for school or certifications"},

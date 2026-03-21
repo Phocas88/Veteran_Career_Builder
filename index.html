@@ -29,7 +29,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-     const firebaseConfig = {
+      const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -92,9 +92,9 @@
       const session = params.get("session_id");
       const success = params.get("stripe_success");
       if (success === "1" && session) {
-        // Grant 31 days  (slight buffer over 30)
+        // Grant 31 days access (slight buffer over 30)
         const expiry = Date.now() + 31 * 24 * 60 * 60 * 1000;
-        localStorage.setItem("vcb_", JSON.stringify({ 
+        localStorage.setItem("vcb_access", JSON.stringify({ 
           type:"paid", expiry, plan:"monthly", session 
         }));
         // Clean URL
@@ -1177,7 +1177,7 @@ async function callClaude(prompt, system = "", maxTokens = 2000) {
         "Content-Type": "application/json",
         "x-api-key": getStoredApiKey(),
         "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-": "true"
+        "anthropic-dangerous-direct-browser-access": "true"
       },
       body: JSON.stringify(body)
     });
@@ -1472,7 +1472,7 @@ function newMilExp() {
     unit:"", startDate:"", endDate:"", current:false, tos:"", duties:"",
     mosRoles:[], // sub-roles held within this MOS
     deployments:"", awards:[], customAward:"",
-    clearanceLevel:"None", clearanceStatus:"Active", sci:false, polygraph:"None",
+    clearanceLevel:"None", clearanceStatus:"Active", sciAccess:false, polygraph:"None",
     asi:[], sqi:[], additionalDuties:[], customDuty:"", customAsiCode:"", customAsiDesc:"", customSqiCode:"", customSqiDesc:"",
     employer:"", jobTitle:"" 
   };
@@ -1480,7 +1480,7 @@ function newMilExp() {
 function newCivExp() {
   return { id:Date.now(), type:"Civilian Employment", branch:"", rank:"", mos:"", mosTitle:"", serviceType:"",
     unit:"", startDate:"", endDate:"", current:false, tos:"", duties:"", deployments:"", awards:"",
-    clearanceLevel:"None", clearanceStatus:"Active", sci:false, polygraph:"None",
+    clearanceLevel:"None", clearanceStatus:"Active", sciAccess:false, polygraph:"None",
     asi:[], sqi:[], additionalDuties:[], customDuty:"", customAsiCode:"", customAsiDesc:"", customSqiCode:"", customSqiDesc:"",
     employer:"", jobTitle:"" };
 }
@@ -1589,7 +1589,7 @@ function App() {
   const [viewingResume, setViewingResume] = useState(null);
 
   // ── PAYWALL STATE ─────────────────────────────────────────────────────────
-  // ──  CODE SYSTEM ──────────────────────────────────────────────────────
+  // ── ACCESS CODE SYSTEM ──────────────────────────────────────────────────────
   // Format: CODE -> expiry timestamp (ms). 0 = never expires.
   // Add new codes here. Date.UTC(year, month-1, day) for expiry.
   // Example: Date.UTC(2026, 3, 20) = April 20 2026
@@ -1608,7 +1608,7 @@ function App() {
     "INDIA30":            Date.UTC(2026, 3, 20),
     "JULIET30":           Date.UTC(2026, 3, 20),
     // Special named codes (give to specific people)
-    "Amon26":           Date.UTC(2026, 4, 25),
+    "Amon26":           Date.UTC(2026, 4, 20),
     "VETTEST2":           Date.UTC(2026, 4, 20),
     "VETTEST3":           Date.UTC(2026, 4, 20),
     "VETTEST4":           Date.UTC(2026, 4, 20),
@@ -3766,11 +3766,11 @@ Return this exact JSON structure:
 
               {/* CAREER LIST */}
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem",flexWrap:"wrap",gap:".4rem"}}>
-                <div style={{fontSize:".78rem",color:"var(--dim)"}}>{careers.filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter==="Defense/Intel"&&c.sector==="Defense/Intel")||(careerFilter==="Civilian"&&c.sector==="Civilian")).length} career matches</div>
+                <div style={{fontSize:".78rem",color:"var(--dim)"}}>{careers.filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter===["Defense","Intel"].join("/")&&c.sector===["Defense","Intel"].join("/"))||(careerFilter==="Civilian"&&c.sector==="Civilian")).length} career matches</div>
                 <button style={{padding:".35rem .8rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".78rem",cursor:"pointer",fontWeight:600}}
                   onClick={()=>{
                     if(!currentUser){setShowAuth(true);return;}
-                    const visible=careers.filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter==="Defense/Intel"&&c.sector==="Defense/Intel")||(careerFilter==="Civilian"&&c.sector==="Civilian"));
+                    const visible=careers.filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter===["Defense","Intel"].join("/")&&c.sector===["Defense","Intel"].join("/"))||(careerFilter==="Civilian"&&c.sector==="Civilian"));
                     const entries=visible.map(c=>({id:Date.now().toString()+c.title,title:c.title,sector:c.sector,industry:c.industry,salary:c.salaryRange,match:c.match,date:new Date().toLocaleDateString("en-US",{year:"numeric",month:"short",day:"numeric"})}));
                     const prev=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");
                     const titles=entries.map(e=>e.title);
@@ -3783,7 +3783,7 @@ Return this exact JSON structure:
               </div>
               <div style={{display:"flex",flexDirection:"column",gap:".55rem"}}>
                 {careers
-                  .filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter==="Defense/Intel"&&c.sector==="Defense/Intel")||(careerFilter==="Civilian"&&c.sector==="Civilian"))
+                  .filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter===["Defense","Intel"].join("/")&&c.sector===["Defense","Intel"].join("/"))||(careerFilter==="Civilian"&&c.sector==="Civilian"))
                   .map((c,i)=>(
                   <div key={i} onClick={()=>openCareerDetail(c)}
                     style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.28)",borderRadius:"4px",
@@ -3793,7 +3793,7 @@ Return this exact JSON structure:
 
                     {/* sector icon */}
                     <div style={{fontSize:"1.6rem",flexShrink:0,width:"2.4rem",textAlign:"center"}}>
-                      {c.sector==="Government"?"🏛️":c.sector==="Defense/Intel"?"🛡️":"💼"}
+                      {c.sector==="Government"?"🏛️":c.sector===["Defense","Intel"].join("/")?"🛡️":"💼"}
                     </div>
 
                     {/* main info */}
@@ -3834,7 +3834,7 @@ Return this exact JSON structure:
                   <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:".75rem"}}>
                     <div>
                       <div style={{display:"flex",alignItems:"center",gap:".6rem",flexWrap:"wrap",marginBottom:".4rem"}}>
-                        <span style={{fontSize:"1.5rem"}}>{selectedCareer.sector==="Government"?"🏛️":selectedCareer.sector==="Defense/Intel"?"🛡️":"💼"}</span>
+                        <span style={{fontSize:"1.5rem"}}>{selectedCareer.sector==="Government"?"🏛️":selectedCareer.sector===["Defense","Intel"].join("/")?"🛡️":"💼"}</span>
                         <h2 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",fontSize:"1.6rem",color:"var(--gold-light)"}}>{selectedCareer.title}</h2>
                         <span className="badge bc">{selectedCareer.match} Match</span>
                         {selectedCareer.clearanceBonus&&<span style={{fontSize:".68rem",color:"#e8b84b",background:"rgba(230,160,60,.1)",border:"1px solid rgba(230,160,60,.25)",padding:".18rem .5rem",borderRadius:"2px"}}>🔐 Clearance Advantage</span>}

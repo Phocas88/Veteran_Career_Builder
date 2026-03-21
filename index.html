@@ -29,7 +29,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-const firebaseConfig = {
+      const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -916,7 +916,67 @@ body{background:#f4f6fa;font-family:'Crimson Pro',serif;color:#0d1f3c;}
 /* FORM */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.85rem;}
-@media(max-width:600px){.g2,.g3{grid-template-columns:1fr;}}
+@media(max-width:600px){
+  .g2,.g3{grid-template-columns:1fr;}
+  .wrap{padding:.75rem .6rem;}
+  .hdr img{width:180px!important;height:180px!important;}
+  .hdr h1{font-size:1.5rem!important;}
+  /* Tabs: scrollable on mobile */
+  .tabs{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex:0 0 auto;padding:.6rem .7rem;font-size:.62rem;min-width:70px;}
+  .tab-n{font-size:.55rem;}
+  /* Cards */
+  .card{margin-bottom:.75rem;}
+  .ch{padding:.6rem .8rem;}
+  .cb{padding:.6rem .8rem;}
+  /* User bar */
+  .user-bar{flex-wrap:wrap;gap:.3rem;padding:.4rem .8rem;}
+  .user-bar span{font-size:.72rem;}
+  /* Nav row */
+  .nav-row{flex-direction:column;gap:.5rem;}
+  .nav-row button{width:100%;}
+  /* Paywall */
+  .pw-box{max-height:95vh;overflow-y:auto;}
+  .pw-plans{grid-template-columns:1fr!important;}
+  .pw-head{padding:1.2rem 1.2rem .9rem;}
+  .pw-head h2{font-size:1.2rem;}
+  /* Resume output */
+  #resume-render{padding:.6rem!important;}
+  /* Tracker table */
+  .tracker-table{font-size:.75rem;}
+  .tracker-table th,.tracker-table td{padding:.4rem .5rem;}
+  /* Stat cards */
+  .stat-card{padding:.7rem .5rem;}
+  .stat-num{font-size:1.4rem!important;}
+  /* Score ring */
+  .score-ring{width:90px!important;height:90px!important;}
+  .score-num{font-size:1.6rem!important;}
+  /* Grade grid */
+  .grade-grid-2{grid-template-columns:1fr!important;}
+  /* Resource cards */
+  .res-card{flex-direction:column;}
+  .res-filter-bar{gap:.3rem;}
+  .res-filter-btn{font-size:.72rem;padding:.3rem .6rem;}
+  /* Crisis banner */
+  .crisis-banner{flex-direction:column;gap:.6rem;}
+  /* Format grid */
+  .format-grid{grid-template-columns:1fr 1fr!important;}
+  /* pw-code-row */
+  .pw-code-row{flex-direction:column;}
+  .pw-code-row input,.pw-code-btn{width:100%;box-sizing:border-box;}
+  /* intro box */
+  .intro{font-size:.85rem;padding:.7rem .8rem;}
+  /* fields */
+  .field label{font-size:.78rem;}
+  .field input,.field select,.field textarea{font-size:.88rem;}
+  /* Buttons */
+  .btn-primary,.btn-sec{font-size:.82rem;padding:.55rem .8rem;}
+}
+@media(max-width:400px){
+  .tab{min-width:62px;font-size:.58rem;padding:.55rem .5rem;}
+  .hdr img{width:140px!important;height:140px!important;}
+}
 .field{margin-bottom:.65rem;}
 .field label{font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:#1a3a6b;font-weight:700;display:block;margin-bottom:.3rem;}
 .field input,.field select,.field textarea{background:#ffffff;border:1.5px solid #c0d0e4;border-radius:4px;color:#0d1f3c;padding:.52rem .75rem;width:100%;font-family:'Crimson Pro',serif;font-size:.95rem;transition:border-color .2s;}
@@ -1446,6 +1506,9 @@ function App() {
   const [resumeReview, setResumeReview] = useState(null);
   const [coverLetterLoading, setCoverLetterLoading] = useState(false);
   const [reviewLoading, setReviewLoading] = useState(false);
+  const [uploadedResumeText, setUploadedResumeText] = useState("");
+  const [uploadedFileName, setUploadedFileName] = useState("");
+  const [uploadProcessing, setUploadProcessing] = useState(false);
   const [copiedCL, setCopiedCL] = useState(false);
 
   // ── RETENTION FEATURE STATE ───────────────────────────────────────────────
@@ -1537,13 +1600,11 @@ function App() {
     "INDIA30":            Date.UTC(2026, 3, 20),
     "JULIET30":           Date.UTC(2026, 3, 20),
     // Special named codes (give to specific people)
-    "VETTEST1":           Date.UTC(2026, 4, 20),
+    "Amon26":           Date.UTC(2026, 4, 21),
     "VETTEST2":           Date.UTC(2026, 4, 20),
     "VETTEST3":           Date.UTC(2026, 4, 20),
     "VETTEST4":           Date.UTC(2026, 4, 20),
     "VETTEST5":           Date.UTC(2026, 4, 20),
-    "Amon26":           Date.UTC(2026, 5, 21),
-    "Daquan26":           Date.UTC(2026, 5, 21),
   };
 
   const isCodeValid = (code) => {
@@ -2175,7 +2236,7 @@ Use this exact structure:
   const genCoverLetter = async () => {
     if (!hasAccess) { setShowPaywall(true); return; }
     if (!isApiKeySet()) { setShowAdminSetup(true); return; }
-    if (!resume && !resumeData) { alert("Generate your resume first on the Build Resume tab, then come back to create a cover letter."); return; }
+    if (!resume && !resumeData && !uploadedResumeText) { alert("Generate your resume first on the Build Resume tab, or upload your existing resume above."); return; }
     setCoverLetterLoading(true);
     setCoverLetter("");
     const milSummary = milExperiences.map(e=>`${e.branch} ${e.rank} (${e.tos}), MOS: ${e.mos}`).join("; ");
@@ -2297,7 +2358,7 @@ Return ONLY the email text including the subject line. No extra commentary.`;
     setReviewLoading(true);
     setResumeScore(null);
     setResumeReview(null);
-    const resumeText = resume || JSON.stringify(resumeData||{});
+    const resumeText = uploadedResumeText || resume || JSON.stringify(resumeData||{});
     const prompt = `You are an expert resume reviewer for military-to-civilian career transitions. Analyze this resume and return ONLY valid JSON.
 
 RESUME:
@@ -4275,9 +4336,102 @@ Return this exact JSON structure:
               <div className="ch"><h3>📊 Resume Score & Review</h3></div>
               <div className="cb">
                 <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>
-                  Get an AI-powered score and actionable feedback on your resume — just like a recruiter would see it.
+                  Get an AI-powered score and actionable feedback on your resume — just like a recruiter would see it. Use your generated resume below, or upload an existing one.
                 </p>
-                <button className="btn-primary" onClick={runResumeReview} disabled={reviewLoading} style={{marginBottom:"1rem"}}>
+
+                {/* Upload section */}
+                <div style={{background:"#f8fafc",border:"1.5px dashed #b0c4d8",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
+                  <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",marginBottom:".4rem"}}>📎 Upload Your Resume (optional)</div>
+                  <div style={{fontSize:".78rem",color:"var(--dim)",marginBottom:".6rem"}}>Accepts PDF, Word (.docx), or plain text (.txt)</div>
+                  <input type="file" accept=".pdf,.doc,.docx,.txt"
+                    style={{display:"none"}} id="resume-upload-input"
+                    onChange={async(e)=>{
+                      const file = e.target.files[0];
+                      if(!file) return;
+                      setUploadProcessing(true);
+                      setUploadedFileName(file.name);
+                      try {
+                        if(file.type==="text/plain" || file.name.endsWith(".txt")) {
+                          const text = await file.text();
+                          setUploadedResumeText(text);
+                        } else if(file.name.endsWith(".pdf")) {
+                          // Read as ArrayBuffer for PDF
+                          const reader = new FileReader();
+                          reader.onload = async(ev)=>{
+                            try {
+                              // Use PDF.js from CDN if available, otherwise extract text from dataURL
+                              const arr = new Uint8Array(ev.target.result);
+                              // Simple text extraction: find text between stream markers
+                              let text = "";
+                              const str = new TextDecoder("utf-8").decode(arr);
+                              // Extract readable strings (heuristic)
+                              const matches = str.match(/[\x20-\x7E\n\r]{4,}/g)||[];
+                              text = matches.filter(s=>s.trim().length>3&&!/^[0-9\.\s]+$/.test(s)).join(" ").slice(0,5000);
+                              setUploadedResumeText(text||"[PDF uploaded — text extraction limited. For best results, paste your resume text below or use the Resume Builder.]");
+                            } catch(err) { setUploadedResumeText("[Could not extract PDF text. Try a .txt or .docx file.]"); }
+                            setUploadProcessing(false);
+                          };
+                          reader.readAsArrayBuffer(file);
+                          return;
+                        } else if(file.name.endsWith(".docx")) {
+                          const reader = new FileReader();
+                          reader.onload = async(ev)=>{
+                            try {
+                              const arr = new Uint8Array(ev.target.result);
+                              const str = new TextDecoder("utf-8").decode(arr);
+                              // Extract text from docx XML (word/document.xml is zipped inside)
+                              const matches = str.match(/<w:t[^>]*>([^<]+)<\/w:t>/g)||[];
+                              const text = matches.map(m=>m.replace(/<[^>]+>/g,"")).join(" ").slice(0,5000);
+                              setUploadedResumeText(text||"[DOCX uploaded — limited extraction. For best results use .txt or copy-paste.]");
+                            } catch(err) { setUploadedResumeText("[Could not read DOCX. Try saving as .txt]"); }
+                            setUploadProcessing(false);
+                          };
+                          reader.readAsArrayBuffer(file);
+                          return;
+                        } else {
+                          const text = await file.text();
+                          setUploadedResumeText(text);
+                        }
+                      } catch(err) { setUploadedResumeText("[Could not read file. Try a .txt file.]"); }
+                      setUploadProcessing(false);
+                    }}
+                  />
+                  <div style={{display:"flex",gap:".5rem",alignItems:"center",flexWrap:"wrap"}}>
+                    <button className="btn-sec" style={{fontSize:".82rem"}}
+                      onClick={()=>document.getElementById("resume-upload-input").click()}>
+                      {uploadProcessing?"Processing...":"📎 Choose File"}
+                    </button>
+                    {uploadedFileName&&(
+                      <div style={{display:"flex",alignItems:"center",gap:".4rem"}}>
+                        <span style={{fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>✓ {uploadedFileName}</span>
+                        <button onClick={()=>{setUploadedFileName("");setUploadedResumeText("");document.getElementById("resume-upload-input").value="";}}
+                          style={{background:"none",border:"none",color:"#c0392b",cursor:"pointer",fontSize:".85rem"}}>✕</button>
+                      </div>
+                    )}
+                  </div>
+                  {uploadedResumeText&&(
+                    <div style={{marginTop:".6rem",background:"#fff",border:"1px solid #d0daea",borderRadius:"4px",padding:".5rem .7rem",fontSize:".75rem",color:"#3a5070",maxHeight:"80px",overflowY:"auto",lineHeight:1.5}}>
+                      <strong style={{color:"#1a3a6b"}}>Preview:</strong> {uploadedResumeText.slice(0,300)}...
+                    </div>
+                  )}
+                  {/* Paste fallback */}
+                  {!uploadedResumeText&&(
+                    <div style={{marginTop:".6rem"}}>
+                      <div style={{fontSize:".75rem",color:"var(--dim)",marginBottom:".3rem"}}>Or paste your resume text directly:</div>
+                      <textarea rows={4} placeholder="Paste your resume here..."
+                        style={{width:"100%",resize:"vertical",padding:".5rem .7rem",border:"1px solid #c0d0e4",borderRadius:"4px",fontFamily:"inherit",fontSize:".8rem",boxSizing:"border-box"}}
+                        onChange={e=>setUploadedResumeText(e.target.value)}/>
+                    </div>
+                  )}
+                </div>
+
+                {(!resume&&!resumeData&&!uploadedResumeText)&&(
+                  <div style={{background:"#fff8e0",border:"1px solid #f0c040",borderRadius:"6px",padding:".75rem",marginBottom:"1rem",fontSize:".82rem",color:"#5a3a00"}}>
+                    💡 Generate your resume on the <button style={{background:"none",border:"none",color:"#1a3a6b",fontWeight:700,cursor:"pointer",padding:0,textDecoration:"underline"}} onClick={()=>setTab(2)}>Build Resume tab</button> first, or upload/paste your existing resume above.
+                  </div>
+                )}
+
+                <button className="btn-primary" onClick={runResumeReview} disabled={reviewLoading||(!resume&&!resumeData&&!uploadedResumeText)} style={{marginBottom:"1rem"}}>
                   {reviewLoading?"🔍 Analyzing your resume...":"📊 Score My Resume"}
                 </button>
 

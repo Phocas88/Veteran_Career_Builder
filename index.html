@@ -31,14 +31,14 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-      const firebaseConfig = {
-        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
-        authDomain: "veteran-career-builder.firebaseapp.com",
-        projectId: "veteran-career-builder",
-        storageBucket: "veteran-career-builder.firebasestorage.app",
-        messagingSenderId: "REPLACE_SENDER_ID",
-        appId: "REPLACE_APP_ID"
-      };
+     const firebaseConfig = {
+  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
+  authDomain: "veteran-career-builder.firebaseapp.com",
+  projectId: "veteran-career-builder",
+  storageBucket: "veteran-career-builder.firebasestorage.app",
+  messagingSenderId: "664123627374",
+  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
+};
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -60,7 +60,7 @@
 </style></head>
 <body>
   <div id="loading">
-    <img id="loading-logo" src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Builder"/>
+    <img id="loading-logo" src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path"/>
     <p>VETERAN CAREER BUILDER</p>
     <div class="spin"></div>
   </div>
@@ -2572,6 +2572,30 @@ function App() {
   };
 
   // ── LISTEN FOR FIREBASE AUTH STATE ──
+  // ── BOOKMARKLET URL HANDLER ──
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("addjob") === "1") {
+      const title = decodeURIComponent(params.get("title")||"");
+      const company = decodeURIComponent(params.get("company")||"");
+      const link = decodeURIComponent(params.get("link")||"");
+      if (title || company) {
+        const entry = {id:Date.now(), title, company, link,
+          date: new Date().toISOString().slice(0,10),
+          status:"Applied", notes:"", source:"Bookmarklet"};
+        setJobApps(prev => {
+          const updated = [entry, ...prev];
+          localStorage.setItem("vcb_jobs", JSON.stringify(updated));
+          return updated;
+        });
+        setTab(4);
+        setRetentionTab("tracker");
+        showToast("Job saved to tracker ✓ — "+(title||company));
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    }
+  }, []);
+
   useEffect(() => {
     if (!fbAuth) return;
     const unsubscribe = fbAuth.onAuthStateChanged(async (firebaseUser) => {
@@ -3376,17 +3400,21 @@ Return this exact JSON structure:
             <div className="pw-box">
               <div className="pw-head">
                 <div style={{fontSize:"2.2rem",marginBottom:".4rem"}}>🎖</div>
-                <h2>Veteran Career Builder</h2>
+                <h2>Veteran Career Path</h2>
                 <p>AI-powered tools to translate your service into a civilian career</p>
               </div>
 
               <div style={{padding:"1.2rem 1.5rem 0"}}>
                 <div style={{border:"2.5px solid #1a3a6b",borderRadius:"10px",padding:"1.2rem",background:"linear-gradient(135deg,#f0f4ff,#e8edf5)",textAlign:"center"}}>
-                  <div style={{fontSize:".72rem",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#8aa0b8",marginBottom:".3rem"}}>Founding Member Price</div>
-                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.8rem",color:"#1a3a6b",lineHeight:1}}>$4.99<span style={{fontSize:"1.4rem"}}>.99</span><span style={{fontSize:".9rem",fontWeight:400,color:"#5a7090"}}>/mo</span></div>
-                  <div style={{fontSize:".75rem",color:"#c0392b",fontWeight:700,margin:".3rem 0 .8rem",letterSpacing:".04em"}}>🔒 Price locks in for life — then $14.99/month after trial</div>
+
+                  <div style={{textAlign:"center",marginBottom:".4rem"}}>
+                    <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"3rem",color:"#1a3a6b",lineHeight:1}}>$4.99</div>
+                    <div style={{fontSize:".85rem",fontWeight:700,color:"#1a3a6b",marginTop:".2rem"}}>3-Day Trial</div>
+                    <div style={{fontSize:".78rem",color:"#5a7090",marginTop:".15rem"}}>then $14.99 / month — cancel anytime</div>
+                  </div>
+
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".3rem .8rem",textAlign:"left",fontSize:".78rem",color:"#2a4a6a"}}>
-                    {["AI Career Match (24 paths)","Military Language Translator","AI Resume Builder","5 Resume Templates","Cover Letter Generator","Resume Score & Review","Job Application Tracker","Interview Prep Generator","Follow-Up Email Generator","Transition Timeline","Weekly Progress Dashboard","Veteran Resources Hub"].map((f,i)=>(
+                    {["AI Career Matching","Military Language Translator","AI Resume Builder","5 Resume Templates","Cover Letter Generator","Resume Score & Review","Job Application Tracker","Interview Prep Generator","Follow-Up Email Generator","Transition Timeline","Weekly Progress Dashboard","Veteran Resources Hub"].map((f,i)=>(
                       <div key={i} style={{display:"flex",gap:".3rem",alignItems:"center"}}><span style={{color:"#1a7a40",fontWeight:700,fontSize:".8rem"}}>✓</span>{f}</div>
                     ))}
                   </div>
@@ -3421,10 +3449,10 @@ Return this exact JSON structure:
                   const stripeLink = "https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00";
                   window.location.href = stripeLink;
                 }}>
-                  Start 7-Day Trial — $4.99 →
+                  Start 3-Day Trial — $4.99 →
                 </button>
                 <div style={{textAlign:"center",fontSize:".72rem",color:"#8aa0b8",margin:"-.1rem 0 .2rem"}}>
-                  Cancel anytime · No contracts · 7-day trial $4.99
+                  $4.99 for 3 days · then $14.99/month · cancel anytime
                 </div>
                 <button className="pw-skip" onClick={()=>{setShowPaywall(false);}}>
                   Not ready yet? Browse the app first (AI features locked)
@@ -3449,7 +3477,7 @@ Return this exact JSON structure:
               <div style={{background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",padding:"1.6rem 1.8rem 1.2rem",textAlign:"center",position:"relative"}}>
                 <button onClick={()=>setShowAuth(false)} style={{position:"absolute",top:".8rem",right:".8rem",background:"transparent",border:"none",color:"rgba(255,255,255,.7)",fontSize:"1.4rem",cursor:"pointer",lineHeight:1}}>✕</button>
                 <div style={{fontSize:"2rem",marginBottom:".4rem"}}>🎖</div>
-                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.4rem",letterSpacing:".1em",color:"#f0c040"}}>Veteran Career Builder</div>
+                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.4rem",letterSpacing:".1em",color:"#f0c040"}}>Veteran Career Path</div>
                 <div style={{fontSize:".82rem",color:"#b8d0f0",marginTop:".3rem"}}>Free account — save your profile and resumes</div>
               </div>
 
@@ -4541,7 +4569,9 @@ Return this exact JSON structure:
                           if(!el) return;
                           const name=(resumeData&&resumeData.name)||personal.name||"Veteran";
                           const w=window.open("","_blank");
-                          w.document.write("<html><head><title>Resume</title><style>html,body{margin:0;padding:0;background:#fff;}body{font-family:Arial,sans-serif;font-size:10pt;color:#111;padding:1.5cm;}@page{margin:0;size:letter;}@media print{  html,body{margin:0;padding:1.5cm;}  @page{margin:0;}  * {-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}  .no-print{display:none!important;}}.resume-wrapper,.resume-page{box-shadow:none!important;border:none!important;margin:0!important;padding:0!important;}</style><script>window.onload=function(){  document.title=" ";  window.print();}<\/script></head><body>"+el.innerHTML+"<div style=\"margin-top:2rem;font-size:8pt;color:#aaa;border-top:1px solid #eee;padding-top:.5rem;\">Generated by VeteranCareerPath.com<\/div><script>window.onload=function(){window.print();}<\/script><\/body><\/html>");
+                          const css="html,body{margin:0;padding:0;background:#fff;}body{font-family:Arial,sans-serif;font-size:10pt;color:#111;padding:1.5cm;}@page{margin:0;size:letter;}@media print{html,body{margin:0;padding:0;}@page{margin:1cm;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}}div[style*=\'box-shadow\']{box-shadow:none!important;}div[style*=\'border\']{border:none!important;}";
+                          const scr="scr"+"ipt";
+                          w.document.write("<html><head><title>Resume</title><style>"+css+"</style></head><body>"+el.innerHTML+"<"+scr+">window.onload=function(){window.print();}<\/"+scr+"></body></html>");
                           w.document.close();
                         }}>PDF</button>
                     </div>
@@ -5480,7 +5510,7 @@ Return this exact JSON structure:
             ))}
 
             <div style={{background:"#f0f4ff",border:"1px solid #c0d0e4",borderRadius:"8px",padding:"1rem 1.2rem",marginTop:"1rem",fontSize:".82rem",color:"#3a5070",lineHeight:1.7}}>
-              <strong style={{color:"#1a3a6b"}}>📌 A note from Veteran Career Builder:</strong> This resource page exists because we know the transition is more than just a job search. You served. You sacrificed. And you deserve support in every area of your life — not just your career. If you know a veteran who needs help, please share these resources with them.
+              <strong style={{color:"#1a3a6b"}}>📌 A note from Veteran Career Path:</strong> This resource page exists because we know the transition is more than just a job search. You served. You sacrificed. And you deserve support in every area of your life — not just your career. If you know a veteran who needs help, please share these resources with them.
             </div>
 
             <div className="nav-row" style={{marginTop:"1.5rem"}}>
@@ -5517,5 +5547,5 @@ Return this exact JSON structure:
       <span style="color:#3a5070;">|</span>
       <a href="/cdn-cgi/l/email-protection#0e7d7b7e7e617c7a4e786b7a6b7c6f606d67786762676f60206d6163" style="color:#a0b8d0;text-decoration:none;margin:0 .75rem;">Contact Us</a>
     </div>
-    <div style="color:#3a5070;font-size:.72rem;">&copy; 2025 Veteran Career Builder &bull; Not affiliated with the U.S. Department of Defense or the Department of Veterans Affairs
+    <div style="color:#3a5070;font-size:.72rem;">&copy; 2025 Veteran Career Path &bull; Not affiliated with the U.S. Department of Defense or the Department of Veterans Affairs
 </html>

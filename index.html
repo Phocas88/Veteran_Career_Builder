@@ -1499,7 +1499,8 @@ function newCivExp() {
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 
 
-function CareerListView({careers,careerFilter,setCareerFilter,openCareerDetail,findCareers,loading,careerError,milExperiences,target,upT,currentUser,setShowAuth,showToast,DI,filterCareers,matchesSector,setSelectedCareer}) {
+function CareerListView(props) {
+  const {careers,careerFilter,setCareerFilter,openCareerDetail,findCareers,loading,careerError,milExperiences,target,upT,currentUser,setShowAuth,showToast,DI,filterCareers,matchesSector,setSelectedCareer} = props;
   return (<>
   <div style={{marginTop:"1.1rem",marginBottom:".75rem",display:"flex",justifyContent:"space-between",alignItems:"flex-end",flexWrap:"wrap",gap:".5rem"}}>
     <div>
@@ -1769,7 +1770,8 @@ function CareerDetailBody({careerDetail,selectedCareer,currentUser,setShowAuth,s
   </div>);
 }
 
-function CareerDetailView({selectedCareer,setSelectedCareer,careerDetail,loading,currentUser,setShowAuth,showToast,tab,setTab,target,targetLocation,upT,DI}) {
+function CareerDetailView(props) {
+  const {selectedCareer,setSelectedCareer,careerDetail,loading,currentUser,setShowAuth,showToast,tab,setTab,target,targetLocation,upT,DI} = props;
   if (!selectedCareer||loading.careers) return null;
   return (<div style={{marginTop:"1rem"}}>
     <button className="btn-sec" onClick={()=>{setSelectedCareer(null);setCareerDetail("");}} style={{marginBottom:"1rem",display:"flex",alignItems:"center",gap:".4rem"}}>
@@ -1806,7 +1808,8 @@ function CareerDetailView({selectedCareer,setSelectedCareer,careerDetail,loading
   </div>);
 }
 
-function CareerTab({careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector}) {
+function CareerTab(props) {
+  const {careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector} = props;
   return (<div className={"panel "+(tab===1?"on":"")}>
 
         <div className="intro">
@@ -2092,7 +2095,8 @@ function RankInsignia({branch,grade,color}) {
 
 
 
-function MyProfileHero({tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall}) {
+function MyProfileHero(props) {
+  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
   return (<>
   
   <div style={{background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",borderRadius:"8px",padding:"1.5rem",color:"#fff",marginBottom:"1.2rem"}}>
@@ -2171,7 +2175,8 @@ function MyProfileHero({tab,currentUser,personal,hasAccess,hasUnsaved,milExperie
 }
 
 
-function MyProfileSaved({tab,hasAccess,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall}) {
+function MyProfileSaved(props) {
+  const {tab,hasAccess,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
   return (<>
   <div className="card">
     <div className="ch" style={{justifyContent:"space-between"}}>
@@ -2308,14 +2313,16 @@ function MyProfileSaved({tab,hasAccess,setTab,resume,savedResumes,handleDeleteRe
   </>);
 }
 
-function MyProfileContent({tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall}) {
+function MyProfileContent(props) {
+  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
   return (<div style={{padding:"1rem"}}>
     <MyProfileHero tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
     <MyProfileSaved tab={tab} hasAccess={hasAccess} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
   </div>);
 }
 
-function MyProfileTab({tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall}) {
+function MyProfileTab(props) {
+  const {tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
   return (<div className={"panel "+(tab===6?"on":"")}>
     {!currentUser?(
       <div style={{textAlign:"center",padding:"3rem 1rem"}}>

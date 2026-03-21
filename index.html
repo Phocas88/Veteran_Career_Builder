@@ -1214,7 +1214,7 @@ function DatePicker({ value, onChange, placeholder = "Select date" }) {
 
   const parsed = value ? { year: value.split("-")[0], month: value.split("-")[1] } : null;
   const display = parsed
-    ? `${MONTHS[parseInt(parsed.month) - 1]} ${parsed.year}`
+    ? (MONTHS[parseInt(parsed.month) - 1])+" ${parsed.year}"
     : placeholder;
 
   const pickYear = (y) => { setSelYear(y); setMode("month"); };
@@ -1264,6 +1264,7 @@ function DatePicker({ value, onChange, placeholder = "Select date" }) {
       )}
     </div>
   );
+  return _panel;
 }
 
 // ── UNIVERSITY AUTOCOMPLETE COMPONENT ────────────────────────────────────────
@@ -1319,6 +1320,7 @@ function UniversityInput({ value, onChange, placeholder }) {
       )}
     </div>
   );
+  return _panel;
 }
 
 
@@ -1486,6 +1488,554 @@ function newCivExp() {
 }
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
+
+
+function CareerListView({careers,careerFilter,setCareerFilter,openCareerDetail,findCareers,loading,careerError,milExperiences,target,upT,currentUser,setShowAuth,showToast,DI,filterCareers,matchesSector,setSelectedCareer}) {
+  return (<>
+  <div style={{marginTop:"1.1rem",marginBottom:".75rem",display:"flex",justifyContent:"space-between",alignItems:"flex-end",flexWrap:"wrap",gap:".5rem"}}>
+    <div>
+      <h3 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",color:"var(--gold-light)",fontSize:"1.05rem"}}>Your Career Matches</h3>
+      <p style={{fontSize:".78rem",color:"var(--slate)",marginTop:".2rem"}}>Click any career to see full details, salary breakdown, and growth path</p>
+    </div>
+    <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
+      {["All","Civilian","Government",DI].map(f=>(
+        <button key={f} onClick={()=>setCareerFilter(f)} style={{padding:".28rem .7rem",borderRadius:"2px",border:"1px solid",fontSize:".72rem",letterSpacing:".06em",cursor:"pointer",borderColor:careerFilter===f?"var(--gold)":"rgba(201,168,76,.25)",background:careerFilter===f?"rgba(201,168,76,.12)":"transparent",color:careerFilter===f?"var(--gold-light)":"var(--slate)"}}>
+          {f}
+        </button>
+      ))}
+    </div>
+  </div>
+    
+
+
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem"}}>
+    <span style={{fontSize:".78rem",color:"var(--dim)"}}>{filterCareers(careers,careerFilter).length} matches</span>
+    <button style={{padding:".3rem .8rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".78rem",cursor:"pointer"}} onClick={()=>{if(!currentUser){setShowAuth(true);return;}const v=filterCareers(careers,careerFilter);const e=v.map(c=>({id:Date.now()+c.title,title:c.title,sector:c.sector,industry:c.industry,salary:c.salaryRange,match:c.match,date:new Date().toLocaleDateString()}));const p=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");localStorage.setItem("vcb_saved_paths",JSON.stringify([...e,...p.filter(x=>!e.find(y=>y.title===x.title))].slice(0,50)));showToast("✓ Saved "+e.length+" paths");}}>💾 Save All</button>
+  </div>
+  <div style={{display:"flex",flexDirection:"column",gap:".55rem"}}>
+    {careers
+      .filter(c=>matchesSector(c,careerFilter))
+      .map((c,i)=>(
+      <div key={i} onClick={()=>openCareerDetail(c)} style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.28)",borderRadius:"4px",padding:"1rem 1.1rem",cursor:"pointer",transition:"all .18s",display:"flex",alignItems:"center",gap:"1rem",flexWrap:"wrap"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.5)";e.currentTarget.style.background="rgba(201,168,76,.05)";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.28)";e.currentTarget.style.background="rgba(255,255,255,.03)";}}>
+    
+
+        <div style={{fontSize:"1.6rem",flexShrink:0,width:"2.4rem",textAlign:"center"}}>
+          {c.sector==="Government"?"🏛️":c.sector===DI?"🛡️":"💼"}
+        </div>
+    
+
+        <div style={{flex:1,minWidth:"160px"}}>
+          <div style={{display:"flex",alignItems:"center",gap:".5rem",flexWrap:"wrap",marginBottom:".25rem"}}>
+            <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1rem",color:"var(--gold-light)"}}>{c.title}</span>
+            <span className="badge bc" style={{fontSize:".6rem"}}>{c.match} Match</span>
+            {c.clearanceBonus&&<span style={{fontSize:".65rem",color:"#e8b84b",background:"rgba(230,160,60,.1)",border:"1px solid rgba(230,160,60,.25)",padding:".1rem .4rem",borderRadius:"2px"}}>🔐 Clearance+</span>}
+          </div>
+          <div style={{fontSize:".82rem",color:"var(--dim)",lineHeight:"1.45"}}>{c.description}</div>
+        </div>
+    
+
+        <div style={{textAlign:"right",flexShrink:0,minWidth:"110px"}}>
+          <div style={{fontSize:"1rem",fontWeight:600,color:"var(--green)"}}>{c.salaryRange}</div>
+          <div style={{fontSize:".7rem",marginTop:".2rem"}} className={c.outlook==="High Growth"?"outlook-high":c.outlook==="Emerging"?"outlook-med":"outlook-low"}>
+            {c.outlook==="High Growth"?"📈":c.outlook==="Emerging"?"🔄":"📊"} {c.outlook}
+          </div>
+        </div>
+    
+
+        <div style={{color:"var(--gold)",fontSize:"1.1rem",flexShrink:0}}>→</div>
+      </div>
+    ))}
+  </div>
+  </>);
+}
+
+
+function CareerDetailView({selectedCareer,setSelectedCareer,careerDetail,loading,currentUser,setShowAuth,showToast,tab,setTab,target,targetLocation,upT,DI}) {
+  if (!selectedCareer||loading.careers) return null;
+  return (<div style={{marginTop:"1rem"}}>
+    <button className="btn-sec" onClick={()=>{setSelectedCareer(null);setCareerDetail("");}} style={{marginBottom:"1rem",display:"flex",alignItems:"center",gap:".4rem"}}>
+      ← Back to All Careers
+    </button>
+    
+
+    <div style={{background:"rgba(201,168,76,.07)",border:"1px solid rgba(201,168,76,.3)",borderRadius:"4px",padding:"1.2rem 1.4rem",marginBottom:"1rem"}}>
+      <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:".75rem"}}>
+        <div>
+          <div style={{display:"flex",alignItems:"center",gap:".6rem",flexWrap:"wrap",marginBottom:".4rem"}}>
+            <span style={{fontSize:"1.5rem"}}>{selectedCareer.sector==="Government"?"🏛️":selectedCareer.sector===DI?"🛡️":"💼"}</span>
+            <h2 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",fontSize:"1.6rem",color:"var(--gold-light)"}}>{selectedCareer.title}</h2>
+            <span className="badge bc">{selectedCareer.match} Match</span>
+            {selectedCareer.clearanceBonus&&<span style={{fontSize:".68rem",color:"#e8b84b",background:"rgba(230,160,60,.1)",border:"1px solid rgba(230,160,60,.25)",padding:".18rem .5rem",borderRadius:"2px"}}>🔐 Clearance Advantage</span>}
+          </div>
+          <div style={{fontSize:".82rem",color:"var(--dim)"}}>{selectedCareer.sector} · {selectedCareer.industry||"Multiple Industries"}</div>
+        </div>
+        <div style={{textAlign:"right"}}>
+          <div style={{fontSize:"1.5rem",fontWeight:600,color:"var(--green)"}}>{selectedCareer.salaryRange}</div>
+          <div className={selectedCareer.outlook==="High Growth"?"outlook-high":selectedCareer.outlook==="Emerging"?"outlook-med":"outlook-low"} style={{fontSize:".75rem"}}>
+            {selectedCareer.outlook==="High Growth"?"📈":selectedCareer.outlook==="Emerging"?"🔄":"📊"} {selectedCareer.outlook}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    {loading.careerDetail&&<div className="loading"><div className="spin"/><span>Loading full career profile...</span></div>}
+    {careerDetail&&!loading.careerDetail&&(
+      <div style={{display:"flex",flexDirection:"column",gap:"1rem"}}>
+    
+
+        {careerDetail.about&&(
+          <div className="card">
+            <div className="ch"><h3>📋 About This Career</h3></div>
+            <div className="cb" style={{fontSize:".9rem",lineHeight:"1.8",color:"var(--text)"}}>{careerDetail.about}</div>
+          </div>
+        )}
+    
+
+        {careerDetail.salaryBreakdown&&(
+          <div className="card">
+            <div className="ch"><h3>💰 Salary Breakdown</h3></div>
+            <div className="cb">
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:".65rem",marginBottom:".85rem"}}>
+                {[
+                  {label:"Entry Level",val:careerDetail.salaryBreakdown.entry,color:"var(--slate)"},
+                  {label:"Mid-Career",val:careerDetail.salaryBreakdown.mid,color:"var(--gold)"},
+                  {label:"Senior / Expert",val:careerDetail.salaryBreakdown.senior,color:"var(--green)"},
+                  {label:"With Clearance",val:careerDetail.salaryBreakdown.cleared,color:"#e8b84b"},
+                ].filter(s=>s.val).map(s=>(
+                  <div key={s.label} style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderRadius:"3px",padding:".7rem .85rem",textAlign:"center"}}>
+                    <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--dim)",marginBottom:".3rem"}}>{s.label}</div>
+                    <div style={{fontSize:"1.05rem",fontWeight:600,color:s.color}}>{s.val}</div>
+                  </div>
+                ))}
+              </div>
+              {careerDetail.salaryBreakdown.notes&&(
+                <div style={{fontSize:".8rem",color:"var(--dim)",fontStyle:"italic",lineHeight:"1.55"}}>{careerDetail.salaryBreakdown.notes}</div>
+              )}
+            </div>
+          </div>
+        )}
+    
+
+        {careerDetail.careerPath&&careerDetail.careerPath.length>0&&(
+          <div className="card">
+            <div className="ch"><h3>📈 Career Growth Path</h3></div>
+            <div className="cb">
+              <div style={{display:"flex",flexDirection:"column",gap:"0"}}>
+                {careerDetail.careerPath.map((step,i)=>(
+                  <div key={i} style={{display:"flex",gap:"1rem",alignItems:"flex-start",position:"relative"}}>
+
+                    <div style={{display:"flex",flexDirection:"column",alignItems:"center",flexShrink:0}}>
+                      <div style={{width:"28px",height:"28px",borderRadius:"50%",background:"rgba(201,168,76,.15)",border:"2px solid rgba(201,168,76,.4)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".7rem",fontWeight:700,color:"var(--gold)",flexShrink:0}}>{i+1}</div>
+                      {i<careerDetail.careerPath.length-1&&<div style={{width:"2px",background:"rgba(201,168,76,.15)",flex:1,minHeight:"30px",margin:".2rem 0"}}/>}
+                    </div>
+
+                    <div style={{flex:1,paddingBottom:i<careerDetail.careerPath.length-1?"1rem":"0"}}>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:".3rem",marginBottom:".25rem"}}>
+                        <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".07em",fontSize:".95rem",color:"var(--gold-light)"}}>{step.title}</span>
+                        <span style={{fontSize:".75rem",color:"var(--green)",fontWeight:600}}>{step.salary}</span>
+                      </div>
+                      <div style={{fontSize:".78rem",color:"var(--dim)",lineHeight:"1.5",marginBottom:".2rem"}}>{step.description}</div>
+                      {step.timeframe&&<div style={{fontSize:".7rem",color:"var(--slate)",fontStyle:"italic"}}>⏱ {step.timeframe}</div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+    
+
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem"}}>
+          {careerDetail.whyYouFit&&(
+            <div className="card">
+              <div className="ch"><h3>🎯 Why You're Qualified</h3></div>
+              <div className="cb">
+                <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
+                  {careerDetail.whyYouFit.map((w,i)=>(
+                    <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
+                      <span style={{color:"var(--green)",flexShrink:0}}>✓</span>{w}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+          {careerDetail.requiredSkills&&(
+            <div className="card">
+              <div className="ch"><h3>🔧 Skills Needed</h3></div>
+              <div className="cb">
+                <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
+                  {careerDetail.requiredSkills.map((s,i)=>(
+                    <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
+                      <span style={{color:"var(--gold)",flexShrink:0}}>→</span>{s}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+    
+
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem"}}>
+          {careerDetail.gaps&&careerDetail.gaps.length>0&&(
+            <div className="card">
+              <div className="ch"><h3>⚠️ Gaps to Address</h3></div>
+              <div className="cb">
+                <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
+                  {careerDetail.gaps.map((g,i)=>(
+                    <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
+                      <span style={{color:"var(--orange)",flexShrink:0}}>!</span>{g}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+          {careerDetail.certifications&&careerDetail.certifications.length>0&&(
+            <div className="card">
+              <div className="ch"><h3>📜 Recommended Certifications</h3></div>
+              <div className="cb">
+                <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
+                  {careerDetail.certifications.map((c,i)=>(
+                    <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
+                      <span style={{color:"var(--blue)",flexShrink:0}}>⭐</span>{c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+    
+
+        {careerDetail.actionSteps&&careerDetail.actionSteps.length>0&&(
+          <div className="card" style={{borderColor:"rgba(76,175,130,.3)"}}>
+            <div className="ch" style={{background:"rgba(76,175,130,.07)"}}><h3>🚀 Your Action Plan</h3></div>
+            <div className="cb">
+              <div style={{display:"flex",flexDirection:"column",gap:".55rem"}}>
+                {careerDetail.actionSteps.map((s,i)=>(
+                  <div key={i} style={{display:"flex",gap:".75rem",alignItems:"flex-start"}}>
+                    <div style={{width:"22px",height:"22px",borderRadius:"50%",background:"rgba(76,175,130,.15)",border:"1px solid rgba(76,175,130,.35)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".68rem",fontWeight:700,color:"var(--green)",flexShrink:0}}>{i+1}</div>
+                    <div style={{fontSize:".84rem",color:"var(--text)",lineHeight:"1.55",paddingTop:".15rem"}}>{s}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+    
+
+        <button className="btn-primary" onClick={()=>{upT("title",selectedCareer.title);upT("industry",selectedCareer.industry||selectedCareer.sector);setTab(2);}} style={{marginTop:".25rem"}}>📄 Use This Career to Build My Resume →
+    
+        </button>
+    
+        <div style={{marginTop:"1rem",background:"#f8fafc",border:"1px solid #d0daea",borderRadius:"6px",padding:"1rem"}}>
+          <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".08em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".6rem"}}>
+            Find Jobs {targetLocation ? "near " + targetLocation : "Nationwide"}
+          </div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:".4rem",marginBottom:"1rem"}}>
+            {[
+              {l:"Indeed",i:"🔍",u:"https://www.indeed.com/jobs?q="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
+              {l:"LinkedIn",i:"💼",u:"https://www.linkedin.com/jobs/search/?keywords="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
+              {l:"USAJobs",i:"🏛",u:"https://www.usajobs.gov/search/results/?k="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
+              {l:"ZipRecruiter",i:"⚡",u:"https://www.ziprecruiter.com/jobs-search?search="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
+              {l:"Hire Heroes USA",i:"🎖",u:"https://www.hireheroesusa.org/"},
+              {l:"RecruitMilitary",i:"⭐",u:"https://recruitmilitary.com/job-seeker"},
+              {l:"ClearanceJobs",i:"🔐",u:"https://www.clearancejobs.com/jobs?q="+encodeURIComponent(selectedCareer.title)},
+            ].map(s=>(
+              <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#ffffff",border:"1px solid #c0d0e4",borderRadius:"20px",color:"#1a3a6b",textDecoration:"none",fontSize:".77rem",fontWeight:500}}>
+                {s.i} {s.l}
+              </a>
+            ))}
+          </div>
+    
+          <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",marginBottom:".75rem"}}>
+            <div style={{fontWeight:700,fontSize:".75rem",color:"#1a5c9a",textTransform:"uppercase",letterSpacing:".08em",marginBottom:".4rem"}}>SkillBridge — Train While Still Serving</div>
+            <div style={{fontSize:".82rem",color:"#3a5070",marginBottom:".5rem",lineHeight:1.6}}>Active duty? SkillBridge lets you work with civilian employers during your last 180 days while keeping full military pay and benefits.</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:".4rem"}}>
+              {[
+                {l:"DOD SkillBridge Directory",u:"https://skillbridge.osd.mil/programs.htm"},
+                {l:"SkillBridge by Career",u:"https://www.skillbridge.com/jobs?q="+encodeURIComponent(selectedCareer.title)},
+                {l:"Corporate Gray",u:"https://www.corporategray.com/skillbridge"},
+              ].map(s=>(
+                <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#e8f4fc",border:"1px solid #b0d4ec",borderRadius:"20px",color:"#1a5c9a",textDecoration:"none",fontSize:".77rem"}}>
+                  🔗 {s.l}
+                </a>
+              ))}
+            </div>
+          </div>
+    
+          <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",marginBottom:".75rem"}}>
+            <div style={{fontWeight:700,fontSize:".75rem",color:"#1a7a40",textTransform:"uppercase",letterSpacing:".08em",marginBottom:".4rem"}}>GI Bill — Education Programs</div>
+            <div style={{fontSize:".82rem",color:"#3a5070",marginBottom:".5rem",lineHeight:1.6}}>Use your GI Bill benefits to get certified or degreed for this career field.</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:".4rem"}}>
+              {[
+                {l:"VA GI Bill School Finder",u:"https://www.va.gov/gi-bill-comparison-tool"},
+                {l:"VA Education Benefits",u:"https://www.va.gov/education/"},
+                {l:"Coursera Veteran Courses",u:"https://www.coursera.org/search?query="+encodeURIComponent(selectedCareer.title)},
+              ].map(s=>(
+                <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#e8f8ee",border:"1px solid #a0d4b4",borderRadius:"20px",color:"#1a7a40",textDecoration:"none",fontSize:".77rem"}}>
+                  🎓 {s.l}
+                </a>
+              ))}
+            </div>
+          </div>
+          <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",display:"flex",gap:".5rem",flexWrap:"wrap",justifyContent:"flex-end"}}>
+            <button style={{padding:".4rem .9rem",background:"transparent",border:"1px solid #d0daea",borderRadius:"4px",color:"#3a5070",fontSize:".8rem",cursor:"pointer"}} onClick={()=>{const win=window.open("","_blank");const c=selectedCareer;const cd=careerDetail;win.document.write("<html><head><title>"+c.title+"</title><style>body{font-family:Arial,sans-serif;padding:2rem;max-width:800px;margin:0 auto;}h1,h2{color:#1a3a6b;}</style></head><body><h1>"+c.title+"</h1><p><b>Sector:</b> "+(c.sector||"")+" | <b>Industry:</b> "+(c.industry||"")+" | <b>Salary:</b> "+(c.salaryRange||"")+"</p>"+(cd&&cd.about?"<h2>About</h2><p>"+cd.about+"</p>":"")+"<p style='margin-top:2rem;font-size:8pt;color:#aaa'>Generated by VeteranCareerPath.com</p><scr"+"ipt>window.onload=function(){window.print()}<\/scr"+"ipt></body></html>");win.document.close();}}>🖨 Print</button>
+            <button style={{padding:".4rem .9rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".8rem",cursor:"pointer",fontWeight:600}} onClick={()=>{if(!currentUser){setShowAuth(true);return;}const e={id:Date.now().toString(),title:selectedCareer.title,sector:selectedCareer.sector,industry:selectedCareer.industry,salary:selectedCareer.salaryRange,match:selectedCareer.match,date:new Date().toLocaleDateString()};const p=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");localStorage.setItem("vcb_saved_paths",JSON.stringify([e,...p.filter(x=>x.title!==e.title)].slice(0,20)));showToast("✓ "+selectedCareer.title+" saved");}}>💾 Save Path</button>
+          </div>
+      </div>
+    )}
+  </div>);
+}
+
+function CareerTab({careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,currentUser,showToast,setShowAuth,DI,filterCareers,matchesSector}) {
+  return (<div className={"panel "+(tab===1?"on":"")}>
+
+        <div className="intro">
+          <strong>Your Civilian Qualifications Profile.</strong> Before finding your career matches, review what your service actually unlocks in the civilian world. Every MOS, clearance, ASI, SQI, and additional duty is an asset — here's what each one means to a civilian employer.
+        </div>
+      
+
+        {milExperiences.map(exp=>(
+          <div className="card" key={exp.id} style={{borderColor:"rgba(201,168,76,.35)"}}>
+            <div className="ch" style={{background:"rgba(201,168,76,.1)"}}>
+              <h3>🎖️ {exp.branch} {exp.rank ? "— "+exp.rank : ""}</h3>
+              <span className="ch-sub">{exp.serviceType}{exp.tos ? " · "+exp.tos : ""}</span>
+            </div>
+            <div className="cb">
+      
+
+              <div style={{marginBottom:"1rem"}}>
+                <div style={{display:"flex",alignItems:"center",gap:".75rem",flexWrap:"wrap",marginBottom:".5rem"}}>
+                  <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".08em",color:"var(--gold-light)"}}>{exp.mos||"—"}</span>
+                  {exp.mosTitle&&<span style={{fontSize:"1rem",color:"var(--text)"}}>{exp.mosTitle}</span>}
+                  {exp.unit&&<span style={{fontSize:".8rem",color:"var(--dim)"}}>· {exp.unit}</span>}
+                </div>
+                <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+                  {exp.tos&&<span className="tos-badge">⏱ {exp.tos} Time in Service</span>}
+                  {exp.startDate&&<span className="tos-badge">📅 {exp.startDate} – {exp.current?"Present":exp.endDate||"?"}</span>}
+                </div>
+                <div style={{marginTop:".6rem",background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".7rem .9rem"}}>
+                  <div style={{fontSize:".68rem",letterSpacing:".12em",textTransform:"uppercase",color:"var(--slate)",marginBottom:".3rem"}}>What this MOS means to a civilian employer</div>
+                  <div style={{fontSize:".85rem",color:"var(--dim)",fontStyle:"italic"}}>
+                    {exp.mos ? "Your "+(exp.mosTitle||exp.mos)+" background demonstrates technical expertise, disciplined execution, and mission-critical responsibility. Civilian employers in operations, logistics, healthcare, security, and government sectors actively seek this experience." : "Enter your MOS code on the Profile tab to see what it unlocks."}
+                  </div>
+                </div>
+              </div>
+      
+              <hr className="sdiv"/>
+      
+
+              <div style={{marginBottom:"1rem"}}>
+                <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>🔐 Security Clearance</div>
+                {exp.clearanceLevel==="None"
+                  ? <div style={{fontSize:".85rem",color:"var(--dim)"}}>No clearance listed. Many civilian roles don't require one — your skills still transfer.</div>
+                  : <div style={{display:"flex",flexDirection:"column",gap:".4rem"}}>
+                      <div style={{display:"flex",gap:".5rem",flexWrap:"wrap",alignItems:"center"}}>
+                        <span className={getClearanceBadge(exp.clearanceLevel)}>{exp.clearanceLevel}</span>
+                        <span className="badge bc">{exp.clearanceStatus}</span>
+                        {exp.polygraph!=="None"&&<span className="badge bd">{exp.polygraph}</span>}
+                      </div>
+                      <div style={{background:"rgba(201,168,76,.06)",border:"1px solid rgba(201,168,76,.28)",borderRadius:"3px",padding:".65rem .85rem",fontSize:".83rem",color:"var(--text)",lineHeight:"1.6"}}>
+                        {exp.clearanceLevel.includes("SCI")||exp.clearanceLevel.includes("Poly")
+                          ? "🏆 Premium Asset: TS/SCI clearances unlock high-paying roles in intelligence agencies (CIA, NSA, DIA), defense contractors (Booz Allen, SAIC, Leidos), and federal IT. Cleared professionals command 10–30% salary premiums. Your clearance alone can be worth $20,000–$50,000 more per year."
+                          : exp.clearanceLevel==="Top Secret"
+                          ? "⭐ High Value: Top Secret clearance opens doors to defense contracting, federal law enforcement, DHS, and government IT roles. Actively sought by employers — investigation costs $50,000+ to initiate."
+                          : exp.clearanceLevel==="Secret"
+                          ? "✅ Solid Asset: Secret clearance qualifies you for thousands of defense, federal, and contractor positions. Most DoD contractor roles require this as a baseline."
+                          : "✅ Clearance noted. Even Confidential/Public Trust clearances help with federal and contractor employment."}
+                      </div>
+                    </div>
+                }
+              </div>
+      
+
+              {exp.asi.length>0&&(<>
+                <hr className="sdiv"/>
+                <div style={{marginBottom:"1rem"}}>
+                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Skill Identifiers (ASI) — What They Unlock</div>
+                  <div style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
+                    {exp.asi.map(a=>(
+                      <div key={a.code} style={{display:"flex",gap:".75rem",alignItems:"flex-start",background:"rgba(91,155,213,.06)",border:"1px solid rgba(91,155,213,.18)",borderRadius:"3px",padding:".6rem .85rem"}}>
+                        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.1rem",color:"#7eb8f5",letterSpacing:".08em",minWidth:"2.5rem"}}>{a.code}</span>
+                        <div>
+                          <div style={{fontSize:".88rem",color:"var(--text)",fontWeight:600}}>{a.desc}</div>
+                          <div style={{fontSize:".78rem",color:"var(--dim)",marginTop:".2rem",lineHeight:"1.5"}}>
+                            {a.code==="2S"||a.code==="R" ? "Ranger qualification signals elite physical conditioning, leadership under extreme stress, and small-unit tactics mastery. Highly valued in law enforcement special units, federal agencies, private security, and defense contracting." :
+                             a.code==="8A" ? "Airborne qualification demonstrates ability to operate in austere environments and adapt to rapidly changing conditions. Valued in emergency management, aviation, and special operations support roles." :
+                             a.code==="B3" ? "Linguist qualification is a premium asset in intelligence, federal law enforcement (FBI/CIA/DEA), international business, diplomacy, and translation services." :
+                             a.code==="P1" ? "Master Parachutist with 65+ jumps signals elite special operations background, exceptional risk management, and advanced military training. Top-tier for SOF support, government contracting, and security consulting." :
+                             a.code==="X3" ? "Military Instructor qualification translates directly to corporate training, learning & development roles, academic instruction, and leadership coaching — all high-demand civilian fields." :
+                             a.code==="G4" ? "Combatives instructor certification demonstrates advanced physical training expertise. Directly applicable to law enforcement training, personal protection, and defense sector roles." :
+                             a.code==="V5" ? "Battle Staff qualification means you've planned and coordinated complex multi-element operations. This maps directly to senior project management, operations director, and strategic planning roles." :
+                             a.code==="W1" ? "SERE training signals resilience, high-stress decision-making, and classified operations knowledge — valuable in intelligence, security, and government contracting." :
+                             (a.desc)+" represents specialized military training that differentiates you from typical civilian applicants. Highlight this on your resume and in interviews."}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>)}
+      
+
+              {exp.sqi.length>0&&(<>
+                <hr className="sdiv"/>
+                <div style={{marginBottom:"1rem"}}>
+                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Skill Qualification Identifiers (SQI) — What They Unlock</div>
+                  <div style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
+                    {exp.sqi.map(s=>(
+                      <div key={s.code} style={{display:"flex",gap:".75rem",alignItems:"flex-start",background:"rgba(160,124,214,.07)",border:"1px solid rgba(160,124,214,.2)",borderRadius:"3px",padding:".6rem .85rem"}}>
+                        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.1rem",color:"#c4a0f5",letterSpacing:".08em",minWidth:"2.5rem"}}>{s.code}</span>
+                        <div>
+                          <div style={{fontSize:".88rem",color:"var(--text)",fontWeight:600}}>{s.desc}</div>
+                          <div style={{fontSize:".78rem",color:"var(--dim)",marginTop:".2rem",lineHeight:"1.5"}}>
+                            {s.code==="F"||s.code==="Q" ? "Special Forces background is among the most valued military credentials in civilian employment. Opens doors to intelligence agencies, Tier 1 defense contractors, private military consulting, federal law enforcement leadership, and executive protection. Salary premiums of 20–40% are common." :
+                             s.code==="R" ? "Ranger-tabbed service members are highly sought in law enforcement, federal agencies, and security consulting for their demonstrated leadership, physical toughness, and tactical expertise." :
+                             s.code==="P" ? "Parachutist qualification demonstrates willingness to operate in high-risk environments and comfort with complex technical procedures — valued in aviation, emergency services, and government contracting." :
+                             s.code==="X" ? "Instructor/Faculty SQI means you've been certified to teach and develop others in the military's most rigorous training environment. This maps directly to corporate L&D, technical training, academic instruction, and coaching careers." :
+                             s.code==="V" ? "Aviation background unlocks commercial aviation, drone operations, air traffic control, aviation management, and aerospace industry roles." :
+                             s.code==="S" ? "Special Operations support experience is premium in defense contracting, intelligence support, and government program management." :
+                             (s.desc)+" SQI represents a specialized role that distinguishes you from standard applicants. Leverage this credential prominently."}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>)}
+      
+
+              {exp.additionalDuties.length>0&&(<>
+                <hr className="sdiv"/>
+                <div>
+                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Duty Qualifications — Civilian Value</div>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:".45rem"}}>
+                    {exp.additionalDuties.map(d=>(
+                      <div key={d} style={{background:"rgba(76,175,130,.06)",border:"1px solid rgba(76,175,130,.18)",borderRadius:"3px",padding:".55rem .75rem"}}>
+                        <div style={{fontSize:".8rem",color:"#1a3a6b",fontWeight:600,marginBottom:".2rem"}}>{d}</div>
+                        <div style={{fontSize:".72rem",color:"var(--dim)",lineHeight:"1.45"}}>
+                          {d.includes("Armorer") ? "Maps to: Firearms compliance, asset management, inventory control" :
+                           d.includes("Safety") ? "Maps to: EHS Officer, Workplace Safety Manager, OSHA compliance" :
+                           d.includes("SHARP")||d.includes("Equal Opportunity") ? "Maps to: HR Business Partner, DEI Coordinator, Employee Relations" :
+                           d.includes("COR")||d.includes("Contracting") ? "Maps to: Procurement Specialist, Contract Manager, Acquisition Analyst" :
+                           d.includes("OPSEC")||d.includes("Information Security") ? "Maps to: Information Security Analyst, Cybersecurity, Risk Management" :
+                           d.includes("UPL")||d.includes("Prevention") ? "Maps to: Employee Assistance Programs, HR Compliance, Wellness Coordinator" :
+                           d.includes("Training Room")||d.includes("Records") ? "Maps to: HR Specialist, Records Manager, Compliance Officer" :
+                           d.includes("Property Book")||d.includes("Supply") ? "Maps to: Logistics Coordinator, Asset Manager, Supply Chain Analyst" :
+                           d.includes("Master Driver") ? "Maps to: Fleet Manager, Transportation Supervisor, Logistics Lead" :
+                           d.includes("Battle Staff")||d.includes("Master Gunner") ? "Maps to: Operations Manager, Senior Project Lead, Strategic Planner" :
+                           d.includes("Recruiter")||d.includes("Career Counselor") ? "Maps to: Talent Acquisition, HR Recruiter, Career Coach" :
+                           d.includes("Family Readiness") ? "Maps to: Community Liaison, Employee Engagement, HR Programs" :
+                           d.includes("NBC")||d.includes("CBRN") ? "Maps to: Hazmat Specialist, Environmental Health & Safety, Emergency Management" :
+                           "Maps to: Program management, compliance, and organizational leadership roles"}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>)}
+      
+
+              {(exp.deployments||exp.awards)&&(<>
+                <hr className="sdiv"/>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem"}}>
+                  {exp.deployments&&<div style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".65rem .85rem"}}>
+                    <div style={{fontSize:".68rem",letterSpacing:".12em",textTransform:"uppercase",color:"var(--slate)",marginBottom:".3rem"}}>Combat / Operational Experience</div>
+                    <div style={{fontSize:".83rem",color:"var(--text)"}}>{exp.deployments}</div>
+                    <div style={{fontSize:".73rem",color:"var(--dim)",marginTop:".3rem",fontStyle:"italic"}}>Demonstrates: adaptability, crisis leadership, cross-cultural operations, mission execution under pressure</div>
+                  </div>}
+                  {(exp.awards||[]).length>0&&<div style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".65rem .85rem"}}>
+                    <div style={{fontSize:".68rem",letterSpacing:".12em",textTransform:"uppercase",color:"var(--slate)",marginBottom:".3rem"}}>Awards & Decorations</div>
+                    <div style={{fontSize:".83rem",color:"var(--text)"}}>{exp.awards}</div>
+                    <div style={{fontSize:".73rem",color:"var(--dim)",marginTop:".3rem",fontStyle:"italic"}}>Demonstrates: recognized performance, leadership, valor, and professional excellence</div>
+                  </div>}
+                </div>
+              </>)}
+      
+            </div>
+          </div>
+        ))}
+      
+
+        {civExperiences.map(exp=>(
+          <div className="card" key={exp.id} style={{borderColor:"rgba(76,175,130,.25)"}}>
+            <div className="ch" style={{background:"rgba(76,175,130,.07)"}}>
+              <h3>💼 {exp.type}</h3>
+              <span className="ch-sub">{exp.jobTitle||""}{exp.employer?" · "+exp.employer:""}</span>
+            </div>
+            <div className="cb" style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
+              <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+                {exp.startDate&&<span className="tos-badge">📅 {exp.startDate} – {exp.current?"Present":exp.endDate||"?"}</span>}
+                {exp.clearanceLevel!=="None"&&<span className={getClearanceBadge(exp.clearanceLevel)}>{exp.clearanceLevel} — {exp.clearanceStatus}</span>}
+              </div>
+              {exp.duties&&<div style={{fontSize:".85rem",color:"var(--dim)",lineHeight:"1.6",fontStyle:"italic"}}>"{exp.duties.slice(0,180)}{exp.duties.length>180?"...":""}"</div>}
+              {exp.type===RG&&
+                <div style={{background:"rgba(230,160,60,.07)",border:"1px solid rgba(230,160,60,.22)",borderRadius:"3px",padding:".6rem .85rem",fontSize:".8rem",color:"#e8b84b"}}>
+                  ⭐ Dual-career advantage: Simultaneously maintaining civilian employment and military service demonstrates exceptional time management, discipline, and commitment — a top-tier signal to civilian employers.
+                </div>}
+            </div>
+          </div>
+        ))}
+      
+        <hr className="sdiv"/>
+      
+
+        <div className="card">
+          <div className="ch"><h3>Refine Your Target (optional)</h3></div>
+          <div className="cb">
+            <div className="g3">
+              <div className="field"><label>Target Job Title</label><input placeholder="e.g. Project Manager, Paramedic" value={target.title} onChange={e=>upT("title",e.target.value)}/></div>
+              <div className="field"><label>Preferred Industry</label><input placeholder="e.g. Healthcare, Defense, Tech, Finance" value={target.industry} onChange={e=>upT("industry",e.target.value)}/></div>
+              <div className="field"><label>Priorities / Keywords</label><input placeholder="e.g. remote work, leadership role, outdoors" value={target.keywords} onChange={e=>upT("keywords",e.target.value)}/></div>
+              <div className="field"><label>Preferred Work Location</label>
+                <input placeholder="e.g. Norfolk VA, Remote, Dallas TX..." value={targetLocation} onChange={e=>setTargetLocation(e.target.value)}/>
+              </div>
+              <div className="field"><label>Interests & Hobbies</label>
+                <input placeholder="e.g. technology, coaching youth sports, woodworking, motorcycles, hunting, cooking, fitness..." value={target.interests||""} onChange={e=>upT("interests",e.target.value)}/>
+                <span className="hint">Help us find careers matching your passions — not just your MOS</span>
+              </div>
+              <div className="field"><label>Open To Exploring</label>
+                <div style={{display:"flex",flexWrap:"wrap",gap:".4rem",marginTop:".3rem"}}>
+                  {["Entrepreneurship","Government / Federal","Defense / Intel","Tech / Cybersecurity","Trades / Skilled Labor","Healthcare","Law Enforcement","Education / Coaching","Nonprofit / Veteran Services","Remote Work","Part-time / Flexible"].map(opt=>(
+                    <button key={opt} onClick={()=>{const cur=(target.openTo||"").split(",").map(s=>s.trim()).filter(Boolean);const upd=cur.includes(opt)?cur.filter(x=>x!==opt):[...cur,opt];upT("openTo",upd.join(", "));}} style={{padding:".28rem .7rem",borderRadius:"20px",border:"1.5px solid",cursor:"pointer",background:(target.openTo||"").includes(opt)?"#1a3a6b":"transparent",color:(target.openTo||"").includes(opt)?"#ffffff":"#3a5070",borderColor:(target.openTo||"").includes(opt)?"#1a3a6b":"#b0c4d8"}}>{opt}</button>
+                  ))}
+                </div>
+                <span className="hint" style={{marginTop:".4rem",display:"block"}}>Click to select — expands career matches beyond your MOS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <button className="btn-primary" onClick={findCareers} style={{position:"relative"}} disabled={loading.careers}>
+          {loading.careers?"Analyzing Your Full Qualifications Profile...":"🔍  Find My Best Career Matches"}
+        </button>
+      
+        {loading.careers&&<div className="loading"><div className="spin"/><span>Analyzing your qualifications and finding career matches...</span></div>}
+        {careerError&&!loading.careers&&(
+          <div style={{background:"rgba(224,85,85,.12)",border:"1px solid rgba(224,85,85,.35)",borderRadius:"4px",padding:"1rem 1.2rem",marginTop:"1rem",fontSize:".88rem",color:"#f0a0a0"}}>
+            <strong>Career match error: </strong>{careerError}
+          </div>
+        )}
+      
+    {careers&&!loading.careers&&!selectedCareer&&(<CareerListView careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} openCareerDetail={openCareerDetail} findCareers={findCareers} loading={loading} careerError={careerError} milExperiences={milExperiences} target={target} upT={upT} currentUser={currentUser} setShowAuth={setShowAuth} showToast={showToast} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector} setSelectedCareer={setSelectedCareer} />)}
+      
+
+    {selectedCareer&&!loading.careers&&(<CareerDetailView selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} currentUser={currentUser} setShowAuth={setShowAuth} showToast={showToast} tab={tab} setTab={setTab} target={target} targetLocation={targetLocation} upT={upT} DI={DI} />)}
+      
+        <div className="nav-row">
+          <button className="btn-sec" onClick={()=>setTab(0)}>← Back to Profile</button>
+          <button className="btn-sec" onClick={()=>setTab(2)}>Next: Build Resume →</button>
+        </div>
+  </div>);
+
+
+}
+
+
 function App() {
 
   // ── APP STATE (must be declared first) ──
@@ -1613,7 +2163,7 @@ function App() {
     "VETTEST3":           Date.UTC(2026, 4, 20),
     "VETTEST4":           Date.UTC(2026, 4, 20),
     "VETTEST5":           Date.UTC(2026, 4, 20),
-    "AMON26":             0,
+    "AMON26":             Date.UTC(2026, 5, 21),
   };
 
   const isCodeValid = (code) => {
@@ -1907,13 +2457,13 @@ function App() {
   const buildExpSummary = () => {
     const milParts = milExperiences.map(e=>{
       const rolesStr = (e.mosRoles||[]).length
-        ? `Sub-roles: ${e.mosRoles.map(r=>r.title+" ("+r.duration+")").join(", ")}`
+        ? "Sub-roles: "+(e.mosRoles.map(r=>r.title+" ("+r.duration+")").join(", "))
         : "";
-      const awardsStr = (e.awards||[]).length ? `Awards: ${(e.awards||[]).join(", ")}` : "";
+      const awardsStr = (e.awards||[]).length ? "Awards: "+((e.awards||[]).join(", ")) : "";
       const qualStr = [
-        (e.asi && e.asi.length)?`ASIs: ${e.asi.map(a=>a.code+"("+a.desc+")").join(", ")}`:null,
-        (e.sqi && e.sqi.length)?`SQIs: ${e.sqi.map(s=>s.code+"("+s.desc+")").join(", ")}`:null,
-        (e.additionalDuties && e.additionalDuties.length)?`Additional Duties: ${e.additionalDuties.join(", ")}`:null,
+        (e.asi && e.asi.length)?"ASIs: "+(e.asi.map(a=>a.code+"("+a.desc+")").join(", ")):null,
+        (e.sqi && e.sqi.length)?"SQIs: "+(e.sqi.map(s=>s.code+"("+s.desc+")").join(", ")):null,
+        (e.additionalDuties && e.additionalDuties.length)?"Additional Duties: "+(e.additionalDuties.join(", ")):null,
       ].filter(Boolean).join(" | ");
       const clearStr = e.clearanceLevel!=="None"
         ? `Clearance: ${e.clearanceLevel} (${e.clearanceStatus})${e.polygraph!=="None"?" + "+e.polygraph+" Poly":""}`
@@ -1922,7 +2472,7 @@ function App() {
     });
     const civParts = civExperiences.map(e=>{
       const clearStr = (e.clearanceLevel&&e.clearanceLevel!=="None")
-        ? `Clearance: ${e.clearanceLevel}`:"";
+        ? "Clearance: "+(e.clearanceLevel):"";
       return `[${e.type.toUpperCase()}] ${e.jobTitle||"Role"} at ${e.employer||"Unknown"} | ${e.startDate||"?"}–${e.current?"Present":e.endDate||"?"} | Duties: ${e.duties||"not listed"}${clearStr?" | "+clearStr:""}`;
     });
     return [...milParts,...civParts].join("\n");
@@ -2110,7 +2660,7 @@ Use this exact structure:
 
       // Ensure all expected fields exist with fallbacks
       setCareerDetail({
-        about: parsed.about || `${career.title} is a ${career.sector} career well-suited for veterans.`,
+        about: parsed.about || (career.title)+" is a ${career.sector} career well-suited for veterans.",
         salaryBreakdown: {
           entry: (parsed.salaryBreakdown && parsed.salaryBreakdown.entry) || career.salaryRange,
           mid: (parsed.salaryBreakdown && parsed.salaryBreakdown.mid) || "",
@@ -2128,12 +2678,12 @@ Use this exact structure:
     } catch(err) {
       // Fallback: build a useful detail view from the data we already have
       setCareerDetail({
-        about: `${career.title} is a ${career.sector} role in ${career.industry || "multiple industries"}. ${career.description || ""} Veterans are well-positioned for this career due to their disciplined work ethic, leadership experience, and mission-focused mindset.`,
+        about: (career.title)+" is a ${career.sector} role in ${career.industry || "multiple industries"}. ${career.description || ""} Veterans are well-positioned for this career due to their disciplined work ethic, leadership experience, and mission-focused mindset.",
         salaryBreakdown: { entry: career.salaryRange, mid: "", senior: "", cleared: null, notes: "Salary varies by location, experience, and certifications." },
         careerPath: [
-          { title: `Entry-Level ${career.title}`, salary: career.salaryRange, description: "Build foundational civilian experience and professional network.", timeframe: "Years 0–2" },
-          { title: `Mid-Level ${career.title}`, salary: "", description: "Take on increased responsibility and specialize in a sub-field.", timeframe: "Years 2–5" },
-          { title: `Senior ${career.title}`, salary: "", description: "Lead teams, mentor junior staff, manage larger programs.", timeframe: "Years 5–10" },
+          { title: "Entry-Level "+(career.title), salary: career.salaryRange, description: "Build foundational civilian experience and professional network.", timeframe: "Years 0–2" },
+          { title: "Mid-Level "+(career.title), salary: "", description: "Take on increased responsibility and specialize in a sub-field.", timeframe: "Years 2–5" },
+          { title: "Senior "+(career.title), salary: "", description: "Lead teams, mentor junior staff, manage larger programs.", timeframe: "Years 5–10" },
           { title: "Director / Principal", salary: "", description: "Strategic leadership, executive decision-making, organizational impact.", timeframe: "Years 10+" },
         ],
         whyYouFit: [career.whyFit || "Your military background provides strong transferable skills.", "Veterans bring leadership and discipline that civilian employers highly value.", "Your service demonstrates mission focus and the ability to perform under pressure."],
@@ -2167,7 +2717,7 @@ Use this exact structure:
       " Deployments:" + (e.deployments||"none") +
       " Duties:" + (e.duties||"not described")
     ).join(" | ");
-    const eduText = education.map(e=>`${e.degree} in ${e.field} — ${e.institution} (${e.year})${e.pme?" | PME/Military Schools: "+e.pme:""}`).join("\n");
+    const eduText = education.map(e=>(e.degree)+" in ${e.field} — ${e.institution} (${e.year})${e.pme?" | PME/Military Schools: "+e.pme:""}").join("\n");
     try {
       const formatInstructions = {
         ats_chrono: "ATS CHRONOLOGICAL FORMAT: Simple clean layout. Standard section headers (Summary, Experience, Education, Skills, Certifications). Reverse chronological work history. No tables, no text boxes, no columns. Keyword-rich. ATS-safe fonts and structure.",
@@ -2248,8 +2798,8 @@ Use this exact structure:
     if (!resume && !resumeData && !uploadedResumeText) { alert("Generate your resume first on the Build Resume tab, or upload your existing resume above."); return; }
     setCoverLetterLoading(true);
     setCoverLetter("");
-    const milSummary = milExperiences.map(e=>`${e.branch} ${e.rank} (${e.tos}), MOS: ${e.mos}`).join("; ");
-    const resumeText = resume || (resumeData ? `${resumeData.name} - ${(resumeData.experience||[]).map(j=>j.title+" at "+j.employer).join(", ")}` : "");
+    const milSummary = milExperiences.map(e=>(e.branch)+" ${e.rank} (${e.tos}), MOS: ${e.mos}").join("; ");
+    const resumeText = resume || (resumeData ? (resumeData.name)+" - ${(resumeData.experience||[]).map(j=>j.title+" at "+j.employer).join(", ")}" : "");
     const prompt = `You are an expert military-to-civilian career counselor writing a compelling cover letter.
 
 VETERAN PROFILE:
@@ -2288,7 +2838,7 @@ Return ONLY the cover letter text, no subject line, no extra commentary.`;
     if (!hasAccess) { setShowPaywall(true); return; }
     if (!isApiKeySet()) { setShowAdminSetup(true); return; }
     setPrepLoading(true); setPrepQuestions([]);
-    const milSummary = milExperiences.map(e=>`${e.branch} ${e.rank} MOS ${e.mos} (${e.tos})`).join("; ");
+    const milSummary = milExperiences.map(e=>(e.branch)+" ${e.rank} MOS ${e.mos} (${e.tos})").join("; ");
     const prompt = `You are an elite interview coach for military veterans transitioning to civilian careers.
 
 VETERAN: ${milSummary}
@@ -2328,7 +2878,7 @@ Make answers specific to their MOS and rank. Use the STAR method. Translate all 
     if (!hasAccess) { setShowPaywall(true); return; }
     if (!isApiKeySet()) { setShowAdminSetup(true); return; }
     setFollowupLoading(true); setFollowupEmail("");
-    const milSum = milExperiences.map(e=>`${e.branch} ${e.rank}`).join(", ");
+    const milSum = milExperiences.map(e=>(e.branch)+" ${e.rank}").join(", ");
     const emailTypes = {
       "thank-you": "a warm, professional thank-you email after an interview",
       "follow-up": "a polite follow-up email checking on application status after 1 week of silence",
@@ -2698,17 +3248,17 @@ Return this exact JSON structure:
         </div>
         <div className="tabs">
           {TABS.map((t,i)=>(
-            <button key={i} className={`tab ${tab===i?"active":""}`} onClick={()=>setTab(i)}>
+            <button key={i} className={"tab "+(tab===i?"active":"")} onClick={()=>setTab(i)}>
               <span className="tab-n">{i+1}</span>{t}
             </button>
           ))}
         </div>
-        <div className="steps">{TABS.map((_,i)=><div key={i} className={`sdot ${tab===i?"on":""}`}/>)}</div>
+        <div className="steps">{TABS.map((_,i)=><div key={i} className={"sdot "+(tab===i?"on":"")}/>)}</div>
 
         <div className="wrap">
 
           {/* ══ TAB 0: PROFILE ══ */}
-          <div className={`panel ${tab===0?"on":""}`}>
+          <div className={"panel "+(tab===0?"on":"")}>
             <div className="intro">
               <strong>Your service matters.</strong> Fill in your background below — your military experience, civilian work, education, and skills. The more you add, the better your career matches and resume will be. Take your time and be as detailed as you like.
             </div>
@@ -3355,7 +3905,7 @@ Return this exact JSON structure:
                         translationData.summary||"",
                         "",
                         ...(translationData.roles||[]).flatMap(r=>[
-                          `${r.mos} — ${r.title}`,
+                          (r.mos)+" — ${r.title}",
                           r.whatYouDid||"",
                           "Transferable Skills: " + (r.transferableSkills||[]).join(", "),
                           "Resume Bullets:",
@@ -3363,8 +3913,8 @@ Return this exact JSON structure:
                           ""
                         ]),
                         ...(translationData.qualifications||[]).flatMap(q=>[
-                          `${q.code} — ${q.name}: ${q.civilianMeaning}`,
-                          `Opens doors to: ${q.unlocks}`,""
+                          (q.code)+" — ${q.name}: ${q.civilianMeaning}",
+                          "Opens doors to: "+(q.unlocks),""
                         ]),
                       ].join("\n");
                       navigator.clipboard.writeText(text);
@@ -3391,7 +3941,7 @@ Return this exact JSON structure:
                         addLine("PROFESSIONAL SUMMARY", 11, true); y+=2;
                         addLine(translationData.summary||""); y+=4;
                         (translationData.roles||[]).forEach(r=>{
-                          addLine(`${r.mos} — ${r.title}`, 11, true); y+=1;
+                          addLine((r.mos)+" — ${r.title}", 11, true); y+=1;
                           addLine(r.whatYouDid||""); y+=2;
                           addLine("TRANSFERABLE SKILLS", 9, true);
                           addLine((r.transferableSkills||[]).join(" • ")); y+=2;
@@ -3401,7 +3951,7 @@ Return this exact JSON structure:
                         if((translationData.qualifications||[]).length){
                           addLine("QUALIFICATIONS & WHAT THEY UNLOCK", 11, true); y+=2;
                           (translationData.qualifications||[]).forEach(q=>{
-                            addLine(`${q.code} — ${q.name}`, 10, true);
+                            addLine((q.code)+" — ${q.name}", 10, true);
                             addLine(q.civilianMeaning||"");
                             addLine("Opens: "+(q.unlocks||"")); y+=2;
                           });
@@ -3409,7 +3959,7 @@ Return this exact JSON structure:
                         if((translationData.additionalDuties||[]).length){
                           addLine("ADDITIONAL DUTY QUALIFICATIONS", 11, true); y+=2;
                           (translationData.additionalDuties||[]).forEach(d=>{
-                            addLine(`${d.duty} → ${d.civilianEquivalent}`, 10, true);
+                            addLine((d.duty)+" → ${d.civilianEquivalent}", 10, true);
                             addLine(d.value||""); y+=2;
                           });
                         }
@@ -3514,540 +4064,12 @@ Return this exact JSON structure:
           </div>
 
           {/* ══ TAB 1: CAREERS ══ */}
-          <div className={`panel ${tab===1?"on":""}`}>
-            <div className="intro">
-              <strong>Your Civilian Qualifications Profile.</strong> Before finding your career matches, review what your service actually unlocks in the civilian world. Every MOS, clearance, ASI, SQI, and additional duty is an asset — here's what each one means to a civilian employer.
-            </div>
+          {/* ══ TAB 1: CAREERS ══ */}
+          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector} />
 
-            {/* ── QUALIFICATIONS PROFILE CARD ── */}
-            {milExperiences.map(exp=>(
-              <div className="card" key={exp.id} style={{borderColor:"rgba(201,168,76,.35)"}}>
-                <div className="ch" style={{background:"rgba(201,168,76,.1)"}}>
-                  <h3>🎖️ {exp.branch} {exp.rank ? `— ${exp.rank}` : ""}</h3>
-                  <span className="ch-sub">{exp.serviceType}{exp.tos ? ` · ${exp.tos}` : ""}</span>
-                </div>
-                <div className="cb">
-
-                  {/* MOS ROW */}
-                  <div style={{marginBottom:"1rem"}}>
-                    <div style={{display:"flex",alignItems:"center",gap:".75rem",flexWrap:"wrap",marginBottom:".5rem"}}>
-                      <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".08em",color:"var(--gold-light)"}}>{exp.mos||"—"}</span>
-                      {exp.mosTitle&&<span style={{fontSize:"1rem",color:"var(--text)"}}>{exp.mosTitle}</span>}
-                      {exp.unit&&<span style={{fontSize:".8rem",color:"var(--dim)"}}>· {exp.unit}</span>}
-                    </div>
-                    <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
-                      {exp.tos&&<span className="tos-badge">⏱ {exp.tos} Time in Service</span>}
-                      {exp.startDate&&<span className="tos-badge">📅 {exp.startDate} – {exp.current?"Present":exp.endDate||"?"}</span>}
-                    </div>
-                    <div style={{marginTop:".6rem",background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".7rem .9rem"}}>
-                      <div style={{fontSize:".68rem",letterSpacing:".12em",textTransform:"uppercase",color:"var(--slate)",marginBottom:".3rem"}}>What this MOS means to a civilian employer</div>
-                      <div style={{fontSize:".85rem",color:"var(--dim)",fontStyle:"italic"}}>
-                        {exp.mos ? `Your ${exp.mosTitle||exp.mos} background demonstrates technical expertise, disciplined execution, and mission-critical responsibility. Civilian employers in operations, logistics, healthcare, security, and government sectors actively seek this experience.` : "Enter your MOS code on the Profile tab to see what it unlocks."}
-                      </div>
-                    </div>
-                  </div>
-
-                  <hr className="sdiv"/>
-
-                  {/* CLEARANCE ROW */}
-                  <div style={{marginBottom:"1rem"}}>
-                    <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>🔐 Security Clearance</div>
-                    {exp.clearanceLevel==="None"
-                      ? <div style={{fontSize:".85rem",color:"var(--dim)"}}>No clearance listed. Many civilian roles don't require one — your skills still transfer.</div>
-                      : <div style={{display:"flex",flexDirection:"column",gap:".4rem"}}>
-                          <div style={{display:"flex",gap:".5rem",flexWrap:"wrap",alignItems:"center"}}>
-                            <span className={getClearanceBadge(exp.clearanceLevel)}>{exp.clearanceLevel}</span>
-                            <span className="badge bc">{exp.clearanceStatus}</span>
-                            {exp.polygraph!=="None"&&<span className="badge bd">{exp.polygraph}</span>}
-                          </div>
-                          <div style={{background:"rgba(201,168,76,.06)",border:"1px solid rgba(201,168,76,.28)",borderRadius:"3px",padding:".65rem .85rem",fontSize:".83rem",color:"var(--text)",lineHeight:"1.6"}}>
-                            {exp.clearanceLevel.includes("SCI")||exp.clearanceLevel.includes("Poly")
-                              ? "🏆 Premium Asset: TS/SCI clearances unlock high-paying roles in intelligence agencies (CIA, NSA, DIA), defense contractors (Booz Allen, SAIC, Leidos), and federal IT. Cleared professionals command 10–30% salary premiums. Your clearance alone can be worth $20,000–$50,000 more per year."
-                              : exp.clearanceLevel==="Top Secret"
-                              ? "⭐ High Value: Top Secret clearance opens doors to defense contracting, federal law enforcement, DHS, and government IT roles. Actively sought by employers — investigation costs $50,000+ to initiate."
-                              : exp.clearanceLevel==="Secret"
-                              ? "✅ Solid Asset: Secret clearance qualifies you for thousands of defense, federal, and contractor positions. Most DoD contractor roles require this as a baseline."
-                              : "✅ Clearance noted. Even Confidential/Public Trust clearances help with federal and contractor employment."}
-                          </div>
-                        </div>
-                    }
-                  </div>
-
-                  {/* ASI ROW */}
-                  {exp.asi.length>0&&(<>
-                    <hr className="sdiv"/>
-                    <div style={{marginBottom:"1rem"}}>
-                      <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Skill Identifiers (ASI) — What They Unlock</div>
-                      <div style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
-                        {exp.asi.map(a=>(
-                          <div key={a.code} style={{display:"flex",gap:".75rem",alignItems:"flex-start",background:"rgba(91,155,213,.06)",border:"1px solid rgba(91,155,213,.18)",borderRadius:"3px",padding:".6rem .85rem"}}>
-                            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.1rem",color:"#7eb8f5",letterSpacing:".08em",minWidth:"2.5rem"}}>{a.code}</span>
-                            <div>
-                              <div style={{fontSize:".88rem",color:"var(--text)",fontWeight:600}}>{a.desc}</div>
-                              <div style={{fontSize:".78rem",color:"var(--dim)",marginTop:".2rem",lineHeight:"1.5"}}>
-                                {a.code==="2S"||a.code==="R" ? "Ranger qualification signals elite physical conditioning, leadership under extreme stress, and small-unit tactics mastery. Highly valued in law enforcement special units, federal agencies, private security, and defense contracting." :
-                                 a.code==="8A" ? "Airborne qualification demonstrates ability to operate in austere environments and adapt to rapidly changing conditions. Valued in emergency management, aviation, and special operations support roles." :
-                                 a.code==="B3" ? "Linguist qualification is a premium asset in intelligence, federal law enforcement (FBI/CIA/DEA), international business, diplomacy, and translation services." :
-                                 a.code==="P1" ? "Master Parachutist with 65+ jumps signals elite special operations background, exceptional risk management, and advanced military training. Top-tier for SOF support, government contracting, and security consulting." :
-                                 a.code==="X3" ? "Military Instructor qualification translates directly to corporate training, learning & development roles, academic instruction, and leadership coaching — all high-demand civilian fields." :
-                                 a.code==="G4" ? "Combatives instructor certification demonstrates advanced physical training expertise. Directly applicable to law enforcement training, personal protection, and defense sector roles." :
-                                 a.code==="V5" ? "Battle Staff qualification means you've planned and coordinated complex multi-element operations. This maps directly to senior project management, operations director, and strategic planning roles." :
-                                 a.code==="W1" ? "SERE training signals resilience, high-stress decision-making, and classified operations knowledge — valuable in intelligence, security, and government contracting." :
-                                 `${a.desc} represents specialized military training that differentiates you from typical civilian applicants. Highlight this on your resume and in interviews.`}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </>)}
-
-                  {/* SQI ROW */}
-                  {exp.sqi.length>0&&(<>
-                    <hr className="sdiv"/>
-                    <div style={{marginBottom:"1rem"}}>
-                      <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Skill Qualification Identifiers (SQI) — What They Unlock</div>
-                      <div style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
-                        {exp.sqi.map(s=>(
-                          <div key={s.code} style={{display:"flex",gap:".75rem",alignItems:"flex-start",background:"rgba(160,124,214,.07)",border:"1px solid rgba(160,124,214,.2)",borderRadius:"3px",padding:".6rem .85rem"}}>
-                            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.1rem",color:"#c4a0f5",letterSpacing:".08em",minWidth:"2.5rem"}}>{s.code}</span>
-                            <div>
-                              <div style={{fontSize:".88rem",color:"var(--text)",fontWeight:600}}>{s.desc}</div>
-                              <div style={{fontSize:".78rem",color:"var(--dim)",marginTop:".2rem",lineHeight:"1.5"}}>
-                                {s.code==="F"||s.code==="Q" ? "Special Forces background is among the most valued military credentials in civilian employment. Opens doors to intelligence agencies, Tier 1 defense contractors, private military consulting, federal law enforcement leadership, and executive protection. Salary premiums of 20–40% are common." :
-                                 s.code==="R" ? "Ranger-tabbed service members are highly sought in law enforcement, federal agencies, and security consulting for their demonstrated leadership, physical toughness, and tactical expertise." :
-                                 s.code==="P" ? "Parachutist qualification demonstrates willingness to operate in high-risk environments and comfort with complex technical procedures — valued in aviation, emergency services, and government contracting." :
-                                 s.code==="X" ? "Instructor/Faculty SQI means you've been certified to teach and develop others in the military's most rigorous training environment. This maps directly to corporate L&D, technical training, academic instruction, and coaching careers." :
-                                 s.code==="V" ? "Aviation background unlocks commercial aviation, drone operations, air traffic control, aviation management, and aerospace industry roles." :
-                                 s.code==="S" ? "Special Operations support experience is premium in defense contracting, intelligence support, and government program management." :
-                                 `${s.desc} SQI represents a specialized role that distinguishes you from standard applicants. Leverage this credential prominently.`}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </>)}
-
-                  {/* ADDITIONAL DUTIES ROW */}
-                  {exp.additionalDuties.length>0&&(<>
-                    <hr className="sdiv"/>
-                    <div>
-                      <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Duty Qualifications — Civilian Value</div>
-                      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:".45rem"}}>
-                        {exp.additionalDuties.map(d=>(
-                          <div key={d} style={{background:"rgba(76,175,130,.06)",border:"1px solid rgba(76,175,130,.18)",borderRadius:"3px",padding:".55rem .75rem"}}>
-                            <div style={{fontSize:".8rem",color:"#1a3a6b",fontWeight:600,marginBottom:".2rem"}}>{d}</div>
-                            <div style={{fontSize:".72rem",color:"var(--dim)",lineHeight:"1.45"}}>
-                              {d.includes("Armorer") ? "Maps to: Firearms compliance, asset management, inventory control" :
-                               d.includes("Safety") ? "Maps to: EHS Officer, Workplace Safety Manager, OSHA compliance" :
-                               d.includes("SHARP")||d.includes("Equal Opportunity") ? "Maps to: HR Business Partner, DEI Coordinator, Employee Relations" :
-                               d.includes("COR")||d.includes("Contracting") ? "Maps to: Procurement Specialist, Contract Manager, Acquisition Analyst" :
-                               d.includes("OPSEC")||d.includes("Information Security") ? "Maps to: Information Security Analyst, Cybersecurity, Risk Management" :
-                               d.includes("UPL")||d.includes("Prevention") ? "Maps to: Employee Assistance Programs, HR Compliance, Wellness Coordinator" :
-                               d.includes("Training Room")||d.includes("Records") ? "Maps to: HR Specialist, Records Manager, Compliance Officer" :
-                               d.includes("Property Book")||d.includes("Supply") ? "Maps to: Logistics Coordinator, Asset Manager, Supply Chain Analyst" :
-                               d.includes("Master Driver") ? "Maps to: Fleet Manager, Transportation Supervisor, Logistics Lead" :
-                               d.includes("Battle Staff")||d.includes("Master Gunner") ? "Maps to: Operations Manager, Senior Project Lead, Strategic Planner" :
-                               d.includes("Recruiter")||d.includes("Career Counselor") ? "Maps to: Talent Acquisition, HR Recruiter, Career Coach" :
-                               d.includes("Family Readiness") ? "Maps to: Community Liaison, Employee Engagement, HR Programs" :
-                               d.includes("NBC")||d.includes("CBRN") ? "Maps to: Hazmat Specialist, Environmental Health & Safety, Emergency Management" :
-                               "Maps to: Program management, compliance, and organizational leadership roles"}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </>)}
-
-                  {/* DEPLOYMENTS / AWARDS */}
-                  {(exp.deployments||exp.awards)&&(<>
-                    <hr className="sdiv"/>
-                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem"}}>
-                      {exp.deployments&&<div style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".65rem .85rem"}}>
-                        <div style={{fontSize:".68rem",letterSpacing:".12em",textTransform:"uppercase",color:"var(--slate)",marginBottom:".3rem"}}>Combat / Operational Experience</div>
-                        <div style={{fontSize:".83rem",color:"var(--text)"}}>{exp.deployments}</div>
-                        <div style={{fontSize:".73rem",color:"var(--dim)",marginTop:".3rem",fontStyle:"italic"}}>Demonstrates: adaptability, crisis leadership, cross-cultural operations, mission execution under pressure</div>
-                      </div>}
-                      {(exp.awards||[]).length>0&&<div style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".65rem .85rem"}}>
-                        <div style={{fontSize:".68rem",letterSpacing:".12em",textTransform:"uppercase",color:"var(--slate)",marginBottom:".3rem"}}>Awards & Decorations</div>
-                        <div style={{fontSize:".83rem",color:"var(--text)"}}>{exp.awards}</div>
-                        <div style={{fontSize:".73rem",color:"var(--dim)",marginTop:".3rem",fontStyle:"italic"}}>Demonstrates: recognized performance, leadership, valor, and professional excellence</div>
-                      </div>}
-                    </div>
-                  </>)}
-
-                </div>
-              </div>
-            ))}
-
-            {/* civilian/DoD entries summary */}
-            {civExperiences.map(exp=>(
-              <div className="card" key={exp.id} style={{borderColor:"rgba(76,175,130,.25)"}}>
-                <div className="ch" style={{background:"rgba(76,175,130,.07)"}}>
-                  <h3>💼 {exp.type}</h3>
-                  <span className="ch-sub">{exp.jobTitle||""}{exp.employer?` · ${exp.employer}`:""}</span>
-                </div>
-                <div className="cb" style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
-                  <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
-                    {exp.startDate&&<span className="tos-badge">📅 {exp.startDate} – {exp.current?"Present":exp.endDate||"?"}</span>}
-                    {exp.clearanceLevel!=="None"&&<span className={getClearanceBadge(exp.clearanceLevel)}>{exp.clearanceLevel} — {exp.clearanceStatus}</span>}
-                  </div>
-                  {exp.duties&&<div style={{fontSize:".85rem",color:"var(--dim)",lineHeight:"1.6",fontStyle:"italic"}}>"{exp.duties.slice(0,180)}{exp.duties.length>180?"...":""}"</div>}
-                  {exp.type===RG&&
-                    <div style={{background:"rgba(230,160,60,.07)",border:"1px solid rgba(230,160,60,.22)",borderRadius:"3px",padding:".6rem .85rem",fontSize:".8rem",color:"#e8b84b"}}>
-                      ⭐ Dual-career advantage: Simultaneously maintaining civilian employment and military service demonstrates exceptional time management, discipline, and commitment — a top-tier signal to civilian employers.
-                    </div>}
-                </div>
-              </div>
-            ))}
-
-            <hr className="sdiv"/>
-
-            {/* TARGET + FIND CAREERS */}
-            <div className="card">
-              <div className="ch"><h3>Refine Your Target (optional)</h3></div>
-              <div className="cb">
-                <div className="g3">
-                  <div className="field"><label>Target Job Title</label><input placeholder="e.g. Project Manager, Paramedic" value={target.title} onChange={e=>upT("title",e.target.value)}/></div>
-                  <div className="field"><label>Preferred Industry</label><input placeholder="e.g. Healthcare, Defense, Tech, Finance" value={target.industry} onChange={e=>upT("industry",e.target.value)}/></div>
-                  <div className="field"><label>Priorities / Keywords</label><input placeholder="e.g. remote work, leadership role, outdoors" value={target.keywords} onChange={e=>upT("keywords",e.target.value)}/></div>
-                  <div className="field"><label>Preferred Work Location</label>
-                    <input placeholder="e.g. Norfolk VA, Remote, Dallas TX..." value={targetLocation} onChange={e=>setTargetLocation(e.target.value)}/>
-                  </div>
-                  <div className="field"><label>Interests & Hobbies</label>
-                    <input placeholder="e.g. technology, coaching youth sports, woodworking, motorcycles, hunting, cooking, fitness..." value={target.interests||""} onChange={e=>upT("interests",e.target.value)}/>
-                    <span className="hint">Help us find careers matching your passions — not just your MOS</span>
-                  </div>
-                  <div className="field"><label>Open To Exploring</label>
-                    <div style={{display:"flex",flexWrap:"wrap",gap:".4rem",marginTop:".3rem"}}>
-                      {["Entrepreneurship","Government / Federal","Defense / Intel","Tech / Cybersecurity","Trades / Skilled Labor","Healthcare","Law Enforcement","Education / Coaching","Nonprofit / Veteran Services","Remote Work","Part-time / Flexible"].map(opt=>(
-                        <button key={opt} onClick={()=>{const cur=(target.openTo||"").split(",").map(s=>s.trim()).filter(Boolean);const upd=cur.includes(opt)?cur.filter(x=>x!==opt):[...cur,opt];upT("openTo",upd.join(", "));}} style={{padding:".28rem .7rem",borderRadius:"20px",border:"1.5px solid",cursor:"pointer",background:(target.openTo||"").includes(opt)?"#1a3a6b":"transparent",color:(target.openTo||"").includes(opt)?"#ffffff":"#3a5070",borderColor:(target.openTo||"").includes(opt)?"#1a3a6b":"#b0c4d8"}}>{opt}</button>
-                      ))}
-                    </div>
-                    <span className="hint" style={{marginTop:".4rem",display:"block"}}>Click to select — expands career matches beyond your MOS</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <button className="btn-primary" onClick={findCareers} style={{position:"relative"}} disabled={loading.careers}>
-              {loading.careers?"Analyzing Your Full Qualifications Profile...":"🔍  Find My Best Career Matches"}
-            </button>
-
-            {loading.careers&&<div className="loading"><div className="spin"/><span>Analyzing your qualifications and finding career matches...</span></div>}
-            {careerError&&!loading.careers&&(
-              <div style={{background:"rgba(224,85,85,.12)",border:"1px solid rgba(224,85,85,.35)",borderRadius:"4px",padding:"1rem 1.2rem",marginTop:"1rem",fontSize:".88rem",color:"#f0a0a0"}}>
-                <strong>Career match error: </strong>{careerError}
-              </div>
-            )}
-
-            {careers&&!loading.careers&&!selectedCareer&&(<>
-              <div style={{marginTop:"1.1rem",marginBottom:".75rem",display:"flex",justifyContent:"space-between",alignItems:"flex-end",flexWrap:"wrap",gap:".5rem"}}>
-                <div>
-                  <h3 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",color:"var(--gold-light)",fontSize:"1.05rem"}}>Your Career Matches</h3>
-                  <p style={{fontSize:".78rem",color:"var(--slate)",marginTop:".2rem"}}>Click any career to see full details, salary breakdown, and growth path</p>
-                </div>
-                <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
-                  {["All","Civilian","Government",DI].map(f=>(
-                    <button key={f} onClick={()=>setCareerFilter(f)} style={{padding:".28rem .7rem",borderRadius:"2px",border:"1px solid",fontSize:".72rem",letterSpacing:".06em",cursor:"pointer",borderColor:careerFilter===f?"var(--gold)":"rgba(201,168,76,.25)",background:careerFilter===f?"rgba(201,168,76,.12)":"transparent",color:careerFilter===f?"var(--gold-light)":"var(--slate)"}}>
-                      {f}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* CAREER LIST */}
-              {/* CAREER LIST */}
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem"}}>
-                <span style={{fontSize:".78rem",color:"var(--dim)"}}>{filterCareers(careers,careerFilter).length} matches</span>
-                <button style={{padding:".3rem .8rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".78rem",cursor:"pointer"}} onClick={()=>{if(!currentUser){setShowAuth(true);return;}const v=filterCareers(careers,careerFilter);const e=v.map(c=>({id:Date.now()+c.title,title:c.title,sector:c.sector,industry:c.industry,salary:c.salaryRange,match:c.match,date:new Date().toLocaleDateString()}));const p=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");localStorage.setItem("vcb_saved_paths",JSON.stringify([...e,...p.filter(x=>!e.find(y=>y.title===x.title))].slice(0,50)));showToast("✓ Saved "+e.length+" paths");}}>💾 Save All</button>
-              </div>
-              <div style={{display:"flex",flexDirection:"column",gap:".55rem"}}>
-                {careers
-                  .filter(c=>matchesSector(c,careerFilter))
-                  .map((c,i)=>(
-                  <div key={i} onClick={()=>openCareerDetail(c)} style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.28)",borderRadius:"4px",padding:"1rem 1.1rem",cursor:"pointer",transition:"all .18s",display:"flex",alignItems:"center",gap:"1rem",flexWrap:"wrap"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.5)";e.currentTarget.style.background="rgba(201,168,76,.05)";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.28)";e.currentTarget.style.background="rgba(255,255,255,.03)";}}>
-
-                    {/* sector icon */}
-                    <div style={{fontSize:"1.6rem",flexShrink:0,width:"2.4rem",textAlign:"center"}}>
-                      {c.sector==="Government"?"🏛️":c.sector===DI?"🛡️":"💼"}
-                    </div>
-
-                    {/* main info */}
-                    <div style={{flex:1,minWidth:"160px"}}>
-                      <div style={{display:"flex",alignItems:"center",gap:".5rem",flexWrap:"wrap",marginBottom:".25rem"}}>
-                        <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1rem",color:"var(--gold-light)"}}>{c.title}</span>
-                        <span className="badge bc" style={{fontSize:".6rem"}}>{c.match} Match</span>
-                        {c.clearanceBonus&&<span style={{fontSize:".65rem",color:"#e8b84b",background:"rgba(230,160,60,.1)",border:"1px solid rgba(230,160,60,.25)",padding:".1rem .4rem",borderRadius:"2px"}}>🔐 Clearance+</span>}
-                      </div>
-                      <div style={{fontSize:".82rem",color:"var(--dim)",lineHeight:"1.45"}}>{c.description}</div>
-                    </div>
-
-                    {/* salary + outlook */}
-                    <div style={{textAlign:"right",flexShrink:0,minWidth:"110px"}}>
-                      <div style={{fontSize:"1rem",fontWeight:600,color:"var(--green)"}}>{c.salaryRange}</div>
-                      <div style={{fontSize:".7rem",marginTop:".2rem"}} className={c.outlook==="High Growth"?"outlook-high":c.outlook==="Emerging"?"outlook-med":"outlook-low"}>
-                        {c.outlook==="High Growth"?"📈":c.outlook==="Emerging"?"🔄":"📊"} {c.outlook}
-                      </div>
-                    </div>
-
-                    {/* arrow */}
-                    <div style={{color:"var(--gold)",fontSize:"1.1rem",flexShrink:0}}>→</div>
-                  </div>
-                ))}
-              </div>
-            </>)}
-
-            {/* ── CAREER DETAIL VIEW ── */}
-            {selectedCareer&&!loading.careers&&(
-              <div style={{marginTop:"1rem"}}>
-                <button className="btn-sec" onClick={()=>{setSelectedCareer(null);setCareerDetail("");}} style={{marginBottom:"1rem",display:"flex",alignItems:"center",gap:".4rem"}}>
-                  ← Back to All Careers
-                </button>
-
-                {/* HEADER */}
-                <div style={{background:"rgba(201,168,76,.07)",border:"1px solid rgba(201,168,76,.3)",borderRadius:"4px",padding:"1.2rem 1.4rem",marginBottom:"1rem"}}>
-                  <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:".75rem"}}>
-                    <div>
-                      <div style={{display:"flex",alignItems:"center",gap:".6rem",flexWrap:"wrap",marginBottom:".4rem"}}>
-                        <span style={{fontSize:"1.5rem"}}>{selectedCareer.sector==="Government"?"🏛️":selectedCareer.sector===DI?"🛡️":"💼"}</span>
-                        <h2 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",fontSize:"1.6rem",color:"var(--gold-light)"}}>{selectedCareer.title}</h2>
-                        <span className="badge bc">{selectedCareer.match} Match</span>
-                        {selectedCareer.clearanceBonus&&<span style={{fontSize:".68rem",color:"#e8b84b",background:"rgba(230,160,60,.1)",border:"1px solid rgba(230,160,60,.25)",padding:".18rem .5rem",borderRadius:"2px"}}>🔐 Clearance Advantage</span>}
-                      </div>
-                      <div style={{fontSize:".82rem",color:"var(--dim)"}}>{selectedCareer.sector} · {selectedCareer.industry||"Multiple Industries"}</div>
-                    </div>
-                    <div style={{textAlign:"right"}}>
-                      <div style={{fontSize:"1.5rem",fontWeight:600,color:"var(--green)"}}>{selectedCareer.salaryRange}</div>
-                      <div className={selectedCareer.outlook==="High Growth"?"outlook-high":selectedCareer.outlook==="Emerging"?"outlook-med":"outlook-low"} style={{fontSize:".75rem"}}>
-                        {selectedCareer.outlook==="High Growth"?"📈":selectedCareer.outlook==="Emerging"?"🔄":"📊"} {selectedCareer.outlook}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* DETAIL BODY */}
-                {loading.careerDetail&&<div className="loading"><div className="spin"/><span>Loading full career profile...</span></div>}
-                {careerDetail&&!loading.careerDetail&&(
-                  <div style={{display:"flex",flexDirection:"column",gap:"1rem"}}>
-
-                    {/* ABOUT */}
-                    {careerDetail.about&&(
-                      <div className="card">
-                        <div className="ch"><h3>📋 About This Career</h3></div>
-                        <div className="cb" style={{fontSize:".9rem",lineHeight:"1.8",color:"var(--text)"}}>{careerDetail.about}</div>
-                      </div>
-                    )}
-
-                    {/* SALARY BREAKDOWN */}
-                    {careerDetail.salaryBreakdown&&(
-                      <div className="card">
-                        <div className="ch"><h3>💰 Salary Breakdown</h3></div>
-                        <div className="cb">
-                          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:".65rem",marginBottom:".85rem"}}>
-                            {[
-                              {label:"Entry Level",val:careerDetail.salaryBreakdown.entry,color:"var(--slate)"},
-                              {label:"Mid-Career",val:careerDetail.salaryBreakdown.mid,color:"var(--gold)"},
-                              {label:"Senior / Expert",val:careerDetail.salaryBreakdown.senior,color:"var(--green)"},
-                              {label:"With Clearance",val:careerDetail.salaryBreakdown.cleared,color:"#e8b84b"},
-                            ].filter(s=>s.val).map(s=>(
-                              <div key={s.label} style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderRadius:"3px",padding:".7rem .85rem",textAlign:"center"}}>
-                                <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--dim)",marginBottom:".3rem"}}>{s.label}</div>
-                                <div style={{fontSize:"1.05rem",fontWeight:600,color:s.color}}>{s.val}</div>
-                              </div>
-                            ))}
-                          </div>
-                          {careerDetail.salaryBreakdown.notes&&(
-                            <div style={{fontSize:".8rem",color:"var(--dim)",fontStyle:"italic",lineHeight:"1.55"}}>{careerDetail.salaryBreakdown.notes}</div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* CAREER PATH */}
-                    {careerDetail.careerPath&&careerDetail.careerPath.length>0&&(
-                      <div className="card">
-                        <div className="ch"><h3>📈 Career Growth Path</h3></div>
-                        <div className="cb">
-                          <div style={{display:"flex",flexDirection:"column",gap:"0"}}>
-                            {careerDetail.careerPath.map((step,i)=>(
-                              <div key={i} style={{display:"flex",gap:"1rem",alignItems:"flex-start",position:"relative"}}>
-                                {/* timeline line */}
-                                <div style={{display:"flex",flexDirection:"column",alignItems:"center",flexShrink:0}}>
-                                  <div style={{width:"28px",height:"28px",borderRadius:"50%",background:"rgba(201,168,76,.15)",border:"2px solid rgba(201,168,76,.4)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".7rem",fontWeight:700,color:"var(--gold)",flexShrink:0}}>{i+1}</div>
-                                  {i<careerDetail.careerPath.length-1&&<div style={{width:"2px",background:"rgba(201,168,76,.15)",flex:1,minHeight:"30px",margin:".2rem 0"}}/>}
-                                </div>
-                                {/* content */}
-                                <div style={{flex:1,paddingBottom:i<careerDetail.careerPath.length-1?"1rem":"0"}}>
-                                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:".3rem",marginBottom:".25rem"}}>
-                                    <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".07em",fontSize:".95rem",color:"var(--gold-light)"}}>{step.title}</span>
-                                    <span style={{fontSize:".75rem",color:"var(--green)",fontWeight:600}}>{step.salary}</span>
-                                  </div>
-                                  <div style={{fontSize:".78rem",color:"var(--dim)",lineHeight:"1.5",marginBottom:".2rem"}}>{step.description}</div>
-                                  {step.timeframe&&<div style={{fontSize:".7rem",color:"var(--slate)",fontStyle:"italic"}}>⏱ {step.timeframe}</div>}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* TWO-COL: WHY YOU FIT + REQUIRED SKILLS */}
-                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem"}}>
-                      {careerDetail.whyYouFit&&(
-                        <div className="card">
-                          <div className="ch"><h3>🎯 Why You're Qualified</h3></div>
-                          <div className="cb">
-                            <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
-                              {careerDetail.whyYouFit.map((w,i)=>(
-                                <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
-                                  <span style={{color:"var(--green)",flexShrink:0}}>✓</span>{w}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      )}
-                      {careerDetail.requiredSkills&&(
-                        <div className="card">
-                          <div className="ch"><h3>🔧 Skills Needed</h3></div>
-                          <div className="cb">
-                            <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
-                              {careerDetail.requiredSkills.map((s,i)=>(
-                                <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
-                                  <span style={{color:"var(--gold)",flexShrink:0}}>→</span>{s}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* GAPS + CERTS */}
-                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem"}}>
-                      {careerDetail.gaps&&careerDetail.gaps.length>0&&(
-                        <div className="card">
-                          <div className="ch"><h3>⚠️ Gaps to Address</h3></div>
-                          <div className="cb">
-                            <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
-                              {careerDetail.gaps.map((g,i)=>(
-                                <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
-                                  <span style={{color:"var(--orange)",flexShrink:0}}>!</span>{g}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      )}
-                      {careerDetail.certifications&&careerDetail.certifications.length>0&&(
-                        <div className="card">
-                          <div className="ch"><h3>📜 Recommended Certifications</h3></div>
-                          <div className="cb">
-                            <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
-                              {careerDetail.certifications.map((c,i)=>(
-                                <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
-                                  <span style={{color:"var(--blue)",flexShrink:0}}>⭐</span>{c}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* FIRST STEPS */}
-                    {careerDetail.actionSteps&&careerDetail.actionSteps.length>0&&(
-                      <div className="card" style={{borderColor:"rgba(76,175,130,.3)"}}>
-                        <div className="ch" style={{background:"rgba(76,175,130,.07)"}}><h3>🚀 Your Action Plan</h3></div>
-                        <div className="cb">
-                          <div style={{display:"flex",flexDirection:"column",gap:".55rem"}}>
-                            {careerDetail.actionSteps.map((s,i)=>(
-                              <div key={i} style={{display:"flex",gap:".75rem",alignItems:"flex-start"}}>
-                                <div style={{width:"22px",height:"22px",borderRadius:"50%",background:"rgba(76,175,130,.15)",border:"1px solid rgba(76,175,130,.35)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".68rem",fontWeight:700,color:"var(--green)",flexShrink:0}}>{i+1}</div>
-                                <div style={{fontSize:".84rem",color:"var(--text)",lineHeight:"1.55",paddingTop:".15rem"}}>{s}</div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* USE THIS FOR RESUME */}
-                    <button className="btn-primary" onClick={()=>{upT("title",selectedCareer.title);upT("industry",selectedCareer.industry||selectedCareer.sector);setTab(2);}} style={{marginTop:".25rem"}}>📄 Use This Career to Build My Resume →
-
-                    </button>
-
-                    <div style={{marginTop:"1rem",background:"#f8fafc",border:"1px solid #d0daea",borderRadius:"6px",padding:"1rem"}}>
-                      <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".08em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".6rem"}}>
-                        Find Jobs {targetLocation ? "near " + targetLocation : "Nationwide"}
-                      </div>
-                      <div style={{display:"flex",flexWrap:"wrap",gap:".4rem",marginBottom:"1rem"}}>
-                        {[
-                          {l:"Indeed",i:"🔍",u:"https://www.indeed.com/jobs?q="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
-                          {l:"LinkedIn",i:"💼",u:"https://www.linkedin.com/jobs/search/?keywords="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
-                          {l:"USAJobs",i:"🏛",u:"https://www.usajobs.gov/search/results/?k="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
-                          {l:"ZipRecruiter",i:"⚡",u:"https://www.ziprecruiter.com/jobs-search?search="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
-                          {l:"Hire Heroes USA",i:"🎖",u:"https://www.hireheroesusa.org/"},
-                          {l:"RecruitMilitary",i:"⭐",u:"https://recruitmilitary.com/job-seeker"},
-                          {l:"ClearanceJobs",i:"🔐",u:"https://www.clearancejobs.com/jobs?q="+encodeURIComponent(selectedCareer.title)},
-                        ].map(s=>(
-                          <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#ffffff",border:"1px solid #c0d0e4",borderRadius:"20px",color:"#1a3a6b",textDecoration:"none",fontSize:".77rem",fontWeight:500}}>
-                            {s.i} {s.l}
-                          </a>
-                        ))}
-                      </div>
-
-                      <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",marginBottom:".75rem"}}>
-                        <div style={{fontWeight:700,fontSize:".75rem",color:"#1a5c9a",textTransform:"uppercase",letterSpacing:".08em",marginBottom:".4rem"}}>SkillBridge — Train While Still Serving</div>
-                        <div style={{fontSize:".82rem",color:"#3a5070",marginBottom:".5rem",lineHeight:1.6}}>Active duty? SkillBridge lets you work with civilian employers during your last 180 days while keeping full military pay and benefits.</div>
-                        <div style={{display:"flex",flexWrap:"wrap",gap:".4rem"}}>
-                          {[
-                            {l:"DOD SkillBridge Directory",u:"https://skillbridge.osd.mil/programs.htm"},
-                            {l:"SkillBridge by Career",u:"https://www.skillbridge.com/jobs?q="+encodeURIComponent(selectedCareer.title)},
-                            {l:"Corporate Gray",u:"https://www.corporategray.com/skillbridge"},
-                          ].map(s=>(
-                            <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#e8f4fc",border:"1px solid #b0d4ec",borderRadius:"20px",color:"#1a5c9a",textDecoration:"none",fontSize:".77rem"}}>
-                              🔗 {s.l}
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",marginBottom:".75rem"}}>
-                        <div style={{fontWeight:700,fontSize:".75rem",color:"#1a7a40",textTransform:"uppercase",letterSpacing:".08em",marginBottom:".4rem"}}>GI Bill — Education Programs</div>
-                        <div style={{fontSize:".82rem",color:"#3a5070",marginBottom:".5rem",lineHeight:1.6}}>Use your GI Bill benefits to get certified or degreed for this career field.</div>
-                        <div style={{display:"flex",flexWrap:"wrap",gap:".4rem"}}>
-                          {[
-                            {l:"VA GI Bill School Finder",u:"https://www.va.gov/gi-bill-comparison-tool"},
-                            {l:"VA Education Benefits",u:"https://www.va.gov/education/"},
-                            {l:"Coursera Veteran Courses",u:"https://www.coursera.org/search?query="+encodeURIComponent(selectedCareer.title)},
-                          ].map(s=>(
-                            <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#e8f8ee",border:"1px solid #a0d4b4",borderRadius:"20px",color:"#1a7a40",textDecoration:"none",fontSize:".77rem"}}>
-                              🎓 {s.l}
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                      <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",display:"flex",gap:".5rem",flexWrap:"wrap",justifyContent:"flex-end"}}>
-                        <button style={{padding:".4rem .9rem",background:"transparent",border:"1px solid #d0daea",borderRadius:"4px",color:"#3a5070",fontSize:".8rem",cursor:"pointer"}} onClick={()=>{const win=window.open("","_blank");const c=selectedCareer;const cd=careerDetail;win.document.write("<html><head><title>"+c.title+"</title><style>body{font-family:Arial,sans-serif;padding:2rem;max-width:800px;margin:0 auto;}h1,h2{color:#1a3a6b;}</style></head><body><h1>"+c.title+"</h1><p><b>Sector:</b> "+(c.sector||"")+" | <b>Industry:</b> "+(c.industry||"")+" | <b>Salary:</b> "+(c.salaryRange||"")+"</p>"+(cd&&cd.about?"<h2>About</h2><p>"+cd.about+"</p>":"")+"<p style='margin-top:2rem;font-size:8pt;color:#aaa'>Generated by VeteranCareerPath.com</p><scr"+"ipt>window.onload=function(){window.print()}<\/scr"+"ipt></body></html>");win.document.close();}}>🖨 Print</button>
-                        <button style={{padding:".4rem .9rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".8rem",cursor:"pointer",fontWeight:600}} onClick={()=>{if(!currentUser){setShowAuth(true);return;}const e={id:Date.now().toString(),title:selectedCareer.title,sector:selectedCareer.sector,industry:selectedCareer.industry,salary:selectedCareer.salaryRange,match:selectedCareer.match,date:new Date().toLocaleDateString()};const p=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");localStorage.setItem("vcb_saved_paths",JSON.stringify([e,...p.filter(x=>x.title!==e.title)].slice(0,20)));showToast("✓ "+selectedCareer.title+" saved");}}>💾 Save Path</button>
-                      </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="nav-row">
-              <button className="btn-sec" onClick={()=>setTab(0)}>← Back to Profile</button>
-              <button className="btn-sec" onClick={()=>setTab(2)}>Next: Build Resume →</button>
-            </div>
-          </div>
 
           {/* ══ TAB 2: RESUME ══ */}
-          <div className={`panel ${tab===2?"on":""}`}>
+          <div className={"panel "+(tab===2?"on":"")}>
             <div className="intro">
               <strong>Generate Your Resume.</strong> Your complete military profile — MOS, ASIs, SQIs, additional duties, clearances, service history, and all experience — will be translated into a polished, ATS-optimized civilian resume.
             </div>
@@ -4067,7 +4089,7 @@ Return this exact JSON structure:
               <div className="cb">
                 <div className="format-grid">
                   {RESUME_FORMATS.map(f=>(
-                    <div key={f.id} className={`format-card ${resumeFormat===f.id?"selected":""}`} onClick={()=>setResumeFormat(f.id)}>
+                    <div key={f.id} className={"format-card "+(resumeFormat===f.id?"selected":"")} onClick={()=>setResumeFormat(f.id)}>
                       <h4>{f.label}</h4>
                       <p>{f.desc}</p>
                     </div>
@@ -4270,7 +4292,7 @@ Return this exact JSON structure:
           </div>
 
           {/* ══ TAB 3: COVER LETTER & REVIEW ══ */}
-          <div className={`panel ${tab===3?"on":""}`}>
+          <div className={"panel "+(tab===3?"on":"")}>
             <div className="intro"><strong>Cover Letter Builder & Resume Review.</strong> Generate a tailored cover letter and get AI-powered feedback on your resume.</div>
 
             {(!resume&&!resumeData)&&(
@@ -4522,7 +4544,7 @@ Return this exact JSON structure:
 
 
           {/* ══ TAB 4: JOB SEARCH HUB ══ */}
-          <div className={`panel ${tab===4?"on":""}`}>
+          <div className={"panel "+(tab===4?"on":"")}>
 
             {/* Sub-nav */}
             <div style={{display:"flex",gap:".4rem",flexWrap:"wrap",marginBottom:"1.2rem",borderBottom:"2px solid #e0e8f0",paddingBottom:".7rem"}}>
@@ -4868,7 +4890,7 @@ Return this exact JSON structure:
 
 
           {/* ══ TAB 5: VETERAN RESOURCES ══ */}
-          <div className={`panel ${tab===5?"on":""}`}>
+          <div className={"panel "+(tab===5?"on":"")}>
 
             {/* Crisis Banner - always at top */}
             <div className="crisis-banner">
@@ -5027,7 +5049,7 @@ Return this exact JSON structure:
 
 
           {/* ══ TAB 6: MY PROFILE ══ */}
-          <div className={`panel ${tab===6?"on":""}`}>
+          <div className={"panel "+(tab===6?"on":"")}>
             {!currentUser?(
               <div style={{textAlign:"center",padding:"3rem 1rem"}}>
                 <div style={{fontSize:"3rem",marginBottom:"1rem"}}>🔒</div>

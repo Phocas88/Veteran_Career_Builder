@@ -30,13 +30,13 @@
   <script>
     try {
       const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+        authDomain: "veteran-career-builder.firebaseapp.com",
+        projectId: "veteran-career-builder",
+        storageBucket: "veteran-career-builder.firebasestorage.app",
+        messagingSenderId: "REPLACE_SENDER_ID",
+        appId: "REPLACE_APP_ID"
+      };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -1608,7 +1608,7 @@ function App() {
     "INDIA30":            Date.UTC(2026, 3, 20),
     "JULIET30":           Date.UTC(2026, 3, 20),
     // Special named codes (give to specific people)
-    "Amon26":           Date.UTC(2026, 4, 20),
+    "VETTEST1":           Date.UTC(2026, 4, 20),
     "VETTEST2":           Date.UTC(2026, 4, 20),
     "VETTEST3":           Date.UTC(2026, 4, 20),
     "VETTEST4":           Date.UTC(2026, 4, 20),
@@ -2409,6 +2409,10 @@ Return this exact JSON structure:
 
   const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Vet Resources","My Profile"];
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
+  const DI = "Defense/Intel";
+  const RG = "Reserve/Guard (concurrent with civilian)";
+  const matchesSector = (c, filter) => filter==="All" || c.sector===filter || (filter===DI && c.sector===DI);
+  const filterCareers = (careers, filter) => careers.filter(c => matchesSector(c, filter));
 
   return (
     <>
@@ -3689,7 +3693,7 @@ Return this exact JSON structure:
                     {exp.clearanceLevel!=="None"&&<span className={getClearanceBadge(exp.clearanceLevel)}>{exp.clearanceLevel} — {exp.clearanceStatus}</span>}
                   </div>
                   {exp.duties&&<div style={{fontSize:".85rem",color:"var(--dim)",lineHeight:"1.6",fontStyle:"italic"}}>"{exp.duties.slice(0,180)}{exp.duties.length>180?"...":""}"</div>}
-                  {exp.type==="Reserve/Guard (concurrent with civilian)"&&
+                  {exp.type===RG&&
                     <div style={{background:"rgba(230,160,60,.07)",border:"1px solid rgba(230,160,60,.22)",borderRadius:"3px",padding:".6rem .85rem",fontSize:".8rem",color:"#e8b84b"}}>
                       ⭐ Dual-career advantage: Simultaneously maintaining civilian employment and military service demonstrates exceptional time management, discipline, and commitment — a top-tier signal to civilian employers.
                     </div>}
@@ -3752,7 +3756,7 @@ Return this exact JSON structure:
                   <p style={{fontSize:".78rem",color:"var(--slate)",marginTop:".2rem"}}>Click any career to see full details, salary breakdown, and growth path</p>
                 </div>
                 <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
-                  {["All","Civilian","Government","Defense/Intel"].map(f=>(
+                  {["All","Civilian","Government",DI].map(f=>(
                     <button key={f} onClick={()=>setCareerFilter(f)}
                       style={{padding:".28rem .7rem",borderRadius:"2px",border:"1px solid",fontSize:".72rem",letterSpacing:".06em",cursor:"pointer",fontFamily:"'Crimson Pro',serif",
                         borderColor:careerFilter===f?"var(--gold)":"rgba(201,168,76,.25)",
@@ -3766,11 +3770,11 @@ Return this exact JSON structure:
 
               {/* CAREER LIST */}
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem",flexWrap:"wrap",gap:".4rem"}}>
-                <div style={{fontSize:".78rem",color:"var(--dim)"}}>{careers.filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter===["Defense","Intel"].join("/")&&c.sector===["Defense","Intel"].join("/"))||(careerFilter==="Civilian"&&c.sector==="Civilian")).length} career matches</div>
+                <div style={{fontSize:".78rem",color:"var(--dim)"}}>{filterCareers(careers,careerFilter).length} career matches</div>
                 <button style={{padding:".35rem .8rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".78rem",cursor:"pointer",fontWeight:600}}
                   onClick={()=>{
                     if(!currentUser){setShowAuth(true);return;}
-                    const visible=careers.filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter===["Defense","Intel"].join("/")&&c.sector===["Defense","Intel"].join("/"))||(careerFilter==="Civilian"&&c.sector==="Civilian"));
+                    const visible=filterCareers(careers,careerFilter);
                     const entries=visible.map(c=>({id:Date.now().toString()+c.title,title:c.title,sector:c.sector,industry:c.industry,salary:c.salaryRange,match:c.match,date:new Date().toLocaleDateString("en-US",{year:"numeric",month:"short",day:"numeric"})}));
                     const prev=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");
                     const titles=entries.map(e=>e.title);
@@ -3783,7 +3787,7 @@ Return this exact JSON structure:
               </div>
               <div style={{display:"flex",flexDirection:"column",gap:".55rem"}}>
                 {careers
-                  .filter(c=>careerFilter==="All"||(careerFilter==="Government"&&c.sector==="Government")||(careerFilter===["Defense","Intel"].join("/")&&c.sector===["Defense","Intel"].join("/"))||(careerFilter==="Civilian"&&c.sector==="Civilian"))
+                  .filter(c=>matchesSector(c,careerFilter))
                   .map((c,i)=>(
                   <div key={i} onClick={()=>openCareerDetail(c)}
                     style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.28)",borderRadius:"4px",
@@ -3793,7 +3797,7 @@ Return this exact JSON structure:
 
                     {/* sector icon */}
                     <div style={{fontSize:"1.6rem",flexShrink:0,width:"2.4rem",textAlign:"center"}}>
-                      {c.sector==="Government"?"🏛️":c.sector===["Defense","Intel"].join("/")?"🛡️":"💼"}
+                      {c.sector==="Government"?"🏛️":c.sector===DI?"🛡️":"💼"}
                     </div>
 
                     {/* main info */}
@@ -3834,7 +3838,7 @@ Return this exact JSON structure:
                   <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:".75rem"}}>
                     <div>
                       <div style={{display:"flex",alignItems:"center",gap:".6rem",flexWrap:"wrap",marginBottom:".4rem"}}>
-                        <span style={{fontSize:"1.5rem"}}>{selectedCareer.sector==="Government"?"🏛️":selectedCareer.sector===["Defense","Intel"].join("/")?"🛡️":"💼"}</span>
+                        <span style={{fontSize:"1.5rem"}}>{selectedCareer.sector==="Government"?"🏛️":selectedCareer.sector===DI?"🛡️":"💼"}</span>
                         <h2 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",fontSize:"1.6rem",color:"var(--gold-light)"}}>{selectedCareer.title}</h2>
                         <span className="badge bc">{selectedCareer.match} Match</span>
                         {selectedCareer.clearanceBonus&&<span style={{fontSize:".68rem",color:"#e8b84b",background:"rgba(230,160,60,.1)",border:"1px solid rgba(230,160,60,.25)",padding:".18rem .5rem",borderRadius:"2px"}}>🔐 Clearance Advantage</span>}

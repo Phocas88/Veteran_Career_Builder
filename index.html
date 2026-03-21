@@ -3750,11 +3750,7 @@ Return this exact JSON structure:
                 </div>
                 <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
                   {["All","Civilian","Government",DI].map(f=>(
-                    <button key={f} onClick={()=>setCareerFilter(f)}
-                      style={{padding:".28rem .7rem",borderRadius:"2px",border:"1px solid",fontSize:".72rem",letterSpacing:".06em",cursor:"pointer",fontFamily:"'Crimson Pro',serif",
-                        borderColor:careerFilter===f?"var(--gold)":"rgba(201,168,76,.25)",
-                        background:careerFilter===f?"rgba(201,168,76,.12)":"transparent",
-                        color:careerFilter===f?"var(--gold-light)":"var(--slate)"}}>
+                    <button key={f} onClick={()=>setCareerFilter(f)} style={{padding:".28rem .7rem",borderRadius:"2px",border:"1px solid",fontSize:".72rem",letterSpacing:".06em",cursor:"pointer",borderColor:careerFilter===f?"var(--gold)":"rgba(201,168,76,.25)",background:careerFilter===f?"rgba(201,168,76,.12)":"transparent",color:careerFilter===f?"var(--gold-light)":"var(--slate)"}}>
                       {f}
                     </button>
                   ))}
@@ -3771,11 +3767,7 @@ Return this exact JSON structure:
                 {careers
                   .filter(c=>matchesSector(c,careerFilter))
                   .map((c,i)=>(
-                  <div key={i} onClick={()=>openCareerDetail(c)}
-                    style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.28)",borderRadius:"4px",
-                      padding:"1rem 1.1rem",cursor:"pointer",transition:"all .18s",display:"flex",alignItems:"center",gap:"1rem",flexWrap:"wrap"}}
-                    onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.5)";e.currentTarget.style.background="rgba(201,168,76,.05)";}}
-                    onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.28)";e.currentTarget.style.background="rgba(255,255,255,.03)";}}>
+                  <div key={i} onClick={()=>openCareerDetail(c)} style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.28)",borderRadius:"4px",padding:"1rem 1.1rem",cursor:"pointer",transition:"all .18s",display:"flex",alignItems:"center",gap:"1rem",flexWrap:"wrap"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.5)";e.currentTarget.style.background="rgba(201,168,76,.05)";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.28)";e.currentTarget.style.background="rgba(255,255,255,.03)";}}
 
                     {/* sector icon */}
                     <div style={{fontSize:"1.6rem",flexShrink:0,width:"2.4rem",textAlign:"center"}}>
@@ -3810,8 +3802,7 @@ Return this exact JSON structure:
             {/* ── CAREER DETAIL VIEW ── */}
             {selectedCareer&&!loading.careers&&(
               <div style={{marginTop:"1rem"}}>
-                <button className="btn-sec" onClick={()=>{setSelectedCareer(null);setCareerDetail("");}}
-                  style={{marginBottom:"1rem",display:"flex",alignItems:"center",gap:".4rem"}}>
+                <button className="btn-sec" onClick={()=>{setSelectedCareer(null);setCareerDetail("");}} style={{marginBottom:"1rem",display:"flex",alignItems:"center",gap:".4rem"}}>
                   ← Back to All Careers
                 </button>
 
@@ -3985,9 +3976,8 @@ Return this exact JSON structure:
                     )}
 
                     {/* USE THIS FOR RESUME */}
-                    <button className="btn-primary" onClick={()=>{upT("title",selectedCareer.title);upT("industry",selectedCareer.industry||selectedCareer.sector);setTab(2);}}
-                      style={{marginTop:".25rem"}}>
-                      📄 Use This Career to Build My Resume →
+                    <button className="btn-primary" onClick={()=>{upT("title",selectedCareer.title);upT("industry",selectedCareer.industry||selectedCareer.sector);setTab(2);}} style={{marginTop:".25rem"}}>📄 Use This Career to Build My Resume →
+
                     </button>
 
                     <div style={{marginTop:"1rem",background:"#f8fafc",border:"1px solid #d0daea",borderRadius:"6px",padding:"1rem"}}>
@@ -4004,8 +3994,7 @@ Return this exact JSON structure:
                           {l:"RecruitMilitary",i:"⭐",u:"https://recruitmilitary.com/job-seeker"},
                           {l:"ClearanceJobs",i:"🔐",u:"https://www.clearancejobs.com/jobs?q="+encodeURIComponent(selectedCareer.title)},
                         ].map(s=>(
-                          <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer"
-                            style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#ffffff",border:"1px solid #c0d0e4",borderRadius:"20px",color:"#1a3a6b",textDecoration:"none",fontSize:".77rem",fontWeight:500}}>
+                          <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#ffffff",border:"1px solid #c0d0e4",borderRadius:"20px",color:"#1a3a6b",textDecoration:"none",fontSize:".77rem",fontWeight:500}}>
                             {s.i} {s.l}
                           </a>
                         ))}
@@ -4020,8 +4009,7 @@ Return this exact JSON structure:
                             {l:"SkillBridge by Career",u:"https://www.skillbridge.com/jobs?q="+encodeURIComponent(selectedCareer.title)},
                             {l:"Corporate Gray",u:"https://www.corporategray.com/skillbridge"},
                           ].map(s=>(
-                            <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer"
-                              style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#e8f4fc",border:"1px solid #b0d4ec",borderRadius:"20px",color:"#1a5c9a",textDecoration:"none",fontSize:".77rem"}}>
+                            <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#e8f4fc",border:"1px solid #b0d4ec",borderRadius:"20px",color:"#1a5c9a",textDecoration:"none",fontSize:".77rem"}}>
                               🔗 {s.l}
                             </a>
                           ))}
@@ -4037,8 +4025,7 @@ Return this exact JSON structure:
                             {l:"VA Education Benefits",u:"https://www.va.gov/education/"},
                             {l:"Coursera Veteran Courses",u:"https://www.coursera.org/search?query="+encodeURIComponent(selectedCareer.title)},
                           ].map(s=>(
-                            <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer"
-                              style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#e8f8ee",border:"1px solid #a0d4b4",borderRadius:"20px",color:"#1a7a40",textDecoration:"none",fontSize:".77rem"}}>
+                            <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#e8f8ee",border:"1px solid #a0d4b4",borderRadius:"20px",color:"#1a7a40",textDecoration:"none",fontSize:".77rem"}}>
                               🎓 {s.l}
                             </a>
                           ))}

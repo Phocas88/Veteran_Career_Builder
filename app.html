@@ -40,7 +40,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-      const firebaseConfig = {
+   const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -4571,7 +4571,11 @@ Return this exact JSON structure:
               <div className="cb">
                 <div className="format-grid">
                   {RESUME_FORMATS.map(f=>(
-                    <div key={f.id} className={"format-card "+(resumeFormat===f.id?"selected":"")} onClick={()=>setResumeFormat(f.id)}>
+                    <div key={f.id} className={"format-card "+(resumeFormat===f.id?"selected":"")} onClick={()=>{
+                          setResumeFormat(f.id);
+                          const tmplMap={"ats_chrono":"ats_chrono","ats_combo":"ats_combo","traditional":"traditional","modern":"modern","executive":"executive","federal":"federal","harvard":"harvard","wharton":"wharton","minimalist":"minimalist","creative":"modern"};
+                          setResumeTemplate(tmplMap[f.id]||"modern");
+                        }}>
                       <h4>{f.label}</h4>
                       <p>{f.desc}</p>
                     </div>
@@ -4597,8 +4601,8 @@ Return this exact JSON structure:
 
 
                   <div style={{background:"#f0f2f8",borderBottom:"1px solid #d0d8e8",padding:".65rem 1rem",display:"flex",gap:".4rem",flexWrap:"wrap",alignItems:"center"}}>
-                    <span style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#3a5070",marginRight:".2rem"}}>Template:</span>
-                    {[{id:"modern",l:"Modern"},{id:"classic",l:"Classic"},{id:"executive",l:"Executive"},{id:"federal",l:"Federal/USAJobs"},{id:"minimal",l:"Minimal"}].map(t=>(
+                    <span style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#3a5070",marginRight:".2rem"}}>Preview Style:</span>
+                    {[{id:"ats_chrono",l:"ATS Chrono"},{id:"ats_combo",l:"ATS Combo"},{id:"traditional",l:"Traditional"},{id:"modern",l:"Modern"},{id:"classic",l:"Classic"},{id:"executive",l:"Executive"},{id:"federal",l:"Federal"},{id:"harvard",l:"Harvard"},{id:"wharton",l:"Wharton"},{id:"minimalist",l:"Minimalist"}].map(t=>(
                       <button key={t.id} onClick={()=>setResumeTemplate(t.id)}
                         style={{padding:".28rem .75rem",borderRadius:"3px",border:"1.5px solid",fontSize:".74rem",cursor:"pointer",fontWeight:resumeTemplate===t.id?700:400,
                           background:resumeTemplate===t.id?"#1a3a6b":"#fff",

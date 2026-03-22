@@ -2411,10 +2411,17 @@ function App() {
     try { return JSON.parse(localStorage.getItem("vcb_timeline")||"{}"); } catch(e){ return {}; }
   });
   const saveTl = (key, val) => {
+  const saveTl = (key, val) => {
     const updated = {...tlChecks, [key]: val};
     setTlChecks(updated);
     localStorage.setItem("vcb_timeline", JSON.stringify(updated));
+    if (currentUser && fbDb) {
+      try { fbDb.collection("profiles").doc(currentUser.uid).set({ timeline: updated, updatedAt: Date.now() }, { merge: true }); } catch(e) {}
+    }
   };
+
+
+
 
   // Dashboard tab sub-view
   const [retentionTab, setRetentionTab] = useState("tracker");
@@ -2639,6 +2646,7 @@ function App() {
       } else {
         setCurrentUser(null);
         setSavedResumes([]);
+        setJobApps([]); setTlChecks({});
         setSavedCoverLetters([]); setSavedEmails([]); setSavedScores([]);
       }
     });
@@ -5548,3 +5556,4 @@ Return this exact JSON structure:
 
       <a href="https://veterancareerpath.com/contact.html" style="color:#a0b8d0;text-decoration:none;margin:0 .5rem;">Contact Us</a>
     <div style="color:#3a5070;font-size:.72rem;">&copy; 2025 Veteran Career Path &bull; Not affiliated with the U.S. Dep
+</html>

@@ -2519,14 +2519,16 @@ function App() {
     const stored = localStorage.getItem("vcb_access");
     if (!stored) return false;
     try {
-      const { type, expiry, code } = JSON.parse(stored);
-      if (type === "paid" && expiry > Date.now()) return true;
-      if (type === "code" && code) {
-        const check = isCodeValid(code);
-        if (!check.valid) {
-          localStorage.removeItem("vcb_access"); // auto-clear expired
-          return false;
-        }
+      const d = JSON.parse(stored);
+      // Paid access MUST have a stripeSession marker — clears old test grants
+      if (d.type === "paid") {
+        if (!d.stripeSession) { localStorage.removeItem("vcb_access"); return false; }
+        if (d.expiry > Date.now()) return true;
+        localStorage.removeItem("vcb_access"); return false;
+      }
+      if (d.type === "code" && d.code) {
+        const check = isCodeValid(d.code);
+        if (!check.valid) { localStorage.removeItem("vcb_access"); return false; }
         return true;
       }
       return false;
@@ -2566,20 +2568,7 @@ function App() {
     setShowPaywall(false);
   };
 
-  // ── CLEAR STALE TEST ACCESS ──
-  // Clears any access that was granted via the old "payment coming soon" fallback
-  (function(){
-    try {
-      const s = localStorage.getItem("vcb_access");
-      if (s) {
-        const d = JSON.parse(s);
-        if (d.type==="paid" && !d.stripeSession) {
-          localStorage.removeItem("vcb_access");
-          console.log("Cleared stale test access");
-        }
-      }
-    } catch(e) {}
-  })();
+  // Access validation handled in checkAccess()
 
 
   // ── FIREBASE STORAGE HELPERS ────────────────────────────────────────────────

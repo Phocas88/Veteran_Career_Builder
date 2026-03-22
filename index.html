@@ -209,6 +209,10 @@ nav {
   letter-spacing: .1em;
   color: var(--gold);
   text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60vw;
 }
 
 .nav-logo span { color: var(--white); }
@@ -660,9 +664,11 @@ footer {
   .hero-right { display: none; }
   .steps-row { grid-template-columns: 1fr 1fr; }
   .steps-row::before { display: none; }
-  nav { padding: 1rem 6%; }
-  .nav-links { gap: 1.25rem; }
+  nav { padding: .7rem 4%; gap: .5rem; }
+  .nav-links { gap: .75rem; }
   .nav-links a:not(.nav-cta) { display: none; }
+  .nav-logo { font-size: 1.1rem; }
+  .nav-logo img { height: 28px !important; width: 28px !important; }
 }
 
 @media (max-width: 600px) {
@@ -671,6 +677,11 @@ footer {
   footer { flex-direction: column; text-align: center; }
   .footer-links { flex-wrap: wrap; justify-content: center; }
   .pricing-features { grid-template-columns: 1fr; }
+}
+@media (max-width: 400px) {
+  .nav-logo { font-size: .95rem; letter-spacing: .05em; }
+  .nav-logo img { height: 24px !important; width: 24px !important; margin-right: .3rem !important; }
+  .nav-cta { padding: .35rem .7rem !important; font-size: .78rem !important; }
 }
 </style>
 </head>

@@ -46,10 +46,10 @@
       console.warn("Firebase not configured:", e.message);
       window.fbAuth = null; window.fbDb = null;
     }
-</script>
+  </script>
   <script>window.VCB_STRIPE_PK="pk_test_51TDAB4I88XNO7Y7PHRn7rhUBd9R6a06uT1IiYlJPHkGtGd2Dk2nSnIADrA1Qev4cVLa2WMz0E1qFIgTJXb1eTSSN00gzgmEdDp";</script>
   <script>window.VCB_LOGO="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png";</script>
-  <script>window.VCB_PROXY_URL="https://vcp-proxy.vercel.app/api/claude";</script>
+  <script>window.VCB_PROXY_URL="REPLACE_WITH_YOUR_VERCEL_PROXY_URL";</script>
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
   <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
 
@@ -1172,13 +1172,24 @@ function getClearanceBadge(lvl) {
 }
 
 // ── API KEY CHECK ───────────────────────────────────────────────────────────
+// ── PROXY CONFIG ──
+// Set this to your Vercel proxy URL after deploying
+const PROXY_URL = window.VCB_PROXY_URL || "";
+
 function isApiKeySet() {
-  const key = localStorage.getItem("vcb_admin_key") || (typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key")) || (document.cookie.match(/vcb_ak=([^;]+)/)||[])[1]||"";
-  return key.length > 20;
+  // Works if proxy URL is configured OR if a local key exists (fallback)
+  return PROXY_URL.length > 10 || (localStorage.getItem("vcb_admin_key") || "").length > 20;
 }
+
 function getStoredApiKey() {
   return localStorage.getItem("vcb_admin_key") || (typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key")) || (document.cookie.match(/vcb_ak=([^;]+)/)||[])[1]||"";
 }
+
+
+
+
+
+
 
 async function callClaude(prompt, system = "", maxTokens = 2000) {
   try {
@@ -1189,14 +1200,14 @@ async function callClaude(prompt, system = "", maxTokens = 2000) {
     };
     if (system) body.system = system;
 
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": getStoredApiKey(),
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
-      },
+    const endpoint = PROXY_URL ? PROXY_URL : "https://api.anthropic.com/v1/messages";
+    const headers = { "Content-Type": "application/json" };
+    if (!PROXY_URL) {
+      headers["x-api-key"] = getStoredApiKey();
+      headers["anthropic-version"] = "2023-06-01";
+      headers["anthropic-dangerous-direct-browser-access"] = "true";
+    }
+    const r = await fetch(endpoint, {
       body: JSON.stringify(body)
     });
 
@@ -3600,14 +3611,14 @@ Return this exact JSON structure:
                   </div>
                 ):(
                   <div style={{background:"rgba(201,168,76,.08)",border:"1px solid rgba(201,168,76,.25)",borderRadius:"3px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".85rem",color:"var(--slate)",lineHeight:"1.6"}}>
-                    To enable AI features, enter your Anthropic API key below. Get one free at <a href="https://console.anthropic.com/settings/keys" target="_blank" style={{color:"var(--gold-light)"}}>console.anthropic.com</a>. Your key is saved only in this browser.
+                  To enable AI features, enter your Vercel proxy URL below. If you have not deployed the proxy yet, see the setup instructions.
                   </div>
                 )}
                 <div style={{marginBottom:"1rem"}}>
                   <label style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,display:"block",marginBottom:".4rem"}}>Anthropic API Key</label>
                   <input
                     type="password"
-                    placeholder="sk-ant-api03-..."
+                    placeholder="https://your-proxy.vercel.app/api/claude"
                     value={adminKeyInput}
                     onChange={e=>setAdminKeyInput(e.target.value)}
                     style={{width:"100%",background:"rgba(255,255,255,.92)",border:"1.5px solid rgba(201,168,76,.5)",borderRadius:"3px",color:"#1a1a2e",padding:".65rem .85rem",fontFamily:"monospace",fontSize:".9rem"}}
@@ -3618,7 +3629,14 @@ Return this exact JSON structure:
                   onClick={()=>{
                     const k = adminKeyInput.trim();
                     if(k.length < 20){ alert("That doesn't look like a valid API key."); return; }
-                    localStorage.setItem("vcb_admin_key", k); try{sessionStorage.setItem("vcb_admin_key", k);}catch(e){} document.cookie="vcb_ak="+k+";max-age=31536000;path=/;SameSite=Strict";
+                    if (k.startsWith("https://")) {
+                      // It's a proxy URL — store separately and reload
+                      localStorage.setItem("vcb_proxy_url", k);
+                      alert("Proxy URL saved! AI features are now enabled.");
+                      window.location.reload();
+                    } else {
+                      localStorage.setItem("vcb_admin_key", k);
+                    } try{sessionStorage.setItem("vcb_admin_key", k);}catch(e){} document.cookie="vcb_ak="+k+";max-age=31536000;path=/;SameSite=Strict";
                     setAdminKeySet(true);
                     setAdminKeyInput("");
                     setShowAdminSetup(false);
@@ -5546,9 +5564,8 @@ Return this exact JSON structure:
 }
     ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
     hideLoading();
-  ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
-       hideLoading();
-     </script>
+  </script>
+
 
   <footer style="background:#0d1f3c;color:#a0b8d0;text-align:center;padding:1.5rem 1rem;font-size:.78rem;margin-top:2rem;word-wrap:break-word;">
     <div style="margin-bottom:.6rem;">

@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veteran Career Path — Translate Your Service Into a Civilian Career</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0d1f3c;
+  --navy2: #1a3a6b;
+  --navy3: #1e4a8a;
+  --gold: #c8a951;
+  --gold2: #f0c040;
+  --cream: #f5f0e8;
+  --dim: #6a82a0;
+  --white: #ffffff;
+  --red: #c0392b;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy);
+  color: var(--cream);
+  overflow-x: hidden;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 60% at 60% 30%, rgba(30,74,138,.35) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 10% 80%, rgba(200,169,81,.08) 0%, transparent 60%),
+    linear-gradient(160deg, #06111f 0%, #0d1f3c 45%, #0a1828 100%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 4rem;
+  padding: 6rem 8% 5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: rgba(200,169,81,.12);
+  border: 1px solid rgba(200,169,81,.3);
+  border-radius: 100px;
+  padding: .35rem .9rem;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.8rem;
+}
+
+.hero-eyebrow {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  line-height: .95;
+  letter-spacing: .03em;
+  color: var(--white);
+  margin-bottom: 1.2rem;
+}
+
+.hero-eyebrow span {
+  color: var(--gold);
+  display: block;
+}
+
+.hero-sub {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  font-weight: 300;
+  font-style: italic;
+  color: rgba(245,240,232,.7);
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 2.5rem;
+}
+
+.hero-cta-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-hero {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold), #e0a820);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: .9rem 2.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  letter-spacing: .02em;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 4px 24px rgba(200,169,81,.3);
+}
+.btn-hero:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(200,169,81,.4); }
+
+.btn-ghost {
+  display: inline-block;
+  color: rgba(245,240,232,.7);
+  font-size: .9rem;
+  text-decoration: none;
+  padding: .9rem .5rem;
+  border-bottom: 1px solid rgba(245,240,232,.2);
+  transition: color .15s, border-color .15s;
+}
+.btn-ghost:hover { color: var(--cream); border-color: var(--gold); }
+
+.hero-pricing {
+  margin-top: 1.5rem;
+  font-size: .75rem;
+  color: var(--dim);
+  letter-spacing: .04em;
+}
+
+/* Hero right — pain point cards */
+.hero-right {
+  position: relative;
+}
+
+.pain-stack {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.pain-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-left: 3px solid var(--gold);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: .85rem;
+  transform: translateX(40px);
+  opacity: 0;
+  animation: slideIn .5s ease forwards;
+}
+
+.pain-card:nth-child(1) { animation-delay: .1s; }
+.pain-card:nth-child(2) { animation-delay: .2s; }
+.pain-card:nth-child(3) { animation-delay: .3s; }
+.pain-card:nth-child(4) { animation-delay: .4s; }
+.pain-card:nth-child(5) { animation-delay: .5s; }
+
+@keyframes slideIn {
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.pain-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  margin-top: .1rem;
+}
+
+.pain-text {
+  font-size: .88rem;
+  color: rgba(245,240,232,.85);
+  line-height: 1.5;
+}
+
+.pain-text strong {
+  color: var(--white);
+  display: block;
+  font-size: .92rem;
+  margin-bottom: .15rem;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 1rem 8%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(13,31,60,.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: .1em;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.nav-logo span { color: var(--white); }
+
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+
+.nav-links a {
+  color: rgba(245,240,232,.6);
+  text-decoration: none;
+  font-size: .85rem;
+  letter-spacing: .04em;
+  transition: color .15s;
+}
+.nav-links a:hover { color: var(--cream); }
+
+.nav-cta {
+  background: var(--gold2);
+  color: var(--navy) !important;
+  font-weight: 700 !important;
+  padding: .45rem 1.2rem;
+  border-radius: 4px;
+}
+
+/* ── SECTION BASE ── */
+section { padding: 6rem 8%; }
+
+.section-label {
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  letter-spacing: .04em;
+  line-height: 1;
+  color: var(--white);
+  margin-bottom: 1.2rem;
+}
+
+.section-body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: rgba(245,240,232,.65);
+  line-height: 1.75;
+  max-width: 560px;
+}
+
+/* ── PROBLEM STRIP ── */
+.problem-strip {
+  background: linear-gradient(135deg, #0a1828, #0d1f3c);
+  border-top: 1px solid rgba(200,169,81,.15);
+  border-bottom: 1px solid rgba(200,169,81,.15);
+  padding: 4rem 8%;
+}
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.problem-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.problem-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  color: rgba(200,169,81,.2);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 2.5rem;
+}
+
+.problem-content h3 {
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: .4rem;
+}
+
+.problem-content p {
+  font-size: .83rem;
+  color: var(--dim);
+  line-height: 1.6;
+}
+
+/* ── FEATURES ── */
+.features-section {
+  background: #080f1c;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3.5rem;
+}
+
+.feature-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 12px;
+  padding: 1.75rem;
+  transition: border-color .2s, background .2s, transform .2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.feature-card:hover {
+  border-color: rgba(200,169,81,.2);
+  background: rgba(200,169,81,.04);
+  transform: translateY(-3px);
+}
+
+.feature-card:hover::before { opacity: 1; }
+
+.feature-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: .6rem;
+}
+
+.feature-card p {
+  font-size: .83rem;
+  color: var(--dim);
+  line-height: 1.65;
+}
+
+.feature-card .feature-tag {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(200,169,81,.1);
+  border-radius: 100px;
+  padding: .2rem .65rem;
+}
+
+/* ── HOW IT WORKS ── */
+.how-section {
+  background: linear-gradient(160deg, #0d1f3c, #080f1c);
+}
+
+.steps-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  margin-top: 4rem;
+  position: relative;
+}
+
+.steps-row::before {
+  content: '';
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  right: 2rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200,169,81,.3), rgba(200,169,81,.3), transparent);
+}
+
+.step {
+  text-align: center;
+  position: relative;
+}
+
+.step-num {
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(135deg, var(--navy2), var(--navy3));
+  border: 2px solid rgba(200,169,81,.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: var(--gold);
+  margin: 0 auto 1.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.step h3 {
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: .5rem;
+}
+
+.step p {
+  font-size: .8rem;
+  color: var(--dim);
+  line-height: 1.6;
+}
+
+/* ── WHO IT'S FOR ── */
+.who-section {
+  background: #050d18;
+}
+
+.who-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-top: 3.5rem;
+}
+
+.who-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.who-card .who-icon { font-size: 2.2rem; margin-bottom: .75rem; }
+.who-card h3 { font-size: .95rem; font-weight: 600; color: var(--white); margin-bottom: .4rem; }
+.who-card p { font-size: .8rem; color: var(--dim); line-height: 1.55; }
+
+/* ── PRICING ── */
+.pricing-section {
+  background: linear-gradient(160deg, #080f1c, #0d1f3c);
+  text-align: center;
+}
+
+.pricing-card {
+  max-width: 480px;
+  margin: 3.5rem auto 0;
+  background: rgba(255,255,255,.04);
+  border: 2px solid rgba(200,169,81,.25);
+  border-radius: 16px;
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at center, rgba(200,169,81,.06), transparent 60%);
+  pointer-events: none;
+}
+
+.price-trial {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 5rem;
+  color: var(--white);
+  line-height: 1;
+}
+
+.price-trial sup { font-size: 2rem; vertical-align: top; margin-top: .8rem; display: inline-block; }
+
+.price-label {
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin: .4rem 0 .2rem;
+}
+
+.price-then {
+  font-size: .82rem;
+  color: var(--dim);
+  margin-bottom: 2rem;
+}
+
+.pricing-features {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem .75rem;
+}
+
+.pricing-features li {
+  font-size: .82rem;
+  color: rgba(245,240,232,.75);
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.pricing-features li::before {
+  content: '✓';
+  color: var(--gold);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.btn-pricing {
+  display: block;
+  width: 100%;
+  background: linear-gradient(135deg, var(--gold), #e0a820);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  letter-spacing: .03em;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 4px 24px rgba(200,169,81,.25);
+}
+
+.btn-pricing:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(200,169,81,.35); }
+
+.pricing-fine {
+  margin-top: 1rem;
+  font-size: .72rem;
+  color: var(--dim);
+}
+
+/* ── QUOTE STRIP ── */
+.quote-strip {
+  background: var(--navy2);
+  border-top: 1px solid rgba(200,169,81,.15);
+  border-bottom: 1px solid rgba(200,169,81,.15);
+  padding: 4rem 8%;
+  text-align: center;
+}
+
+.quote-text {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--white);
+  max-width: 820px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.quote-text strong { color: var(--gold); font-style: normal; font-weight: 600; }
+
+.quote-source {
+  margin-top: 1.25rem;
+  font-size: .75rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* ── CTA SECTION ── */
+.cta-section {
+  background: linear-gradient(160deg, #050d18, #0d1f3c);
+  text-align: center;
+  padding: 8rem 8%;
+}
+
+.cta-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  color: var(--white);
+  letter-spacing: .04em;
+  line-height: 1;
+  margin-bottom: 1.2rem;
+}
+
+.cta-title span { color: var(--gold); }
+
+.cta-sub {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: rgba(245,240,232,.6);
+  margin-bottom: 2.5rem;
+}
+
+.cta-disclaimer {
+  margin-top: 1.5rem;
+  font-size: .72rem;
+  color: var(--dim);
+}
+
+/* ── FOOTER ── */
+footer {
+  background: #040b16;
+  border-top: 1px solid rgba(255,255,255,.05);
+  padding: 3rem 8%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: .1em;
+  color: var(--gold);
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-links a {
+  font-size: .78rem;
+  color: var(--dim);
+  text-decoration: none;
+  transition: color .15s;
+}
+.footer-links a:hover { color: var(--cream); }
+
+.footer-copy {
+  font-size: .72rem;
+  color: rgba(106,130,160,.5);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding: 7rem 6% 4rem; }
+  .hero-right { display: none; }
+  .steps-row { grid-template-columns: 1fr 1fr; }
+  .steps-row::before { display: none; }
+  nav { padding: 1rem 6%; }
+  .nav-links { gap: 1.25rem; }
+  .nav-links a:not(.nav-cta) { display: none; }
+}
+
+@media (max-width: 600px) {
+  section { padding: 4rem 5%; }
+  .steps-row { grid-template-columns: 1fr; }
+  footer { flex-direction: column; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+  .pricing-features { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo"><img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path" style="height:36px;width:36px;object-fit:contain;vertical-align:middle;margin-right:.5rem;">Veteran <span>Career Path</span></a>
+  <div class="nav-links">
+    <a href="#how">How It Works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="https://veterancareerpath.com/app.html" class="nav-cta">Launch App →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div style="margin-bottom:1.5rem;">
+      <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path" style="width:90px;height:90px;object-fit:contain;display:block;margin-bottom:.75rem;filter:drop-shadow(0 4px 16px rgba(200,169,81,.3));">
+      <div style="font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);">Built by a Veteran · For Veterans</div>
+    </div>
+    <h1 class="hero-eyebrow">Your Service<span>Deserves More</span>Than a Blank Resume</h1>
+    <p class="hero-sub">You led people, managed logistics under pressure, and made decisions that mattered. Now translate all of it into a civilian career — in plain language recruiters actually understand.</p>
+    <div class="hero-cta-row">
+      <a href="https://veterancareerpath.com/app.html" class="btn-hero">Start Free — 3-Day Trial</a>
+      <a href="#how" class="btn-ghost">See how it works →</a>
+    </div>
+    <p class="hero-pricing">$4.99 for 3 days · then $14.99/month · cancel anytime</p>
+  </div>
+
+  <div class="hero-right">
+    <div class="pain-stack">
+      <div class="pain-card">
+        <div class="pain-icon">🔤</div>
+        <div class="pain-text">
+          <strong>Turn MOS experience into civilian language</strong>
+          11B doesn't mean anything to a hiring manager. We translate it into skills they're looking for.
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">📄</div>
+        <div class="pain-text">
+          <strong>Build a resume recruiters understand</strong>
+          No more starting from scratch. Your service record becomes a professional resume in minutes.
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🎯</div>
+        <div class="pain-text">
+          <strong>See career paths that match your background</strong>
+          AI matches your MOS, rank, clearance, and experience to civilian roles that fit.
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">⭐</div>
+        <div class="pain-text">
+          <strong>Translate rank, duties, and achievements into private sector value</strong>
+          Leadership of 40 soldiers = operations management. We make that connection clear.
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🛡</div>
+        <div class="pain-text">
+          <strong>Veteran-specific help — not a generic tool</strong>
+          Built around your DD-214, your clearance, your MOS. Not a resume builder for everyone.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM STRIP -->
+<div class="problem-strip" id="problem">
+  <div class="section-label">The transition gap is real</div>
+  <h2 class="section-title">What nobody tells you<br>when you ETS</h2>
+  <div class="problem-grid">
+    <div class="problem-item">
+      <div class="problem-num">01</div>
+      <div class="problem-content">
+        <h3>Civilian employers don't speak military</h3>
+        <p>Your MOS, rank, and acronyms are invisible on a resume. Recruiters pass on qualified veterans because the language doesn't translate.</p>
+      </div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-num">02</div>
+      <div class="problem-content">
+        <h3>Generic resume tools miss the military context</h3>
+        <p>Existing resume builders weren't built for SGTs who managed $2M in equipment or Logistics Officers who coordinated multi-unit operations.</p>
+      </div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-num">03</div>
+      <div class="problem-content">
+        <h3>The clock is ticking at ETS</h3>
+        <p>TAP is a starting point, not a solution. Most veterans are navigating the private sector alone, without a clear roadmap or personalized guidance.</p>
+      </div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-num">04</div>
+      <div class="problem-content">
+        <h3>Your clearance is an asset — if you know how to use it</h3>
+        <p>Thousands of cleared veteran roles exist in defense, intel, and contracting. Most veterans never find them because they don't know where to look.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="section-label">What's inside</div>
+  <h2 class="section-title">Every tool you need<br>for the transition</h2>
+  <p class="section-body">From your first civilian resume to your first interview prep session — everything built specifically around military service.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <h3>AI Career Matching</h3>
+      <p>Enter your MOS, branch, rank, and time in service. Get civilian career paths matched to your actual background — not generic suggestions.</p>
+      <span class="feature-tag">Personalized</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔤</div>
+      <h3>Military Language Translator</h3>
+      <p>Paste your duties and get civilian equivalents instantly. Turns "conducted convoy operations" into "coordinated multi-vehicle logistics and asset protection."</p>
+      <span class="feature-tag">AI-Powered</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📄</div>
+      <h3>AI Resume Builder</h3>
+      <p>Your complete service record — MOS, ASIs, clearance, awards, duties — generates a recruiter-ready resume in seconds. Multiple formats for any industry.</p>
+      <span class="feature-tag">5 Templates</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✉</div>
+      <h3>Cover Letter Generator</h3>
+      <p>Tailored to the specific job and company, written in civilian language. No more generic cover letters that sound like everyone else's.</p>
+      <span class="feature-tag">AI-Powered</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Resume Score & Review</h3>
+      <p>Upload your current resume and get an AI-powered score with specific, actionable feedback — just like a recruiter would give it.</p>
+      <span class="feature-tag">Instant Feedback</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎤</div>
+      <h3>Interview Prep Generator</h3>
+      <p>Get custom behavioral and technical interview questions based on the exact job and company you're targeting, with STAR-format guidance.</p>
+      <span class="feature-tag">Job-Specific</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💼</div>
+      <h3>Job Application Tracker</h3>
+      <p>Track every application. Save jobs from Indeed, LinkedIn, and ZipRecruiter with one click using the browser bookmarklet. Never lose track of where you applied.</p>
+      <span class="feature-tag">Bookmarklet Included</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📅</div>
+      <h3>ETS Transition Timeline</h3>
+      <p>A personalized month-by-month checklist from 12 months before ETS through post-separation — TAP, VA claims, housing, and job search all in one place.</p>
+      <span class="feature-tag">Checklist</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔗</div>
+      <h3>Veteran Resources Hub</h3>
+      <p>SkillBridge, GI Bill, VA benefits, VSOs, cleared job boards, and more — curated and organized so you don't have to hunt across 20 different sites.</p>
+      <span class="feature-tag">Curated</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-label">Simple process</div>
+  <h2 class="section-title">Four steps from<br>service to offer</h2>
+
+  <div class="steps-row">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Enter Your Service Record</h3>
+      <p>Branch, MOS/rate, rank, time in service, clearance, awards, and duties. Takes about 10 minutes.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Get Matched to Careers</h3>
+      <p>AI identifies civilian career paths aligned to your specific background — not generic suggestions.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Build Your Resume</h3>
+      <p>Generate a recruiter-ready resume in your preferred format. Download, save, and customize.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Apply and Prep</h3>
+      <p>Track applications, generate cover letters, prep for interviews — all from one hub.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="who-section">
+  <div class="section-label">Who this is for</div>
+  <h2 class="section-title">Every transition looks different</h2>
+
+  <div class="who-grid">
+    <div class="who-card">
+      <div class="who-icon">⚔️</div>
+      <h3>Separating After First Term</h3>
+      <p>Transitioning from E-4 to E-6 range. Limited civilian work history. Need to build everything from the ground up.</p>
+    </div>
+    <div class="who-card">
+      <div class="who-icon">🎖</div>
+      <h3>Senior NCOs & Officers</h3>
+      <p>Led large organizations, managed significant budgets. The challenge is translating senior leadership into terms civilian employers understand.</p>
+    </div>
+    <div class="who-card">
+      <div class="who-icon">🔐</div>
+      <h3>Cleared Veterans</h3>
+      <p>Active clearance is a major hiring asset in defense, intel, and contracting. We help you find and target those roles specifically.</p>
+    </div>
+    <div class="who-card">
+      <div class="who-icon">🔄</div>
+      <h3>Reserve & Guard Members</h3>
+      <p>Balancing civilian career with continued service. Build a resume that reflects both your military and civilian experience.</p>
+    </div>
+    <div class="who-card">
+      <div class="who-icon">📋</div>
+      <h3>MOS in Transition</h3>
+      <p>Your specialty doesn't have a direct civilian equivalent. We find the transferable skills that civilian employers are actually hiring for.</p>
+    </div>
+    <div class="who-card">
+      <div class="who-icon">🎓</div>
+      <h3>Using GI Bill</h3>
+      <p>Going to school post-service. Build a resume that bridges your military experience with your degree and positions you for graduation day.</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE STRIP -->
+<div class="quote-strip">
+  <p class="quote-text">"The average veteran spends <strong>6–12 months</strong> navigating the civilian job market after separation. The biggest barrier isn't their qualifications — it's knowing how to present them."</p>
+  <p class="quote-source">— Common finding across TAP data and veteran employment research</p>
+</div>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="section-label">Simple pricing</div>
+  <h2 class="section-title">Try it risk-free</h2>
+  <p class="section-body" style="margin:0 auto;">Start your trial for less than a cup of coffee. Cancel any time — no questions asked.</p>
+
+  <div class="pricing-card">
+    <div class="price-trial"><sup>$</sup>4.99</div>
+    <div class="price-label">3-Day Trial</div>
+    <div class="price-then">then $14.99 / month — cancel anytime</div>
+
+    <ul class="pricing-features">
+      <li>AI Career Matching</li>
+      <li>Military Language Translator</li>
+      <li>AI Resume Builder</li>
+      <li>5 Resume Templates</li>
+      <li>Cover Letter Generator</li>
+      <li>Resume Score & Review</li>
+      <li>Interview Prep Generator</li>
+      <li>Transition Timeline</li>
+      <li>Job Application Tracker</li>
+      <li>Veteran Resources Hub</li>
+    </ul>
+
+    <a href="https://veterancareerpath.com/app.html" class="btn-pricing">Start 3-Day Trial — $4.99 →</a>
+    <p class="pricing-fine">No commitment · Cancel anytime · Full access from day one</p>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <h2 class="cta-title">Your service has value.<br><span>Make sure they see it.</span></h2>
+  <p class="cta-sub">You've already done the hard part. Now let's make sure the civilian world knows it.</p>
+  <a href="https://veterancareerpath.com/app.html" class="btn-hero" style="font-size:1.1rem;padding:1rem 2.5rem;">Get Started — $4.99 Trial →</a>
+  <p class="cta-disclaimer">Not affiliated with the U.S. Department of Defense or the Department of Veterans Affairs.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Veteran Career Path</div>
+  <div class="footer-links">
+    <a href="https://veterancareerpath.com/privacy-policy.html">Privacy Policy</a>
+    <a href="https://veterancareerpath.com/terms-of-service.html">Terms of Service</a>
+    <a href="/cdn-cgi/l/email-protection#0a5c6f7e6f786b64496b786f6f785a6b7e624a597e786f6b67597364695965667f7e6365647924646f7e">Contact Us</a>
+    <a href="https://veterancareerpath.com/app.html">Launch App →</a>
+  </div>
+  <div class="footer-copy">© 2025 Veteran Career Path &bull; Not

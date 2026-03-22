@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — Veteran Career Path</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0d1f3c; --navy2: #1a3a6b;
+  --gold: #c8a951; --gold2: #f0c040;
+  --cream: #f5f0e8; --dim: #6a82a0; --white: #ffffff;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: #050d18; color: var(--cream); min-height: 100vh; }
+
+nav {
+  position: sticky; top: 0; z-index: 100;
+  padding: 1rem 8%;
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(13,31,60,.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
+  letter-spacing: .1em; color: var(--gold); text-decoration: none;
+  display: flex; align-items: center; gap: .6rem;
+}
+.nav-logo span { color: var(--white); }
+.nav-back { font-size: .82rem; color: var(--dim); text-decoration: none; transition: color .15s; }
+.nav-back:hover { color: var(--cream); }
+
+.page-header {
+  background: linear-gradient(160deg, #0d1f3c, #080f1c);
+  padding: 5rem 8% 4rem;
+  border-bottom: 1px solid rgba(200,169,81,.1);
+  text-align: center;
+}
+.page-header .label {
+  font-size: .7rem; font-weight: 700; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: .75rem;
+}
+.page-header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  letter-spacing: .04em; color: var(--white); margin-bottom: .75rem;
+}
+.page-header p {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.05rem; font-style: italic; font-weight: 300;
+  color: rgba(245,240,232,.6); max-width: 500px; margin: 0 auto;
+  line-height: 1.7;
+}
+
+.content {
+  max-width: 900px; margin: 0 auto;
+  padding: 5rem 8%;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* Left column — contact info */
+.contact-info h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem; letter-spacing: .06em; color: var(--white);
+  margin-bottom: 1.5rem;
+}
+
+.contact-block {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.contact-block:last-child { border-bottom: none; }
+
+.contact-block .block-label {
+  font-size: .68rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: .5rem;
+}
+
+.contact-block a {
+  display: block;
+  color: var(--white); text-decoration: none;
+  font-size: 1rem; font-weight: 500;
+  transition: color .15s;
+}
+.contact-block a:hover { color: var(--gold); }
+
+.contact-block p {
+  font-size: .82rem; color: var(--dim); line-height: 1.65; margin-top: .4rem;
+}
+
+.response-badge {
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: rgba(200,169,81,.1); border: 1px solid rgba(200,169,81,.2);
+  border-radius: 100px; padding: .3rem .85rem;
+  font-size: .72rem; font-weight: 600; color: var(--gold);
+  margin-top: .75rem;
+}
+
+/* Right column — form */
+.contact-form {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  padding: 2.5rem;
+}
+
+.contact-form h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem; letter-spacing: .06em; color: var(--white);
+  margin-bottom: 1.75rem;
+}
+
+.field {
+  margin-bottom: 1.25rem;
+}
+.field label {
+  display: block;
+  font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--dim);
+  margin-bottom: .45rem;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  background: rgba(255,255,255,.05);
+  border: 1.5px solid rgba(255,255,255,.1);
+  border-radius: 6px;
+  padding: .75rem 1rem;
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .9rem;
+  transition: border-color .2s, background .2s;
+  outline: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: rgba(200,169,81,.5);
+  background: rgba(200,169,81,.04);
+}
+.field textarea { resize: vertical; min-height: 130px; line-height: 1.6; }
+.field select option { background: #0d1f3c; color: var(--cream); }
+
+.field-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+
+.btn-submit {
+  width: 100%;
+  background: linear-gradient(135deg, var(--gold), #e0a820);
+  color: var(--navy);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700; font-size: 1rem;
+  padding: .9rem;
+  border: none; border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: .03em;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 4px 20px rgba(200,169,81,.25);
+  margin-top: .5rem;
+}
+.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(200,169,81,.35); }
+
+.form-note {
+  font-size: .75rem; color: var(--dim);
+  text-align: center; margin-top: 1rem; line-height: 1.6;
+}
+
+/* Success state */
+.success-msg {
+  display: none;
+  text-align: center; padding: 2rem;
+}
+.success-msg .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+.success-msg h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--white); margin-bottom: .5rem; }
+.success-msg p { font-size: .88rem; color: var(--dim); line-height: 1.7; }
+
+/* Disclaimer */
+.disclaimer {
+  max-width: 900px; margin: 0 auto;
+  padding: 0 8% 5rem;
+}
+.disclaimer-box {
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  font-size: .78rem;
+  color: var(--dim);
+  line-height: 1.7;
+}
+
+footer {
+  background: #040b16;
+  border-top: 1px solid rgba(255,255,255,.05);
+  padding: 2.5rem 8%;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem;
+}
+.footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.footer-links a { font-size: .78rem; color: var(--dim); text-decoration: none; transition: color .15s; }
+.footer-links a:hover { color: var(--cream); }
+.footer-copy { font-size: .72rem; color: rgba(106,130,160,.4); }
+
+@media (max-width: 750px) {
+  .content { grid-template-columns: 1fr; gap: 2.5rem; }
+  .field-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://veterancareerpath.com" class="nav-logo">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="" style="height:30px;width:30px;object-fit:contain;">
+    Veteran <span>Career Path</span>
+  </a>
+  <a href="https://veterancareerpath.com" class="nav-back">← Back to Home</a>
+</nav>
+
+<div class="page-header">
+  <div class="label">We're here to help</div>
+  <h1>Contact Us</h1>
+  <p>Questions about the platform, your subscription, or your transition? We've got you.</p>
+</div>
+
+<div class="content">
+
+  <!-- LEFT: Contact Info -->
+  <div class="contact-info">
+    <h2>Get In Touch</h2>
+
+    <div class="contact-block">
+      <div class="block-label">Email</div>
+      <a href="https://veterancareerpath.com/contact.html">VeteranCareerPath@<br>StreamSyncSolutions.net</a>
+      <p>Best for account issues, billing questions, and general inquiries.</p>
+      <div class="response-badge">⏱ Typically respond within 24–48 hours</div>
+    </div>
+
+    <div class="contact-block">
+      <div class="block-label">Platform</div>
+      <a href="https://veterancareerpath.com/app.html">veterancareerpath.com</a>
+      <p>Access your career transition tools, resume builder, and job tracker.</p>
+    </div>
+
+    <div class="contact-block">
+      <div class="block-label">Billing & Subscriptions</div>
+      <p>To cancel, upgrade, or manage your subscription, log into the app and go to <strong style="color:var(--cream);">My Profile → Account</strong>. For billing disputes, email us directly.</p>
+    </div>
+
+    <div class="contact-block">
+      <div class="block-label">Common Questions</div>
+      <p style="margin-bottom:.5rem;">• <strong style="color:var(--cream);">AI features not working?</strong> Email us and we'll get you set up — no technical knowledge needed.</p>
+      <p style="margin-bottom:.5rem;">• <strong style="color:var(--cream);">Access code issues?</strong> Email us with the code you're trying.</p>
+      <p>• <strong style="color:var(--cream);">Feature requests?</strong> We'd love to hear them — use the form.</p>
+    </div>
+  </div>
+
+  <!-- RIGHT: Contact Form -->
+  <div class="contact-form">
+    <h2>Send a Message</h2>
+
+    <div id="form-area">
+      <div class="field-row">
+        <div class="field">
+          <label>First Name</label>
+          <input type="text" id="fname" placeholder="John" />
+        </div>
+        <div class="field">
+          <label>Last Name</label>
+          <input type="text" id="lname" placeholder="Smith" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="your@email.com" />
+      </div>
+
+      <div class="field">
+        <label>Topic</label>
+        <select id="topic">
+          <option value="">— Select a topic —</option>
+          <option value="billing">Billing / Subscription</option>
+          <option value="account">Account / Login Issue</option>
+          <option value="feature">Feature Request</option>
+          <option value="bug">Bug Report</option>
+          <option value="access-code">Access Code Issue</option>
+          <option value="transition">Career Transition Question</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Message</label>
+        <textarea id="message" placeholder="Tell us how we can help..."></textarea>
+      </div>
+
+      <button class="btn-submit" onclick="handleSubmit()">Send Message →</button>
+      <p class="form-note">We'll respond within 24–48 hours.</p>
+    </div>
+
+    <div class="success-msg" id="success-msg">
+      <div class="success-icon">✅</div>
+      <h3>Message Sent</h3>
+      <p>Thanks for reaching out. We'll get back to you at your email address within 24–48 hours.<br><br>
+      In the meantime, you can <a href="https://veterancareerpath.com/app.html" style="color:var(--gold);">continue using the app</a>.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="disclaimer">
+  <div class="disclaimer-box">
+    <strong style="color:var(--cream);">Not affiliated with any government agency.</strong> Veteran Career Path is an independent platform operated by StreamSync Solutions. We are not affiliated with, endorsed by, or connected to the U.S. Department of Defense, the Department of Veterans Affairs, or any branch of the U.S. Armed Forces. For VA benefits and claims, visit <a href="https://www.va.gov" target="_blank" style="color:var(--gold);">va.gov</a>. For DoD transition resources, visit <a href="https://www.dodtap.mil" target="_blank" style="color:var(--gold);">dodtap.mil</a>.
+  </div>
+</div>
+
+<footer>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;color:var(--gold);">Veteran Career Path</div>
+  <div class="footer-links">
+    <a href="https://veterancareerpath.com/privacy-policy.html">Privacy Policy</a>
+    <a href="https://veterancareerpath.com/terms-of-service.html">Terms of Service</a>
+    <a href="https://veterancareerpath.com/contact.html">Contact</a>
+    <a href="https://veterancareerpath.com/app.html">Launch App →</a>
+  </div>
+  <div class="footer-copy">© 2025 Veteran Career Path · Not affiliated with the DoD or VA</div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function handleSubmit() {
+  const fname = document.getElementById('fname').value.trim();
+  const lname = document.getElementById('lname').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const topic = document.getElementById('topic').value;
+  const message = document.getElementById('message').value.trim();
+
+  if (!fname || !email || !message) {
+    alert('Please fill in your name, email, and message.');
+    return;
+  }
+  if (!email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  // Build mailto link with form data pre-filled
+  const subject = encodeURIComponent('[Veteran Career Path] ' + (topic || 'Contact Form') + ' — ' + fname + ' ' + lname);
+  const body = encodeURIComponent(
+    'Name: ' + fname + ' ' + lname + '\n' +
+    'Email: ' + email + '\n' +
+    'Topic: ' + (topic || 'General') + '\n\n' +
+    'Message:\n

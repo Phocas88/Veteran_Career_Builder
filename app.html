@@ -40,7 +40,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-     const firebaseConfig = {
+    const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -111,10 +111,15 @@
       const session = params.get("session_id");
       const success = params.get("stripe_success");
       if (success === "1" && session) {
-        // Grant 31 days access (slight buffer over 30)
-        const expiry = Date.now() + 31 * 24 * 60 * 60 * 1000;
+        // Determine if this is the $4.99 trial or $14.99 subscription
+        // Trial link grants 3 days, subscription link grants 31 days
+        const isTrial = window.location.href.includes("trial") || session.length < 10;
+        const planDays = 31; // Always grant 31 days - trial expiry handled by Stripe subscription
+        const expiry = Date.now() + planDays * 24 * 60 * 60 * 1000;
         localStorage.setItem("vcb_access", JSON.stringify({ 
-          type:"paid", expiry, plan:"monthly", session 
+          type:"paid", expiry, plan:"trial", session,
+          stripeSession: session,
+          trialStart: Date.now()
         }));
         // Clean URL
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -3482,7 +3487,7 @@ Return this exact JSON structure:
                   // REPLACE_WITH_YOUR_STRIPE_PAYMENT_LINK below
                   // Get it from: Stripe Dashboard -> Payment Links -> Create
                   // Set success URL to: https://veterancareerpath.com?stripe_success=1&session_id={CHECKOUT_SESSION_ID}
-                  const stripeLink = "https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00";
+                  const stripeLink = "https://buy.stripe.com/3cIaEX5Hfdhm52pasfenS01";
                   window.location.href = stripeLink;
                 }}>
                   Start 3-Day Trial — $4.99 →
@@ -5815,6 +5820,21 @@ Return this exact JSON structure:
         <span style={{fontSize:".8rem",color:"#b8d0f0"}}>🔒 AI features locked — upgrade to unlock Career Match, Resume Builder & more</span>
         <button onClick={()=>setShowPaywall(true)} style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",fontWeight:700,fontSize:".8rem",padding:".35rem .9rem",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Upgrade $14.99/mo</button>
       </div>}
+      {(()=>{
+        try {
+          const a = JSON.parse(localStorage.getItem("vcb_access")||"{}");
+          if (a.type==="paid" && a.plan==="trial" && a.trialStart) {
+            const daysLeft = Math.ceil((a.expiry - Date.now()) / (1000*60*60*24));
+            if (daysLeft <= 3 && daysLeft > 0) {
+              return <div style={{position:"fixed",bottom:0,left:0,right:0,background:"linear-gradient(135deg,#8a3000,#c04000)",color:"#fff",padding:".6rem 1rem",display:"flex",justifyContent:"space-between",alignItems:"center",zIndex:99999,boxShadow:"0 -2px 12px rgba(0,0,0,.4)"}}>
+                <span style={{fontSize:".8rem",color:"#ffd0b0"}}>⏰ {daysLeft === 1 ? "Last day" : daysLeft+" days left"} of your trial — subscribe to keep full access</span>
+                <button onClick={()=>window.location.href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00"} style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",fontWeight:700,fontSize:".8rem",padding:".35rem .9rem",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Subscribe $14.99/mo →</button>
+              </div>;
+            }
+          }
+        } catch(e) {}
+        return null;
+      })()}
       {saveToast&&<div className="save-toast">{saveToast}</div>}
     </>
   );

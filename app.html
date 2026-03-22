@@ -2423,7 +2423,6 @@ function App() {
     try { return JSON.parse(localStorage.getItem("vcb_timeline")||"{}"); } catch(e){ return {}; }
   });
   const saveTl = (key, val) => {
-  const saveTl = (key, val) => {
     const updated = {...tlChecks, [key]: val};
     setTlChecks(updated);
     localStorage.setItem("vcb_timeline", JSON.stringify(updated));

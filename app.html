@@ -31,7 +31,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
- const firebaseConfig = {
+   const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -49,7 +49,7 @@
   </script>
   <script>window.VCB_STRIPE_PK="pk_test_51TDAB4I88XNO7Y7PHRn7rhUBd9R6a06uT1IiYlJPHkGtGd2Dk2nSnIADrA1Qev4cVLa2WMz0E1qFIgTJXb1eTSSN00gzgmEdDp";</script>
   <script>window.VCB_LOGO="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png";</script>
-  <script>window.VCB_PROXY_URL="REPLACE_WITH_YOUR_VERCEL_PROXY_URL";</script>
+  <script>window.VCB_PROXY_URL="https://vcp-proxy.vercel.app/api/claude";</script>
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
   <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
 
@@ -85,7 +85,8 @@
     function openAdmin(){
       document.getElementById("admin-overlay").classList.add("open");
       var k=localStorage.getItem("vcb_admin_key")||"";
-      document.getElementById("astatus").textContent=k.length>20?"Key saved: "+k.slice(0,14)+"...":"No API key saved yet.";
+      var proxyUrl=window.VCB_PROXY_URL||"";
+      document.getElementById("astatus").textContent=proxyUrl.length>10?"✓ Proxy configured: "+proxyUrl.slice(0,40)+"...":k.length>20?"Key saved: "+k.slice(0,14)+"...":"No API key saved yet.";
     }
     function closeAdmin(){document.getElementById("admin-overlay").classList.remove("open");}
     function saveKey(){
@@ -2456,6 +2457,7 @@ function App() {
   const [showAdminSetup, setShowAdminSetup] = useState(false);
   const [adminKeyInput, setAdminKeyInput] = useState("");
   const [adminKeySet, setAdminKeySet] = useState(() => {
+    if (PROXY_URL && PROXY_URL.length > 10) return true;
     const k = localStorage.getItem("vcb_admin_key")||(typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key"))||"";
     return k.length > 20;
   });
@@ -3601,7 +3603,7 @@ Return this exact JSON structure:
                   </div>
                 ):(
                   <div style={{background:"rgba(201,168,76,.08)",border:"1px solid rgba(201,168,76,.25)",borderRadius:"3px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".85rem",color:"var(--slate)",lineHeight:"1.6"}}>
-                  To enable AI features, enter your Vercel proxy URL below. If you have not deployed the proxy yet, see the setup instructions.
+                  AI features are enabled via the Vercel proxy. If you need to override with a direct API key, enter it below.
                   </div>
                 )}
                 <div style={{marginBottom:"1rem"}}>

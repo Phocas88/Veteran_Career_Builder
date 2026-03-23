@@ -2431,7 +2431,7 @@ function MyProfileContent(props) {
 }
 
 function MyProfileTab(props) {
-  const {tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
+  const {tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
   return (<div className={"panel "+(tab===6?"on":"")}>
     {!currentUser?(
       <div style={{textAlign:"center",padding:"3rem 1rem"}}>
@@ -6104,7 +6104,7 @@ Return this exact JSON structure:
 
 
 
-          <MyProfileTab tab={tab} currentUser={currentUser} setShowAuth={setShowAuth} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
+          <MyProfileTab tab={tab} currentUser={currentUser} setShowAuth={setShowAuth} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} />
         </div>
       </div>
 

@@ -2133,7 +2133,7 @@ function RankInsignia({branch,grade,color}) {
 
 
 function MyProfileHero(props) {
-  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
+  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
   return (<>
   
   <div style={{background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",borderRadius:"8px",padding:"1.5rem",color:"#fff",marginBottom:"1.2rem"}}>
@@ -2423,7 +2423,7 @@ function MyProfileSaved(props) {
 }
 
 function MyProfileContent(props) {
-  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
+  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
   return (<div style={{padding:"1rem"}}>
     <MyProfileHero tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
     <MyProfileSaved tab={tab} hasAccess={hasAccess} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} savedPaths={savedPaths} setSavedPaths={setSavedPaths} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
@@ -2443,7 +2443,7 @@ function MyProfileTab(props) {
         </button>
       </div>
     ):(
-      <MyProfileContent tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
+      <MyProfileContent tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} />
     )}
 
   </div>);

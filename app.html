@@ -2233,38 +2233,144 @@ function MyProfileSaved(props) {
             </div>
             <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
               <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{
-                const w=window.open("","_blank");
-                const printCSS=`
-                  @page{size:letter;margin:1.8cm 2cm;}
-                  *{box-sizing:border-box;}
-                  body{margin:0;padding:0;background:#fff;-webkit-print-color-adjust:exact;}
-                  @media print{
-                    body{margin:0;}
-                    header,footer,nav{display:none!important;}
+                const w = window.open("","_blank");
+                const d = r.resumeData;
+                const tmpl = r.template || "ats_chrono";
+                const PAGE_CSS = `
+                  @page { size: letter; margin: 1.8cm 2cm; margin-top: 1.5cm; }
+                  @page :first { margin-top: 1.5cm; }
+                  * { box-sizing: border-box; }
+                  html, body { margin: 0; padding: 0; background: #fff; }
+                  @media print {
+                    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                    body { margin: 0 !important; padding: 0 !important; }
                   }
                 `;
-                // Try to render the saved resumeData with template styling
-                let bodyHtml = "";
-                if (r.resumeData) {
-                  const d = r.resumeData;
-                  bodyHtml = "<div style='font-family:Arial,sans-serif;font-size:10pt;line-height:1.5;max-width:760px;margin:0 auto;padding:1.5cm 2cm;'>"
-                    +"<div style='text-align:center;margin-bottom:12pt;'>"
-                    +"<div style='font-size:16pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em;'>"+(d.name||"")+"</div>"
-                    +"<div style='font-size:9pt;color:#333;margin-top:3pt;'>"+(d.contact||"")+"</div>"
+                let body = "";
+                if (d) {
+                  const exp = (d.experience||[]).map(j =>
+                    "<div style='margin-bottom:9pt'>"
+                    +"<div style='display:flex;justify-content:space-between;align-items:baseline'>"
+                    +"<strong style='font-size:10.5pt'>"+j.title+"</strong>"
+                    +"<span style='font-size:9pt;color:#555'>"+j.dates+"</span></div>"
+                    +"<div style='font-style:italic;font-size:9.5pt;margin-bottom:3pt'>"+j.employer+(j.unit?" · "+j.unit:"")+"</div>"
+                    +(j.bullets||[]).map(b=>"<div style='padding-left:12pt;margin-bottom:2pt;font-size:9.5pt'>&#8226; "+b+"</div>").join("")
                     +"</div>"
-                    +"<div style='font-size:9.5pt;margin-bottom:10pt;line-height:1.6;'>"+(d.summary||"")+"</div>"
-                    +(d.experience||[]).map(j=>"<div style='margin-bottom:8pt;'><div style='display:flex;justify-content:space-between;'><strong>"+j.title+"</strong><span style='font-size:9pt;color:#555;'>"+j.dates+"</span></div><div style='font-style:italic;font-size:9pt;margin-bottom:3pt;'>"+j.employer+"</div>"+(j.bullets||[]).map(b=>"<div style='padding-left:12pt;margin-bottom:2pt;font-size:9pt;'>&#8226; "+b+"</div>").join("")+"</div>").join("")
-                    +"<div style='border-top:1px solid #ccc;padding-top:6pt;margin-top:4pt;'><strong style='font-size:9pt;text-transform:uppercase;letter-spacing:.08em;'>Education</strong></div>"
-                    +(d.education||[]).map(e=>"<div style='font-size:9pt;margin-top:4pt;'><strong>"+e.degree+"</strong> — "+e.school+" "+(e.year||"")+"</div>").join("")
-                    +"<div style='border-top:1px solid #ccc;padding-top:6pt;margin-top:8pt;'><strong style='font-size:9pt;text-transform:uppercase;letter-spacing:.08em;'>Skills</strong></div>"
-                    +"<div style='font-size:9pt;margin-top:4pt;line-height:1.8;'>"+(d.skills||[]).join(" &bull; ")+"</div>"
-                    +"</div>";
-                } else if (r.content && !r.content.trim().startsWith("{")) {
-                  bodyHtml = "<div style='font-family:Arial,sans-serif;font-size:10pt;line-height:1.6;max-width:760px;margin:0 auto;padding:1.5cm 2cm;white-space:pre-wrap;'>"+r.content+"</div>";
+                  ).join("");
+                  const edu = (d.education||[]).map(e =>
+                    "<div style='font-size:9.5pt;margin-bottom:4pt'><strong>"+e.degree+"</strong> — "+e.school+(e.year?" ("+e.year+")":"")+"</div>"
+                  ).join("");
+                  const skills = (d.skills||[]).join(" &bull; ");
+                  const certs = (d.certifications||[]).join(" &bull; ");
+                  const sectionHdr = (label) =>
+                    "<div style='font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:2px solid #000;padding-bottom:2pt;margin:8pt 0 5pt'>"+label+"</div>";
+                  if (tmpl === "harvard" || tmpl === "classic") {
+                    body = "<div style='font-family:Garamond,Georgia,serif;font-size:11pt;line-height:1.5;padding:1.5cm 2cm'>"
+                      +"<div style='text-align:center;margin-bottom:8pt'><div style='font-size:16pt;font-weight:700;font-variant:small-caps;letter-spacing:.06em'>"+d.name+"</div>"
+                      +"<div style='height:1px;background:#000;margin:4pt 0'></div>"
+                      +"<div style='font-size:9pt;color:#333'>"+d.contact+"</div></div>"
+                      +"<div style='font-size:10pt;margin-bottom:10pt;line-height:1.7;text-align:justify'>"+d.summary+"</div>"
+                      +sectionHdr("Experience")+exp
+                      +sectionHdr("Education")+edu
+                      +sectionHdr("Skills & Certifications")+"<div style='font-size:9.5pt;line-height:1.8'>"+skills+(certs?" &bull; "+certs:"")+"</div>"
+                      +"</div>";
+                  } else if (tmpl === "executive") {
+                    body = "<div style='font-family:Arial,sans-serif;font-size:10pt;line-height:1.45'>"
+                      +"<div style='background:#1a3a6b;color:#fff;padding:1.2rem 2cm'>"
+                      +"<div style='font-size:18pt;font-weight:700;letter-spacing:.04em'>"+d.name+"</div>"
+                      +"<div style='font-size:9pt;color:#c0d8f0;margin-top:3pt'>"+d.contact+"</div></div>"
+                      +"<div style='padding:0 2cm'>"
+                      +"<div style='font-size:9.5pt;margin:10pt 0;line-height:1.65;border-left:3px solid #c8960a;padding-left:10pt'>"+d.summary+"</div>"
+                      +sectionHdr("Experience")+exp
+                      +sectionHdr("Education")+edu
+                      +"<div style='display:grid;grid-template-columns:1fr 1fr;gap:.5rem;font-size:9pt;line-height:1.8'>"
+                      +(d.skills||[]).map(s=>"<div>&#9632; "+s+"</div>").join("")+"</div>"
+                      +"</div></div>";
+                  } else if (tmpl === "federal") {
+                    body = "<div style='font-family:Arial,sans-serif;font-size:9.5pt;line-height:1.45;padding:1.5cm 2cm'>"
+                      +"<div style='border-bottom:3px double #000;padding-bottom:8pt;margin-bottom:8pt'>"
+                      +"<div style='font-size:15pt;font-weight:700'>"+d.name+"</div>"
+                      +"<div style='font-size:8.5pt;color:#333;margin-top:2pt'>"+d.contact+"</div></div>"
+                      +"<div style='font-size:9pt;line-height:1.65;margin-bottom:10pt'>"+d.summary+"</div>"
+                      +"<div style='font-weight:700;font-size:9.5pt;text-decoration:underline;margin:8pt 0 5pt'>WORK EXPERIENCE</div>"
+                      +exp
+                      +"<div style='font-weight:700;font-size:9.5pt;text-decoration:underline;margin:8pt 0 5pt'>EDUCATION</div>"
+                      +edu
+                      +"<div style='font-weight:700;font-size:9.5pt;text-decoration:underline;margin:8pt 0 5pt'>SKILLS & CERTIFICATIONS</div>"
+                      +"<div style='font-size:9pt;line-height:1.8'>"+skills+(certs?" &bull; "+certs:"")+"</div>"
+                      +"</div>";
+                  } else if (tmpl === "wharton") {
+                    body = "<div style='font-family:Calibri,Arial,sans-serif;font-size:10pt;line-height:1.35;padding:1.5cm 2cm'>"
+                      +"<div style='border-bottom:3px solid #000;padding-bottom:4pt;margin-bottom:6pt'>"
+                      +"<div style='font-size:17pt;font-weight:700'>"+d.name+"</div>"
+                      +"<div style='font-size:9pt;color:#444;margin-top:2pt'>"+d.contact+"</div></div>"
+                      +"<div style='font-weight:700;font-size:8.5pt;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4pt'>Education</div>"
+                      +edu
+                      +"<div style='border-bottom:1.5px solid #000;margin:6pt 0'></div>"
+                      +"<div style='font-weight:700;font-size:8.5pt;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4pt'>Experience</div>"
+                      +exp
+                      +"<div style='border-bottom:1.5px solid #000;margin:6pt 0'></div>"
+                      +"<div style='font-size:9.5pt'><strong>Skills: </strong>"+skills+"<br>"+(certs?"<strong>Certifications: </strong>"+certs:"")+"</div>"
+                      +"</div>";
+                  } else if (tmpl === "minimalist") {
+                    body = "<div style='font-family:Helvetica Neue,Arial,sans-serif;font-size:10pt;line-height:1.6;padding:2cm 3cm'>"
+                      +"<div style='margin-bottom:1.5rem'>"
+                      +"<div style='font-size:22pt;font-weight:300;letter-spacing:-.01em'>"+d.name+"</div>"
+                      +"<div style='font-size:9pt;color:#888'>"+d.contact+"</div></div>"
+                      +"<div style='font-size:10pt;color:#555;line-height:1.8;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #e8e8e8'>"+d.summary+"</div>"
+                      +"<div style='font-size:7.5pt;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#aaa;margin-bottom:12pt'>Experience</div>"
+                      +(d.experience||[]).map(j=>
+                        "<div style='display:grid;grid-template-columns:130px 1fr;gap:0 1.5rem;margin-bottom:1.2rem'>"
+                        +"<div style='font-size:8.5pt;color:#999'>"+j.dates+"<br><em>"+j.employer+"</em></div>"
+                        +"<div><strong style='font-size:10pt'>"+j.title+"</strong>"
+                        +(j.bullets||[]).map(b=>"<div style='font-size:9.5pt;color:#444;margin-top:3pt;padding-left:8pt;border-left:1.5px solid #e0e0e0'>"+b+"</div>").join("")
+                        +"</div></div>"
+                      ).join("")
+                      +"<div style='display:grid;grid-template-columns:1fr 1fr;gap:2rem;padding-top:1rem;border-top:1px solid #e8e8e8'>"
+                      +"<div><div style='font-size:7.5pt;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#aaa;margin-bottom:8pt'>Education</div>"+edu+"</div>"
+                      +"<div><div style='font-size:7.5pt;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#aaa;margin-bottom:8pt'>Skills</div>"
+                      +(d.skills||[]).map(s=>"<div style='font-size:9.5pt;color:#555;margin-bottom:3pt'>— "+s+"</div>").join("")
+                      +"</div></div></div>";
+                  } else {
+                    // ATS Chrono, ATS Combo, Modern, Traditional — clean single column
+                    body = "<div style='font-family:Arial,sans-serif;font-size:10pt;line-height:1.45;padding:1.5cm 2cm'>"
+                      +"<div style='text-align:center;margin-bottom:10pt'>"
+                      +"<div style='font-size:15pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em'>"+d.name+"</div>"
+                      +"<div style='font-size:9pt;color:#333;margin-top:3pt'>"+d.contact+"</div></div>"
+                      +(d.clearance?"<div style='text-align:center;font-size:9pt;font-weight:700;color:#8a4000;margin-bottom:6pt'>"+d.clearance+"</div>":"")
+                      +"<div style='font-size:9.5pt;margin-bottom:10pt;line-height:1.65'>"+d.summary+"</div>"
+                      +sectionHdr("Professional Experience")+exp
+                      +sectionHdr("Education")+edu
+                      +((d.skills||[]).length?sectionHdr("Core Competencies")
+                        +"<div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:2pt;font-size:9pt;line-height:1.8'>"
+                        +(d.skills||[]).map(s=>"<div>&#9632; "+s+"</div>").join("")+"</div>":"")
+                      +((d.certifications||[]).length?sectionHdr("Certifications")
+                        +"<div style='font-size:9pt;line-height:1.8'>"+certs+"</div>":"")
+                      +"</div>";
+                  }
                 } else {
-                  bodyHtml = "<div style='font-family:Arial,sans-serif;font-size:10pt;padding:2cm;color:#555;'>Resume content could not be rendered. Please regenerate this resume.</div>";
+                  // No resumeData - try to parse from content
+                  try {
+                    const raw = r.content || "";
+                    const js = raw.slice(raw.indexOf("{"), raw.lastIndexOf("}")+1);
+                    const dd = JSON.parse(js);
+                    body = "<div style='font-family:Arial,sans-serif;font-size:10pt;padding:1.5cm 2cm;line-height:1.5'>"
+                      +"<div style='text-align:center;margin-bottom:10pt'><div style='font-size:15pt;font-weight:700;text-transform:uppercase'>"+dd.name+"</div>"
+                      +"<div style='font-size:9pt;color:#333'>"+dd.contact+"</div></div>"
+                      +"<div style='margin-bottom:8pt;font-size:9.5pt;line-height:1.65'>"+dd.summary+"</div>"
+                      +(dd.experience||[]).map(j=>"<div style='margin-bottom:8pt'><div style='display:flex;justify-content:space-between'><strong>"+j.title+"</strong><span style='font-size:9pt;color:#555'>"+j.dates+"</span></div><div style='font-style:italic;font-size:9pt;margin-bottom:2pt'>"+j.employer+"</div>"+(j.bullets||[]).map(b=>"<div style='padding-left:12pt;font-size:9.5pt;margin-bottom:1pt'>&#8226; "+b+"</div>").join("")+"</div>").join("")
+                      +(dd.education||[]).map(e=>"<div style='font-size:9.5pt;margin-bottom:4pt'><strong>"+e.degree+"</strong> — "+e.school+" "+(e.year||"")+"</div>").join("")
+                      +"</div>";
+                  } catch(ex) {
+                    body = "<div style='font-family:Arial,sans-serif;padding:2cm;color:#555;font-size:11pt'>Unable to render this resume. Please regenerate it on the Build Resume tab.</div>";
+                  }
                 }
-                w.document.write("<!DOCTYPE html><html><head><title>"+(r.title||"Resume")+"</title><style>"+printCSS+"</style></head><body>"+bodyHtml+"</body></html>");
+                w.document.write("<!DOCTYPE html><html><head>"
+                  +"<title></title>"
+                  +"<style>"+PAGE_CSS+"</style>"
+                  +"</head><body>"+body
+                  +"<script>window.onload=function(){document.title='';setTimeout(function(){window.print();},400);}<\/script>"
+                  +"</body></html>");
                 w.document.close();
               }}>👁 View</button>
               <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const w=window.open("","_blank");w.document.write("<html><head><title>"+( r.title||"Resume")+"</title><style>body{font-family:Arial,sans-serif;margin:1.5cm;font-size:10pt;}@page{margin:1.5cm;}@media print{@page{margin:1.5cm;}}</style></head><body>"+r.content.replace(/\n/g,"<br>")+"<script>window.onload=function(){window.print();}<\/script></body></html>");w.document.close();}}>🖨 Print</button>

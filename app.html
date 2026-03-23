@@ -50,7 +50,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-      const firebaseConfig = {
+     const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -993,11 +993,11 @@ const css = `
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-size:15px;}
 .app{min-height:100vh;background:var(--bg);}
-.hdr{text-align:center;padding:2rem 1rem 1.75rem;background:linear-gradient(160deg,#0a1628 0%,#1a3a6b 50%,#1e4a8a 100%);position:relative;overflow:hidden;}
+.hdr{text-align:center;padding:clamp(.75rem,3vw,2rem) 1rem clamp(.75rem,3vw,1.75rem);background:linear-gradient(160deg,#0a1628 0%,#1a3a6b 50%,#1e4a8a 100%);position:relative;overflow:hidden;}
 .hdr::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;}
 .hdr h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4.5vw,3.2rem);letter-spacing:.14em;color:#f5d060;text-shadow:0 2px 16px rgba(0,0,0,.3);position:relative;}
 .hdr p{font-size:.9rem;color:#c0d8f0;letter-spacing:.05em;font-weight:500;position:relative;}
-.tagline{font-size:.78rem;color:#80a8d0;margin-top:.15rem;font-style:italic;position:relative;}
+.tagline{font-size:.78rem;color:#80a8d0;margin-top:.15rem;font-style:italic;position:relative;display:none;}@media(min-width:500px){.tagline{display:block;}}
 .user-bar{background:rgba(10,22,40,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.08);padding:.5rem 1.4rem;display:flex;align-items:center;justify-content:space-between;font-size:.78rem;color:#b0cce8;}
 .user-bar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#d0e8f8;border-radius:6px;padding:.25rem .7rem;cursor:pointer;font-size:.72rem;transition:all .2s;}
 .user-bar button:hover{background:rgba(255,255,255,.18);}
@@ -4175,7 +4175,7 @@ Return this exact JSON structure:
           <img
             src={window.VCB_LOGO}
             alt="Veteran to Civilian Career Transitions"
-            style={{display:"block",margin:"0 auto",width:"300px",height:"260px",objectFit:"contain",mixBlendMode:"screen",filter:"drop-shadow(0 2px 12px rgba(201,168,76,.2))"}}
+            style={{display:"block",margin:"0 auto",width:"clamp(100px,35vw,220px)",height:"clamp(86px,30vw,190px)",objectFit:"contain",mixBlendMode:"screen",filter:"drop-shadow(0 2px 12px rgba(201,168,76,.2))"}}
           />
           <p style={{marginTop:".5rem"}}>From Service to Civilian Success</p>
         </div>

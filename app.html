@@ -50,7 +50,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-      const firebaseConfig = {
+     const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -2145,26 +2145,22 @@ function MyProfileHero(props) {
         const rankObj = allR.find(r=>r.abbr===exp.rank)||null;
         const bColor = BRANCH_COLORS[exp.branch]||BRANCH_COLORS["Army"];
         return (
-          <div key={exp.id} style={{background:bColor.bg,border:"1px solid rgba(255,255,255,.2)",borderRadius:"10px",padding:".85rem 1rem",minWidth:"155px",flex:"1 1 155px",maxWidth:"210px"}}>
-            <div style={{display:"flex",alignItems:"center",gap:".45rem",marginBottom:".5rem"}}>
-              <span style={{fontSize:"1.5rem"}}>{BRANCH_EMBLEMS[exp.branch]||"⭐"}</span>
-              <span style={{fontWeight:700,fontSize:".82rem",color:"#fff",letterSpacing:".05em",textTransform:"uppercase"}}>{exp.branch}</span>
+          <div key={exp.id} style={{background:bColor.bg,border:"1px solid rgba(255,255,255,.15)",borderRadius:"10px",padding:".85rem 1.1rem",minWidth:"175px",flex:"1 1 175px",maxWidth:"240px"}}>
+            <div style={{fontWeight:700,fontSize:".85rem",color:"#f0d060",letterSpacing:".08em",textTransform:"uppercase",marginBottom:".55rem",borderBottom:"1px solid rgba(255,255,255,.15)",paddingBottom:".4rem"}}>
+              {exp.branch}
             </div>
-
-
-
-
-
-
-
-
-
-
-
-            <div style={{display:"flex",gap:".35rem",flexWrap:"wrap"}}>
-              <span style={{fontSize:".68rem",background:"rgba(0,0,0,.3)",borderRadius:"3px",padding:".15rem .45rem",color:"rgba(255,255,255,.85)"}}>{exp.serviceType||"Veteran"}</span>
-              {exp.tos&&<span style={{fontSize:".68rem",background:"rgba(0,0,0,.2)",borderRadius:"3px",padding:".15rem .45rem",color:"rgba(255,255,255,.7)"}}>⏱ {exp.tos}</span>}
+            <div style={{fontSize:".76rem",color:"rgba(255,255,255,.9)",marginBottom:".22rem"}}>
+              <span style={{opacity:.65,marginRight:".3rem"}}>Status:</span>{exp.serviceType||"—"}
             </div>
+            {exp.rank&&<div style={{fontSize:".76rem",color:"rgba(255,255,255,.9)",marginBottom:".22rem"}}>
+              <span style={{opacity:.65,marginRight:".3rem"}}>Rank:</span>{exp.rank}{rankObj?" — "+rankObj.title:""}
+            </div>}
+            {(exp.startDate||exp.endDate)&&<div style={{fontSize:".72rem",color:"rgba(255,255,255,.75)",marginTop:".15rem"}}>
+              <span style={{opacity:.65,marginRight:".3rem"}}>Served:</span>{exp.startDate||"?"} – {exp.currently?"Present":(exp.endDate||"?")}
+            </div>}
+            {exp.tos&&<div style={{fontSize:".7rem",color:"rgba(255,255,255,.6)",marginTop:".1rem"}}>
+              {exp.tos} total
+            </div>}
           </div>
         );
       })}
@@ -2228,9 +2224,37 @@ function MyProfileSaved(props) {
             <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
               <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{
                 const w=window.open("","_blank");
-                const css="body{font-family:Arial,sans-serif;margin:1.5cm;font-size:10pt;line-height:1.5;}@page{margin:1.5cm;}@media print{@page{margin:1.5cm;}}";
-                const body = r.content ? r.content.replace(/\n/g,"<br>") : "(No content saved)";
-                w.document.write("<html><head><title>"+(r.title||"Resume")+"</title><style>"+css+"</style></head><body>"+body+"<scr"+"ipt>window.onload=function(){}<\/scr"+"ipt></body></html>");
+                const printCSS=`
+                  @page{size:letter;margin:1.8cm 2cm;}
+                  *{box-sizing:border-box;}
+                  body{margin:0;padding:0;background:#fff;-webkit-print-color-adjust:exact;}
+                  @media print{
+                    body{margin:0;}
+                    header,footer,nav{display:none!important;}
+                  }
+                `;
+                // Try to render the saved resumeData with template styling
+                let bodyHtml = "";
+                if (r.resumeData) {
+                  const d = r.resumeData;
+                  bodyHtml = "<div style='font-family:Arial,sans-serif;font-size:10pt;line-height:1.5;max-width:760px;margin:0 auto;padding:1.5cm 2cm;'>"
+                    +"<div style='text-align:center;margin-bottom:12pt;'>"
+                    +"<div style='font-size:16pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em;'>"+(d.name||"")+"</div>"
+                    +"<div style='font-size:9pt;color:#333;margin-top:3pt;'>"+(d.contact||"")+"</div>"
+                    +"</div>"
+                    +"<div style='font-size:9.5pt;margin-bottom:10pt;line-height:1.6;'>"+(d.summary||"")+"</div>"
+                    +(d.experience||[]).map(j=>"<div style='margin-bottom:8pt;'><div style='display:flex;justify-content:space-between;'><strong>"+j.title+"</strong><span style='font-size:9pt;color:#555;'>"+j.dates+"</span></div><div style='font-style:italic;font-size:9pt;margin-bottom:3pt;'>"+j.employer+"</div>"+(j.bullets||[]).map(b=>"<div style='padding-left:12pt;margin-bottom:2pt;font-size:9pt;'>&#8226; "+b+"</div>").join("")+"</div>").join("")
+                    +"<div style='border-top:1px solid #ccc;padding-top:6pt;margin-top:4pt;'><strong style='font-size:9pt;text-transform:uppercase;letter-spacing:.08em;'>Education</strong></div>"
+                    +(d.education||[]).map(e=>"<div style='font-size:9pt;margin-top:4pt;'><strong>"+e.degree+"</strong> — "+e.school+" "+(e.year||"")+"</div>").join("")
+                    +"<div style='border-top:1px solid #ccc;padding-top:6pt;margin-top:8pt;'><strong style='font-size:9pt;text-transform:uppercase;letter-spacing:.08em;'>Skills</strong></div>"
+                    +"<div style='font-size:9pt;margin-top:4pt;line-height:1.8;'>"+(d.skills||[]).join(" &bull; ")+"</div>"
+                    +"</div>";
+                } else if (r.content && !r.content.trim().startsWith("{")) {
+                  bodyHtml = "<div style='font-family:Arial,sans-serif;font-size:10pt;line-height:1.6;max-width:760px;margin:0 auto;padding:1.5cm 2cm;white-space:pre-wrap;'>"+r.content+"</div>";
+                } else {
+                  bodyHtml = "<div style='font-family:Arial,sans-serif;font-size:10pt;padding:2cm;color:#555;'>Resume content could not be rendered. Please regenerate this resume.</div>";
+                }
+                w.document.write("<!DOCTYPE html><html><head><title>"+(r.title||"Resume")+"</title><style>"+printCSS+"</style></head><body>"+bodyHtml+"</body></html>");
                 w.document.close();
               }}>👁 View</button>
               <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const w=window.open("","_blank");w.document.write("<html><head><title>"+( r.title||"Resume")+"</title><style>body{font-family:Arial,sans-serif;margin:1.5cm;font-size:10pt;}@page{margin:1.5cm;}@media print{@page{margin:1.5cm;}}</style></head><body>"+r.content.replace(/\n/g,"<br>")+"<script>window.onload=function(){window.print();}<\/script></body></html>");w.document.close();}}>🖨 Print</button>
@@ -2337,7 +2361,7 @@ function MyProfileSaved(props) {
       {hasAccess?(
         <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".4rem .75rem",fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>
           ✓ Full Access Active
-          <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>window.open("https://billing.stripe.com/p/login/bpc_1TDTCaEYZOEiIlw4CXXx3IbD","_blank")}>Manage Subscription ↗</button>
+          <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>window.open("https://billing.stripe.com/p/login/bJedR91qZcdieCZ8k7enS00","_blank")}>Manage Subscription ↗</button>
         </div>
       ):(
         <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>
@@ -2998,7 +3022,7 @@ function App() {
 
       const raw = await callClaude(
         prompt,
-        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: keep exactly as-is — they are valuable. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
+        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
         2000
       );
 
@@ -3273,7 +3297,7 @@ Use this exact structure:
         "awards (array of strings)";
       const raw = await callClaude(
         prompt,
-        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: keep exactly as-is — they are valuable. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
+        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
         3500
       );
       const rStart = raw.indexOf("{");
@@ -3329,7 +3353,7 @@ Write a professional, warm, and compelling 3-paragraph cover letter that:
 
 Return ONLY the cover letter text, no subject line, no extra commentary.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: keep exactly as-is — they are valuable. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 1500);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 1500);
       setCoverLetter(raw);
     } catch(e) {
       setCoverLetter("Error generating cover letter. Please try again.");
@@ -3361,7 +3385,7 @@ Generate 8 interview questions they will likely be asked, with a tailored answer
 
 Make answers specific to their MOS and rank. Use the STAR method. Translate all military jargon.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: keep exactly as-is — they are valuable. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 3000);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 3000);
       const clean = raw.replace(/```json|```/g,"").trim();
       const s = clean.indexOf("["); const e = clean.lastIndexOf("]");
       if(s===-1||e===-1) throw new Error("No array");
@@ -3406,7 +3430,7 @@ Write a genuine, professional email that:
 
 Return ONLY the email text including the subject line. No extra commentary.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: keep exactly as-is — they are valuable. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 800);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 800);
       setFollowupEmail(raw.trim());
     } catch(err) {
       setFollowupEmail("Subject: Thank You - " + (followupCtx.role||"Position") + " Interview\n\nDear " + (followupCtx.interviewerName||"Hiring Manager") + ",\n\nThank you for taking the time to meet with me regarding the " + (followupCtx.role||"position") + " role at " + (followupCtx.company||"your organization") + ". I enjoyed learning more about the team and am excited about the opportunity to bring my military leadership experience to your organization.\n\nPlease let me know if you need any additional information.\n\nBest regards,\n" + (personal.name||"[Your Name]"));
@@ -4727,7 +4751,7 @@ Return this exact JSON structure:
                             <div style={{background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",padding:"1.8rem 2.2rem 1.4rem"}}>
                               <div style={{fontSize:"20pt",fontWeight:700,marginBottom:".3rem"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"8.5pt",opacity:.85}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&(<div style={{marginTop:".5rem",display:"inline-block",background:"#b8860b",color:"#fff",padding:".12rem .6rem",borderRadius:"2px",fontSize:"7.5pt",fontWeight:700,letterSpacing:".08em"}}>CLEARANCE: {resumeData.clearance}</div>)}
+                              {(includeClearance&&resumeData.clearance)&&(<div style={{marginTop:".5rem",display:"inline-block",background:"#b8860b",color:"#fff",padding:".12rem .6rem",borderRadius:"2px",fontSize:"7.5pt",fontWeight:700,letterSpacing:".08em"}}>CLEARANCE: {resumeData.clearance}</div>)}
                             </div>
                             <div style={{padding:"1.4rem 2.2rem"}}>
                               {resumeData.summary&&(<div style={{marginBottom:"1rem",paddingBottom:".8rem",borderBottom:"2px solid #1a3a6b"}}>
@@ -4767,7 +4791,7 @@ Return this exact JSON structure:
                             <div style={{textAlign:"center",borderBottom:"2px solid #1a1a1a",paddingBottom:".8rem",marginBottom:".8rem"}}>
                               <div style={{fontSize:"18pt",fontWeight:700,letterSpacing:".04em",textTransform:"uppercase"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"8.5pt",color:"#444",marginTop:".25rem"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&(<div style={{fontSize:"8.5pt",fontWeight:700,marginTop:".2rem"}}>Security Clearance: {resumeData.clearance}</div>)}
+                              {(includeClearance&&resumeData.clearance)&&(<div style={{fontSize:"8.5pt",fontWeight:700,marginTop:".2rem"}}>Security Clearance: {resumeData.clearance}</div>)}
                             </div>
                             {resumeData.summary&&(<div style={{marginBottom:".9rem"}}><div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",marginBottom:".4rem"}}>Professional Summary</div><div style={{fontSize:"9.5pt",lineHeight:1.65,color:"#222",textAlign:"justify"}}>{resumeData.summary}</div></div>)}
                             <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",marginBottom:".5rem"}}>Experience</div>
@@ -4786,7 +4810,7 @@ Return this exact JSON structure:
                               <div style={{fontSize:"22pt",fontWeight:300,letterSpacing:".08em",textTransform:"uppercase"}}>{resumeData.name||personal.name}</div>
                               <div style={{height:"2px",background:"#b8860b",width:"50px",margin:".6rem 0"}}/>
                               <div style={{fontSize:"8.5pt",color:"#aaa",letterSpacing:".05em"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&(<div style={{marginTop:".5rem",color:"#b8860b",fontSize:"8.5pt",fontWeight:600}}>CLEARANCE: {resumeData.clearance.toUpperCase()}</div>)}
+                              {(includeClearance&&resumeData.clearance)&&(<div style={{marginTop:".5rem",color:"#b8860b",fontSize:"8.5pt",fontWeight:600}}>CLEARANCE: {resumeData.clearance.toUpperCase()}</div>)}
                             </div>
                             <div style={{padding:"1.5rem 2.4rem"}}>
                               {resumeData.summary&&(<div style={{marginBottom:"1.2rem",paddingBottom:"1.2rem",borderBottom:"1px solid #e8e8e8"}}><div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".4rem"}}>Executive Profile</div><div style={{fontSize:"10pt",lineHeight:1.7,color:"#222",fontWeight:300}}>{resumeData.summary}</div></div>)}
@@ -4805,7 +4829,7 @@ Return this exact JSON structure:
                             <div style={{marginBottom:"1.8rem"}}>
                               <div style={{fontSize:"24pt",fontWeight:700,marginBottom:".15rem"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"8.5pt",color:"#888"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&(<div style={{fontSize:"8.5pt",fontWeight:600,color:"#333",marginTop:".2rem"}}>{resumeData.clearance}</div>)}
+                              {(includeClearance&&resumeData.clearance)&&(<div style={{fontSize:"8.5pt",fontWeight:600,color:"#333",marginTop:".2rem"}}>{resumeData.clearance}</div>)}
                             </div>
                             {resumeData.summary&&(<div style={{marginBottom:"1.8rem",paddingBottom:"1.8rem",borderBottom:"1px solid #eee"}}><div style={{fontSize:"10pt",lineHeight:1.8,color:"#444"}}>{resumeData.summary}</div></div>)}
                             {(resumeData.experience||[]).map((job,i)=>(<div key={i} style={{marginBottom:"1.6rem"}}><div style={{display:"flex",justifyContent:"space-between"}}><div style={{fontWeight:700,fontSize:"10.5pt"}}>{job.title}</div><div style={{fontSize:"8.5pt",color:"#999"}}>{job.dates}</div></div><div style={{color:"#666",fontSize:"9pt",marginBottom:".4rem"}}>{job.employer}</div>{(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",lineHeight:1.6,paddingLeft:".9rem",borderLeft:"2px solid #eee",marginBottom:".25rem",color:"#333"}}>{b}</div>))}</div>))}
@@ -4821,7 +4845,7 @@ Return this exact JSON structure:
                             <div style={{borderBottom:"3px double #000",paddingBottom:".8rem",marginBottom:".8rem"}}>
                               <div style={{fontSize:"15pt",fontWeight:700}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"8.5pt",color:"#333",marginTop:".2rem"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&(<div style={{fontSize:"8.5pt",fontWeight:700,marginTop:".2rem"}}>SECURITY CLEARANCE: {resumeData.clearance}</div>)}
+                              {(includeClearance&&resumeData.clearance)&&(<div style={{fontSize:"8.5pt",fontWeight:700,marginTop:".2rem"}}>SECURITY CLEARANCE: {resumeData.clearance}</div>)}
                             </div>
                             {resumeData.summary&&(<div style={{marginBottom:".8rem"}}><div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",marginBottom:".3rem"}}>PROFESSIONAL SUMMARY</div><div style={{lineHeight:1.7}}>{resumeData.summary}</div></div>)}
                             <div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",marginBottom:".5rem"}}>WORK EXPERIENCE</div>
@@ -4839,7 +4863,7 @@ Return this exact JSON structure:
                             <div style={{textAlign:"center",marginBottom:"8pt"}}>
                               <div style={{fontSize:"14pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".05em"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"9pt",color:"#333",marginTop:"2pt"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&<div style={{fontSize:"9pt",fontWeight:700,marginTop:"2pt"}}>Clearance: {resumeData.clearance}</div>}
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",fontWeight:700,marginTop:"2pt"}}>Clearance: {resumeData.clearance}</div>}
                             </div>
                             <div style={{borderTop:"2px solid #000",borderBottom:"1px solid #000",padding:"3pt 0",marginBottom:"6pt"}}>
                               <div style={{fontSize:"8pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",textAlign:"center"}}>Professional Summary</div>
@@ -4886,7 +4910,7 @@ Return this exact JSON structure:
                             <div style={{marginBottom:"8pt"}}>
                               <div style={{fontSize:"15pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".04em"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"9pt",color:"#333",marginTop:"2pt"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&<div style={{fontSize:"9pt",fontWeight:700,color:"#1a3a6b",marginTop:"2pt"}}>Clearance: {resumeData.clearance}</div>}
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",fontWeight:700,color:"#1a3a6b",marginTop:"2pt"}}>Clearance: {resumeData.clearance}</div>}
                             </div>
                             <div style={{background:"#f0f0f0",padding:"6pt 8pt",marginBottom:"8pt",borderLeft:"4px solid #000"}}>
                               <div style={{fontSize:"9pt",lineHeight:1.65}}>{resumeData.summary}</div>
@@ -4925,7 +4949,7 @@ Return this exact JSON structure:
                               <div style={{fontSize:"16pt",fontWeight:700,letterSpacing:".06em",textTransform:"uppercase",fontVariant:"small-caps"}}>{resumeData.name||personal.name}</div>
                               <div style={{height:"1px",background:"#000",margin:"4pt 0"}}/>
                               <div style={{fontSize:"9pt",color:"#333"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&<div style={{fontSize:"9pt",fontWeight:700,marginTop:"2pt"}}>Security Clearance: {resumeData.clearance}</div>}
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",fontWeight:700,marginTop:"2pt"}}>Security Clearance: {resumeData.clearance}</div>}
                             </div>
                             {resumeData.summary&&(
                               <div style={{marginBottom:"10pt"}}>
@@ -4963,7 +4987,7 @@ Return this exact JSON structure:
                             <div style={{borderBottom:"3px solid #000",paddingBottom:"4pt",marginBottom:"6pt"}}>
                               <div style={{fontSize:"17pt",fontWeight:700,letterSpacing:".02em"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"9pt",color:"#444",marginTop:"2pt"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&<div style={{fontSize:"9pt",fontWeight:700,color:"#1a3a6b",marginTop:"1pt"}}>Active {resumeData.clearance} Clearance</div>}
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",fontWeight:700,color:"#1a3a6b",marginTop:"1pt"}}>Active {resumeData.clearance} Clearance</div>}
                             </div>
                             <div style={{fontWeight:700,fontSize:"8.5pt",textTransform:"uppercase",letterSpacing:".1em",marginBottom:"4pt"}}>Education</div>
                             {(resumeData.education||[]).map((e,i)=>(
@@ -4998,7 +5022,7 @@ Return this exact JSON structure:
                             <div style={{textAlign:"center",marginBottom:"10pt"}}>
                               <div style={{fontSize:"15pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".08em"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"9.5pt",marginTop:"3pt"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&<div style={{fontSize:"9.5pt",fontWeight:700,marginTop:"2pt"}}>Security Clearance: {resumeData.clearance}</div>}
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9.5pt",fontWeight:700,marginTop:"2pt"}}>Security Clearance: {resumeData.clearance}</div>}
                             </div>
                             {resumeData.summary&&(
                               <div style={{marginBottom:"10pt"}}>
@@ -5040,7 +5064,7 @@ Return this exact JSON structure:
                             <div style={{marginBottom:"2rem"}}>
                               <div style={{fontSize:"22pt",fontWeight:300,letterSpacing:"-.01em",marginBottom:"3pt"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"9pt",color:"#888",letterSpacing:".03em"}}>{resumeData.contact||personal.email}</div>
-                              {resumeData.clearance&&<div style={{fontSize:"9pt",color:"#888",marginTop:"1pt"}}>{resumeData.clearance}</div>}
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",color:"#888",marginTop:"1pt"}}>{resumeData.clearance}</div>}
                             </div>
                             {resumeData.summary&&(
                               <div style={{marginBottom:"2rem",paddingBottom:"1.5rem",borderBottom:"1px solid #e8e8e8"}}>
@@ -5478,9 +5502,11 @@ Return this exact JSON structure:
                         {label:"Offers",val:jobApps.filter(j=>j.status==="Offer Received"||j.status==="Accepted").length,color:"#1a7a40"},
                         {label:"Response Rate",val:Math.round((jobApps.filter(j=>j.status!=="Applied"&&j.status!=="Rejected").length/Math.max(1,jobApps.length))*100)+"%",color:"#1a3a6b"},
                       ].map((s,i)=>(
-                        <div key={i} className="stat-card">
+                        <div key={i} className="stat-card" style={{cursor:s.label==="Resumes Built"?"pointer":"default"}}
+                          onClick={()=>{if(s.label==="Resumes Built"){setTab(2);window.scrollTo(0,0);}}}>
                           <div className="stat-num" style={{color:s.color}}>{s.val}</div>
                           <div className="stat-lbl">{s.label}</div>
+                          {s.label==="Resumes Built"&&<div style={{fontSize:".65rem",color:"#8aa0b8",marginTop:".2rem"}}>Click to view →</div>}
                         </div>
                       ))}
                     </div>

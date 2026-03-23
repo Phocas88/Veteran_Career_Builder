@@ -2033,7 +2033,7 @@ function CareerTab(props) {
               <div className="field"><label>Preferred Industry</label><input placeholder="e.g. Healthcare, Defense, Tech, Finance" value={target.industry} onChange={e=>upT("industry",e.target.value)}/></div>
               <div className="field"><label>Priorities / Keywords</label><input placeholder="e.g. remote work, leadership role, outdoors" value={target.keywords} onChange={e=>upT("keywords",e.target.value)}/></div>
               <div className="field"><label>Preferred Work Location</label>
-                <input placeholder="e.g. Norfolk VA, Remote, Dallas TX..." value={targetLocation||""} onChange={e=>upT("targetLocation",e.target.value)} style={{width:"100%"}} />
+                <input placeholder="e.g. Norfolk VA, Remote, Dallas TX..." value={targetLocation} onChange={e=>setTargetLocation(e.target.value)} style={{width:"100%"}} />
               </div>
               <div className="field"><label>Interests & Hobbies</label>
                 <input placeholder="e.g. technology, coaching youth sports, woodworking, motorcycles, hunting, cooking, fitness..." value={target.interests||""} onChange={e=>upT("interests",e.target.value)}/>
@@ -2419,7 +2419,8 @@ function App() {
   const experiences = [...milExperiences, ...civExperiences];
   const [education, setEducation] = useState([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
   const [skills, setSkills] = useState({ technical:"", leadership:"", languages:"", certs:"" });
-  const [target, setTarget] = useState({ title:"", industry:"", keywords:"", interests:"", openTo:"", targetLocation:"" });
+  const [target, setTarget] = useState({ title:"", industry:"", keywords:"", interests:"", openTo:"" });
+  const [targetLocation, setTargetLocation] = useState("");
   const [collapsed, setCollapsed] = useState({});
   const [mosOut, setMosOut] = useState("");
   const [careers, setCareers] = useState(null);
@@ -2457,6 +2458,9 @@ function App() {
   const [followupEmail, setFollowupEmail] = useState("");
   const [followupJob, setFollowupJob] = useState({title:"",company:""});
   const [showClipboardModal, setShowClipboardModal] = useState(false);
+  const [showHomelessForm, setShowHomelessForm] = useState(false);
+  const [homelessForm, setHomelessForm] = useState({name:"",branch:"",location:"",situation:"",email:"",phone:""});
+  const [homelessSubmitted, setHomelessSubmitted] = useState(false);
   const [clipboardParsed, setClipboardParsed] = useState({title:"",company:"",link:""});
   const [followupLoading, setFollowupLoading] = useState(false);
   const [copiedFollowup, setCopiedFollowup] = useState(false);
@@ -2504,7 +2508,7 @@ function App() {
   const [careerError, setCareerError] = useState("");
   const [resumeData, setResumeData] = useState(null);
   const [resumeTemplate, setResumeTemplate] = useState("ats_chrono");
-  const targetLocation = targetLocation || "";
+  
   const [resumeError, setResumeError] = useState("");
   const [copied, setCopied] = useState(false);
   const [includeClearance, setIncludeClearance] = useState(true);
@@ -5809,6 +5813,115 @@ Return this exact JSON structure:
                 <script dangerouslySetInnerHTML={{__html:"(adsbygoogle = window.adsbygoogle || []).push({});"}}/>
               </div>
             )}
+            <div style={{background:"linear-gradient(135deg,#0a1628,#1a3a6b)",border:"2px solid rgba(200,150,10,.4)",borderRadius:"12px",padding:"1.5rem 1.75rem",marginBottom:"1.5rem",boxShadow:"0 4px 20px rgba(0,0,0,.2)"}}>
+              <div style={{display:"flex",gap:"1rem",alignItems:"flex-start",marginBottom:"1rem"}}>
+                <div style={{fontSize:"2rem",flexShrink:0}}>🏠</div>
+                <div>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.3rem",letterSpacing:".1em",color:"#f0c040",marginBottom:".3rem"}}>Are You a Veteran Experiencing Homelessness?</div>
+                  <p style={{color:"#c0d8f0",fontSize:".88rem",lineHeight:1.7,margin:0}}>
+                    There is <strong style={{color:"#f0c040"}}>absolutely no shame</strong> in reaching out for help.
+                    You answered the call when your country needed you — now let us answer yours.
+                    Fill out the form below and the Veteran Career Path team will personally reach out
+                    to help you build a resume, create an action plan, and connect you with resources
+                    in your area. <strong style={{color:"#f0c040"}}>Your service matters and so do you.</strong>
+                  </p>
+                </div>
+              </div>
+
+              {!showHomelessForm&&!homelessSubmitted&&(
+                <button onClick={()=>setShowHomelessForm(true)}
+                  style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"8px",color:"#0a1628",fontWeight:700,fontSize:".95rem",padding:".7rem 1.5rem",cursor:"pointer"}}>
+                  🤝 Request Help — We've Got You
+                </button>
+              )}
+
+              {homelessSubmitted&&(
+                <div style={{background:"rgba(26,122,64,.25)",border:"1px solid rgba(26,122,64,.5)",borderRadius:"8px",padding:"1rem 1.25rem"}}>
+                  <div style={{fontWeight:700,fontSize:"1rem",color:"#90e8b0",marginBottom:".4rem"}}>✓ Message received. You are not alone.</div>
+                  <div style={{fontSize:".86rem",color:"#c0f0d0",lineHeight:1.7}}>
+                    We will reach out within 24–48 hours with local resources and next steps.
+                    In the meantime, start filling out your profile in the app — we will have a
+                    resume ready for you when we connect.
+                  </div>
+                </div>
+              )}
+
+              {showHomelessForm&&!homelessSubmitted&&(
+                <div style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.12)",borderRadius:"8px",padding:"1.25rem",marginTop:".75rem"}}>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem",marginBottom:".75rem"}}>
+                    <div className="field" style={{marginBottom:0}}>
+                      <label style={{color:"#a0c0e0"}}>Your Name</label>
+                      <input placeholder="First Last" value={homelessForm.name}
+                        onChange={e=>setHomelessForm(f=>({...f,name:e.target.value}))}
+                        style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff"}}/>
+                    </div>
+                    <div className="field" style={{marginBottom:0}}>
+                      <label style={{color:"#a0c0e0"}}>Branch of Service</label>
+                      <input placeholder="e.g. U.S. Army, U.S. Marines" value={homelessForm.branch}
+                        onChange={e=>setHomelessForm(f=>({...f,branch:e.target.value}))}
+                        style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff"}}/>
+                    </div>
+                    <div className="field" style={{marginBottom:0}}>
+                      <label style={{color:"#a0c0e0"}}>Your Current Location <span style={{color:"#f0c040"}}>*</span></label>
+                      <input placeholder="City, State — e.g. Newport News, VA" value={homelessForm.location}
+                        onChange={e=>setHomelessForm(f=>({...f,location:e.target.value}))}
+                        style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff"}}/>
+                      <span style={{fontSize:".72rem",color:"#80a8d0",marginTop:".25rem",display:"block"}}>We use your location to find nearby VA offices, shelters, and employment resources</span>
+                    </div>
+                    <div className="field" style={{marginBottom:0}}>
+                      <label style={{color:"#a0c0e0"}}>Best Way to Reach You</label>
+                      <input placeholder="Email or phone number" value={homelessForm.email}
+                        onChange={e=>setHomelessForm(f=>({...f,email:e.target.value}))}
+                        style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff"}}/>
+                    </div>
+                  </div>
+                  <div className="field" style={{marginBottom:"1rem"}}>
+                    <label style={{color:"#a0c0e0"}}>Tell us about your situation (optional — share only what you are comfortable with)</label>
+                    <textarea placeholder="Current living situation, what kind of work you are looking for, any urgent needs we should know about..." value={homelessForm.situation}
+                      onChange={e=>setHomelessForm(f=>({...f,situation:e.target.value}))}
+                      style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff",minHeight:"80px"}}/>
+                  </div>
+                  <div style={{display:"flex",gap:".75rem",flexWrap:"wrap",marginBottom:"1rem"}}>
+                    <button onClick={async()=>{
+                        if(!homelessForm.location){alert("Please enter your current location so we can find resources near you.");return;}
+                        try{
+                          await fetch("https://formspree.io/f/REPLACE_WITH_FORMSPREE_ID",{
+                            method:"POST",
+                            headers:{"Content-Type":"application/json"},
+                            body:JSON.stringify({
+                              subject:"HOMELESS VETERAN OUTREACH — "+homelessForm.location,
+                              name:homelessForm.name||"(not provided)",
+                              branch:homelessForm.branch||"(not provided)",
+                              location:homelessForm.location,
+                              contact:homelessForm.email||"(not provided)",
+                              situation:homelessForm.situation||"(not provided)"
+                            })
+                          });
+                        }catch(e){}
+                        setHomelessSubmitted(true);
+                        setShowHomelessForm(false);
+                      }}
+                      style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"8px",color:"#0a1628",fontWeight:700,fontSize:".9rem",padding:".65rem 1.5rem",cursor:"pointer"}}>
+                      ✓ Send — We Will Reach Out Within 24–48 Hours
+                    </button>
+                    <button onClick={()=>setShowHomelessForm(false)}
+                      style={{background:"transparent",border:"1px solid rgba(255,255,255,.2)",borderRadius:"8px",color:"#a0c0e0",fontSize:".85rem",padding:".65rem 1rem",cursor:"pointer"}}>
+                      Cancel
+                    </button>
+                  </div>
+                  <div style={{padding:".85rem 1rem",background:"rgba(192,57,43,.15)",border:"1px solid rgba(192,57,43,.3)",borderRadius:"8px"}}>
+                    <div style={{fontWeight:700,color:"#f08080",fontSize:".82rem",marginBottom:".4rem"}}>🆘 Need immediate help right now?</div>
+                    <div style={{fontSize:".8rem",color:"#c0b0b0",lineHeight:1.8}}>
+                      <strong style={{color:"#fff"}}>VA Homeless Veterans Hotline: 1-877-4AID-VET (1-877-424-3838)</strong> — 24/7<br/>
+                      <strong style={{color:"#fff"}}>HUD-VASH Program</strong> — Contact your local VA medical center for housing vouchers<br/>
+                      <strong style={{color:"#fff"}}>211</strong> — Dial 211 for local shelter, food, and emergency services<br/>
+                      <strong style={{color:"#fff"}}>SSVF (Supportive Services for Veteran Families)</strong> — google.com/search?q=SSVF+near+me
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="res-filter-bar">
               {["All","Mental Health","Benefits & VA","Financial","Education","Employment","Housing","Legal","Family","Substance Use"].map(f=>(
                 <button key={f} className={"res-filter-btn"+(resFilter===f?" active":"")} onClick={()=>setResFilter(f)}>{f}</button>

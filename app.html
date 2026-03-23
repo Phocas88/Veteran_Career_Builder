@@ -50,7 +50,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-     const firebaseConfig = {
+      const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -2032,8 +2032,18 @@ function CareerTab(props) {
               <div className="field"><label>Target Job Title</label><input placeholder="e.g. Project Manager, Paramedic" value={target.title} onChange={e=>upT("title",e.target.value)}/></div>
               <div className="field"><label>Preferred Industry</label><input placeholder="e.g. Healthcare, Defense, Tech, Finance" value={target.industry} onChange={e=>upT("industry",e.target.value)}/></div>
               <div className="field"><label>Priorities / Keywords</label><input placeholder="e.g. remote work, leadership role, outdoors" value={target.keywords} onChange={e=>upT("keywords",e.target.value)}/></div>
-              <div className="field"><label>Preferred Work Location</label>
-                <input placeholder="e.g. Norfolk VA, Remote, Dallas TX..." value={targetLocation} onChange={e=>setTargetLocation(e.target.value)} style={{width:"100%"}} />
+            </div>
+            <div className="g2" style={{marginTop:".75rem"}}>
+              <div className="field">
+                <label>Preferred Work Location</label>
+                <input
+                  placeholder="e.g. Norfolk VA, Remote, Dallas TX..."
+                  defaultValue={targetLocation}
+                  onBlur={e=>setTargetLocation(e.target.value)}
+                  onKeyUp={e=>setTargetLocation(e.target.value)}
+                  style={{width:"100%"}}
+                />
+                <span className="hint">Used to filter job search results by location</span>
               </div>
               <div className="field"><label>Interests & Hobbies</label>
                 <input placeholder="e.g. technology, coaching youth sports, woodworking, motorcycles, hunting, cooking, fitness..." value={target.interests||""} onChange={e=>upT("interests",e.target.value)}/>
@@ -6174,5 +6184,8 @@ Return this exact JSON structure:
       <span style="color:#3a5070;">|</span>
 
       <a href="https://veterancareerpath.com/contact.html" style="color:#a0b8d0;text-decoration:none;margin:0 .5rem;">Contact Us</a>
-    <div style="color:#3a5070;font-size:.72rem;">&copy; 2025 Veteran Career Path &bull; Not affiliated with the U.S. Dep
+    <div style="color:#3a5070;font-size:.72rem;text-align:center;line-height:1.8;">
+      &copy; 2026 Veteran Career Path &bull; Not affiliated with the U.S. Department of Veterans Affairs or any government agency.<br>
+      Built by a Veteran, for Veterans. &bull; <a href="https://veterancareerpath.com/privacy-policy.html" style="color:#5a7090;">Privacy Policy</a> &bull; <a href="https://veterancareerpath.com/terms-of-service.html" style="color:#5a7090;">Terms of Service</a>
+    </div>
 </html>

@@ -2210,7 +2210,7 @@ function MyProfileHero(props) {
 
 
 function MyProfileSaved(props) {
-  const {tab,hasAccess,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
+  const {tab,hasAccess,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
   return (<>
   <div className="card">
     <div className="ch" style={{justifyContent:"space-between"}}>
@@ -2388,6 +2388,37 @@ function MyProfileSaved(props) {
   </div>
   
 
+  <div className="card" style={{marginTop:"1rem"}}>
+    <div className="ch" style={{justifyContent:"space-between"}}>
+      <h3>⭐ Saved Career Paths</h3>
+      <span style={{fontSize:".75rem",color:"var(--dim)"}}>{(savedPaths||[]).length} saved</span>
+    </div>
+    <div className="cb">
+      {(!savedPaths||savedPaths.length===0)?(
+        <div style={{textAlign:"center",padding:"1.5rem",color:"var(--dim)",fontSize:".88rem"}}>
+          <div style={{fontSize:"2rem",marginBottom:".5rem"}}>🎯</div>
+          No saved career paths yet. Go to Career Pathways and click 💾 Save Path on any career.
+        </div>
+      ):(
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(250px,1fr))",gap:".75rem"}}>
+          {(savedPaths||[]).map((p,i)=>(
+            <div key={i} style={{background:"linear-gradient(135deg,#f8fafd,#f0f4fa)",border:"1.5px solid var(--border)",borderRadius:"10px",padding:"1rem"}}>
+              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1rem",letterSpacing:".08em",color:"var(--navy)",marginBottom:".25rem"}}>{p.title}</div>
+              {p.sector&&<div style={{fontSize:".72rem",color:"var(--slate)",marginBottom:".3rem"}}>{p.sector}{p.industry?" · "+p.industry:""}</div>}
+              {p.salaryRange&&<div style={{fontSize:".78rem",fontWeight:600,color:"var(--green)",marginBottom:".3rem"}}>{p.salaryRange}</div>}
+              {p.match&&<span style={{display:"inline-block",background:p.match==="Excellent"?"rgba(26,122,64,.1)":"rgba(26,58,107,.1)",border:"1px solid",borderColor:p.match==="Excellent"?"rgba(26,122,64,.3)":"rgba(26,58,107,.3)",borderRadius:"20px",padding:".1rem .5rem",fontSize:".7rem",fontWeight:700,color:p.match==="Excellent"?"var(--green)":"var(--navy)",marginBottom:".4rem",display:"inline-block"}}>{p.match} Match</span>}
+              {p.whyFit&&<div style={{fontSize:".78rem",color:"var(--slate)",lineHeight:1.55,margin:".4rem 0 .5rem"}}>{p.whyFit}</div>}
+              <div style={{display:"flex",justifyContent:"space-between",marginTop:".5rem"}}>
+                <button onClick={()=>setTab(1)} style={{fontSize:".72rem",color:"var(--navy)",background:"transparent",border:"1px solid var(--navy)",borderRadius:"4px",padding:".2rem .5rem",cursor:"pointer"}}>View Pathways →</button>
+                <button onClick={()=>{const u=(savedPaths||[]).filter((_,j)=>j!==i);setSavedPaths(u);localStorage.setItem("vcb_saved_paths",JSON.stringify(u));showToast("Removed "+p.title);}} style={{fontSize:".72rem",color:"var(--red)",background:"transparent",border:"none",cursor:"pointer"}}>✕ Remove</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+
   </>);
 }
 
@@ -2395,7 +2426,7 @@ function MyProfileContent(props) {
   const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall} = props;
   return (<div style={{padding:"1rem"}}>
     <MyProfileHero tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
-    <MyProfileSaved tab={tab} hasAccess={hasAccess} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
+    <MyProfileSaved tab={tab} hasAccess={hasAccess} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} savedPaths={savedPaths} setSavedPaths={setSavedPaths} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
   </div>);
 }
 
@@ -5434,7 +5465,7 @@ Return this exact JSON structure:
                     <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",marginBottom:".2rem"}}>🔖 Save Jobs From Any Job Board</div>
                     <div style={{fontSize:".78rem",color:"#5a7090",lineHeight:1.5}}>Drag the button to your browser bookmarks bar. Then click it on any Indeed, LinkedIn, ZipRecruiter, or USAJobs listing to instantly save it here.</div>
                   </div>
-                  <a href="javascript:(function(){var t=document.title||'';var u=window.location.href;var co='';var ti=t;var m=t.match(/^(.+?)\s*[-|]\s*(.+?)\s*[-|\|]/);if(m){ti=m[1].trim();co=m[2].trim();}var m2=t.match(/^(.+?)\s+at\s+(.+?)\s*(\||$)/);if(m2){ti=m2[1].trim();co=m2[2].trim();}var m3=t.match(/^(.+?)\s*\|\s*USAJOBS/);if(m3){ti=m3[1].trim();co='U.S. Government';}var base='https://veterancareerpath.com';var params='?addjob=1&title='+encodeURIComponent(ti)+'&company='+encodeURIComponent(co)+'&link='+encodeURIComponent(u);window.open(base+'/app.html'+params,'_blank');})()"
+                  <a href="javascript:(function(){var t=document.title||'';var u=window.location.href;var co='';var ti='';if(t.match(/jobs[,\s]|employment\s*[\|,]/i)&&!t.match(/\bat\b/i)){alert('Please open a specific job listing first, then click the bookmarklet. You appear to be on a search results page.');return;}var m1=t.match(/^(.+?)\s*[-\u2013]\s*(.+?)\s*[-\u2013|]/);if(m1){ti=m1[1].trim();co=m1[2].trim();}var m2=t.match(/^(.+?)\s+at\s+(.+?)\s*(\||$)/i);if(m2){ti=m2[1].trim();co=m2[2].split('|')[0].trim();}var m3=t.match(/^(.+?)\s*\|\s*USAJOBS/i);if(m3){ti=m3[1].trim();co='U.S. Government';}if(!ti){var m4=t.match(/^(.+?)\s*\|/);if(m4)ti=m4[1].trim();else ti=t.slice(0,80);}co=co.replace(/\s*(indeed|linkedin|glassdoor|ziprecruiter|usajobs)\s*/ig,'').replace(/[-|].*$/,'').trim();var base='https://veterancareerpath.com';var p='?addjob=1&title='+encodeURIComponent(ti)+'&company='+encodeURIComponent(co)+'&link='+encodeURIComponent(u);window.open(base+'/app.html'+p,'_blank');})()"
                     onClick={e=>e.preventDefault()}
                     draggable="true"
                     style={{display:"inline-block",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#f0c040",fontWeight:700,fontSize:".82rem",padding:".5rem 1rem",borderRadius:"6px",textDecoration:"none",whiteSpace:"nowrap",cursor:"grab",border:"2px dashed #f0c040",flexShrink:0}}

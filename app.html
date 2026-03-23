@@ -1736,14 +1736,14 @@ function CareerDetailBody({careerDetail,selectedCareer,currentUser,setShowAuth,s
 
     <div style={{marginTop:"1rem",background:"#f8fafc",border:"1px solid #d0daea",borderRadius:"6px",padding:"1rem"}}>
       <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".08em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".6rem"}}>
-        Find Jobs {targetLocation ? "near " + targetLocation : "Nationwide"}
+        Find Jobs {target.targetLocation ? "near " + target.targetLocation : "Nationwide"}
       </div>
       <div style={{display:"flex",flexWrap:"wrap",gap:".4rem",marginBottom:"1rem"}}>
         {[
-          {l:"Indeed",i:"🔍",u:"https://www.indeed.com/jobs?q="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
-          {l:"LinkedIn",i:"💼",u:"https://www.linkedin.com/jobs/search/?keywords="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
-          {l:"USAJobs",i:"🏛",u:"https://www.usajobs.gov/search/results/?k="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
-          {l:"ZipRecruiter",i:"⚡",u:"https://www.ziprecruiter.com/jobs-search?search="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
+          {l:"Indeed",i:"🔍",u:"https://www.indeed.com/jobs?q="+encodeURIComponent(selectedCareer.title)+(target.targetLocation?"&l="+encodeURIComponent(target.targetLocation):"")},
+          {l:"LinkedIn",i:"💼",u:"https://www.linkedin.com/jobs/search/?keywords="+encodeURIComponent(selectedCareer.title)+(target.targetLocation?"&location="+encodeURIComponent(target.targetLocation):"")},
+          {l:"USAJobs",i:"🏛",u:"https://www.usajobs.gov/search/results/?k="+encodeURIComponent(selectedCareer.title)+(target.targetLocation?"&l="+encodeURIComponent(target.targetLocation):"")},
+          {l:"ZipRecruiter",i:"⚡",u:"https://www.ziprecruiter.com/jobs-search?search="+encodeURIComponent(selectedCareer.title)+(target.targetLocation?"&location="+encodeURIComponent(target.targetLocation):"")},
           {l:"Hire Heroes USA",i:"🎖",u:"https://www.hireheroesusa.org/"},
           {l:"RecruitMilitary",i:"⭐",u:"https://recruitmilitary.com/job-seeker"},
           {l:"ClearanceJobs",i:"🔐",u:"https://www.clearancejobs.com/jobs?q="+encodeURIComponent((selectedCareer&&selectedCareer.title)||target.title||"")},
@@ -1826,7 +1826,7 @@ function CareerDetailView(props) {
     {loading.careerDetail&&<div className="loading"><div className="spin"/><span>Loading full career profile...</span></div>}
 
     {careerDetail&&!loading.careerDetail&&(
-      <CareerDetailBody careerDetail={careerDetail} selectedCareer={selectedCareer} currentUser={currentUser} setShowAuth={setShowAuth} showToast={showToast} tab={tab} setTab={setTab} target={target} targetLocation={targetLocation} upT={upT} DI={DI} setSelectedCareer={setSelectedCareer} />
+      <CareerDetailBody careerDetail={careerDetail} selectedCareer={selectedCareer} currentUser={currentUser} setShowAuth={setShowAuth} showToast={showToast} tab={tab} setTab={setTab} target={target} targetLocation={target.targetLocation} upT={upT} DI={DI} setSelectedCareer={setSelectedCareer} />
     )}
   </div>);
 }
@@ -2033,7 +2033,7 @@ function CareerTab(props) {
               <div className="field"><label>Preferred Industry</label><input placeholder="e.g. Healthcare, Defense, Tech, Finance" value={target.industry} onChange={e=>upT("industry",e.target.value)}/></div>
               <div className="field"><label>Priorities / Keywords</label><input placeholder="e.g. remote work, leadership role, outdoors" value={target.keywords} onChange={e=>upT("keywords",e.target.value)}/></div>
               <div className="field"><label>Preferred Work Location</label>
-                <input placeholder="e.g. Norfolk VA, Remote, Dallas TX..." value={targetLocation} onChange={e=>upT("targetLocation",e.target.value)} style={{width:"100%"}} />
+                <input placeholder="e.g. Norfolk VA, Remote, Dallas TX..." value={target.targetLocation||""} onChange={e=>upT("target.targetLocation",e.target.value)} style={{width:"100%"}} />
               </div>
               <div className="field"><label>Interests & Hobbies</label>
                 <input placeholder="e.g. technology, coaching youth sports, woodworking, motorcycles, hunting, cooking, fitness..." value={target.interests||""} onChange={e=>upT("interests",e.target.value)}/>
@@ -2069,7 +2069,7 @@ function CareerTab(props) {
     {careers&&!loading.careers&&!selectedCareer&&(<CareerListView careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} openCareerDetail={openCareerDetail} findCareers={findCareers} loading={loading} careerError={careerError} milExperiences={milExperiences} target={target} upT={upT} currentUser={currentUser} setShowAuth={setShowAuth} showToast={showToast} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector} setSelectedCareer={setSelectedCareer} />)}
       
 
-    {selectedCareer&&!loading.careers&&(<CareerDetailView selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} currentUser={currentUser} setShowAuth={setShowAuth} showToast={showToast} tab={tab} setTab={setTab} target={target} targetLocation={targetLocation} upT={upT} DI={DI} />)}
+    {selectedCareer&&!loading.careers&&(<CareerDetailView selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} currentUser={currentUser} setShowAuth={setShowAuth} showToast={showToast} tab={tab} setTab={setTab} target={target} targetLocation={target.targetLocation} upT={upT} DI={DI} />)}
       
         <div className="nav-row">
           <button className="btn-sec" onClick={()=>setTab(0)}>← Back to Profile</button>
@@ -2419,7 +2419,7 @@ function App() {
   const experiences = [...milExperiences, ...civExperiences];
   const [education, setEducation] = useState([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
   const [skills, setSkills] = useState({ technical:"", leadership:"", languages:"", certs:"" });
-  const [target, setTarget] = useState({ title:"", industry:"", keywords:"", interests:"", openTo:"" });
+  const [target, setTarget] = useState({ title:"", industry:"", keywords:"", interests:"", openTo:"", target.targetLocation:"" });
   const [collapsed, setCollapsed] = useState({});
   const [mosOut, setMosOut] = useState("");
   const [careers, setCareers] = useState(null);
@@ -2504,7 +2504,7 @@ function App() {
   const [careerError, setCareerError] = useState("");
   const [resumeData, setResumeData] = useState(null);
   const [resumeTemplate, setResumeTemplate] = useState("ats_chrono");
-  const [targetLocation, setTargetLocation] = useState("");
+  // targetLocation moved into target object
   const [resumeError, setResumeError] = useState("");
   const [copied, setCopied] = useState(false);
   const [includeClearance, setIncludeClearance] = useState(true);
@@ -4650,7 +4650,7 @@ Return this exact JSON structure:
 
 
 
-          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} education={education} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector}  hasAccess={hasAccess} RG={RG} setShowPaywall={setShowPaywall}  skills={skills} personal={personal} />
+          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={target.targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} education={education} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector}  hasAccess={hasAccess} RG={RG} setShowPaywall={setShowPaywall}  skills={skills} personal={personal} />
 
 
 

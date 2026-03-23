@@ -50,7 +50,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-     const firebaseConfig = {
+      const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -486,6 +486,17 @@ const BRANCH_QUALS = {
       { code:"7P", desc:"Physical Security" },
       { code:"8L", desc:"Interagency Support" },
       { code:"9R", desc:"Drill Sergeant" },
+    { code:"5W", desc:"Counterintelligence Agent" },
+    { code:"4X", desc:"Equal Opportunity Advisor" },
+    { code:"2G", desc:"Combatives Level I" },
+    { code:"5H", desc:"Master Fitness Trainer" },
+    { code:"4V", desc:"SHARP/SARC Coordinator" },
+    { code:"3C", desc:"Unit Ministry Team" },
+    { code:"2R", desc:"Retention/Career Counselor" },
+    { code:"9P", desc:"Airborne Ranger" },
+    { code:"4D", desc:"Master Resilience Trainer" },
+    { code:"5J", desc:"Contracting Officer Representative" },
+    { code:"4M", desc:"Medical Platoon Sergeant" },
     ],
     sqiLabel: "Skill Qualification Identifiers (SQI)",
     sqi: [
@@ -540,6 +551,14 @@ const BRANCH_QUALS = {
       // Logistics
       { code:"3043", desc:"Supply Administration and Operations" },
       { code:"3044", desc:"Advanced Supply Marine" },
+    { code:"5811", desc:"Military Police" },
+    { code:"5821", desc:"CID Special Agent" },
+    { code:"4133", desc:"Paralegal Specialist" },
+    { code:"4341", desc:"Combat Correspondent" },
+    { code:"0411", desc:"Maintenance Management Specialist" },
+    { code:"3531", desc:"Motor Vehicle Operator" },
+    { code:"4612", desc:"Nuclear, Biological & Chemical Defense Specialist" },
+    { code:"0491", desc:"Administrative Chief" },
     ],
     sqiLabel: "Billet & Functional Qualifications",
     sqi: [
@@ -606,6 +625,12 @@ const BRANCH_QUALS = {
       { code:"2512", desc:"Aviation Storekeeper" },
       { code:"3501", desc:"Logistics Specialist" },
       { code:"2721", desc:"Equipment Operator" },
+    { code:"8408", desc:"Fleet Marine Force Corpsman (FMF)" },
+    { code:"9585", desc:"Drug and Alcohol Program Advisor (DAPA)" },
+    { code:"5765", desc:"Victim Advocate / SAPR" },
+    { code:"9620", desc:"Career Counselor" },
+    { code:"8406", desc:"Independent Duty Corpsman (IDC)" },
+    { code:"2752", desc:"Personnel Specialist" },
     ],
     sqiLabel: "Warfare Designators",
     sqi: [
@@ -672,6 +697,14 @@ const BRANCH_QUALS = {
       // Training
       { code:"EX", desc:"Formal Training Unit (FTU) Instructor" },
       { code:"XO", desc:"Operations Officer / Exec" },
+    { code:"3P", desc:"Security Forces / Law Enforcement" },
+    { code:"RC", desc:"Recruiter" },
+    { code:"JA", desc:"Judge Advocate (JAG)" },
+    { code:"CH", desc:"Chaplain" },
+    { code:"PA", desc:"Public Affairs Officer" },
+    { code:"FM", desc:"Financial Management" },
+    { code:"LG", desc:"Logistics Officer" },
+    { code:"HR", desc:"Human Resources Advisor" },
     ],
     sqiLabel: "Prefixes & Additional Duty Identifiers",
     sqi: [
@@ -787,7 +820,44 @@ const COMMON_ASI = BRANCH_QUALS["Army"].items;
 const COMMON_SQI = BRANCH_QUALS["Army"].sqi;
 
 const COMMON_ADDL_DUTIES = [
-  "Unit Armorer","NBC/CBRN Officer","Equal Opportunity Leader","Safety Officer/NCO","Master Driver","Unit Prevention Leader (UPL/Drug Testing)","Retention NCO","Casualty Notification Officer","Family Readiness Officer/NCO","Sexual Harassment/Assault Response (SHARP) Coordinator","Records Management","Information Security Officer","Operations Security (OPSEC) Coordinator","Physical Security Officer","Inspector General Representative","Unit Fund Custodian","Training Room NCO","Supply Sergeant (additional duty)","Contracting Officer Representative (COR)","Property Book Officer","Master Gunner","Battle Staff NCO","Recruiter/Career Counselor","Casualty Liaison Officer",
+  "Commander","Executive Officer (XO)","Officer in Charge (OIC)","NCOIC / Staff NCO in Charge",
+  "Watch Officer","Duty Officer","Staff Duty Officer/NCO","Operations Officer","Battle Staff NCO",
+  "Unit Movement Officer","Liaison Officer",
+  "Safety Officer/NCO","Range Safety Officer","Ground Safety Officer","Aviation Safety Officer",
+  "Unit Safety Representative","Master Driver","Master Gunner","Weapons Safety Officer",
+  "Equal Opportunity Leader/Advisor","Sexual Harassment/Assault Response (SHARP) Coordinator",
+  "SAPR Victim Advocate (USMC/Navy/AF)","Family Readiness Officer/NCO",
+  "Family Support Group Leader","Casualty Notification Officer",
+  "Casualty Assistance Calls Officer (CACO)","Transition Assistance Advisor",
+  "Morale Welfare & Recreation (MWR) Officer",
+  "Unit Training Manager","Training Room NCO","Master Training Specialist (Navy)",
+  "Formal Training Unit (FTU) Instructor","Drill Sergeant/Instructor","Physical Fitness Leader",
+  "Master Fitness Trainer","Combatives Instructor","Marksmanship Instructor / Coach",
+  "SERE Instructor","Water Survival Instructor","Rappel Master","Air Assault Instructor",
+  "Airborne Safety NCO",
+  "Unit Armorer","Physical Security Officer","Information Security Officer",
+  "Operations Security (OPSEC) Coordinator","Antiterrorism Officer",
+  "Personnel Security Manager","Classified Material Custodian",
+  "Communications Security (COMSEC) Custodian","NATO Control Officer","Facility Security Officer",
+  "Property Book Officer","Supply Officer (additional duty)","Contracting Officer Representative (COR)",
+  "Unit Deployment Manager","Hazardous Material Control Officer","Petroleum Officer",
+  "Ammunition Handler/NCO","Government Purchase Card (GPC) Holder",
+  "Unit Prevention Leader (UPL / Drug Testing)","Suicide Prevention Coordinator",
+  "Substance Abuse Counselor/Coordinator","Resilience Training Facilitator",
+  "Medical Readiness NCO","Dental Readiness NCO","Health & Wellness Coordinator",
+  "Records Management Officer","Inspector General Representative","Unit Fund Custodian",
+  "Legal Assistance Officer","Privacy Act Coordinator","Public Affairs Representative",
+  "Defense Travel System (DTS) Administrator","Budget Analyst (additional duty)",
+  "Pay and Allowances Advisor","Government Travel Card Program Coordinator",
+  "Telephone Control Officer","Radio Officer/NCO","IT System Administrator (additional duty)",
+  "Cybersecurity Awareness Training Coordinator","NIPR/SIPR Account Manager",
+  "Recruiter","Career Counselor / Retention NCO","Reenlistment NCO","Transition Counselor",
+  "Nuclear Surety Officer","CBRN/NBC Officer/NCO","Environmental Compliance Officer",
+  "Energy Manager","Religious Ministries Support","Chaplain Assistant",
+  "Drug and Alcohol Program Advisor (DAPA)","Congressional Liaison",
+  "Drug Testing Program Coordinator","Inspector General Representative",
+  "Sexual Assault Response Coordinator (SARC)","Voting Assistance Officer",
+  "Financial Readiness Program Coordinator",
 ];
 const UNIVERSITIES = [
   "American Military University","American Public University","Arizona State University",
@@ -1897,7 +1967,7 @@ function CareerTab(props) {
               {exp.asi.length>0&&(<>
                 <hr className="sdiv"/>
                 <div style={{marginBottom:"1rem"}}>
-                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Skill Identifiers (ASI) — What They Unlock</div>
+                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>{(BRANCH_QUALS[(milExperiences[0]||{}).branch]||BRANCH_QUALS["Army"]).label} — What They Unlock</div>
                   <div style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
                     {exp.asi.map(a=>(
                       <div key={a.code} style={{display:"flex",gap:".75rem",alignItems:"flex-start",background:"rgba(91,155,213,.06)",border:"1px solid rgba(91,155,213,.18)",borderRadius:"3px",padding:".6rem .85rem"}}>
@@ -2244,6 +2314,26 @@ function MyProfileSaved(props) {
                     @page { size: letter; margin: 1.5cm 1.8cm; }
                     html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
                     body { margin: 0 !important; padding: 0 !important; }
+                    /* Keep each job block together — never split company name from bullets */
+                    .job-block {
+                      page-break-inside: avoid;
+                      break-inside: avoid;
+                    }
+                    /* Never leave a section header alone at bottom of page */
+                    .sec-hdr {
+                      page-break-after: avoid;
+                      break-after: avoid;
+                    }
+                    /* Prevent orphans/widows — min 3 lines before a break */
+                    p, div {
+                      orphans: 3;
+                      widows: 3;
+                    }
+                    /* Never break inside skill grids or education entries */
+                    .no-break {
+                      page-break-inside: avoid;
+                      break-inside: avoid;
+                    }
                   }
                 `;
                 let body = "";
@@ -2555,6 +2645,156 @@ function MyProfileTab(props) {
   </div>);
 }
 
+
+const MOS_CODES = {
+  "Army": [
+    {code:"11A",title:"Infantry Officer"},{code:"11B",title:"Infantryman"},{code:"11C",title:"Indirect Fire Infantryman"},{code:"11Z",title:"Infantry Senior Sergeant"},
+    {code:"12A",title:"Engineer Officer"},{code:"12B",title:"Combat Engineer"},{code:"12C",title:"Bridge Crewmember"},{code:"12D",title:"Diver"},{code:"12G",title:"Quarrying Specialist"},{code:"12H",title:"Construction Engineering Supervisor"},{code:"12K",title:"Plumber"},{code:"12M",title:"Firefighter"},{code:"12N",title:"Horizontal Construction Engineer"},{code:"12P",title:"Prime Power Production Specialist"},{code:"12Q",title:"Transmission & Distribution Specialist"},{code:"12R",title:"Interior Electrician"},{code:"12T",title:"Technical Engineer"},{code:"12W",title:"Carpentry & Masonry Specialist"},{code:"12Y",title:"Geospatial Engineer"},
+    {code:"13A",title:"Field Artillery Officer"},{code:"13B",title:"Cannon Crewmember"},{code:"13D",title:"Field Artillery Automated Tactical Data Systems Specialist"},{code:"13E",title:"Cannon Fire Direction Specialist"},{code:"13F",title:"Fire Support Specialist"},{code:"13J",title:"Fire Control Specialist"},{code:"13M",title:"Multiple Launch Rocket System Crewmember"},{code:"13P",title:"MLRS Operations/Fire Direction"},{code:"13R",title:"Field Artillery Firefinder Radar Operator"},{code:"13T",title:"Field Artillery Surveyor/Meteorological Crewmember"},{code:"13Z",title:"Field Artillery Senior Sergeant"},
+    {code:"14A",title:"Air Defense Artillery Officer"},{code:"14E",title:"Patriot Fire Control Enhanced Operator/Maintainer"},{code:"14G",title:"Air Defense Battle Management System Operator"},{code:"14H",title:"Air Defense Enhanced Early Warning System Operator"},{code:"14P",title:"Air & Missile Defense Crewmember"},{code:"14S",title:"Avenger Crewmember"},{code:"14T",title:"Patriot Launching Station Enhanced Operator/Maintainer"},{code:"14Z",title:"Air Defense Artillery Senior Sergeant"},
+    {code:"15A",title:"Aviation Officer"},{code:"15B",title:"Aircraft Powerplant Repairer"},{code:"15C",title:"Aviation Meteorological Equipment Repairer"},{code:"15D",title:"Aircraft Powertrain Repairer"},{code:"15E",title:"Unmanned Aircraft Systems Repairer"},{code:"15F",title:"Aircraft Electrician"},{code:"15G",title:"Aircraft Structural Repairer"},{code:"15H",title:"Aircraft Pneudraulics Repairer"},{code:"15J",title:"OH-58D Armament/Electrical/Avionics Systems Repairer"},{code:"15K",title:"Aircraft Components Repair Supervisor"},{code:"15M",title:"UH-1 Helicopter Repairer"},{code:"15N",title:"Avionic Mechanic"},{code:"15P",title:"Aviation Operations Specialist"},{code:"15Q",title:"Air Traffic Control Operator"},{code:"15R",title:"AH-64 Attack Helicopter Repairer"},{code:"15S",title:"OH-58D/ARH Scout Helicopter Repairer"},{code:"15T",title:"UH-60 Helicopter Repairer"},{code:"15U",title:"CH-47 Helicopter Repairer"},{code:"15W",title:"Unmanned Aircraft Systems Operator"},{code:"15X",title:"AH-64A Armament/Electrical/Avionics Systems Repairer"},{code:"15Y",title:"AH-64D Armament/Electrical/Avionics Systems Repairer"},{code:"15Z",title:"Aircraft Maintenance Senior Sergeant"},
+    {code:"17A",title:"Cyber Warfare Officer"},{code:"17C",title:"Cyber Operations Specialist"},{code:"17E",title:"Electronic Warfare Specialist"},
+    {code:"18A",title:"Special Forces Officer"},{code:"18B",title:"Special Forces Weapons Sergeant"},{code:"18C",title:"Special Forces Engineer Sergeant"},{code:"18D",title:"Special Forces Medical Sergeant"},{code:"18E",title:"Special Forces Communications Sergeant"},{code:"18F",title:"Special Forces Assistant Operations & Intelligence Sergeant"},{code:"18X",title:"Special Forces Candidate"},{code:"18Z",title:"Special Forces Senior Sergeant"},
+    {code:"19A",title:"Armor Officer"},{code:"19D",title:"Cavalry Scout"},{code:"19K",title:"M1 Armor Crewman"},{code:"19Z",title:"Armor Senior Sergeant"},
+    {code:"25A",title:"Signal Officer"},{code:"25B",title:"IT Specialist"},{code:"25C",title:"Radio Operator-Maintainer"},{code:"25D",title:"Cyber Network Defender"},{code:"25E",title:"Electromagnetic Spectrum Manager"},{code:"25F",title:"Network Switching Systems Operator-Maintainer"},{code:"25H",title:"Cable Systems Installer-Maintainer"},{code:"25J",title:"Electronic Warfare Specialist"},{code:"25L",title:"Cable Systems Installer-Maintainer"},{code:"25M",title:"Multimedia Illustrator"},{code:"25N",title:"Nodal Network Systems Operator-Maintainer"},{code:"25P",title:"Microwave Systems Operator-Maintainer"},{code:"25Q",title:"Multichannel Transmission Systems Operator-Maintainer"},{code:"25R",title:"Visual Information Equipment Operator-Maintainer"},{code:"25S",title:"Satellite Communication Systems Operator-Maintainer"},{code:"25T",title:"Satellite/Microwave Systems Repairer"},{code:"25U",title:"Signal Support Systems Specialist"},{code:"25V",title:"Combat Documentation/Production Specialist"},{code:"25W",title:"Telecommunications Operations Chief"},{code:"25X",title:"Chief Signal NCO"},{code:"25Z",title:"Visual Information Operations Chief"},
+    {code:"27A",title:"Judge Advocate General Officer"},{code:"27D",title:"Paralegal Specialist"},
+    {code:"29E",title:"Electronic Warfare Senior Sergeant"},
+    {code:"31A",title:"Military Police Officer"},{code:"31B",title:"Military Police"},{code:"31D",title:"Criminal Investigation Special Agent"},{code:"31E",title:"Internment/Resettlement Specialist"},{code:"31K",title:"Military Working Dog Handler"},{code:"31Z",title:"Military Police Senior Sergeant"},
+    {code:"35A",title:"Military Intelligence Officer"},{code:"35D",title:"All-Source Intelligence Officer"},{code:"35E",title:"Counterintelligence Agent"},{code:"35F",title:"Intelligence Analyst"},{code:"35G",title:"Geospatial Intelligence Imagery Analyst"},{code:"35H",title:"Collection Manager"},{code:"35I",title:"Counterintelligence Agent"},{code:"35L",title:"Counterintelligence Agent"},{code:"35M",title:"Human Intelligence Collector"},{code:"35N",title:"Signals Intelligence Analyst"},{code:"35P",title:"Cryptologic Linguist"},{code:"35Q",title:"Cryptologic Network Warfare Specialist"},{code:"35S",title:"Signals Intelligence Analyst"},{code:"35T",title:"Military Intelligence Systems Maintainer/Integrator"},{code:"35V",title:"Imagery Analyst"},{code:"35W",title:"Electronic Warfare Specialist"},{code:"35X",title:"Intelligence Senior Sergeant"},{code:"35Y",title:"Chief Intelligence Sergeant"},{code:"35Z",title:"Signals Intelligence (SIGINT) Senior Sergeant/Chief"},
+    {code:"36A",title:"Financial Management Officer"},{code:"36B",title:"Financial Management Technician"},
+    {code:"37A",title:"Psychological Operations Officer"},{code:"37F",title:"Psychological Operations Specialist"},
+    {code:"38A",title:"Civil Affairs Officer"},{code:"38B",title:"Civil Affairs Specialist"},
+    {code:"42A",title:"Human Resources Specialist"},{code:"42B",title:"Human Resources Officer"},{code:"42F",title:"Human Resources Information Systems Manager"},
+    {code:"46A",title:"Public Affairs Officer"},{code:"46Q",title:"Public Affairs Specialist"},{code:"46R",title:"Public Affairs Broadcast Specialist"},
+    {code:"51A",title:"Acquisition Officer"},
+    {code:"52D",title:"Power Generation Equipment Repairer"},
+    {code:"56A",title:"Chaplain"},{code:"56M",title:"Religious Affairs Specialist"},
+    {code:"60A",title:"Operational Medicine Officer"},{code:"60B",title:"Nuclear Medicine Officer"},
+    {code:"61A",title:"Internist"},{code:"61B",title:"General Surgeon"},
+    {code:"62A",title:"Emergency Physician"},
+    {code:"63A",title:"General Dentist"},{code:"63B",title:"Prosthodontist"},
+    {code:"64A",title:"Veterinarian"},
+    {code:"65A",title:"Occupational Therapist"},
+    {code:"66A",title:"Medical-Surgical Nurse"},{code:"66B",title:"Public Health Nurse"},{code:"66C",title:"Psychiatric/Mental Health Nurse"},{code:"66E",title:"Perioperative Nurse"},{code:"66F",title:"Nurse Anesthetist"},{code:"66G",title:"Obstetrics/Gynecology Nurse"},{code:"66H",title:"Medical-Surgical Nurse"},{code:"66N",title:"Registered Nurse"},
+    {code:"67A",title:"Medical Operations Officer"},{code:"67D",title:"Physical Therapist"},{code:"67E",title:"Podiatrist"},{code:"67F",title:"Optometrist"},{code:"67G",title:"Physician Assistant"},{code:"67J",title:"Aeromedical Physician Assistant"},
+    {code:"68A",title:"Biomedical Equipment Specialist"},{code:"68B",title:"Orthopedic Specialist"},{code:"68C",title:"Practical Nursing Specialist"},{code:"68D",title:"Operating Room Specialist"},{code:"68E",title:"Dental Specialist"},{code:"68F",title:"Physical Therapy Specialist"},{code:"68G",title:"Patient Administration Specialist"},{code:"68H",title:"Optical Laboratory Specialist"},{code:"68J",title:"Medical Logistics Specialist"},{code:"68K",title:"Medical Laboratory Specialist"},{code:"68L",title:"Occupational Therapy Specialist"},{code:"68M",title:"Nutrition Care Specialist"},{code:"68N",title:"Cardiovascular Specialist"},{code:"68P",title:"Radiology Specialist"},{code:"68Q",title:"Pharmacy Specialist"},{code:"68R",title:"Veterinary Food Inspection Specialist"},{code:"68S",title:"Preventive Medicine Specialist"},{code:"68T",title:"Animal Care Specialist"},{code:"68U",title:"Ear, Nose & Throat Specialist"},{code:"68V",title:"Respiratory Specialist"},{code:"68W",title:"Combat Medic Specialist"},{code:"68X",title:"Mental Health Specialist"},{code:"68Y",title:"Eye Specialist"},{code:"68Z",title:"Chief Medical NCO"},
+    {code:"74A",title:"Chemical & Nuclear Officer"},{code:"74B",title:"Chemical Operations Specialist"},
+    {code:"79A",title:"Retention/Transition NCO"},{code:"79R",title:"Recruiter"},{code:"79S",title:"Career Counselor"},{code:"79T",title:"Recruiting & Retention NCO"},{code:"79V",title:"Retention & Transition NCO"},
+    {code:"88A",title:"Transportation Officer"},{code:"88H",title:"Cargo Specialist"},{code:"88K",title:"Watercraft Operator"},{code:"88L",title:"Watercraft Engineer"},{code:"88M",title:"Motor Transport Operator"},{code:"88N",title:"Transportation Management Coordinator"},{code:"88P",title:"Railway Equipment Repairer"},{code:"88T",title:"Railway Section Repairer"},{code:"88U",title:"Railway Operations Chief"},{code:"88Z",title:"Transportation Senior Sergeant"},
+    {code:"89A",title:"Ammunition Stock Control & Accounting Specialist"},{code:"89B",title:"Ammunition Specialist"},{code:"89D",title:"Explosive Ordnance Disposal Specialist"},
+    {code:"91A",title:"M1 Abrams Tank System Maintainer"},{code:"91B",title:"Wheeled Vehicle Mechanic"},{code:"91C",title:"Utilities Equipment Repairer"},{code:"91D",title:"Power Generation Equipment Repairer"},{code:"91E",title:"Allied Trades Specialist"},{code:"91F",title:"Small Arms/Artillery Repairer"},{code:"91G",title:"Fire Control Repairer"},{code:"91H",title:"Track Vehicle Repairer"},{code:"91J",title:"Quartermaster & Chemical Equipment Repairer"},{code:"91L",title:"Construction Equipment Repairer"},{code:"91M",title:"Bradley Fighting Vehicle System Maintainer"},{code:"91P",title:"Artillery Mechanic"},{code:"91S",title:"Stryker Systems Maintainer"},{code:"91X",title:"Maintenance Supervisor"},{code:"91Z",title:"Mechanical Maintenance Supervisor"},
+    {code:"92A",title:"Automated Logistical Specialist"},{code:"92F",title:"Petroleum Supply Specialist"},{code:"92G",title:"Culinary Specialist"},{code:"92L",title:"Petroleum Laboratory Specialist"},{code:"92M",title:"Mortuary Affairs Specialist"},{code:"92R",title:"Parachute Rigger"},{code:"92S",title:"Shower/Laundry & Clothing Repair Specialist"},{code:"92W",title:"Water Treatment Specialist"},{code:"92Y",title:"Unit Supply Specialist"},{code:"92Z",title:"Senior Noncommissioned Logistics Officer"},
+    {code:"94A",title:"Land Combat Electronic Missile System Repairer"},{code:"94D",title:"Air Traffic Control Equipment Repairer"},{code:"94E",title:"Radio & Communications Security Repairer"},{code:"94F",title:"Special Electronic Devices Repairer"},{code:"94H",title:"Test, Measurement & Diagnostic Equipment Support Specialist"},{code:"94M",title:"Radar Repairer"},{code:"94P",title:"Multiple Launch Rocket System Repairer"},{code:"94R",title:"Avionic and Survivability Equipment Repairer"},{code:"94S",title:"Patriot System Repairer"},{code:"94T",title:"Avenger System Repairer"},{code:"94W",title:"Electronic Maintenance Chief"},{code:"94Y",title:"Integrated Family of Test Equipment Operator & Maintainer"},{code:"94Z",title:"Senior Electronic Maintenance Sergeant"}
+  ],
+  "Marine Corps": [
+    {code:"0100",title:"Basic Admin & Finance Marine"},{code:"0111",title:"Administrative Specialist"},{code:"0121",title:"Personnel and Human Resources Specialist"},{code:"0161",title:"Postal Clerk"},
+    {code:"0200",title:"Intelligence Marine"},{code:"0211",title:"Counterintelligence/HUMINT Specialist"},{code:"0231",title:"Intelligence Specialist"},{code:"0241",title:"Imagery Analysis Specialist"},{code:"0261",title:"Geographic Intelligence Specialist"},{code:"0291",title:"Intelligence Chief"},
+    {code:"0300",title:"Basic Infantry Marine"},{code:"0311",title:"Rifleman"},{code:"0313",title:"Light Armored Reconnaissance Marine"},{code:"0321",title:"Reconnaissance Marine"},{code:"0331",title:"Machine Gunner"},{code:"0341",title:"Mortarman"},{code:"0351",title:"Infantry Assaultman"},{code:"0352",title:"Anti-Tank Missileman"},{code:"0365",title:"Infantry Squad Leader"},{code:"0369",title:"Infantry Unit Leader"},
+    {code:"0400",title:"Basic Logistics/Embarkation Marine"},{code:"0411",title:"Maintenance Management Specialist"},{code:"0431",title:"Logistics/Embarkation Specialist"},{code:"0451",title:"Airborne & Air Delivery Specialist"},
+    {code:"0500",title:"Marine Gunner"},{code:"0511",title:"MAGTF Planning Specialist"},
+    {code:"0600",title:"Basic Communications Marine"},{code:"0612",title:"Field Wireman"},{code:"0613",title:"Cable Systems & Wiring Specialist"},{code:"0614",title:"Telephone Technician"},{code:"0621",title:"Field Radio Operator"},{code:"0623",title:"Radio Chief"},{code:"0627",title:"Ground Mobile Forces Satellite Operator"},{code:"0631",title:"Network Administrator"},{code:"0651",title:"Cyber Network Operator"},{code:"0689",title:"Communications Chief"},
+    {code:"0700",title:"Basic Airborne/Parachute Marine"},{code:"0721",title:"Reconnaissance Man (Parachute/Combatant Dive Qualified)"},
+    {code:"0800",title:"Basic Field Artillery Marine"},{code:"0811",title:"Field Artillery Cannoneer"},{code:"0842",title:"Field Artillery Radar Operator"},{code:"0844",title:"Field Artillery Fire Control Marine"},{code:"0847",title:"Artillery Meteorological Man"},{code:"0848",title:"Artillery Survey Man"},{code:"0861",title:"Fire Support Marine"},{code:"0871",title:"Field Artillery Sensor Support Marine"},
+    {code:"1100",title:"Utilities Marine"},{code:"1141",title:"Electrician"},{code:"1142",title:"Electrical Equipment Repairer"},{code:"1161",title:"Refrigeration Mechanic"},
+    {code:"1200",title:"Basic Engineer, Construction, Facilities & Equipment Marine"},{code:"1316",title:"Metal Worker"},{code:"1341",title:"Engineer Equipment Mechanic"},{code:"1345",title:"Engineer Equipment Operator"},{code:"1361",title:"Combat Engineer"},{code:"1371",title:"Combat Engineer"},
+    {code:"1800",title:"Basic Tank & Assault Amphibian Marine"},{code:"1811",title:"Tank Crewman"},{code:"1812",title:"M1A1 Tank Crewman"},{code:"1833",title:"Assault Amphibious Vehicle Crewman"},{code:"1836",title:"Assault Amphibious Vehicle Officer"},
+    {code:"2100",title:"Basic Ordnance Marine"},{code:"2111",title:"Small Arms Repairer/Technician"},{code:"2131",title:"Towed Artillery Systems Technician"},{code:"2141",title:"Assault Amphibious Vehicle Repairer/Technician"},{code:"2146",title:"Main Battle Tank Repairer/Technician"},{code:"2147",title:"Light Armored Vehicle Repairer/Technician"},{code:"2161",title:"Machinist"},{code:"2171",title:"Electro-Optical Ordnance Repairer"},
+    {code:"2300",title:"Basic Ammunition Marine"},{code:"2311",title:"Ammunition Technician"},
+    {code:"2500",title:"Basic Signal Intelligence/Ground Electronic Warfare Marine"},{code:"2621",title:"Special Communications Signals Collection Operator/Analyst"},{code:"2631",title:"Ground Electronic Warfare Operator"},{code:"2641",title:"Cryptologic Linguist"},{code:"2651",title:"Special Intelligence System Administrator/Communicator"},{code:"2671",title:"Arabic Linguist"},{code:"2673",title:"Korean Linguist"},
+    {code:"3000",title:"Basic Supply/Service Marine"},{code:"3043",title:"Supply Administration & Operations Specialist"},{code:"3051",title:"Warehouse Clerk"},{code:"3052",title:"Packaging Specialist"},{code:"3112",title:"Traffic Management Specialist"},{code:"3531",title:"Motor Vehicle Operator"},{code:"3533",title:"Automotive Organizational Mechanic"},{code:"3534",title:"Motor Transport Operations Chief"},
+    {code:"3700",title:"Basic Nuclear, Biological & Chemical Defense Marine"},{code:"3711",title:"NBC Defense Specialist"},
+    {code:"4100",title:"Legal Services"},{code:"4133",title:"Paralegal Specialist"},
+    {code:"4300",title:"Basic Public Affairs Marine"},{code:"4312",title:"Combat Photographer"},{code:"4341",title:"Combat Correspondent"},
+    {code:"4400",title:"Basic Combat Camera Marine"},{code:"4421",title:"Combat Videographer"},
+    {code:"5500",title:"Marine Security Guard"},
+    {code:"5800",title:"Basic Military Police"},{code:"5811",title:"Military Police"},{code:"5821",title:"Criminal Investigation Division Special Agent"},
+    {code:"6000",title:"Basic Aviation Maintenance Marine"},{code:"6046",title:"Aviation Ordnance Systems Technician"},{code:"6048",title:"Flight Equipment Technician"},{code:"6060",title:"Aviation Maintenance Administration Specialist"},{code:"6072",title:"Aircraft Maintenance Chief"},{code:"6081",title:"Quality Assurance Representative"},
+    {code:"6100",title:"Basic Fixed Wing Aircraft Mechanic"},{code:"6113",title:"Fixed-Wing Aircraft Mechanic"},{code:"6123",title:"Fixed-Wing Aircraft Power Plants Mechanic"},{code:"6153",title:"Fixed-Wing Aircraft Airframe Mechanic"},
+    {code:"6200",title:"Basic Helicopter/Tiltrotor Mechanic"},{code:"6213",title:"Helicopter Mechanic"},{code:"6223",title:"Helicopter Power Plants Mechanic"},{code:"6273",title:"Helicopter Airframes Mechanic"},
+    {code:"7200",title:"Basic Airfield Services Marine"},{code:"7212",title:"Low Altitude Air Defense Gunner"},{code:"7242",title:"Aircraft Rescue & Fire Fighter"},
+    {code:"8000",title:"Basic Miscellaneous Officer"},{code:"8001",title:"Infantry Officer"},{code:"8002",title:"Artillery Officer"},{code:"8003",title:"Motor Transport Officer"},
+    {code:"9600",title:"Basic Recruit"}
+  ],
+  "Navy": [
+    {code:"AB",title:"Aviation Boatswain's Mate"},{code:"AC",title:"Air Traffic Controller"},{code:"AD",title:"Aviation Machinist's Mate"},{code:"AE",title:"Aviation Electrician's Mate"},{code:"AG",title:"Aerographer's Mate"},{code:"AM",title:"Aviation Structural Mechanic"},{code:"AME",title:"Aviation Structural Mechanic (Safety Equipment)"},{code:"AO",title:"Aviation Ordnanceman"},{code:"AS",title:"Aviation Support Equipment Technician"},{code:"AT",title:"Aviation Electronics Technician"},{code:"AW",title:"Naval Aircrewman"},
+    {code:"BM",title:"Boatswain's Mate"},{code:"BU",title:"Builder"},
+    {code:"CE",title:"Construction Electrician"},{code:"CM",title:"Construction Mechanic"},{code:"CS",title:"Culinary Specialist"},{code:"CSS",title:"Culinary Specialist (Submarine)"},
+    {code:"CTI",title:"Cryptologic Technician (Interpretive)"},{code:"CTM",title:"Cryptologic Technician (Maintenance)"},{code:"CTN",title:"Cryptologic Technician (Networks)"},{code:"CTR",title:"Cryptologic Technician (Collection)"},{code:"CTT",title:"Cryptologic Technician (Technical)"},
+    {code:"DC",title:"Damage Controlman"},{code:"DT",title:"Dental Technician"},
+    {code:"EA",title:"Engineering Aid"},{code:"EM",title:"Electrician's Mate"},{code:"EMN",title:"Electrician's Mate (Nuclear)"},{code:"EN",title:"Engineman"},{code:"EOD",title:"Explosive Ordnance Disposal Technician"},{code:"EO",title:"Equipment Operator"},{code:"ET",title:"Electronics Technician"},{code:"ETN",title:"Electronics Technician (Nuclear)"},
+    {code:"FC",title:"Fire Controlman"},{code:"FCA",title:"Fire Controlman (Aegis)"},{code:"FT",title:"Fire Control Technician"},
+    {code:"GM",title:"Gunner's Mate"},{code:"GS",title:"Gas Turbine Systems Technician"},
+    {code:"HM",title:"Hospital Corpsman"},{code:"HT",title:"Hull Maintenance Technician"},
+    {code:"IC",title:"Interior Communications Electrician"},{code:"IS",title:"Intelligence Specialist"},{code:"IT",title:"Information Systems Technician"},
+    {code:"LN",title:"Legalman"},{code:"LS",title:"Logistics Specialist"},{code:"LSS",title:"Logistics Specialist (Submarine)"},
+    {code:"MA",title:"Master-at-Arms"},{code:"MC",title:"Mass Communication Specialist"},{code:"MM",title:"Machinist's Mate"},{code:"MMN",title:"Machinist's Mate (Nuclear)"},{code:"MN",title:"Mineman"},{code:"MR",title:"Machinery Repairman"},{code:"MT",title:"Missile Technician"},
+    {code:"MU",title:"Musician"},
+    {code:"ND",title:"Navy Diver"},
+    {code:"OS",title:"Operations Specialist"},
+    {code:"PR",title:"Aircrew Survival Equipmentman"},
+    {code:"QM",title:"Quartermaster"},
+    {code:"RP",title:"Religious Program Specialist"},
+    {code:"SB",title:"Special Warfare Boat Operator"},{code:"SO",title:"Special Warfare Operator (SEAL)"},{code:"STG",title:"Sonar Technician (Surface)"},{code:"STS",title:"Sonar Technician (Submarine)"},{code:"SW",title:"Steelworker"},
+    {code:"TM",title:"Torpedoman's Mate"},
+    {code:"UT",title:"Utilitiesman"},
+    {code:"YN",title:"Yeoman"},{code:"YNS",title:"Yeoman (Submarine)"}
+  ],
+  "Air Force": [
+    {code:"1A0X1",title:"In-Flight Refueling"},{code:"1A1X1",title:"Flight Engineer"},{code:"1A2X1",title:"Aircraft Loadmaster"},{code:"1A3X1",title:"Airborne Mission Systems"},{code:"1A4X1",title:"Airborne Operations"},{code:"1A6X1",title:"Flight Attendant"},{code:"1A7X1",title:"Aerial Gunner"},{code:"1A8X1",title:"Airborne Cryptologic Language Analyst"},{code:"1A9X1",title:"Special Missions Aviation"},
+    {code:"1B4X1",title:"Cyber Warfare Operations"},{code:"1C0X2",title:"Aviation Resource Management"},{code:"1C1X1",title:"Air Traffic Control"},{code:"1C2X1",title:"Combat Control"},{code:"1C3X1",title:"Command Post"},{code:"1C4X1",title:"Tactical Air Control Party"},{code:"1C5X1",title:"Command & Control Battle Management Operations"},{code:"1C6X1",title:"Space Systems Operations"},{code:"1C7X1",title:"Airfield Management"},{code:"1C8X2",title:"Radar, Airfield & Weather Systems"},
+    {code:"1D7X1",title:"Cyberspace Defense Operations"},{code:"1N0X1",title:"All Source Intelligence"},{code:"1N1X1",title:"Geospatial Intelligence"},{code:"1N2X1",title:"Signals Intelligence Analyst"},{code:"1N3X1",title:"Cryptologic Language Analyst"},{code:"1N4X1",title:"Fusion Analyst"},{code:"1N8X1",title:"Targeting Analyst"},
+    {code:"1P0X1",title:"Aircrew Flight Equipment"},{code:"1T0X1",title:"Survival, Evasion, Resistance, Escape (SERE)"},{code:"1T2X1",title:"Pararescue"},{code:"1U0X1",title:"Sensor Operator"},{code:"1W0X1",title:"Weather"},
+    {code:"2A0X1",title:"Avionics Test Station & Components"},{code:"2A2X1",title:"Mobility Air Forces Integrated Communication/Navigation/Mission Systems"},{code:"2A2X2",title:"Mobility Air Forces Integrated Instrument & Flight Control Systems"},{code:"2A2X3",title:"Mobility Air Forces Integrated Electronic Warfare Systems"},{code:"2A3X3",title:"Combat Systems"},{code:"2A3X4",title:"Fighter Aircraft Integrated Avionics"},{code:"2A5X1",title:"Aerospace Maintenance"},{code:"2A5X2",title:"Helicopter/Tiltrotor Aircraft Maintenance"},{code:"2A5X3",title:"Integrated Avionics Systems"},{code:"2A6X1",title:"Aerospace Propulsion"},{code:"2A6X2",title:"Aerospace Ground Equipment"},{code:"2A6X3",title:"Aircrew Egress Systems"},{code:"2A6X4",title:"Aircraft Fuel Systems"},{code:"2A6X5",title:"Aircraft Hydraulic Systems"},{code:"2A6X6",title:"Aircraft Electrical & Environmental Systems"},{code:"2A7X1",title:"Aircraft Metals Technology"},{code:"2A7X2",title:"Nondestructive Inspection"},{code:"2A7X3",title:"Aircraft Structural Maintenance"},{code:"2A8X1",title:"Mobility Air Forces Scheduled Maintenance"},{code:"2A8X2",title:"Mobility Air Forces Back Shop Maintenance"},
+    {code:"2E1X1",title:"Ground Radar Systems"},{code:"2E1X2",title:"Meteorological & Navigation Systems"},{code:"2E1X3",title:"Ground Radio Communications"},{code:"2E1X4",title:"Visual Imagery & Intrusion Detection Systems"},
+    {code:"2F0X1",title:"Fuels"},{code:"2G0X1",title:"Logistics Plans"},{code:"2M0X1",title:"Missile & Space Systems Electronic Maintenance"},{code:"2M0X2",title:"Missile & Space Systems Maintenance"},{code:"2M0X3",title:"Missile & Space Systems Electronic Maintenance"},
+    {code:"2P0X1",title:"Precision Measurement Equipment Laboratory"},{code:"2R0X1",title:"Maintenance Management Analysis"},{code:"2R1X1",title:"Maintenance Management Production"},
+    {code:"2S0X1",title:"Material Management"},{code:"2T0X1",title:"Traffic Management"},{code:"2T1X1",title:"Vehicle Operations"},{code:"2T2X1",title:"Air Transportation"},{code:"2T3X1",title:"Special Vehicle Maintenance"},{code:"2T3X2",title:"Special Purpose Vehicle & Equipment Maintenance"},{code:"2T3X7",title:"Vehicle Management & Analysis"},{code:"2W0X1",title:"Munitions Systems"},{code:"2W1X1",title:"Aircraft Armament Systems"},
+    {code:"3C0X1",title:"Communications - Computer Systems Operations"},{code:"3C0X2",title:"Communications - Computer Systems Operations"},{code:"3C1X1",title:"Radio Communications Systems"},{code:"3C1X2",title:"Electromagnetic Spectrum Management"},{code:"3D0X1",title:"Knowledge Operations Management"},{code:"3D0X2",title:"Cyber Systems Operations"},{code:"3D0X3",title:"Cyber Surety"},{code:"3D0X4",title:"Computer Systems Programming"},{code:"3D1X1",title:"Client Systems"},{code:"3D1X2",title:"Cyber Transport Systems"},{code:"3D1X3",title:"RF Transmission Systems"},{code:"3D1X4",title:"Spectrum Operations"},
+    {code:"3E0X1",title:"Electrical Systems"},{code:"3E0X2",title:"Electrical Power Production"},{code:"3E1X1",title:"Heating, Ventilation, Air Conditioning & Refrigeration"},{code:"3E2X1",title:"Pavement & Construction Equipment"},{code:"3E3X1",title:"Structural"},{code:"3E4X1",title:"Water & Fuel Systems Maintenance"},{code:"3E4X3",title:"Pest Management"},{code:"3E5X1",title:"Engineering"},{code:"3E6X1",title:"Operations Management"},{code:"3E7X1",title:"Fire Protection"},{code:"3E8X1",title:"Explosive Ordnance Disposal"},
+    {code:"3F0X1",title:"Personnel"},{code:"3F1X1",title:"Services"},{code:"3F2X1",title:"Education & Training"},{code:"3F3X1",title:"Manpower"},{code:"3F4X1",title:"Equal Opportunity"},{code:"3F5X1",title:"Administration"},{code:"3M0X1",title:"Services"},
+    {code:"3N0X1",title:"Public Affairs"},{code:"3N1X1",title:"Regional Band"},{code:"3N2X1",title:"Premier Band"},
+    {code:"3P0X1",title:"Security Forces"},{code:"3S0X1",title:"Personnel"},
+    {code:"4A0X1",title:"Health Services Management"},{code:"4A1X1",title:"Medical Materiel"},{code:"4A2X1",title:"Biomedical Equipment"},{code:"4B0X1",title:"Bioenvironmental Engineering"},{code:"4C0X1",title:"Mental Health Service"},{code:"4D0X1",title:"Diet Therapy"},{code:"4E0X1",title:"Public Health"},{code:"4H0X1",title:"Cardiopulmonary Laboratory"},{code:"4J0X2",title:"Physical Medicine"},{code:"4M0X1",title:"Aerospace & Operational Physiology"},{code:"4N0X1",title:"Aerospace Medical Service"},{code:"4P0X1",title:"Pharmacy"},{code:"4R0X1",title:"Diagnostic Imaging"},{code:"4T0X1",title:"Medical Laboratory"},{code:"4V0X1",title:"Ophthalmic"},
+    {code:"5J0X1",title:"Paralegal"},{code:"5R0X1",title:"Chaplain Assistant"},
+    {code:"6C0X1",title:"Contracting"},{code:"6F0X1",title:"Financial Management & Comptroller"},
+    {code:"7S0X1",title:"Special Investigations"},
+    {code:"8A100",title:"Career Assistance Advisor"},{code:"8B000",title:"Military Training Instructor"},{code:"8D000",title:"Linguist/Language Analyst"},{code:"8G000",title:"Staff Weather Officer"},{code:"8P000",title:"Courier"},{code:"8R000",title:"Recruiter"},{code:"8S000",title:"Missile Facility Manager"},{code:"8U000",title:"Unit Deployment Manager"}
+  ],
+  "Coast Guard": [
+    {code:"AET",title:"Aviation Electrical Technician"},{code:"AMT",title:"Aviation Maintenance Technician"},{code:"AST",title:"Aviation Survival Technician (Rescue Swimmer)"},
+    {code:"BM",title:"Boatswain's Mate"},{code:"BMC",title:"Boatswain's Mate Chief"},
+    {code:"DC",title:"Damage Controlman"},
+    {code:"ELC",title:"Electronics Technician (Command, Control, Comm)"},{code:"EMF",title:"Electrician's Mate (Shore)"},
+    {code:"EM",title:"Electrician's Mate"},{code:"ET",title:"Electronics Technician"},
+    {code:"FS",title:"Food Service Specialist"},
+    {code:"GM",title:"Gunner's Mate"},
+    {code:"HS",title:"Health Services Technician"},
+    {code:"IS",title:"Intelligence Specialist"},{code:"IT",title:"Information Systems Technician"},
+    {code:"IV",title:"Investigator"},
+    {code:"MA",title:"Maritime Enforcement Specialist"},{code:"ME",title:"Maritime Enforcement Specialist"},
+    {code:"MK",title:"Machinery Technician"},
+    {code:"MST",title:"Marine Science Technician"},
+    {code:"MU",title:"Musician"},
+    {code:"OS",title:"Operations Specialist"},
+    {code:"PA",title:"Public Affairs Specialist"},
+    {code:"PO",title:"Port Security/Law Enforcement"},
+    {code:"SK",title:"Storekeeper"},
+    {code:"TC",title:"Telecommunications Specialist"},
+    {code:"WPC",title:"Warrant Officer Pay Corps"},
+    {code:"YN",title:"Yeoman"}
+  ],
+  "Space Force": [
+    {code:"1C6X1",title:"Space Systems Operations"},{code:"1C6X1A",title:"Orbital Warfare"},{code:"1C6X1B",title:"Space Electronic Warfare"},{code:"1C6X1C",title:"Space Battle Management"},{code:"1C6X1D",title:"Space Systems Operations (ISR)"},{code:"1C6X1E",title:"Electromagnetic Warfare"},
+    {code:"3D0X2",title:"Cyber Systems Operations"},{code:"3D0X3",title:"Cyber Surety"},
+    {code:"1N1X1",title:"Geospatial Intelligence"},{code:"1N2X1",title:"Signals Intelligence"},
+    {code:"6C0X1",title:"Contracting"},{code:"6F0X1",title:"Financial Management"},
+    {code:"3F0X1",title:"Personnel"},{code:"3F5X1",title:"Administration"},
+    {code:"2M0X1",title:"Missile & Space Systems Electronic Maintenance"},{code:"2M0X3",title:"Missile & Space Systems Maintenance"},
+    {code:"5J0X1",title:"Paralegal"},{code:"5R0X1",title:"Chaplain Assistant"},
+    {code:"8R000",title:"Guardian Recruiter"}
+  ]
+};
+
 function App() {
 
   // ── APP STATE (must be declared first) ──
@@ -2605,6 +2845,7 @@ function App() {
   const [followupEmail, setFollowupEmail] = useState("");
   const [followupJob, setFollowupJob] = useState({title:"",company:""});
   const [showClipboardModal, setShowClipboardModal] = useState(false);
+  const [mosBrowse, setMosBrowse] = useState({open:false,expId:null,search:"",branch:""});
   const [showHomelessForm, setShowHomelessForm] = useState(false);
   const [homelessForm, setHomelessForm] = useState({name:"",branch:"",location:"",situation:"",email:"",phone:""});
   const [homelessSubmitted, setHomelessSubmitted] = useState(false);
@@ -3174,7 +3415,7 @@ function App() {
 
       const raw = await callClaude(
         prompt,
-        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
+        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) QUALIFICATIONS — USE ALL OF THEM: The profile includes ASIs/SQIs/NECs/SEIs (extra qualifiers), sub-roles (mosRoles), and additional duties. Every single one must appear in the resume as a skill, bullet, certification, or job title. ASI 8A=Parachute Operations Certified. ASI 9R=Leadership Development Instructor. Unit Armorer=Weapons & Equipment Inventory Manager. Retention NCO=Talent Acquisition Specialist. SHARP Rep=HR Compliance Coordinator. Never ignore any qualifier or additional duty — each one is a real earned credential.",
         2000
       );
 
@@ -3449,7 +3690,7 @@ Use this exact structure:
         "awards (array of strings)";
       const raw = await callClaude(
         prompt,
-        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
+        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) QUALIFICATIONS — USE ALL OF THEM: The profile includes ASIs/SQIs/NECs/SEIs (extra qualifiers), sub-roles (mosRoles), and additional duties. Every single one must appear in the resume as a skill, bullet, certification, or job title. ASI 8A=Parachute Operations Certified. ASI 9R=Leadership Development Instructor. Unit Armorer=Weapons & Equipment Inventory Manager. Retention NCO=Talent Acquisition Specialist. SHARP Rep=HR Compliance Coordinator. Never ignore any qualifier or additional duty — each one is a real earned credential.",
         3500
       );
       const rStart = raw.indexOf("{");
@@ -3505,7 +3746,7 @@ Write a professional, warm, and compelling 3-paragraph cover letter that:
 
 Return ONLY the cover letter text, no subject line, no extra commentary.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 1500);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) QUALIFICATIONS — USE ALL OF THEM: The profile includes ASIs/SQIs/NECs/SEIs (extra qualifiers), sub-roles (mosRoles), and additional duties. Every single one must appear in the resume as a skill, bullet, certification, or job title. ASI 8A=Parachute Operations Certified. ASI 9R=Leadership Development Instructor. Unit Armorer=Weapons & Equipment Inventory Manager. Retention NCO=Talent Acquisition Specialist. SHARP Rep=HR Compliance Coordinator. Never ignore any qualifier or additional duty — each one is a real earned credential.", 1500);
       setCoverLetter(raw);
     } catch(e) {
       setCoverLetter("Error generating cover letter. Please try again.");
@@ -3537,7 +3778,7 @@ Generate 8 interview questions they will likely be asked, with a tailored answer
 
 Make answers specific to their MOS and rank. Use the STAR method. Translate all military jargon.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 3000);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) QUALIFICATIONS — USE ALL OF THEM: The profile includes ASIs/SQIs/NECs/SEIs (extra qualifiers), sub-roles (mosRoles), and additional duties. Every single one must appear in the resume as a skill, bullet, certification, or job title. ASI 8A=Parachute Operations Certified. ASI 9R=Leadership Development Instructor. Unit Armorer=Weapons & Equipment Inventory Manager. Retention NCO=Talent Acquisition Specialist. SHARP Rep=HR Compliance Coordinator. Never ignore any qualifier or additional duty — each one is a real earned credential.", 3000);
       const clean = raw.replace(/```json|```/g,"").trim();
       const s = clean.indexOf("["); const e = clean.lastIndexOf("]");
       if(s===-1||e===-1) throw new Error("No array");
@@ -3582,7 +3823,7 @@ Write a genuine, professional email that:
 
 Return ONLY the email text including the subject line. No extra commentary.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 800);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) QUALIFICATIONS — USE ALL OF THEM: The profile includes ASIs/SQIs/NECs/SEIs (extra qualifiers), sub-roles (mosRoles), and additional duties. Every single one must appear in the resume as a skill, bullet, certification, or job title. ASI 8A=Parachute Operations Certified. ASI 9R=Leadership Development Instructor. Unit Armorer=Weapons & Equipment Inventory Manager. Retention NCO=Talent Acquisition Specialist. SHARP Rep=HR Compliance Coordinator. Never ignore any qualifier or additional duty — each one is a real earned credential.", 800);
       setFollowupEmail(raw.trim());
     } catch(err) {
       setFollowupEmail("Subject: Thank You - " + (followupCtx.role||"Position") + " Interview\n\nDear " + (followupCtx.interviewerName||"Hiring Manager") + ",\n\nThank you for taking the time to meet with me regarding the " + (followupCtx.role||"position") + " role at " + (followupCtx.company||"your organization") + ". I enjoyed learning more about the team and am excited about the opportunity to bring my military leadership experience to your organization.\n\nPlease let me know if you need any additional information.\n\nBest regards,\n" + (personal.name||"[Your Name]"));
@@ -4031,8 +4272,15 @@ Return this exact JSON structure:
                     <div className="g3">
                       <div className="field">
                         <label>Primary MOS / Rate / AFSC</label>
-                        <input placeholder="e.g. 11B, 68W, HM, 3D0" value={exp.mos}
-                          onChange={e=>upMilExp(exp.id,"mos",e.target.value.toUpperCase())}/>
+                        <div style={{display:"flex",gap:".4rem",alignItems:"center"}}>
+                          <input placeholder="e.g. 11B, 68W, HM, 3D0" value={exp.mos}
+                            onChange={e=>upMilExp(exp.id,"mos",e.target.value.toUpperCase())}
+                            style={{flex:1}}/>
+                          <button type="button" onClick={()=>setMosBrowse({open:true,expId:exp.id,search:"",branch:exp.branch||"Army"})}
+                            style={{background:"var(--navy)",color:"#fff",border:"none",borderRadius:"6px",padding:".4rem .7rem",fontSize:".75rem",fontWeight:600,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>
+                            🔍 Browse
+                          </button>
+                        </div>
                         {exp.mosTitle&&<span className="mos-pill">↳ {exp.mosTitle}</span>}
                         <span className="hint">Don't know the code? Type your job title.</span>
                       </div>
@@ -4070,9 +4318,22 @@ Return this exact JSON structure:
 
 
                     <div className="qual-section">
-                      <span className="qual-label">Roles Held Under This MOS</span>
+                      <span className="qual-label">
+                        {exp.branch==="Navy"?"Roles Held Under This Rate/NEC":
+                         exp.branch==="Air Force"?"Roles Held Under This AFSC":
+                         exp.branch==="Marine Corps"?"Roles Held Under This MOS":
+                         exp.branch==="Coast Guard"?"Roles Held Under This Rating":
+                         exp.branch==="Space Force"?"Roles Held Under This AFSC":
+                         "Roles Held Under This MOS"}
+                      </span>
                       <div className="hint" style={{marginBottom:".5rem"}}>
-                        Many veterans hold multiple official roles within their MOS — Truck Master, OPS Clerk, Motor Sergeant, Training NCO, etc. Add each role you held and how long.
+                        Many veterans hold multiple official roles —
+                        {exp.branch==="Navy"?" Master-at-Arms, LPO, Division LCPO, Training PO, Duty Section Leader, etc.":
+                         exp.branch==="Air Force"?" Flight Commander, Section Chief, Crew Chief, Training NCO, Quality Assurance Inspector, etc.":
+                         exp.branch==="Marine Corps"?" Squad Leader, Platoon Sergeant, Section Leader, Platoon Commander, etc.":
+                         exp.branch==="Coast Guard"?" OOD, Coxswain, Boarding Team Leader, Watch Stander, etc.":
+                         " Truck Master, OPS Clerk, Motor Sergeant, Training NCO, NCOIC, etc."}
+                        Add each role you held and how long.
                       </div>
                       {(exp.mosRoles||[]).map((role,ri)=>(
                         <div key={ri} style={{display:"flex",gap:".5rem",alignItems:"flex-end",marginBottom:".4rem",background:"rgba(255,255,255,.05)",padding:".6rem .7rem",borderRadius:"3px",border:"1px solid rgba(201,168,76,.18)"}}>
@@ -4146,7 +4407,7 @@ Return this exact JSON structure:
                       </div>
                       <details style={{border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff",marginBottom:".6rem"}}>
                         <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                          Browse common qualifiers <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).items.length} options ›</span>
+                          Browse {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).label} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).items.length} options ›</span>
                         </summary>
                         <div style={{padding:".5rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
                           {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).items.map(a=>(
@@ -6237,6 +6498,63 @@ Return this exact JSON structure:
         return null;
       })()}
       {saveToast&&<div className="save-toast">{saveToast}</div>}
+
+      {mosBrowse.open&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.55)",zIndex:60000,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}}
+          onClick={e=>e.target===e.currentTarget&&setMosBrowse(s=>({...s,open:false}))}>
+          <div style={{background:"#fff",borderRadius:"14px",width:"100%",maxWidth:"620px",maxHeight:"85vh",display:"flex",flexDirection:"column",overflow:"hidden",boxShadow:"0 16px 48px rgba(0,0,0,.3)"}}>
+            <div style={{background:"linear-gradient(135deg,#0a1628,#1a3a6b)",padding:"1.1rem 1.4rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.3rem",letterSpacing:".1em",color:"#f0c040"}}>🔍 Browse Job Codes</div>
+              <button onClick={()=>setMosBrowse(s=>({...s,open:false}))} style={{background:"transparent",border:"none",color:"#fff",fontSize:"1.4rem",cursor:"pointer"}}>✕</button>
+            </div>
+            <div style={{padding:".85rem 1.1rem",borderBottom:"1px solid #e8eef6",display:"flex",gap:".6rem",flexWrap:"wrap"}}>
+              {["Army","Marine Corps","Navy","Air Force","Coast Guard","Space Force"].map(br=>(
+                <button key={br} onClick={()=>setMosBrowse(s=>({...s,branch:br,search:""}))}
+                  style={{padding:".3rem .75rem",borderRadius:"20px",border:"1.5px solid",fontSize:".78rem",fontWeight:600,cursor:"pointer",
+                    background:mosBrowse.branch===br?"var(--navy)":"#fff",
+                    color:mosBrowse.branch===br?"#fff":"var(--navy)",
+                    borderColor:"var(--navy)"}}>
+                  {br}
+                </button>
+              ))}
+            </div>
+            <div style={{padding:".75rem 1.1rem",borderBottom:"1px solid #e8eef6"}}>
+              <input
+                placeholder={"Search "+mosBrowse.branch+" job codes or titles..."}
+                value={mosBrowse.search}
+                onChange={e=>setMosBrowse(s=>({...s,search:e.target.value}))}
+                style={{width:"100%",padding:".55rem .9rem",border:"1.5px solid #c8d4e4",borderRadius:"8px",fontSize:".9rem"}}
+                autoFocus/>
+            </div>
+            <div style={{overflowY:"auto",flex:1,padding:".5rem"}}>
+              {(()=>{
+                const codes = MOS_CODES[mosBrowse.branch]||[];
+                const q = mosBrowse.search.toLowerCase();
+                const filtered = q ? codes.filter(m=>m.code.toLowerCase().includes(q)||m.title.toLowerCase().includes(q)) : codes;
+                if(filtered.length===0) return <div style={{textAlign:"center",padding:"2rem",color:"#8aa0b8",fontSize:".88rem"}}>No results found</div>;
+                return filtered.map(m=>(
+                  <div key={m.code}
+                    onClick={()=>{
+                      upMilExp(mosBrowse.expId,"mos",m.code);
+                      upMilExp(mosBrowse.expId,"mosTitle",m.title);
+                      setMosBrowse(s=>({...s,open:false}));
+                      showToast("✓ "+m.code+" — "+m.title);
+                    }}
+                    style={{display:"flex",gap:"1rem",alignItems:"center",padding:".6rem .85rem",borderRadius:"8px",cursor:"pointer",marginBottom:"2px",transition:"background .12s"}}
+                    onMouseEnter={e=>e.currentTarget.style.background="#f0f4fa"}
+                    onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                    <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:".95rem",letterSpacing:".08em",color:"var(--navy)",minWidth:"60px",flexShrink:0}}>{m.code}</span>
+                    <span style={{fontSize:".88rem",color:"#2a3a4a"}}>{m.title}</span>
+                  </div>
+                ));
+              })()}
+            </div>
+            <div style={{padding:".75rem 1.1rem",borderTop:"1px solid #e8eef6",fontSize:".75rem",color:"#8aa0b8",textAlign:"center"}}>
+              {(MOS_CODES[mosBrowse.branch]||[]).length} codes · Click any code to select it
+            </div>
+          </div>
+        </div>
+      )}
 
       {showClipboardModal&&(
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.55)",zIndex:50000,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:"0"}}

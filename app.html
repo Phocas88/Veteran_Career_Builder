@@ -51,13 +51,13 @@
   <script>
     try {
       const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+        authDomain: "veteran-career-builder.firebaseapp.com",
+        projectId: "veteran-career-builder",
+        storageBucket: "veteran-career-builder.firebasestorage.app",
+        messagingSenderId: "REPLACE_SENDER_ID",
+        appId: "REPLACE_APP_ID"
+      };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -2420,10 +2420,59 @@ function MyProfileHero(props) {
 }
 
 function MyProfileSaved(props) {
-  const {tab,hasAccess,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
+  const {tab,hasAccess,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths,careerTestResults,setShowCareerTest,setCareerTestMode,setCareerTestStep,setCareerTestAnswers} = props;
   return (<>
   <div className="card">
     <div className="ch" style={{justifyContent:"space-between"}}>
+      {careerTestResults&&(
+        <div className="card" style={{marginBottom:"1.1rem"}}>
+          <div className="ch" style={{justifyContent:"space-between"}}>
+            <h3>Career Assessment Results</h3>
+            <div style={{display:"flex",gap:".5rem"}}>
+              <button className="btn-sec" style={{fontSize:".72rem",padding:".28rem .7rem"}}
+                onClick={()=>{setCareerTestMode(careerTestResults.deepProfile?"deep":"basic");setCareerTestStep(careerTestResults.deepProfile?window.DEEP_CAREER_TEST.dimensions.length:CAREER_TEST.sections.length);setShowCareerTest(true);}}>
+                View Results
+              </button>
+            </div>
+          </div>
+          <div className="cb">
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem",marginBottom:".75rem"}}>
+              <div style={{background:"#f0f4fa",borderRadius:"8px",padding:".75rem"}}>
+                <div style={{fontSize:".72rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#5a7090",marginBottom:".4rem"}}>Primary Type</div>
+                <div style={{fontWeight:700,color:"#1a3a6b",fontSize:".95rem"}}>{careerTestResults.profile?.primary||careerTestResults.deepProfile?.primary||"N/A"}</div>
+              </div>
+              <div style={{background:"#f0f4fa",borderRadius:"8px",padding:".75rem"}}>
+                <div style={{fontSize:".72rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#5a7090",marginBottom:".4rem"}}>Assessment Type</div>
+                <div style={{fontWeight:700,color:"#1a3a6b",fontSize:".95rem"}}>{careerTestResults.deepProfile?"Full 60-Question":"Basic 20-Question"}</div>
+              </div>
+            </div>
+            {careerTestResults.insight&&(
+              <div style={{fontSize:".82rem",color:"#3a4a5a",lineHeight:1.6,marginBottom:".75rem",padding:".75rem",background:"rgba(200,150,10,.06)",border:"1px solid rgba(200,150,10,.2)",borderRadius:"6px"}}>
+                <strong style={{color:"#8a6000"}}>Insight: </strong>{careerTestResults.insight}
+              </div>
+            )}
+            <div style={{fontWeight:700,fontSize:".82rem",color:"#1a3a6b",marginBottom:".5rem"}}>Top Career Matches</div>
+            {(careerTestResults.careers||[]).slice(0,5).map((c,i)=>(
+              <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".45rem .6rem",background:i%2===0?"#f8fafd":"#fff",borderRadius:"5px",marginBottom:"2px"}}>
+                <div>
+                  <div style={{fontWeight:600,fontSize:".83rem",color:"#1a3a6b"}}>{c.title}</div>
+                  <div style={{fontSize:".73rem",color:"#5a7090"}}>{c.sector} | {c.salaryRange}</div>
+                </div>
+                <span style={{fontSize:".7rem",fontWeight:700,padding:".1rem .4rem",borderRadius:"10px",flexShrink:0,marginLeft:".5rem",
+                  background:c.fit==="Excellent"?"rgba(26,122,64,.1)":c.fit==="Strong"?"rgba(26,58,107,.1)":"rgba(200,150,10,.1)",
+                  color:c.fit==="Excellent"?"#1a7a40":c.fit==="Strong"?"#1a3a6b":"#8a6000"}}>
+                  {c.fit}
+                </span>
+              </div>
+            ))}
+            {(careerTestResults.careers||[]).length>5&&(
+              <div style={{fontSize:".75rem",color:"#8aa0b8",textAlign:"center",marginTop:".4rem"}}>+{(careerTestResults.careers||[]).length-5} more — click View Results to see all</div>
+            )}
+            <div style={{marginTop:".75rem",fontSize:".72rem",color:"#8aa0b8"}}>Completed: {new Date(careerTestResults.completedAt||Date.now()).toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}</div>
+          </div>
+        </div>
+      )}
+
       <h3>Saved Resumes</h3>
       {resume&&<button className="btn-sec" style={{fontSize:".72rem",padding:".28rem .7rem"}} onClick={handleSaveResume}>+ Save Current</button>}
     </div>
@@ -2737,15 +2786,15 @@ function MyProfileSaved(props) {
 }
 
 function MyProfileContent(props) {
-  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
+  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths,careerTestResults,setShowCareerTest,setCareerTestMode,setCareerTestStep,setCareerTestAnswers} = props;
   return (<div style={{padding:"1rem"}}>
     <MyProfileHero tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
-    <MyProfileSaved tab={tab} hasAccess={hasAccess} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} savedPaths={savedPaths} setSavedPaths={setSavedPaths} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
+    <MyProfileSaved tab={tab} hasAccess={hasAccess} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} savedPaths={savedPaths} setSavedPaths={setSavedPaths} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} careerTestResults={careerTestResults} setShowCareerTest={setShowCareerTest} setCareerTestMode={setCareerTestMode} setCareerTestStep={setCareerTestStep} setCareerTestAnswers={setCareerTestAnswers} />
   </div>);
 }
 
 function MyProfileTab(props) {
-  const {tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
+  const {tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths,careerTestResults,setShowCareerTest,setCareerTestMode,setCareerTestStep,setCareerTestAnswers} = props;
   return (<div className={"panel "+(tab===6?"on":"")}>
     {!currentUser?(
       <div style={{textAlign:"center",padding:"3rem 1rem"}}>
@@ -2757,7 +2806,7 @@ function MyProfileTab(props) {
         </button>
       </div>
     ):(
-      <MyProfileContent tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} />
+      <MyProfileContent tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} careerTestResults={careerTestResults} setShowCareerTest={setShowCareerTest} setCareerTestMode={setCareerTestMode} setCareerTestStep={setCareerTestStep} setCareerTestAnswers={setCareerTestAnswers} />
     )}
 
   </div>);
@@ -3056,6 +3105,7 @@ function App() {
         setJobApps(prev => {
           const updated = [entry, ...prev];
           localStorage.setItem("vcb_jobs", JSON.stringify(updated));
+          if(currentUser&&fbDb){try{fbDb.collection("profiles").doc(currentUser.uid).set({jobApps:updated,updatedAt:Date.now()},{merge:true});}catch(e){}}
           return updated;
         });
         setTab(4);
@@ -3091,6 +3141,18 @@ function App() {
             if ((data.education && data.education.length)) setEducation(data.education);
             if (data.skills) setSkills(data.skills);
             if (data.target) setTarget(data.target);
+            if (data.careerTest) {
+              setCareerTestResults(data.careerTest);
+              localStorage.setItem("vcb_career_test", JSON.stringify(data.careerTest));
+            }
+            if (data.jobApps && data.jobApps.length) {
+              setJobApps(data.jobApps);
+              localStorage.setItem("vcb_jobs", JSON.stringify(data.jobApps));
+            }
+            if (data.savedPaths && data.savedPaths.length) {
+              setSavedPaths(data.savedPaths);
+              localStorage.setItem("vcb_saved_paths", JSON.stringify(data.savedPaths));
+            }
           }
           const resumesSnap = await fbDb.collection("profiles").doc(firebaseUser.uid)
             .collection("resumes").orderBy("createdAt","desc").limit(20).get();
@@ -6359,7 +6421,7 @@ Return this exact JSON structure:
             </div>
           </div>
 
-          <MyProfileTab tab={tab} currentUser={currentUser} setShowAuth={setShowAuth} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} />
+          <MyProfileTab tab={tab} currentUser={currentUser} setShowAuth={setShowAuth} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} careerTestResults={careerTestResults} setShowCareerTest={setShowCareerTest} setCareerTestMode={setCareerTestMode} setCareerTestStep={setCareerTestStep} setCareerTestAnswers={setCareerTestAnswers} />
         </div>
       </div>
 
@@ -6502,7 +6564,13 @@ Return this exact JSON structure:
                     ))}
                   </>}
                   <div style={{display:"flex",gap:".6rem",marginTop:".85rem",flexWrap:"wrap"}}>
-                    <button onClick={()=>{const sv={...careerTestResults,completedAt:new Date().toISOString()};setCareerTestResults(sv);localStorage.setItem("vcb_career_test",JSON.stringify(sv));showToast("Results saved to your profile");}} style={{flex:1,minWidth:"130px",padding:".65rem",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",border:"none",borderRadius:"8px",fontWeight:700,fontSize:".83rem",cursor:"pointer"}}>Save to Profile</button>
+                    <button onClick={()=>{const sv={...careerTestResults,completedAt:new Date().toISOString()};
+                      setCareerTestResults(sv);
+                      localStorage.setItem("vcb_career_test",JSON.stringify(sv));
+                      if(currentUser&&fbDb){
+                        try{await fbDb.collection("profiles").doc(currentUser.uid).set({careerTest:sv,updatedAt:Date.now()},{merge:true});}catch(e){}
+                      }
+                      showToast("Results saved to your profile");}} style={{flex:1,minWidth:"130px",padding:".65rem",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",border:"none",borderRadius:"8px",fontWeight:700,fontSize:".83rem",cursor:"pointer"}}>Save to Profile</button>
                     <button onClick={()=>{
                       const pr=careerTestResults.profile||{};const isD=!!careerTestResults.deepProfile;
                       const nm=personal.name||"Veteran";const dt=new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});

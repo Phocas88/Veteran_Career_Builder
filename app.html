@@ -51,13 +51,13 @@
   <script>
     try {
       const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+        authDomain: "veteran-career-builder.firebaseapp.com",
+        projectId: "veteran-career-builder",
+        storageBucket: "veteran-career-builder.firebasestorage.app",
+        messagingSenderId: "REPLACE_SENDER_ID",
+        appId: "REPLACE_APP_ID"
+      };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -4238,10 +4238,7 @@ Return this exact JSON structure:
                       showToast("Reading your resume...");
                       try{
                         const text=await new Promise((res,rej)=>{const r=new FileReader();r.onload=ev=>res(ev.target.result);r.onerror=rej;r.readAsText(file);});
-                        const prompt="Extract all information from this resume. Return ONLY valid JSON with no markdown: {name,email,phone,city,state,linkedin,experience:[{employer,title,startDate,endDate,current:bool,duties,isMilitary:bool}],education:[{institution,degree,field,year}],skills:{technical,certs},incompleteFields:[list of fields that are empty or need more detail]}
-
-RESUME:
-"+text.slice(0,5000);
+                        const prompt="Extract all information from this resume. Return ONLY valid JSON with no markdown: {name,email,phone,city,state,linkedin,experience:[{employer,title,startDate,endDate,current:bool,duties,isMilitary:bool}],education:[{institution,degree,field,year}],skills:{technical,certs},incompleteFields:[list of fields that are empty or need more detail]}\n\nRESUME:\n"+text.slice(0,5000);
                         const raw=await callClaude(prompt,"You are a precise resume parser. Extract all data accurately.",2000);
                         const js=raw.slice(raw.indexOf("{"),raw.lastIndexOf("}")+1);
                         const p=JSON.parse(js);
@@ -6984,18 +6981,7 @@ RESUME:
                           }).join("
 ");
                           const milCtx=milExperiences.length>0?"Veteran military background: "+milExperiences.map(e=>e.branch+" "+e.rank+" MOS:"+e.mos+(e.mosTitle?" ("+e.mosTitle+")":"")).join(", "):"No military background entered yet.";
-                          const prompt="A veteran completed a career personality assessment.
-
-"+milCtx+"
-
-Answers:
-"+ansSum+"
-
-Profile: Analytical "+profile.analytical+"% | Creative "+profile.creative+"% | Social "+profile.social+"% | Leadership "+profile.leadership+"%
-Primary: "+profile.primary+" Secondary: "+profile.secondary+"
-
-Generate 15 personalized career recommendations that cross-reference their military background AND personality profile. Return ONLY valid JSON:
-{"careers":[{"title":"Title","sector":"Industry","salaryRange":"$X-$Y","fit":"Excellent|Strong|Good","why":"2 sentences","nextStep":"One action","mosLink":"how their MOS connects to this career"}],"degrees":[{"level":"Degree level","field":"Field","why":"reason","timeframe":"duration","cost":"estimate","giTip":"GI Bill tip"}],"certifications":[{"name":"Cert name","org":"Org","why":"reason","timeframe":"duration","cost":"estimate","url":"website"}],"insight":"3-4 sentences about their career personality"}";
+                          const prompt="A veteran completed a career personality assessment.\n\n"+milCtx+"\n\nAnswers:\n"+ansSum+"\n\nProfile: Analytical "+profile.analytical+"% | Creative "+profile.creative+"% | Social "+profile.social+"% | Leadership "+profile.leadership+"%\nPrimary: "+profile.primary+" Secondary: "+profile.secondary+"\n\nGenerate 15 personalized career recommendations that cross-reference their military background AND personality profile. Return ONLY valid JSON:\n{\"careers\":[{\"title\":\"Title\",\"sector\":\"Industry\",\"salaryRange\":\"$X-$Y\",\"fit\":\"Excellent|Strong|Good\",\"why\":\"2 sentences\",\"nextStep\":\"One action\",\"mosLink\":\"how their MOS connects to this career\"}],\"degrees\":[{\"level\":\"Degree level\",\"field\":\"Field\",\"why\":\"reason\",\"timeframe\":\"duration\",\"cost\":\"estimate\",\"giTip\":\"GI Bill tip\"}],\"certifications\":[{\"name\":\"Cert name\",\"org\":\"Org\",\"why\":\"reason\",\"timeframe\":\"duration\",\"cost\":\"estimate\",\"url\":\"website\"}],\"insight\":\"3-4 sentences about their career personality\"}";"
                           try{
                             const raw=await callClaude(prompt,"You are an expert veteran career counselor. Generate highly personalized results that explicitly connect the veteran's military experience to civilian career opportunities. Cross-reference their MOS, rank, and background with their personality profile to generate career matches that make sense for who they are and what they have done.",3500);
                             const js=raw.slice(raw.indexOf("{"),raw.lastIndexOf("}")+1);
@@ -7026,17 +7012,7 @@ Generate 15 personalized career recommendations that cross-reference their milit
                             const score=(deepProfile.scores||{})[d.id]||0;
                             return d.title+": "+score+"%";
                           }).join(" | ");
-                          const prompt="A veteran completed a 60-question career assessment.
-
-"+milCtx+"
-
-Dimension scores:
-"+dimSummary+"
-
-Primary: "+deepProfile.primary+" Secondary: "+deepProfile.secondary+" Tertiary: "+deepProfile.tertiary+"
-
-Generate 20 highly personalized career paths that deeply cross-reference their military background AND their full 6-dimension personality profile. For each career explicitly explain how their military experience (MOS, rank, training) connects to it. Return ONLY valid JSON:
-{"careers":[{"title":"Title","sector":"Industry","salaryRange":"$X-$Y","fit":"Excellent|Strong|Good","why":"2-3 sentences connecting personality AND military background","nextStep":"One specific action","mosLink":"How their specific MOS/experience connects directly","clearanceBonus":"If clearance helps, how"}],"degrees":[{"level":"Level","field":"Field","why":"reason","timeframe":"time","cost":"cost","giTip":"GI Bill info"}],"certifications":[{"name":"Name","org":"Org","why":"reason","timeframe":"time","cost":"cost","url":"url"}],"insight":"4-5 sentences deeply analyzing their full profile, what they will thrive doing, what environments suit them, and what to avoid"}";
+                          const prompt="A veteran completed a 60-question career assessment.\n\n"+milCtx+"\n\nDimension scores:\n"+dimSummary+"\n\nPrimary: "+deepProfile.primary+" Secondary: "+deepProfile.secondary+" Tertiary: "+deepProfile.tertiary+"\n\nGenerate 20 highly personalized career paths that deeply cross-reference their military background AND their full 6-dimension personality profile. For each career explicitly explain how their military experience (MOS, rank, training) connects to it. Return ONLY valid JSON:\n{\"careers\":[{\"title\":\"Title\",\"sector\":\"Industry\",\"salaryRange\":\"$X-$Y\",\"fit\":\"Excellent|Strong|Good\",\"why\":\"2-3 sentences connecting personality AND military background\",\"nextStep\":\"One specific action\",\"mosLink\":\"How their specific MOS/experience connects directly\",\"clearanceBonus\":\"If clearance helps, how\"}],\"degrees\":[{\"level\":\"Level\",\"field\":\"Field\",\"why\":\"reason\",\"timeframe\":\"time\",\"cost\":\"cost\",\"giTip\":\"GI Bill info\"}],\"certifications\":[{\"name\":\"Name\",\"org\":\"Org\",\"why\":\"reason\",\"timeframe\":\"time\",\"cost\":\"cost\",\"url\":\"url\"}],\"insight\":\"4-5 sentences deeply analyzing their full profile, what they will thrive doing, what environments suit them, and what to avoid\"}";"
                           try{
                             const raw=await callClaude(prompt,"You are a master career counselor specializing in veteran transitions. Generate deeply personalized, highly specific career recommendations that treat this veteran as an individual. Every recommendation must explicitly connect their military background to the civilian opportunity. This is a paid premium assessment - deliver exceptional, detailed, actionable results.",4000);
                             const js=raw.slice(raw.indexOf("{"),raw.lastIndexOf("}")+1);

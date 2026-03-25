@@ -51,13 +51,13 @@
   <script>
     try {
       const firebaseConfig = {
-        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
-        authDomain: "veteran-career-builder.firebaseapp.com",
-        projectId: "veteran-career-builder",
-        storageBucket: "veteran-career-builder.firebasestorage.app",
-        messagingSenderId: "REPLACE_SENDER_ID",
-        appId: "REPLACE_APP_ID"
-      };
+  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
+  authDomain: "veteran-career-builder.firebaseapp.com",
+  projectId: "veteran-career-builder",
+  storageBucket: "veteran-career-builder.firebasestorage.app",
+  messagingSenderId: "664123627374",
+  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
+};
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -2630,7 +2630,7 @@ function MyProfileSaved(props) {
                   +"</body></html>");
                 w.document.close();
               }}>👁 View</button>
-              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const w=window.open("","_blank");w.document.write("<html><head><title>"+( r.title||"Resume")+"</title><style>body{font-family:Arial,sans-serif;margin:1.5cm;font-size:10pt;}@page{margin:1.5cm;}@media print{@page{margin:1.5cm;}}</style></head><body>"+r.content.replace(/\n/g,"<br>")+"<script>window.onload=function(){window.print();}<\/script></body></html>");w.document.close();}}>🖨 Print</button>
+              
               <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm('Delete this saved resume? Cannot be undone.'))handleDeleteResume(r.id);}}>🗑</button>
             </div>
           </div>
@@ -6568,7 +6568,7 @@ Return this exact JSON structure:
                       setCareerTestResults(sv);
                       localStorage.setItem("vcb_career_test",JSON.stringify(sv));
                       if(currentUser&&fbDb){
-                        try{await fbDb.collection("profiles").doc(currentUser.uid).set({careerTest:sv,updatedAt:Date.now()},{merge:true});}catch(e){}
+                        try{fbDb.collection("profiles").doc(currentUser.uid).set({careerTest:sv,updatedAt:Date.now()},{merge:true});}catch(e){}
                       }
                       showToast("Results saved to your profile");}} style={{flex:1,minWidth:"130px",padding:".65rem",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",border:"none",borderRadius:"8px",fontWeight:700,fontSize:".83rem",cursor:"pointer"}}>Save to Profile</button>
                     <button onClick={()=>{
@@ -6764,6 +6764,15 @@ Return this exact JSON structure:
           ➕
         </button>
       )}
+      <div style={{borderTop:"1px solid #e8eef6",padding:".65rem 1rem",display:"flex",flexWrap:"wrap",justifyContent:"center",gap:"1rem",background:"#f8fafd",fontSize:".72rem"}}>
+        <a href="https://veterancareerpath.com" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none",fontWeight:600}}>Home</a>
+        <a href="https://veterancareerpath.com/veteran-career-test.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>Free Career Test</a>
+        <a href="https://veterancareerpath.com/mos-career-translator.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>MOS Translator Guide</a>
+        <a href="https://veterancareerpath.com/military-civilian-resume.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>Resume Guide</a>
+        <a href="https://veterancareerpath.com/military-transition-guide.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>Transition Guide</a>
+        <a href="https://veterancareerpath.com/privacy-policy.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>Privacy</a>
+        <a href="https://veterancareerpath.com/contact.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>Contact</a>
+      </div>
     </>
   );
 }

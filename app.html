@@ -50,7 +50,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-     const firebaseConfig = {
+      const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -486,17 +486,6 @@ const BRANCH_QUALS = {
       { code:"7P", desc:"Physical Security" },
       { code:"8L", desc:"Interagency Support" },
       { code:"9R", desc:"Drill Sergeant" },
-    { code:"5W", desc:"Counterintelligence Agent" },
-    { code:"4X", desc:"Equal Opportunity Advisor" },
-    { code:"2G", desc:"Combatives Level I" },
-    { code:"5H", desc:"Master Fitness Trainer" },
-    { code:"4V", desc:"SHARP/SARC Coordinator" },
-    { code:"3C", desc:"Unit Ministry Team" },
-    { code:"2R", desc:"Retention/Career Counselor" },
-    { code:"9P", desc:"Airborne Ranger" },
-    { code:"4D", desc:"Master Resilience Trainer" },
-    { code:"5J", desc:"Contracting Officer Representative" },
-    { code:"4M", desc:"Medical Platoon Sergeant" },
     ],
     sqiLabel: "Skill Qualification Identifiers (SQI)",
     sqi: [
@@ -551,14 +540,6 @@ const BRANCH_QUALS = {
       // Logistics
       { code:"3043", desc:"Supply Administration and Operations" },
       { code:"3044", desc:"Advanced Supply Marine" },
-    { code:"5811", desc:"Military Police" },
-    { code:"5821", desc:"CID Special Agent" },
-    { code:"4133", desc:"Paralegal Specialist" },
-    { code:"4341", desc:"Combat Correspondent" },
-    { code:"0411", desc:"Maintenance Management Specialist" },
-    { code:"3531", desc:"Motor Vehicle Operator" },
-    { code:"4612", desc:"Nuclear, Biological & Chemical Defense Specialist" },
-    { code:"0491", desc:"Administrative Chief" },
     ],
     sqiLabel: "Billet & Functional Qualifications",
     sqi: [
@@ -625,12 +606,6 @@ const BRANCH_QUALS = {
       { code:"2512", desc:"Aviation Storekeeper" },
       { code:"3501", desc:"Logistics Specialist" },
       { code:"2721", desc:"Equipment Operator" },
-    { code:"8408", desc:"Fleet Marine Force Corpsman (FMF)" },
-    { code:"9585", desc:"Drug and Alcohol Program Advisor (DAPA)" },
-    { code:"5765", desc:"Victim Advocate / SAPR" },
-    { code:"9620", desc:"Career Counselor" },
-    { code:"8406", desc:"Independent Duty Corpsman (IDC)" },
-    { code:"2752", desc:"Personnel Specialist" },
     ],
     sqiLabel: "Warfare Designators",
     sqi: [
@@ -697,14 +672,6 @@ const BRANCH_QUALS = {
       // Training
       { code:"EX", desc:"Formal Training Unit (FTU) Instructor" },
       { code:"XO", desc:"Operations Officer / Exec" },
-    { code:"3P", desc:"Security Forces / Law Enforcement" },
-    { code:"RC", desc:"Recruiter" },
-    { code:"JA", desc:"Judge Advocate (JAG)" },
-    { code:"CH", desc:"Chaplain" },
-    { code:"PA", desc:"Public Affairs Officer" },
-    { code:"FM", desc:"Financial Management" },
-    { code:"LG", desc:"Logistics Officer" },
-    { code:"HR", desc:"Human Resources Advisor" },
     ],
     sqiLabel: "Prefixes & Additional Duty Identifiers",
     sqi: [
@@ -820,44 +787,7 @@ const COMMON_ASI = BRANCH_QUALS["Army"].items;
 const COMMON_SQI = BRANCH_QUALS["Army"].sqi;
 
 const COMMON_ADDL_DUTIES = [
-  "Commander","Executive Officer (XO)","Officer in Charge (OIC)","NCOIC / Staff NCO in Charge",
-  "Watch Officer","Duty Officer","Staff Duty Officer/NCO","Operations Officer","Battle Staff NCO",
-  "Unit Movement Officer","Liaison Officer",
-  "Safety Officer/NCO","Range Safety Officer","Ground Safety Officer","Aviation Safety Officer",
-  "Unit Safety Representative","Master Driver","Master Gunner","Weapons Safety Officer",
-  "Equal Opportunity Leader/Advisor","Sexual Harassment/Assault Response (SHARP) Coordinator",
-  "SAPR Victim Advocate (USMC/Navy/AF)","Family Readiness Officer/NCO",
-  "Family Support Group Leader","Casualty Notification Officer",
-  "Casualty Assistance Calls Officer (CACO)","Transition Assistance Advisor",
-  "Morale Welfare & Recreation (MWR) Officer",
-  "Unit Training Manager","Training Room NCO","Master Training Specialist (Navy)",
-  "Formal Training Unit (FTU) Instructor","Drill Sergeant/Instructor","Physical Fitness Leader",
-  "Master Fitness Trainer","Combatives Instructor","Marksmanship Instructor / Coach",
-  "SERE Instructor","Water Survival Instructor","Rappel Master","Air Assault Instructor",
-  "Airborne Safety NCO",
-  "Unit Armorer","Physical Security Officer","Information Security Officer",
-  "Operations Security (OPSEC) Coordinator","Antiterrorism Officer",
-  "Personnel Security Manager","Classified Material Custodian",
-  "Communications Security (COMSEC) Custodian","NATO Control Officer","Facility Security Officer",
-  "Property Book Officer","Supply Officer (additional duty)","Contracting Officer Representative (COR)",
-  "Unit Deployment Manager","Hazardous Material Control Officer","Petroleum Officer",
-  "Ammunition Handler/NCO","Government Purchase Card (GPC) Holder",
-  "Unit Prevention Leader (UPL / Drug Testing)","Suicide Prevention Coordinator",
-  "Substance Abuse Counselor/Coordinator","Resilience Training Facilitator",
-  "Medical Readiness NCO","Dental Readiness NCO","Health & Wellness Coordinator",
-  "Records Management Officer","Inspector General Representative","Unit Fund Custodian",
-  "Legal Assistance Officer","Privacy Act Coordinator","Public Affairs Representative",
-  "Defense Travel System (DTS) Administrator","Budget Analyst (additional duty)",
-  "Pay and Allowances Advisor","Government Travel Card Program Coordinator",
-  "Telephone Control Officer","Radio Officer/NCO","IT System Administrator (additional duty)",
-  "Cybersecurity Awareness Training Coordinator","NIPR/SIPR Account Manager",
-  "Recruiter","Career Counselor / Retention NCO","Reenlistment NCO","Transition Counselor",
-  "Nuclear Surety Officer","CBRN/NBC Officer/NCO","Environmental Compliance Officer",
-  "Energy Manager","Religious Ministries Support","Chaplain Assistant",
-  "Drug and Alcohol Program Advisor (DAPA)","Congressional Liaison",
-  "Drug Testing Program Coordinator","Inspector General Representative",
-  "Sexual Assault Response Coordinator (SARC)","Voting Assistance Officer",
-  "Financial Readiness Program Coordinator",
+  "Unit Armorer","NBC/CBRN Officer","Equal Opportunity Leader","Safety Officer/NCO","Master Driver","Unit Prevention Leader (UPL/Drug Testing)","Retention NCO","Casualty Notification Officer","Family Readiness Officer/NCO","Sexual Harassment/Assault Response (SHARP) Coordinator","Records Management","Information Security Officer","Operations Security (OPSEC) Coordinator","Physical Security Officer","Inspector General Representative","Unit Fund Custodian","Training Room NCO","Supply Sergeant (additional duty)","Contracting Officer Representative (COR)","Property Book Officer","Master Gunner","Battle Staff NCO","Recruiter/Career Counselor","Casualty Liaison Officer",
 ];
 const UNIVERSITIES = [
   "American Military University","American Public University","Arizona State University",
@@ -993,11 +923,11 @@ const css = `
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-size:15px;}
 .app{min-height:100vh;background:var(--bg);}
-.hdr{text-align:center;padding:clamp(.75rem,3vw,2rem) 1rem clamp(.75rem,3vw,1.75rem);background:linear-gradient(160deg,#0a1628 0%,#1a3a6b 50%,#1e4a8a 100%);position:relative;overflow:hidden;}
+.hdr{text-align:center;padding:2rem 1rem 1.75rem;background:linear-gradient(160deg,#0a1628 0%,#1a3a6b 50%,#1e4a8a 100%);position:relative;overflow:hidden;}
 .hdr::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;}
 .hdr h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4.5vw,3.2rem);letter-spacing:.14em;color:#f5d060;text-shadow:0 2px 16px rgba(0,0,0,.3);position:relative;}
 .hdr p{font-size:.9rem;color:#c0d8f0;letter-spacing:.05em;font-weight:500;position:relative;}
-.tagline{font-size:.78rem;color:#80a8d0;margin-top:.15rem;font-style:italic;position:relative;display:none;}@media(min-width:500px){.tagline{display:block;}}
+.tagline{font-size:.78rem;color:#80a8d0;margin-top:.15rem;font-style:italic;position:relative;}
 .user-bar{background:rgba(10,22,40,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.08);padding:.5rem 1.4rem;display:flex;align-items:center;justify-content:space-between;font-size:.78rem;color:#b0cce8;}
 .user-bar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#d0e8f8;border-radius:6px;padding:.25rem .7rem;cursor:pointer;font-size:.72rem;transition:all .2s;}
 .user-bar button:hover{background:rgba(255,255,255,.18);}
@@ -1967,7 +1897,7 @@ function CareerTab(props) {
               {exp.asi.length>0&&(<>
                 <hr className="sdiv"/>
                 <div style={{marginBottom:"1rem"}}>
-                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>{(BRANCH_QUALS[(milExperiences[0]||{}).branch]||BRANCH_QUALS["Army"]).label} — What They Unlock</div>
+                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Skill Identifiers (ASI) — What They Unlock</div>
                   <div style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
                     {exp.asi.map(a=>(
                       <div key={a.code} style={{display:"flex",gap:".75rem",alignItems:"flex-start",background:"rgba(91,155,213,.06)",border:"1px solid rgba(91,155,213,.18)",borderRadius:"3px",padding:".6rem .85rem"}}>
@@ -2094,6 +2024,28 @@ function CareerTab(props) {
       
         <hr className="sdiv"/>
       
+
+        <div style={{background:"linear-gradient(135deg,#0a1628,#1a3a6b)",border:"2px solid rgba(200,150,10,.3)",borderRadius:"12px",padding:"1.1rem 1.3rem",marginBottom:"1.1rem"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:".75rem"}}>
+            <div>
+              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.15rem",letterSpacing:".08em",color:"#f0c040",marginBottom:".25rem"}}>Not Sure What Career to Pursue?</div>
+              <div style={{fontSize:".8rem",color:"#c0d8f0",lineHeight:1.6,maxWidth:"400px"}}>
+                Take our in-depth career and personality assessment. Built specifically for veterans.
+                {careerTestResults&&<span style={{color:"#90e8b0",fontWeight:600,display:"block",marginTop:".2rem"}}>Last completed: {new Date(careerTestResults.completedAt||Date.now()).toLocaleDateString()}</span>}
+              </div>
+            </div>
+            <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+              <button onClick={()=>{setCareerTestMode("basic");setCareerTestStep(0);setCareerTestAnswers({});setShowCareerTest(true);}}
+                style={{background:"rgba(255,255,255,.1)",color:"#c0d8f0",border:"1px solid rgba(255,255,255,.2)",borderRadius:"8px",padding:".55rem 1rem",fontWeight:600,fontSize:".82rem",cursor:"pointer"}}>
+                Free Test (20 Q)
+              </button>
+              {hasAccess&&<button onClick={()=>{setCareerTestMode("deep");setDeepTestStep(0);setDeepTestAnswers({});setShowCareerTest(true);}}
+                style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",color:"#0a1628",border:"none",borderRadius:"8px",padding:".55rem 1.1rem",fontWeight:700,fontSize:".85rem",cursor:"pointer",whiteSpace:"nowrap"}}>
+                Full Assessment (60 Q) →
+              </button>}
+            </div>
+          </div>
+        </div>
 
         <div className="card">
           <div className="ch"><h3>Refine Your Target (optional)</h3></div>
@@ -2314,25 +2266,8 @@ function MyProfileSaved(props) {
                     @page { size: letter; margin: 1.5cm 1.8cm; }
                     html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
                     body { margin: 0 !important; padding: 0 !important; orphans: 4; widows: 4; }
-                    /* Keep entire job block on same page */
-                    .job-block, [style*="page-break-inside:avoid"] {
-                      page-break-inside: avoid !important;
-                      break-inside: avoid !important;
-                    }
-                    /* Section headers stay with content below them */
-                    .sec-hdr, [style*="page-break-after:avoid"] {
-                      page-break-after: avoid !important;
-                      break-after: avoid !important;
-                    }
-                    /* Global: prevent widows and orphans */
-                    div {
-                      orphans: 4;
-                      widows: 4;
-                    }
-                    .no-break {
-                      page-break-inside: avoid !important;
-                      break-inside: avoid !important;
-                    }
+                    [style*="page-break-inside:avoid"] { page-break-inside: avoid !important; break-inside: avoid !important; }
+                    div { orphans: 4; widows: 4; }
                   }
                 `;
                 let body = "";
@@ -2352,7 +2287,7 @@ function MyProfileSaved(props) {
                   const skills = (d.skills||[]).join(" &bull; ");
                   const certs = (d.certifications||[]).join(" &bull; ");
                   const sectionHdr = (label) =>
-                    "<div style='font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:2px solid #000;padding-bottom:2pt;margin:8pt 0 5pt;page-break-after:avoid;break-after:avoid'>"+label+"</div>";
+                    "<div style='font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:2px solid #000;padding-bottom:2pt;margin:8pt 0 5pt'>"+label+"</div>";
                   if (tmpl === "harvard" || tmpl === "classic") {
                     body = "<div style='font-family:Garamond,Georgia,serif;font-size:11pt;line-height:1.5;padding:1.5cm 2cm'>"
                       +"<div style='text-align:center;margin-bottom:8pt'><div style='font-size:16pt;font-weight:700;font-variant:small-caps;letter-spacing:.06em'>"+d.name+"</div>"
@@ -2447,7 +2382,7 @@ function MyProfileSaved(props) {
                       +"<div style='text-align:center;margin-bottom:10pt'><div style='font-size:15pt;font-weight:700;text-transform:uppercase'>"+dd.name+"</div>"
                       +"<div style='font-size:9pt;color:#333'>"+dd.contact+"</div></div>"
                       +"<div style='margin-bottom:8pt;font-size:9.5pt;line-height:1.65'>"+dd.summary+"</div>"
-                      +(dd.experience||[]).map(j=>"<div style='margin-bottom:8pt;page-break-inside:avoid;break-inside:avoid;orphans:4;widows:4'><div style='display:flex;justify-content:space-between'><strong>"+j.title+"</strong><span style='font-size:9pt;color:#555'>"+j.dates+"</span></div><div style='font-style:italic;font-size:9pt;margin-bottom:2pt'>"+j.employer+"</div>"+(j.bullets||[]).map(b=>"<div style='padding-left:12pt;font-size:9.5pt;margin-bottom:1pt'>&#8226; "+b+"</div>").join("")+"</div>").join("")
+                      +(dd.experience||[]).map(j=>"<div style='margin-bottom:8pt'><div style='display:flex;justify-content:space-between'><strong>"+j.title+"</strong><span style='font-size:9pt;color:#555'>"+j.dates+"</span></div><div style='font-style:italic;font-size:9pt;margin-bottom:2pt'>"+j.employer+"</div>"+(j.bullets||[]).map(b=>"<div style='padding-left:12pt;font-size:9.5pt;margin-bottom:1pt'>&#8226; "+b+"</div>").join("")+"</div>").join("")
                       +(dd.education||[]).map(e=>"<div style='font-size:9.5pt;margin-bottom:4pt'><strong>"+e.degree+"</strong> — "+e.school+" "+(e.year||"")+"</div>").join("")
                       +"</div>";
                   } catch(ex) {
@@ -2644,155 +2579,239 @@ function MyProfileTab(props) {
   </div>);
 }
 
+// ─── CAREER TEST DATA ─────────────────────────────────────────────────────────
+const CAREER_TEST = {
+  sections: [
+    {id:"work_style",title:"Work Style",icon:"🏢",questions:[
+      {id:"ws1",q:"When solving a difficult problem at work you prefer to:",options:["Analyze data and think through solutions methodically","Brainstorm creative ideas and try new approaches","Talk it through with the team and reach consensus","Take charge and make a decision quickly"]},
+      {id:"ws2",q:"Your ideal work environment is:",options:["Quiet and independent with deep focus time","Dynamic with variety and new challenges daily","Collaborative and team-oriented","Fast-paced with clear goals and high stakes"]},
+      {id:"ws3",q:"You feel most accomplished when you:",options:["Master a complex technical skill or subject","Create something new or solve a problem innovatively","Help someone succeed or develop professionally","Lead a team to accomplish a difficult goal"]},
+      {id:"ws4",q:"How do you prefer to receive direction?",options:["Clear written procedures and standards to follow","Big picture goals with freedom to determine how","Regular check-ins and collaborative planning","Clear mission and full authority to execute"]}
+    ]},
+    {id:"strengths",title:"Core Strengths",icon:"💪",questions:[
+      {id:"st1",q:"People who served with you would say your greatest strength was:",options:["Technical expertise and precision in everything","Creativity and innovative thinking under pressure","Empathy and ability to develop and retain people","Leadership presence and mission execution"]},
+      {id:"st2",q:"In the military you were most valued for:",options:["Technical or specialized skills and knowledge","Planning, logistics, and systems thinking","Training, mentoring, and building unit cohesion","Operational leadership and command decisions"]},
+      {id:"st3",q:"When something goes wrong your instinct is to:",options:["Diagnose root cause methodically before acting","Improvise and adapt quickly to the situation","Rally the team and maintain morale","Take control and execute a fix immediately"]},
+      {id:"st4",q:"You are most energized by:",options:["Mastering something complex and difficult","Building or creating something from nothing","Making a real difference in someone's life","Competing, winning, and exceeding targets"]}
+    ]},
+    {id:"values",title:"Work Values",icon:"⭐",questions:[
+      {id:"va1",q:"What matters most to you in a civilian career?",options:["Job security, benefits, and predictable stability","Creative freedom and ability to innovate freely","Meaningful work that helps people directly","Advancement, income growth, and recognition"]},
+      {id:"va2",q:"How important is purpose in your work?",options:["Critical, I must fully believe in what I do","Important but I find meaning through good people","Somewhat, the team matters more than the mission","Less important, results and compensation drive me"]},
+      {id:"va3",q:"Your ideal salary trajectory:",options:["Steady predictable growth is ideal for me","Accept less now for significant upside later","Fair pay so I can focus on meaningful work","Maximize earning potential as rapidly as possible"]},
+      {id:"va4",q:"How do you feel about professional risk?",options:["Prefer stability and low-risk environments","Comfortable with calculated risk for career growth","Willing to take risk if it helps more people","High risk high reward, I thrive under pressure"]}
+    ]},
+    {id:"lifestyle",title:"Lifestyle Fit",icon:"🌍",questions:[
+      {id:"li1",q:"Travel and relocation for work:",options:["No relocation, I want roots and stability","Some travel is fine, no major relocation","Open to relocation for the right opportunity","Go wherever the mission requires, fully adaptable"]},
+      {id:"li2",q:"Work-life balance priority:",options:["Critical, predictable hours are non-negotiable","Important but I can flex when the work demands it","Secondary when the mission is truly meaningful","Less of a concern, I am wired to work hard and win"]},
+      {id:"li3",q:"Remote versus in-person work preference:",options:["Fully remote, I work best independently","Hybrid, best of both worlds for me","In-person, I need team energy and collaboration","Wherever the role requires, I adapt fully"]},
+      {id:"li4",q:"Continued education or certification appetite:",options:["Already credentialed and ready to execute now","Open to short certification programs","Willing to pursue a full degree if needed","Ready to invest years in advanced education"]}
+    ]},
+    {id:"personality",title:"Personality",icon:"🧠",questions:[
+      {id:"pe1",q:"In a group setting you naturally:",options:["Observe carefully then speak with precision","Jump in with ideas and energy","Listen and support others around you","Step up to lead or direct the group"]},
+      {id:"pe2",q:"Your free time typically involves:",options:["Learning, reading, researching on your own","Creating, building, writing, or making things","Connecting with family and people you care about","Competing, training, or chasing personal goals"]},
+      {id:"pe3",q:"When receiving feedback or criticism you:",options:["Analyze it methodically and improve systematically","Take what is useful and move on quickly","Take it personally but grow from it over time","Want it direct and act on it immediately"]},
+      {id:"pe4",q:"Your communication style at work is:",options:["Precise and detailed, you say exactly what you mean","Expressive and persuasive with others","Warm, empathetic, and collaborative by nature","Direct, confident, and results-focused always"]}
+    ]}
+  ]
+};
+
+// 60-Question Deep Assessment (Paid)
+const DEEP_CAREER_TEST = {
+  dimensions: [
+    {id:"realistic",title:"Hands-On and Technical",icon:"🔧",color:"#1a5c9a",
+     desc:"Work with tools, systems, equipment, and physical environments",
+     questions:[
+       {id:"r1",q:"I enjoy working with tools, machinery, vehicles, or physical equipment"},
+       {id:"r2",q:"I prefer seeing concrete, tangible results from my work"},
+       {id:"r3",q:"I am comfortable with physical, outdoor, or operational work environments"},
+       {id:"r4",q:"I enjoy maintaining, repairing, or building things"},
+       {id:"r5",q:"I like understanding how mechanical or physical systems work"},
+       {id:"r6",q:"I prefer practical hands-on solutions over theoretical approaches"},
+       {id:"r7",q:"I am drawn to technical trades, engineering, or skilled craft work"},
+       {id:"r8",q:"I enjoy structured tasks with clear, established procedures to follow"},
+       {id:"r9",q:"I am patient with repetitive or detail-oriented physical tasks"},
+       {id:"r10",q:"I take pride in precision and doing physical work to a high standard"}
+     ]},
+    {id:"investigative",title:"Analytical and Research-Oriented",icon:"🔬",color:"#6a2a9a",
+     desc:"Research, analyze, investigate, and solve complex problems",
+     questions:[
+       {id:"i1",q:"I enjoy researching and investigating complex or ambiguous problems"},
+       {id:"i2",q:"I like working with data, statistics, intelligence, or analytical tools"},
+       {id:"i3",q:"I am drawn to science, technology, engineering, or math fields"},
+       {id:"i4",q:"I enjoy solving puzzles or figuring out how complex systems work"},
+       {id:"i5",q:"I prefer thinking deeply through problems before taking action"},
+       {id:"i6",q:"I enjoy reading, self-directed learning, and intellectual challenge"},
+       {id:"i7",q:"I am comfortable working with abstract concepts, theories, and models"},
+       {id:"i8",q:"I like identifying patterns and drawing conclusions from complex data"},
+       {id:"i9",q:"I enjoy tasks that require precision, rigor, and careful reasoning"},
+       {id:"i10",q:"I value accuracy and thoroughness over speed in my work"}
+     ]},
+    {id:"artistic",title:"Creative and Expressive",icon:"🎨",color:"#8a3a5a",
+     desc:"Create, design, express, and work in flexible unstructured environments",
+     questions:[
+       {id:"a1",q:"I enjoy creative work such as writing, design, media, or storytelling"},
+       {id:"a2",q:"I like environments with minimal rigid rules and creative freedom"},
+       {id:"a3",q:"I express myself better through creating things than following procedures"},
+       {id:"a4",q:"I am drawn to communication, public affairs, marketing, or media roles"},
+       {id:"a5",q:"I enjoy brainstorming new ideas and envisioning things differently"},
+       {id:"a6",q:"I find conventional or strictly structured work environments limiting"},
+       {id:"a7",q:"I like roles that let me craft messages, narratives, or visual content"},
+       {id:"a8",q:"I am comfortable with ambiguity when it gives me creative latitude"},
+       {id:"a9",q:"I see myself as more imaginative and expressive than methodical"},
+       {id:"a10",q:"I am energized by projects where I can put my personal stamp on things"}
+     ]},
+    {id:"social",title:"People-Oriented and Helping",icon:"🤝",color:"#1a7a40",
+     desc:"Help, teach, counsel, and work directly with people every day",
+     questions:[
+       {id:"s1",q:"I enjoy helping others solve personal or professional problems"},
+       {id:"s2",q:"I am energized by working directly with people on a daily basis"},
+       {id:"s3",q:"I find deep satisfaction in teaching, training, or mentoring others"},
+       {id:"s4",q:"I am a natural listener and people come to me for guidance"},
+       {id:"s5",q:"I care deeply about the wellbeing and success of the people I work with"},
+       {id:"s6",q:"I like working in healthcare, education, social services, or nonprofit roles"},
+       {id:"s7",q:"I am comfortable managing interpersonal conflict and difficult conversations"},
+       {id:"s8",q:"I prefer collaborative team work over working independently"},
+       {id:"s9",q:"I feel genuinely fulfilled when someone I helped succeeds or grows"},
+       {id:"s10",q:"I enjoy building long-term relationships built on trust and care"}
+     ]},
+    {id:"enterprising",title:"Leadership and Business-Driven",icon:"🎯",color:"#c8960a",
+     desc:"Lead teams, drive results, persuade, and build organizations",
+     questions:[
+       {id:"e1",q:"I enjoy leading teams and being fully responsible for outcomes"},
+       {id:"e2",q:"I am comfortable making high-stakes decisions with incomplete information"},
+       {id:"e3",q:"I like persuading, negotiating, and influencing people and situations"},
+       {id:"e4",q:"I am driven by competition and achieving measurable results"},
+       {id:"e5",q:"I enjoy starting new initiatives, ventures, or programs from scratch"},
+       {id:"e6",q:"I set ambitious goals and hold myself and others accountable to them"},
+       {id:"e7",q:"I am comfortable presenting to groups and speaking in high-visibility settings"},
+       {id:"e8",q:"I am motivated by earning potential, advancement, and financial growth"},
+       {id:"e9",q:"I am willing to take calculated risks to achieve bigger outcomes"},
+       {id:"e10",q:"I thrive in fast-paced, high-stakes environments with real consequences"}
+     ]},
+    {id:"conventional",title:"Organized and Systems-Oriented",icon:"📋",color:"#2a7090",
+     desc:"Organize, manage, administrate, and maintain structured systems",
+     questions:[
+       {id:"c1",q:"I like following established procedures, regulations, and systems"},
+       {id:"c2",q:"I prefer organized, structured work over ambiguous situations"},
+       {id:"c3",q:"I enjoy managing records, data, files, and documentation accurately"},
+       {id:"c4",q:"I take pride in accuracy, attention to detail, and thorough follow-through"},
+       {id:"c5",q:"I am comfortable working with numbers, budgets, or financial systems"},
+       {id:"c6",q:"I like having clearly defined expectations, roles, and responsibilities"},
+       {id:"c7",q:"I plan ahead rather than responding to situations as they arise"},
+       {id:"c8",q:"I find satisfaction in completing checklists and meeting every deadline"},
+       {id:"c9",q:"I am reliable, consistent, methodical, and thorough in everything I do"},
+       {id:"c10",q:"I am comfortable with administrative, compliance, or coordination work"}
+     ]}
+  ]
+};
+
+// Score scale-based deep test answers (1-5 per question)
+function getDeepProfile(answers) {
+  const dimScores = {};
+  DEEP_CAREER_TEST.dimensions.forEach(dim => {
+    const vals = dim.questions.map(q => parseInt(answers[q.id]) || 3);
+    dimScores[dim.id] = Math.round((vals.reduce((a,b)=>a+b,0)/vals.length)*20);
+  });
+  const sorted = Object.entries(dimScores).sort((a,b)=>b[1]-a[1]);
+  return { scores: dimScores, primary: sorted[0][0], secondary: sorted[1][0], tertiary: sorted[2][0] };
+}
+
+function getCareerTestProfile(answers) {
+  let a=0,c=0,s=0,l=0;
+  Object.values(answers).forEach(v => { if(v===0)a++; else if(v===1)c++; else if(v===2)s++; else l++; });
+  const t=Math.max(1,a+c+s+l), p=x=>Math.round((x/t)*100);
+  const scores=[a,c,s,l], lbs=["Analytical","Creative","Social","Leadership"];
+  const srt=[...scores].map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v);
+  return {analytical:p(a),creative:p(c),social:p(s),leadership:p(l),primary:lbs[srt[0].i],secondary:lbs[srt[1].i]};
+}
+
 
 const MOS_CODES = {
   "Army": [
-    {code:"11A",title:"Infantry Officer"},{code:"11B",title:"Infantryman"},{code:"11C",title:"Indirect Fire Infantryman"},{code:"11Z",title:"Infantry Senior Sergeant"},
-    {code:"12A",title:"Engineer Officer"},{code:"12B",title:"Combat Engineer"},{code:"12C",title:"Bridge Crewmember"},{code:"12D",title:"Diver"},{code:"12G",title:"Quarrying Specialist"},{code:"12H",title:"Construction Engineering Supervisor"},{code:"12K",title:"Plumber"},{code:"12M",title:"Firefighter"},{code:"12N",title:"Horizontal Construction Engineer"},{code:"12P",title:"Prime Power Production Specialist"},{code:"12Q",title:"Transmission & Distribution Specialist"},{code:"12R",title:"Interior Electrician"},{code:"12T",title:"Technical Engineer"},{code:"12W",title:"Carpentry & Masonry Specialist"},{code:"12Y",title:"Geospatial Engineer"},
-    {code:"13A",title:"Field Artillery Officer"},{code:"13B",title:"Cannon Crewmember"},{code:"13D",title:"Field Artillery Automated Tactical Data Systems Specialist"},{code:"13E",title:"Cannon Fire Direction Specialist"},{code:"13F",title:"Fire Support Specialist"},{code:"13J",title:"Fire Control Specialist"},{code:"13M",title:"Multiple Launch Rocket System Crewmember"},{code:"13P",title:"MLRS Operations/Fire Direction"},{code:"13R",title:"Field Artillery Firefinder Radar Operator"},{code:"13T",title:"Field Artillery Surveyor/Meteorological Crewmember"},{code:"13Z",title:"Field Artillery Senior Sergeant"},
-    {code:"14A",title:"Air Defense Artillery Officer"},{code:"14E",title:"Patriot Fire Control Enhanced Operator/Maintainer"},{code:"14G",title:"Air Defense Battle Management System Operator"},{code:"14H",title:"Air Defense Enhanced Early Warning System Operator"},{code:"14P",title:"Air & Missile Defense Crewmember"},{code:"14S",title:"Avenger Crewmember"},{code:"14T",title:"Patriot Launching Station Enhanced Operator/Maintainer"},{code:"14Z",title:"Air Defense Artillery Senior Sergeant"},
-    {code:"15A",title:"Aviation Officer"},{code:"15B",title:"Aircraft Powerplant Repairer"},{code:"15C",title:"Aviation Meteorological Equipment Repairer"},{code:"15D",title:"Aircraft Powertrain Repairer"},{code:"15E",title:"Unmanned Aircraft Systems Repairer"},{code:"15F",title:"Aircraft Electrician"},{code:"15G",title:"Aircraft Structural Repairer"},{code:"15H",title:"Aircraft Pneudraulics Repairer"},{code:"15J",title:"OH-58D Armament/Electrical/Avionics Systems Repairer"},{code:"15K",title:"Aircraft Components Repair Supervisor"},{code:"15M",title:"UH-1 Helicopter Repairer"},{code:"15N",title:"Avionic Mechanic"},{code:"15P",title:"Aviation Operations Specialist"},{code:"15Q",title:"Air Traffic Control Operator"},{code:"15R",title:"AH-64 Attack Helicopter Repairer"},{code:"15S",title:"OH-58D/ARH Scout Helicopter Repairer"},{code:"15T",title:"UH-60 Helicopter Repairer"},{code:"15U",title:"CH-47 Helicopter Repairer"},{code:"15W",title:"Unmanned Aircraft Systems Operator"},{code:"15X",title:"AH-64A Armament/Electrical/Avionics Systems Repairer"},{code:"15Y",title:"AH-64D Armament/Electrical/Avionics Systems Repairer"},{code:"15Z",title:"Aircraft Maintenance Senior Sergeant"},
-    {code:"17A",title:"Cyber Warfare Officer"},{code:"17C",title:"Cyber Operations Specialist"},{code:"17E",title:"Electronic Warfare Specialist"},
-    {code:"18A",title:"Special Forces Officer"},{code:"18B",title:"Special Forces Weapons Sergeant"},{code:"18C",title:"Special Forces Engineer Sergeant"},{code:"18D",title:"Special Forces Medical Sergeant"},{code:"18E",title:"Special Forces Communications Sergeant"},{code:"18F",title:"Special Forces Assistant Operations & Intelligence Sergeant"},{code:"18X",title:"Special Forces Candidate"},{code:"18Z",title:"Special Forces Senior Sergeant"},
-    {code:"19A",title:"Armor Officer"},{code:"19D",title:"Cavalry Scout"},{code:"19K",title:"M1 Armor Crewman"},{code:"19Z",title:"Armor Senior Sergeant"},
-    {code:"25A",title:"Signal Officer"},{code:"25B",title:"IT Specialist"},{code:"25C",title:"Radio Operator-Maintainer"},{code:"25D",title:"Cyber Network Defender"},{code:"25E",title:"Electromagnetic Spectrum Manager"},{code:"25F",title:"Network Switching Systems Operator-Maintainer"},{code:"25H",title:"Cable Systems Installer-Maintainer"},{code:"25J",title:"Electronic Warfare Specialist"},{code:"25L",title:"Cable Systems Installer-Maintainer"},{code:"25M",title:"Multimedia Illustrator"},{code:"25N",title:"Nodal Network Systems Operator-Maintainer"},{code:"25P",title:"Microwave Systems Operator-Maintainer"},{code:"25Q",title:"Multichannel Transmission Systems Operator-Maintainer"},{code:"25R",title:"Visual Information Equipment Operator-Maintainer"},{code:"25S",title:"Satellite Communication Systems Operator-Maintainer"},{code:"25T",title:"Satellite/Microwave Systems Repairer"},{code:"25U",title:"Signal Support Systems Specialist"},{code:"25V",title:"Combat Documentation/Production Specialist"},{code:"25W",title:"Telecommunications Operations Chief"},{code:"25X",title:"Chief Signal NCO"},{code:"25Z",title:"Visual Information Operations Chief"},
-    {code:"27A",title:"Judge Advocate General Officer"},{code:"27D",title:"Paralegal Specialist"},
-    {code:"29E",title:"Electronic Warfare Senior Sergeant"},
-    {code:"31A",title:"Military Police Officer"},{code:"31B",title:"Military Police"},{code:"31D",title:"Criminal Investigation Special Agent"},{code:"31E",title:"Internment/Resettlement Specialist"},{code:"31K",title:"Military Working Dog Handler"},{code:"31Z",title:"Military Police Senior Sergeant"},
-    {code:"35A",title:"Military Intelligence Officer"},{code:"35D",title:"All-Source Intelligence Officer"},{code:"35E",title:"Counterintelligence Agent"},{code:"35F",title:"Intelligence Analyst"},{code:"35G",title:"Geospatial Intelligence Imagery Analyst"},{code:"35H",title:"Collection Manager"},{code:"35I",title:"Counterintelligence Agent"},{code:"35L",title:"Counterintelligence Agent"},{code:"35M",title:"Human Intelligence Collector"},{code:"35N",title:"Signals Intelligence Analyst"},{code:"35P",title:"Cryptologic Linguist"},{code:"35Q",title:"Cryptologic Network Warfare Specialist"},{code:"35S",title:"Signals Intelligence Analyst"},{code:"35T",title:"Military Intelligence Systems Maintainer/Integrator"},{code:"35V",title:"Imagery Analyst"},{code:"35W",title:"Electronic Warfare Specialist"},{code:"35X",title:"Intelligence Senior Sergeant"},{code:"35Y",title:"Chief Intelligence Sergeant"},{code:"35Z",title:"Signals Intelligence (SIGINT) Senior Sergeant/Chief"},
-    {code:"36A",title:"Financial Management Officer"},{code:"36B",title:"Financial Management Technician"},
-    {code:"37A",title:"Psychological Operations Officer"},{code:"37F",title:"Psychological Operations Specialist"},
-    {code:"38A",title:"Civil Affairs Officer"},{code:"38B",title:"Civil Affairs Specialist"},
-    {code:"42A",title:"Human Resources Specialist"},{code:"42B",title:"Human Resources Officer"},{code:"42F",title:"Human Resources Information Systems Manager"},
-    {code:"46A",title:"Public Affairs Officer"},{code:"46Q",title:"Public Affairs Specialist"},{code:"46R",title:"Public Affairs Broadcast Specialist"},
-    {code:"51A",title:"Acquisition Officer"},
-    {code:"52D",title:"Power Generation Equipment Repairer"},
-    {code:"56A",title:"Chaplain"},{code:"56M",title:"Religious Affairs Specialist"},
-    {code:"60A",title:"Operational Medicine Officer"},{code:"60B",title:"Nuclear Medicine Officer"},
-    {code:"61A",title:"Internist"},{code:"61B",title:"General Surgeon"},
-    {code:"62A",title:"Emergency Physician"},
-    {code:"63A",title:"General Dentist"},{code:"63B",title:"Prosthodontist"},
-    {code:"64A",title:"Veterinarian"},
-    {code:"65A",title:"Occupational Therapist"},
-    {code:"66A",title:"Medical-Surgical Nurse"},{code:"66B",title:"Public Health Nurse"},{code:"66C",title:"Psychiatric/Mental Health Nurse"},{code:"66E",title:"Perioperative Nurse"},{code:"66F",title:"Nurse Anesthetist"},{code:"66G",title:"Obstetrics/Gynecology Nurse"},{code:"66H",title:"Medical-Surgical Nurse"},{code:"66N",title:"Registered Nurse"},
-    {code:"67A",title:"Medical Operations Officer"},{code:"67D",title:"Physical Therapist"},{code:"67E",title:"Podiatrist"},{code:"67F",title:"Optometrist"},{code:"67G",title:"Physician Assistant"},{code:"67J",title:"Aeromedical Physician Assistant"},
-    {code:"68A",title:"Biomedical Equipment Specialist"},{code:"68B",title:"Orthopedic Specialist"},{code:"68C",title:"Practical Nursing Specialist"},{code:"68D",title:"Operating Room Specialist"},{code:"68E",title:"Dental Specialist"},{code:"68F",title:"Physical Therapy Specialist"},{code:"68G",title:"Patient Administration Specialist"},{code:"68H",title:"Optical Laboratory Specialist"},{code:"68J",title:"Medical Logistics Specialist"},{code:"68K",title:"Medical Laboratory Specialist"},{code:"68L",title:"Occupational Therapy Specialist"},{code:"68M",title:"Nutrition Care Specialist"},{code:"68N",title:"Cardiovascular Specialist"},{code:"68P",title:"Radiology Specialist"},{code:"68Q",title:"Pharmacy Specialist"},{code:"68R",title:"Veterinary Food Inspection Specialist"},{code:"68S",title:"Preventive Medicine Specialist"},{code:"68T",title:"Animal Care Specialist"},{code:"68U",title:"Ear, Nose & Throat Specialist"},{code:"68V",title:"Respiratory Specialist"},{code:"68W",title:"Combat Medic Specialist"},{code:"68X",title:"Mental Health Specialist"},{code:"68Y",title:"Eye Specialist"},{code:"68Z",title:"Chief Medical NCO"},
-    {code:"74A",title:"Chemical & Nuclear Officer"},{code:"74B",title:"Chemical Operations Specialist"},
-    {code:"79A",title:"Retention/Transition NCO"},{code:"79R",title:"Recruiter"},{code:"79S",title:"Career Counselor"},{code:"79T",title:"Recruiting & Retention NCO"},{code:"79V",title:"Retention & Transition NCO"},
-    {code:"88A",title:"Transportation Officer"},{code:"88H",title:"Cargo Specialist"},{code:"88K",title:"Watercraft Operator"},{code:"88L",title:"Watercraft Engineer"},{code:"88M",title:"Motor Transport Operator"},{code:"88N",title:"Transportation Management Coordinator"},{code:"88P",title:"Railway Equipment Repairer"},{code:"88T",title:"Railway Section Repairer"},{code:"88U",title:"Railway Operations Chief"},{code:"88Z",title:"Transportation Senior Sergeant"},
-    {code:"89A",title:"Ammunition Stock Control & Accounting Specialist"},{code:"89B",title:"Ammunition Specialist"},{code:"89D",title:"Explosive Ordnance Disposal Specialist"},
-    {code:"91A",title:"M1 Abrams Tank System Maintainer"},{code:"91B",title:"Wheeled Vehicle Mechanic"},{code:"91C",title:"Utilities Equipment Repairer"},{code:"91D",title:"Power Generation Equipment Repairer"},{code:"91E",title:"Allied Trades Specialist"},{code:"91F",title:"Small Arms/Artillery Repairer"},{code:"91G",title:"Fire Control Repairer"},{code:"91H",title:"Track Vehicle Repairer"},{code:"91J",title:"Quartermaster & Chemical Equipment Repairer"},{code:"91L",title:"Construction Equipment Repairer"},{code:"91M",title:"Bradley Fighting Vehicle System Maintainer"},{code:"91P",title:"Artillery Mechanic"},{code:"91S",title:"Stryker Systems Maintainer"},{code:"91X",title:"Maintenance Supervisor"},{code:"91Z",title:"Mechanical Maintenance Supervisor"},
-    {code:"92A",title:"Automated Logistical Specialist"},{code:"92F",title:"Petroleum Supply Specialist"},{code:"92G",title:"Culinary Specialist"},{code:"92L",title:"Petroleum Laboratory Specialist"},{code:"92M",title:"Mortuary Affairs Specialist"},{code:"92R",title:"Parachute Rigger"},{code:"92S",title:"Shower/Laundry & Clothing Repair Specialist"},{code:"92W",title:"Water Treatment Specialist"},{code:"92Y",title:"Unit Supply Specialist"},{code:"92Z",title:"Senior Noncommissioned Logistics Officer"},
-    {code:"94A",title:"Land Combat Electronic Missile System Repairer"},{code:"94D",title:"Air Traffic Control Equipment Repairer"},{code:"94E",title:"Radio & Communications Security Repairer"},{code:"94F",title:"Special Electronic Devices Repairer"},{code:"94H",title:"Test, Measurement & Diagnostic Equipment Support Specialist"},{code:"94M",title:"Radar Repairer"},{code:"94P",title:"Multiple Launch Rocket System Repairer"},{code:"94R",title:"Avionic and Survivability Equipment Repairer"},{code:"94S",title:"Patriot System Repairer"},{code:"94T",title:"Avenger System Repairer"},{code:"94W",title:"Electronic Maintenance Chief"},{code:"94Y",title:"Integrated Family of Test Equipment Operator & Maintainer"},{code:"94Z",title:"Senior Electronic Maintenance Sergeant"}
+    {code:"11B",title:"Infantryman"},{code:"11C",title:"Indirect Fire Infantryman"},{code:"12B",title:"Combat Engineer"},{code:"12M",title:"Firefighter"},{code:"12N",title:"Horizontal Construction Engineer"},{code:"12T",title:"Technical Engineer"},{code:"12W",title:"Carpentry and Masonry Specialist"},
+    {code:"13B",title:"Cannon Crewmember"},{code:"13F",title:"Fire Support Specialist"},{code:"13M",title:"MLRS Crewmember"},{code:"13R",title:"Field Artillery Radar Operator"},
+    {code:"14S",title:"Avenger Crewmember"},{code:"14T",title:"Patriot Launching Station Operator"},
+    {code:"15B",title:"Aircraft Powerplant Repairer"},{code:"15F",title:"Aircraft Electrician"},{code:"15P",title:"Aviation Operations Specialist"},{code:"15Q",title:"Air Traffic Control Operator"},{code:"15R",title:"AH-64 Repairer"},{code:"15T",title:"UH-60 Repairer"},{code:"15U",title:"CH-47 Repairer"},{code:"15W",title:"Unmanned Aircraft Systems Operator"},
+    {code:"17C",title:"Cyber Operations Specialist"},{code:"17E",title:"Electronic Warfare Specialist"},
+    {code:"18B",title:"SF Weapons Sergeant"},{code:"18C",title:"SF Engineer Sergeant"},{code:"18D",title:"SF Medical Sergeant"},{code:"18E",title:"SF Communications Sergeant"},
+    {code:"19D",title:"Cavalry Scout"},{code:"19K",title:"M1 Armor Crewman"},
+    {code:"25B",title:"IT Specialist"},{code:"25D",title:"Cyber Network Defender"},{code:"25E",title:"Electromagnetic Spectrum Manager"},{code:"25M",title:"Multimedia Illustrator"},{code:"25N",title:"Nodal Network Systems Operator"},{code:"25Q",title:"Multichannel Transmission Systems Operator"},{code:"25S",title:"Satellite Communication Systems Operator"},{code:"25U",title:"Signal Support Systems Specialist"},{code:"25V",title:"Combat Documentation/Production Specialist"},
+    {code:"27D",title:"Paralegal Specialist"},
+    {code:"31B",title:"Military Police"},{code:"31D",title:"Criminal Investigation Special Agent"},{code:"31E",title:"Internment/Resettlement Specialist"},{code:"31K",title:"Military Working Dog Handler"},
+    {code:"35F",title:"Intelligence Analyst"},{code:"35G",title:"Geospatial Intelligence Analyst"},{code:"35L",title:"Counterintelligence Agent"},{code:"35M",title:"Human Intelligence Collector"},{code:"35N",title:"Signals Intelligence Analyst"},{code:"35P",title:"Cryptologic Linguist"},{code:"35W",title:"Electronic Warfare Specialist"},
+    {code:"36B",title:"Financial Management Technician"},
+    {code:"37F",title:"Psychological Operations Specialist"},
+    {code:"38B",title:"Civil Affairs Specialist"},
+    {code:"42A",title:"Human Resources Specialist"},
+    {code:"46Q",title:"Public Affairs Specialist"},
+    {code:"56M",title:"Religious Affairs Specialist"},
+    {code:"68A",title:"Biomedical Equipment Specialist"},{code:"68B",title:"Orthopedic Specialist"},{code:"68C",title:"Practical Nursing Specialist"},{code:"68D",title:"Operating Room Specialist"},{code:"68E",title:"Dental Specialist"},{code:"68G",title:"Patient Administration Specialist"},{code:"68J",title:"Medical Logistics Specialist"},{code:"68K",title:"Medical Laboratory Specialist"},{code:"68M",title:"Nutrition Care Specialist"},{code:"68P",title:"Radiology Specialist"},{code:"68Q",title:"Pharmacy Specialist"},{code:"68S",title:"Preventive Medicine Specialist"},{code:"68W",title:"Combat Medic Specialist"},{code:"68X",title:"Mental Health Specialist"},
+    {code:"74D",title:"Chemical Operations Specialist"},
+    {code:"79R",title:"Recruiter"},{code:"79S",title:"Career Counselor"},
+    {code:"88H",title:"Cargo Specialist"},{code:"88M",title:"Motor Transport Operator"},{code:"88N",title:"Transportation Management Coordinator"},
+    {code:"89B",title:"Ammunition Specialist"},{code:"89D",title:"EOD Specialist"},
+    {code:"91B",title:"Wheeled Vehicle Mechanic"},{code:"91D",title:"Power Generation Equipment Repairer"},{code:"91F",title:"Small Arms Repairer"},{code:"91H",title:"Track Vehicle Repairer"},{code:"91M",title:"Bradley Fighting Vehicle Maintainer"},{code:"91S",title:"Stryker Systems Maintainer"},
+    {code:"92A",title:"Automated Logistical Specialist"},{code:"92F",title:"Petroleum Supply Specialist"},{code:"92G",title:"Culinary Specialist"},{code:"92R",title:"Parachute Rigger"},{code:"92W",title:"Water Treatment Specialist"},{code:"92Y",title:"Unit Supply Specialist"}
   ],
   "Marine Corps": [
-    {code:"0100",title:"Basic Admin & Finance Marine"},{code:"0111",title:"Administrative Specialist"},{code:"0121",title:"Personnel and Human Resources Specialist"},{code:"0161",title:"Postal Clerk"},
-    {code:"0200",title:"Intelligence Marine"},{code:"0211",title:"Counterintelligence/HUMINT Specialist"},{code:"0231",title:"Intelligence Specialist"},{code:"0241",title:"Imagery Analysis Specialist"},{code:"0261",title:"Geographic Intelligence Specialist"},{code:"0291",title:"Intelligence Chief"},
-    {code:"0300",title:"Basic Infantry Marine"},{code:"0311",title:"Rifleman"},{code:"0313",title:"Light Armored Reconnaissance Marine"},{code:"0321",title:"Reconnaissance Marine"},{code:"0331",title:"Machine Gunner"},{code:"0341",title:"Mortarman"},{code:"0351",title:"Infantry Assaultman"},{code:"0352",title:"Anti-Tank Missileman"},{code:"0365",title:"Infantry Squad Leader"},{code:"0369",title:"Infantry Unit Leader"},
-    {code:"0400",title:"Basic Logistics/Embarkation Marine"},{code:"0411",title:"Maintenance Management Specialist"},{code:"0431",title:"Logistics/Embarkation Specialist"},{code:"0451",title:"Airborne & Air Delivery Specialist"},
-    {code:"0500",title:"Marine Gunner"},{code:"0511",title:"MAGTF Planning Specialist"},
-    {code:"0600",title:"Basic Communications Marine"},{code:"0612",title:"Field Wireman"},{code:"0613",title:"Cable Systems & Wiring Specialist"},{code:"0614",title:"Telephone Technician"},{code:"0621",title:"Field Radio Operator"},{code:"0623",title:"Radio Chief"},{code:"0627",title:"Ground Mobile Forces Satellite Operator"},{code:"0631",title:"Network Administrator"},{code:"0651",title:"Cyber Network Operator"},{code:"0689",title:"Communications Chief"},
-    {code:"0700",title:"Basic Airborne/Parachute Marine"},{code:"0721",title:"Reconnaissance Man (Parachute/Combatant Dive Qualified)"},
-    {code:"0800",title:"Basic Field Artillery Marine"},{code:"0811",title:"Field Artillery Cannoneer"},{code:"0842",title:"Field Artillery Radar Operator"},{code:"0844",title:"Field Artillery Fire Control Marine"},{code:"0847",title:"Artillery Meteorological Man"},{code:"0848",title:"Artillery Survey Man"},{code:"0861",title:"Fire Support Marine"},{code:"0871",title:"Field Artillery Sensor Support Marine"},
-    {code:"1100",title:"Utilities Marine"},{code:"1141",title:"Electrician"},{code:"1142",title:"Electrical Equipment Repairer"},{code:"1161",title:"Refrigeration Mechanic"},
-    {code:"1200",title:"Basic Engineer, Construction, Facilities & Equipment Marine"},{code:"1316",title:"Metal Worker"},{code:"1341",title:"Engineer Equipment Mechanic"},{code:"1345",title:"Engineer Equipment Operator"},{code:"1361",title:"Combat Engineer"},{code:"1371",title:"Combat Engineer"},
-    {code:"1800",title:"Basic Tank & Assault Amphibian Marine"},{code:"1811",title:"Tank Crewman"},{code:"1812",title:"M1A1 Tank Crewman"},{code:"1833",title:"Assault Amphibious Vehicle Crewman"},{code:"1836",title:"Assault Amphibious Vehicle Officer"},
-    {code:"2100",title:"Basic Ordnance Marine"},{code:"2111",title:"Small Arms Repairer/Technician"},{code:"2131",title:"Towed Artillery Systems Technician"},{code:"2141",title:"Assault Amphibious Vehicle Repairer/Technician"},{code:"2146",title:"Main Battle Tank Repairer/Technician"},{code:"2147",title:"Light Armored Vehicle Repairer/Technician"},{code:"2161",title:"Machinist"},{code:"2171",title:"Electro-Optical Ordnance Repairer"},
-    {code:"2300",title:"Basic Ammunition Marine"},{code:"2311",title:"Ammunition Technician"},
-    {code:"2500",title:"Basic Signal Intelligence/Ground Electronic Warfare Marine"},{code:"2621",title:"Special Communications Signals Collection Operator/Analyst"},{code:"2631",title:"Ground Electronic Warfare Operator"},{code:"2641",title:"Cryptologic Linguist"},{code:"2651",title:"Special Intelligence System Administrator/Communicator"},{code:"2671",title:"Arabic Linguist"},{code:"2673",title:"Korean Linguist"},
-    {code:"3000",title:"Basic Supply/Service Marine"},{code:"3043",title:"Supply Administration & Operations Specialist"},{code:"3051",title:"Warehouse Clerk"},{code:"3052",title:"Packaging Specialist"},{code:"3112",title:"Traffic Management Specialist"},{code:"3531",title:"Motor Vehicle Operator"},{code:"3533",title:"Automotive Organizational Mechanic"},{code:"3534",title:"Motor Transport Operations Chief"},
-    {code:"3700",title:"Basic Nuclear, Biological & Chemical Defense Marine"},{code:"3711",title:"NBC Defense Specialist"},
-    {code:"4100",title:"Legal Services"},{code:"4133",title:"Paralegal Specialist"},
-    {code:"4300",title:"Basic Public Affairs Marine"},{code:"4312",title:"Combat Photographer"},{code:"4341",title:"Combat Correspondent"},
-    {code:"4400",title:"Basic Combat Camera Marine"},{code:"4421",title:"Combat Videographer"},
-    {code:"5500",title:"Marine Security Guard"},
-    {code:"5800",title:"Basic Military Police"},{code:"5811",title:"Military Police"},{code:"5821",title:"Criminal Investigation Division Special Agent"},
-    {code:"6000",title:"Basic Aviation Maintenance Marine"},{code:"6046",title:"Aviation Ordnance Systems Technician"},{code:"6048",title:"Flight Equipment Technician"},{code:"6060",title:"Aviation Maintenance Administration Specialist"},{code:"6072",title:"Aircraft Maintenance Chief"},{code:"6081",title:"Quality Assurance Representative"},
-    {code:"6100",title:"Basic Fixed Wing Aircraft Mechanic"},{code:"6113",title:"Fixed-Wing Aircraft Mechanic"},{code:"6123",title:"Fixed-Wing Aircraft Power Plants Mechanic"},{code:"6153",title:"Fixed-Wing Aircraft Airframe Mechanic"},
-    {code:"6200",title:"Basic Helicopter/Tiltrotor Mechanic"},{code:"6213",title:"Helicopter Mechanic"},{code:"6223",title:"Helicopter Power Plants Mechanic"},{code:"6273",title:"Helicopter Airframes Mechanic"},
-    {code:"7200",title:"Basic Airfield Services Marine"},{code:"7212",title:"Low Altitude Air Defense Gunner"},{code:"7242",title:"Aircraft Rescue & Fire Fighter"},
-    {code:"8000",title:"Basic Miscellaneous Officer"},{code:"8001",title:"Infantry Officer"},{code:"8002",title:"Artillery Officer"},{code:"8003",title:"Motor Transport Officer"},
-    {code:"9600",title:"Basic Recruit"}
+    {code:"0111",title:"Administrative Specialist"},{code:"0211",title:"Counterintelligence/HUMINT Specialist"},{code:"0231",title:"Intelligence Specialist"},
+    {code:"0311",title:"Rifleman"},{code:"0321",title:"Reconnaissance Marine"},{code:"0331",title:"Machine Gunner"},{code:"0341",title:"Mortarman"},{code:"0351",title:"Infantry Assaultman"},
+    {code:"0431",title:"Logistics/Embarkation Specialist"},
+    {code:"0621",title:"Field Radio Operator"},{code:"0651",title:"Cyber Network Operator"},
+    {code:"0811",title:"Field Artillery Cannoneer"},{code:"0844",title:"Field Artillery Fire Control Marine"},{code:"0861",title:"Fire Support Marine"},
+    {code:"1141",title:"Electrician"},{code:"1345",title:"Engineer Equipment Operator"},{code:"1371",title:"Combat Engineer"},
+    {code:"1811",title:"Tank Crewman"},{code:"1833",title:"Assault Amphibious Vehicle Crewman"},
+    {code:"2111",title:"Small Arms Repairer"},{code:"2141",title:"AAV Repairer"},
+    {code:"2311",title:"Ammunition Technician"},
+    {code:"3043",title:"Supply Administration Specialist"},{code:"3051",title:"Warehouse Clerk"},{code:"3531",title:"Motor Vehicle Operator"},
+    {code:"3711",title:"NBC Defense Specialist"},
+    {code:"4133",title:"Paralegal Specialist"},{code:"4341",title:"Combat Correspondent"},
+    {code:"5811",title:"Military Police"},{code:"5821",title:"CID Special Agent"},
+    {code:"6046",title:"Aviation Ordnance Systems Technician"},{code:"6213",title:"Helicopter Mechanic"},
+    {code:"7212",title:"LAAD Gunner"},{code:"7242",title:"Aircraft Rescue and Fire Fighter"},
+    {code:"8531",title:"Marksmanship Coach"},{code:"8541",title:"Scout Sniper"}
   ],
   "Navy": [
-    {code:"AB",title:"Aviation Boatswain's Mate"},{code:"AC",title:"Air Traffic Controller"},{code:"AD",title:"Aviation Machinist's Mate"},{code:"AE",title:"Aviation Electrician's Mate"},{code:"AG",title:"Aerographer's Mate"},{code:"AM",title:"Aviation Structural Mechanic"},{code:"AME",title:"Aviation Structural Mechanic (Safety Equipment)"},{code:"AO",title:"Aviation Ordnanceman"},{code:"AS",title:"Aviation Support Equipment Technician"},{code:"AT",title:"Aviation Electronics Technician"},{code:"AW",title:"Naval Aircrewman"},
+    {code:"AB",title:"Aviation Boatswain's Mate"},{code:"AC",title:"Air Traffic Controller"},{code:"AD",title:"Aviation Machinist's Mate"},{code:"AE",title:"Aviation Electrician's Mate"},{code:"AG",title:"Aerographer's Mate"},{code:"AM",title:"Aviation Structural Mechanic"},{code:"AO",title:"Aviation Ordnanceman"},{code:"AT",title:"Aviation Electronics Technician"},{code:"AW",title:"Naval Aircrewman"},
     {code:"BM",title:"Boatswain's Mate"},{code:"BU",title:"Builder"},
-    {code:"CE",title:"Construction Electrician"},{code:"CM",title:"Construction Mechanic"},{code:"CS",title:"Culinary Specialist"},{code:"CSS",title:"Culinary Specialist (Submarine)"},
-    {code:"CTI",title:"Cryptologic Technician (Interpretive)"},{code:"CTM",title:"Cryptologic Technician (Maintenance)"},{code:"CTN",title:"Cryptologic Technician (Networks)"},{code:"CTR",title:"Cryptologic Technician (Collection)"},{code:"CTT",title:"Cryptologic Technician (Technical)"},
+    {code:"CS",title:"Culinary Specialist"},{code:"CTI",title:"Cryptologic Technician (Interpretive)"},{code:"CTN",title:"Cryptologic Technician (Networks)"},{code:"CTR",title:"Cryptologic Technician (Collection)"},{code:"CTT",title:"Cryptologic Technician (Technical)"},
     {code:"DC",title:"Damage Controlman"},{code:"DT",title:"Dental Technician"},
-    {code:"EA",title:"Engineering Aid"},{code:"EM",title:"Electrician's Mate"},{code:"EMN",title:"Electrician's Mate (Nuclear)"},{code:"EN",title:"Engineman"},{code:"EOD",title:"Explosive Ordnance Disposal Technician"},{code:"EO",title:"Equipment Operator"},{code:"ET",title:"Electronics Technician"},{code:"ETN",title:"Electronics Technician (Nuclear)"},
-    {code:"FC",title:"Fire Controlman"},{code:"FCA",title:"Fire Controlman (Aegis)"},{code:"FT",title:"Fire Control Technician"},
-    {code:"GM",title:"Gunner's Mate"},{code:"GS",title:"Gas Turbine Systems Technician"},
+    {code:"EM",title:"Electrician's Mate"},{code:"EN",title:"Engineman"},{code:"EOD",title:"EOD Technician"},{code:"ET",title:"Electronics Technician"},
+    {code:"FC",title:"Fire Controlman"},{code:"GM",title:"Gunner's Mate"},
     {code:"HM",title:"Hospital Corpsman"},{code:"HT",title:"Hull Maintenance Technician"},
-    {code:"IC",title:"Interior Communications Electrician"},{code:"IS",title:"Intelligence Specialist"},{code:"IT",title:"Information Systems Technician"},
-    {code:"LN",title:"Legalman"},{code:"LS",title:"Logistics Specialist"},{code:"LSS",title:"Logistics Specialist (Submarine)"},
-    {code:"MA",title:"Master-at-Arms"},{code:"MC",title:"Mass Communication Specialist"},{code:"MM",title:"Machinist's Mate"},{code:"MMN",title:"Machinist's Mate (Nuclear)"},{code:"MN",title:"Mineman"},{code:"MR",title:"Machinery Repairman"},{code:"MT",title:"Missile Technician"},
-    {code:"MU",title:"Musician"},
-    {code:"ND",title:"Navy Diver"},
-    {code:"OS",title:"Operations Specialist"},
-    {code:"PR",title:"Aircrew Survival Equipmentman"},
-    {code:"QM",title:"Quartermaster"},
-    {code:"RP",title:"Religious Program Specialist"},
-    {code:"SB",title:"Special Warfare Boat Operator"},{code:"SO",title:"Special Warfare Operator (SEAL)"},{code:"STG",title:"Sonar Technician (Surface)"},{code:"STS",title:"Sonar Technician (Submarine)"},{code:"SW",title:"Steelworker"},
-    {code:"TM",title:"Torpedoman's Mate"},
-    {code:"UT",title:"Utilitiesman"},
-    {code:"YN",title:"Yeoman"},{code:"YNS",title:"Yeoman (Submarine)"}
-  ],
-  "Air Force": [
-    {code:"1A0X1",title:"In-Flight Refueling"},{code:"1A1X1",title:"Flight Engineer"},{code:"1A2X1",title:"Aircraft Loadmaster"},{code:"1A3X1",title:"Airborne Mission Systems"},{code:"1A4X1",title:"Airborne Operations"},{code:"1A6X1",title:"Flight Attendant"},{code:"1A7X1",title:"Aerial Gunner"},{code:"1A8X1",title:"Airborne Cryptologic Language Analyst"},{code:"1A9X1",title:"Special Missions Aviation"},
-    {code:"1B4X1",title:"Cyber Warfare Operations"},{code:"1C0X2",title:"Aviation Resource Management"},{code:"1C1X1",title:"Air Traffic Control"},{code:"1C2X1",title:"Combat Control"},{code:"1C3X1",title:"Command Post"},{code:"1C4X1",title:"Tactical Air Control Party"},{code:"1C5X1",title:"Command & Control Battle Management Operations"},{code:"1C6X1",title:"Space Systems Operations"},{code:"1C7X1",title:"Airfield Management"},{code:"1C8X2",title:"Radar, Airfield & Weather Systems"},
-    {code:"1D7X1",title:"Cyberspace Defense Operations"},{code:"1N0X1",title:"All Source Intelligence"},{code:"1N1X1",title:"Geospatial Intelligence"},{code:"1N2X1",title:"Signals Intelligence Analyst"},{code:"1N3X1",title:"Cryptologic Language Analyst"},{code:"1N4X1",title:"Fusion Analyst"},{code:"1N8X1",title:"Targeting Analyst"},
-    {code:"1P0X1",title:"Aircrew Flight Equipment"},{code:"1T0X1",title:"Survival, Evasion, Resistance, Escape (SERE)"},{code:"1T2X1",title:"Pararescue"},{code:"1U0X1",title:"Sensor Operator"},{code:"1W0X1",title:"Weather"},
-    {code:"2A0X1",title:"Avionics Test Station & Components"},{code:"2A2X1",title:"Mobility Air Forces Integrated Communication/Navigation/Mission Systems"},{code:"2A2X2",title:"Mobility Air Forces Integrated Instrument & Flight Control Systems"},{code:"2A2X3",title:"Mobility Air Forces Integrated Electronic Warfare Systems"},{code:"2A3X3",title:"Combat Systems"},{code:"2A3X4",title:"Fighter Aircraft Integrated Avionics"},{code:"2A5X1",title:"Aerospace Maintenance"},{code:"2A5X2",title:"Helicopter/Tiltrotor Aircraft Maintenance"},{code:"2A5X3",title:"Integrated Avionics Systems"},{code:"2A6X1",title:"Aerospace Propulsion"},{code:"2A6X2",title:"Aerospace Ground Equipment"},{code:"2A6X3",title:"Aircrew Egress Systems"},{code:"2A6X4",title:"Aircraft Fuel Systems"},{code:"2A6X5",title:"Aircraft Hydraulic Systems"},{code:"2A6X6",title:"Aircraft Electrical & Environmental Systems"},{code:"2A7X1",title:"Aircraft Metals Technology"},{code:"2A7X2",title:"Nondestructive Inspection"},{code:"2A7X3",title:"Aircraft Structural Maintenance"},{code:"2A8X1",title:"Mobility Air Forces Scheduled Maintenance"},{code:"2A8X2",title:"Mobility Air Forces Back Shop Maintenance"},
-    {code:"2E1X1",title:"Ground Radar Systems"},{code:"2E1X2",title:"Meteorological & Navigation Systems"},{code:"2E1X3",title:"Ground Radio Communications"},{code:"2E1X4",title:"Visual Imagery & Intrusion Detection Systems"},
-    {code:"2F0X1",title:"Fuels"},{code:"2G0X1",title:"Logistics Plans"},{code:"2M0X1",title:"Missile & Space Systems Electronic Maintenance"},{code:"2M0X2",title:"Missile & Space Systems Maintenance"},{code:"2M0X3",title:"Missile & Space Systems Electronic Maintenance"},
-    {code:"2P0X1",title:"Precision Measurement Equipment Laboratory"},{code:"2R0X1",title:"Maintenance Management Analysis"},{code:"2R1X1",title:"Maintenance Management Production"},
-    {code:"2S0X1",title:"Material Management"},{code:"2T0X1",title:"Traffic Management"},{code:"2T1X1",title:"Vehicle Operations"},{code:"2T2X1",title:"Air Transportation"},{code:"2T3X1",title:"Special Vehicle Maintenance"},{code:"2T3X2",title:"Special Purpose Vehicle & Equipment Maintenance"},{code:"2T3X7",title:"Vehicle Management & Analysis"},{code:"2W0X1",title:"Munitions Systems"},{code:"2W1X1",title:"Aircraft Armament Systems"},
-    {code:"3C0X1",title:"Communications - Computer Systems Operations"},{code:"3C0X2",title:"Communications - Computer Systems Operations"},{code:"3C1X1",title:"Radio Communications Systems"},{code:"3C1X2",title:"Electromagnetic Spectrum Management"},{code:"3D0X1",title:"Knowledge Operations Management"},{code:"3D0X2",title:"Cyber Systems Operations"},{code:"3D0X3",title:"Cyber Surety"},{code:"3D0X4",title:"Computer Systems Programming"},{code:"3D1X1",title:"Client Systems"},{code:"3D1X2",title:"Cyber Transport Systems"},{code:"3D1X3",title:"RF Transmission Systems"},{code:"3D1X4",title:"Spectrum Operations"},
-    {code:"3E0X1",title:"Electrical Systems"},{code:"3E0X2",title:"Electrical Power Production"},{code:"3E1X1",title:"Heating, Ventilation, Air Conditioning & Refrigeration"},{code:"3E2X1",title:"Pavement & Construction Equipment"},{code:"3E3X1",title:"Structural"},{code:"3E4X1",title:"Water & Fuel Systems Maintenance"},{code:"3E4X3",title:"Pest Management"},{code:"3E5X1",title:"Engineering"},{code:"3E6X1",title:"Operations Management"},{code:"3E7X1",title:"Fire Protection"},{code:"3E8X1",title:"Explosive Ordnance Disposal"},
-    {code:"3F0X1",title:"Personnel"},{code:"3F1X1",title:"Services"},{code:"3F2X1",title:"Education & Training"},{code:"3F3X1",title:"Manpower"},{code:"3F4X1",title:"Equal Opportunity"},{code:"3F5X1",title:"Administration"},{code:"3M0X1",title:"Services"},
-    {code:"3N0X1",title:"Public Affairs"},{code:"3N1X1",title:"Regional Band"},{code:"3N2X1",title:"Premier Band"},
-    {code:"3P0X1",title:"Security Forces"},{code:"3S0X1",title:"Personnel"},
-    {code:"4A0X1",title:"Health Services Management"},{code:"4A1X1",title:"Medical Materiel"},{code:"4A2X1",title:"Biomedical Equipment"},{code:"4B0X1",title:"Bioenvironmental Engineering"},{code:"4C0X1",title:"Mental Health Service"},{code:"4D0X1",title:"Diet Therapy"},{code:"4E0X1",title:"Public Health"},{code:"4H0X1",title:"Cardiopulmonary Laboratory"},{code:"4J0X2",title:"Physical Medicine"},{code:"4M0X1",title:"Aerospace & Operational Physiology"},{code:"4N0X1",title:"Aerospace Medical Service"},{code:"4P0X1",title:"Pharmacy"},{code:"4R0X1",title:"Diagnostic Imaging"},{code:"4T0X1",title:"Medical Laboratory"},{code:"4V0X1",title:"Ophthalmic"},
-    {code:"5J0X1",title:"Paralegal"},{code:"5R0X1",title:"Chaplain Assistant"},
-    {code:"6C0X1",title:"Contracting"},{code:"6F0X1",title:"Financial Management & Comptroller"},
-    {code:"7S0X1",title:"Special Investigations"},
-    {code:"8A100",title:"Career Assistance Advisor"},{code:"8B000",title:"Military Training Instructor"},{code:"8D000",title:"Linguist/Language Analyst"},{code:"8G000",title:"Staff Weather Officer"},{code:"8P000",title:"Courier"},{code:"8R000",title:"Recruiter"},{code:"8S000",title:"Missile Facility Manager"},{code:"8U000",title:"Unit Deployment Manager"}
-  ],
-  "Coast Guard": [
-    {code:"AET",title:"Aviation Electrical Technician"},{code:"AMT",title:"Aviation Maintenance Technician"},{code:"AST",title:"Aviation Survival Technician (Rescue Swimmer)"},
-    {code:"BM",title:"Boatswain's Mate"},{code:"BMC",title:"Boatswain's Mate Chief"},
-    {code:"DC",title:"Damage Controlman"},
-    {code:"ELC",title:"Electronics Technician (Command, Control, Comm)"},{code:"EMF",title:"Electrician's Mate (Shore)"},
-    {code:"EM",title:"Electrician's Mate"},{code:"ET",title:"Electronics Technician"},
-    {code:"FS",title:"Food Service Specialist"},
-    {code:"GM",title:"Gunner's Mate"},
-    {code:"HS",title:"Health Services Technician"},
     {code:"IS",title:"Intelligence Specialist"},{code:"IT",title:"Information Systems Technician"},
-    {code:"IV",title:"Investigator"},
-    {code:"MA",title:"Maritime Enforcement Specialist"},{code:"ME",title:"Maritime Enforcement Specialist"},
-    {code:"MK",title:"Machinery Technician"},
-    {code:"MST",title:"Marine Science Technician"},
-    {code:"MU",title:"Musician"},
-    {code:"OS",title:"Operations Specialist"},
-    {code:"PA",title:"Public Affairs Specialist"},
-    {code:"PO",title:"Port Security/Law Enforcement"},
-    {code:"SK",title:"Storekeeper"},
-    {code:"TC",title:"Telecommunications Specialist"},
-    {code:"WPC",title:"Warrant Officer Pay Corps"},
+    {code:"LS",title:"Logistics Specialist"},{code:"MA",title:"Master-at-Arms"},{code:"MC",title:"Mass Communication Specialist"},{code:"MM",title:"Machinist's Mate"},{code:"MN",title:"Mineman"},{code:"MT",title:"Missile Technician"},
+    {code:"ND",title:"Navy Diver"},{code:"OS",title:"Operations Specialist"},
+    {code:"QM",title:"Quartermaster"},{code:"RP",title:"Religious Program Specialist"},
+    {code:"SO",title:"Special Warfare Operator (SEAL)"},{code:"STG",title:"Sonar Technician (Surface)"},{code:"STS",title:"Sonar Technician (Submarine)"},
     {code:"YN",title:"Yeoman"}
   ],
+  "Air Force": [
+    {code:"1A2X1",title:"Aircraft Loadmaster"},{code:"1A8X1",title:"Airborne Cryptologic Language Analyst"},{code:"1B4X1",title:"Cyber Warfare Operations"},{code:"1C1X1",title:"Air Traffic Control"},{code:"1C2X1",title:"Combat Control"},{code:"1C4X1",title:"Tactical Air Control Party"},{code:"1C6X1",title:"Space Systems Operations"},{code:"1N0X1",title:"All Source Intelligence"},{code:"1N2X1",title:"Signals Intelligence Analyst"},{code:"1N3X1",title:"Cryptologic Language Analyst"},{code:"1T2X1",title:"Pararescue"},{code:"1W0X1",title:"Weather"},
+    {code:"2A5X1",title:"Aerospace Maintenance"},{code:"2A6X1",title:"Aerospace Propulsion"},{code:"2A6X6",title:"Aircraft Electrical and Environmental Systems"},{code:"2A7X3",title:"Aircraft Structural Maintenance"},{code:"2F0X1",title:"Fuels"},{code:"2S0X1",title:"Material Management"},{code:"2T1X1",title:"Vehicle Operations"},{code:"2T2X1",title:"Air Transportation"},{code:"2W0X1",title:"Munitions Systems"},{code:"2W1X1",title:"Aircraft Armament Systems"},
+    {code:"3D0X2",title:"Cyber Systems Operations"},{code:"3D0X3",title:"Cyber Surety"},{code:"3D1X1",title:"Client Systems"},{code:"3D1X2",title:"Cyber Transport Systems"},
+    {code:"3E7X1",title:"Fire Protection"},{code:"3E8X1",title:"Explosive Ordnance Disposal"},
+    {code:"3F0X1",title:"Personnel"},{code:"3N0X1",title:"Public Affairs"},{code:"3P0X1",title:"Security Forces"},
+    {code:"4N0X1",title:"Aerospace Medical Service"},{code:"4T0X1",title:"Medical Laboratory"},
+    {code:"5J0X1",title:"Paralegal"},
+    {code:"6C0X1",title:"Contracting"},{code:"6F0X1",title:"Financial Management"}
+  ],
+  "Coast Guard": [
+    {code:"AET",title:"Aviation Electrical Technician"},{code:"AMT",title:"Aviation Maintenance Technician"},{code:"AST",title:"Aviation Survival Technician"},
+    {code:"BM",title:"Boatswain's Mate"},{code:"DC",title:"Damage Controlman"},{code:"EM",title:"Electrician's Mate"},{code:"ET",title:"Electronics Technician"},
+    {code:"FS",title:"Food Service Specialist"},{code:"GM",title:"Gunner's Mate"},{code:"HS",title:"Health Services Technician"},
+    {code:"IS",title:"Intelligence Specialist"},{code:"IT",title:"Information Systems Technician"},
+    {code:"MA",title:"Maritime Enforcement Specialist"},{code:"ME",title:"Maritime Enforcement Specialist"},{code:"MK",title:"Machinery Technician"},{code:"MST",title:"Marine Science Technician"},
+    {code:"OS",title:"Operations Specialist"},{code:"SK",title:"Storekeeper"},{code:"YN",title:"Yeoman"}
+  ],
   "Space Force": [
-    {code:"1C6X1",title:"Space Systems Operations"},{code:"1C6X1A",title:"Orbital Warfare"},{code:"1C6X1B",title:"Space Electronic Warfare"},{code:"1C6X1C",title:"Space Battle Management"},{code:"1C6X1D",title:"Space Systems Operations (ISR)"},{code:"1C6X1E",title:"Electromagnetic Warfare"},
-    {code:"3D0X2",title:"Cyber Systems Operations"},{code:"3D0X3",title:"Cyber Surety"},
-    {code:"1N1X1",title:"Geospatial Intelligence"},{code:"1N2X1",title:"Signals Intelligence"},
-    {code:"6C0X1",title:"Contracting"},{code:"6F0X1",title:"Financial Management"},
-    {code:"3F0X1",title:"Personnel"},{code:"3F5X1",title:"Administration"},
-    {code:"2M0X1",title:"Missile & Space Systems Electronic Maintenance"},{code:"2M0X3",title:"Missile & Space Systems Maintenance"},
-    {code:"5J0X1",title:"Paralegal"},{code:"5R0X1",title:"Chaplain Assistant"},
-    {code:"8R000",title:"Guardian Recruiter"}
+    {code:"1C6X1",title:"Space Systems Operations"},{code:"1C6X1A",title:"Orbital Warfare"},{code:"1C6X1B",title:"Space Electronic Warfare"},{code:"1C6X1C",title:"Space Battle Management"},{code:"1C6X1D",title:"Space ISR"},
+    {code:"3D0X2",title:"Cyber Systems Operations"},{code:"3D0X3",title:"Cyber Surety"},{code:"1N1X1",title:"Geospatial Intelligence"},{code:"1N2X1",title:"Signals Intelligence"},
+    {code:"2M0X1",title:"Missile and Space Systems Electronic Maintenance"},{code:"2M0X3",title:"Missile and Space Facilities"},
+    {code:"6C0X1",title:"Contracting"},{code:"6F0X1",title:"Financial Management"}
   ]
 };
+
 
 function App() {
 
@@ -2844,7 +2863,6 @@ function App() {
   const [followupEmail, setFollowupEmail] = useState("");
   const [followupJob, setFollowupJob] = useState({title:"",company:""});
   const [showClipboardModal, setShowClipboardModal] = useState(false);
-  const [mosBrowse, setMosBrowse] = useState({open:false,expId:null,search:"",branch:""});
   const [showHomelessForm, setShowHomelessForm] = useState(false);
   const [homelessForm, setHomelessForm] = useState({name:"",branch:"",location:"",situation:"",email:"",phone:""});
   const [homelessSubmitted, setHomelessSubmitted] = useState(false);
@@ -2899,6 +2917,18 @@ function App() {
   const [resumeError, setResumeError] = useState("");
   const [copied, setCopied] = useState(false);
   const [includeClearance, setIncludeClearance] = useState(true);
+  const [mosBrowse, setMosBrowse] = useState({open:false,expId:null,search:"",branch:""});
+  const [resumeEditMode, setResumeEditMode] = useState(false);
+  const [editableResume, setEditableResume] = useState(null);
+  // Career Test
+  const [showCareerTest, setShowCareerTest] = useState(false);
+  const [careerTestMode, setCareerTestMode] = useState("basic");
+  const [careerTestStep, setCareerTestStep] = useState(0);
+  const [careerTestAnswers, setCareerTestAnswers] = useState({});
+  const [careerTestResults, setCareerTestResults] = useState(null);
+  const [careerTestLoading, setCareerTestLoading] = useState(false);
+  const [deepTestStep, setDeepTestStep] = useState(0);
+  const [deepTestAnswers, setDeepTestAnswers] = useState({});
 
   // ── AUTH STATE ──
   const [authMode, setAuthMode] = useState("login");
@@ -3414,7 +3444,7 @@ function App() {
 
       const raw = await callClaude(
         prompt,
-        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) QUALIFICATIONS — USE ALL OF THEM: The profile includes ASIs/SQIs/NECs/SEIs (extra qualifiers), sub-roles (mosRoles), and additional duties. Every single one must appear in the resume as a skill, bullet, certification, or job title. ASI 8A=Parachute Operations Certified. ASI 9R=Leadership Development Instructor. Unit Armorer=Weapons & Equipment Inventory Manager. Retention NCO=Talent Acquisition Specialist. SHARP Rep=HR Compliance Coordinator. Never ignore any qualifier or additional duty — each one is a real earned credential.",
+        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) CIVILIAN AND GOVERNMENT JOBS: Treat every civilian or government job with the same rigor as military experience. Strengthen every bullet with action verbs, measurable scope, and impact. Never leave civilian experience generic or weak. 10) USE ALL QUALIFICATIONS: Every ASI, SQI, NEC, SEI, sub-role, and additional duty must appear somewhere in the resume as a skill, bullet, certification, or title. None may be omitted.",
         2000
       );
 
@@ -3689,7 +3719,7 @@ Use this exact structure:
         "awards (array of strings)";
       const raw = await callClaude(
         prompt,
-        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) QUALIFICATIONS — USE ALL OF THEM: The profile includes ASIs/SQIs/NECs/SEIs (extra qualifiers), sub-roles (mosRoles), and additional duties. Every single one must appear in the resume as a skill, bullet, certification, or job title. ASI 8A=Parachute Operations Certified. ASI 9R=Leadership Development Instructor. Unit Armorer=Weapons & Equipment Inventory Manager. Retention NCO=Talent Acquisition Specialist. SHARP Rep=HR Compliance Coordinator. Never ignore any qualifier or additional duty — each one is a real earned credential.",
+        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) CIVILIAN AND GOVERNMENT JOBS: Treat every civilian or government job with the same rigor as military experience. Strengthen every bullet with action verbs, measurable scope, and impact. Never leave civilian experience generic or weak. 10) USE ALL QUALIFICATIONS: Every ASI, SQI, NEC, SEI, sub-role, and additional duty must appear somewhere in the resume as a skill, bullet, certification, or title. None may be omitted.",
         3500
       );
       const rStart = raw.indexOf("{");
@@ -3697,7 +3727,7 @@ Use this exact structure:
       if (rStart > -1 && rEnd > -1) {
         try {
           const rd = JSON.parse(raw.slice(rStart, rEnd + 1));
-          delete rd.careerPath; setResumeData(rd);
+          delete rd.careerPath; setResumeData(rd); setEditableResume(JSON.parse(JSON.stringify(rd))); setResumeEditMode(false);
         } catch(pe) {
           console.warn("Resume JSON parse failed, using text mode:", pe.message);
         }
@@ -3745,7 +3775,7 @@ Write a professional, warm, and compelling 3-paragraph cover letter that:
 
 Return ONLY the cover letter text, no subject line, no extra commentary.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) QUALIFICATIONS — USE ALL OF THEM: The profile includes ASIs/SQIs/NECs/SEIs (extra qualifiers), sub-roles (mosRoles), and additional duties. Every single one must appear in the resume as a skill, bullet, certification, or job title. ASI 8A=Parachute Operations Certified. ASI 9R=Leadership Development Instructor. Unit Armorer=Weapons & Equipment Inventory Manager. Retention NCO=Talent Acquisition Specialist. SHARP Rep=HR Compliance Coordinator. Never ignore any qualifier or additional duty — each one is a real earned credential.", 1500);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) CIVILIAN AND GOVERNMENT JOBS: Treat every civilian or government job with the same rigor as military experience. Strengthen every bullet with action verbs, measurable scope, and impact. Never leave civilian experience generic or weak. 10) USE ALL QUALIFICATIONS: Every ASI, SQI, NEC, SEI, sub-role, and additional duty must appear somewhere in the resume as a skill, bullet, certification, or title. None may be omitted.", 1500);
       setCoverLetter(raw);
     } catch(e) {
       setCoverLetter("Error generating cover letter. Please try again.");
@@ -3777,7 +3807,7 @@ Generate 8 interview questions they will likely be asked, with a tailored answer
 
 Make answers specific to their MOS and rank. Use the STAR method. Translate all military jargon.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) QUALIFICATIONS — USE ALL OF THEM: The profile includes ASIs/SQIs/NECs/SEIs (extra qualifiers), sub-roles (mosRoles), and additional duties. Every single one must appear in the resume as a skill, bullet, certification, or job title. ASI 8A=Parachute Operations Certified. ASI 9R=Leadership Development Instructor. Unit Armorer=Weapons & Equipment Inventory Manager. Retention NCO=Talent Acquisition Specialist. SHARP Rep=HR Compliance Coordinator. Never ignore any qualifier or additional duty — each one is a real earned credential.", 3000);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) CIVILIAN AND GOVERNMENT JOBS: Treat every civilian or government job with the same rigor as military experience. Strengthen every bullet with action verbs, measurable scope, and impact. Never leave civilian experience generic or weak. 10) USE ALL QUALIFICATIONS: Every ASI, SQI, NEC, SEI, sub-role, and additional duty must appear somewhere in the resume as a skill, bullet, certification, or title. None may be omitted.", 3000);
       const clean = raw.replace(/```json|```/g,"").trim();
       const s = clean.indexOf("["); const e = clean.lastIndexOf("]");
       if(s===-1||e===-1) throw new Error("No array");
@@ -3822,7 +3852,7 @@ Write a genuine, professional email that:
 
 Return ONLY the email text including the subject line. No extra commentary.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: " + (includeClearance ? "INCLUDE security clearance prominently." : "DO NOT include security clearance anywhere.") + " 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) QUALIFICATIONS — USE ALL OF THEM: The profile includes ASIs/SQIs/NECs/SEIs (extra qualifiers), sub-roles (mosRoles), and additional duties. Every single one must appear in the resume as a skill, bullet, certification, or job title. ASI 8A=Parachute Operations Certified. ASI 9R=Leadership Development Instructor. Unit Armorer=Weapons & Equipment Inventory Manager. Retention NCO=Talent Acquisition Specialist. SHARP Rep=HR Compliance Coordinator. Never ignore any qualifier or additional duty — each one is a real earned credential.", 800);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) CIVILIAN AND GOVERNMENT JOBS: Treat every civilian or government job with the same rigor as military experience. Strengthen every bullet with action verbs, measurable scope, and impact. Never leave civilian experience generic or weak. 10) USE ALL QUALIFICATIONS: Every ASI, SQI, NEC, SEI, sub-role, and additional duty must appear somewhere in the resume as a skill, bullet, certification, or title. None may be omitted.", 800);
       setFollowupEmail(raw.trim());
     } catch(err) {
       setFollowupEmail("Subject: Thank You - " + (followupCtx.role||"Position") + " Interview\n\nDear " + (followupCtx.interviewerName||"Hiring Manager") + ",\n\nThank you for taking the time to meet with me regarding the " + (followupCtx.role||"position") + " role at " + (followupCtx.company||"your organization") + ". I enjoyed learning more about the team and am excited about the opportunity to bring my military leadership experience to your organization.\n\nPlease let me know if you need any additional information.\n\nBest regards,\n" + (personal.name||"[Your Name]"));
@@ -3898,7 +3928,7 @@ Return this exact JSON structure:
             <div className="pw-box">
               <div className="pw-head">
                 <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path"
-                  style={{width:"clamp(44px,10vw,68px)",height:"clamp(44px,10vw,68px)",objectFit:"contain",marginBottom:".35rem",filter:"drop-shadow(0 2px 8px rgba(0,0,0,.4))"}}/>
+                  style={{width:"90px",height:"90px",objectFit:"contain",marginBottom:".6rem",filter:"drop-shadow(0 2px 8px rgba(0,0,0,.4))"}}/>
                 <p style={{color:"#a0c0e0",fontSize:".85rem",margin:0}}>AI-powered tools to translate your service into a civilian career</p>
               </div>
 
@@ -4193,7 +4223,50 @@ Return this exact JSON structure:
 
           <div className={"panel "+(tab===0?"on":"")}>
             <div className="intro">
-              <strong>Your service matters.</strong> Fill in your background below — your military experience, civilian work, education, and skills. The more you add, the better your career matches and resume will be. Take your time and be as detailed as you like.
+              <strong>Your service matters.</strong> Fill in your background below or upload an existing resume to auto-fill your profile instantly.
+            </div>
+            <div style={{background:"linear-gradient(135deg,#f0f4ff,#e8edf8)",border:"1.5px solid #b0c4e0",borderRadius:"10px",padding:"1rem 1.2rem",marginBottom:"1rem"}}>
+              <div style={{fontWeight:700,fontSize:".9rem",color:"#1a3a6b",marginBottom:".3rem"}}>Have an Existing Resume?</div>
+              <div style={{fontSize:".78rem",color:"#5a7090",lineHeight:1.6,marginBottom:".75rem"}}>Upload your current resume (PDF, Word, or text file) and we will auto-fill your profile. We will then show you which fields still need your attention.</div>
+              <div style={{display:"flex",alignItems:"center",gap:".75rem",flexWrap:"wrap"}}>
+                <label style={{display:"inline-flex",alignItems:"center",gap:".5rem",background:"var(--navy)",color:"#fff",padding:".5rem 1rem",borderRadius:"8px",cursor:"pointer",fontWeight:700,fontSize:".83rem"}}>
+                  Upload Resume
+                  <input type="file" accept=".pdf,.doc,.docx,.txt" style={{display:"none"}}
+                    onChange={async(e)=>{
+                      const file=e.target.files[0]; if(!file)return;
+                      if(!isApiKeySet()){setShowAdminSetup(true);return;}
+                      showToast("Reading your resume...");
+                      try{
+                        const text=await new Promise((res,rej)=>{const r=new FileReader();r.onload=ev=>res(ev.target.result);r.onerror=rej;r.readAsText(file);});
+                        const prompt="Extract all information from this resume. Return ONLY valid JSON with no markdown: {name,email,phone,city,state,linkedin,experience:[{employer,title,startDate,endDate,current:bool,duties,isMilitary:bool}],education:[{institution,degree,field,year}],skills:{technical,certs},incompleteFields:[list of fields that are empty or need more detail]}
+
+RESUME:
+"+text.slice(0,5000);
+                        const raw=await callClaude(prompt,"You are a precise resume parser. Extract all data accurately.",2000);
+                        const js=raw.slice(raw.indexOf("{"),raw.lastIndexOf("}")+1);
+                        const p=JSON.parse(js);
+                        if(p.name)setPersonal(prev=>({...prev,name:p.name}));
+                        if(p.email)setPersonal(prev=>({...prev,email:p.email}));
+                        if(p.phone)setPersonal(prev=>({...prev,phone:p.phone}));
+                        if(p.city)setPersonal(prev=>({...prev,city:p.city+(p.state&&!p.city.includes(p.state)?" "+p.state:"")}));
+                        if(p.linkedin)setPersonal(prev=>({...prev,linkedin:p.linkedin}));
+                        if(p.experience&&p.experience.length>0){
+                          const civs=p.experience.filter(e=>!e.isMilitary).map((e,i)=>({
+                            id:Date.now()+i,type:"Civilian Employment",employer:e.employer||"",jobTitle:e.title||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,duties:e.duties||"",
+                            branch:"",rank:"",mos:"",mosTitle:"",serviceType:"",unit:"",tos:"",deployments:"",awards:"",clearanceLevel:"None",clearanceStatus:"Active",sciAccess:false,polygraph:"None",asi:[],sqi:[],additionalDuties:[],mosRoles:[]
+                          }));
+                          if(civs.length>0)setCivExperiences(civs);
+                        }
+                        if(p.education&&p.education.length>0)setEducation(p.education.map((e,i)=>({id:i+1,institution:e.institution||"",degree:e.degree||"",field:e.field||"",year:e.year||"",pme:""})));
+                        if(p.skills){if(p.skills.technical)setSkills(s=>({...s,technical:p.skills.technical}));if(p.skills.certs)setSkills(s=>({...s,certs:p.skills.certs}));}
+                        showToast("Profile auto-filled from resume!");
+                        const missing=p.incompleteFields||[];
+                        if(missing.length>0)setTimeout(()=>showToast("Still needs: "+missing.slice(0,3).join(", ")+(missing.length>3?" and more...":"")),3000);
+                      }catch(err){showToast("Could not read file. Try saving as .txt first.");}
+                    }}/>
+                </label>
+                <span style={{fontSize:".73rem",color:"#8aa0b8"}}>Supports PDF, Word (.docx), and plain text</span>
+              </div>
             </div>
 
 
@@ -4277,7 +4350,7 @@ Return this exact JSON structure:
                             style={{flex:1}}/>
                           <button type="button" onClick={()=>setMosBrowse({open:true,expId:exp.id,search:"",branch:exp.branch||"Army"})}
                             style={{background:"var(--navy)",color:"#fff",border:"none",borderRadius:"6px",padding:".4rem .7rem",fontSize:".75rem",fontWeight:600,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>
-                            🔍 Browse
+                            Browse
                           </button>
                         </div>
                         {exp.mosTitle&&<span className="mos-pill">↳ {exp.mosTitle}</span>}
@@ -4320,19 +4393,12 @@ Return this exact JSON structure:
                       <span className="qual-label">
                         {exp.branch==="Navy"?"Roles Held Under This Rate/NEC":
                          exp.branch==="Air Force"?"Roles Held Under This AFSC":
-                         exp.branch==="Marine Corps"?"Roles Held Under This MOS":
-                         exp.branch==="Coast Guard"?"Roles Held Under This Rating":
                          exp.branch==="Space Force"?"Roles Held Under This AFSC":
+                         exp.branch==="Coast Guard"?"Roles Held Under This Rating":
                          "Roles Held Under This MOS"}
                       </span>
                       <div className="hint" style={{marginBottom:".5rem"}}>
-                        Many veterans hold multiple official roles —
-                        {exp.branch==="Navy"?" Master-at-Arms, LPO, Division LCPO, Training PO, Duty Section Leader, etc.":
-                         exp.branch==="Air Force"?" Flight Commander, Section Chief, Crew Chief, Training NCO, Quality Assurance Inspector, etc.":
-                         exp.branch==="Marine Corps"?" Squad Leader, Platoon Sergeant, Section Leader, Platoon Commander, etc.":
-                         exp.branch==="Coast Guard"?" OOD, Coxswain, Boarding Team Leader, Watch Stander, etc.":
-                         " Truck Master, OPS Clerk, Motor Sergeant, Training NCO, NCOIC, etc."}
-                        Add each role you held and how long.
+                        Many veterans hold multiple official roles within their MOS — Truck Master, OPS Clerk, Motor Sergeant, Training NCO, etc. Add each role you held and how long.
                       </div>
                       {(exp.mosRoles||[]).map((role,ri)=>(
                         <div key={ri} style={{display:"flex",gap:".5rem",alignItems:"flex-end",marginBottom:".4rem",background:"rgba(255,255,255,.05)",padding:".6rem .7rem",borderRadius:"3px",border:"1px solid rgba(201,168,76,.18)"}}>
@@ -4880,7 +4946,7 @@ Return this exact JSON structure:
 
 
             <button className="btn-primary" onClick={translateMOS} style={{position:"relative"}} disabled={loading.translate||milExperiences.length===0}>
-              {loading.translate?"Translating Your Service...":"🔄  Translate My Military Experience to Civilian Language"}
+              {loading.translate?"Translating Your Service...":"🎖 Translate My Military Service to Civilian Language"}
             </button>
 
             {loading.translate&&<div className="loading"><div className="spin"/><span>Analyzing your service record...</span></div>}
@@ -6126,6 +6192,7 @@ Return this exact JSON structure:
                     {label:"Offers",val:jobApps.filter(j=>j.status==="Offer Received"||j.status==="Accepted").length,icon:"🏆",color:"#1a7a40"},
                     {label:"Timeline Done",val:Object.values(tlChecks).filter(Boolean).length+"/16",icon:"🗓",color:"#8a6000"},
                     {label:"Resumes Built",val:savedResumes.length,icon:"📄",color:"#1a3a6b"},
+                    {label:"Career Test",val:careerTestResults?"Done":"Not Yet",icon:"🧠",color:careerTestResults?"#1a7a40":"#8aa0b8"},
                   ].map((s,i)=>(
                     <div key={i} className="stat-card">
                       <div style={{fontSize:"1.5rem",marginBottom:".3rem"}}>{s.icon}</div>
@@ -6497,19 +6564,18 @@ Return this exact JSON structure:
         return null;
       })()}
       {saveToast&&<div className="save-toast">{saveToast}</div>}
-
       {mosBrowse.open&&(
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.55)",zIndex:60000,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}}
           onClick={e=>e.target===e.currentTarget&&setMosBrowse(s=>({...s,open:false}))}>
-          <div style={{background:"#fff",borderRadius:"14px",width:"100%",maxWidth:"620px",maxHeight:"85vh",display:"flex",flexDirection:"column",overflow:"hidden",boxShadow:"0 16px 48px rgba(0,0,0,.3)"}}>
-            <div style={{background:"linear-gradient(135deg,#0a1628,#1a3a6b)",padding:"1.1rem 1.4rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.3rem",letterSpacing:".1em",color:"#f0c040"}}>🔍 Browse Job Codes</div>
-              <button onClick={()=>setMosBrowse(s=>({...s,open:false}))} style={{background:"transparent",border:"none",color:"#fff",fontSize:"1.4rem",cursor:"pointer"}}>✕</button>
+          <div style={{background:"#fff",borderRadius:"14px",width:"100%",maxWidth:"600px",maxHeight:"85vh",display:"flex",flexDirection:"column",overflow:"hidden",boxShadow:"0 16px 48px rgba(0,0,0,.3)"}}>
+            <div style={{background:"linear-gradient(135deg,#0a1628,#1a3a6b)",padding:"1rem 1.4rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.2rem",letterSpacing:".1em",color:"#f0c040"}}>Browse Job Codes</div>
+              <button onClick={()=>setMosBrowse(s=>({...s,open:false}))} style={{background:"transparent",border:"none",color:"#fff",fontSize:"1.3rem",cursor:"pointer"}}>✕</button>
             </div>
-            <div style={{padding:".85rem 1.1rem",borderBottom:"1px solid #e8eef6",display:"flex",gap:".6rem",flexWrap:"wrap"}}>
+            <div style={{padding:".75rem 1rem",borderBottom:"1px solid #e8eef6",display:"flex",gap:".4rem",flexWrap:"wrap"}}>
               {["Army","Marine Corps","Navy","Air Force","Coast Guard","Space Force"].map(br=>(
                 <button key={br} onClick={()=>setMosBrowse(s=>({...s,branch:br,search:""}))}
-                  style={{padding:".3rem .75rem",borderRadius:"20px",border:"1.5px solid",fontSize:".78rem",fontWeight:600,cursor:"pointer",
+                  style={{padding:".28rem .65rem",borderRadius:"20px",border:"1.5px solid",fontSize:".76rem",fontWeight:600,cursor:"pointer",
                     background:mosBrowse.branch===br?"var(--navy)":"#fff",
                     color:mosBrowse.branch===br?"#fff":"var(--navy)",
                     borderColor:"var(--navy)"}}>
@@ -6517,40 +6583,479 @@ Return this exact JSON structure:
                 </button>
               ))}
             </div>
-            <div style={{padding:".75rem 1.1rem",borderBottom:"1px solid #e8eef6"}}>
-              <input
-                placeholder={"Search "+mosBrowse.branch+" job codes or titles..."}
-                value={mosBrowse.search}
+            <div style={{padding:".6rem 1rem",borderBottom:"1px solid #e8eef6"}}>
+              <input placeholder={"Search "+mosBrowse.branch+" codes or titles..."} value={mosBrowse.search}
                 onChange={e=>setMosBrowse(s=>({...s,search:e.target.value}))}
-                style={{width:"100%",padding:".55rem .9rem",border:"1.5px solid #c8d4e4",borderRadius:"8px",fontSize:".9rem"}}
+                style={{width:"100%",padding:".5rem .85rem",border:"1.5px solid #c8d4e4",borderRadius:"8px",fontSize:".88rem"}}
                 autoFocus/>
             </div>
-            <div style={{overflowY:"auto",flex:1,padding:".5rem"}}>
+            <div style={{overflowY:"auto",flex:1,padding:".4rem"}}>
               {(()=>{
-                const codes = MOS_CODES[mosBrowse.branch]||[];
-                const q = mosBrowse.search.toLowerCase();
-                const filtered = q ? codes.filter(m=>m.code.toLowerCase().includes(q)||m.title.toLowerCase().includes(q)) : codes;
-                if(filtered.length===0) return <div style={{textAlign:"center",padding:"2rem",color:"#8aa0b8",fontSize:".88rem"}}>No results found</div>;
+                const codes=MOS_CODES[mosBrowse.branch]||[];
+                const q=mosBrowse.search.toLowerCase();
+                const filtered=q?codes.filter(m=>m.code.toLowerCase().includes(q)||m.title.toLowerCase().includes(q)):codes;
+                if(!filtered.length) return <div style={{textAlign:"center",padding:"2rem",color:"#8aa0b8",fontSize:".85rem"}}>No results found</div>;
                 return filtered.map(m=>(
                   <div key={m.code}
-                    onClick={()=>{
-                      upMilExp(mosBrowse.expId,"mos",m.code);
-                      upMilExp(mosBrowse.expId,"mosTitle",m.title);
-                      setMosBrowse(s=>({...s,open:false}));
-                      showToast("✓ "+m.code+" — "+m.title);
-                    }}
-                    style={{display:"flex",gap:"1rem",alignItems:"center",padding:".6rem .85rem",borderRadius:"8px",cursor:"pointer",marginBottom:"2px",transition:"background .12s"}}
+                    onClick={()=>{upMilExp(mosBrowse.expId,"mos",m.code);upMilExp(mosBrowse.expId,"mosTitle",m.title);setMosBrowse(s=>({...s,open:false}));showToast(m.code+" selected");}}
+                    style={{display:"flex",gap:"1rem",alignItems:"center",padding:".55rem .85rem",borderRadius:"7px",cursor:"pointer",marginBottom:"1px",transition:"background .1s"}}
                     onMouseEnter={e=>e.currentTarget.style.background="#f0f4fa"}
                     onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-                    <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:".95rem",letterSpacing:".08em",color:"var(--navy)",minWidth:"60px",flexShrink:0}}>{m.code}</span>
-                    <span style={{fontSize:".88rem",color:"#2a3a4a"}}>{m.title}</span>
+                    <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:".9rem",letterSpacing:".08em",color:"var(--navy)",minWidth:"55px",flexShrink:0}}>{m.code}</span>
+                    <span style={{fontSize:".85rem",color:"#2a3a4a"}}>{m.title}</span>
                   </div>
                 ));
               })()}
             </div>
-            <div style={{padding:".75rem 1.1rem",borderTop:"1px solid #e8eef6",fontSize:".75rem",color:"#8aa0b8",textAlign:"center"}}>
-              {(MOS_CODES[mosBrowse.branch]||[]).length} codes · Click any code to select it
+            <div style={{padding:".6rem 1rem",borderTop:"1px solid #e8eef6",fontSize:".73rem",color:"#8aa0b8",textAlign:"center"}}>
+              {(MOS_CODES[mosBrowse.branch]||[]).length} codes available
             </div>
+          </div>
+        </div>
+      )}
+
+      {showCareerTest&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.65)",zIndex:70000,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem",overflowY:"auto"}}
+          onClick={e=>e.target===e.currentTarget&&setShowCareerTest(false)}>
+          <div style={{background:"#fff",borderRadius:"14px",width:"100%",maxWidth:careerTestMode==="deep"?"720px":"600px",maxHeight:"92vh",display:"flex",flexDirection:"column",overflow:"hidden",boxShadow:"0 20px 60px rgba(0,0,0,.35)",margin:"auto"}}>
+
+            {/* Header */}
+            <div style={{background:"linear-gradient(135deg,#0a1628,#1a3a6b)",padding:"1rem 1.4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+              <div>
+                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.2rem",letterSpacing:".1em",color:"#f0c040"}}>
+                  {careerTestMode==="deep"?"Full Career Assessment (60 Questions)":"Career and Personality Assessment"}
+                </div>
+                <div style={{fontSize:".72rem",color:"#80a8d0",marginTop:".15rem"}}>
+                  {careerTestMode==="deep"
+                    ?"Section "+(deepTestStep+1)+" of "+DEEP_CAREER_TEST.dimensions.length+" | "+DEEP_CAREER_TEST.dimensions[Math.min(deepTestStep,DEEP_CAREER_TEST.dimensions.length-1)].title
+                    :careerTestStep<CAREER_TEST.sections.length
+                      ?"Section "+(careerTestStep+1)+" of "+CAREER_TEST.sections.length
+                      :"Your Results"}
+                </div>
+              </div>
+              <button onClick={()=>setShowCareerTest(false)} style={{background:"transparent",border:"none",color:"#fff",fontSize:"1.4rem",cursor:"pointer",padding:".25rem"}}>✕</button>
+            </div>
+
+            {/* Progress bar */}
+            <div style={{height:"3px",background:"rgba(255,255,255,.08)",flexShrink:0}}>
+              <div style={{height:"100%",background:"linear-gradient(90deg,#c8960a,#f0c040)",transition:"width .3s",
+                width:careerTestMode==="deep"
+                  ?(deepTestStep/DEEP_CAREER_TEST.dimensions.length*100)+"%"
+                  :(careerTestStep/CAREER_TEST.sections.length*100)+"%"}}/>
+            </div>
+
+            {/* Body */}
+            <div style={{flex:1,overflowY:"auto",padding:"1.25rem"}}>
+
+              {careerTestMode==="deep"&&deepTestStep<DEEP_CAREER_TEST.dimensions.length&&(()=>{
+                const dim = DEEP_CAREER_TEST.dimensions[deepTestStep];
+                return (
+                  <div>
+                    <div style={{display:"flex",alignItems:"center",gap:".6rem",marginBottom:".5rem"}}>
+                      <span style={{fontSize:"1.4rem"}}>{dim.icon}</span>
+                      <div>
+                        <div style={{fontWeight:700,fontSize:".95rem",color:dim.color}}>{dim.title}</div>
+                        <div style={{fontSize:".75rem",color:"#8aa0b8"}}>{dim.desc}</div>
+                      </div>
+                    </div>
+                    <div style={{fontSize:".75rem",color:"#8aa0b8",marginBottom:".85rem",fontStyle:"italic"}}>
+                      Rate each statement: 1 = Strongly Disagree, 5 = Strongly Agree
+                    </div>
+                    {dim.questions.map((q,qi)=>(
+                      <div key={q.id} style={{marginBottom:"1rem",padding:".85rem",background:"#f8fafd",borderRadius:"8px",border:"1px solid #e8eef6"}}>
+                        <div style={{fontSize:".85rem",color:"#1a2a3a",marginBottom:".6rem",lineHeight:1.45,fontWeight:500}}>{qi+1}. {q.q}</div>
+                        <div style={{display:"flex",gap:".4rem",alignItems:"center"}}>
+                          {[1,2,3,4,5].map(v=>(
+                            <button key={v} onClick={()=>setDeepTestAnswers(a=>({...a,[q.id]:v}))}
+                              style={{flex:1,padding:".5rem .2rem",borderRadius:"6px",border:"1.5px solid",cursor:"pointer",fontSize:".8rem",fontWeight:deepTestAnswers[q.id]===v?700:400,
+                                background:deepTestAnswers[q.id]===v?dim.color:"#fff",
+                                color:deepTestAnswers[q.id]===v?"#fff":"#5a7090",
+                                borderColor:deepTestAnswers[q.id]===v?dim.color:"#dde3ec",
+                                transition:"all .12s"}}>
+                              {v}
+                            </button>
+                          ))}
+                        </div>
+                        <div style={{display:"flex",justifyContent:"space-between",fontSize:".65rem",color:"#aab8c8",marginTop:".2rem"}}>
+                          <span>Strongly Disagree</span><span>Strongly Agree</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+
+              {careerTestMode==="basic"&&careerTestStep<CAREER_TEST.sections.length&&(()=>{
+                const sec = CAREER_TEST.sections[careerTestStep];
+                return (
+                  <div>
+                    {sec.questions.map((q,qi)=>(
+                      <div key={q.id} style={{marginBottom:"1.2rem"}}>
+                        <div style={{fontWeight:700,fontSize:".9rem",color:"#1a3a6b",marginBottom:".6rem",lineHeight:1.4}}>{qi+1}. {q.q}</div>
+                        <div style={{display:"flex",flexDirection:"column",gap:".35rem"}}>
+                          {q.options.map((opt,oi)=>(
+                            <div key={oi} onClick={()=>setCareerTestAnswers(a=>({...a,[q.id]:oi}))}
+                              style={{padding:".65rem .9rem",borderRadius:"8px",cursor:"pointer",fontSize:".85rem",lineHeight:1.4,transition:"all .12s",
+                                background:careerTestAnswers[q.id]===oi?"linear-gradient(135deg,#1a3a6b,#1e4a8a)":"#f8fafd",
+                                color:careerTestAnswers[q.id]===oi?"#fff":"#2a3a4a",
+                                border:careerTestAnswers[q.id]===oi?"1.5px solid #1a3a6b":"1.5px solid #dde3ec"}}>
+                              <strong>{["A","B","C","D"][oi]}.</strong> {opt}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+
+              {careerTestLoading&&(
+                <div style={{textAlign:"center",padding:"3rem"}}>
+                  <div className="spin"/>
+                  <div style={{color:"#5a7090",marginTop:"1rem",fontSize:".9rem",lineHeight:1.6}}>
+                    Analyzing your profile...<br/>
+                    <span style={{fontSize:".8rem"}}>Generating career matches, education recommendations, and your personal insight</span>
+                  </div>
+                </div>
+              )}
+
+              {!careerTestLoading&&careerTestResults&&(careerTestStep>=CAREER_TEST.sections.length||deepTestStep>=DEEP_CAREER_TEST.dimensions.length)&&(()=>{
+                const p = careerTestResults.profile||careerTestResults;
+                const isDeep = careerTestResults.deepProfile;
+                return (
+                  <div>
+                    {/* Personality bars */}
+                    <div style={{background:"linear-gradient(135deg,#f8fafd,#f0f4fa)",border:"1px solid #dde3ec",borderRadius:"10px",padding:"1rem",marginBottom:"1rem"}}>
+                      <div style={{fontWeight:700,fontSize:".9rem",color:"#1a3a6b",marginBottom:".75rem"}}>
+                        {isDeep?"Your Full Career Personality Profile":"Your Career Profile"}
+                      </div>
+                      {isDeep?
+                        DEEP_CAREER_TEST.dimensions.map(d=>(
+                          <div key={d.id} style={{marginBottom:".5rem"}}>
+                            <div style={{display:"flex",justifyContent:"space-between",fontSize:".78rem",marginBottom:".2rem"}}>
+                              <span style={{fontWeight:600,color:d.color}}>{d.icon} {d.title}</span>
+                              <span style={{color:"#5a7090"}}>{(careerTestResults.deepProfile.scores||{})[d.id]||0}%</span>
+                            </div>
+                            <div style={{height:"7px",background:"#e8eef6",borderRadius:"4px"}}>
+                              <div style={{height:"100%",width:((careerTestResults.deepProfile.scores||{})[d.id]||0)+"%",background:d.color,borderRadius:"4px",transition:"width .6s"}}/>
+                            </div>
+                          </div>
+                        ))
+                      :
+                        [{l:"Analytical",v:p.analytical,c:"#1a5c9a"},{l:"Creative",v:p.creative,c:"#8a3a9a"},{l:"Social",v:p.social,c:"#1a7a40"},{l:"Leadership",v:p.leadership,c:"#c8960a"}].map(d=>(
+                          <div key={d.l} style={{marginBottom:".5rem"}}>
+                            <div style={{display:"flex",justifyContent:"space-between",fontSize:".78rem",marginBottom:".2rem"}}>
+                              <span style={{fontWeight:600,color:d.c}}>{d.l}</span>
+                              <span style={{color:"#5a7090"}}>{d.v}%</span>
+                            </div>
+                            <div style={{height:"7px",background:"#e8eef6",borderRadius:"4px"}}>
+                              <div style={{height:"100%",width:d.v+"%",background:d.c,borderRadius:"4px",transition:"width .6s"}}/>
+                            </div>
+                          </div>
+                        ))
+                      }
+                      {careerTestResults.insight&&(
+                        <div style={{background:"rgba(200,150,10,.08)",border:"1px solid rgba(200,150,10,.2)",borderRadius:"6px",padding:".75rem",marginTop:".75rem",fontSize:".8rem",color:"#5a4000",lineHeight:1.6}}>
+                          <strong style={{color:"#8a6000"}}>Career Insight: </strong>{careerTestResults.insight}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Career matches */}
+                    <div style={{fontWeight:700,fontSize:".9rem",color:"#1a3a6b",marginBottom:".6rem"}}>
+                      Recommended Career Paths ({(careerTestResults.careers||[]).length} matches)
+                    </div>
+                    {(careerTestResults.careers||[]).map((c,i)=>(
+                      <div key={i} style={{background:"#fff",border:"1.5px solid #dde3ec",borderRadius:"8px",padding:".85rem",marginBottom:".5rem",boxShadow:"0 2px 6px rgba(26,58,107,.05)"}}>
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:".25rem"}}>
+                          <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b"}}>{c.title}</div>
+                          <span style={{fontSize:".7rem",fontWeight:700,padding:".1rem .5rem",borderRadius:"20px",flexShrink:0,marginLeft:".5rem",
+                            background:c.fit==="Excellent"?"rgba(26,122,64,.1)":c.fit==="Strong"?"rgba(26,58,107,.1)":"rgba(200,150,10,.1)",
+                            color:c.fit==="Excellent"?"#1a7a40":c.fit==="Strong"?"#1a3a6b":"#8a6000",
+                            border:"1px solid",borderColor:c.fit==="Excellent"?"rgba(26,122,64,.25)":c.fit==="Strong"?"rgba(26,58,107,.25)":"rgba(200,150,10,.25)"}}>
+                            {c.fit} Fit
+                          </span>
+                        </div>
+                        <div style={{fontSize:".75rem",color:"#5a7090",marginBottom:".25rem"}}>{c.sector} | {c.salaryRange}</div>
+                        <div style={{fontSize:".8rem",color:"#3a4a5a",lineHeight:1.5}}>{c.why}</div>
+                        {c.nextStep&&<div style={{fontSize:".74rem",color:"#1a5c9a",marginTop:".3rem",fontStyle:"italic"}}>Next step: {c.nextStep}</div>}
+                        {c.mosLink&&<div style={{fontSize:".74rem",color:"#1a7a40",marginTop:".2rem",fontWeight:600}}>Military connection: {c.mosLink}</div>}
+                      </div>
+                    ))}
+
+                    {/* Degrees */}
+                    {(careerTestResults.degrees||[]).length>0&&(
+                      <div style={{marginTop:".85rem"}}>
+                        <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",marginBottom:".5rem"}}>Recommended Education Paths</div>
+                        {(careerTestResults.degrees||[]).map((d,i)=>(
+                          <div key={i} style={{background:"linear-gradient(135deg,#f0f8ff,#e8f4ff)",border:"1px solid #b0d0f0",borderRadius:"8px",padding:".8rem",marginBottom:".45rem"}}>
+                            <div style={{display:"flex",justifyContent:"space-between",marginBottom:".2rem"}}>
+                              <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b"}}>{d.level}: {d.field}</div>
+                              <span style={{fontSize:".72rem",color:"#5a7090"}}>{d.timeframe}</span>
+                            </div>
+                            <div style={{fontSize:".78rem",color:"#3a5070",lineHeight:1.5,marginBottom:".25rem"}}>{d.why}</div>
+                            <div style={{fontSize:".72rem",display:"flex",gap:"1rem"}}>
+                              {d.cost&&<span style={{color:"#5a7090"}}>Est. cost: {d.cost}</span>}
+                              {d.giTip&&<span style={{color:"#1a7a40",fontWeight:600}}>GI Bill: {d.giTip}</span>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Certifications */}
+                    {(careerTestResults.certifications||[]).length>0&&(
+                      <div style={{marginTop:".85rem"}}>
+                        <div style={{fontWeight:700,fontSize:".88rem",color:"#8a6000",marginBottom:".5rem"}}>Recommended Certifications</div>
+                        {(careerTestResults.certifications||[]).map((c,i)=>(
+                          <div key={i} style={{background:"linear-gradient(135deg,#fffbf0,#fff8e0)",border:"1px solid rgba(200,150,10,.25)",borderRadius:"8px",padding:".8rem",marginBottom:".45rem"}}>
+                            <div style={{display:"flex",justifyContent:"space-between",marginBottom:".15rem"}}>
+                              <div style={{fontWeight:700,fontSize:".85rem",color:"#8a6000"}}>{c.name}</div>
+                              <span style={{fontSize:".72rem",color:"#8a6000"}}>{c.timeframe}</span>
+                            </div>
+                            <div style={{fontSize:".73rem",color:"#8a6000",fontStyle:"italic",marginBottom:".2rem"}}>{c.org}</div>
+                            <div style={{fontSize:".78rem",color:"#5a4000",lineHeight:1.5,marginBottom:".25rem"}}>{c.why}</div>
+                            <div style={{fontSize:".72rem",display:"flex",gap:"1rem",flexWrap:"wrap"}}>
+                              {c.cost&&<span style={{color:"#8a6000"}}>Cost: {c.cost}</span>}
+                              {c.url&&<a href={c.url} target="_blank" rel="noreferrer" style={{color:"#1a5c9a",textDecoration:"underline"}}>Learn more</a>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* College finder */}
+                    <div style={{background:"linear-gradient(135deg,#f0f8ff,#e8f4ff)",border:"1.5px solid #b0d0f0",borderRadius:"10px",padding:"1rem",marginTop:".85rem"}}>
+                      <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",marginBottom:".3rem"}}>Find Programs Near You</div>
+                      <div style={{fontSize:".75rem",color:"#5a7090",marginBottom:".6rem",lineHeight:1.5}}>Enter your city or ZIP to find schools and programs that match your results.</div>
+                      <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+                        <input id="col-loc" placeholder="City, State or ZIP code"
+                          style={{flex:1,minWidth:"140px",padding:".5rem .75rem",border:"1.5px solid #b0c4da",borderRadius:"6px",fontSize:".83rem"}}/>
+                        <button onClick={async()=>{
+                          const loc=(document.getElementById("col-loc")||{}).value||"";
+                          if(!loc.trim()){showToast("Enter your city or ZIP");return;}
+                          if(!isApiKeySet()){setShowAdminSetup(true);return;}
+                          const df=(careerTestResults.degrees||[]).map(d=>d.field).slice(0,3).join(", ")||"business, technology";
+                          const cf=(careerTestResults.certifications||[]).map(c=>c.name).slice(0,3).join(", ")||"industry certifications";
+                          showToast("Searching programs near "+loc.trim()+"...");
+                          const prompt="A veteran near "+loc.trim()+" needs education programs. Degree fields: "+df+". Certifications: "+cf+". List 5 real, specific schools near this location including community colleges, universities, and vocational programs. Include GI Bill acceptance. Return ONLY valid JSON: {programs:[{name,type,location,fields:[],website,giAccepted:bool,veteranFriendly:bool,note}]}";
+                          try {
+                            const raw=await callClaude(prompt,"You are a veteran education advisor. List real, accurate schools.",1500);
+                            const js=raw.slice(raw.indexOf("{"),raw.lastIndexOf("}")+1);
+                            const res=JSON.parse(js);
+                            const el=document.getElementById("col-res");
+                            if(!el)return;
+                            const list=res.programs||[];
+                            el.innerHTML=list.length===0
+                              ?"<p style='font-size:.78rem;color:#8aa0b8;padding:.5rem 0'>No programs found. Try a nearby city.</p>"
+                              :list.map(p=>
+                                "<div style='padding:.7rem;background:#fff;border:1px solid #d0daea;border-radius:7px;margin-bottom:.4rem'>"+
+                                "<div style='display:flex;justify-content:space-between;align-items:flex-start;gap:.4rem;margin-bottom:.2rem'>"+
+                                "<span style='font-weight:700;font-size:.84rem;color:#1a3a6b'>"+p.name+"</span>"+
+                                "<div style='display:flex;gap:.2rem;flex-shrink:0'>"+
+                                (p.giAccepted?"<span style='background:rgba(26,122,64,.1);color:#1a7a40;border:1px solid rgba(26,122,64,.2);border-radius:10px;padding:1px 6px;font-size:.65rem;font-weight:700'>GI Bill</span>":"")+
+                                (p.veteranFriendly?"<span style='background:rgba(26,58,107,.1);color:#1a3a6b;border:1px solid rgba(26,58,107,.2);border-radius:10px;padding:1px 6px;font-size:.65rem;font-weight:700'>Vet Friendly</span>":"")+
+                                "</div></div>"+
+                                "<div style='font-size:.72rem;color:#5a7090'>"+p.type+" | "+p.location+"</div>"+
+                                "<div style='font-size:.74rem;color:#3a5070;margin:.15rem 0'>"+(p.fields||[]).join(", ")+"</div>"+
+                                (p.note?"<div style='font-size:.7rem;color:#8aa0b8;font-style:italic'>"+p.note+"</div>":"")+
+                                (p.website?"<a href='"+p.website+"' target='_blank' rel='noreferrer' style='font-size:.7rem;color:#1a5c9a;text-decoration:underline'>Visit website</a>":"")+
+                                "</div>"
+                              ).join("");
+                          } catch(err){showToast("Search failed. Please try again.");}
+                        }} style={{background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",border:"none",borderRadius:"6px",padding:".5rem 1rem",fontSize:".82rem",fontWeight:700,cursor:"pointer",flexShrink:0}}>
+                          Search
+                        </button>
+                      </div>
+                      <div id="col-res" style={{marginTop:".6rem"}}></div>
+                    </div>
+
+                    {/* Action buttons */}
+                    <div style={{display:"flex",gap:".6rem",marginTop:".85rem",flexWrap:"wrap"}}>
+                      <button onClick={()=>{
+                        const save={...careerTestResults,completedAt:new Date().toISOString()};
+                        setCareerTestResults(save);
+                        localStorage.setItem("vcb_career_test",JSON.stringify(save));
+                        showToast("Career test results saved to your profile");
+                      }} style={{flex:1,minWidth:"140px",padding:".7rem",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",border:"none",borderRadius:"8px",fontWeight:700,fontSize:".85rem",cursor:"pointer"}}>
+                        Save to Profile
+                      </button>
+                      <button onClick={()=>{
+                        const p=careerTestResults.profile||careerTestResults;
+                        const name=personal.name||"Veteran";
+                        const date=new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
+                        const isDeep=!!careerTestResults.deepProfile;
+                        const careers=(careerTestResults.careers||[]);
+                        const degrees=(careerTestResults.degrees||[]);
+                        const certs=(careerTestResults.certifications||[]);
+                        const careersHtml=careers.map((c,i)=>
+                          "<tr style='background:"+(i%2===0?"#f8fafd":"#fff")+"'><td style='padding:8px 10px;font-weight:600;color:#1a3a6b;font-size:9.5pt'>"+(i+1)+". "+c.title+"</td>"+
+                          "<td style='padding:8px 10px;font-size:9pt;color:#3a5070'>"+c.sector+"</td>"+
+                          "<td style='padding:8px 10px;font-size:9pt;color:#1a7a40;font-weight:600'>"+c.salaryRange+"</td>"+
+                          "<td style='padding:8px 10px'><span style='font-size:8pt;font-weight:700;padding:2px 8px;border-radius:10px;background:"+(c.fit==="Excellent"?"#e8f8ef":c.fit==="Strong"?"#e8edf8":"#fff8e0")+";color:"+(c.fit==="Excellent"?"#1a7a40":c.fit==="Strong"?"#1a3a6b":"#8a6000")+"'>"+c.fit+"</span></td>"+
+                          (c.mosLink?"<td style='padding:8px 10px;font-size:8.5pt;color:#1a7a40'>"+c.mosLink+"</td>":"<td></td>")+
+                          "</tr>"
+                        ).join("");
+                        const barHtml=(isDeep?
+                          DEEP_CAREER_TEST.dimensions.map(d=>"<div style='margin-bottom:8px'><div style='display:flex;justify-content:space-between;font-size:9pt;margin-bottom:3px'><span style='font-weight:600;color:"+d.color+"'>"+d.icon+" "+d.title+"</span><span style='color:#5a7090'>"+((careerTestResults.deepProfile.scores||{})[d.id]||0)+"%</span></div><div style='height:7px;background:#e8eef6;border-radius:4px'><div style='height:100%;width:"+((careerTestResults.deepProfile.scores||{})[d.id]||0)+"%;background:"+d.color+";border-radius:4px'></div></div></div>").join("")
+                          :
+                          [{l:"Analytical",v:p.analytical,c:"#1a5c9a"},{l:"Creative",v:p.creative,c:"#8a3a9a"},{l:"Social",v:p.social,c:"#1a7a40"},{l:"Leadership",v:p.leadership,c:"#c8960a"}].map(b=>"<div style='margin-bottom:8px'><div style='display:flex;justify-content:space-between;font-size:9pt;margin-bottom:3px'><span style='font-weight:600;color:"+b.c+"'>"+b.l+"</span><span style='color:#5a7090'>"+b.v+"%</span></div><div style='height:7px;background:#e8eef6;border-radius:4px'><div style='height:100%;width:"+b.v+"%;background:"+b.c+";border-radius:4px'></div></div></div>").join("")
+                        );
+                        const degreesHtml=degrees.map(d=>"<div style='margin-bottom:10px;padding:10px 12px;background:#f0f8ff;border-left:4px solid #1a3a6b;border-radius:4px'><div style='font-weight:700;font-size:9.5pt;color:#1a3a6b'>"+d.level+": "+d.field+"</div><div style='font-size:9pt;color:#3a5070;margin-top:3px'>"+d.why+"</div><div style='font-size:8.5pt;color:#5a7090;margin-top:4px'>"+(d.timeframe?"Timeframe: "+d.timeframe+" &nbsp; ":"")+(d.cost?"Est. Cost: "+d.cost+" &nbsp; ":"")+(d.giTip?"<strong style='color:#1a7a40'>GI Bill: "+d.giTip+"</strong>":"")+"</div></div>").join("")||"<p style='color:#8aa0b8;font-size:9pt'>No degree recommendations generated.</p>";
+                        const certsHtml=certs.map(c=>"<div style='margin-bottom:10px;padding:10px 12px;background:#fffbf0;border-left:4px solid #c8960a;border-radius:4px'><div style='font-weight:700;font-size:9.5pt;color:#8a6000'>"+c.name+"</div><div style='font-size:8pt;color:#8a6000;margin-top:1px'>"+c.org+"</div><div style='font-size:9pt;color:#5a4000;margin-top:3px'>"+c.why+"</div><div style='font-size:8pt;color:#8a6000;margin-top:4px'>"+(c.timeframe?"Time: "+c.timeframe+" &nbsp; ":"")+(c.cost?"Cost: "+c.cost:"")+"</div></div>").join("")||"<p style='color:#8aa0b8;font-size:9pt'>No certification recommendations generated.</p>";
+                        const w=window.open("","_blank");
+                        w.document.write(`<!DOCTYPE html><html><head><title>Career Assessment Report</title><style>*{box-sizing:border-box;margin:0;padding:0;}@page{size:letter;margin:1.5cm 1.8cm;}body{font-family:Arial,sans-serif;font-size:10pt;color:#1a2a3a;background:#fff;}@media print{@page{size:letter;margin:1.5cm 1.8cm;}html{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.no-break{page-break-inside:avoid;break-inside:avoid;}}</style></head><body>
+                          <div style="background:linear-gradient(135deg,#0a1628,#1a3a6b);color:#fff;padding:28px 32px;margin-bottom:24px;">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                              <div>
+                                <div style="font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:#f0c040;margin-bottom:6px;">${isDeep?"Full 60-Question":"Career"} Assessment Report</div>
+                                <div style="font-size:22pt;font-weight:700;letter-spacing:.02em;margin-bottom:4px;">${name}</div>
+                                <div style="font-size:9pt;color:#c0d8f0;">Generated by Veteran Career Path &nbsp;|&nbsp; ${date}</div>
+                              </div>
+                              <div style="text-align:right;">
+                                <div style="font-size:8pt;color:#80a8d0;margin-bottom:4px;">Primary Type</div>
+                                <div style="font-size:13pt;font-weight:700;color:#f0c040;">${isDeep?(careerTestResults.deepProfile.primary||"").replace(/^\w/,c=>c.toUpperCase()):p.primary}</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;" class="no-break">
+                            <div style="background:#f8fafd;border:1px solid #dde3ec;border-radius:8px;padding:16px;">
+                              <div style="font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#1a3a6b;margin-bottom:12px;">Personality Profile</div>
+                              ${barHtml}
+                            </div>
+                            <div style="background:#f8fafd;border:1px solid #dde3ec;border-radius:8px;padding:16px;">
+                              <div style="font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#1a3a6b;margin-bottom:10px;">Career Insight</div>
+                              <div style="font-size:9.5pt;color:#2a3a4a;line-height:1.7;">${careerTestResults.insight||""}</div>
+                            </div>
+                          </div>
+                          <div style="margin-bottom:24px;" class="no-break">
+                            <div style="font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#1a3a6b;border-bottom:2px solid #1a3a6b;padding-bottom:4px;margin-bottom:12px;">Recommended Career Paths (${careers.length} Matches)</div>
+                            <table style="width:100%;border-collapse:collapse;">
+                              <thead><tr style="background:#1a3a6b;color:#fff;"><th style="padding:8px 10px;text-align:left;font-size:8pt;">Career Title</th><th style="padding:8px 10px;text-align:left;font-size:8pt;">Industry</th><th style="padding:8px 10px;text-align:left;font-size:8pt;">Salary Range</th><th style="padding:8px 10px;text-align:left;font-size:8pt;">Fit</th><th style="padding:8px 10px;text-align:left;font-size:8pt;">Military Connection</th></tr></thead>
+                              <tbody>${careersHtml}</tbody>
+                            </table>
+                          </div>
+                          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+                            <div class="no-break"><div style="font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#1a3a6b;border-bottom:2px solid #1a3a6b;padding-bottom:4px;margin-bottom:12px;">Recommended Education</div>${degreesHtml}</div>
+                            <div class="no-break"><div style="font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#c8960a;border-bottom:2px solid #c8960a;padding-bottom:4px;margin-bottom:12px;">Recommended Certifications</div>${certsHtml}</div>
+                          </div>
+                          <div style="background:#f0f4fa;border:1px solid #dde3ec;border-radius:8px;padding:14px;text-align:center;" class="no-break">
+                            <div style="font-size:8pt;color:#5a7090;line-height:1.7;">This report was generated by Veteran Career Path | veterancareerpath.com<br>Built by veterans, for veterans. Your service matters. Your future is bright.</div>
+                          </div>
+                        </body></html>`);
+                        w.document.close();
+                        setTimeout(()=>{w.document.title=" ";w.print();},600);
+                      }} style={{flex:1,minWidth:"140px",padding:".7rem",background:"linear-gradient(135deg,#c8960a,#e8aa10)",color:"#0a1628",border:"none",borderRadius:"8px",fontWeight:700,fontSize:".85rem",cursor:"pointer"}}>
+                        Print PDF Report
+                      </button>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Footer navigation */}
+            {!careerTestResults&&!careerTestLoading&&(
+              <div style={{padding:".85rem 1.25rem",borderTop:"1px solid #e8eef6",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+                <div style={{display:"flex",gap:".3rem"}}>
+                  {(careerTestMode==="deep"?DEEP_CAREER_TEST.dimensions:CAREER_TEST.sections).map((_,i)=>(
+                    <div key={i} style={{width:"7px",height:"7px",borderRadius:"50%",background:i<=(careerTestMode==="deep"?deepTestStep:careerTestStep)?"#1a3a6b":"#dde3ec",transition:"background .2s"}}/>
+                  ))}
+                </div>
+                <div style={{display:"flex",gap:".5rem"}}>
+                  {(careerTestMode==="deep"?deepTestStep:careerTestStep)>0&&(
+                    <button onClick={()=>careerTestMode==="deep"?setDeepTestStep(s=>s-1):setCareerTestStep(s=>s-1)}
+                      style={{background:"transparent",border:"1px solid #dde3ec",borderRadius:"6px",padding:".42rem .85rem",fontSize:".82rem",cursor:"pointer",color:"#5a7090"}}>
+                      Back
+                    </button>
+                  )}
+                  {careerTestMode==="basic"&&careerTestStep<CAREER_TEST.sections.length&&(
+                    <button onClick={()=>{
+                      const sec=CAREER_TEST.sections[careerTestStep];
+                      const answered=sec.questions.filter(q=>careerTestAnswers[q.id]!==undefined).length;
+                      if(answered<sec.questions.length){showToast("Please answer all questions in this section");return;}
+                      if(careerTestStep===CAREER_TEST.sections.length-1){
+                        // Generate results
+                        (async()=>{
+                          setCareerTestLoading(true);
+                          const profile=getCareerTestProfile(careerTestAnswers);
+                          const ansSum=Object.entries(careerTestAnswers).map(([qid,ai])=>{
+                            for(const sec of CAREER_TEST.sections){const q=sec.questions.find(q=>q.id===qid);if(q)return q.q+" => "+q.options[ai];}return "";
+                          }).join("
+");
+                          const milCtx=milExperiences.length>0?"Veteran military background: "+milExperiences.map(e=>e.branch+" "+e.rank+" MOS:"+e.mos+(e.mosTitle?" ("+e.mosTitle+")":"")).join(", "):"No military background entered yet.";
+                          const prompt="A veteran completed a career personality assessment.
+
+"+milCtx+"
+
+Answers:
+"+ansSum+"
+
+Profile: Analytical "+profile.analytical+"% | Creative "+profile.creative+"% | Social "+profile.social+"% | Leadership "+profile.leadership+"%
+Primary: "+profile.primary+" Secondary: "+profile.secondary+"
+
+Generate 15 personalized career recommendations that cross-reference their military background AND personality profile. Return ONLY valid JSON:
+{"careers":[{"title":"Title","sector":"Industry","salaryRange":"$X-$Y","fit":"Excellent|Strong|Good","why":"2 sentences","nextStep":"One action","mosLink":"how their MOS connects to this career"}],"degrees":[{"level":"Degree level","field":"Field","why":"reason","timeframe":"duration","cost":"estimate","giTip":"GI Bill tip"}],"certifications":[{"name":"Cert name","org":"Org","why":"reason","timeframe":"duration","cost":"estimate","url":"website"}],"insight":"3-4 sentences about their career personality"}";
+                          try{
+                            const raw=await callClaude(prompt,"You are an expert veteran career counselor. Generate highly personalized results that explicitly connect the veteran's military experience to civilian career opportunities. Cross-reference their MOS, rank, and background with their personality profile to generate career matches that make sense for who they are and what they have done.",3500);
+                            const js=raw.slice(raw.indexOf("{"),raw.lastIndexOf("}")+1);
+                            const res=JSON.parse(js);
+                            setCareerTestResults({...res,profile,completedAt:new Date().toISOString()});
+                            setCareerTestStep(CAREER_TEST.sections.length);
+                          }catch(err){showToast("Error generating results. Please try again.");}
+                          setCareerTestLoading(false);
+                        })();
+                      } else {
+                        setCareerTestStep(s=>s+1);
+                      }
+                    }} style={{background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",border:"none",borderRadius:"6px",padding:".42rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}}>
+                      {careerTestStep===CAREER_TEST.sections.length-1?"Generate My Results":"Next"}
+                    </button>
+                  )}
+                  {careerTestMode==="deep"&&deepTestStep<DEEP_CAREER_TEST.dimensions.length&&(
+                    <button onClick={()=>{
+                      const dim=DEEP_CAREER_TEST.dimensions[deepTestStep];
+                      const answered=dim.questions.filter(q=>deepTestAnswers[q.id]!==undefined).length;
+                      if(answered<dim.questions.length){showToast("Please rate all statements in this section");return;}
+                      if(deepTestStep===DEEP_CAREER_TEST.dimensions.length-1){
+                        (async()=>{
+                          setCareerTestLoading(true);
+                          const deepProfile=getDeepProfile(deepTestAnswers);
+                          const milCtx=milExperiences.length>0?"Veteran military background: "+milExperiences.map(e=>e.branch+" "+e.rank+" MOS:"+e.mos+(e.mosTitle?" ("+e.mosTitle+")":"")+(e.asi&&e.asi.length?" ASIs:"+e.asi.map(a=>a.code).join(","):"")).join("; "):"No military background entered yet.";
+                          const dimSummary=DEEP_CAREER_TEST.dimensions.map(d=>{
+                            const score=(deepProfile.scores||{})[d.id]||0;
+                            return d.title+": "+score+"%";
+                          }).join(" | ");
+                          const prompt="A veteran completed a 60-question career assessment.
+
+"+milCtx+"
+
+Dimension scores:
+"+dimSummary+"
+
+Primary: "+deepProfile.primary+" Secondary: "+deepProfile.secondary+" Tertiary: "+deepProfile.tertiary+"
+
+Generate 20 highly personalized career paths that deeply cross-reference their military background AND their full 6-dimension personality profile. For each career explicitly explain how their military experience (MOS, rank, training) connects to it. Return ONLY valid JSON:
+{"careers":[{"title":"Title","sector":"Industry","salaryRange":"$X-$Y","fit":"Excellent|Strong|Good","why":"2-3 sentences connecting personality AND military background","nextStep":"One specific action","mosLink":"How their specific MOS/experience connects directly","clearanceBonus":"If clearance helps, how"}],"degrees":[{"level":"Level","field":"Field","why":"reason","timeframe":"time","cost":"cost","giTip":"GI Bill info"}],"certifications":[{"name":"Name","org":"Org","why":"reason","timeframe":"time","cost":"cost","url":"url"}],"insight":"4-5 sentences deeply analyzing their full profile, what they will thrive doing, what environments suit them, and what to avoid"}";
+                          try{
+                            const raw=await callClaude(prompt,"You are a master career counselor specializing in veteran transitions. Generate deeply personalized, highly specific career recommendations that treat this veteran as an individual. Every recommendation must explicitly connect their military background to the civilian opportunity. This is a paid premium assessment - deliver exceptional, detailed, actionable results.",4000);
+                            const js=raw.slice(raw.indexOf("{"),raw.lastIndexOf("}")+1);
+                            const res=JSON.parse(js);
+                            setCareerTestResults({...res,deepProfile,completedAt:new Date().toISOString()});
+                            setDeepTestStep(DEEP_CAREER_TEST.dimensions.length);
+                          }catch(err){showToast("Error generating results. Please try again.");}
+                          setCareerTestLoading(false);
+                        })();
+                      } else {
+                        setDeepTestStep(s=>s+1);
+                      }
+                    }} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",color:"#0a1628",border:"none",borderRadius:"6px",padding:".42rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}}>
+                      {deepTestStep===DEEP_CAREER_TEST.dimensions.length-1?"Generate Full Report":"Next"}
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

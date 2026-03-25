@@ -6978,8 +6978,7 @@ Return this exact JSON structure:
                           const profile=getCareerTestProfile(careerTestAnswers);
                           const ansSum=Object.entries(careerTestAnswers).map(([qid,ai])=>{
                             for(const sec of CAREER_TEST.sections){const q=sec.questions.find(q=>q.id===qid);if(q)return q.q+" => "+q.options[ai];}return "";
-                          }).join("
-");
+                          }).join("\n");
                           const milCtx=milExperiences.length>0?"Veteran military background: "+milExperiences.map(e=>e.branch+" "+e.rank+" MOS:"+e.mos+(e.mosTitle?" ("+e.mosTitle+")":"")).join(", "):"No military background entered yet.";
                           const prompt="A veteran completed a career personality assessment.\n\n"+milCtx+"\n\nAnswers:\n"+ansSum+"\n\nProfile: Analytical "+profile.analytical+"% | Creative "+profile.creative+"% | Social "+profile.social+"% | Leadership "+profile.leadership+"%\nPrimary: "+profile.primary+" Secondary: "+profile.secondary+"\n\nGenerate 15 personalized career recommendations that cross-reference their military background AND personality profile. Return ONLY valid JSON:\n{\"careers\":[{\"title\":\"Title\",\"sector\":\"Industry\",\"salaryRange\":\"$X-$Y\",\"fit\":\"Excellent|Strong|Good\",\"why\":\"2 sentences\",\"nextStep\":\"One action\",\"mosLink\":\"how their MOS connects to this career\"}],\"degrees\":[{\"level\":\"Degree level\",\"field\":\"Field\",\"why\":\"reason\",\"timeframe\":\"duration\",\"cost\":\"estimate\",\"giTip\":\"GI Bill tip\"}],\"certifications\":[{\"name\":\"Cert name\",\"org\":\"Org\",\"why\":\"reason\",\"timeframe\":\"duration\",\"cost\":\"estimate\",\"url\":\"website\"}],\"insight\":\"3-4 sentences about their career personality\"}";"
                           try{

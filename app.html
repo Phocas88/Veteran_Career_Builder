@@ -50,7 +50,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-      const firebaseConfig = {
+     const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -2439,7 +2439,7 @@ function MyProfileSaved(props) {
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem",marginBottom:".75rem"}}>
               <div style={{background:"#f0f4fa",borderRadius:"8px",padding:".75rem"}}>
                 <div style={{fontSize:".72rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#5a7090",marginBottom:".4rem"}}>Primary Type</div>
-                <div style={{fontWeight:700,color:"#1a3a6b",fontSize:".95rem"}}>{careerTestResults.profile?.primary||careerTestResults.deepProfile?.primary||"N/A"}</div>
+                <div style={{fontWeight:700,color:"#1a3a6b",fontSize:".95rem"}}>{((careerTestResults.profile||{}).primary)||(careerTestResults.deepProfile&&careerTestResults.deepProfile.primary)||"N/A"}</div>
               </div>
               <div style={{background:"#f0f4fa",borderRadius:"8px",padding:".75rem"}}>
                 <div style={{fontSize:".72rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#5a7090",marginBottom:".4rem"}}>Assessment Type</div>
@@ -6062,7 +6062,7 @@ Return this exact JSON structure:
                         <div className={"tl-dot "+(tlChecks[item.id]?"tl-done":"tl-pending")}>
                           {tlChecks[item.id]?"✓":"○"}
                         </div>
-                        <div className="tl-content" style={{opacity:tlChecks[item.id]?.6:1}}>
+                        <div className="tl-content" style={{opacity:(tlChecks[item.id]?6:1)}}>
                           <h4 style={{textDecoration:tlChecks[item.id]?"line-through":"none"}}>{item.label}</h4>
                           <p>{item.desc}</p>
                         </div>
@@ -6766,6 +6766,12 @@ Return this exact JSON structure:
       )}
       <div style={{borderTop:"1px solid #e8eef6",padding:".65rem 1rem",display:"flex",flexWrap:"wrap",justifyContent:"center",gap:"1rem",background:"#f8fafd",fontSize:".72rem"}}>
         <a href="https://veterancareerpath.com" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none",fontWeight:600}}>Home</a>
+        <a href="https://veterancareerpath.com/army-mos-careers.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>Army MOS</a>
+        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>USMC MOS</a>
+        <a href="https://veterancareerpath.com/navy-rate-careers.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>Navy Rates</a>
+        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>USAF AFSC</a>
+        <a href="https://veterancareerpath.com/coast-guard-rating-careers.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>USCG Ratings</a>
+        <a href="https://veterancareerpath.com/space-force-afsc-careers.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>USSF AFSC</a>
         <a href="https://veterancareerpath.com/veteran-career-test.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>Free Career Test</a>
         <a href="https://veterancareerpath.com/mos-career-translator.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>MOS Translator Guide</a>
         <a href="https://veterancareerpath.com/military-civilian-resume.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>Resume Guide</a>

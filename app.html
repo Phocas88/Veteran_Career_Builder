@@ -2393,12 +2393,17 @@ function CareerTab(props) {
         <div style={{background:"linear-gradient(135deg,#0a1628,#1a3a6b)",border:"2px solid rgba(200,150,10,.3)",borderRadius:"12px",padding:"1.1rem 1.3rem",marginBottom:"1.1rem"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:".75rem"}}>
             <div>
-              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.1rem",letterSpacing:".08em",color:"#f0c040",marginBottom:".25rem"}}>Not Sure What Career to Pursue?</div>
-              <div style={{fontSize:".8rem",color:"#c0d8f0",lineHeight:1.6,maxWidth:"400px"}}>Take our career and personality assessment built specifically for veterans. {careerTestResults&&<span style={{color:"#90e8b0",fontWeight:600}}>Completed {new Date(careerTestResults.completedAt||Date.now()).toLocaleDateString()}</span>}</div>
+              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.1rem",letterSpacing:".08em",color:"#f0c040",marginBottom:".25rem"}}>Career Assessment</div>
+              <div style={{fontSize:".8rem",color:"#c0d8f0",lineHeight:1.6,maxWidth:"400px"}}>
+                {careerTestResults
+                  ?<span style={{color:"#90e8b0",fontWeight:600}}>Last taken: {new Date(careerTestResults.completedAt||Date.now()).toLocaleDateString()}</span>
+                  :"Take the 60-question career assessment to discover your ideal civilian career matches."}
+              </div>
             </div>
             <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
-              <button onClick={()=>{setCareerTestMode("basic");setCareerTestStep(0);setCareerTestAnswers({});setCareerTestResults(null);setShowCareerTest(true);}} style={{background:"rgba(255,255,255,.1)",color:"#c0d8f0",border:"1px solid rgba(255,255,255,.2)",borderRadius:"8px",padding:".5rem .9rem",fontWeight:600,fontSize:".82rem",cursor:"pointer"}}>Free Test (20 Q)</button>
-              {hasAccess&&<button onClick={()=>{setCareerTestMode("deep");setDeepTestStep(0);setDeepTestAnswers({});setCareerTestResults(null);setShowCareerTest(true);}} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",color:"#0a1628",border:"none",borderRadius:"8px",padding:".5rem 1rem",fontWeight:700,fontSize:".85rem",cursor:"pointer"}}>Full Assessment (60 Q)</button>}
+              {!hasAccess&&<a href="https://veterancareerpath.com/veteran-career-test.html" target="_blank" rel="noreferrer" style={{background:"rgba(255,255,255,.1)",color:"#c0d8f0",border:"1px solid rgba(255,255,255,.2)",borderRadius:"8px",padding:".5rem .9rem",fontWeight:600,fontSize:".82rem",cursor:"pointer",textDecoration:"none"}}>Free Preview Test</a>}
+              {hasAccess&&<button onClick={()=>{setCareerTestMode("deep");setCareerTestStep(0);setCareerTestAnswers({});setCareerTestResults(null);setShowCareerTest(true);}} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",color:"#0a1628",border:"none",borderRadius:"8px",padding:".5rem 1rem",fontWeight:700,fontSize:".85rem",cursor:"pointer"}}>Take Full Assessment (60 Q)</button>}
+              {hasAccess&&careerTestResults&&<button onClick={()=>{setCareerTestMode(careerTestResults.deepProfile?"deep":"basic");setCareerTestStep(careerTestResults.deepProfile?window.DEEP_CAREER_TEST.dimensions.length:CAREER_TEST.sections.length);setShowCareerTest(true);}} style={{background:"rgba(255,255,255,.1)",color:"#c0d8f0",border:"1px solid rgba(255,255,255,.2)",borderRadius:"8px",padding:".5rem .9rem",fontWeight:600,fontSize:".82rem",cursor:"pointer"}}>View Results</button>}
             </div>
           </div>
         </div>

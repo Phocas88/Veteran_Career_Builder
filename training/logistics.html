@@ -108,22 +108,55 @@ footer{background:var(--dark);padding:2.5rem 6%;border-top:1px solid rgba(255,25
 .fl:hover{color:rgba(255,255,255,.75)}
 .fb{border-top:1px solid rgba(255,255,255,.06);padding-top:1.25rem;text-align:center;font-size:.73rem;color:rgba(255,255,255,.25);font-weight:300}
 @media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{position:static;display:none}.layout{padding:2rem 5%}}
-@media(max-width:640px){.nav-links .nav-link{display:none}.hero-meta{gap:1rem}}</style>
+@media(max-width:640px){.nav-links .nav-link{display:none}.hero-meta{gap:1rem}}.content-area .example-bad p{color:#ffbbbb !important;font-size:.85rem;margin:0;line-height:1.55;font-weight:400}
+.content-area .example-good p{color:#bbffdd !important;font-size:.85rem;margin:0;line-height:1.55;font-weight:400}
+.content-area .example-bad-label{color:#e07070 !important}
+.content-area .example-good-label{color:#70e0a0 !important}
+.content-area .ex-bad p{color:#ffbbbb !important;font-size:.85rem;margin:0;line-height:1.55;font-weight:400}
+.content-area .ex-good p{color:#bbffdd !important;font-size:.85rem;margin:0;line-height:1.55;font-weight:400}
+.content-area .ex-bad-l{color:#e07070 !important}
+.content-area .ex-good-l{color:#70e0a0 !important}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
+
+<style id="mobile-nav-css">
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:auto;}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;font-weight:500;padding:.85rem 6%;border-bottom:1px solid rgba(255,255,255,.05);transition:background .15s;}
+.mobile-menu a:hover{background:rgba(255,255,255,.05);}
+.mobile-menu .mobile-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e !important;font-weight:700;text-align:center;margin:.75rem 1.5rem;border-radius:8px;padding:.75rem !important;border:none !important;}
+@media(max-width:768px){.hamburger{display:flex;}.nav-links{display:none !important;}}
+</style>
 </head>
 <body>
-<nav>
-  <a class="nav-logo" href="https://veterancareerpath.com">
-    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path">
-    <span>Veteran Career Path</span>
+<nav style="background:#0a1628;padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.15)">
+  <a href="https://veterancareerpath.com" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" style="width:36px;height:36px;object-fit:contain" alt="Veteran Career Path">
+    <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;color:#f0c040">Veteran Career Path</span>
   </a>
-  <div class="nav-links">
-    <a href="https://veterancareerpath.com/training.html" class="nav-link active">Training</a>
-    <a href="https://veterancareerpath.com/veteran-career-test.html" class="nav-link">Career Test</a>
-    <a href="https://veterancareerpath.com/mos-career-translator.html" class="nav-link">MOS Translator</a>
-    <a href="https://veterancareerpath.com/army-mos-careers.html" class="nav-link">MOS Guides</a>
-    <a href="https://veterancareerpath.com/app.html" class="nav-cta">Launch App</a>
+  <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap" class="nav-links">
+    <a href="https://veterancareerpath.com/veteran-career-test.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Career Test</a>
+    <a href="https://veterancareerpath.com/mos-career-translator.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">MOS Translator</a>
+    <a href="https://veterancareerpath.com/training.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Training</a>
+    <a href="https://veterancareerpath.com/army-mos-careers.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">MOS Guides</a>
+    <a href="https://veterancareerpath.com/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.82rem;padding:.45rem 1rem;border-radius:6px;text-decoration:none">Launch App</a>
   </div>
+  <button class="hamburger" id="hamburger-btn" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="https://veterancareerpath.com/">Home</a>
+  <a href="https://veterancareerpath.com/veteran-career-test.html">Free Career Test</a>
+  <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
+  <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Career Guides</a>
+  <a href="https://veterancareerpath.com/training.html">Training Library</a>
+  <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a>
+  <a href="https://veterancareerpath.com/app.html" class="mobile-cta">Launch App &#8212; Free</a>
+</div>
 <section class="course-hero">
   <div class="hero-inner">
     <div class="hero-eyebrow">📚 Free Training Guide &bull; 88M · 92A · LS</div>
@@ -137,7 +170,7 @@ footer{background:var(--dark);padding:2.5rem 6%;border-top:1px solid rgba(255,25
     </div>
     <div class="hero-actions">
       <a href="#lesson-1" class="btn-primary">Start Reading</a>
-      <a href="https://veterancareerpath.com/app.html" class="btn-ghost">Build My Resume →</a>
+      <a href="https://veterancareerpath.com/app.html" class="btn-ghost">Start Free Trial →</a>
     </div>
   </div>
 </section>
@@ -145,7 +178,7 @@ footer{background:var(--dark);padding:2.5rem 6%;border-top:1px solid rgba(255,25
   <aside class="sidebar">
     <div class="sidebar-title">In This Course</div>
     <ul class="lesson-list"><li class="lesson-item"><a href="#lesson-1" class="lesson-link"><span class="lesson-num">1</span><span style="flex:1;line-height:1.35">Why Logistics Veterans Are in Demand</span></a></li><li class="lesson-item"><a href="#lesson-2" class="lesson-link"><span class="lesson-num">2</span><span style="flex:1;line-height:1.35">Certifications That Accelerate Your Career</span></a></li><li class="lesson-item"><a href="#lesson-3" class="lesson-link"><span class="lesson-num">3</span><span style="flex:1;line-height:1.35">Top Employers and How to Target Them</span></a></li><li class="lesson-item"><a href="#lesson-4" class="lesson-link"><span class="lesson-num">4</span><span style="flex:1;line-height:1.35">From Operator to Executive — The Career Ladder</span></a></li></ul>
-    <div class="sidebar-cta"><p>Ready to act? Build your translated resume free.</p><a href="https://veterancareerpath.com/app.html">Build My Resume →</a></div>
+    <div class="sidebar-cta"><p>Free career test and MOS translator. Resume builder requires a subscription.</p><a href="https://veterancareerpath.com/app.html">Start Free Trial →</a></div>
   </aside>
   <main>
     <div class="lesson-block" id="lesson-1"><div class="lesson-header"><div class="lesson-badge" style="background:#8a5a00">1</div><div class="lesson-meta"><div class="lesson-title-text">Why Logistics Veterans Are in Demand</div></div></div><div class="content-area">
@@ -244,7 +277,7 @@ footer{background:var(--dark);padding:2.5rem 6%;border-top:1px solid rgba(255,25
 <div class="guide-cta-block">
   <h3>Translate Your Logistics Experience Into a Civilian Resume</h3>
   <p>Your 88M or 92A background is worth significantly more than most veterans realize. Build your resume and see the career matches.</p>
-  <a href="https://veterancareerpath.com/app.html" class="btn-primary">Build My Logistics Resume →</a>
+  <a href="https://veterancareerpath.com/app.html" class="btn-primary">Start Free Trial →</a>
 </div>
 
 <div class="key-points">
@@ -258,7 +291,7 @@ footer{background:var(--dark);padding:2.5rem 6%;border-top:1px solid rgba(255,25
 </div></div></div>
     <div class="lesson-nav">
       <a href="https://veterancareerpath.com/training.html" class="lesson-nav-btn">← All Courses</a>
-      <a href="https://veterancareerpath.com/app.html" class="lesson-nav-btn next">Build My Resume →</a>
+      <a href="https://veterancareerpath.com/app.html" class="lesson-nav-btn next">Start Free Trial →</a>
     </div>
   </main>
 </div>
@@ -307,4 +340,30 @@ footer{background:var(--dark);padding:2.5rem 6%;border-top:1px solid rgba(255,25
     <div class="fb">Veteran Career Path &bull; Built by a veteran, for veterans &bull; &copy; 2026</div>
   </div>
 </footer>
+
+<script>
+(function(){
+  var btn = document.getElementById('hamburger-btn');
+  var menu = document.getElementById('mobile-menu');
+  if(!btn||!menu) return;
+  btn.addEventListener('click', function(){
+    btn.classList.toggle('open');
+    menu.classList.toggle('open');
+  });
+  // Close on link click
+  menu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      btn.classList.remove('open');
+      menu.classList.remove('open');
+    });
+  });
+  // Close on outside click
+  document.addEventListener('click', function(e){
+    if(!btn.contains(e.target)&&!menu.contains(e.target)){
+      btn.classList.remove('open');
+      menu.classList.remove('open');
+    }
+  });
+})();
+</script>
 </body></html>

@@ -50,14 +50,14 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-     const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+      const firebaseConfig = {
+        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+        authDomain: "veteran-career-builder.firebaseapp.com",
+        projectId: "veteran-career-builder",
+        storageBucket: "veteran-career-builder.firebasestorage.app",
+        messagingSenderId: "REPLACE_SENDER_ID",
+        appId: "REPLACE_APP_ID"
+      };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -77,14 +77,50 @@
   @page { margin: 1.5cm; }
   /* Suppress browser print headers/footers */
 }
-</style></head>
+</style>
+<style id="mobile-nav-css">
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:auto;}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;font-weight:500;padding:.85rem 6%;border-bottom:1px solid rgba(255,255,255,.05);transition:background .15s;}
+.mobile-menu a:hover{background:rgba(255,255,255,.05);}
+.mobile-menu .mobile-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e !important;font-weight:700;text-align:center;margin:.75rem 1.5rem;border-radius:8px;padding:.75rem !important;border:none !important;}
+@media(max-width:768px){.hamburger{display:flex;}.nav-links{display:none !important;}}
+</style>
+<style id="mobile-nav-css">
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:auto;}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;font-weight:500;padding:.85rem 6%;border-bottom:1px solid rgba(255,255,255,.05);}
+.mobile-menu .mobile-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e !important;font-weight:700;text-align:center;margin:.75rem 1.5rem;border-radius:8px;padding:.75rem !important;border:none !important;}
+@media(max-width:768px){.hamburger{display:flex;}.nav-links{display:none !important;}}
+</style>
+</head>
 <body>
   <div id="loading">
     <img id="loading-logo" src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path"/>
     <p>VETERAN CAREER BUILDER</p>
     <div class="spin"></div>
   </div>
-  <div id="root"></div>
+  <button class="hamburger" id="hamburger-btn" aria-label="Menu"><span></span><span></span><span></span></button>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="https://veterancareerpath.com/">Home</a>
+  <a href="https://veterancareerpath.com/veteran-career-test.html">Free Career Test</a>
+  <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
+  <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Career Guides</a>
+  <a href="https://veterancareerpath.com/training.html">Training Library</a>
+  <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a>
+  <a href="https://veterancareerpath.com/app.html" class="mobile-cta">Launch App — Free</a>
+</div>
+<div id="root"></div>
   <button id="admin-btn" onclick="openAdmin()">ADMIN SETUP</button>
   <div id="admin-overlay">
     <div id="admin-box">
@@ -452,269 +488,132 @@ window.MOS_CODES={
     // Support
     {code:"3F0X1",title:"Personnel"},{code:"3F5X1",title:"Administration"},{code:"5J0X1",title:"Paralegal"},{code:"5R0X1",title:"Chaplain Assistant"},{code:"6C0X1",title:"Contracting"},{code:"6F0X1",title:"Financial Management"},{code:"8R000",title:"Guardian Recruiter"},{code:"4N0X1",title:"Aerospace Medical Service"},{code:"3P0X1",title:"Security Forces"},{code:"3N0X1",title:"Public Affairs"}
   ]
-};</script>
-<script type="text/babel" data-presets="react,env">
-const { useState, useEffect, useRef } = React;
-    const fbAuth = window.fbAuth;
-    const fbDb = window.fbDb;
-const MIL_JARGON = {
-  "NCOIC":"Team Supervisor / Operations Lead",
-  "OIC":"Department Manager / Program Lead",
-  "CDR":"Commander / Director",
-  "XO":"Deputy Director / Operations Manager",
-  "1SG":"Senior Operations Supervisor",
-  "CSM":"Senior Advisor / Chief of Staff",
-  "NCO":"Team Leader / Supervisor",
-  "SNCO":"Senior Team Leader",
-  "AO":"Area of Operations",
-  "AOR":"Area of Responsibility",
-  "OPORD":"Operations Plan",
-  "SITREP":"Status Report",
-  "AAR":"Post-Project Review / Lessons Learned",
-  "SOP":"Standard Operating Procedure",
-  "PMCS":"Preventive Maintenance Program",
-  "TOC":"Operations Center",
-  "COP":"Operations Dashboard / Common Picture",
-  "OPTEMPO":"Operational Tempo / Workload Intensity",
-  "TDY":"Temporary Business Travel",
-  "TAD":"Temporary Duty Assignment",
-  "PME":"Professional Development / Leadership Training",
-  "PCS":"Relocation",
-  "MOB":"Deployment / Mobilization",
-  "MOS":"Career Specialty",
-  "AFSC":"Career Specialty Code",
-  "NEC":"Navy Job Classification",
-  "PBO":"Asset / Property Manager",
-  "SSA":"Supply Chain / Distribution Center",
-  "MHE":"Material Handling Equipment / Forklifts",
-  "Chain of Command":"Reporting Structure",
-  "Unit Cohesion":"Team Unity",
-  "Battle Rhythm":"Recurring Operating Cadence",
-  "Tasker":"Action Item / Work Order",
-  "Deadlined":"Equipment Out of Service",
-  "Force Multiplier":"Efficiency / Capability Enhancement",
-  "Hooah":"(omit - military slang)",
-  "Oorah":"(omit - military slang)",
-  "Hard Charger":"High Performer / Self-Starter",
 };
-
-const BRANCHES = ["Army","Navy","Marine Corps","Air Force","Space Force","Coast Guard"];
-const RANKS = {
-  "Army": {
-    enlisted: [
-      { grade:"E-1", title:"Private", abbr:"PVT", insignia:"⬜" },
-      { grade:"E-2", title:"Private Second Class", abbr:"PV2", insignia:"▲" },
-      { grade:"E-3", title:"Private First Class", abbr:"PFC", insignia:"▲▲" },
-      { grade:"E-4", title:"Specialist", abbr:"SPC", insignia:"◆" },
-      { grade:"E-4", title:"Corporal", abbr:"CPL", insignia:"◆◆" },
-      { grade:"E-5", title:"Sergeant", abbr:"SGT", insignia:"⬡⬡⬡" },
-      { grade:"E-6", title:"Staff Sergeant", abbr:"SSG", insignia:"⬡⬡⬡" },
-      { grade:"E-7", title:"Sergeant First Class", abbr:"SFC", insignia:"⬡⬡⬡" },
-      { grade:"E-8", title:"Master Sergeant", abbr:"MSG", insignia:"⬡⬡⬡" },
-      { grade:"E-8", title:"First Sergeant", abbr:"1SG", insignia:"⬡⬡⬡" },
-      { grade:"E-9", title:"Sergeant Major", abbr:"SGM", insignia:"⬡⬡⬡" },
-      { grade:"E-9", title:"Command Sergeant Major", abbr:"CSM", insignia:"⬡⬡⬡" },
-      { grade:"E-9", title:"Sergeant Major of the Army", abbr:"SMA", insignia:"★" },
-    ],
-    warrant: [
-      { grade:"W-1", title:"Warrant Officer 1", abbr:"WO1", insignia:"▬" },
-      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CW2", insignia:"▬▬" },
-      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CW3", insignia:"▬▬▬" },
-      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CW4", insignia:"▬▬▬▬" },
-      { grade:"W-5", title:"Chief Warrant Officer 5", abbr:"CW5", insignia:"▬▬▬▬▬" },
-    ],
-    officer: [
-      { grade:"O-1", title:"Second Lieutenant", abbr:"2LT", insignia:"▧" },
-      { grade:"O-2", title:"First Lieutenant", abbr:"1LT", insignia:"▧▧" },
-      { grade:"O-3", title:"Captain", abbr:"CPT", insignia:"✦" },
-      { grade:"O-4", title:"Major", abbr:"MAJ", insignia:"🔶" },
-      { grade:"O-5", title:"Lieutenant Colonel", abbr:"LTC", insignia:"⬟" },
-      { grade:"O-6", title:"Colonel", abbr:"COL", insignia:"🦅" },
-      { grade:"O-7", title:"Brigadier General", abbr:"BG", insignia:"★" },
-      { grade:"O-8", title:"Major General", abbr:"MG", insignia:"★★" },
-      { grade:"O-9", title:"Lieutenant General", abbr:"LTG", insignia:"★★★" },
-      { grade:"O-10", title:"General", abbr:"GEN", insignia:"★★★★" },
+window.COURSES = [
+  {
+    id:"bootcamp",
+    title:"Transition Bootcamp",
+    subtitle:"From Uniform to Civilian in 90 Days",
+    icon:"🎖",
+    color:"#1a3a6b",
+    description:"The complete step-by-step system for transitioning out of the military and into a civilian career. Built specifically for veterans, by veterans.",
+    lessons:[
+      {id:"bc1",title:"Understanding the Civilian Workforce",duration:"12 min",free:true,
+       description:"How civilian companies work, how hiring decisions are made, and why military experience is your biggest competitive advantage — if you know how to present it.",
+       objectives:["Understand how civilian hiring managers think","Learn why military experience is undervalued by default","Discover how to position your service as a premium qualification"],
+       keyPoints:["Civilian companies don't speak military — you need to translate","Your rank and experience translate to real leadership value","Early preparation (12+ months out) is the single biggest factor in success"]},
+      {id:"bc2",title:"Building Your 90-Day Transition Plan",duration:"15 min",free:false,
+       description:"A concrete timeline and action plan from 12 months before ETS to your first day on the civilian job. What to do every week, in what order, and why.",
+       objectives:["Create a personalized transition timeline","Identify your top 3 target career paths","Set up your financial runway for the transition period"],
+       keyPoints:["Start earlier than you think you need to","TAP is a starting point, not a complete plan","Your network is your most valuable job search asset"]},
+      {id:"bc3",title:"Translating Your MOS to Civilian Language",duration:"18 min",free:false,
+       description:"The tactical system for converting every element of your military record — MOS, rank, duties, ASIs, awards — into civilian language that hiring managers understand.",
+       objectives:["Convert your MOS into civilian job titles","Translate military duties into quantified resume bullets","Understand which qualifications add salary premium in the civilian market"],
+       keyPoints:["Never put your MOS code on a civilian resume without translation","Quantify everything: dollars, personnel, equipment, outcomes","Your additional duties are often your most valuable civilian qualifications"]},
+      {id:"bc4",title:"Using Your GI Bill and VA Benefits",duration:"14 min",free:false,
+       description:"A complete breakdown of Chapter 33, Chapter 30, VR&E (Chapter 31), and the DoD COOL program. Which benefit is right for your situation and how to maximize it.",
+       objectives:["Compare Post-9/11 GI Bill vs Montgomery GI Bill","Determine if VR&E is a better option for your situation","Identify certifications you can get funded before separation"],
+       keyPoints:["VR&E is often more valuable than GI Bill for veterans with disability ratings","COOL funds certifications while you are still on active duty","Housing allowance from Chapter 33 can fund your entire transition period"]},
+      {id:"bc5",title:"Building Your Civilian Network",duration:"16 min",free:false,
+       description:"How to build a professional network from scratch, leverage veteran hiring programs, and get referred into jobs before they are posted publicly.",
+       objectives:["Set up a LinkedIn profile that gets recruiter attention","Identify veteran hiring programs at target companies","Get warm introductions into your target organizations"],
+       keyPoints:["70% of jobs are never publicly posted — referrals are everything","Veteran hiring programs at major companies are specifically designed for you","LinkedIn alumni networks from your base or unit are powerful and underused"]},
+      {id:"bc6",title:"Your First 90 Days in the Civilian Job",duration:"13 min",free:false,
+       description:"How to succeed in your first civilian role, navigate workplace culture differences, and set yourself up for rapid advancement.",
+       objectives:["Understand civilian workplace culture differences","Build relationships and establish credibility quickly","Position yourself for promotion within the first year"],
+       keyPoints:["Civilian workplaces move slower and communicate differently than military units","Your first 90 days set your reputation for years — manage it intentionally","Asking for feedback is a strength in civilian culture, not a weakness"]}
     ]
   },
-  "Marine Corps": {
-    enlisted: [
-      { grade:"E-1", title:"Private", abbr:"Pvt", insignia:"⬜" },
-      { grade:"E-2", title:"Private First Class", abbr:"PFC", insignia:"▲" },
-      { grade:"E-3", title:"Lance Corporal", abbr:"LCpl", insignia:"⬡" },
-      { grade:"E-4", title:"Corporal", abbr:"Cpl", insignia:"⬡⬡" },
-      { grade:"E-5", title:"Sergeant", abbr:"Sgt", insignia:"⬡⬡⬡" },
-      { grade:"E-6", title:"Staff Sergeant", abbr:"SSgt", insignia:"⬡⬡⬡" },
-      { grade:"E-7", title:"Gunnery Sergeant", abbr:"GySgt", insignia:"⬡⬡⬡" },
-      { grade:"E-8", title:"Master Sergeant", abbr:"MSgt", insignia:"⬡⬡⬡" },
-      { grade:"E-8", title:"First Sergeant", abbr:"1stSgt", insignia:"⬡⬡⬡" },
-      { grade:"E-9", title:"Master Gunnery Sergeant", abbr:"MGySgt", insignia:"⬡⬡⬡" },
-      { grade:"E-9", title:"Sergeant Major", abbr:"SgtMaj", insignia:"⬡⬡⬡" },
-      { grade:"E-9", title:"Sergeant Major of the Marine Corps", abbr:"SgtMajMC", insignia:"★" },
-    ],
-    warrant: [
-      { grade:"W-1", title:"Warrant Officer 1", abbr:"WO1", insignia:"▬" },
-      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CWO2", insignia:"▬▬" },
-      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CWO3", insignia:"▬▬▬" },
-      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CWO4", insignia:"▬▬▬▬" },
-      { grade:"W-5", title:"Chief Warrant Officer 5", abbr:"CWO5", insignia:"▬▬▬▬▬" },
-    ],
-    officer: [
-      { grade:"O-1", title:"Second Lieutenant", abbr:"2ndLt", insignia:"▧" },
-      { grade:"O-2", title:"First Lieutenant", abbr:"1stLt", insignia:"▧▧" },
-      { grade:"O-3", title:"Captain", abbr:"Capt", insignia:"✦" },
-      { grade:"O-4", title:"Major", abbr:"Maj", insignia:"🔶" },
-      { grade:"O-5", title:"Lieutenant Colonel", abbr:"LtCol", insignia:"⬟" },
-      { grade:"O-6", title:"Colonel", abbr:"Col", insignia:"🦅" },
-      { grade:"O-7", title:"Brigadier General", abbr:"BGen", insignia:"★" },
-      { grade:"O-8", title:"Major General", abbr:"MajGen", insignia:"★★" },
-      { grade:"O-9", title:"Lieutenant General", abbr:"LtGen", insignia:"★★★" },
-      { grade:"O-10", title:"General", abbr:"Gen", insignia:"★★★★" },
+  {
+    id:"resume",
+    title:"Resume Mastery",
+    subtitle:"Build a Resume That Gets Interviews",
+    icon:"📄",
+    color:"#1a5c9a",
+    description:"The complete guide to building a military-to-civilian resume that passes ATS filters, gets recruiter attention, and lands interviews.",
+    lessons:[
+      {id:"rm1",title:"Why Military Resumes Fail",duration:"10 min",free:true,
+       description:"The three specific reasons veteran resumes get filtered out before a human ever sees them — and exactly how to fix each one.",
+       objectives:["Understand how ATS systems filter resumes","Identify jargon and formatting that disqualifies veteran resumes","Learn the civilian resume rules that military resumes routinely break"],
+       keyPoints:["ATS systems reject resumes with military jargon and acronyms","Rank as a primary identifier means nothing to civilian recruiters","Duty descriptions without metrics are invisible to hiring managers"]},
+      {id:"rm2",title:"The ATS-Optimized Resume Formula",duration:"20 min",free:false,
+       description:"The exact resume structure, keyword strategy, and formatting rules that get veteran resumes past applicant tracking systems and into human hands.",
+       objectives:["Build an ATS-optimized resume structure","Identify and include target job keywords","Choose the right resume format for your experience level"],
+       keyPoints:["Keywords from the job posting must appear in your resume","One-page rule is a myth for veterans — two pages is standard","Formatting matters: no tables, no text boxes, no graphics in ATS versions"]},
+      {id:"rm3",title:"Writing Bullet Points That Get Interviews",duration:"22 min",free:false,
+       description:"The formula for writing resume bullet points that quantify your military impact in civilian language — with specific examples from common MOS backgrounds.",
+       objectives:["Apply the Action-Result-Metric formula to every bullet","Translate military duties into civilian accomplishments","Eliminate every piece of jargon from your resume"],
+       keyPoints:["Every bullet: verb + what you did + the quantified outcome","Start with the most impressive number or result","Never assume the reader knows what your MOS does"]},
+      {id:"rm4",title:"Tailoring Your Resume for Each Application",duration:"15 min",free:false,
+       description:"How to customize your resume for each job in 15 minutes or less — the exact keywords to pull, where to put them, and which bullets to lead with.",
+       objectives:["Extract keywords from any job posting in under 5 minutes","Customize your resume header and summary for each role","Know which experiences to lead with for different job types"],
+       keyPoints:["Tailored resumes get 3x more callbacks than generic ones","The summary section is your most powerful real estate","Mirror the language of the job posting exactly"]},
+      {id:"rm5",title:"Federal Resume vs Civilian Resume",duration:"17 min",free:false,
+       description:"Federal GS resumes are completely different from civilian resumes. This lesson covers the OPM standards, USAJobs formatting, and how to write for federal hiring.",
+       objectives:["Understand OPM resume requirements for GS positions","Format your resume for USAJobs applications","Write KSA responses that score well in federal evaluation"],
+       keyPoints:["Federal resumes are 4-6 pages — one page will disqualify you","Every GS position requires specific hours-per-week and supervisor contacts","Veteran preference points are powerful but only if the resume qualifies"]}
     ]
   },
-  "Navy": {
-    enlisted: [
-      { grade:"E-1", title:"Seaman Recruit", abbr:"SR", insignia:"⬜" },
-      { grade:"E-2", title:"Seaman Apprentice", abbr:"SA", insignia:"▲▲" },
-      { grade:"E-3", title:"Seaman", abbr:"SN", insignia:"▲▲▲" },
-      { grade:"E-4", title:"Petty Officer Third Class", abbr:"PO3", insignia:"⬡" },
-      { grade:"E-5", title:"Petty Officer Second Class", abbr:"PO2", insignia:"⬡⬡" },
-      { grade:"E-6", title:"Petty Officer First Class", abbr:"PO1", insignia:"⬡⬡⬡" },
-      { grade:"E-7", title:"Chief Petty Officer", abbr:"CPO", insignia:"⚓" },
-      { grade:"E-8", title:"Senior Chief Petty Officer", abbr:"SCPO", insignia:"⚓⚓" },
-      { grade:"E-9", title:"Master Chief Petty Officer", abbr:"MCPO", insignia:"⚓⚓⚓" },
-      { grade:"E-9", title:"Fleet Master Chief", abbr:"FLTCM", insignia:"★" },
-      { grade:"E-9", title:"Master Chief Petty Officer of the Navy", abbr:"MCPON", insignia:"★" },
-    ],
-    warrant: [
-      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CWO2", insignia:"▬▬" },
-      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CWO3", insignia:"▬▬▬" },
-      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CWO4", insignia:"▬▬▬▬" },
-      { grade:"W-5", title:"Chief Warrant Officer 5", abbr:"CWO5", insignia:"▬▬▬▬▬" },
-    ],
-    officer: [
-      { grade:"O-1", title:"Ensign", abbr:"ENS", insignia:"▧" },
-      { grade:"O-2", title:"Lieutenant Junior Grade", abbr:"LTJG", insignia:"▧▧" },
-      { grade:"O-3", title:"Lieutenant", abbr:"LT", insignia:"✦" },
-      { grade:"O-4", title:"Lieutenant Commander", abbr:"LCDR", insignia:"🔶" },
-      { grade:"O-5", title:"Commander", abbr:"CDR", insignia:"⬟" },
-      { grade:"O-6", title:"Captain", abbr:"CAPT", insignia:"🦅" },
-      { grade:"O-7", title:"Rear Admiral Lower Half", abbr:"RDML", insignia:"★" },
-      { grade:"O-8", title:"Rear Admiral Upper Half", abbr:"RADM", insignia:"★★" },
-      { grade:"O-9", title:"Vice Admiral", abbr:"VADM", insignia:"★★★" },
-      { grade:"O-10", title:"Admiral", abbr:"ADM", insignia:"★★★★" },
+  {
+    id:"interview",
+    title:"Interview Confidence",
+    subtitle:"Walk Into Any Interview Ready",
+    icon:"🎯",
+    color:"#1a7a40",
+    description:"Master the civilian interview — from phone screens to final rounds. Learn STAR method, behavioral questions, and how to negotiate your salary.",
+    lessons:[
+      {id:"iv1",title:"How Civilian Interviews Work",duration:"11 min",free:true,
+       description:"Civilian interviews are fundamentally different from military boards or promotion evaluations. This lesson explains what interviewers are actually evaluating and how to give them what they want.",
+       objectives:["Understand the civilian interview process from phone screen to offer","Learn how interviewers evaluate candidates","Know the difference between behavioral, situational, and technical interviews"],
+       keyPoints:["Interviewers are looking for culture fit as much as qualifications","Every question is a chance to tell a story about your value","Silence and thoughtful pauses are respected in civilian interviews"]},
+      {id:"iv2",title:"The STAR Method for Veterans",duration:"19 min",free:false,
+       description:"The STAR method (Situation, Task, Action, Result) is the universal framework for answering behavioral interview questions. This lesson teaches veterans how to adapt their military stories to STAR format.",
+       objectives:["Master the STAR format for behavioral questions","Build a library of 8-10 military stories that answer common questions","Translate military situations into civilian-relevant narratives"],
+       keyPoints:["Your military stories are more compelling than most civilian candidates have","Quantify the result in every STAR story","Practice out loud — your stories need to sound natural, not rehearsed"]},
+      {id:"iv3",title:"The 30 Most Common Interview Questions",duration:"24 min",free:false,
+       description:"The 30 behavioral, situational, and character questions that appear in virtually every civilian interview — with veteran-specific answer frameworks for each.",
+       objectives:["Prepare answers to the 30 most common interview questions","Adapt military experience to each question type","Avoid the most common veteran interview mistakes"],
+       keyPoints:["'Tell me about yourself' is not an invitation to list your resume","'What is your greatest weakness' is a test of self-awareness, not confession","Questions about failure are opportunities to show growth and resilience"]},
+      {id:"iv4",title:"Salary Negotiation for Veterans",duration:"21 min",free:false,
+       description:"Veterans chronically undervalue themselves in salary negotiations. This lesson teaches you how to research market rates, receive and counter offers, and negotiate your total compensation package.",
+       objectives:["Research accurate market rates for your target role and location","Receive a job offer without immediately accepting","Counter a job offer professionally and successfully"],
+       keyPoints:["Never give a salary number first — let them anchor first","The first offer is almost never the final offer","Total compensation includes bonus, equity, PTO, and benefits — negotiate all of it"]},
+      {id:"iv5",title:"Questions to Ask the Interviewer",duration:"12 min",free:false,
+       description:"The questions you ask at the end of an interview reveal how you think and what you value. This lesson teaches veterans which questions to ask — and which to avoid — to close strong.",
+       objectives:["Prepare 8-10 strong questions for each interview","Use questions to assess the role and company","End every interview with a clear next step"],
+       keyPoints:["'Do you have any concerns about my background?' is your most powerful closing question","Ask about success metrics — it shows you think in outcomes","Never ask about salary or PTO in the first interview"]}
     ]
   },
-  "Air Force": {
-    enlisted: [
-      { grade:"E-1", title:"Airman Basic", abbr:"AB", insignia:"⬜" },
-      { grade:"E-2", title:"Airman", abbr:"Amn", insignia:"▲" },
-      { grade:"E-3", title:"Airman First Class", abbr:"A1C", insignia:"▲▲▲" },
-      { grade:"E-4", title:"Senior Airman", abbr:"SrA", insignia:"⬡" },
-      { grade:"E-5", title:"Staff Sergeant", abbr:"SSgt", insignia:"⬡⬡⬡" },
-      { grade:"E-6", title:"Technical Sergeant", abbr:"TSgt", insignia:"⬡⬡⬡" },
-      { grade:"E-7", title:"Master Sergeant", abbr:"MSgt", insignia:"⬡⬡⬡" },
-      { grade:"E-7", title:"First Sergeant", abbr:"1Sgt", insignia:"⬡⬡⬡" },
-      { grade:"E-8", title:"Senior Master Sergeant", abbr:"SMSgt", insignia:"⬡⬡⬡" },
-      { grade:"E-8", title:"First Sergeant", abbr:"1Sgt", insignia:"⬡⬡⬡" },
-      { grade:"E-9", title:"Chief Master Sergeant", abbr:"CMSgt", insignia:"⬡⬡⬡" },
-      { grade:"E-9", title:"Command Chief Master Sergeant", abbr:"CCM", insignia:"★" },
-      { grade:"E-9", title:"Chief Master Sergeant of the Air Force", abbr:"CMSAF", insignia:"★" },
-    ],
-    warrant: [],
-    officer: [
-      { grade:"O-1", title:"Second Lieutenant", abbr:"2d Lt", insignia:"▧" },
-      { grade:"O-2", title:"First Lieutenant", abbr:"1st Lt", insignia:"▧▧" },
-      { grade:"O-3", title:"Captain", abbr:"Capt", insignia:"✦" },
-      { grade:"O-4", title:"Major", abbr:"Maj", insignia:"🔶" },
-      { grade:"O-5", title:"Lieutenant Colonel", abbr:"Lt Col", insignia:"⬟" },
-      { grade:"O-6", title:"Colonel", abbr:"Col", insignia:"🦅" },
-      { grade:"O-7", title:"Brigadier General", abbr:"Brig Gen", insignia:"★" },
-      { grade:"O-8", title:"Major General", abbr:"Maj Gen", insignia:"★★" },
-      { grade:"O-9", title:"Lieutenant General", abbr:"Lt Gen", insignia:"★★★" },
-      { grade:"O-10", title:"General", abbr:"Gen", insignia:"★★★★" },
-    ]
-  },
-  "Space Force": {
-    enlisted: [
-      { grade:"E-1", title:"Specialist 1", abbr:"Spc1", insignia:"⬜" },
-      { grade:"E-2", title:"Specialist 2", abbr:"Spc2", insignia:"▲" },
-      { grade:"E-3", title:"Specialist 3", abbr:"Spc3", insignia:"▲▲▲" },
-      { grade:"E-4", title:"Specialist 4", abbr:"Spc4", insignia:"⬡" },
-      { grade:"E-5", title:"Sergeant", abbr:"Sgt", insignia:"⬡⬡⬡" },
-      { grade:"E-6", title:"Technical Sergeant", abbr:"TSgt", insignia:"⬡⬡⬡" },
-      { grade:"E-7", title:"Master Sergeant", abbr:"MSgt", insignia:"⬡⬡⬡" },
-      { grade:"E-8", title:"Senior Master Sergeant", abbr:"SMSgt", insignia:"⬡⬡⬡" },
-      { grade:"E-9", title:"Chief Master Sergeant", abbr:"CMSgt", insignia:"★" },
-    ],
-    warrant: [],
-    officer: [
-      { grade:"O-1", title:"Second Lieutenant", abbr:"2d Lt", insignia:"▧" },
-      { grade:"O-2", title:"First Lieutenant", abbr:"1st Lt", insignia:"▧▧" },
-      { grade:"O-3", title:"Captain", abbr:"Capt", insignia:"✦" },
-      { grade:"O-4", title:"Major", abbr:"Maj", insignia:"🔶" },
-      { grade:"O-5", title:"Lieutenant Colonel", abbr:"Lt Col", insignia:"⬟" },
-      { grade:"O-6", title:"Colonel", abbr:"Col", insignia:"🦅" },
-      { grade:"O-7", title:"Brigadier General", abbr:"Brig Gen", insignia:"★" },
-      { grade:"O-8", title:"Major General", abbr:"Maj Gen", insignia:"★★" },
-      { grade:"O-9", title:"Lieutenant General", abbr:"Lt Gen", insignia:"★★★" },
-      { grade:"O-10", title:"General", abbr:"Gen", insignia:"★★★★" },
-    ]
-  },
-  "Coast Guard": {
-    enlisted: [
-      { grade:"E-1", title:"Seaman Recruit", abbr:"SR", insignia:"⬜" },
-      { grade:"E-2", title:"Seaman Apprentice", abbr:"SA", insignia:"▲▲" },
-      { grade:"E-3", title:"Seaman", abbr:"SN", insignia:"▲▲▲" },
-      { grade:"E-4", title:"Petty Officer Third Class", abbr:"PO3", insignia:"⬡" },
-      { grade:"E-5", title:"Petty Officer Second Class", abbr:"PO2", insignia:"⬡⬡" },
-      { grade:"E-6", title:"Petty Officer First Class", abbr:"PO1", insignia:"⬡⬡⬡" },
-      { grade:"E-7", title:"Chief Petty Officer", abbr:"CPO", insignia:"⚓" },
-      { grade:"E-8", title:"Senior Chief Petty Officer", abbr:"SCPO", insignia:"⚓⚓" },
-      { grade:"E-9", title:"Master Chief Petty Officer", abbr:"MCPO", insignia:"⚓⚓⚓" },
-      { grade:"E-9", title:"Master Chief Petty Officer of the Coast Guard", abbr:"MCPOCG", insignia:"★" },
-    ],
-    warrant: [
-      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CWO2", insignia:"▬▬" },
-      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CWO3", insignia:"▬▬▬" },
-      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CWO4", insignia:"▬▬▬▬" },
-    ],
-    officer: [
-      { grade:"O-1", title:"Ensign", abbr:"ENS", insignia:"▧" },
-      { grade:"O-2", title:"Lieutenant Junior Grade", abbr:"LTJG", insignia:"▧▧" },
-      { grade:"O-3", title:"Lieutenant", abbr:"LT", insignia:"✦" },
-      { grade:"O-4", title:"Lieutenant Commander", abbr:"LCDR", insignia:"🔶" },
-      { grade:"O-5", title:"Commander", abbr:"CDR", insignia:"⬟" },
-      { grade:"O-6", title:"Captain", abbr:"CAPT", insignia:"🦅" },
-      { grade:"O-7", title:"Rear Admiral", abbr:"RDML", insignia:"★" },
-      { grade:"O-8", title:"Vice Admiral", abbr:"VADM", insignia:"★★" },
-      { grade:"O-9", title:"Admiral", abbr:"ADM", insignia:"★★★" },
+  {
+    id:"federal",
+    title:"Federal & Defense Career Track",
+    subtitle:"Leverage Your Clearance and Military Background",
+    icon:"🏛",
+    color:"#6a2a9a",
+    description:"Federal government and defense contracting are the most veteran-friendly sectors in the country. Learn how to leverage your clearance, veteran preference, and military background to land high-paying positions.",
+    lessons:[
+      {id:"fd1",title:"Federal Jobs 101 — USAJobs and Veteran Preference",duration:"13 min",free:true,
+       description:"How the federal hiring system actually works, how veteran preference points give you a competitive edge, and how to navigate USAJobs effectively.",
+       objectives:["Understand how federal GS positions are classified and graded","Apply veteran preference (5-point and 10-point) to your applications","Navigate USAJobs to find relevant positions"],
+       keyPoints:["Veteran preference is a legal advantage — learn how to apply it","Schedule A is a pathway for veterans with disabilities that bypasses normal competition","Federal jobs offer pension, stability, and strong benefits that often exceed private sector total comp"]},
+      {id:"fd2",title:"Defense Contracting — Your Clearance Is Worth Money",duration:"18 min",free:false,
+       description:"Your security clearance is a rare and valuable credential in the civilian market. This lesson covers the clearance premium, which contractors hire veterans, and how to position yourself.",
+       objectives:["Understand the clearance salary premium by level (Secret, TS, TS/SCI)","Identify the top defense contractors that actively recruit veterans","Position your clearance and military background in your resume and interviews"],
+       keyPoints:["TS/SCI clearance adds $20,000-$40,000 in salary premium over non-cleared equivalents","Booz Allen, SAIC, Leidos, and Northrop Grumman have veteran hiring programs","Cleared positions are rarely posted publicly — relationships and referrals are everything"]},
+      {id:"fd3",title:"GS Grade Equivalents — What Level Should You Target",duration:"14 min",free:false,
+       description:"How to translate your military rank and experience into the right GS grade level — and avoid the mistake of applying too low or too high.",
+       objectives:["Map your military rank to the appropriate GS grade","Understand GS pay scales and locality adjustments","Target the right positions for your experience level"],
+       keyPoints:["E-6 to E-8 veterans typically qualify for GS-7 to GS-11 depending on field","Officers with graduate degrees often qualify for GS-12 and above","Locality pay in high-cost areas can add 20-35% to base GS salary"]},
+      {id:"fd4",title:"Writing a Winning Federal Resume",duration:"20 min",free:false,
+       description:"Federal resumes are 4-6 pages and require specific elements that civilian resumes never include. This lesson walks through every required section with veteran-specific examples.",
+       objectives:["Build a complete OPM-compliant federal resume","Write job duty descriptions that score well in federal evaluation","Include all required elements for USAJobs applications"],
+       keyPoints:["Federal resumes require hours per week, supervisor names, and contact information","KSAs (Knowledge, Skills, Abilities) must be addressed explicitly for some positions","Your military awards and training are legitimate credentials in the federal system"]}
     ]
   }
-};
+];
 
-const BRANCH_COLORS = {
-  "Army": {bg:"linear-gradient(135deg,#3a4a1a,#556b2f)",accent:"#c8a951"},
-  "Marine Corps": {bg:"linear-gradient(135deg,#6a0000,#a00000)",accent:"#c8a951"},
-  "Navy": {bg:"linear-gradient(135deg,#000060,#000d9a)",accent:"#c8a951"},
-  "Air Force": {bg:"linear-gradient(135deg,#001a5e,#003087)",accent:"#7fb2f0"},
-  "Space Force": {bg:"linear-gradient(135deg,#0d1520,#1c2951)",accent:"#a0b8d8"},
-  "Coast Guard": {bg:"linear-gradient(135deg,#002a5c,#003f87)",accent:"#e8111a"}
-};
 
-const BRANCH_EMBLEMS = {
-  "Army": "⭐",
-  "Marine Corps": "🦅",
-  "Navy": "⚓",
-  "Air Force": "✈",
-  "Space Force": "🛸",
-  "Coast Guard": "🔱"
-};
-const SERVICE_TYPES = ["Active Duty","Reserve","National Guard","Active Guard Reserve (AGR)","Retired","Separated/Veteran","Discharged"];
-const EXP_TYPES = ["Military Service","Reserve/Guard (concurrent with civilian)","Civilian Employment","DoD/Government Contractor","Other Government (Federal/State)"];
-
-const CLEARANCE_LEVELS = ["None","Public Trust","Confidential","Secret","Top Secret","Top Secret/SCI","TS/SCI with CI Poly","TS/SCI with Full Scope Poly","Q Clearance (DOE)","L Clearance (DOE)"];
-const CLEARANCE_STATUS = ["Active","Inactive","Expired","Pending","Unknown"];
-const BRANCH_QUALS = {
+window.BRANCH_QUALS = {
   "Army": {
     label: "Additional Skill Identifiers (ASI)",
     items: [
@@ -1026,8 +925,270 @@ const BRANCH_QUALS = {
     ]
   },
 };
-const COMMON_ASI = BRANCH_QUALS["Army"].items;
-const COMMON_SQI = BRANCH_QUALS["Army"].sqi;
+
+</script>
+<script type="text/babel" data-presets="react,env">
+const { useState, useEffect, useRef } = React;
+    const fbAuth = window.fbAuth;
+    const fbDb = window.fbDb;
+const MIL_JARGON = {
+  "NCOIC":"Team Supervisor / Operations Lead",
+  "OIC":"Department Manager / Program Lead",
+  "CDR":"Commander / Director",
+  "XO":"Deputy Director / Operations Manager",
+  "1SG":"Senior Operations Supervisor",
+  "CSM":"Senior Advisor / Chief of Staff",
+  "NCO":"Team Leader / Supervisor",
+  "SNCO":"Senior Team Leader",
+  "AO":"Area of Operations",
+  "AOR":"Area of Responsibility",
+  "OPORD":"Operations Plan",
+  "SITREP":"Status Report",
+  "AAR":"Post-Project Review / Lessons Learned",
+  "SOP":"Standard Operating Procedure",
+  "PMCS":"Preventive Maintenance Program",
+  "TOC":"Operations Center",
+  "COP":"Operations Dashboard / Common Picture",
+  "OPTEMPO":"Operational Tempo / Workload Intensity",
+  "TDY":"Temporary Business Travel",
+  "TAD":"Temporary Duty Assignment",
+  "PME":"Professional Development / Leadership Training",
+  "PCS":"Relocation",
+  "MOB":"Deployment / Mobilization",
+  "MOS":"Career Specialty",
+  "AFSC":"Career Specialty Code",
+  "NEC":"Navy Job Classification",
+  "PBO":"Asset / Property Manager",
+  "SSA":"Supply Chain / Distribution Center",
+  "MHE":"Material Handling Equipment / Forklifts",
+  "Chain of Command":"Reporting Structure",
+  "Unit Cohesion":"Team Unity",
+  "Battle Rhythm":"Recurring Operating Cadence",
+  "Tasker":"Action Item / Work Order",
+  "Deadlined":"Equipment Out of Service",
+  "Force Multiplier":"Efficiency / Capability Enhancement",
+  "Hooah":"(omit - military slang)",
+  "Oorah":"(omit - military slang)",
+  "Hard Charger":"High Performer / Self-Starter",
+};
+
+const BRANCHES = ["Army","Navy","Marine Corps","Air Force","Space Force","Coast Guard"];
+const RANKS = {
+  "Army": {
+    enlisted: [
+      { grade:"E-1", title:"Private", abbr:"PVT", insignia:"⬜" },
+      { grade:"E-2", title:"Private Second Class", abbr:"PV2", insignia:"▲" },
+      { grade:"E-3", title:"Private First Class", abbr:"PFC", insignia:"▲▲" },
+      { grade:"E-4", title:"Specialist", abbr:"SPC", insignia:"◆" },
+      { grade:"E-4", title:"Corporal", abbr:"CPL", insignia:"◆◆" },
+      { grade:"E-5", title:"Sergeant", abbr:"SGT", insignia:"⬡⬡⬡" },
+      { grade:"E-6", title:"Staff Sergeant", abbr:"SSG", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Sergeant First Class", abbr:"SFC", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"Master Sergeant", abbr:"MSG", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"First Sergeant", abbr:"1SG", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Sergeant Major", abbr:"SGM", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Command Sergeant Major", abbr:"CSM", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Sergeant Major of the Army", abbr:"SMA", insignia:"★" },
+    ],
+    warrant: [
+      { grade:"W-1", title:"Warrant Officer 1", abbr:"WO1", insignia:"▬" },
+      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CW2", insignia:"▬▬" },
+      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CW3", insignia:"▬▬▬" },
+      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CW4", insignia:"▬▬▬▬" },
+      { grade:"W-5", title:"Chief Warrant Officer 5", abbr:"CW5", insignia:"▬▬▬▬▬" },
+    ],
+    officer: [
+      { grade:"O-1", title:"Second Lieutenant", abbr:"2LT", insignia:"▧" },
+      { grade:"O-2", title:"First Lieutenant", abbr:"1LT", insignia:"▧▧" },
+      { grade:"O-3", title:"Captain", abbr:"CPT", insignia:"✦" },
+      { grade:"O-4", title:"Major", abbr:"MAJ", insignia:"🔶" },
+      { grade:"O-5", title:"Lieutenant Colonel", abbr:"LTC", insignia:"⬟" },
+      { grade:"O-6", title:"Colonel", abbr:"COL", insignia:"🦅" },
+      { grade:"O-7", title:"Brigadier General", abbr:"BG", insignia:"★" },
+      { grade:"O-8", title:"Major General", abbr:"MG", insignia:"★★" },
+      { grade:"O-9", title:"Lieutenant General", abbr:"LTG", insignia:"★★★" },
+      { grade:"O-10", title:"General", abbr:"GEN", insignia:"★★★★" },
+    ]
+  },
+  "Marine Corps": {
+    enlisted: [
+      { grade:"E-1", title:"Private", abbr:"Pvt", insignia:"⬜" },
+      { grade:"E-2", title:"Private First Class", abbr:"PFC", insignia:"▲" },
+      { grade:"E-3", title:"Lance Corporal", abbr:"LCpl", insignia:"⬡" },
+      { grade:"E-4", title:"Corporal", abbr:"Cpl", insignia:"⬡⬡" },
+      { grade:"E-5", title:"Sergeant", abbr:"Sgt", insignia:"⬡⬡⬡" },
+      { grade:"E-6", title:"Staff Sergeant", abbr:"SSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Gunnery Sergeant", abbr:"GySgt", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"Master Sergeant", abbr:"MSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"First Sergeant", abbr:"1stSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Master Gunnery Sergeant", abbr:"MGySgt", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Sergeant Major", abbr:"SgtMaj", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Sergeant Major of the Marine Corps", abbr:"SgtMajMC", insignia:"★" },
+    ],
+    warrant: [
+      { grade:"W-1", title:"Warrant Officer 1", abbr:"WO1", insignia:"▬" },
+      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CWO2", insignia:"▬▬" },
+      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CWO3", insignia:"▬▬▬" },
+      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CWO4", insignia:"▬▬▬▬" },
+      { grade:"W-5", title:"Chief Warrant Officer 5", abbr:"CWO5", insignia:"▬▬▬▬▬" },
+    ],
+    officer: [
+      { grade:"O-1", title:"Second Lieutenant", abbr:"2ndLt", insignia:"▧" },
+      { grade:"O-2", title:"First Lieutenant", abbr:"1stLt", insignia:"▧▧" },
+      { grade:"O-3", title:"Captain", abbr:"Capt", insignia:"✦" },
+      { grade:"O-4", title:"Major", abbr:"Maj", insignia:"🔶" },
+      { grade:"O-5", title:"Lieutenant Colonel", abbr:"LtCol", insignia:"⬟" },
+      { grade:"O-6", title:"Colonel", abbr:"Col", insignia:"🦅" },
+      { grade:"O-7", title:"Brigadier General", abbr:"BGen", insignia:"★" },
+      { grade:"O-8", title:"Major General", abbr:"MajGen", insignia:"★★" },
+      { grade:"O-9", title:"Lieutenant General", abbr:"LtGen", insignia:"★★★" },
+      { grade:"O-10", title:"General", abbr:"Gen", insignia:"★★★★" },
+    ]
+  },
+  "Navy": {
+    enlisted: [
+      { grade:"E-1", title:"Seaman Recruit", abbr:"SR", insignia:"⬜" },
+      { grade:"E-2", title:"Seaman Apprentice", abbr:"SA", insignia:"▲▲" },
+      { grade:"E-3", title:"Seaman", abbr:"SN", insignia:"▲▲▲" },
+      { grade:"E-4", title:"Petty Officer Third Class", abbr:"PO3", insignia:"⬡" },
+      { grade:"E-5", title:"Petty Officer Second Class", abbr:"PO2", insignia:"⬡⬡" },
+      { grade:"E-6", title:"Petty Officer First Class", abbr:"PO1", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Chief Petty Officer", abbr:"CPO", insignia:"⚓" },
+      { grade:"E-8", title:"Senior Chief Petty Officer", abbr:"SCPO", insignia:"⚓⚓" },
+      { grade:"E-9", title:"Master Chief Petty Officer", abbr:"MCPO", insignia:"⚓⚓⚓" },
+      { grade:"E-9", title:"Fleet Master Chief", abbr:"FLTCM", insignia:"★" },
+      { grade:"E-9", title:"Master Chief Petty Officer of the Navy", abbr:"MCPON", insignia:"★" },
+    ],
+    warrant: [
+      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CWO2", insignia:"▬▬" },
+      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CWO3", insignia:"▬▬▬" },
+      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CWO4", insignia:"▬▬▬▬" },
+      { grade:"W-5", title:"Chief Warrant Officer 5", abbr:"CWO5", insignia:"▬▬▬▬▬" },
+    ],
+    officer: [
+      { grade:"O-1", title:"Ensign", abbr:"ENS", insignia:"▧" },
+      { grade:"O-2", title:"Lieutenant Junior Grade", abbr:"LTJG", insignia:"▧▧" },
+      { grade:"O-3", title:"Lieutenant", abbr:"LT", insignia:"✦" },
+      { grade:"O-4", title:"Lieutenant Commander", abbr:"LCDR", insignia:"🔶" },
+      { grade:"O-5", title:"Commander", abbr:"CDR", insignia:"⬟" },
+      { grade:"O-6", title:"Captain", abbr:"CAPT", insignia:"🦅" },
+      { grade:"O-7", title:"Rear Admiral Lower Half", abbr:"RDML", insignia:"★" },
+      { grade:"O-8", title:"Rear Admiral Upper Half", abbr:"RADM", insignia:"★★" },
+      { grade:"O-9", title:"Vice Admiral", abbr:"VADM", insignia:"★★★" },
+      { grade:"O-10", title:"Admiral", abbr:"ADM", insignia:"★★★★" },
+    ]
+  },
+  "Air Force": {
+    enlisted: [
+      { grade:"E-1", title:"Airman Basic", abbr:"AB", insignia:"⬜" },
+      { grade:"E-2", title:"Airman", abbr:"Amn", insignia:"▲" },
+      { grade:"E-3", title:"Airman First Class", abbr:"A1C", insignia:"▲▲▲" },
+      { grade:"E-4", title:"Senior Airman", abbr:"SrA", insignia:"⬡" },
+      { grade:"E-5", title:"Staff Sergeant", abbr:"SSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-6", title:"Technical Sergeant", abbr:"TSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Master Sergeant", abbr:"MSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"First Sergeant", abbr:"1Sgt", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"Senior Master Sergeant", abbr:"SMSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"First Sergeant", abbr:"1Sgt", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Chief Master Sergeant", abbr:"CMSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Command Chief Master Sergeant", abbr:"CCM", insignia:"★" },
+      { grade:"E-9", title:"Chief Master Sergeant of the Air Force", abbr:"CMSAF", insignia:"★" },
+    ],
+    warrant: [],
+    officer: [
+      { grade:"O-1", title:"Second Lieutenant", abbr:"2d Lt", insignia:"▧" },
+      { grade:"O-2", title:"First Lieutenant", abbr:"1st Lt", insignia:"▧▧" },
+      { grade:"O-3", title:"Captain", abbr:"Capt", insignia:"✦" },
+      { grade:"O-4", title:"Major", abbr:"Maj", insignia:"🔶" },
+      { grade:"O-5", title:"Lieutenant Colonel", abbr:"Lt Col", insignia:"⬟" },
+      { grade:"O-6", title:"Colonel", abbr:"Col", insignia:"🦅" },
+      { grade:"O-7", title:"Brigadier General", abbr:"Brig Gen", insignia:"★" },
+      { grade:"O-8", title:"Major General", abbr:"Maj Gen", insignia:"★★" },
+      { grade:"O-9", title:"Lieutenant General", abbr:"Lt Gen", insignia:"★★★" },
+      { grade:"O-10", title:"General", abbr:"Gen", insignia:"★★★★" },
+    ]
+  },
+  "Space Force": {
+    enlisted: [
+      { grade:"E-1", title:"Specialist 1", abbr:"Spc1", insignia:"⬜" },
+      { grade:"E-2", title:"Specialist 2", abbr:"Spc2", insignia:"▲" },
+      { grade:"E-3", title:"Specialist 3", abbr:"Spc3", insignia:"▲▲▲" },
+      { grade:"E-4", title:"Specialist 4", abbr:"Spc4", insignia:"⬡" },
+      { grade:"E-5", title:"Sergeant", abbr:"Sgt", insignia:"⬡⬡⬡" },
+      { grade:"E-6", title:"Technical Sergeant", abbr:"TSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Master Sergeant", abbr:"MSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"Senior Master Sergeant", abbr:"SMSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Chief Master Sergeant", abbr:"CMSgt", insignia:"★" },
+    ],
+    warrant: [],
+    officer: [
+      { grade:"O-1", title:"Second Lieutenant", abbr:"2d Lt", insignia:"▧" },
+      { grade:"O-2", title:"First Lieutenant", abbr:"1st Lt", insignia:"▧▧" },
+      { grade:"O-3", title:"Captain", abbr:"Capt", insignia:"✦" },
+      { grade:"O-4", title:"Major", abbr:"Maj", insignia:"🔶" },
+      { grade:"O-5", title:"Lieutenant Colonel", abbr:"Lt Col", insignia:"⬟" },
+      { grade:"O-6", title:"Colonel", abbr:"Col", insignia:"🦅" },
+      { grade:"O-7", title:"Brigadier General", abbr:"Brig Gen", insignia:"★" },
+      { grade:"O-8", title:"Major General", abbr:"Maj Gen", insignia:"★★" },
+      { grade:"O-9", title:"Lieutenant General", abbr:"Lt Gen", insignia:"★★★" },
+      { grade:"O-10", title:"General", abbr:"Gen", insignia:"★★★★" },
+    ]
+  },
+  "Coast Guard": {
+    enlisted: [
+      { grade:"E-1", title:"Seaman Recruit", abbr:"SR", insignia:"⬜" },
+      { grade:"E-2", title:"Seaman Apprentice", abbr:"SA", insignia:"▲▲" },
+      { grade:"E-3", title:"Seaman", abbr:"SN", insignia:"▲▲▲" },
+      { grade:"E-4", title:"Petty Officer Third Class", abbr:"PO3", insignia:"⬡" },
+      { grade:"E-5", title:"Petty Officer Second Class", abbr:"PO2", insignia:"⬡⬡" },
+      { grade:"E-6", title:"Petty Officer First Class", abbr:"PO1", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Chief Petty Officer", abbr:"CPO", insignia:"⚓" },
+      { grade:"E-8", title:"Senior Chief Petty Officer", abbr:"SCPO", insignia:"⚓⚓" },
+      { grade:"E-9", title:"Master Chief Petty Officer", abbr:"MCPO", insignia:"⚓⚓⚓" },
+      { grade:"E-9", title:"Master Chief Petty Officer of the Coast Guard", abbr:"MCPOCG", insignia:"★" },
+    ],
+    warrant: [
+      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CWO2", insignia:"▬▬" },
+      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CWO3", insignia:"▬▬▬" },
+      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CWO4", insignia:"▬▬▬▬" },
+    ],
+    officer: [
+      { grade:"O-1", title:"Ensign", abbr:"ENS", insignia:"▧" },
+      { grade:"O-2", title:"Lieutenant Junior Grade", abbr:"LTJG", insignia:"▧▧" },
+      { grade:"O-3", title:"Lieutenant", abbr:"LT", insignia:"✦" },
+      { grade:"O-4", title:"Lieutenant Commander", abbr:"LCDR", insignia:"🔶" },
+      { grade:"O-5", title:"Commander", abbr:"CDR", insignia:"⬟" },
+      { grade:"O-6", title:"Captain", abbr:"CAPT", insignia:"🦅" },
+      { grade:"O-7", title:"Rear Admiral", abbr:"RDML", insignia:"★" },
+      { grade:"O-8", title:"Vice Admiral", abbr:"VADM", insignia:"★★" },
+      { grade:"O-9", title:"Admiral", abbr:"ADM", insignia:"★★★" },
+    ]
+  }
+};
+
+const BRANCH_COLORS = {
+  "Army": {bg:"linear-gradient(135deg,#3a4a1a,#556b2f)",accent:"#c8a951"},
+  "Marine Corps": {bg:"linear-gradient(135deg,#6a0000,#a00000)",accent:"#c8a951"},
+  "Navy": {bg:"linear-gradient(135deg,#000060,#000d9a)",accent:"#c8a951"},
+  "Air Force": {bg:"linear-gradient(135deg,#001a5e,#003087)",accent:"#7fb2f0"},
+  "Space Force": {bg:"linear-gradient(135deg,#0d1520,#1c2951)",accent:"#a0b8d8"},
+  "Coast Guard": {bg:"linear-gradient(135deg,#002a5c,#003f87)",accent:"#e8111a"}
+};
+
+const BRANCH_EMBLEMS = {
+  "Army": "⭐",
+  "Marine Corps": "🦅",
+  "Navy": "⚓",
+  "Air Force": "✈",
+  "Space Force": "🛸",
+  "Coast Guard": "🔱"
+};
+const SERVICE_TYPES = ["Active Duty","Reserve","National Guard","Active Guard Reserve (AGR)","Retired","Separated/Veteran","Discharged"];
+const EXP_TYPES = ["Military Service","Reserve/Guard (concurrent with civilian)","Civilian Employment","DoD/Government Contractor","Other Government (Federal/State)"];
+
+const CLEARANCE_LEVELS = ["None","Public Trust","Confidential","Secret","Top Secret","Top Secret/SCI","TS/SCI with CI Poly","TS/SCI with Full Scope Poly","Q Clearance (DOE)","L Clearance (DOE)"];
+const CLEARANCE_STATUS = ["Active","Inactive","Expired","Pending","Unknown"];const COMMON_ASI = window.BRANCH_QUALS["Army"].items;
+const COMMON_SQI = window.BRANCH_QUALS["Army"].sqi;
 
 const COMMON_ADDL_DUTIES = [
   "Unit Armorer","NBC/CBRN Officer","Equal Opportunity Leader","Safety Officer/NCO","Master Driver","Unit Prevention Leader (UPL/Drug Testing)","Retention NCO","Casualty Notification Officer","Family Readiness Officer/NCO","Sexual Harassment/Assault Response (SHARP) Coordinator","Records Management","Information Security Officer","Operations Security (OPSEC) Coordinator","Physical Security Officer","Inspector General Representative","Unit Fund Custodian","Training Room NCO","Supply Sergeant (additional duty)","Contracting Officer Representative (COR)","Property Book Officer","Master Gunner","Battle Staff NCO","Recruiter/Career Counselor","Casualty Liaison Officer",
@@ -2627,7 +2788,56 @@ function MyProfileSaved(props) {
                   +"<style>"+PAGE_CSS+"</style>"
                   +"</head><body>"+body
                   +"<script>window.onload=function(){document.title='';setTimeout(function(){window.print();},400);}<\/script>"
-                  +"</body></html>");
+                  +"
+<script>
+(function(){
+  var btn = document.getElementById('hamburger-btn');
+  var menu = document.getElementById('mobile-menu');
+  if(!btn||!menu) return;
+  btn.addEventListener('click', function(){
+    btn.classList.toggle('open');
+    menu.classList.toggle('open');
+  });
+  // Close on link click
+  menu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      btn.classList.remove('open');
+      menu.classList.remove('open');
+    });
+  });
+  // Close on outside click
+  document.addEventListener('click', function(e){
+    if(!btn.contains(e.target)&&!menu.contains(e.target)){
+      btn.classList.remove('open');
+      menu.classList.remove('open');
+    }
+  });
+})();
+</script>
+<script>
+(function(){
+  var btn=document.getElementById("hamburger-btn");
+  var menu=document.getElementById("mobile-menu");
+  if(!btn||!menu) return;
+  btn.addEventListener("click",function(){
+    btn.classList.toggle("open");
+    menu.classList.toggle("open");
+  });
+  menu.querySelectorAll("a").forEach(function(a){
+    a.addEventListener("click",function(){
+      btn.classList.remove("open");
+      menu.classList.remove("open");
+    });
+  });
+  document.addEventListener("click",function(e){
+    if(!btn.contains(e.target)&&!menu.contains(e.target)){
+      btn.classList.remove("open");
+      menu.classList.remove("open");
+    }
+  });
+})();
+</script>
+</body></html>");
                 w.document.close();
               }}>👁 View</button>
               
@@ -2964,6 +3174,8 @@ function App() {
   const [deepTestStep, setDeepTestStep] = useState(0);
   const [deepTestAnswers, setDeepTestAnswers] = useState({});
   const [mosBrowse, setMosBrowse] = useState({open:false,expId:null,search:"",branch:""});
+  const [trainingProgress, setTrainingProgress] = useState(()=>{try{return JSON.parse(localStorage.getItem("vcb_training")||"{}");}catch(e){return {};}});
+  const [activeLesson, setActiveLesson] = useState(null);
   const [authMode, setAuthMode] = useState("login");
   const [showAuth, setShowAuth] = useState(false);
   const [authForm, setAuthForm] = useState({ username:"", password:"", confirmPassword:"", name:"" });
@@ -3144,6 +3356,10 @@ function App() {
             if (data.careerTest) {
               setCareerTestResults(data.careerTest);
               localStorage.setItem("vcb_career_test", JSON.stringify(data.careerTest));
+            }
+            if (data.trainingProgress) {
+              setTrainingProgress(data.trainingProgress);
+              localStorage.setItem("vcb_training", JSON.stringify(data.trainingProgress));
             }
             if (data.jobApps && data.jobApps.length) {
               setJobApps(data.jobApps);
@@ -3883,7 +4099,7 @@ Return this exact JSON structure:
 
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
 
-  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Vet Resources","My Profile"];
+  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Vet Resources","My Profile","Training"];
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
   const DI = "Defense/Intel";
   const RG = "Reserve/Guard (concurrent with civilian)";
@@ -4401,14 +4617,14 @@ Return this exact JSON structure:
 
                     <div style={{marginBottom:"1rem"}}>
                       <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".5rem"}}>
-                        {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).label}
+                        {(window.BRANCH_QUALS[exp.branch]||window.BRANCH_QUALS["Army"]).label}
                       </div>
                       <details style={{border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff",marginBottom:".6rem"}}>
                         <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                          Browse {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).label} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).items.length} options ›</span>
+                          Browse {(window.BRANCH_QUALS[exp.branch]||window.BRANCH_QUALS["Army"]).label} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{(window.BRANCH_QUALS[exp.branch]||window.BRANCH_QUALS["Army"]).items.length} options ›</span>
                         </summary>
                         <div style={{padding:".5rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
-                          {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).items.map(a=>(
+                          {(window.BRANCH_QUALS[exp.branch]||window.BRANCH_QUALS["Army"]).items.map(a=>(
                             <button key={a.code}
                               style={{background:(exp.asi||[]).find(x=>x.code===a.code)?"#1a3a6b":"#e8edf5",color:(exp.asi||[]).find(x=>x.code===a.code)?"#fff":"#1a3a6b",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".22rem .6rem",fontSize:".78rem",cursor:"pointer"}}
                               onClick={()=>{ if(!(exp.asi||[]).find(x=>x.code===a.code)) upMilExp(exp.id,"asi",[...(exp.asi||[]),a]); }}>
@@ -4448,14 +4664,14 @@ Return this exact JSON structure:
 
                     <div style={{marginBottom:"1rem"}}>
                       <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".5rem"}}>
-                        {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).sqiLabel}
+                        {(window.BRANCH_QUALS[exp.branch]||window.BRANCH_QUALS["Army"]).sqiLabel}
                       </div>
                       <details style={{border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff",marginBottom:".6rem"}}>
                         <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                          Browse qualifiers <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).sqi.length} options ›</span>
+                          Browse qualifiers <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{(window.BRANCH_QUALS[exp.branch]||window.BRANCH_QUALS["Army"]).sqi.length} options ›</span>
                         </summary>
                         <div style={{padding:".5rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
-                          {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).sqi.map(s=>(
+                          {(window.BRANCH_QUALS[exp.branch]||window.BRANCH_QUALS["Army"]).sqi.map(s=>(
                             <button key={s.code}
                               style={{background:(exp.sqi||[]).find(x=>x.code===s.code)?"#1a3a6b":"#e8edf5",color:(exp.sqi||[]).find(x=>x.code===s.code)?"#fff":"#1a3a6b",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".22rem .6rem",fontSize:".78rem",cursor:"pointer"}}
                               onClick={()=>{ if(!(exp.sqi||[]).find(x=>x.code===s.code)) upMilExp(exp.id,"sqi",[...(exp.sqi||[]),s]); }}>
@@ -6764,8 +6980,188 @@ Return this exact JSON structure:
           ➕
         </button>
       )}
+          <div className={"panel "+(tab===7?"on":"")}>
+            {tab===7&&(()=>{
+              const totalLessons = window.COURSES.reduce((a,c)=>a+c.lessons.length,0);
+              const completedCount = Object.keys(trainingProgress).filter(k=>trainingProgress[k]==="complete").length;
+              const pct = Math.round((completedCount/totalLessons)*100);
+
+              if(activeLesson){
+                const course = window.COURSES.find(c=>c.lessons.find(l=>l.id===activeLesson));
+                const lesson = course&&course.lessons.find(l=>l.id===activeLesson);
+                const isLocked = !lesson.free&&!hasAccess;
+                const lessonIdx = course&&course.lessons.findIndex(l=>l.id===activeLesson);
+                const nextLesson = course&&course.lessons[lessonIdx+1];
+                const prevLesson = lessonIdx>0&&course.lessons[lessonIdx-1];
+                const isComplete = trainingProgress[activeLesson]==="complete";
+                return(
+                  <div>
+                    <div style={{display:"flex",alignItems:"center",gap:".5rem",marginBottom:"1rem"}}>
+                      <button onClick={()=>setActiveLesson(null)} style={{background:"transparent",border:"none",color:"#1a3a6b",cursor:"pointer",fontSize:".82rem",fontWeight:600,padding:0,display:"flex",alignItems:"center",gap:".3rem"}}>← Back to Courses</button>
+                      <span style={{color:"#dde3ec"}}>|</span>
+                      <span style={{fontSize:".78rem",color:"#5a7090"}}>{course.title}</span>
+                    </div>
+
+                    {isLocked?(
+                      <div style={{background:"linear-gradient(135deg,#0a1628,#1a3a6b)",borderRadius:"12px",padding:"2.5rem",textAlign:"center"}}>
+                        <div style={{fontSize:"2.5rem",marginBottom:"1rem"}}>🔒</div>
+                        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.4rem",letterSpacing:".08em",color:"#f0c040",marginBottom:".5rem"}}>Full Course Access Required</div>
+                        <p style={{color:"#c0d8f0",fontSize:".9rem",lineHeight:1.6,marginBottom:"1.5rem",maxWidth:"400px",margin:"0 auto 1.5rem"}}>This lesson is part of the paid course library. Subscribe to unlock all {totalLessons} lessons across {window.COURSES.length} courses.</p>
+                        <button onClick={()=>setShowPaywall(true)} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",color:"#0a1628",border:"none",borderRadius:"10px",padding:".85rem 2.5rem",fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.1rem",letterSpacing:".08em",cursor:"pointer"}}>Unlock Full Library</button>
+                        <div style={{marginTop:"1rem"}}>
+                          <button onClick={()=>{setActiveLesson(null);}} style={{background:"transparent",border:"none",color:"#c0d8f0",fontSize:".82rem",cursor:"pointer",textDecoration:"underline"}}>View free lessons only</button>
+                        </div>
+                      </div>
+                    ):(
+                      <div>
+                        <div style={{background:"#000",borderRadius:"12px",overflow:"hidden",marginBottom:"1.25rem",position:"relative",paddingTop:"56.25%"}}>
+                          <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(135deg,#0a1628,#1a3a6b)",flexDirection:"column",gap:"1rem"}}>
+                            <div style={{fontSize:"3rem"}}>▶</div>
+                            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.2rem",letterSpacing:".08em",color:"#f0c040",textAlign:"center",padding:"0 1rem"}}>{lesson.title}</div>
+                            <div style={{fontSize:".8rem",color:"#80a8d0"}}>{lesson.duration} • Add your YouTube video ID to display here</div>
+                          </div>
+                        </div>
+
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"1rem",flexWrap:"wrap",gap:".75rem"}}>
+                          <div>
+                            <h2 style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.4rem",letterSpacing:".06em",color:"#1a3a6b",marginBottom:".25rem"}}>{lesson.title}</h2>
+                            <div style={{fontSize:".78rem",color:"#5a7090"}}>{lesson.duration} {lesson.free&&<span style={{background:"rgba(26,122,64,.1)",color:"#1a7a40",border:"1px solid rgba(26,122,64,.2)",borderRadius:"10px",padding:".1rem .5rem",fontWeight:700,marginLeft:".4rem"}}>Free Preview</span>}</div>
+                          </div>
+                          {!isComplete&&(
+                            <button onClick={()=>{
+                              const updated={...trainingProgress,[activeLesson]:"complete"};
+                              setTrainingProgress(updated);
+                              localStorage.setItem("vcb_training",JSON.stringify(updated));
+                              if(currentUser&&fbDb){fbDb.collection("profiles").doc(currentUser.uid).set({trainingProgress:updated,updatedAt:Date.now()},{merge:true});}
+                              showToast("Lesson marked complete!");
+                            }} style={{background:"linear-gradient(135deg,#1a7a40,#1e9a50)",color:"#fff",border:"none",borderRadius:"8px",padding:".5rem 1.1rem",fontWeight:700,fontSize:".83rem",cursor:"pointer",flexShrink:0}}>
+                              Mark Complete ✓
+                            </button>
+                          )}
+                          {isComplete&&<span style={{background:"rgba(26,122,64,.1)",color:"#1a7a40",border:"1px solid rgba(26,122,64,.25)",borderRadius:"8px",padding:".5rem 1rem",fontWeight:700,fontSize:".83rem"}}>✓ Completed</span>}
+                        </div>
+
+                        <p style={{color:"#3a4a5a",lineHeight:1.7,marginBottom:"1.25rem",fontSize:".95rem"}}>{lesson.description}</p>
+
+                        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginBottom:"1.25rem"}}>
+                          <div style={{background:"#f0f4fa",borderRadius:"10px",padding:"1rem"}}>
+                            <div style={{fontWeight:700,fontSize:".82rem",letterSpacing:".08em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".6rem"}}>Learning Objectives</div>
+                            {lesson.objectives.map((o,i)=>(
+                              <div key={i} style={{display:"flex",gap:".5rem",marginBottom:".4rem",fontSize:".84rem",color:"#3a4a5a"}}>
+                                <span style={{color:"#1a7a40",fontWeight:700,flexShrink:0}}>✓</span>{o}
+                              </div>
+                            ))}
+                          </div>
+                          <div style={{background:"linear-gradient(135deg,#fffbf0,#fff8e0)",border:"1px solid rgba(200,150,10,.2)",borderRadius:"10px",padding:"1rem"}}>
+                            <div style={{fontWeight:700,fontSize:".82rem",letterSpacing:".08em",textTransform:"uppercase",color:"#8a6000",marginBottom:".6rem"}}>Key Takeaways</div>
+                            {lesson.keyPoints.map((k,i)=>(
+                              <div key={i} style={{display:"flex",gap:".5rem",marginBottom:".4rem",fontSize:".84rem",color:"#5a4000"}}>
+                                <span style={{color:"#c8960a",fontWeight:700,flexShrink:0}}>→</span>{k}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div style={{display:"flex",justifyContent:"space-between",borderTop:"1px solid #e8eef6",paddingTop:"1rem"}}>
+                          {prevLesson?(
+                            <button onClick={()=>setActiveLesson(prevLesson.id)} style={{background:"transparent",border:"1px solid #dde3ec",borderRadius:"8px",padding:".5rem 1rem",fontSize:".82rem",cursor:"pointer",color:"#5a7090"}}>← {prevLesson.title}</button>
+                          ):<div/>}
+                          {nextLesson&&(
+                            <button onClick={()=>{
+                              if(!nextLesson.free&&!hasAccess){setShowPaywall(true);return;}
+                              setActiveLesson(nextLesson.id);
+                            }} style={{background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",border:"none",borderRadius:"8px",padding:".5rem 1.1rem",fontSize:".82rem",fontWeight:700,cursor:"pointer"}}>
+                              {nextLesson.free||hasAccess?"Next: "+nextLesson.title:"🔒 Unlock Next Lesson"}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              return(
+                <div>
+                  <div className="ch" style={{justifyContent:"space-between",marginBottom:"1.1rem"}}>
+                    <h2 style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.4rem",letterSpacing:".08em",color:"#1a3a6b"}}>Training Library</h2>
+                    <div style={{fontSize:".78rem",color:"#5a7090",textAlign:"right"}}>
+                      {completedCount}/{totalLessons} lessons completed
+                      <div style={{height:"4px",background:"#e8eef6",borderRadius:"2px",width:"120px",marginTop:".3rem"}}>
+                        <div style={{height:"100%",width:pct+"%",background:"linear-gradient(90deg,#1a7a40,#22a855)",borderRadius:"2px",transition:"width .4s"}}/>
+                      </div>
+                    </div>
+                  </div>
+
+                  {!hasAccess&&(
+                    <div style={{background:"linear-gradient(135deg,#0a1628,#1a3a6b)",borderRadius:"12px",padding:"1.25rem",marginBottom:"1.25rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem"}}>
+                      <div>
+                        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.1rem",letterSpacing:".08em",color:"#f0c040",marginBottom:".3rem"}}>Unlock the Full Library</div>
+                        <div style={{fontSize:".8rem",color:"#c0d8f0",lineHeight:1.5}}>{totalLessons} lessons across {window.COURSES.length} courses. Free preview available for each course.</div>
+                      </div>
+                      <button onClick={()=>setShowPaywall(true)} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",color:"#0a1628",border:"none",borderRadius:"8px",padding:".6rem 1.4rem",fontFamily:"'Bebas Neue',sans-serif",fontSize:"1rem",letterSpacing:".06em",cursor:"pointer",flexShrink:0}}>Upgrade to Access</button>
+                    </div>
+                  )}
+
+                  {window.COURSES.map(course=>{
+                    const completed = course.lessons.filter(l=>trainingProgress[l.id]==="complete").length;
+                    const pctCourse = Math.round((completed/course.lessons.length)*100);
+                    return(
+                      <div key={course.id} className="card" style={{marginBottom:"1.1rem"}}>
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"1rem"}}>
+                          <div style={{display:"flex",gap:".75rem",alignItems:"center"}}>
+                            <div style={{width:"44px",height:"44px",borderRadius:"10px",background:course.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.4rem",flexShrink:0}}>{course.icon}</div>
+                            <div>
+                              <div style={{fontWeight:700,fontSize:".95rem",color:"#1a3a6b"}}>{course.title}</div>
+                              <div style={{fontSize:".78rem",color:"#5a7090"}}>{course.subtitle}</div>
+                            </div>
+                          </div>
+                          <div style={{textAlign:"right",flexShrink:0,marginLeft:".5rem"}}>
+                            <div style={{fontSize:".72rem",color:"#5a7090"}}>{completed}/{course.lessons.length} done</div>
+                            <div style={{height:"4px",background:"#e8eef6",borderRadius:"2px",width:"80px",marginTop:".25rem"}}>
+                              <div style={{height:"100%",width:pctCourse+"%",background:course.color,borderRadius:"2px"}}/>
+                            </div>
+                          </div>
+                        </div>
+                        <p style={{fontSize:".83rem",color:"#5a7090",lineHeight:1.55,marginBottom:"1rem"}}>{course.description}</p>
+                        <div style={{display:"flex",flexDirection:"column",gap:".35rem"}}>
+                          {course.lessons.map((lesson,li)=>{
+                            const isLocked=!lesson.free&&!hasAccess;
+                            const isDone=trainingProgress[lesson.id]==="complete";
+                            return(
+                              <div key={lesson.id} onClick={()=>setActiveLesson(lesson.id)}
+                                style={{display:"flex",alignItems:"center",gap:".75rem",padding:".6rem .85rem",borderRadius:"8px",cursor:"pointer",border:"1px solid",
+                                  borderColor:isDone?"rgba(26,122,64,.2)":"#e8eef6",
+                                  background:isDone?"rgba(26,122,64,.04)":"#f8fafd",
+                                  transition:"all .12s"}}
+                                onMouseEnter={e=>e.currentTarget.style.borderColor=course.color}
+                                onMouseLeave={e=>e.currentTarget.style.borderColor=isDone?"rgba(26,122,64,.2)":"#e8eef6"}>
+                                <div style={{width:"28px",height:"28px",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:".75rem",fontWeight:700,
+                                  background:isDone?"#1a7a40":isLocked?"#dde3ec":"#fff",
+                                  color:isDone?"#fff":isLocked?"#8aa0b8":course.color,
+                                  border:"2px solid",borderColor:isDone?"#1a7a40":isLocked?"#dde3ec":course.color}}>
+                                  {isDone?"✓":isLocked?"🔒":(li+1)}
+                                </div>
+                                <div style={{flex:1}}>
+                                  <div style={{fontSize:".84rem",fontWeight:600,color:isLocked?"#8aa0b8":"#1a2a3a"}}>{lesson.title}</div>
+                                  <div style={{fontSize:".72rem",color:"#8aa0b8"}}>{lesson.duration}{lesson.free&&" • Free Preview"}</div>
+                                </div>
+                                <span style={{color:"#8aa0b8",fontSize:".8rem"}}>›</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
+
       <div style={{borderTop:"1px solid #e8eef6",padding:".65rem 1rem",display:"flex",flexWrap:"wrap",justifyContent:"center",gap:"1rem",background:"#f8fafd",fontSize:".72rem"}}>
         <a href="https://veterancareerpath.com" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none",fontWeight:600}}>Home</a>
+        <a href="https://veterancareerpath.com/training.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none",fontWeight:600}}>Training</a>
         <a href="https://veterancareerpath.com/army-mos-careers.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>Army MOS</a>
         <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>USMC MOS</a>
         <a href="https://veterancareerpath.com/navy-rate-careers.html" target="_blank" rel="noreferrer" style={{color:"#5a7090",textDecoration:"none"}}>Navy Rates</a>

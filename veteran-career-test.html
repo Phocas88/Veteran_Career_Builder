@@ -3,189 +3,636 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-:root{--navy:#1a3a6b;--gold:#f0c040;--dark:#0a1628;--light:#f0f4fa;}
-body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#fff;line-height:1.7;}
-.nav{background:var(--dark);padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;}
-.nav-logo{display:flex;align-items:center;gap:.75rem;text-decoration:none;}
-.nav-logo img{width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(200,169,81,.3));}
-.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;color:var(--gold);}
-.nav-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.82rem;padding:.45rem 1rem;border-radius:6px;text-decoration:none;}
-.hero-seo{background:linear-gradient(160deg,#0a1628 0%,#1a3a6b 60%,#1e4a8a 100%);padding:4rem 6% 3.5rem;text-align:center;}
-.hero-seo .badge{display:inline-block;background:rgba(200,150,10,.15);border:1px solid rgba(200,150,10,.4);border-radius:20px;padding:.3rem .9rem;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
-.hero-seo h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.5rem);letter-spacing:.08em;color:#fff;line-height:1.1;margin-bottom:1rem;}
-.hero-seo h1 span{color:var(--gold);}
-.hero-seo p{font-size:1.05rem;color:#c0d8f0;max-width:620px;margin:0 auto 2rem;line-height:1.75;}
-.btn-hero{display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:1rem;padding:.85rem 2.2rem;border-radius:10px;text-decoration:none;margin:.3rem;}
-.btn-ghost{display:inline-block;background:transparent;color:#fff;font-weight:600;font-size:.95rem;padding:.85rem 1.8rem;border-radius:10px;text-decoration:none;border:1.5px solid rgba(255,255,255,.3);margin:.3rem;}
-.content{max-width:820px;margin:0 auto;padding:3rem 6%;}
-.content h2{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:.08em;color:var(--navy);margin:2rem 0 .75rem;}
-.content h3{font-size:1.1rem;font-weight:700;color:var(--navy);margin:1.5rem 0 .5rem;}
-.content p{color:#3a4a5a;margin-bottom:1rem;font-size:.98rem;}
-.content ul{padding-left:1.5rem;margin-bottom:1rem;}
-.content li{color:#3a4a5a;margin-bottom:.4rem;font-size:.95rem;}
-.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin:1.5rem 0;}
-.info-card{background:var(--light);border:1px solid #dde3ec;border-radius:10px;padding:1.2rem;}
-.info-card h4{font-weight:700;color:var(--navy);margin-bottom:.4rem;font-size:.95rem;}
-.info-card p{font-size:.85rem;color:#5a7090;margin:0;line-height:1.6;}
-.cta-strip{background:linear-gradient(135deg,#0a1628,#1a3a6b);padding:3rem 6%;text-align:center;}
-.cta-strip h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.08em;color:#fff;margin-bottom:.75rem;}
-.cta-strip p{color:#c0d8f0;max-width:520px;margin:0 auto 1.5rem;font-size:.95rem;}
-footer{background:#0d1f3c;padding:1.5rem 6%;text-align:center;font-size:.78rem;color:#5a7090;}
-footer a{color:#5a7090;text-decoration:none;}
-.faq-item{border-bottom:1px solid #e8eef6;padding:1.1rem 0;}
-.faq-item h4{font-weight:700;color:var(--navy);margin-bottom:.4rem;font-size:.95rem;}
-.faq-item p{font-size:.88rem;color:#5a7090;line-height:1.65;margin:0;}
-.test-embed{background:linear-gradient(135deg,#0a1628,#1a3a6b);border-radius:14px;padding:2rem;margin:2rem 0;}
-.test-embed h3{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:var(--gold);margin-bottom:.5rem;}
-.test-embed p{color:#c0d8f0;font-size:.88rem;margin-bottom:1.2rem;}
-.test-embed .btn{display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;padding:.7rem 1.8rem;border-radius:8px;text-decoration:none;font-size:.95rem;}
-</style>
-<title>Free Veteran Career Test | Military to Civilian Career Assessment</title>
-<meta name="description" content="Free RIASEC-based career test built specifically for veterans. Find out which civilian careers match your military personality, skills, and experience. No account required.">
-<meta name="keywords" content="veteran career test, military career assessment, military to civilian career test, veteran personality test, RIASEC veteran, what career after military">
+<title>Free Veteran Career Assessment | 60-Question RIASEC Test</title>
+<meta name="description" content="The most comprehensive free career assessment for veterans. 60 questions across 6 RIASEC dimensions — identifies your top civilian career matches, salary ranges, and certification roadmap based on your military background.">
+<meta name="keywords" content="veteran career assessment, free veteran career test, RIASEC test veteran, military career assessment, what career matches my military background, veteran career quiz">
 <link rel="canonical" href="https://veterancareerpath.com/veteran-career-test.html">
-<meta property="og:title" content="Free Veteran Career Test - Military to Civilian Career Assessment">
-<meta property="og:description" content="10-question RIASEC career assessment built for veterans. Find your top civilian career matches based on your personality and military background.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0f2545;--navy-mid:#1a3a6b;--gold:#c9a84c;--gold-bright:#f0c040;
+  --dark:#08111e;--text:#1a2535;--muted:#6b7a8d;--border:#dde4ed;
+}
+body{font-family:Inter,sans-serif;color:var(--text);background:#f4f6fb;line-height:1.7;min-height:100vh}
+nav{background:var(--dark);padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.15)}
+.nav-logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+.nav-logo img{width:36px;height:36px;object-fit:contain}
+.nav-logo span{font-family:"Bebas Neue",sans-serif;font-size:1.1rem;letter-spacing:.1em;color:var(--gold-bright)}
+.nav-links{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+.nav-link{color:rgba(255,255,255,.65);text-decoration:none;font-size:.82rem;font-weight:500}
+.nav-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.82rem;padding:.45rem 1rem;border-radius:6px;text-decoration:none}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;font-weight:500;padding:.85rem 6%;border-bottom:1px solid rgba(255,255,255,.05)}
+.mobile-menu .mobile-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e !important;font-weight:700;text-align:center;margin:.75rem 1.5rem;border-radius:8px;padding:.75rem !important;border:none !important}
+@media(max-width:768px){.hamburger{display:flex}.nav-links{display:none !important}}
 
-<style id="mobile-nav-css">
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:auto;}
-.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s;}
-.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
-.hamburger.open span:nth-child(2){opacity:0;}
-.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
-.mobile-menu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;box-shadow:0 8px 24px rgba(0,0,0,.4);}
-.mobile-menu.open{display:flex;}
-.mobile-menu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;font-weight:500;padding:.85rem 6%;border-bottom:1px solid rgba(255,255,255,.05);transition:background .15s;}
-.mobile-menu a:hover{background:rgba(255,255,255,.05);}
-.mobile-menu .mobile-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e !important;font-weight:700;text-align:center;margin:.75rem 1.5rem;border-radius:8px;padding:.75rem !important;border:none !important;}
-@media(max-width:768px){.hamburger{display:flex;}.nav-links{display:none !important;}}
+/* Assessment layout */
+.assessment-wrap{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+
+/* Hero */
+.hero{background:linear-gradient(160deg,#0a1628 0%,#1a3a6b 55%,#1a5c9a 100%);padding:3rem 6%;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,.1),transparent 70%)}
+.hero-inner{max-width:860px;margin:0 auto;position:relative;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:.3rem .9rem;font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.hero h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);letter-spacing:.06em;color:#fff;line-height:1.1;margin-bottom:.75rem}
+.hero h1 span{color:var(--gold-bright)}
+.hero p{font-size:.97rem;color:rgba(255,255,255,.65);max-width:580px;margin:0 auto 1.5rem;line-height:1.75;font-weight:300}
+.hero-stats{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1)}
+.stat{text-align:center}
+.stat-n{font-family:"Bebas Neue",sans-serif;font-size:1.8rem;letter-spacing:.05em;color:var(--gold-bright);display:block}
+.stat-l{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);display:block}
+
+/* Progress */
+.progress-bar-wrap{background:#fff;border-bottom:1px solid var(--border);padding:.85rem 6%;position:sticky;top:57px;z-index:50}
+.progress-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:1rem}
+.progress-label{font-size:.8rem;font-weight:600;color:var(--navy-mid);white-space:nowrap}
+.progress-track{flex:1;height:8px;background:#e8eef6;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--navy-mid),#1a5c9a);border-radius:4px;transition:width .4s ease}
+.progress-pct{font-size:.78rem;font-weight:700;color:var(--navy-mid);white-space:nowrap}
+
+/* Dimension header */
+.dim-header{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:1.5rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem}
+.dim-icon-box{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
+.dim-title{font-family:"Bebas Neue",sans-serif;font-size:1.3rem;letter-spacing:.06em;color:var(--navy);margin-bottom:.2rem}
+.dim-subtitle{font-size:.82rem;color:var(--muted);font-weight:300;line-height:1.5}
+.dim-progress{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:.3rem}
+
+/* Question card */
+.question-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:1.4rem 1.6rem;margin-bottom:.85rem;transition:border-color .15s,box-shadow .15s}
+.question-card:hover{border-color:rgba(26,58,107,.25);box-shadow:0 2px 12px rgba(15,37,69,.06)}
+.question-card.answered{border-color:rgba(26,122,64,.2);background:rgba(26,122,64,.02)}
+.q-text{font-size:.95rem;color:var(--text);font-weight:500;margin-bottom:1rem;line-height:1.55}
+.q-num{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.likert{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.likert-label{font-size:.72rem;color:var(--muted);flex-shrink:0;font-weight:400}
+.likert-label.right{text-align:right}
+.likert-btns{display:flex;gap:.4rem;flex:1;justify-content:center}
+.likert-btn{width:42px;height:42px;border-radius:50%;border:2px solid var(--border);background:#fff;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--muted);transition:all .15s;display:flex;align-items:center;justify-content:center}
+.likert-btn:hover{border-color:var(--navy-mid);color:var(--navy-mid);transform:scale(1.1)}
+.likert-btn.selected{color:#fff;border-color:transparent}
+
+/* Navigation */
+.nav-btns{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)}
+.btn{padding:.7rem 1.75rem;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;border:none;transition:all .15s}
+.btn-back{background:#fff;color:var(--navy-mid);border:1.5px solid var(--border)}
+.btn-back:hover{border-color:var(--navy-mid)}
+.btn-next{background:linear-gradient(135deg,var(--navy-mid),#1a5c9a);color:#fff}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,58,107,.3)}
+.btn-next:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-submit{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,150,10,.3)}
+
+/* Results */
+.results-wrap{padding:2rem 0}
+.results-hero{background:linear-gradient(160deg,#0a1628,#1a3a6b);border-radius:16px;padding:2.5rem;text-align:center;margin-bottom:2rem}
+.results-hero h2{font-family:"Bebas Neue",sans-serif;font-size:2rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem}
+.results-hero p{color:rgba(255,255,255,.65);font-size:.9rem;font-weight:300}
+.dim-scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-bottom:2rem}
+.dim-score-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:1.25rem}
+.dim-score-top{display:flex;align-items:center;gap:.65rem;margin-bottom:.75rem}
+.dim-score-icon{font-size:1.4rem}
+.dim-score-name{font-weight:700;font-size:.9rem;color:var(--navy)}
+.score-bar-wrap{height:8px;background:#e8eef6;border-radius:4px;overflow:hidden;margin-bottom:.4rem}
+.score-bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.score-pct{font-size:.75rem;font-weight:700;color:var(--muted)}
+.primary-dim{border-width:2px;position:relative}
+.primary-badge{position:absolute;top:.75rem;right:.75rem;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .5rem;border-radius:10px}
+.careers-section h3{font-family:"Bebas Neue",sans-serif;font-size:1.5rem;letter-spacing:.08em;color:var(--navy);margin-bottom:1rem}
+.careers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.85rem;margin-bottom:2rem}
+.career-card{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:1.1rem}
+.career-card:hover{border-color:rgba(201,168,76,.4)}
+.career-title{font-weight:700;color:var(--navy);font-size:.92rem;margin-bottom:.25rem}
+.career-salary{font-size:.8rem;color:#1a7a40;font-weight:600;margin-bottom:.4rem}
+.career-sector{font-size:.75rem;color:var(--muted)}
+.cert-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}
+.cert-tag{background:#f0f4fa;border:1px solid #dde3ec;border-radius:4px;padding:.1rem .45rem;font-size:.7rem;color:var(--navy-mid);font-weight:500}
+.result-cta{background:linear-gradient(135deg,#0a1628,#1a3a6b);border-radius:14px;padding:2rem;text-align:center;margin-top:1.5rem}
+.result-cta h3{font-family:"Bebas Neue",sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem}
+.result-cta p{color:rgba(255,255,255,.6);font-size:.88rem;margin-bottom:1.25rem;font-weight:300}
+.result-cta a{display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.95rem;padding:.8rem 2rem;border-radius:8px;text-decoration:none}
+footer{background:var(--dark);padding:2rem 6%;margin-top:3rem;border-top:1px solid rgba(255,255,255,.06)}
+.fi{max-width:1000px;margin:0 auto}
+.fb{text-align:center;font-size:.73rem;color:rgba(255,255,255,.25);font-weight:300}
+
+@media(max-width:600px){
+  .likert-btn{width:36px;height:36px;font-size:.75rem}
+  .likert-label{display:none}
+  .dim-scores{grid-template-columns:1fr}
+}
 </style>
 </head>
-<nav style="background:#0a1628;padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.15)">
-  <a href="https://veterancareerpath.com" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
-    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" style="width:36px;height:36px;object-fit:contain" alt="Veteran Career Path">
-    <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;color:#f0c040">Veteran Career Path</span>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://veterancareerpath.com">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path">
+    <span>Veteran Career Path</span>
   </a>
-  <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap" class="nav-links">
-    <a href="https://veterancareerpath.com/veteran-career-test.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Career Test</a>
-    <a href="https://veterancareerpath.com/mos-career-translator.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">MOS Translator</a>
-    <a href="https://veterancareerpath.com/training.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Training</a>
-    <a href="https://veterancareerpath.com/army-mos-careers.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">MOS Guides</a>
-    <a href="https://veterancareerpath.com/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.82rem;padding:.45rem 1rem;border-radius:6px;text-decoration:none">Launch App</a>
+  <div class="nav-links">
+    <a href="https://veterancareerpath.com/mos-career-translator.html" class="nav-link">MOS Translator</a>
+    <a href="https://veterancareerpath.com/training.html" class="nav-link">Training</a>
+    <a href="https://veterancareerpath.com/army-mos-careers.html" class="nav-link">MOS Guides</a>
+    <a href="https://veterancareerpath.com/app.html" class="nav-cta">Launch App</a>
   </div>
   <button class="hamburger" id="hamburger-btn" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 <div class="mobile-menu" id="mobile-menu">
   <a href="https://veterancareerpath.com/">Home</a>
-  <a href="https://veterancareerpath.com/veteran-career-test.html">Free Career Test</a>
   <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
-  <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Career Guides</a>
   <a href="https://veterancareerpath.com/training.html">Training Library</a>
-  <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a>
-  <a href="https://veterancareerpath.com/app.html" class="mobile-cta">Launch App &#8212; Free</a>
-</div>
-<section class="hero-seo">
-  <div class="badge">Free Career Assessment</div>
-  <h1>The Veteran <span>Career Test</span></h1>
-  <p>Most career tests were built for civilians. This one was built for people who have deployed, led troops, and operated under pressure. Find out which civilian careers actually fit who you are.</p>
-  <a href="https://veterancareerpath.com/app.html" class="btn-hero">Take the Full Assessment</a>
-  <a href="#about" class="btn-ghost">Learn More</a>
-</section>
-
-<div class="content" id="about">
-  <h2>Why Veterans Need a Different Career Test</h2>
-  <p>Standard career assessments ask questions like "Would you rather organize a filing system or paint a picture?" They were not designed for someone who spent years leading people through high-stakes operations, managing millions of dollars of equipment, or making decisions that affected lives.</p>
-  <p>The Veteran Career Path assessment is built around the real dimensions of military service. It measures your personality against six proven RIASEC dimensions, then cross-references your results with your actual military background — your MOS, rank, clearance level, additional duties, and years of service.</p>
-  <p>The result is a personalized career report that does not just say "you should consider management." It says "your 88M background combined with your Enterprising and Conventional profile makes you a strong candidate for logistics management, supply chain director, or operations manager roles paying $70,000 to $105,000."</p>
-
-  <div class="card-grid">
-    <div class="info-card"><h4>Free Basic Test</h4><p>20 questions covering work style, strengths, values, lifestyle, and personality. Get your RIASEC profile and top career matches instantly.</p></div>
-    <div class="info-card"><h4>Full 60-Question Assessment</h4><p>6 validated dimensions, 10 questions each. The most detailed veteran career assessment available. Generates 20 career matches cross-referenced with your MOS.</p></div>
-    <div class="info-card"><h4>MOS-Linked Results</h4><p>Every career recommendation explicitly explains how your military experience connects to the civilian opportunity. Your service is not just background, it is your advantage.</p></div>
-    <div class="info-card"><h4>Printable PDF Report</h4><p>Professional career assessment report you can take to a career counselor, a TAP advisor, or keep for reference. Looks like a report that costs hundreds of dollars elsewhere.</p></div>
-  </div>
-
-  <h2>What the RIASEC Model Means for Veterans</h2>
-  <p>The RIASEC model (Realistic, Investigative, Artistic, Social, Enterprising, Conventional) is the most validated career assessment framework in existence. It is used by the Department of Labor, the VA, and career counselors worldwide. What makes ours different is how we apply it.</p>
-
-  <h3>Realistic (Hands-On and Technical)</h3>
-  <p>Veterans who score high in Realistic typically thrived in technical, mechanical, or physical MOS roles: 91B wheeled vehicle mechanics, 15T helicopter repairers, 12B combat engineers. Civilian paths include skilled trades, manufacturing management, construction, and technical operations.</p>
-
-  <h3>Investigative (Analytical and Research-Oriented)</h3>
-  <p>High Investigative scores are common among intelligence analysts (35F, 35M, 35N), signal intelligence specialists (35P), and cyber operators (17C, 25D). Civilian paths include intelligence analyst, data scientist, cybersecurity, and program management roles.</p>
-
-  <h3>Social (People-Oriented and Helping)</h3>
-  <p>Social dimensions are strongest in medics (68W), chaplain assistants (56M), human resources specialists (42A), and those who naturally took on training and mentoring roles. Civilian paths include human resources, healthcare, education, social work, and nonprofit management.</p>
-
-  <h3>Enterprising (Leadership and Business-Driven)</h3>
-  <p>Veterans who loved being in charge, leading formations, and driving mission results often score highest in Enterprising. This maps to operations management, business development, defense contracting, and executive leadership roles.</p>
-
-  <div class="test-embed">
-    <h3>Take Your Free Career Test Now</h3>
-    <p>No account required. Takes 5 minutes. Get your RIASEC profile and top career match instantly.</p>
-    <a href="https://veterancareerpath.com/app.html" class="btn">Start Free Career Test</a>
-  </div>
-
-  <h2>Frequently Asked Questions</h2>
-  <div class="faq-item"><h4>How is this different from other veteran career assessments?</h4><p>Most assessments give you generic results. Ours cross-references your RIASEC profile with your actual MOS, rank, clearance level, and military background to give you career recommendations that are specific to you, not just any veteran.</p></div>
-  <div class="faq-item"><h4>Is the basic test really free?</h4><p>Yes. The 20-question basic test and your initial career profile are completely free with no account required. The full 60-question deep assessment and detailed career report require a subscription.</p></div>
-  <div class="faq-item"><h4>How many career matches will I get?</h4><p>The basic test generates your top career match plus a preview of others. The full paid assessment generates 20 personalized career matches, each with salary ranges, your MOS connection, and a specific next step to take.</p></div>
-  <div class="faq-item"><h4>Can I take this test if I am still active duty?</h4><p>Absolutely. Many service members take the assessment during TAP or in the 12 months before their ETS date. Early planning is always better.</p></div>
-  <div class="faq-item"><h4>Does the test account for my security clearance?</h4><p>Yes. When you build your profile in the app, you can enter your clearance level. The career recommendations will then include cleared positions that match your background, which often carry a significant salary premium.</p></div>
+  <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Career Guides</a>
+  <a href="https://veterancareerpath.com/app.html" class="mobile-cta">Launch App</a>
 </div>
 
-<section class="cta-strip">
-  <h2>Your Service Has Value. Let's Prove It to Employers.</h2>
-  <p>Take the career test, build your translated resume, and walk into your next career ready.</p>
-  <a href="https://veterancareerpath.com/app.html" class="btn-hero">Start Free Career Test</a>
-</section>
-<footer style="background:#0d1f3c;padding:2rem 6%;">
-  <div style="max-width:900px;margin:0 auto;">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.5rem;margin-bottom:1.5rem;">
-      <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.75rem;">Resources</div>
-        <a href="https://veterancareerpath.com/veteran-career-test.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Free Career Test</a>
-        <a href="https://veterancareerpath.com/mos-career-translator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">MOS Translator</a>
-        <a href="https://veterancareerpath.com/military-civilian-resume.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Resume Builder</a>
-        <a href="https://veterancareerpath.com/military-transition-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Transition Guide</a>
-      </div>
-      <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.75rem;">App</div>
-        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Launch App</a>
-        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Resume Builder</a>
-        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Career Assessment</a>
-        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Job Tracker</a>
-      </div>
-      <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.75rem;">MOS Career Guides</div>
-        <a href="https://veterancareerpath.com/army-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Army MOS Careers</a>
-        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Marine Corps MOS</a>
-        <a href="https://veterancareerpath.com/navy-rate-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Navy Rate Careers</a>
-        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Air Force AFSC</a>
-        <a href="https://veterancareerpath.com/coast-guard-rating-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Coast Guard Ratings</a>
-        <a href="https://veterancareerpath.com/space-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Space Force AFSC</a>
-      </div>
-      <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.75rem;">Company</div>
-        <a href="https://veterancareerpath.com" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Home</a>
-        <a href="https://veterancareerpath.com/contact.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Contact</a>
-        <a href="https://veterancareerpath.com/privacy-policy.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Privacy Policy</a>
-        <a href="https://veterancareerpath.com/terms-of-service.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.82rem;margin-bottom:.4rem;">Terms of Service</a>
-      </div>
-    </div>
-    <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:1.25rem;text-align:center;font-size:.75rem;color:#5a7090;">
-      Veteran Career Path &bull; Built by a veteran, for veterans &bull; Newport News, VA<br>
-      &copy; 2026 Veteran Career Path. Not affiliated with any U.S. government agency.
+<section class="hero" id="hero-section">
+  <div class="hero-inner">
+    <div class="hero-badge">🎖 Free Veteran Career Assessment</div>
+    <h1>Discover Your <span>Ideal Civilian</span> Career Path</h1>
+    <p>A 60-question assessment built specifically for veterans. Based on the RIASEC career framework used by career counselors nationwide — adapted for military-to-civilian transition.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-n">60</span><span class="stat-l">Questions</span></div>
+      <div class="stat"><span class="stat-n">6</span><span class="stat-l">Dimensions</span></div>
+      <div class="stat"><span class="stat-n">12</span><span class="stat-l">Career Matches</span></div>
+      <div class="stat"><span class="stat-n">~10</span><span class="stat-l">Minutes</span></div>
     </div>
   </div>
-</footer></html>
-<script>(function(){var btn=document.getElementById("hamburger-btn");var menu=document.getElementById("mobile-menu");if(!btn||!menu)return;btn.addEventListener("click",function(){btn.classList.toggle("open");menu.classList.toggle("open");});menu.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){btn.classList.remove("open");menu.classList.remove("open");});});document.addEventListener("click",function(e){if(!btn.contains(e.target)&&!menu.contains(e.target)){btn.classList.remove("open");menu.classList.remove("open");}});})();</script>
+</section>
+
+<div class="progress-bar-wrap" id="progress-wrap" style="display:none">
+  <div class="progress-inner">
+    <div class="progress-label" id="progress-label">Question 1 of 60</div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-pct" id="progress-pct">0%</div>
+  </div>
+</div>
+
+<div class="assessment-wrap" id="main-content">
+
+  <!-- START SCREEN -->
+  <div id="start-screen" style="text-align:center;padding:3rem 1rem">
+    <div style="font-size:3rem;margin-bottom:1rem">🎖</div>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.08em;color:var(--navy);margin-bottom:.75rem">Ready to Start?</h2>
+    <p style="color:var(--muted);max-width:500px;margin:0 auto 1.5rem;line-height:1.7;font-size:.95rem;font-weight:300">Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree). There are no right or wrong answers — be honest for the most accurate results.</p>
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;max-width:480px;margin:0 auto 2rem;text-align:left">
+      <div style="font-weight:700;color:var(--navy);margin-bottom:.75rem;font-size:.88rem">The 5-Point Scale:</div>
+      <div style="display:flex;flex-direction:column;gap:.4rem">
+        <div style="display:flex;gap:.75rem;font-size:.85rem"><span style="width:20px;height:20px;background:#e74c3c;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.72rem;flex-shrink:0">1</span><span style="color:var(--muted)">Strongly Disagree</span></div>
+        <div style="display:flex;gap:.75rem;font-size:.85rem"><span style="width:20px;height:20px;background:#e67e22;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.72rem;flex-shrink:0">2</span><span style="color:var(--muted)">Disagree</span></div>
+        <div style="display:flex;gap:.75rem;font-size:.85rem"><span style="width:20px;height:20px;background:#95a5a6;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.72rem;flex-shrink:0">3</span><span style="color:var(--muted)">Neutral</span></div>
+        <div style="display:flex;gap:.75rem;font-size:.85rem"><span style="width:20px;height:20px;background:#27ae60;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.72rem;flex-shrink:0">4</span><span style="color:var(--muted)">Agree</span></div>
+        <div style="display:flex;gap:.75rem;font-size:.85rem"><span style="width:20px;height:20px;background:#1a3a6b;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.72rem;flex-shrink:0">5</span><span style="color:var(--muted)">Strongly Agree</span></div>
+      </div>
+    </div>
+    <button onclick="startAssessment()" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:1.05rem;padding:.9rem 2.5rem;border-radius:10px;border:none;cursor:pointer;font-family:inherit;letter-spacing:.02em">Begin Assessment →</button>
+    <p style="font-size:.78rem;color:var(--muted);margin-top:.75rem">100% free · No account required · Results in ~10 minutes</p>
+  </div>
+
+  <!-- ASSESSMENT SCREEN -->
+  <div id="assessment-screen" style="display:none">
+    <div class="dim-header" id="dim-header">
+      <div class="dim-icon-box" id="dim-icon"></div>
+      <div>
+        <div class="dim-title" id="dim-title"></div>
+        <div class="dim-subtitle" id="dim-subtitle"></div>
+        <div class="dim-progress" id="dim-progress-text"></div>
+      </div>
+    </div>
+    <div id="questions-container"></div>
+    <div class="nav-btns">
+      <button class="btn btn-back" id="btn-back" onclick="prevDimension()">← Back</button>
+      <button class="btn btn-next" id="btn-next" onclick="nextDimension()">Next Section →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="results-screen" style="display:none"></div>
+
+</div>
+
+<footer>
+  <div class="fi">
+    <div class="fb">Veteran Career Path &bull; Built by a veteran, for veterans &bull; &copy; 2026<br><a href="https://veterancareerpath.com" style="color:rgba(255,255,255,.4);text-decoration:none">Home</a> &bull; <a href="https://veterancareerpath.com/training.html" style="color:rgba(255,255,255,.4);text-decoration:none">Training</a> &bull; <a href="https://veterancareerpath.com/app.html" style="color:rgba(255,255,255,.4);text-decoration:none">Launch App</a></div>
+  </div>
+</footer>
+
+<script>
+window.DEEP_CAREER_TEST={dimensions:[
+  {id:"realistic",title:"Hands-On and Technical",icon:"🔧",color:"#1a5c9a",questions:[
+    {id:"r1",q:"I enjoy working with tools, machinery, or physical equipment"},
+    {id:"r2",q:"I prefer seeing concrete, tangible results from my work"},
+    {id:"r3",q:"I am comfortable in physical or operational environments"},
+    {id:"r4",q:"I enjoy maintaining, repairing, or building things"},
+    {id:"r5",q:"I like understanding how mechanical systems work"},
+    {id:"r6",q:"I prefer practical hands-on solutions over theory"},
+    {id:"r7",q:"I am drawn to technical trades or engineering"},
+    {id:"r8",q:"I enjoy structured tasks with clear procedures"},
+    {id:"r9",q:"I am patient with detail-oriented physical tasks"},
+    {id:"r10",q:"I take pride in precision and doing physical work well"}
+  ]},
+  {id:"investigative",title:"Analytical and Research-Oriented",icon:"🔬",color:"#6a2a9a",questions:[
+    {id:"i1",q:"I enjoy researching and investigating complex problems"},
+    {id:"i2",q:"I like working with data, statistics, or analytical tools"},
+    {id:"i3",q:"I am drawn to science, technology, engineering, or math"},
+    {id:"i4",q:"I enjoy solving puzzles or figuring out complex systems"},
+    {id:"i5",q:"I prefer thinking deeply before taking action"},
+    {id:"i6",q:"I enjoy reading, learning, and intellectual challenges"},
+    {id:"i7",q:"I am comfortable with abstract concepts and theories"},
+    {id:"i8",q:"I like identifying patterns in complex information"},
+    {id:"i9",q:"I enjoy tasks requiring precision and careful reasoning"},
+    {id:"i10",q:"I value accuracy and thoroughness over speed"}
+  ]},
+  {id:"artistic",title:"Creative and Expressive",icon:"🎨",color:"#8a3a5a",questions:[
+    {id:"a1",q:"I enjoy creative work like writing, design, or media"},
+    {id:"a2",q:"I like environments with creative freedom and few rigid rules"},
+    {id:"a3",q:"I express myself better through creating than following procedures"},
+    {id:"a4",q:"I am drawn to communication, marketing, or public affairs roles"},
+    {id:"a5",q:"I enjoy brainstorming new ideas and envisioning things differently"},
+    {id:"a6",q:"I find strictly structured environments limiting"},
+    {id:"a7",q:"I like roles where I can craft messages or visual content"},
+    {id:"a8",q:"I am comfortable with ambiguity when it gives creative latitude"},
+    {id:"a9",q:"I see myself as more imaginative than methodical"},
+    {id:"a10",q:"I am energized when I can put my personal stamp on projects"}
+  ]},
+  {id:"social",title:"People-Oriented and Helping",icon:"🤝",color:"#1a7a40",questions:[
+    {id:"s1",q:"I enjoy helping others solve personal or professional problems"},
+    {id:"s2",q:"I am energized by working directly with people daily"},
+    {id:"s3",q:"I find deep satisfaction in teaching or mentoring others"},
+    {id:"s4",q:"I am a natural listener and people come to me for guidance"},
+    {id:"s5",q:"I care deeply about the wellbeing of people I work with"},
+    {id:"s6",q:"I like healthcare, education, social services, or nonprofit work"},
+    {id:"s7",q:"I am comfortable managing interpersonal conflict"},
+    {id:"s8",q:"I prefer collaborative team work over independent work"},
+    {id:"s9",q:"I feel fulfilled when someone I helped succeeds"},
+    {id:"s10",q:"I enjoy building long-term relationships built on trust"}
+  ]},
+  {id:"enterprising",title:"Leadership and Business-Driven",icon:"🎯",color:"#c8960a",questions:[
+    {id:"e1",q:"I enjoy leading teams and being responsible for outcomes"},
+    {id:"e2",q:"I am comfortable making decisions with incomplete information"},
+    {id:"e3",q:"I like persuading, negotiating, and influencing others"},
+    {id:"e4",q:"I am driven by competition and achieving measurable results"},
+    {id:"e5",q:"I enjoy starting new initiatives or programs from scratch"},
+    {id:"e6",q:"I set ambitious goals and hold myself and others accountable"},
+    {id:"e7",q:"I am comfortable presenting to groups publicly"},
+    {id:"e8",q:"I am motivated by earning potential and financial growth"},
+    {id:"e9",q:"I am willing to take calculated risks for bigger outcomes"},
+    {id:"e10",q:"I thrive in fast-paced, high-stakes environments"}
+  ]},
+  {id:"conventional",title:"Organized and Systems-Oriented",icon:"📋",color:"#2a7090",questions:[
+    {id:"c1",q:"I like following established procedures and systems"},
+    {id:"c2",q:"I prefer organized, structured work over ambiguous situations"},
+    {id:"c3",q:"I enjoy managing records, data, files, and documentation"},
+    {id:"c4",q:"I take pride in accuracy and attention to detail"},
+    {id:"c5",q:"I am comfortable with numbers, budgets, or financial systems"},
+    {id:"c6",q:"I like clearly defined expectations and responsibilities"},
+    {id:"c7",q:"I plan ahead rather than responding to situations ad hoc"},
+    {id:"c8",q:"I find satisfaction in completing checklists and deadlines"},
+    {id:"c9",q:"I am reliable, consistent, and methodical"},
+    {id:"c10",q:"I am comfortable with administrative or compliance work"}
+  ]}
+]};
+
+const CAREER_DB = {
+  realistic: {
+    high: [
+      {title:"Mechanical Engineer",salary:"$75,000–$110,000",sector:"Engineering",certs:["PE License","Six Sigma"]},
+      {title:"Electrician / Master Electrician",salary:"$55,000–$95,000",sector:"Trades",certs:["Master Electrician License","OSHA 30"]},
+      {title:"Aircraft Mechanic (A&P)",salary:"$60,000–$100,000",sector:"Aviation",certs:["FAA A&P License"]},
+      {title:"Fleet / Equipment Manager",salary:"$55,000–$90,000",sector:"Operations",certs:["CDL Class A","ASE"]},
+      {title:"Construction Project Manager",salary:"$70,000–$115,000",sector:"Construction",certs:["PMP","OSHA 30"]},
+      {title:"UAS / Drone Operations Specialist",salary:"$55,000–$95,000",sector:"Technology",certs:["FAA Part 107"]},
+    ]
+  },
+  investigative: {
+    high: [
+      {title:"Intelligence Analyst",salary:"$65,000–$130,000",sector:"Defense/Intel",certs:["Security+","CIP"]},
+      {title:"Cybersecurity Analyst",salary:"$75,000–$145,000",sector:"Technology",certs:["Security+","CISSP","CEH"]},
+      {title:"Data Analyst",salary:"$65,000–$110,000",sector:"Technology",certs:["SQL Certification","Tableau"]},
+      {title:"Medical Laboratory Technician",salary:"$45,000–$80,000",sector:"Healthcare",certs:["MLT Certification"]},
+      {title:"Research Analyst",salary:"$60,000–$100,000",sector:"Consulting",certs:["PMP","Data Analytics"]},
+      {title:"Software Developer",salary:"$85,000–$150,000",sector:"Technology",certs:["AWS","CompTIA CySA+"]},
+    ]
+  },
+  artistic: {
+    high: [
+      {title:"Public Affairs Specialist",salary:"$55,000–$95,000",sector:"Communications",certs:["APR","Digital Marketing"]},
+      {title:"UX Designer",salary:"$75,000–$130,000",sector:"Technology",certs:["Google UX Certificate"]},
+      {title:"Technical Writer",salary:"$60,000–$95,000",sector:"Technology",certs:["Certified Technical Communicator"]},
+      {title:"Marketing Manager",salary:"$65,000–$120,000",sector:"Business",certs:["Google Analytics","HubSpot"]},
+      {title:"Graphic Designer / Creative Director",salary:"$50,000–$95,000",sector:"Creative",certs:["Adobe Certifications"]},
+      {title:"Training & Development Specialist",salary:"$55,000–$90,000",sector:"HR/Education",certs:["CPTD","ATD Certification"]},
+    ]
+  },
+  social: {
+    high: [
+      {title:"Registered Nurse",salary:"$65,000–$110,000",sector:"Healthcare",certs:["NCLEX-RN","ACLS/BLS"]},
+      {title:"Social Worker / Counselor",salary:"$45,000–$80,000",sector:"Social Services",certs:["LCSW","LPC"]},
+      {title:"Human Resources Manager",salary:"$65,000–$115,000",sector:"Business",certs:["SHRM-CP","PHR"]},
+      {title:"Teacher / School Counselor",salary:"$45,000–$80,000",sector:"Education",certs:["State Teaching License"]},
+      {title:"Recruiter / Talent Acquisition",salary:"$55,000–$95,000",sector:"HR",certs:["SHRM-CP","LinkedIn Recruiter"]},
+      {title:"Paramedic / Flight Medic",salary:"$48,000–$90,000",sector:"Healthcare",certs:["NREMT-P","ACLS"]},
+    ]
+  },
+  enterprising: {
+    high: [
+      {title:"Operations Manager",salary:"$75,000–$130,000",sector:"Business",certs:["PMP","Six Sigma Black Belt"]},
+      {title:"Contracting Officer / Specialist",salary:"$70,000–$130,000",sector:"Government",certs:["DAWIA","CPCM"]},
+      {title:"Financial Advisor",salary:"$65,000–$150,000+",sector:"Finance",certs:["Series 7","CFP"]},
+      {title:"Defense Program Manager",salary:"$90,000–$160,000",sector:"Defense",certs:["PMP","DAU Certifications"]},
+      {title:"Corporate Security Director",salary:"$90,000–$160,000",sector:"Security",certs:["CPP","CISSP"]},
+      {title:"Real Estate Investor / Agent",salary:"$60,000–$150,000+",sector:"Real Estate",certs:["Real Estate License"]},
+    ]
+  },
+  conventional: {
+    high: [
+      {title:"Supply Chain / Logistics Manager",salary:"$70,000–$115,000",sector:"Logistics",certs:["APICS CSCP","Six Sigma"]},
+      {title:"Federal Budget Analyst",salary:"$65,000–$110,000",sector:"Government",certs:["CGFM","CPA"]},
+      {title:"Information Systems Security Officer",salary:"$80,000–$140,000",sector:"Cybersecurity",certs:["Security+","CISSP","CAP"]},
+      {title:"HR Specialist / Analyst",salary:"$55,000–$90,000",sector:"HR",certs:["SHRM-CP","PHR"]},
+      {title:"Quality Assurance Inspector",salary:"$55,000–$90,000",sector:"Manufacturing",certs:["ASQ CQI","ISO Certification"]},
+      {title:"Accountant / CPA",salary:"$60,000–$110,000",sector:"Finance",certs:["CPA","CMA"]},
+    ]
+  }
+};
+
+function getTopCareers(scores) {
+  const ranked = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const careers = new Map();
+  
+  // Primary dimension careers
+  ranked.forEach(([dim, score], idx) => {
+    const weight = score * (6 - idx);
+    const dimCareers = CAREER_DB[dim] ? CAREER_DB[dim].high : [];
+    dimCareers.forEach(c => {
+      const key = c.title;
+      if (!careers.has(key)) {
+        careers.set(key, {...c, score: weight, primaryDim: dim});
+      } else {
+        careers.get(key).score += weight * 0.5;
+      }
+    });
+  });
+  
+  return Array.from(careers.values()).sort((a,b)=>b.score-a.score).slice(0,12);
+}
+
+const DIM_LABELS = {
+  realistic: "Hands-On & Technical",
+  investigative: "Analytical & Research",
+  artistic: "Creative & Expressive",
+  social: "People & Helping",
+  enterprising: "Leadership & Business",
+  conventional: "Organized & Systems"
+};
+
+const DIM_ICONS = {
+  realistic:"🔧", investigative:"🔬", artistic:"🎨",
+  social:"🤝", enterprising:"🎯", conventional:"📋"
+};
+
+const DIM_COLORS = {
+  realistic:"#1a5c9a", investigative:"#1a7a40", artistic:"#8a2a8a",
+  social:"#c8400a", enterprising:"#6a2a00", conventional:"#2a5c8a"
+};
+
+const DIM_DESC = {
+  realistic: "You prefer working with your hands, tools, machines, or in physical environments. You value practical results and hands-on problem solving.",
+  investigative: "You are drawn to analysis, research, and problem solving. You enjoy working with data, ideas, and complex systems.",
+  artistic: "You value creativity, self-expression, and original thinking. You prefer unstructured environments where you can innovate.",
+  social: "You are motivated by helping, teaching, and working with people. You build strong relationships and communicate effectively.",
+  enterprising: "You are driven to lead, persuade, and achieve results. You thrive in competitive environments and take initiative.",
+  conventional: "You excel at organization, systems, and detailed work. You value accuracy, structure, and established procedures."
+};
+
+
+const COLORS_SCALE = ['#e74c3c','#e67e22','#95a5a6','#27ae60','#1a3a6b'];
+const dims = window.DEEP_CAREER_TEST.dimensions;
+let currentDim = 0;
+let answers = {};
+
+function startAssessment() {
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('assessment-screen').style.display = 'block';
+  document.getElementById('hero-section').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'block';
+  renderDimension();
+}
+
+function renderDimension() {
+  const dim = dims[currentDim];
+  const totalQ = dims.reduce((a,d)=>a+d.questions.length,0);
+  const answeredBefore = dims.slice(0,currentDim).reduce((a,d)=>a+d.questions.length,0);
+  
+  // Dim header
+  document.getElementById('dim-icon').textContent = dim.icon;
+  document.getElementById('dim-icon').style.background = dim.color + '18';
+  document.getElementById('dim-title').textContent = dim.title;
+  document.getElementById('dim-subtitle').textContent = DIM_DESC[dim.id] || '';
+  document.getElementById('dim-progress-text').textContent = 
+    'Section ' + (currentDim+1) + ' of ' + dims.length + ' · ' + dim.questions.length + ' questions';
+  document.getElementById('dim-header').style.borderColor = dim.color + '40';
+  
+  // Update overall progress
+  const answered = Object.keys(answers).length;
+  const pct = Math.round((answered/totalQ)*100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-label').textContent = 
+    'Question ' + (answeredBefore+1) + '–' + (answeredBefore+dim.questions.length) + ' of ' + totalQ;
+  
+  // Back button
+  document.getElementById('btn-back').style.display = currentDim === 0 ? 'none' : 'block';
+  
+  // Next/Submit button
+  const btnNext = document.getElementById('btn-next');
+  if (currentDim === dims.length - 1) {
+    btnNext.textContent = 'Get My Results →';
+    btnNext.className = 'btn btn-submit';
+    btnNext.onclick = submitAssessment;
+  } else {
+    btnNext.textContent = 'Next Section →';
+    btnNext.className = 'btn btn-next';
+    btnNext.onclick = nextDimension;
+  }
+  
+  // Questions
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+  dim.questions.forEach((q, qi) => {
+    const globalNum = answeredBefore + qi + 1;
+    const card = document.createElement('div');
+    card.className = 'question-card' + (answers[q.id] ? ' answered' : '');
+    card.id = 'qcard-' + q.id;
+    
+    const btns = [1,2,3,4,5].map(v => {
+      const selected = answers[q.id] === v;
+      const color = COLORS_SCALE[v-1];
+      return '<button class="likert-btn' + (selected ? ' selected' : '') + '" ' +
+        (selected ? 'style="background:' + color + ';border-color:' + color + '"' : '') +
+        ' onclick="setAnswer('' + q.id + '',' + v + ','' + dim.color + '')">' + v + '</button>';
+    }).join('');
+    
+    card.innerHTML = 
+      '<div class="q-num">Question ' + globalNum + '</div>' +
+      '<div class="q-text">' + q.q + '</div>' +
+      '<div class="likert">' +
+        '<span class="likert-label">Strongly<br>Disagree</span>' +
+        '<div class="likert-btns">' + btns + '</div>' +
+        '<span class="likert-label right">Strongly<br>Agree</span>' +
+      '</div>';
+    container.appendChild(card);
+  });
+  
+  window.scrollTo({top:0, behavior:'smooth'});
+  updateNextBtn();
+}
+
+function setAnswer(qid, val, color) {
+  answers[qid] = val;
+  
+  // Update card
+  const card = document.getElementById('qcard-' + qid);
+  if (card) {
+    card.className = 'question-card answered';
+    card.querySelectorAll('.likert-btn').forEach((btn, i) => {
+      const selected = (i+1) === val;
+      btn.className = 'likert-btn' + (selected ? ' selected' : '');
+      btn.style.background = selected ? COLORS_SCALE[i] : '';
+      btn.style.borderColor = selected ? COLORS_SCALE[i] : '';
+    });
+  }
+  
+  // Update progress
+  const totalQ = dims.reduce((a,d)=>a+d.questions.length,0);
+  const pct = Math.round((Object.keys(answers).length/totalQ)*100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  
+  updateNextBtn();
+  
+  // Auto-scroll to next unanswered
+  const dim = dims[currentDim];
+  const unanswered = dim.questions.find(q => !answers[q.id]);
+  if (unanswered) {
+    const el = document.getElementById('qcard-' + unanswered.id);
+    if (el) setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}), 200);
+  }
+}
+
+function updateNextBtn() {
+  const dim = dims[currentDim];
+  const allAnswered = dim.questions.every(q => answers[q.id]);
+  document.getElementById('btn-next').disabled = !allAnswered;
+}
+
+function nextDimension() {
+  const dim = dims[currentDim];
+  const allAnswered = dim.questions.every(q => answers[q.id]);
+  if (!allAnswered) {
+    const first = dim.questions.find(q => !answers[q.id]);
+    if (first) document.getElementById('qcard-' + first.id).scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  currentDim++;
+  renderDimension();
+}
+
+function prevDimension() {
+  if (currentDim > 0) { currentDim--; renderDimension(); }
+}
+
+function submitAssessment() {
+  // Calculate scores
+  const scores = {};
+  dims.forEach(dim => {
+    const total = dim.questions.reduce((sum, q) => sum + (answers[q.id]||3), 0);
+    scores[dim.id] = Math.round((total / (dim.questions.length * 5)) * 100);
+  });
+  
+  // Get sorted dims
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const primaryDim = sorted[0][0];
+  const secondaryDim = sorted[1][0];
+  
+  // Get career matches
+  const careers = getTopCareers(scores);
+  
+  // Hide assessment, show results
+  document.getElementById('assessment-screen').style.display = 'none';
+  document.getElementById('hero-section').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+  
+  // Render results
+  const resultsEl = document.getElementById('results-screen');
+  resultsEl.style.display = 'block';
+  
+  const dimCards = sorted.map(([dimId, pct], idx) => {
+    const dim = dims.find(d=>d.id===dimId);
+    const isPrimary = idx === 0;
+    return '<div class="dim-score-card' + (isPrimary ? ' primary-dim" style="border-color:' + dim.color + '"' : '"') + '>' +
+      (isPrimary ? '<div class="primary-badge">Primary</div>' : '') +
+      '<div class="dim-score-top">' +
+        '<span class="dim-score-icon">' + dim.icon + '</span>' +
+        '<div><div class="dim-score-name">' + DIM_LABELS[dimId] + '</div></div>' +
+      '</div>' +
+      '<div class="score-bar-wrap"><div class="score-bar-fill" style="width:' + pct + '%;background:' + dim.color + '"></div></div>' +
+      '<div class="score-pct">' + pct + '% match</div>' +
+    '</div>';
+  }).join('');
+  
+  const careerCards = careers.map(c => 
+    '<div class="career-card">' +
+      '<div class="career-title">' + c.title + '</div>' +
+      '<div class="career-salary">💰 ' + c.salary + '</div>' +
+      '<div class="career-sector">' + c.sector + '</div>' +
+      '<div class="cert-tags">' + (c.certs||[]).map(ct=>'<span class="cert-tag">'+ct+'</span>').join('') + '</div>' +
+    '</div>'
+  ).join('');
+  
+  resultsEl.innerHTML = 
+    '<div class="results-hero">' +
+      '<h2>Your Career Profile</h2>' +
+      '<p>Based on ' + Object.keys(answers).length + ' responses across 6 dimensions</p>' +
+      '<div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap">' +
+        sorted.slice(0,3).map(([id])=>'<span style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:.25rem .75rem;font-size:.8rem;color:#f0c040;font-weight:600">' + DIM_ICONS[id] + ' ' + DIM_LABELS[id] + '</span>').join('') +
+      '</div>' +
+    '</div>' +
+    '<div class="dim-scores">' + dimCards + '</div>' +
+    '<div class="careers-section">' +
+      '<h3>Your Top Career Matches</h3>' +
+      '<p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem;font-weight:300">Based on your RIASEC profile — ranked by alignment with your strongest dimensions.</p>' +
+      '<div class="careers-grid">' + careerCards + '</div>' +
+    '</div>' +
+    '<div class="result-cta">' +
+      '<h3>Build Your Resume Around These Careers</h3>' +
+      '<p>Take these results into the app to translate your MOS experience into a resume targeted at your top career matches.</p>' +
+      '<a href="https://veterancareerpath.com/app.html">Start Free Trial — Resume from $4.99</a>' +
+    '</div>' +
+    '<div style="text-align:center;margin-top:1.5rem">' +
+      '<button onclick="location.reload()" style="background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:.6rem 1.5rem;font-size:.85rem;cursor:pointer;font-family:inherit;color:var(--navy-mid);font-weight:600">Retake Assessment</button>' +
+    '</div>';
+  
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Mobile nav
+(function(){
+  var btn=document.getElementById("hamburger-btn");
+  var menu=document.getElementById("mobile-menu");
+  if(!btn||!menu)return;
+  btn.addEventListener("click",function(){btn.classList.toggle("open");menu.classList.toggle("open");});
+  menu.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){btn.classList.remove("open");menu.classList.remove("open");});});
+  document.addEventListener("click",function(e){if(!btn.contains(e.target)&&!menu.contains(e.target)){btn.classList.remove("open");menu.classList.remove("open");}});
+})();
+</script>
+</body>
+</html>

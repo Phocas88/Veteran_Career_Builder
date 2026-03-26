@@ -50,14 +50,14 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-     const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+      const firebaseConfig = {
+        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+        authDomain: "veteran-career-builder.firebaseapp.com",
+        projectId: "veteran-career-builder",
+        storageBucket: "veteran-career-builder.firebasestorage.app",
+        messagingSenderId: "REPLACE_SENDER_ID",
+        appId: "REPLACE_APP_ID"
+      };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -4050,7 +4050,7 @@ Return this exact JSON structure:
 
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
 
-  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Vet Resources","My Profile","Training"];
+  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Vet Resources","My Profile"];
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
   const DI = "Defense/Intel";
   const RG = "Reserve/Guard (concurrent with civilian)";
@@ -6931,7 +6931,7 @@ Return this exact JSON structure:
           ➕
         </button>
       )}
-          <div className={"panel "+(tab===7?"on":"")}>
+          <div className={"panel "+(false?"on":"")} style={{display:"none"}}>
             {tab===7&&(()=>{
               const totalLessons = window.COURSES.reduce((a,c)=>a+c.lessons.length,0);
               const completedCount = Object.keys(trainingProgress).filter(k=>trainingProgress[k]==="complete").length;

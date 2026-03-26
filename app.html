@@ -2788,55 +2788,6 @@ function MyProfileSaved(props) {
                   +"<style>"+PAGE_CSS+"</style>"
                   +"</head><body>"+body
                   +"<script>window.onload=function(){document.title='';setTimeout(function(){window.print();},400);}<\/script>"
-                  +"
-<script>
-(function(){
-  var btn = document.getElementById('hamburger-btn');
-  var menu = document.getElementById('mobile-menu');
-  if(!btn||!menu) return;
-  btn.addEventListener('click', function(){
-    btn.classList.toggle('open');
-    menu.classList.toggle('open');
-  });
-  // Close on link click
-  menu.querySelectorAll('a').forEach(function(a){
-    a.addEventListener('click', function(){
-      btn.classList.remove('open');
-      menu.classList.remove('open');
-    });
-  });
-  // Close on outside click
-  document.addEventListener('click', function(e){
-    if(!btn.contains(e.target)&&!menu.contains(e.target)){
-      btn.classList.remove('open');
-      menu.classList.remove('open');
-    }
-  });
-})();
-</script>
-<script>
-(function(){
-  var btn=document.getElementById("hamburger-btn");
-  var menu=document.getElementById("mobile-menu");
-  if(!btn||!menu) return;
-  btn.addEventListener("click",function(){
-    btn.classList.toggle("open");
-    menu.classList.toggle("open");
-  });
-  menu.querySelectorAll("a").forEach(function(a){
-    a.addEventListener("click",function(){
-      btn.classList.remove("open");
-      menu.classList.remove("open");
-    });
-  });
-  document.addEventListener("click",function(e){
-    if(!btn.contains(e.target)&&!menu.contains(e.target)){
-      btn.classList.remove("open");
-      menu.classList.remove("open");
-    }
-  });
-})();
-</script>
 </body></html>");
                 w.document.close();
               }}>👁 View</button>

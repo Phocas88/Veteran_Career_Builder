@@ -196,7 +196,7 @@ footer{background:#0d1f3c;padding:2.5rem 6%;margin-top:3rem}
         <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:var(--navy);margin-bottom:.4rem">Free Preview</div>
         <div style="font-size:1.5rem;font-weight:700;color:#1a7a40;margin-bottom:.5rem">10 Questions</div>
         <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1.25rem;font-weight:300">A quick sample across all 6 career dimensions. See your top career matches at no cost.</p>
-        <button onclick="startTeaser()" style="width:100%;background:linear-gradient(135deg,#1a7a40,#22a855);color:#fff;border:none;border-radius:8px;padding:.8rem;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">Start Free Preview</button>
+        <button id="btn-start-teaser" style="width:100%;background:linear-gradient(135deg,#1a7a40,#22a855);color:#fff;border:none;border-radius:8px;padding:.8rem;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">Start Free Preview</button>
         <div style="font-size:.72rem;color:var(--muted);margin-top:.5rem">No account required</div>
       </div>
       <div style="background:#fff;border:2px solid #c9a84c;border-radius:14px;padding:1.75rem;text-align:center;position:relative">
@@ -205,7 +205,7 @@ footer{background:#0d1f3c;padding:2.5rem 6%;margin-top:3rem}
         <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:var(--navy);margin-bottom:.4rem">Full Assessment</div>
         <div style="font-size:1.5rem;font-weight:700;color:#1a3a6b;margin-bottom:.5rem">60 Questions</div>
         <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1.25rem;font-weight:300">The complete 60-question RIASEC assessment with detailed career matches, salary data, and printable results.</p>
-        <button onclick="startFull()" style="width:100%;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;border:none;border-radius:8px;padding:.8rem;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">Start Full Assessment</button>
+        <button id="btn-start-full" style="width:100%;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;border:none;border-radius:8px;padding:.8rem;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">Start Full Assessment</button>
         <div style="font-size:.72rem;color:var(--muted);margin-top:.5rem">Included with subscription</div>
       </div>
     </div>
@@ -695,6 +695,14 @@ function submitAssessment() {
 
   window.scrollTo({top:0,behavior:'smooth'});
 }
+
+// Button event listeners
+document.addEventListener('DOMContentLoaded', function() {
+  var btnTeaser = document.getElementById('btn-start-teaser');
+  var btnFull = document.getElementById('btn-start-full');
+  if (btnTeaser) btnTeaser.addEventListener('click', startTeaser);
+  if (btnFull) btnFull.addEventListener('click', startFull);
+});
 
 // Mobile nav
 (function(){

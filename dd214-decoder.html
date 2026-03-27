@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DD-214 Decoder - Every Field Explained for Veterans | Veteran Career Path</title>
+<meta name="description" content="Complete DD-214 field-by-field breakdown for veterans. What every block means for VA benefits, federal employment, and civilian job applications.">
+<meta name="keywords" content="DD-214 decoder, DD-214 explained, DD-214 blocks explained, veteran discharge document, DD-214 civilian employment">
+<link rel="canonical" href="https://veterancareerpath.com/dd214-decoder.html">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
+<style id="mobile-nav-css">
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;box-shadow:0 8px 24px rgba(0,0,0,.4);max-height:85vh;overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;font-weight:500;padding:.75rem 6%;border-bottom:1px solid rgba(255,255,255,.05)}
+.mobile-menu .mobile-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e !important;font-weight:700;text-align:center;margin:.75rem 1.5rem;border-radius:8px;padding:.75rem !important}
+@media(max-width:768px){.hamburger{display:flex}.nav-links{display:none !important}}
+</style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,sans-serif;color:#1a2a3a;background:#fff;line-height:1.7}
+.hero{background:linear-gradient(160deg,#0a1628 0%,#1a3a6b 60%,#1e4a8a 100%);padding:3.5rem 6%;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,.1),transparent 70%)}
+.hero-inner{max-width:900px;margin:0 auto;position:relative}
+.badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:.3rem .9rem;font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#c9a84c;margin-bottom:1rem}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:.08em;color:#fff;line-height:1.1;margin-bottom:.75rem}
+h1 span{color:#f0c040}
+.hero-sub{font-size:.97rem;color:rgba(255,255,255,.65);max-width:620px;margin:0 auto 1.75rem;line-height:1.75;font-weight:300}
+.btn-hero{display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.95rem;padding:.8rem 2rem;border-radius:8px;text-decoration:none}
+.content{max-width:900px;margin:0 auto;padding:3rem 6%}
+.content h2{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:.08em;color:#1a3a6b;margin:2.5rem 0 1rem;border-bottom:2px solid #1a3a6b;padding-bottom:.4rem}
+.content h3{font-size:1rem;font-weight:700;color:#1a3a6b;margin:1.5rem 0 .5rem}
+.content p{color:#3a4a5a;font-size:.95rem;line-height:1.8;margin-bottom:.9rem;font-weight:300}
+.content ul{color:#3a4a5a;font-size:.92rem;line-height:1.8;margin-bottom:.9rem;padding-left:1.5rem;font-weight:300}
+.content li{margin-bottom:.4rem}
+.callout{background:rgba(200,150,10,.08);border:1px solid rgba(200,150,10,.25);border-left:4px solid #c8960a;border-radius:0 10px 10px 0;padding:1.1rem 1.3rem;margin:1.5rem 0}
+.callout-label{font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#8a6000;margin-bottom:.4rem}
+.callout p{margin:0;font-size:.88rem;font-weight:400;color:#5a3a00}
+.alert{background:rgba(26,90,180,.06);border:1px solid rgba(26,90,180,.2);border-left:4px solid #1a5ab4;border-radius:0 10px 10px 0;padding:1.1rem 1.3rem;margin:1.5rem 0}
+.alert p{margin:0;font-size:.88rem;color:#1a2a5a;font-weight:400}
+.success{background:rgba(26,122,64,.06);border:1px solid rgba(26,122,64,.2);border-left:4px solid #1a7a40;border-radius:0 10px 10px 0;padding:1.1rem 1.3rem;margin:1.5rem 0}
+.success p{margin:0;font-size:.88rem;color:#0a3a20;font-weight:400}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:1.25rem 0}
+.card{background:#f8fafd;border:1.5px solid #dde3ec;border-radius:12px;padding:1.25rem}
+.card-title{font-weight:700;color:#1a3a6b;margin-bottom:.35rem;font-size:.92rem}
+.card p{font-size:.83rem;color:#5a7090;margin:0;line-height:1.55;font-weight:300}
+.tag{display:inline-block;background:#f0f4fa;border:1px solid #dde3ec;border-radius:6px;padding:.15rem .55rem;font-size:.75rem;font-weight:600;color:#1a3a6b;margin:.15rem}
+.tag.green{background:rgba(26,122,64,.08);border-color:rgba(26,122,64,.2);color:#1a7a40}
+.tag.gold{background:rgba(200,150,10,.1);border-color:rgba(200,150,10,.3);color:#8a6000}
+.tag.red{background:rgba(180,40,40,.08);border-color:rgba(180,40,40,.2);color:#8a0000}
+.cta-block{background:linear-gradient(135deg,#0a1628,#1a3a6b);border-radius:12px;padding:2rem;text-align:center;margin:2.5rem 0}
+.cta-block h3{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem}
+.cta-block p{font-size:.88rem;color:rgba(255,255,255,.6);margin-bottom:1.25rem;font-weight:300}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin:1.25rem 0}
+thead tr{background:#1a3a6b;color:#fff}
+th{padding:.75rem 1rem;text-align:left;font-weight:600}
+tbody tr:nth-child(even){background:#f8fafd}
+td{padding:.75rem 1rem;color:#3a4a5a;border-bottom:1px solid #eee}
+.checklist-item{display:flex;align-items:flex-start;gap:.75rem;padding:.85rem 1rem;background:#fff;border:1.5px solid #dde3ec;border-radius:10px;margin-bottom:.65rem}
+.checklist-item input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:.1rem;accent-color:#1a7a40;cursor:pointer}
+.checklist-item label{font-size:.9rem;color:#1a2a3a;font-weight:500;cursor:pointer;line-height:1.5}
+.checklist-item .sub{font-size:.8rem;color:#5a7090;font-weight:300;display:block;margin-top:.2rem}
+.section-label{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.12em;color:#1a3a6b;margin:1.75rem 0 .65rem;text-transform:uppercase;border-bottom:1px solid #dde3ec;padding-bottom:.3rem}
+</style>
+</head>
+<body>
+<nav style="background:#0a1628;padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.15)">
+  <a href="https://veterancareerpath.com" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" style="width:36px;height:36px;object-fit:contain" alt="Veteran Career Path">
+    <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;color:#f0c040">Veteran Career Path</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap" class="nav-links">
+    <a href="https://veterancareerpath.com/veteran-career-test.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Career Test</a>
+    <a href="https://veterancareerpath.com/mos-career-translator.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">MOS Translator</a>
+    <a href="https://veterancareerpath.com/training.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Training</a>
+    <a href="https://veterancareerpath.com/army-mos-careers.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">MOS Guides</a>
+    <a href="https://veterancareerpath.com/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.82rem;padding:.45rem 1rem;border-radius:6px;text-decoration:none">Launch App</a>
+  </div>
+  <button class="hamburger" id="hamburger-btn" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="https://veterancareerpath.com/">Home</a>
+  <a href="https://veterancareerpath.com/veteran-career-test.html">Career Test</a>
+  <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
+  <a href="https://veterancareerpath.com/training.html">Training</a>
+  <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Guides</a>
+  <a href="https://veterancareerpath.com/dd214-decoder.html">DD-214 Decoder</a>
+  <a href="https://veterancareerpath.com/va-benefits-checklist.html">VA Benefits Checklist</a>
+  <a href="https://veterancareerpath.com/va-disability-benefits-calculator.html">Disability Calculator</a>
+  <a href="https://veterancareerpath.com/vre-chapter31-guide.html">VR&amp;E Guide</a>
+  <a href="https://veterancareerpath.com/app.html" class="mobile-cta">Launch App</a>
+</div>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="badge">&#128196; Transition Tool</div>
+    <h1>DD-214 <span>Decoder</span></h1>
+    <p class="hero-sub">Every field on your DD-214 explained in plain English - what it means for VA benefits, federal employment, and your civilian career.</p>
+    <a href="https://veterancareerpath.com/mos-career-translator.html" class="btn-hero">Use the MOS Translator</a>
+  </div>
+</section>
+<div class="content">
+
+<p>Your DD-214 is the single most important document you carry out of the military. Every civilian employer, VA office, federal agency, and VSO will ask for it. Most veterans don't fully understand what's on it or how to use it effectively.</p>
+
+<div class="callout"><div class="callout-label">Most Common Mistake</div><p>Veterans submit their DD-214 to employers without understanding what it says. Know your document before you hand it to anyone.</p></div>
+
+<h2>Field-by-Field Breakdown</h2>
+
+<h3>Block 4a/4b - Grade, Rate, Rank and Pay Grade</h3>
+<p>Your rank at separation. Always translate this on civilian resumes. E-7 becomes "Sergeant First Class - led teams of 20-40 personnel." A Sergeant Major managed 100-200+ personnel with multi-million dollar equipment accountability. Quantify it explicitly.</p>
+
+<h3>Block 11 - Primary Specialty (MOS/Rate/AFSC)</h3>
+<p>The field civilians will try to research but often can't understand. Supplement every application with a civilian translation. Use our <a href="https://veterancareerpath.com/mos-career-translator.html" style="color:#1a3a6b;font-weight:600">MOS Translator</a> to generate the equivalent.</p>
+
+<h3>Block 12 - Record of Service</h3>
+<p>Net active service, total service. Most VA benefits require 24 months of continuous active service for post-9/11 era veterans. Civilian employers focus on total years of service.</p>
+
+<h3>Block 13 - Decorations, Medals and Awards</h3>
+<p>Translate every award. Army Commendation Medal means formally recognized by senior command for superior performance. Combat Infantryman Badge means performed under direct enemy fire. Purple Heart means wounded in combat - you choose whether to include this on civilian applications.</p>
+
+<div class="alert"><p><strong>Federal hiring tip:</strong> Purple Heart recipients receive 10-point veterans preference regardless of disability rating. List all awards on federal applications - it matters.</p></div>
+
+<h3>Block 14 - Military Education</h3>
+<p>Heavily underutilized. Military schools have civilian credit equivalencies through ACE (American Council on Education). Warrior Leader Course, Advanced NCO Course, and officer professional military education all carry college credit recommendations. Check the ACE Military Guide for your specific schools.</p>
+
+<h3>Block 23/24 - Type and Character of Separation</h3>
+<p>The most critical fields for VA benefits and federal employment. "Honorable" opens all doors. "General Under Honorable Conditions" qualifies for most but not all VA benefits. If you received anything other than Honorable and believe it was unjust, a character upgrade is possible through the Discharge Review Board - thousands of veterans have successfully upgraded their discharge.</p>
+
+<h3>Block 26 - Separation Code</h3>
+<p>A letter-number code explaining the specific reason for separation. Standard end-of-service codes (JBK, JCC, LBK) are unremarkable. If yours is non-standard, research it before federal applications - certain codes flag in background investigations.</p>
+
+<h3>Block 28 - Narrative Reason for Separation</h3>
+<p>"Completion of Required Active Service" is the cleanest outcome. Disability-related separations here actually support VA claims. Research your specific code if anything other than standard applies.</p>
+
+<div style="text-align:center;margin:2rem 0;padding:1rem 0;border-top:1px solid #eee;border-bottom:1px solid #eee">
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4999040528510137" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+</div>
+
+<h2>What Civilian Employers Actually Look At</h2>
+<div class="card-grid">
+  <div class="card"><div class="card-title">Block 24 - Character of Service</div><p>"Honorable" is what HR departments verify first. This single field opens or closes civilian employment doors.</p></div>
+  <div class="card"><div class="card-title">Block 12 - Years of Service</div><p>Total active service. Each year above 4 signals commitment and stability to civilian employers unfamiliar with military culture.</p></div>
+  <div class="card"><div class="card-title">Block 11 - MOS/Rate/AFSC</div><p>Have the civilian translation ready. Never assume an employer will research what your MOS means.</p></div>
+  <div class="card"><div class="card-title">Block 13 - Awards</div><p>Leadership awards (MSM, ARCOM, NAM) signal recognized performance. Translate every one into civilian language on your resume.</p></div>
+</div>
+
+<h2>Using Your DD-214 for Federal Employment</h2>
+<p>Veterans preference gives eligible veterans a significant advantage in federal hiring. Five-point preference requires an honorable discharge after at least 181 days of continuous active service. Ten-point preference requires a service-connected disability of 10%+ or certain awards including the Purple Heart. Always apply with the correct preference - federal agencies are required to honor it, and many hiring managers actively recruit veterans with 10-point preference because it simplifies their hiring process.</p>
+
+<h2>Storing and Replacing Your DD-214</h2>
+<p>Store certified copies in multiple locations - physical and digital. If you need a replacement, request it through the National Archives eVetRecs system at archives.gov/veterans. Allow 2-4 weeks for standard requests; expedited copies are available for urgent VA claims. Minimum recommended: one original, two certified copies, and an encrypted digital backup.</p>
+
+<div class="cta-block">
+  <h3>Ready to Translate Your Experience?</h3>
+  <p>Now that you understand your DD-214, the next step is translating your MOS into civilian career language that employers recognize.</p>
+  <a href="https://veterancareerpath.com/mos-career-translator.html" class="btn-hero" style="text-decoration:none">Use the MOS Translator Free</a>
+</div>
+</div>
+<footer style="background:#0d1f3c;padding:2.5rem 6%;margin-top:3rem">
+  <div style="max-width:1000px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1.5rem;margin-bottom:2rem">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem">Transition Tools</div>
+        <a href="https://veterancareerpath.com/dd214-decoder.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">DD-214 Decoder</a>
+        <a href="https://veterancareerpath.com/va-benefits-checklist.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">VA Benefits Checklist</a>
+        <a href="https://veterancareerpath.com/skillbridge-program-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">SkillBridge Guide</a>
+        <a href="https://veterancareerpath.com/tap-transition-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">TAP GPS Supplement</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem">Disability Resources</div>
+        <a href="https://veterancareerpath.com/va-disability-benefits-calculator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Disability Benefits Calculator</a>
+        <a href="https://veterancareerpath.com/veteran-ada-accommodations.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">ADA Accommodations Guide</a>
+        <a href="https://veterancareerpath.com/remote-careers-disabled-veterans.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Remote Careers by MOS</a>
+        <a href="https://veterancareerpath.com/vre-chapter31-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">VR&amp;E Chapter 31 Guide</a>
+        <a href="https://veterancareerpath.com/va-disability-rating-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Disability Rating Guide</a>
+        <a href="https://veterancareerpath.com/schedule-a-federal-hiring.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Schedule A Hiring Guide</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem">Quick Reference</div>
+        <a href="https://veterancareerpath.com/veteran-action-verbs.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Action Verbs Guide</a>
+        <a href="https://veterancareerpath.com/veteran-hiring-companies.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Top 50 Companies</a>
+        <a href="https://veterancareerpath.com/security-clearance-salary.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Clearance Salary</a>
+        <a href="https://veterancareerpath.com/gi-bill-school-comparison.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">GI Bill Schools</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem">Company</div>
+        <a href="https://veterancareerpath.com" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Home</a>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Launch App</a>
+        <a href="https://veterancareerpath.com/contact.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Contact</a>
+        <a href="https://veterancareerpath.com/privacy-policy.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Privacy Policy</a>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:1.25rem;text-align:center;font-size:.73rem;color:rgba(255,255,255,.25)">Veteran Career Path &bull; Built by a veteran, for veterans &bull; &copy; 2026 &bull; Not affiliated with any U.S. government agency</div>
+  </div>
+</footer>
+<script>
+(function(){
+  var b=document.getElementById("hamburger-btn"),m=document.getElementById("mobile-menu");
+  if(!b||!m)return;
+  b.addEventListener("click",function(){b.classList.toggle("open");m.classList.toggle("open");});
+  m.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){b.classList.remove("open");m.classList.remove("open");});});
+  document.addEventListener("click",function(e){if(!b.contains(e.target)&&!m.contains(e.target)){b.classList.remove("open");m.classList.remove("open");}});
+})();
+</script>
+</body>
+</html>

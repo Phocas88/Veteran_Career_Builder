@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veteran Job Application Tracker - Track Every Application | Veteran Career Path</title>
+<meta name="description" content="Track all your veteran job applications in one place. Stage tracking, notes, contact info, and CSV export. Saves automatically in your browser.">
+<meta name="keywords" content="veteran job application tracker, military job search tracker, veteran job hunt tracker, job application organizer veteran">
+<link rel="canonical" href="https://veterancareerpath.com/tools-job-tracker.html">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,sans-serif;background:#0a1628;color:#fff;min-height:100vh;line-height:1.6}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mmenu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;max-height:85vh;overflow-y:auto}
+.mmenu.open{display:flex}
+.mmenu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;padding:.75rem 6%;border-bottom:1px solid rgba(255,255,255,.05)}
+.mcta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e !important;font-weight:700;text-align:center;margin:.75rem 1.5rem;border-radius:8px;padding:.75rem !important}
+@media(max-width:768px){.hamburger{display:flex}.nav-links{display:none !important}}
+.tool-wrap{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+.tool-hero{text-align:center;padding:2.5rem 1.5rem 1.5rem;background:linear-gradient(160deg,#0a1628,#1a3a6b 60%,#1a5c9a);position:relative;overflow:hidden}
+.tool-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,.1),transparent 70%)}
+.tool-hero-inner{position:relative;max-width:700px;margin:0 auto}
+.tbadge{display:inline-block;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:.25rem .85rem;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#c9a84c;margin-bottom:.75rem}
+.tool-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.08em;color:#fff;margin-bottom:.5rem;line-height:1.1}
+.tool-hero h1 span{color:#f0c040}
+.tool-hero p{font-size:.9rem;color:rgba(255,255,255,.6);max-width:550px;margin:0 auto;font-weight:300;line-height:1.7}
+.tool-tabs{display:flex;gap:.5rem;background:rgba(255,255,255,.04);border-radius:10px;padding:.4rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.tool-tab{padding:.5rem 1rem;border-radius:7px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.5);transition:all .15s;font-family:inherit}
+.tool-tab.active{background:rgba(255,255,255,.1);color:#fff}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:.35rem;letter-spacing:.05em;text-transform:uppercase}
+input[type=text],input[type=date],select,textarea{width:100%;padding:.65rem .9rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:.88rem;font-family:inherit;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:rgba(201,168,76,.5)}
+textarea{resize:vertical;min-height:100px}
+select option{background:#1a2a4a;color:#fff}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.5rem;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.btn-gold{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,150,10,.3)}
+.btn-blue{background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff}
+.btn-blue:hover{transform:translateY(-1px)}
+.btn-green{background:linear-gradient(135deg,#1a7a40,#22a855);color:#fff}
+.btn-green:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none !important}
+.result-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.25rem 1.5rem;margin-top:1.25rem;display:none}
+.result-box.show{display:block}
+.result-box h3{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.75rem}
+.result-text{font-size:.88rem;line-height:1.8;color:rgba(255,255,255,.85);white-space:pre-wrap}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.card-tool{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.25rem;margin-bottom:.75rem}
+.paywall{background:linear-gradient(135deg,rgba(200,150,10,.1),rgba(200,150,10,.05));border:1px solid rgba(200,150,10,.3);border-radius:12px;padding:1.5rem;text-align:center;margin-top:1.25rem}
+.paywall h3{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem}
+.paywall p{font-size:.85rem;color:rgba(255,255,255,.6);margin-bottom:1rem;font-weight:300}
+.tip{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:.75rem 1rem;font-size:.82rem;color:rgba(255,255,255,.7);margin-bottom:1rem;line-height:1.6}
+.tip strong{color:#f0c040}
+@media(max-width:600px){.tool-wrap{padding:1.25rem 1rem}}
+</style>
+</head>
+<body>
+<nav style="background:#0a1628;padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.15)">
+  <a href="https://veterancareerpath.com" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" style="width:36px;height:36px;object-fit:contain" alt="Veteran Career Path">
+    <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;color:#f0c040">Veteran Career Path</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap" class="nav-links">
+    <a href="https://veterancareerpath.com/tools-job-match.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Job Match</a>
+    <a href="https://veterancareerpath.com/tools-interview-simulator.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Interview Sim</a>
+    <a href="https://veterancareerpath.com/tools-linkedin-builder.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">LinkedIn</a>
+    <a href="https://veterancareerpath.com/tools-salary-negotiator.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Salary Coach</a>
+    <a href="https://veterancareerpath.com/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.82rem;padding:.45rem 1rem;border-radius:6px;text-decoration:none">Full App</a>
+  </div>
+  <button class="hamburger" id="hbtn" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mmenu" id="mmenu">
+  <a href="https://veterancareerpath.com/">Home</a>
+  <a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
+  <a href="https://veterancareerpath.com/tools-interview-simulator.html">Interview Simulator</a>
+  <a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Builder</a>
+  <a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Coach</a>
+  <a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume</a>
+  <a href="https://veterancareerpath.com/tools-job-tracker.html">Job Tracker</a>
+  <a href="https://veterancareerpath.com/veteran-career-test.html">Career Test</a>
+  <a href="https://veterancareerpath.com/app.html" class="mcta">Full App</a>
+</div>
+<section class="tool-hero">
+  <div class="tool-hero-inner">
+    <div class="tbadge">&#128203; Career Tool</div>
+    <h1>Job Application <span>Tracker</span></h1>
+    <p>Track every application, stage, contact, and note in one place. The average veteran job search involves 30-80 applications - don't lose track of opportunities.</p>
+  </div>
+</section>
+<div class="tool-wrap">
+
+<div class="tip"><strong>Track every application in one place.</strong> The average veteran job search involves 30-80 applications. Without a tracker, follow-up opportunities and patterns get lost. All data saves locally in your browser.</div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem">
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.08em;color:#f0c040" id="tracker-count">0 Applications Tracked</div>
+  <button class="btn btn-gold" onclick="showAddForm()">+ Add Application</button>
+</div>
+
+<div id="add-form" style="display:none" class="card-tool">
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.75rem">New Application</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+    <div class="field"><label>Company</label>
+      <input type="text" id="new-company" placeholder="Company name">
+    </div>
+    <div class="field"><label>Job Title</label>
+      <input type="text" id="new-role" placeholder="Job title">
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+    <div class="field"><label>Stage</label>
+      <select id="new-stage">
+        <option>Applied</option><option>Phone Screen</option><option>Interview</option>
+        <option>Final Round</option><option>Offer</option><option>Rejected</option><option>Withdrawn</option>
+      </select>
+    </div>
+    <div class="field"><label>Date Applied</label>
+      <input type="date" id="new-date">
+    </div>
+    <div class="field"><label>Salary Range</label>
+      <input type="text" id="new-salary" placeholder="e.g. $75K-$90K">
+    </div>
+  </div>
+  <div class="field"><label>Contact Name / Email</label>
+    <input type="text" id="new-contact" placeholder="Recruiter or hiring manager">
+  </div>
+  <div class="field"><label>Notes</label>
+    <textarea id="new-notes" style="min-height:70px" placeholder="Next steps, impressions, follow-up date..."></textarea>
+  </div>
+  <div style="display:flex;gap:.75rem">
+    <button class="btn btn-gold" onclick="addJob()">Save Application</button>
+    <button class="btn" onclick="hideAddForm()" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)">Cancel</button>
+  </div>
+</div>
+
+<div id="stage-filter" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
+  <button class="btn tool-tab active" onclick="filterStage('all', this)" style="padding:.35rem .8rem;font-size:.78rem">All</button>
+  <button class="btn tool-tab" onclick="filterStage('Applied', this)" style="padding:.35rem .8rem;font-size:.78rem;background:#1a5c9a">Applied</button>
+  <button class="btn tool-tab" onclick="filterStage('Phone Screen', this)" style="padding:.35rem .8rem;font-size:.78rem;background:#8a6000">Phone Screen</button>
+  <button class="btn tool-tab" onclick="filterStage('Interview', this)" style="padding:.35rem .8rem;font-size:.78rem;background:#1a3a6b">Interview</button>
+  <button class="btn tool-tab" onclick="filterStage('Offer', this)" style="padding:.35rem .8rem;font-size:.78rem;background:#1a7a40">Offer</button>
+  <button class="btn tool-tab" onclick="filterStage('Rejected', this)" style="padding:.35rem .8pm;font-size:.78rem;background:#8a0000">Rejected</button>
+</div>
+
+<div id="jobs-list"></div>
+
+<div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08)">
+  <div style="font-size:.72rem;color:rgba(255,255,255,.3);margin-bottom:.5rem">All data is stored locally in your browser. It will persist across sessions on this device.</div>
+  <button onclick="exportCSV()" style="background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);border-radius:6px;padding:.3rem .75rem;font-size:.75rem;cursor:pointer;font-family:inherit">Export to CSV</button>
+</div>
+</div>
+<footer style="background:#0d1f3c;padding:2rem 6%;margin-top:2rem">
+  <div style="max-width:900px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.25rem;margin-bottom:1.5rem">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.5rem">Career Tools</div>
+        <a href="https://veterancareerpath.com/tools-job-match.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Job Match Analyzer</a>
+        <a href="https://veterancareerpath.com/tools-interview-simulator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Interview Simulator</a>
+        <a href="https://veterancareerpath.com/tools-linkedin-builder.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">LinkedIn Builder</a>
+        <a href="https://veterancareerpath.com/tools-salary-negotiator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Salary Negotiation</a>
+        <a href="https://veterancareerpath.com/tools-federal-resume.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Federal Resume</a>
+        <a href="https://veterancareerpath.com/tools-job-tracker.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Job Tracker</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.5rem">Resources</div>
+        <a href="https://veterancareerpath.com/veteran-career-test.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Career Assessment</a>
+        <a href="https://veterancareerpath.com/mos-career-translator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">MOS Translator</a>
+        <a href="https://veterancareerpath.com/dd214-decoder.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">DD-214 Decoder</a>
+        <a href="https://veterancareerpath.com/va-benefits-checklist.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">VA Benefits Checklist</a>
+        <a href="https://veterancareerpath.com/veteran-certification-roadmap.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Cert Roadmap</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.5rem">Disability Resources</div>
+        <a href="https://veterancareerpath.com/va-disability-benefits-calculator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Disability Calculator</a>
+        <a href="https://veterancareerpath.com/vre-chapter31-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">VR&amp;E Chapter 31</a>
+        <a href="https://veterancareerpath.com/schedule-a-federal-hiring.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Schedule A Hiring</a>
+        <a href="https://veterancareerpath.com/veteran-mental-health-resources.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Mental Health Help</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.5rem">Company</div>
+        <a href="https://veterancareerpath.com" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Home</a>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Launch Full App</a>
+        <a href="https://veterancareerpath.com/contact.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Contact</a>
+        <a href="https://veterancareerpath.com/privacy-policy.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Privacy</a>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:1rem;text-align:center;font-size:.72rem;color:rgba(255,255,255,.25)">Veteran Career Path &bull; Built by a veteran, for veterans &bull; &copy; 2026</div>
+  </div>
+</footer>
+<script>
+(function(){
+  var b=document.getElementById("hbtn"),m=document.getElementById("mmenu");
+  if(!b||!m)return;
+  b.addEventListener("click",function(){b.classList.toggle("open");m.classList.toggle("open");});
+  m.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){b.classList.remove("open");m.classList.remove("open");});});
+  document.addEventListener("click",function(e){if(!b.contains(e.target)&&!m.contains(e.target)){b.classList.remove("open");m.classList.remove("open");}});
+})();
+</script>
+<script>
+const PROXY = "https://vcp-proxy.vercel.app/api/claude";
+
+async function askClaude(prompt, system, btnId, resultId, resultTitle) {
+  const btn = document.getElementById(btnId);
+  const box = document.getElementById(resultId);
+  if(!btn || !box) return;
+  
+  const origHTML = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating...';
+  
+  try {
+    const res = await fetch(PROXY, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 2000,
+        system: system || "You are a veteran career coach. Be direct, specific, and actionable.",
+        messages: [{role: "user", content: prompt}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || "Error generating response. Please try again.";
+    
+    box.querySelector('.result-text').textContent = text;
+    if(resultTitle) box.querySelector('h3').textContent = resultTitle;
+    box.classList.add('show');
+    box.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+  } catch(err) {
+    box.querySelector('.result-text').textContent = "Connection error. Please check your internet and try again.";
+    box.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = origHTML;
+  }
+}
+
+function val(id) { return (document.getElementById(id)||{}).value || ''; }
+function requireFields(ids) {
+  for(var id of ids) {
+    if(!val(id).trim()) {
+      document.getElementById(id).focus();
+      document.getElementById(id).style.borderColor = '#e74c3c';
+      setTimeout(function(){document.getElementById(id).style.borderColor = '';}, 2000);
+      return false;
+    }
+  }
+  return true;
+}
+</script>
+<script>
+const STAGES = ['Applied','Phone Screen','Interview','Final Round','Offer','Rejected','Withdrawn'];
+const COLORS = {Applied:'#1a5c9a','Phone Screen':'#8a6000',Interview:'#1a3a6b','Final Round':'#5a1a9a',Offer:'#1a7a40',Rejected:'#8a0000',Withdrawn:'#5a5a5a'};
+var currentFilter = 'all';
+
+function loadJobs() { try { return JSON.parse(localStorage.getItem('vcp_tracker') || '[]'); } catch(e) { return []; } }
+function saveJobs(jobs) { localStorage.setItem('vcp_tracker', JSON.stringify(jobs)); }
+
+function showAddForm() {
+  document.getElementById('add-form').style.display = 'block';
+  document.getElementById('new-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('new-company').focus();
+}
+function hideAddForm() { document.getElementById('add-form').style.display = 'none'; }
+
+function addJob() {
+  var company = document.getElementById('new-company').value.trim();
+  var role = document.getElementById('new-role').value.trim();
+  if(!company || !role) { alert('Company and job title are required.'); return; }
+  var jobs = loadJobs();
+  jobs.unshift({
+    id: Date.now(),
+    company, role,
+    stage: document.getElementById('new-stage').value,
+    date: document.getElementById('new-date').value,
+    salary: document.getElementById('new-salary').value,
+    contact: document.getElementById('new-contact').value,
+    notes: document.getElementById('new-notes').value,
+    created: new Date().toISOString()
+  });
+  saveJobs(jobs);
+  hideAddForm();
+  ['new-company','new-role','new-salary','new-contact','new-notes'].forEach(function(id){ document.getElementById(id).value = ''; });
+  render();
+}
+
+function updateStage(id, stage) {
+  var jobs = loadJobs().map(function(j){ return j.id == id ? {...j, stage} : j; });
+  saveJobs(jobs);
+  render();
+}
+
+function deleteJob(id) {
+  if(!confirm('Remove this application?')) return;
+  saveJobs(loadJobs().filter(function(j){ return j.id != id; }));
+  render();
+}
+
+function filterStage(stage, btn) {
+  currentFilter = stage;
+  document.querySelectorAll('#stage-filter .tool-tab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  render();
+}
+
+function render() {
+  var jobs = loadJobs();
+  var filtered = currentFilter === 'all' ? jobs : jobs.filter(function(j){ return j.stage === currentFilter; });
+  document.getElementById('tracker-count').textContent = jobs.length + ' Application' + (jobs.length !== 1 ? 's' : '') + ' Tracked';
+  
+  var list = document.getElementById('jobs-list');
+  if(filtered.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,.3);font-size:.88rem">' + (jobs.length === 0 ? 'No applications yet. Add your first one above.' : 'No applications in this stage.') + '</div>';
+    return;
+  }
+  
+  list.innerHTML = filtered.map(function(j) {
+    var color = COLORS[j.stage] || '#333';
+    return '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-left:3px solid ' + color + ';border-radius:10px;padding:1rem 1.1rem;margin-bottom:.65rem">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem">' +
+        '<div style="flex:1">' +
+          '<div style="font-weight:700;font-size:.95rem;color:#fff;margin-bottom:.2rem">' + j.company + '</div>' +
+          '<div style="font-size:.85rem;color:rgba(255,255,255,.6)">' + j.role + (j.salary ? ' &bull; ' + j.salary : '') + '</div>' +
+          (j.date ? '<div style="font-size:.75rem;color:rgba(255,255,255,.35);margin-top:.2rem">Applied ' + j.date + (j.contact ? ' &bull; ' + j.contact : '') + '</div>' : '') +
+          (j.notes ? '<div style="font-size:.78rem;color:rgba(255,255,255,.45);margin-top:.4rem;border-top:1px solid rgba(255,255,255,.06);padding-top:.4rem">' + j.notes + '</div>' : '') +
+        '</div>' +
+        '<div style="display:flex;gap:.5rem;align-items:center;flex-shrink:0">' +
+          '<select onchange="updateStage(' + j.id + ', this.value)" style="padding:.3rem .5rem;background:' + color + ';border:none;border-radius:6px;color:#fff;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit">' +
+          STAGES.map(function(s){ return '<option value="' + s + '"' + (s === j.stage ? ' selected' : '') + '>' + s + '</option>'; }).join('') +
+          '</select>' +
+          '<button onclick="deleteJob(' + j.id + ')" style="background:transparent;border:none;color:rgba(255,255,255,.25);cursor:pointer;font-size:1.1rem;padding:.1rem .3rem" title="Remove">&#10005;</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function exportCSV() {
+  var jobs = loadJobs();
+  if(!jobs.length) { alert('No applications to export.'); return; }
+  var csv = 'Company,Role,Stage,Date Applied,Salary,Contact,Notes\n';
+  jobs.forEach(function(j){
+    csv += [j.company,j.role,j.stage,j.date,j.salary,j.contact,j.notes].map(function(v){ return '"' + (v||'').replace(/"/g,'""') + '"'; }).join(',') + '\n';
+  });
+  var a = document.createElement('a');
+  a.href = 'data:text/csv,' + encodeURIComponent(csv);
+  a.download = 'job-applications.csv';
+  a.click();
+}
+
+render();
+</script>
+</body>
+</html>

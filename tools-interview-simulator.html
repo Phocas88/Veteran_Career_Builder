@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Interview Simulator for Veterans - AI Practice Questions | Veteran Career Path</title>
+<meta name="description" content="Realistic interview questions for any role based on your military background. Paste a job URL for role-specific prep. Practice answers and get AI coaching.">
+<meta name="keywords" content="veteran interview simulator AI, military interview practice, veteran interview questions job specific">
+<link rel="canonical" href="https://veterancareerpath.com/tools-interview-simulator.html">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,sans-serif;background:#0a1628;color:#fff;min-height:100vh;line-height:1.6}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mmenu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;max-height:85vh;overflow-y:auto}
+.mmenu.open{display:flex}
+.mmenu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;padding:.75rem 6%;border-bottom:1px solid rgba(255,255,255,.05)}
+@media(max-width:768px){.hamburger{display:flex}.nav-links{display:none !important}}
+.tool-hero{background:linear-gradient(160deg,#0a1628,#1a3a6b 60%,#1a5c9a);padding:2.5rem 6%;text-align:center;position:relative;overflow:hidden}
+.tool-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,.1),transparent 70%)}
+.tool-hero-inner{position:relative;max-width:700px;margin:0 auto}
+.tbadge{display:inline-block;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:.25rem .85rem;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#c9a84c;margin-bottom:.75rem}
+.tool-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.08em;color:#fff;margin-bottom:.5rem;line-height:1.1}
+.tool-hero h1 span{color:#f0c040}
+.tool-hero p{font-size:.9rem;color:rgba(255,255,255,.6);max-width:550px;margin:0 auto;font-weight:300;line-height:1.7}
+.tool-wrap{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+.profile-banner{background:rgba(26,122,64,.1);border:1px solid rgba(26,122,64,.2);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.profile-banner .pb-icon{font-size:1.25rem}
+.profile-banner .pb-text{font-size:.82rem;color:rgba(255,255,255,.7);font-weight:300}
+.profile-banner .pb-name{font-weight:700;color:#90e8b0}
+.card-tool{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.section-head{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.75rem}
+.field{margin-bottom:.85rem}
+.field label{display:block;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:.3rem;letter-spacing:.08em;text-transform:uppercase}
+input[type=text],input[type=url],input[type=date],select,textarea{width:100%;padding:.6rem .85rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:.87rem;font-family:inherit;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:rgba(201,168,76,.5)}
+textarea{resize:vertical}
+select option{background:#1a2a4a;color:#fff}
+.autofilled{border-color:rgba(26,122,64,.4) !important;background:rgba(26,122,64,.05) !important}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.5rem;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s;text-decoration:none}
+.btn-gold{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,150,10,.3)}
+.btn-blue{background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff}
+.btn-green{background:linear-gradient(135deg,#1a7a40,#22a855);color:#fff}
+.btn-navy{background:linear-gradient(135deg,#2a2a6b,#3a3a9b);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none !important}
+.result-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.25rem 1.5rem;margin-top:1.25rem;display:none}
+.result-box.show{display:block}
+.result-box .result-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.75rem}
+.result-text{font-size:.88rem;line-height:1.8;color:rgba(255,255,255,.85);white-space:pre-wrap}
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tip{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-left:3px solid #c9a84c;border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:rgba(255,255,255,.7);margin-bottom:1.25rem;line-height:1.6}
+.tip strong{color:#f0c040}
+@media print{nav,.mmenu,.hamburger,footer,.tool-hero,#tool-actions{display:none !important}body{background:#fff;color:#000}.result-text{color:#000;background:#fff}.result-box{border:none;background:#fff}}
+@media(max-width:600px){.tool-wrap{padding:1.25rem 1rem}}
+</style>
+</head>
+<body>
+<nav style="background:#0a1628;padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.15)">
+  <a href="https://veterancareerpath.com" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" style="width:36px;height:36px;object-fit:contain" alt="Veteran Career Path">
+    <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;color:#f0c040">Veteran Career Path</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap" class="nav-links">
+    <a href="https://veterancareerpath.com/tools-job-match.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Job Match</a>
+    <a href="https://veterancareerpath.com/tools-interview-simulator.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Interview</a>
+    <a href="https://veterancareerpath.com/tools-linkedin-builder.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">LinkedIn</a>
+    <a href="https://veterancareerpath.com/tools-salary-negotiator.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Salary</a>
+    <a href="https://veterancareerpath.com/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.82rem;padding:.45rem 1rem;border-radius:6px;text-decoration:none">Full App &#8594;</a>
+  </div>
+  <button class="hamburger" id="hbtn" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mmenu" id="mmenu">
+  <a href="https://veterancareerpath.com/">Home</a>
+  <a href="https://veterancareerpath.com/app.html">&#9733; Full App (All Features)</a>
+  <a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
+  <a href="https://veterancareerpath.com/tools-interview-simulator.html">Interview Simulator</a>
+  <a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Builder</a>
+  <a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Coach</a>
+  <a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume</a>
+  <a href="https://veterancareerpath.com/tools-cert-advisor.html">Cert Advisor</a>
+  <a href="https://veterancareerpath.com/veteran-career-test.html">Career Assessment</a>
+  <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
+</div>
+<section class="tool-hero">
+  <div class="tool-hero-inner">
+    <div class="tbadge">&#127908; Subscriber Tool</div>
+    <h1>Interview <span>Simulator</span></h1>
+    <p>Paste a job posting URL and your military profile auto-loads. Get 10 realistic questions specific to that role with answer frameworks using your military background. Practice mode with AI feedback.</p>
+  </div>
+</section>
+<div class="tool-wrap">
+  <div id="login-wall" style="display:none;text-align:center;padding:3rem 1.5rem;max-width:500px;margin:0 auto">
+  <div style="font-size:3rem;margin-bottom:1rem">&#128274;</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem">Subscriber Tool</div>
+  <p style="color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:1.5rem;font-weight:300;line-height:1.7">This tool is included with your Veteran Career Path subscription. Sign in to access it - your profile data will pre-fill the form automatically.</p>
+  <a href="https://veterancareerpath.com/app.html" style="display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none;margin-bottom:.75rem">Sign In to App</a>
+  <div style="font-size:.78rem;color:rgba(255,255,255,.35);margin-top:.75rem">Don't have a subscription? <a href="https://veterancareerpath.com/app.html" style="color:#c0d8f0">Start free trial - from $4.99</a></div>
+</div>
+  <div id="paywall-wall" style="display:none;text-align:center;padding:3rem 1.5rem;max-width:500px;margin:0 auto">
+  <div style="font-size:3rem;margin-bottom:1rem">&#9889;</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem">Subscription Required</div>
+  <p style="color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:1.5rem;font-weight:300;line-height:1.7">This AI-powered tool is included with a Veteran Career Path subscription. Your profile data auto-fills the form - no re-entering your military background.</p>
+  <a href="https://veterancareerpath.com/app.html" style="display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none">Start Free Trial - from $4.99</a>
+  <div style="font-size:.78rem;color:rgba(255,255,255,.35);margin-top:.75rem">Already subscribed? <a href="https://veterancareerpath.com/app.html" style="color:#c0d8f0">Sign in to the app</a> to access this tool</div>
+</div>
+  <div id="tool-content" style="display:none">
+    <div id="profile-banner" class="profile-banner" style="display:none">
+      <span class="pb-icon">&#9989;</span>
+      <div class="pb-text">Profile loaded: <span class="pb-name" id="pb-name"></span> &bull; <a href="https://veterancareerpath.com/app.html" style="color:#c0d8f0;font-size:.78rem">Edit profile in app</a></div>
+    </div>
+    
+<div class="tip"><strong>Profile auto-loaded.</strong> Enter a job title or paste a job posting URL - the AI generates realistic questions specific to that role and your military background, plus strong answer frameworks.</div>
+<div class="card-tool">
+  <div class="section-head">Interview Setup</div>
+  <div class="field"><label>Target Job Title</label>
+    <input id="int-role" type="text" placeholder="e.g. Operations Manager, SOC Analyst, Supply Chain Manager"></div>
+  <div class="field"><label>Job Posting URL (optional - AI tailors questions to the specific role)</label>
+    <input id="int-url" type="url" placeholder="https://... paste the job posting URL for role-specific questions"></div>
+  <div class="field"><label>Interview Type</label>
+    <select id="int-type">
+      <option value="balanced mix of behavioral, situational, and technical">Balanced mix (recommended)</option>
+      <option value="behavioral STAR-format questions only">Behavioral only (STAR)</option>
+      <option value="technical and role-specific competency">Technical / competency</option>
+      <option value="leadership, management, and team dynamics">Leadership focus</option>
+      <option value="culture fit, motivation, and transition story">Culture fit / why civilian</option>
+    </select>
+  </div>
+  <button class="btn btn-green" id="int-btn">&#127908; Generate Interview Questions</button>
+</div>
+<div class="result-box" id="int-result">
+  <div class="result-title">Your Interview Prep</div>
+  <div class="result-text"></div>
+  <div id="tool-actions" style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap">
+    <button class="btn btn-gold" onclick="showPractice()" style="font-size:.78rem;padding:.45rem .9rem">Practice an Answer (AI Feedback)</button>
+    <button class="btn btn-blue" onclick="window.print()" style="font-size:.78rem;padding:.45rem .9rem">Print Questions</button>
+  </div>
+</div>
+<div id="practice-box" class="card-tool" style="display:none;margin-top:1rem">
+  <div class="section-head">Practice Your Answer</div>
+  <div class="field"><label>Which question are you practicing?</label>
+    <input id="prac-q" type="text" placeholder="Paste one question from above..."></div>
+  <div class="field"><label>Your Answer</label>
+    <textarea id="prac-a" style="min-height:120px" placeholder="Type your answer here... aim for 1-3 minutes spoken (150-400 words)"></textarea></div>
+  <button class="btn btn-gold" id="prac-btn">&#128172; Get AI Feedback on My Answer</button>
+  <div class="result-box" id="prac-result" style="margin-top:.75rem">
+    <div class="result-title">Answer Feedback</div>
+    <div class="result-text"></div>
+  </div>
+</div>
+  </div>
+</div>
+<footer style="background:#0d1f3c;padding:2rem 6%;margin-top:2rem">
+  <div style="max-width:900px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.25rem;margin-bottom:1.5rem">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.5rem">AI Career Tools</div>
+        <a href="https://veterancareerpath.com/tools-job-match.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Job Match Analyzer</a>
+        <a href="https://veterancareerpath.com/tools-interview-simulator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Interview Simulator</a>
+        <a href="https://veterancareerpath.com/tools-linkedin-builder.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">LinkedIn Builder</a>
+        <a href="https://veterancareerpath.com/tools-salary-negotiator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Salary Coach</a>
+        <a href="https://veterancareerpath.com/tools-federal-resume.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Federal Resume</a>
+        <a href="https://veterancareerpath.com/tools-cert-advisor.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Cert Advisor</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.5rem">Free Resources</div>
+        <a href="https://veterancareerpath.com/veteran-career-test.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Career Assessment</a>
+        <a href="https://veterancareerpath.com/mos-career-translator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">MOS Translator</a>
+        <a href="https://veterancareerpath.com/dd214-decoder.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">DD-214 Decoder</a>
+        <a href="https://veterancareerpath.com/va-benefits-checklist.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">VA Benefits Checklist</a>
+        <a href="https://veterancareerpath.com/veteran-certification-roadmap.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Certification Roadmap</a>
+        <a href="https://veterancareerpath.com/skillbridge-program-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">SkillBridge Guide</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.5rem">Disability Resources</div>
+        <a href="https://veterancareerpath.com/va-disability-benefits-calculator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Disability Calculator</a>
+        <a href="https://veterancareerpath.com/vre-chapter31-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">VR&amp;E Chapter 31</a>
+        <a href="https://veterancareerpath.com/veteran-ada-accommodations.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">ADA Accommodations</a>
+        <a href="https://veterancareerpath.com/schedule-a-federal-hiring.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Schedule A Hiring</a>
+        <a href="https://veterancareerpath.com/veteran-mental-health-resources.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Mental Health Help</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.5rem">Company</div>
+        <a href="https://veterancareerpath.com" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Home</a>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Launch Full App</a>
+        <a href="https://veterancareerpath.com/contact.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Contact</a>
+        <a href="https://veterancareerpath.com/privacy-policy.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.78rem;margin-bottom:.3rem">Privacy Policy</a>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:1rem;text-align:center;font-size:.72rem;color:rgba(255,255,255,.25)">Veteran Career Path &bull; Built by a veteran, for veterans &bull; &copy; 2026</div>
+  </div>
+</footer>
+<script>
+(function(){
+  var b=document.getElementById("hbtn"),m=document.getElementById("mmenu");
+  if(!b||!m)return;
+  b.addEventListener("click",function(){b.classList.toggle("open");m.classList.toggle("open");});
+  m.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){b.classList.remove("open");m.classList.remove("open");});});
+  document.addEventListener("click",function(e){if(!b.contains(e.target)&&!m.contains(e.target)){b.classList.remove("open");m.classList.remove("open");}});
+})();
+</script>
+<script>
+// ── Shared Firebase Auth + Profile Loader for Tool Pages ──────────────────
+// Include this in every tool page before the tool-specific script
+
+const PROXY = "https://vcp-proxy.vercel.app/api/claude";
+const FIREBASE_CONFIG = {
+  apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+  authDomain: "veteran-career-builder.firebaseapp.com",
+  projectId: "veteran-career-builder",
+  storageBucket: "veteran-career-builder.firebasestorage.app",
+  messagingSenderId: "REPLACE_SENDER_ID",
+  appId: "REPLACE_APP_ID"
+};
+
+var currentUser = null;
+var userProfile = null;
+var hasAccess = false;
+
+function initFirebase() {
+  try {
+    if (!firebase.apps || !firebase.apps.length) {
+      firebase.initializeApp(FIREBASE_CONFIG);
+    }
+    var auth = firebase.auth();
+    var db = firebase.firestore();
+
+    auth.onAuthStateChanged(function(user) {
+      currentUser = user;
+      if (user) {
+        // Load profile from Firestore
+        db.collection('profiles').doc(user.uid).get()
+          .then(function(doc) {
+            if (doc.exists) {
+              userProfile = doc.data();
+              // Determine access based on subscription field
+              hasAccess = !!(userProfile.subscriptionStatus === 'active' || 
+                             userProfile.hasAccess || 
+                             userProfile.stripeStatus === 'active');
+            }
+            onProfileLoaded(user, userProfile, hasAccess);
+          })
+          .catch(function() {
+            onProfileLoaded(user, null, false);
+          });
+      } else {
+        showLoginWall();
+      }
+    });
+  } catch(e) {
+    console.warn('Firebase init failed:', e);
+    // Allow tool use without Firebase (graceful degradation)
+    onProfileLoaded(null, null, false);
+  }
+}
+
+function getProfileSummary() {
+  if (!userProfile) return null;
+  var exps = userProfile.milExperiences || [];
+  var personal = userProfile.personal || {};
+  var exp = exps[0] || {};
+  return {
+    name: personal.name || '',
+    email: personal.email || '',
+    branch: exp.branch || '',
+    rank: exp.rank || '',
+    mos: exp.mos || '',
+    mosTitle: exp.mosTitle || '',
+    yearsService: exp.tos || '',
+    duties: exp.duties || '',
+    awards: (exp.awards || []).join(', '),
+    clearance: exp.clearanceLevel || 'None',
+    deployments: exp.deployments || '',
+    education: userProfile.education || '',
+    targetRole: userProfile.targetRole || '',
+    targetIndustry: userProfile.targetIndustry || ''
+  };
+}
+
+function buildPromptContext() {
+  var p = getProfileSummary();
+  if (!p) return "Veteran seeking civilian career transition.";
+  var lines = [];
+  if (p.name) lines.push("Name: " + p.name);
+  if (p.branch) lines.push("Branch: " + p.branch);
+  if (p.rank) lines.push("Rank: " + p.rank);
+  if (p.mos) lines.push("MOS/Rate/AFSC: " + p.mos + (p.mosTitle ? " - " + p.mosTitle : ""));
+  if (p.yearsService) lines.push("Years of Service: " + p.yearsService);
+  if (p.clearance && p.clearance !== 'None') lines.push("Security Clearance: " + p.clearance);
+  if (p.duties) lines.push("Primary Duties: " + p.duties);
+  if (p.awards) lines.push("Awards/Decorations: " + p.awards);
+  if (p.deployments) lines.push("Deployments: " + p.deployments);
+  if (p.education) lines.push("Education: " + p.education);
+  if (p.targetRole) lines.push("Target Civilian Role: " + p.targetRole);
+  return lines.join('\n') || "Veteran seeking civilian career transition.";
+}
+
+function showLoginWall() {
+  var wall = document.getElementById('login-wall');
+  var toolContent = document.getElementById('tool-content');
+  if (wall) wall.style.display = 'block';
+  if (toolContent) toolContent.style.display = 'none';
+}
+
+function showPaywall() {
+  var wall = document.getElementById('paywall-wall');
+  var toolContent = document.getElementById('tool-content');
+  if (wall) wall.style.display = 'block';
+  if (toolContent) toolContent.style.display = 'none';
+}
+
+async function callClaude(prompt, systemPrompt, options) {
+  options = options || {};
+  var btn = options.btn ? document.getElementById(options.btn) : null;
+  var resultEl = options.result ? document.getElementById(options.result) : null;
+  
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Generating...'; }
+  
+  try {
+    var body = {
+      model: "claude-sonnet-4-20250514",
+      max_tokens: options.maxTokens || 2500,
+      messages: [{ role: "user", content: prompt }]
+    };
+    if (systemPrompt) body.system = systemPrompt;
+    
+    var res = await fetch(PROXY, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    var data = await res.json();
+    var text = data.content && data.content[0] ? data.content[0].text : "Error generating response.";
+    
+    if (resultEl) {
+      resultEl.querySelector('.result-text').textContent = text;
+      resultEl.classList.add('show');
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    return text;
+  } catch(e) {
+    var msg = "Connection error. Please check your internet and try again.";
+    if (resultEl) {
+      resultEl.querySelector('.result-text').textContent = msg;
+      resultEl.classList.add('show');
+    }
+    return null;
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = options.btnLabel || 'Generate';
+    }
+  }
+}
+
+function val(id) {
+  var el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+// Fetch job posting content via Claude (since we can't fetch URLs directly from browser)
+async function fetchJobPosting(url) {
+  if (!url) return null;
+  var res = await callClaude(
+    "Please fetch and return the full text content of this job posting URL: " + url + "\n\nReturn ONLY the job posting text - title, company, description, requirements, qualifications. No commentary.",
+    "You are a web scraper. Return only the raw text content of the URL provided.",
+    { maxTokens: 2000 }
+  );
+  return res;
+}
+
+// Auto-fill profile fields if they exist on page
+function autofillFromProfile() {
+  var p = getProfileSummary();
+  if (!p) return;
+  var fieldMap = {
+    'af-branch': p.branch,
+    'af-rank': p.rank,
+    'af-mos': p.mos + (p.mosTitle ? ' - ' + p.mosTitle : ''),
+    'af-years': p.yearsService,
+    'af-clearance': p.clearance,
+    'af-duties': p.duties,
+    'af-awards': p.awards,
+    'af-target': p.targetRole,
+    'af-name': p.name
+  };
+  Object.keys(fieldMap).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && fieldMap[id]) el.value = fieldMap[id];
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  initFirebase();
+});
+
+
+function onProfileLoaded(user, profile, access) {
+  if (!user) { showLoginWall(); return; }
+  if (!access) { showPaywall(); return; }
+  
+  // Show tool content
+  document.getElementById('tool-content').style.display = 'block';
+  
+  // Show profile banner
+  var p = getProfileSummary();
+  if (p && (p.name || p.branch)) {
+    var banner = document.getElementById('profile-banner');
+    var nameEl = document.getElementById('pb-name');
+    if (banner) banner.style.display = 'flex';
+    if (nameEl) nameEl.textContent = (p.name || 'Veteran') + (p.branch ? ' | ' + p.branch : '') + (p.rank ? ' ' + p.rank : '');
+  }
+  
+  // Auto-fill fields
+  autofillFromProfile();
+  
+  // Call page-specific init if defined
+  if (typeof pageInit === 'function') pageInit(user, profile, access);
+}
+</script>
+<script>
+var lastRole = '';
+
+document.getElementById('int-btn').addEventListener('click', async function() {
+  var role = val('int-role');
+  var url = val('int-url');
+  var type = val('int-type');
+  if (!role) { alert('Please enter a target job title.'); document.getElementById('int-role').focus(); return; }
+  
+  lastRole = role;
+  var profileContext = buildPromptContext();
+  var jobContext = '';
+  
+  if (url) {
+    this.innerHTML = '<span class="spinner"></span> Reading job posting...';
+    this.disabled = true;
+    jobContext = await callClaude(
+      'Retrieve the key requirements and responsibilities from: ' + url + '\nReturn only: job title, top 5 requirements, top 5 responsibilities.',
+      'Extract only the key requirements and responsibilities from the job posting URL.',
+      { maxTokens: 800 }
+    );
+    this.disabled = false;
+  }
+  
+  var prompt = 'VETERAN PROFILE:\n' + profileContext;
+  prompt += '\nTARGET ROLE: ' + role;
+  if (jobContext) prompt += '\nJOB POSTING CONTEXT:\n' + jobContext;
+  prompt += '\nINTERVIEW TYPE: ' + type;
+  prompt += `\n\nGenerate 10 realistic interview questions. For each:
+
+Q[N]: [The question - make it realistic, not generic]
+WHY THEY ASK: [What the interviewer evaluates - 1 sentence]
+STRONG ANSWER FRAMEWORK: [How to structure using this veteran's specific military background - reference their MOS and experience directly]
+
+Questions should get progressively harder. Include the type requested. Make them questions actual hiring managers ask for this specific role.`;
+
+  await callClaude(prompt,
+    'You are an experienced hiring manager for this role who has interviewed many veterans. Generate realistic questions actual interviewers ask. Reference the veteran's specific military background in answer frameworks.',
+    { btn: 'int-btn', result: 'int-result', btnLabel: '&#127908; Generate Interview Questions', maxTokens: 2500 });
+  
+  document.getElementById('practice-box').style.display = 'block';
+});
+
+function showPractice() {
+  document.getElementById('practice-box').style.display = 'block';
+  document.getElementById('prac-q').focus();
+}
+
+document.getElementById('prac-btn').addEventListener('click', async function() {
+  var q = val('prac-q'); var a = val('prac-a');
+  if (!q || !a) { alert('Please enter the question and your answer.'); return; }
+  var profileContext = buildPromptContext();
+  var prompt = 'VETERAN BACKGROUND: ' + profileContext + '\nROLE THEY ARE INTERVIEWING FOR: ' + lastRole + '\n\nQUESTION ASKED: ' + q + '\n\nCANDIDATE ANSWER: ' + a;
+  prompt += '\n\nEvaluate this answer:\nOVERALL: X/10\nWHAT WORKED: [specific]\nWHAT FELL FLAT: [honest critique]\nWHAT THEY WANTED TO HEAR: [key missing elements]\nIMPROVED VERSION: [rewritten using their content]\nONE COACHING POINT: [most important thing to remember]';
+  await callClaude(prompt,
+    'You are an executive interview coach. Be direct and specific. Vague praise is useless. Rewrite their answer using their own content but structured better.',
+    { btn: 'prac-btn', result: 'prac-result', btnLabel: '&#128172; Get AI Feedback', maxTokens: 1500 });
+});
+</script>
+</body>
+</html>

@@ -51,13 +51,13 @@
   <script>
     try {
       const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+        authDomain: "veteran-career-builder.firebaseapp.com",
+        projectId: "veteran-career-builder",
+        storageBucket: "veteran-career-builder.firebasestorage.app",
+        messagingSenderId: "REPLACE_SENDER_ID",
+        appId: "REPLACE_APP_ID"
+      };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -927,6 +927,120 @@ window.BRANCH_QUALS = {
 };
 
 </script>
+
+<script>
+// ── Tool Helper Functions ──────────────────────────────────────────────
+const PROXY = window.PROXY_URL || "https://vcp-proxy.vercel.app/api/claude";
+
+async function callClaude(prompt, systemPrompt) {
+  const r = await fetch(PROXY, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      model:"claude-sonnet-4-20250514",
+      max_tokens:2000,
+      system: systemPrompt || "You are a veteran career coach. Be direct, specific, and actionable. Format responses clearly.",
+      messages:[{role:"user",content:prompt}]
+    })
+  });
+  const d = await r.json();
+  return d.content?.[0]?.text || "Error generating response. Please try again.";
+}
+
+function setLoading(id, loading) {
+  const el = document.getElementById(id);
+  if(el) el.textContent = loading ? "Generating... please wait." : "";
+}
+
+// Job Match Analyzer
+window.runJobMatch = async function() {
+  const posting = document.getElementById("jma-url").value.trim();
+  if(!posting) { alert("Please paste the job posting text."); return; }
+  const profile = buildProfileSummary();
+  setLoading("jma-result", true);
+  const result = await callClaude(
+    "VETERAN PROFILE:\n" + profile + "\n\nJOB POSTING:\n" + posting + "\n\nProvide:\n1. MATCH SCORE (0-100) with brief explanation\n2. YOUR STRENGTHS for this role (3-5 specific points from the veteran's background)\n3. GAPS to address (honest assessment of what's missing)\n4. IF NOT QUITE THERE: Specific 3-6 month action plan to become competitive for this role\n5. SIMILAR ROLES that may be a better current fit",
+    "You are a brutally honest veteran career advisor. Give real scores, not inflated ones. Veterans need accurate information to make good decisions."
+  );
+  document.getElementById("jma-result").textContent = result;
+};
+
+// LinkedIn Profile Builder
+window.runLinkedIn = async function() {
+  const profile = buildProfileSummary();
+  setLoading("li-result", true);
+  const result = await callClaude(
+    "VETERAN PROFILE:\n" + profile + "\n\nGenerate a complete LinkedIn profile:\n\n1. HEADLINE (120 chars max, civilian language, no military jargon)\n2. ABOUT SECTION (2000 chars max, first person, compelling civilian narrative)\n3. EXPERIENCE BULLETS for most recent 2 positions (4-5 bullets each, action verb + metric)\n4. SKILLS to add (top 15 relevant skills)\n5. FEATURED SECTION suggestion",
+    "You are a LinkedIn profile expert for veterans. Translate military experience into compelling civilian professional language. Never use military acronyms without explanation."
+  );
+  document.getElementById("li-result").textContent = result;
+};
+
+// Interview Simulator
+window.runInterview = async function() {
+  const role = document.getElementById("int-role").value.trim();
+  if(!role) { alert("Please enter a target job title."); return; }
+  const profile = buildProfileSummary();
+  const container = document.getElementById("int-questions");
+  container.innerHTML = '<div style="color:rgba(255,255,255,.6);font-size:.85rem">Generating questions...</div>';
+  const result = await callClaude(
+    "VETERAN PROFILE:\n" + profile + "\nTARGET ROLE: " + role + "\n\nGenerate 10 realistic interview questions for this specific role and background. Include:\n- 3 behavioral questions (STAR format expected)\n- 3 situational questions specific to this role\n- 2 technical/competency questions\n- 2 culture/fit questions\n\nFor each question, provide:\n- The question\n- What the interviewer is actually evaluating\n- A strong answer framework using the veteran's military background",
+    "You are a hiring manager who has interviewed hundreds of veterans for civilian roles. Generate realistic questions that actual hiring managers ask."
+  );
+  container.innerHTML = '<div style="font-size:.85rem;line-height:1.8;color:rgba(255,255,255,.85);white-space:pre-wrap">' + result.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+};
+
+// Salary Negotiation Coach
+window.runSalary = async function() {
+  const role = document.getElementById("sal-role").value.trim();
+  const offer = document.getElementById("sal-offer").value.trim();
+  if(!role) { alert("Please enter a target role."); return; }
+  const profile = buildProfileSummary();
+  setLoading("sal-result", true);
+  const result = await callClaude(
+    "VETERAN PROFILE:\n" + profile + "\nTARGET ROLE: " + role + "\nCURRENT OFFER/EXPECTATION: " + (offer||"No offer yet") + "\n\nProvide:\n1. MARKET SALARY RANGE for this role/location (low, mid, high)\n2. VETERAN PREMIUM to add (clearance, leadership, etc.)\n3. YOUR NUMBER to ask for (specific dollar amount with justification)\n4. NEGOTIATION SCRIPT (exact words to say when they ask your number)\n5. COUNTER-OFFER SCRIPT if initial offer is below target\n6. BEYOND BASE SALARY: What else to negotiate (bonus, equity, PTO, remote, signing bonus)\n7. WALK-AWAY NUMBER",
+    "You are a veteran salary negotiation expert. Give specific dollar amounts. Veterans undersell themselves - be aggressive but realistic."
+  );
+  document.getElementById("sal-result").textContent = result;
+};
+
+// Federal Resume Builder
+window.runFedResume = async function() {
+  const gs = document.getElementById("fed-gs").value.trim();
+  const series = document.getElementById("fed-series").value.trim();
+  const profile = buildProfileSummary();
+  setLoading("fed-result", true);
+  const result = await callClaude(
+    "VETERAN PROFILE:\n" + profile + "\nTARGET GS GRADE: " + (gs||"GS-9 to GS-12") + "\nJOB SERIES: " + (series||"General management") + "\n\nGenerate a federal resume section with:\n1. PROFESSIONAL SUMMARY (tailored to federal hiring managers, include veterans preference statement)\n2. WORK EXPERIENCE ENTRY (most recent military position in federal format: Hours per week, supervisor info placeholder, detailed KSA-style bullets)\n3. RELEVANT KSAs addressed in experience bullets\n4. VETERANS PREFERENCE language to include\n5. EDUCATION section format\n6. Reminder of what else to include in a complete federal resume",
+    "You are a federal resume expert who has helped hundreds of veterans get federal jobs. Federal resumes are different from civilian - they need detail, KSAs, and specific language. Output in federal resume format."
+  );
+  document.getElementById("fed-result").textContent = result;
+};
+
+// Build profile summary from app state for tool context
+function buildProfileSummary() {
+  const state = window.__appState || {};
+  const exps = state.experiences || [];
+  const quals = state.quals || {};
+  const profile = state.profile || {};
+  let summary = "";
+  if(profile.name) summary += "Name: " + profile.name + "\n";
+  if(quals.branch) summary += "Branch: " + quals.branch + "\n";
+  if(quals.rank) summary += "Rank: " + quals.rank + "\n";
+  if(quals.mos) summary += "MOS/Rate: " + quals.mos + "\n";
+  if(quals.yearsService) summary += "Years of Service: " + quals.yearsService + "\n";
+  if(quals.clearance) summary += "Security Clearance: " + quals.clearance + "\n";
+  if(quals.education) summary += "Education: " + quals.education + "\n";
+  if(exps.length > 0) {
+    summary += "\nExperience:\n";
+    exps.forEach(function(e) {
+      summary += "- " + (e.rank||"") + " " + (e.branch||"") + ": " + (e.role||"") + " (" + (e.years||"") + " years)\n";
+      if(e.duties) summary += "  Duties: " + e.duties + "\n";
+    });
+  }
+  return summary || "Veteran seeking civilian career transition";
+}
+</script>
 <script type="text/babel" data-presets="react,env">
 const { useState, useEffect, useRef } = React;
     const fbAuth = window.fbAuth;
@@ -1616,7 +1730,7 @@ async function callClaude(prompt, system = "", maxTokens = 2000) {
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 function DatePicker({ value, onChange, placeholder = "Select date" }) {
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState("year"); // year | month
+  const [mode, setMode] = useState("year"); 
   const [selYear, setSelYear] = useState(null);
   const ref = useRef(null);
   const now = new Date();
@@ -1881,7 +1995,7 @@ function newMilExp() {
   return { 
     id:Date.now(), type:"Military Service", branch:"Army", rank:"", mos:"", mosTitle:"", serviceType:"Active Duty",
     unit:"", startDate:"", endDate:"", current:false, tos:"", duties:"",
-    mosRoles:[], // sub-roles held within this MOS
+    mosRoles:[], 
     deployments:"", awards:[], customAward:"",
     clearanceLevel:"None", clearanceStatus:"Active", sciAccess:false, polygraph:"None",
     asi:[], sqi:[], additionalDuties:[], customDuty:"", customAsiCode:"", customAsiDesc:"", customSqiCode:"", customSqiDesc:"",
@@ -2200,6 +2314,12 @@ function CareerTab(props) {
   const {careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,RG,filterCareers,matchesSector,hasAccess,setShowPaywall,skills,personal,careerTestResults,setCareerTestResults,setShowCareerTest,setCareerTestMode,setCareerTestStep,setCareerTestAnswers,setDeepTestStep,setDeepTestAnswers} = props;
   return (<div className={"panel "+(tab===1?"on":"")}>
 
+        <div style={{background:"rgba(201,168,76,.06)",border:"1px solid rgba(201,168,76,.15)",borderRadius:"10px",padding:".75rem 1rem",marginBottom:"1rem",display:"flex",alignItems:"center",gap:".75rem",flexWrap:"wrap"}}>
+          <span style={{fontSize:".78rem",fontWeight:700,color:"var(--gold-light)",whiteSpace:"nowrap"}}>&#128295; AI Tools:</span>
+          {[["&#128269; Job Match","tools-job-match.html"],["&#127908; Interview","tools-interview-simulator.html"],["&#128101; LinkedIn","tools-linkedin-builder.html"],["&#128176; Salary","tools-salary-negotiator.html"],["&#127963; Federal Resume","tools-federal-resume.html"],["&#127891; Cert Advisor","tools-cert-advisor.html"]].map(([label,page])=>(
+            <a key={page} href={"https://veterancareerpath.com/"+page} target="_blank" rel="noreferrer" style={{color:"rgba(255,255,255,.65)",textDecoration:"none",fontSize:".73rem",fontWeight:500,background:"rgba(255,255,255,.05)",padding:".2rem .55rem",borderRadius:"5px",border:"1px solid rgba(255,255,255,.08)"}}>{label}</a>
+          ))}
+        </div>
         <div className="intro">
           <strong>Your Civilian Qualifications Profile.</strong> Before finding your career matches, review what your service actually unlocks in the civilian world. Every MOS, clearance, ASI, SQI, and additional duty is an asset — here's what each one means to a civilian employer.
         </div>
@@ -2402,8 +2522,8 @@ function CareerTab(props) {
             </div>
             <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
               {!hasAccess&&<a href="https://veterancareerpath.com/veteran-career-test.html" target="_blank" rel="noreferrer" style={{background:"rgba(255,255,255,.1)",color:"#c0d8f0",border:"1px solid rgba(255,255,255,.2)",borderRadius:"8px",padding:".5rem .9rem",fontWeight:600,fontSize:".82rem",cursor:"pointer",textDecoration:"none"}}>Free Preview Test</a>}
-              {hasAccess&&<button onClick={()=>{setCareerTestMode("deep");setCareerTestStep(0);setCareerTestAnswers({});setCareerTestResults(null);setShowCareerTest(true);}} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",color:"#0a1628",border:"none",borderRadius:"8px",padding:".5rem 1rem",fontWeight:700,fontSize:".85rem",cursor:"pointer"}}>Take Full Assessment (60 Q)</button>}
-              {hasAccess&&careerTestResults&&<button onClick={()=>{setCareerTestMode(careerTestResults.deepProfile?"deep":"basic");setCareerTestStep(careerTestResults.deepProfile?window.DEEP_CAREER_TEST.dimensions.length:CAREER_TEST.sections.length);setShowCareerTest(true);}} style={{background:"rgba(255,255,255,.1)",color:"#c0d8f0",border:"1px solid rgba(255,255,255,.2)",borderRadius:"8px",padding:".5rem .9rem",fontWeight:600,fontSize:".82rem",cursor:"pointer"}}>View Results</button>}
+              {hasAccess&&<a href="https://veterancareerpath.com/veteran-career-test.html" target="_blank" rel="noreferrer" style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",color:"#0a1628",border:"none",borderRadius:"8px",padding:".5rem 1rem",fontWeight:700,fontSize:".85rem",cursor:"pointer",textDecoration:"none"}}>Take Full Assessment (60 Q)</a>}
+              {hasAccess&&careerTestResults&&<a href="https://veterancareerpath.com/veteran-career-test.html" target="_blank" rel="noreferrer" style={{background:"rgba(255,255,255,.1)",color:"#c0d8f0",border:"1px solid rgba(255,255,255,.2)",borderRadius:"8px",padding:".5rem .9rem",fontWeight:600,fontSize:".82rem",textDecoration:"none"}}>View / Print Results</a>}
             </div>
           </div>
         </div>
@@ -2599,7 +2719,7 @@ function MyProfileSaved(props) {
                 onClick={()=>{setCareerTestMode(careerTestResults.deepProfile?"deep":"basic");setCareerTestStep(careerTestResults.deepProfile?window.DEEP_CAREER_TEST.dimensions.length:CAREER_TEST.sections.length);setShowCareerTest(true);}}>
                 View Results
               </button>
-              <a href="https://veterancareerpath.com/veteran-career-test.html" target="_blank" rel="noreferrer" style={{fontSize:".72rem",padding:".28rem .7rem",background:"rgba(200,150,10,.1)",color:"#8a6000",border:"1px solid rgba(200,150,10,.3)",borderRadius:"6px",textDecoration:"none",fontWeight:600,display:"inline-flex",alignItems:"center",gap:".25rem"}}>Print Report &#x1F5A8;</a>
+              <a href="https://veterancareerpath.com/veteran-career-test.html" target="_blank" rel="noreferrer" style={{fontSize:".72rem",padding:".28rem .7rem",background:"rgba(200,150,10,.1)",color:"#8a6000",border:"1px solid rgba(200,150,10,.3)",borderRadius:"6px",textDecoration:"none",fontWeight:600,display:"inline-flex",alignItems:"center",gap:".25rem"}}>Print / View Results</a>
             </div>
           </div>
           <div className="cb">
@@ -2962,1437 +3082,78 @@ function MyProfileContent(props) {
 
 function MyProfileTab(props) {
   const {tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths,careerTestResults,setShowCareerTest,setCareerTestMode,setCareerTestStep,setCareerTestAnswers} = props;
-  return (<div className={"panel "+(tab===6?"on":"")}>
-    {!currentUser?(
-      <div style={{textAlign:"center",padding:"3rem 1rem"}}>
-        <div style={{fontSize:"3rem",marginBottom:"1rem"}}>🔒</div>
-        <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",marginBottom:".75rem"}}>SIGN IN TO ACCESS YOUR PROFILE</h3>
-        <p style={{color:"#5a7090",fontSize:".9rem",margin:"0 auto 1.5rem",maxWidth:"360px",lineHeight:1.7}}>Save your service profile, resumes, and career matches across any device.</p>
-        <button className="btn-primary" style={{maxWidth:"280px",margin:"0 auto"}} onClick={()=>setShowAuth(true)}>
-          🔑 Sign In / Create Account
-        </button>
-      </div>
-    ):(
-      <MyProfileContent tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} careerTestResults={careerTestResults} setShowCareerTest={setShowCareerTest} setCareerTestMode={setCareerTestMode} setCareerTestStep={setCareerTestStep} setCareerTestAnswers={setCareerTestAnswers} />
-    )}
-
-  </div>);
-}
-
-const CAREER_TEST={sections:[
-  {id:"work_style",title:"Work Style",icon:"🏢",questions:[
-    {id:"ws1",q:"When solving a difficult problem you prefer to:",options:["Analyze data methodically","Brainstorm creative ideas","Talk it through with the team","Take charge and decide quickly"]},
-    {id:"ws2",q:"Your ideal work environment is:",options:["Quiet and independent","Dynamic with variety","Collaborative and team-oriented","Fast-paced with clear goals"]},
-    {id:"ws3",q:"You feel most accomplished when you:",options:["Master a complex skill","Create something innovative","Help someone succeed","Lead a team to victory"]},
-    {id:"ws4",q:"How do you prefer to receive direction?",options:["Clear written procedures","Big picture goals","Regular check-ins","Clear mission, full authority"]}
-  ]},
-  {id:"strengths",title:"Core Strengths",icon:"💪",questions:[
-    {id:"st1",q:"People would say your greatest strength is:",options:["Technical precision","Creative thinking","Empathy and developing people","Leadership and execution"]},
-    {id:"st2",q:"In the military you were most valued for:",options:["Technical skills","Planning and logistics","Training and mentoring","Operational leadership"]},
-    {id:"st3",q:"When something goes wrong your instinct is to:",options:["Diagnose root cause","Improvise and adapt","Rally the team","Take control immediately"]},
-    {id:"st4",q:"You are most energized by:",options:["Mastering something complex","Building from nothing","Making a difference","Competing and winning"]}
-  ]},
-  {id:"values",title:"Work Values",icon:"⭐",questions:[
-    {id:"va1",q:"What matters most in a career?",options:["Job security and stability","Creative freedom","Meaningful work helping others","Advancement and income"]},
-    {id:"va2",q:"How important is purpose in your work?",options:["Critical, I must believe in it","Important through good people","Somewhat, team matters more","Less important, results drive me"]},
-    {id:"va3",q:"Your ideal salary trajectory:",options:["Steady predictable growth","Less now for big upside","Fair pay for meaningful work","Maximize earnings rapidly"]},
-    {id:"va4",q:"How do you feel about risk?",options:["Prefer stability","Comfortable with calculated risk","Risk is fine if it helps others","High risk high reward"]}
-  ]},
-  {id:"lifestyle",title:"Lifestyle",icon:"🌍",questions:[
-    {id:"li1",q:"Travel and relocation:",options:["No relocation","Some travel fine","Open to relocation","Go wherever needed"]},
-    {id:"li2",q:"Work-life balance priority:",options:["Critical, predictable hours","Important but can flex","Secondary to meaningful work","Less important, I work hard"]},
-    {id:"li3",q:"Remote vs in-person:",options:["Fully remote","Hybrid","In-person","Wherever role requires"]},
-    {id:"li4",q:"Education appetite:",options:["Already credentialed","Open to certifications","Willing to pursue degree","Ready for advanced education"]}
-  ]},
-  {id:"personality",title:"Personality",icon:"🧠",questions:[
-    {id:"pe1",q:"In a group you naturally:",options:["Observe then speak precisely","Jump in with ideas","Listen and support others","Step up to lead"]},
-    {id:"pe2",q:"Your free time involves:",options:["Learning and researching","Creating and building","Connecting with people","Competing and achieving"]},
-    {id:"pe3",q:"When receiving feedback you:",options:["Analyze and improve methodically","Take what is useful and move on","Take it personally but grow","Want it direct and act immediately"]},
-    {id:"pe4",q:"Your communication style is:",options:["Precise and detailed","Expressive and persuasive","Warm and collaborative","Direct and results-focused"]}
-  ]}
-]};
-
-function getCareerTestProfile(answers){
-  let a=0,c=0,s=0,l=0;
-  Object.values(answers).forEach(v=>{if(v===0)a++;else if(v===1)c++;else if(v===2)s++;else l++;});
-  const t=Math.max(1,a+c+s+l),p=x=>Math.round((x/t)*100);
-  const sc=[a,c,s,l],lb=["Analytical","Creative","Social","Leadership"];
-  const sr=[...sc].map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v);
-  return{analytical:p(a),creative:p(c),social:p(s),leadership:p(l),primary:lb[sr[0].i],secondary:lb[sr[1].i]};
-}
-
-function getDeepProfile(answers){
-  const dims=["realistic","investigative","artistic","social","enterprising","conventional"];
-  const dimScores={};
-  dims.forEach(d=>{
-    const qs=window.DEEP_CAREER_TEST?window.DEEP_CAREER_TEST.dimensions.find(x=>x.id===d):null;
-    if(qs){const vals=qs.questions.map(q=>parseInt(answers[q.id])||3);dimScores[d]=Math.round((vals.reduce((a,b)=>a+b,0)/vals.length)*20);}
-    else dimScores[d]=50;
-  });
-  const sorted=Object.entries(dimScores).sort((a,b)=>b[1]-a[1]);
-  return{scores:dimScores,primary:sorted[0][0],secondary:sorted[1][0],tertiary:sorted[2][0]};
-}
-
-function App() {
-  const [tab, setTab] = useState(0);
-  const [personal, setPersonal] = useState({ name:"", email:"", phone:"", location:"", linkedin:"" });
-  const [milExperiences, setMilExperiences] = useState([newMilExp()]);
-  const [civExperiences, setCivExperiences] = useState([]);
-  const experiences = [...milExperiences, ...civExperiences];
-  const [education, setEducation] = useState([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
-  const [skills, setSkills] = useState({ technical:"", leadership:"", languages:"", certs:"" });
-  const [target, setTarget] = useState({ title:"", industry:"", keywords:"", interests:"", openTo:"" });
-  const [targetLocation, setTargetLocation] = useState("");
-  const [collapsed, setCollapsed] = useState({});
-  const [mosOut, setMosOut] = useState("");
-  const [careers, setCareers] = useState(null);
-  const [serviceRecords, setServiceRecords] = useState([{ id:1, branch:"Army", rank:"", status:"Veteran" }]);
-  const [coverLetter, setCoverLetter] = useState("");
-  const [coverLetterJob, setCoverLetterJob] = useState({ title:"", company:"", description:"" });
-  const [resumeScore, setResumeScore] = useState(null);
-  const [resumeReview, setResumeReview] = useState(null);
-  const [coverLetterLoading, setCoverLetterLoading] = useState(false);
-  const [reviewLoading, setReviewLoading] = useState(false);
-  const [uploadedResumeText, setUploadedResumeText] = useState("");
-  const [uploadedFileName, setUploadedFileName] = useState("");
-  const [uploadProcessing, setUploadProcessing] = useState(false);
-  const [copiedCL, setCopiedCL] = useState(false);
-  const [jobApps, setJobApps] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("vcb_jobs")||"[]"); } catch(e){ return []; }
-  });
-  const [newJob, setNewJob] = useState({ company:"", title:"", date:"", status:"Applied", notes:"", link:"",source:"" });
-  const [showAddJob, setShowAddJob] = useState(false);
-  const saveJobs = (jobs) => {
-    setJobApps(jobs);
-    localStorage.setItem("vcb_jobs", JSON.stringify(jobs));
-  };
-  const [prepJob, setPrepJob] = useState({ title:"", company:"", type:"behavioral" });
-  const [prepQuestions, setPrepQuestions] = useState([]);
-  const [prepLoading, setPrepLoading] = useState(false);
-  const [followupCtx, setFollowupCtx] = useState({ company:"", role:"", interviewerName:"", date:"", outcome:"thank-you" });
-  const [followupEmail, setFollowupEmail] = useState("");
-  const [followupJob, setFollowupJob] = useState({title:"",company:""});
-  const [showClipboardModal, setShowClipboardModal] = useState(false);
-  const [showHomelessForm, setShowHomelessForm] = useState(false);
-  const [homelessForm, setHomelessForm] = useState({name:"",branch:"",location:"",situation:"",email:"",phone:""});
-  const [homelessSubmitted, setHomelessSubmitted] = useState(false);
-  const [clipboardParsed, setClipboardParsed] = useState({title:"",company:"",link:""});
-  const [followupLoading, setFollowupLoading] = useState(false);
-  const [copiedFollowup, setCopiedFollowup] = useState(false);
-  const [tlChecks, setTlChecks] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("vcb_timeline")||"{}"); } catch(e){ return {}; }
-  });
-  const saveTl = (key, val) => {
-    const updated = {...tlChecks, [key]: val};
-    setTlChecks(updated);
-    localStorage.setItem("vcb_timeline", JSON.stringify(updated));
-    if (currentUser && fbDb) {
-      try { fbDb.collection("profiles").doc(currentUser.uid).set({ timeline: updated, updatedAt: Date.now() }, { merge: true }); } catch(e) {}
-    }
-  };
-  const [retentionTab, setRetentionTab] = useState("tracker");
-  const [savedPaths, setSavedPaths] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]"); } catch(e){ return []; }
-  });
-  const refreshSavedPaths = () => {
-    try { setSavedPaths(JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]")); } catch(e){}
-  };
-  const [resFilter, setResFilter] = useState("All");
-  const [selectedCareer, setSelectedCareer] = useState(null);
-  const [careerDetail, setCareerDetail] = useState(null);
-  const [careerFilter, setCareerFilter] = useState("All");
-  const [resume, setResume] = useState("");
-  const [resumeFormat, setResumeFormat] = useState("ats_chrono");
-  const [translationData, setTranslationData] = useState(null);
-  const [loading, setLoading] = useState({ translate:false, careers:false, resume:false, careerDetail:false });
-  const [apiError, setApiError] = useState("");
-  const [showAdminSetup, setShowAdminSetup] = useState(false);
-  const [adminKeyInput, setAdminKeyInput] = useState("");
-  const [adminKeySet, setAdminKeySet] = useState(() => {
-    if (PROXY_URL && PROXY_URL.length > 10) return true;
-    const k = localStorage.getItem("vcb_admin_key")||(typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key"))||"";
-    return k.length > 20;
-  });
-  const [careerError, setCareerError] = useState("");
-  const [resumeData, setResumeData] = useState(null);
-  const [resumeTemplate, setResumeTemplate] = useState("ats_chrono");
-  
-  const [resumeError, setResumeError] = useState("");
-  const [copied, setCopied] = useState(false);
-  const [includeClearance, setIncludeClearance] = useState(true);
-  const [resumeEditMode, setResumeEditMode] = useState(false);
-  const [editableResume, setEditableResume] = useState(null);
-  const [showCareerTest, setShowCareerTest] = useState(false);
-  const [careerTestMode, setCareerTestMode] = useState("basic");
-  const [careerTestStep, setCareerTestStep] = useState(0);
-  const [careerTestAnswers, setCareerTestAnswers] = useState({});
-  const [careerTestResults, setCareerTestResults] = useState(null);
-  const [careerTestLoading, setCareerTestLoading] = useState(false);
-  const [deepTestStep, setDeepTestStep] = useState(0);
-  const [deepTestAnswers, setDeepTestAnswers] = useState({});
-  const [mosBrowse, setMosBrowse] = useState({open:false,expId:null,search:"",branch:""});
-  const [trainingProgress, setTrainingProgress] = useState(()=>{try{return JSON.parse(localStorage.getItem("vcb_training")||"{}");}catch(e){return {};}});
-  const [activeLesson, setActiveLesson] = useState(null);
-  const [authMode, setAuthMode] = useState("login");
-  const [showAuth, setShowAuth] = useState(false);
-  const [authForm, setAuthForm] = useState({ username:"", password:"", confirmPassword:"", name:"" });
-  const [authErr, setAuthErr] = useState("");
-  const [authOk, setAuthOk] = useState("");
-  const [currentUser, setCurrentUser] = useState(null);
-  const [saveToast, setSaveToast] = useState("");
-  const [hasUnsaved, setHasUnsaved] = useState(false);
-  const [savedResumes, setSavedResumes] = useState([]);
-  const [savedCoverLetters, setSavedCoverLetters] = useState([]);
-  const [savedEmails, setSavedEmails] = useState([]);
-  const [savedScores, setSavedScores] = useState([]);
-  const [viewingResume, setViewingResume] = useState(null);
-  const ACCESS_CODES = {
-    "OWNER2025":          0,
-    "ALPHA30":            Date.UTC(2026, 3, 20),
-    "BRAVO30":            Date.UTC(2026, 3, 20),
-    "CHARLIE30":          Date.UTC(2026, 3, 20),
-    "DELTA30":            Date.UTC(2026, 3, 20),
-    "ECHO30":             Date.UTC(2026, 3, 20),
-    "FOXTROT30":          Date.UTC(2026, 3, 20),
-    "GOLF30":             Date.UTC(2026, 3, 20),
-    "HOTEL30":            Date.UTC(2026, 3, 20),
-    "INDIA30":            Date.UTC(2026, 3, 20),
-    "JULIET30":           Date.UTC(2026, 3, 20),
-    "VETTEST1":           Date.UTC(2026, 4, 20),
-    "VETTEST2":           Date.UTC(2026, 4, 20),
-    "VETTEST3":           Date.UTC(2026, 4, 20),
-    "VETTEST4":           Date.UTC(2026, 4, 20),
-    "VETTEST5":           Date.UTC(2026, 4, 20),
-    "AMON26":             Date.UTC(2026, 5, 21),
-  };
-
-  const isCodeValid = (code) => {
-    if (!(code in ACCESS_CODES)) return { valid: false, reason: "invalid" };
-    const expiry = ACCESS_CODES[code];
-    if (expiry === 0) return { valid: true, reason: "permanent" };
-    if (Date.now() > expiry) return { valid: false, reason: "expired" };
-    return { valid: true, reason: "timed", expiry };
-  };
-
-  const checkAccess = () => {
-    const stored = localStorage.getItem("vcb_access");
-    if (!stored) return false;
-    try {
-      const d = JSON.parse(stored);
-      if (d.type === "paid") {
-        if (!d.stripeSession) { localStorage.removeItem("vcb_access"); return false; }
-        if (d.expiry > Date.now()) return true;
-        localStorage.removeItem("vcb_access"); return false;
-      }
-      if (d.type === "code" && d.code) {
-        const check = isCodeValid(d.code);
-        if (!check.valid) { localStorage.removeItem("vcb_access"); return false; }
-        return true;
-      }
-      return false;
-    } catch(e) { return false; }
-  };
-  const [hasAccess, setHasAccess] = useState(() => checkAccess());
-  const [showPaywall, setShowPaywall] = useState(() => !checkAccess());
-  const [pwPlan, setPwPlan] = useState("monthly");
-  const [pwCode, setPwCode] = useState("");
-  const [pwCodeStatus, setPwCodeStatus] = useState("idle");
-  const [pwCodeMsg, setPwCodeMsg] = useState("");
-
-  const redeemCode = () => {
-    const code = pwCode.trim().toUpperCase();
-    const check = isCodeValid(code);
-    if (check.valid) {
-      localStorage.setItem("vcb_access", JSON.stringify({ type:"code", code }));
-      const expMsg = check.reason === "permanent"
-        ? "✓ Code accepted! You have permanent access."
-        : "✓ Code accepted! Access expires " + new Date(check.expiry).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}) + ".";
-      setPwCodeStatus("valid");
-      setPwCodeMsg(expMsg);
-      setTimeout(() => { setHasAccess(true); setShowPaywall(false); }, 900);
-    } else if (check.reason === "expired") {
-      setPwCodeStatus("invalid");
-      setPwCodeMsg("This code has expired. Please subscribe or contact support for a new code.");
-    } else {
-      setPwCodeStatus("invalid");
-      setPwCodeMsg("That code isn't valid. Check spelling or contact support.");
-    }
-  };
-
-  const grantPaidAccess = (planMonths) => {
-    const expiry = Date.now() + planMonths * 30 * 24 * 60 * 60 * 1000;
-    localStorage.setItem("vcb_access", JSON.stringify({ type:"paid", stripeSession:"direct", expiry, plan: planMonths===1?"monthly":"annual" }));
-    setHasAccess(true);
-    setShowPaywall(false);
-  };
-
-  const openClipboardCapture = async () => {
-    let text = "";
-    try {
-      text = await navigator.clipboard.readText();
-    } catch(e) {
-    }
-    let title = "";
-    let company = "";
-    let link = "";
-    if (text) {
-      if (text.startsWith("http")) {
-        link = text.trim();
-        if (text.includes("indeed.com")) company = "Indeed Job";
-        if (text.includes("linkedin.com")) company = "LinkedIn Job";
-        if (text.includes("usajobs.gov")) company = "U.S. Government";
-        if (text.includes("ziprecruiter.com")) company = "ZipRecruiter Job";
-        if (text.includes("clearancejobs.com")) company = "ClearanceJobs";
-      } else {
-        const atMatch = text.match(/^(.+?)\s+at\s+(.+?)$/i);
-        const dashMatch = text.match(/^(.+?)\s*[-–]\s*(.+?)$/);
-        if (atMatch) { title = atMatch[1].trim(); company = atMatch[2].trim(); }
-        else if (dashMatch) { title = dashMatch[1].trim(); company = dashMatch[2].trim(); }
-        else { title = text.slice(0, 80).trim(); }
-      }
-    }
-    setClipboardParsed({ title, company, link });
-    setShowClipboardModal(true);
-    setTab(4);
-    setRetentionTab("tracker");
-  };
-
-  const showToast = (msg) => {
-    setSaveToast(msg);
-    setTimeout(() => setSaveToast(""), 2800);
-  };
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("addjob") === "1") {
-      const title = decodeURIComponent(params.get("title")||"");
-      const company = decodeURIComponent(params.get("company")||"");
-      const link = decodeURIComponent(params.get("link")||"");
-      if (title || company) {
-        const entry = {id:Date.now(), title, company, link,
-          date: new Date().toISOString().slice(0,10),
-          status:"Applied", notes:"", source:"Bookmarklet"};
-        setJobApps(prev => {
-          const updated = [entry, ...prev];
-          localStorage.setItem("vcb_jobs", JSON.stringify(updated));
-          if(currentUser&&fbDb){try{fbDb.collection("profiles").doc(currentUser.uid).set({jobApps:updated,updatedAt:Date.now()},{merge:true});}catch(e){}}
-          return updated;
-        });
-        setTab(4);
-        setRetentionTab("tracker");
-        showToast("Job saved to tracker ✓ — "+(title||company));
-        window.history.replaceState({}, "", window.location.pathname);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!fbAuth) return;
-    const unsubscribe = fbAuth.onAuthStateChanged(async (firebaseUser) => {
-      if (firebaseUser) {
-        const initials = (firebaseUser.displayName || firebaseUser.email)
-          .split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
-        const user = {
-          uid: firebaseUser.uid,
-          name: firebaseUser.displayName || firebaseUser.email.split("@")[0],
-          email: firebaseUser.email,
-          initials,
-        };
-        setCurrentUser(user);
-        setHasUnsaved(false);
-        try {
-          const doc = await fbDb.collection("profiles").doc(firebaseUser.uid).get();
-          if (doc.exists) {
-            const data = doc.data();
-            if (data.personal) setPersonal(data.personal);
-            if ((data.milExperiences && data.milExperiences.length)) setMilExperiences(data.milExperiences);
-          if ((data.civExperiences && data.civExperiences.length)) setCivExperiences(data.civExperiences);
-          if (!data.milExperiences && (data.experiences && data.experiences.length)) setMilExperiences(data.experiences);
-            if ((data.education && data.education.length)) setEducation(data.education);
-            if (data.skills) setSkills(data.skills);
-            if (data.target) setTarget(data.target);
-            if (data.careerTest) {
-              setCareerTestResults(data.careerTest);
-              localStorage.setItem("vcb_career_test", JSON.stringify(data.careerTest));
-            }
-            if (data.trainingProgress) {
-              setTrainingProgress(data.trainingProgress);
-              localStorage.setItem("vcb_training", JSON.stringify(data.trainingProgress));
-            }
-            if (data.jobApps && data.jobApps.length) {
-              setJobApps(data.jobApps);
-              localStorage.setItem("vcb_jobs", JSON.stringify(data.jobApps));
-            }
-            if (data.savedPaths && data.savedPaths.length) {
-              setSavedPaths(data.savedPaths);
-              localStorage.setItem("vcb_saved_paths", JSON.stringify(data.savedPaths));
-            }
-          }
-          const resumesSnap = await fbDb.collection("profiles").doc(firebaseUser.uid)
-            .collection("resumes").orderBy("createdAt","desc").limit(20).get();
-          setSavedResumes(resumesSnap.docs.map(d => d.data()));
-          const clSnap = await fbDb.collection("profiles").doc(firebaseUser.uid).collection("coverLetters").orderBy("id","desc").limit(20).get();
-          setSavedCoverLetters(clSnap.docs.map(d=>d.data()));
-          const emSnap = await fbDb.collection("profiles").doc(firebaseUser.uid).collection("emails").orderBy("id","desc").limit(20).get();
-          setSavedEmails(emSnap.docs.map(d=>d.data()));
-          const scSnap = await fbDb.collection("profiles").doc(firebaseUser.uid).collection("scores").orderBy("id","desc").limit(10).get();
-          setSavedScores(scSnap.docs.map(d=>d.data()));
-        } catch(e) { console.warn("Profile load error:", e); }
-      } else {
-        setCurrentUser(null);
-        setSavedResumes([]);
-        setJobApps([]); setTlChecks({});
-        setSavedCoverLetters([]); setSavedEmails([]); setSavedScores([]);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-  useEffect(() => {
-    if (!currentUser || !fbDb) { setHasUnsaved(false); return; }
-    setHasUnsaved(true);
-    const timer = setTimeout(async () => {
-      try {
-        await fbDb.collection("profiles").doc(currentUser.uid).set({
-          personal, milExperiences, civExperiences, education, skills, target,
-          serviceRecords, targetLocation, updatedAt: Date.now()
-        }, { merge: true });
-        setHasUnsaved(false);
-      } catch(e) { /* silent fail */ }
-    }, 1800);
-    return () => clearTimeout(timer);
-  }, [personal, milExperiences, civExperiences, education, skills, target, targetLocation, serviceRecords]);
-  const handleRegister = async () => {
-    setAuthErr(""); setAuthOk("");
-    if (!authForm.name.trim()) return setAuthErr("Full name is required.");
-    if (!authForm.username.trim()) return setAuthErr("Email is required.");
-    if (authForm.password.length < 6) return setAuthErr("Password must be at least 6 characters.");
-    if (authForm.password !== authForm.confirmPassword) return setAuthErr("Passwords do not match.");
-    try {
-      const cred = await fbAuth.createUserWithEmailAndPassword(authForm.username.trim(), authForm.password);
-      await cred.user.updateProfile({ displayName: authForm.name.trim() });
-      setAuthOk("Account created! Signing you in...");
-      setShowAuth(false); if(!checkAccess()){setShowPaywall(true);}
-      showToast("Welcome, " + authForm.name.split(" ")[0] + "! ✓");
-      setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
-    } catch(e) {
-      if (e.code === "auth/email-already-in-use") setAuthErr("An account with this email already exists.");
-      else if (e.code === "auth/invalid-email") setAuthErr("Please enter a valid email address.");
-      else setAuthErr(e.message);
-    }
-  };
-
-  const handleLogin = async () => {
-    if (!fbAuth) { setAuthErr("Authentication is not configured yet. Contact the site owner."); return; }
-    setAuthErr(""); setAuthOk("");
-    if (!authForm.username.trim()) { setAuthErr("Please enter your email address."); return; }
-    if (!authForm.password) { setAuthErr("Please enter your password."); return; }
-    try {
-      await fbAuth.signInWithEmailAndPassword(authForm.username.trim(), authForm.password);
-      setShowAuth(false); if(!checkAccess()){setShowPaywall(true);}
-      setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
-    } catch(e) {
-      if (e.code === "auth/user-not-found" || e.code === "auth/invalid-credential") setAuthErr("No account found. Check your email or create an account.");
-      else if (e.code === "auth/wrong-password") setAuthErr("Incorrect password. Try again or reset it below.");
-      else if (e.code === "auth/invalid-email") setAuthErr("Please enter a valid email address.");
-      else if (e.code === "auth/too-many-requests") setAuthErr("Too many attempts. Please wait a moment and try again.");
-      else setAuthErr("Sign in failed: " + (e.message||"Unknown error"));
-    }
-  };
-
-  const handleLogout = async () => {
-    await fbAuth.signOut();
-    setCurrentUser(null);
-    setSavedResumes([]);
-    setHasUnsaved(false);
-    setPersonal({ name:"", email:"", phone:"", location:"", linkedin:"" });
-    setExperiences([newMilExp()]);
-    setEducation([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
-    setSkills({ technical:"", leadership:"", languages:"", certs:"" });
-  };
-
-  const handleSaveProfile = async () => {
-    if (!currentUser) { setShowAuth(true); return; }
-    try {
-      await fbDb.collection("profiles").doc(currentUser.uid).set({
-        personal, milExperiences, civExperiences, education, skills, target,
-        updatedAt: new Date().toISOString()
-      }, { merge: true });
-      showToast("Profile saved ✓");
-      setHasUnsaved(false);
-    } catch(e) { showToast("Save failed — check connection"); }
-  };
-
-  const handleSaveResume = async () => {
-    if (!currentUser) { setShowAuth(true); return; }
-    if (!resume) return;
-    try {
-      const resumeTitle = window.prompt("Give this resume a name so you can find it later:", target.title || "My Resume") || target.title || "Saved Resume";
-      const id = Date.now().toString();
-      const entry = {
-        id,
-        title: resumeTitle,
-        industry: target.industry || "",
-        format: resumeFormat,
-        template: resumeTemplate,
-        resumeData: resumeData || null,
-        includeClearance: includeClearance,
-        date: new Date().toLocaleDateString("en-US", { year:"numeric", month:"short", day:"numeric" }),
-        preview: resume.slice(0, 120) + "...",
-        content: resume,
-        createdAt: new Date().toISOString(),
-      };
-      await fbDb.collection("profiles").doc(currentUser.uid)
-        .collection("resumes").doc(id).set(entry);
-      setSavedResumes(prev => [entry, ...prev].slice(0, 20));
-      showToast("Resume saved to your profile ✓");
-    } catch(e) { showToast("Save failed — check connection"); }
-  };
-
-  const handleDeleteResume = async (id) => {
-    if (!currentUser) return;
-    try {
-      await fbDb.collection("profiles").doc(currentUser.uid)
-        .collection("resumes").doc(id.toString()).delete();
-      setSavedResumes(prev => prev.filter(r => r.id !== id));
-      showToast("Resume deleted");
-    } catch(e) { showToast("Delete failed"); }
-  };
-
-  const saveCoverLetter = async () => {
-    const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
-      job:coverLetterJob.title||"Cover Letter", company:coverLetterJob.company||"", content:coverLetter};
-    setSavedCoverLetters(prev=>[entry,...prev].slice(0,20));
-    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc(currentUser.uid).collection("coverLetters").doc(entry.id.toString()).set(entry);}catch(e){}}
-    showToast("Cover letter saved to My Profile ✓");
-  };
-  const saveEmail = async () => {
-    const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
-      type:followupType||"Follow-Up Email", content:followupEmail};
-    setSavedEmails(prev=>[entry,...prev].slice(0,20));
-    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc(currentUser.uid).collection("emails").doc(entry.id.toString()).set(entry);}catch(e){}}
-    showToast("Email saved to My Profile ✓");
-  };
-  const saveScore = async () => {
-    const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
-      score:resumeScore, label:resumeScore>=85?"Excellent":resumeScore>=75?"Strong":resumeScore>=65?"Good":"Needs Work",
-      summary:resumeReview.summary||"", grades:resumeReview.grades||{}};
-    setSavedScores(prev=>[entry,...prev].slice(0,10));
-    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc(currentUser.uid).collection("scores").doc(entry.id.toString()).set(entry);}catch(e){}}
-    showToast("Score report saved to My Profile ✓");
-  };
-  const handleDeleteSaved = async (type,id) => {
-    if(type==="cl") setSavedCoverLetters(prev=>prev.filter(x=>x.id!==id));
-    else if(type==="em") setSavedEmails(prev=>prev.filter(x=>x.id!==id));
-    else if(type==="sc") setSavedScores(prev=>prev.filter(x=>x.id!==id));
-    if(currentUser&&fbDb){
-      const col=type==="cl"?"coverLetters":type==="em"?"emails":"scores";
-      try{await fbDb.collection("profiles").doc(currentUser.uid).collection(col).doc(id.toString()).delete();}catch(e){}
-    }
-    showToast("Deleted");
-  };
-
-  const handleLoadResume = (r) => {
-    setResume(r.content);
-    setTarget(t => ({ ...t, title: r.title, industry: r.industry }));
-    setTab(2);
-    showToast("Resume loaded ✓");
-  };
-
-  const setL = (k,v) => setLoading(l=>({...l,[k]:v}));
-  const upP = (k,v) => setPersonal(p=>({...p,[k]:v}));
-  const upT = (k,v) => setTarget(p=>({...p,[k]:v}));
-  const upMilExp = (id,k,v) => setMilExperiences(es=>es.map(e=>e.id===id
-    ? {...e,[k]:v,...(k==="mos"?{mosTitle:(MOS_DATA[v.toUpperCase()] && MOS_DATA[v.toUpperCase()].title)||""}:{})}
-    : e));
-  const upCivExp = (id,k,v) => setCivExperiences(es=>es.map(e=>e.id===id
-    ? {...e,[k]:v}
-    : e));
-  const upExp = (id,k,v) => {
-    if (milExperiences.find(e=>e.id===id)) upMilExp(id,k,v);
-    else upCivExp(id,k,v);
-  };
-  const addAsi = (id) => {
-    const exp = experiences.find(e=>e.id===id);
-    if (!exp) return;
-    const code = exp.customAsiCode.trim().toUpperCase();
-    const desc = exp.customAsiDesc.trim() || (COMMON_ASI.find(a=>a.code===code) ? COMMON_ASI.find(a=>a.code===code).desc : undefined) || "";
-    if (!code) return;
-    if (exp.asi.find(a=>a.code===code)) return;
-    upExp(id,"asi",[...exp.asi,{code,desc}]);
-    upExp(id,"customAsiCode",""); upExp(id,"customAsiDesc","");
-  };
-  const addAsiCommon = (id,asi) => {
-    const exp = experiences.find(e=>e.id===id);
-    if (!exp||exp.asi.find(a=>a.code===asi.code)) return;
-    upExp(id,"asi",[...exp.asi,asi]);
-  };
-  const rmAsi = (id,code) => { const exp=experiences.find(e=>e.id===id); upExp(id,"asi",exp.asi.filter(a=>a.code!==code)); };
-  const addSqi = (id) => {
-    const exp = experiences.find(e=>e.id===id);
-    if (!exp) return;
-    const code = exp.customSqiCode.trim().toUpperCase();
-    const desc = exp.customSqiDesc.trim() || (COMMON_SQI.find(s=>s.code===code) ? COMMON_SQI.find(s=>s.code===code).desc : undefined) || "";
-    if (!code) return;
-    if (exp.sqi.find(s=>s.code===code)) return;
-    upExp(id,"sqi",[...exp.sqi,{code,desc}]);
-    upExp(id,"customSqiCode",""); upExp(id,"customSqiDesc","");
-  };
-  const addSqiCommon = (id,sqi) => {
-    const exp = experiences.find(e=>e.id===id);
-    if (!exp||exp.sqi.find(s=>s.code===sqi.code)) return;
-    upExp(id,"sqi",[...exp.sqi,sqi]);
-  };
-  const rmSqi = (id,code) => { const exp=experiences.find(e=>e.id===id); upExp(id,"sqi",exp.sqi.filter(s=>s.code!==code)); };
-  const addDuty = (id, duty) => {
-    const exp = experiences.find(e=>e.id===id);
-    if (!exp||!duty.trim()||exp.additionalDuties.includes(duty.trim())) return;
-    upExp(id,"additionalDuties",[...exp.additionalDuties,duty.trim()]);
-    upExp(id,"customDuty","");
-  };
-  const rmDuty = (id,d) => { const exp=experiences.find(e=>e.id===id); upExp(id,"additionalDuties",exp.additionalDuties.filter(x=>x!==d)); };
-
-  const addMilExp = () => setMilExperiences(es=>[...es,newMilExp()]);
-  const addCivExp = () => setCivExperiences(es=>[...es,newCivExp()]);
-  const addExp = () => setCivExperiences(es=>[...es,newCivExp()]);
-  const rmExp = id => {
-    setMilExperiences(es=>es.filter(e=>e.id!==id));
-    setCivExperiences(es=>es.filter(e=>e.id!==id));
-  };
-  const upEdu = (id,k,v) => setEducation(eds=>eds.map(e=>e.id===id?{...e,[k]:v}:e));
-  const addEdu = () => setEducation(eds=>[...eds,{id:Date.now(),institution:"",degree:"",field:"",year:"",pme:""}]);
-  const rmEdu = id => setEducation(eds=>eds.filter(e=>e.id!==id));
-  const toggleCollapse = id => setCollapsed(c=>({...c,[id]:!c[id]}));
-  const buildExpSummary = () => {
-    const milParts = milExperiences.map(e=>{
-      const rolesStr = (e.mosRoles||[]).length
-        ? "Sub-roles: "+(e.mosRoles.map(r=>r.title+" ("+r.duration+")").join(", "))
-        : "";
-      const awardsStr = (e.awards||[]).length ? "Awards: "+((e.awards||[]).join(", ")) : "";
-      const qualStr = [
-        (e.asi && e.asi.length)?"ASIs: "+(e.asi.map(a=>a.code+"("+a.desc+")").join(", ")):null,
-        (e.sqi && e.sqi.length)?"SQIs: "+(e.sqi.map(s=>s.code+"("+s.desc+")").join(", ")):null,
-        (e.additionalDuties && e.additionalDuties.length)?"Additional Duties: "+(e.additionalDuties.join(", ")):null,
-      ].filter(Boolean).join(" | ");
-      const clearStr = e.clearanceLevel!=="None"
-        ? `Clearance: ${e.clearanceLevel} (${e.clearanceStatus})${e.polygraph!=="None"?" + "+e.polygraph+" Poly":""}`
-        : "No clearance";
-      return `[MILITARY] ${e.branch} | ${e.rank} | MOS: ${e.mos}${e.mosTitle?" ("+e.mosTitle+")":""} | ${e.serviceType} | Unit: ${e.unit} | TOS: ${e.tos||"not listed"} | ${e.startDate||"?"}–${e.current?"Present":e.endDate||"?"} | ${clearStr}${qualStr?" | "+qualStr:""} | Duties: ${e.duties||"not listed"}${rolesStr?" | "+rolesStr:""}${awardsStr?" | "+awardsStr:""}${e.deployments?" | Deployments: "+e.deployments:""}`;
-    });
-    const civParts = civExperiences.map(e=>{
-      const clearStr = (e.clearanceLevel&&e.clearanceLevel!=="None")
-        ? "Clearance: "+(e.clearanceLevel):"";
-      return `[${e.type.toUpperCase()}] ${e.jobTitle||"Role"} at ${e.employer||"Unknown"} | ${e.startDate||"?"}–${e.current?"Present":e.endDate||"?"} | Duties: ${e.duties||"not listed"}${clearStr?" | "+clearStr:""}`;
-    });
-    return [...milParts,...civParts].join("\n");
-  };
-  const translateMOS = async () => {
-    if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
-    if (!milExperiences.length) return;
-    setApiError("");
-    setTranslationData(null);
-    setMosOut("");
-    setL("translate", true);
-
-    try {
-      const lines = milExperiences.map(e => {
-        const parts = [
-          "MOS/Rate: " + (e.mos||"unknown") + " (" + (e.mosTitle||"see title") + ")",
-          "Branch: " + e.branch + " | Rank: " + (e.rank||"not listed") + " | Service: " + (e.serviceType||"Active Duty") + " | TOS: " + (e.tos||"unknown"),
-          (e.asi&&e.asi.length) ? "ASIs: " + e.asi.map(a=>a.code+" - "+a.desc).join(", ") : null,
-          (e.sqi&&e.sqi.length) ? "SQIs: " + e.sqi.map(s=>s.code+" - "+s.desc).join(", ") : null,
-          (e.additionalDuties&&e.additionalDuties.length) ? "Additional Duties: " + e.additionalDuties.join(", ") : null,
-          (e.mosRoles&&e.mosRoles.length) ? "Roles held: " + e.mosRoles.map(r=>r.title+" ("+r.duration+")").join(", ") : null,
-          (e.awards&&e.awards.length) ? "Awards: " + e.awards.join(", ") : null,
-          (e.clearanceLevel&&e.clearanceLevel!=="None") ? "Clearance: " + e.clearanceLevel + " " + (e.clearanceStatus||"Active") : null,
-          "Duties: " + (e.duties||"not described"),
-        ];
-        return parts.filter(Boolean).join("\n");
-      }).join("\n\n---\n\n");
-
-      const prompt = "A veteran has this military background:\n\n" + lines + "\n\n" +
-        "Please provide a detailed civilian translation. Return ONLY a JSON object with NO markdown, no backticks, no extra text. Start with { and end with }.\n\n" +
-        "The JSON must have these exact keys:\n" +
-        "summary: a 3-sentence professional civilian summary paragraph\n" +
-        "roles: array of objects, one per military role, each with: mos (string), title (string), whatYouDid (string, 2-3 plain English sentences), transferableSkills (array of 6 strings), resumeBullets (array of 4 strong resume bullet points starting with action verbs)\n" +
-        "qualifications: array of objects for each ASI/SQI, each with: code, name, civilianMeaning, unlocks\n" +
-        "additionalDuties: array of objects for each additional duty, each with: duty, civilianEquivalent, value";
-
-      const raw = await callClaude(
-        prompt,
-        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) CIVILIAN AND GOVERNMENT JOBS: Treat every civilian or government job with the same rigor as military. 10) USE ALL QUALIFICATIONS: Every ASI, SQI, NEC, SEI, sub-role, and additional duty must appear somewhere in the resume.",
-        2000
-      );
-      const start = raw.indexOf("{");
-      const end = raw.lastIndexOf("}");
-      if (start === -1 || end === -1) {
-        throw new Error("Response did not contain valid JSON. Raw: " + raw.slice(0,200));
-      }
-      const parsed = JSON.parse(raw.slice(start, end + 1));
-      const result = {
-        summary: parsed.summary || "Your military background demonstrates strong leadership, discipline, and mission-focused expertise.",
-        roles: Array.isArray(parsed.roles) ? parsed.roles : [],
-        qualifications: Array.isArray(parsed.qualifications) ? parsed.qualifications : [],
-        additionalDuties: Array.isArray(parsed.additionalDuties) ? parsed.additionalDuties : [],
-      };
-      setTranslationData(result);
-
-    } catch(err) {
-      console.error("translateMOS error:", err);
-      setMosOut("Translation failed: " + (err.message || "Unknown error. Check your API key and try again."));
-    }
-    setL("translate", false);
-  };
-  const findCareers = async () => {
-    if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
-    setApiError(""); setCareerError(""); setL("careers",true); setCareers(null); setSelectedCareer(null); setCareerDetail(null);
-    const summary = buildExpSummary();
-    const branch = (milExperiences[0]||{}).branch||"Army";
-    const mos = (milExperiences[0]||{}).mos||"";
-    const rank = (milExperiences[0]||{}).rank||"";
-    const tos = (milExperiences[0]||{}).tos||"";
-    const clearance = (milExperiences[0]||{}).clearanceLevel||"None";
-    const hasClearance = clearance && clearance!=="None";
-    const system = "You are the world's best military-to-civilian career counselor. You know EVERY civilian job sector including skilled trades, retail management, transportation, agriculture, maritime, aviation, hospitality, fitness, education, social work, nonprofits, entrepreneurship, real estate, financial services, and more. Return ONLY valid minified JSON. No markdown, no backticks, no line breaks inside strings, no trailing commas. The JSON must parse with JSON.parse() on the first try.";
-    const mosDetail = milExperiences.map(e=>(e.mos||(e.branch+' service'))+(e.mosTitle?' ('+e.mosTitle+')':'')+', '+e.branch+(e.rank?' '+e.rank:'')+', '+(e.tos||'unknown TIS')+' TIS').join('; ');
-    const civDetail = civExperiences.filter(e=>e.jobTitle).map(e=>e.jobTitle+(e.employer?' at '+e.employer:'')).join(', ');
-    const awardsDetail = milExperiences.flatMap(e=>e.awards||[]).slice(0,6).join(', ');
-    const asiDetail = milExperiences.flatMap(e=>(e.asi||[]).map(a=>a.code+': '+a.desc)).slice(0,4).join('; ');
-    const clearances = milExperiences.map(e=>e.clearanceLevel).filter(c=>c&&c!=='None').join(', ');
-    const dutiesDetail = milExperiences.flatMap(e=>e.duties?[e.duties.slice(0,100)]:[]).join(' | ').slice(0,300);
-    const eduDetail = education.map(e=>e.degree+' '+e.field).filter(Boolean).join(', ');
-    const prompt = `You are an expert military transition counselor. Generate 12 PERSONALIZED career paths for this specific veteran.
-
-THIS VETERAN'S ACTUAL BACKGROUND:
-Military: ${mosDetail||'military background'}
-Civilian Work: ${civDetail||'none yet'}
-Duties/Responsibilities: ${dutiesDetail||'standard military duties'}
-Specialty Quals: ${asiDetail||'none listed'}
-Awards: ${awardsDetail||'none listed'}
-Clearance: ${clearances||'None'}
-Education: ${eduDetail||'military training'}
-Career Goal: ${target.title||'open'} in ${target.industry||'any sector'}
-Interests & Hobbies: ${target.interests||'not specified'}
-Open To: ${target.openTo||'flexible'}
-Location: ${targetLocation||'flexible'}
-
-RULES — follow strictly:
-1. Top 8 paths must directly match their MOS/rate and civilian work history
-2. Use their interests/hobbies to find 3-4 meaningful career connections
-3. Clearances unlock intel, defense contractor, and federal roles — include them
-4. ASI/SQI specialties must appear directly in titles and whyFit
-5. Include entry-level ($40k-$60k) AND senior paths ($80k+)
-6. NO generic roles unless directly tied to their specific background
-7. whyFit MUST cite something specific from their profile — not generic veteran praise
-8. salaryRange format: '$XX,000-$XX,000' only, no special chars
-9. Return ONLY minified JSON, no markdown
-
-[{"title":"Specific Title","sector":"Civilian|Government|Defense\/Intel","industry":"Field","salaryRange":"$X-$Y","match":"Excellent|Strong|Good","whyFit":"cite specific background","topSkills":["s1","s2","s3"],"nextStep":"first action"}]`
-
-    try {
-      const raw = await callClaude(prompt, system, 2500);
-      let cleaned = raw
-        .replace(/```json/gi,"").replace(/```/g,"")
-        .replace(/,\s*}/g,"}").replace(/,\s*]/g,"]")
-        .trim();
-      const arrStart = cleaned.indexOf("[");
-      const arrEnd = cleaned.lastIndexOf("]");
-      if (arrStart === -1 || arrEnd === -1) throw new Error("No JSON array found");
-      cleaned = cleaned.slice(arrStart, arrEnd + 1);
-      const parsed = JSON.parse(cleaned);
-      if (!Array.isArray(parsed) || parsed.length === 0) throw new Error("Empty array");
-      setCareers(parsed);
-    } catch(err) {
-      console.error("findCareers error:", err);
-      setCareerError("Career match failed: " + (err.message||"Try again."));
-      setCareers([
-        {title:"CDL Truck Driver",sector:"Civilian",industry:"Transportation / Logistics",salaryRange:"$55,000-$90,000",match:"Excellent",outlook:"High Growth",why:"Military discipline and vehicle operation translate directly. CDL license obtainable in 4-8 weeks.",clearanceBonus:false,entryPath:"Enroll in CDL school using GI Bill or Helmets to Hardhats",education:"CDL-A License"},
-        {title:"Police Officer",sector:"Government",industry:"Law Enforcement",salaryRange:"$55,000-$85,000",match:"Excellent",outlook:"Stable",why:"Military veterans are preferred candidates at most agencies. Physical fitness and command presence are direct assets.",clearanceBonus:false,entryPath:"Apply to local or federal agency, most waive written exam for veterans",education:"Police Academy (3-6 months)"},
-        {title:"Electrician Apprentice",sector:"Civilian",industry:"Skilled Trades / Construction",salaryRange:"$48,000-$95,000",match:"Excellent",outlook:"High Growth",why:"High demand, strong union wages, GI Bill covers apprenticeship programs.",clearanceBonus:false,entryPath:"Register with IBEW or IEC apprenticeship program",education:"4-year apprenticeship"},
-        {title:"Firefighter",sector:"Government",industry:"Fire & Emergency Services",salaryRange:"$52,000-$80,000",match:"Excellent",outlook:"Stable",why:"Military teamwork, physical fitness, and emergency response experience are exactly what fire departments seek.",clearanceBonus:false,entryPath:"Apply to local fire department, use veterans preference points",education:"Fire Academy + EMT cert"},
-        {title:"Federal Law Enforcement Officer",sector:"Government",industry:"Federal Agency",salaryRange:"$60,000-$100,000",match:"Strong",outlook:"Stable",why:"FBI, DEA, CBP, Secret Service all actively recruit veterans with military police or combat experience.",clearanceBonus:true,entryPath:"Apply via USAJobs.gov with veterans preference",education:"Agency-specific training"},
-        {title:"Operations Manager",sector:"Civilian",industry:"Logistics / Manufacturing",salaryRange:"$65,000-$100,000",match:"Strong",outlook:"Stable",why:"Military NCOs and officers run complex operations daily — this is the same skill set.",clearanceBonus:false,entryPath:"Translate leadership experience on resume, target Walmart, Amazon, FedEx hiring programs",education:"PMP cert helpful"},
-        {title:"HVAC Technician",sector:"Civilian",industry:"Skilled Trades",salaryRange:"$50,000-$85,000",match:"Strong",outlook:"High Growth",why:"Strong demand, excellent wages, military mechanical experience is valued.",clearanceBonus:false,entryPath:"Enroll in HVAC program via GI Bill, apprenticeship or trade school",education:"EPA 608 Cert"},
-        {title:"Cybersecurity Analyst",sector:"Civilian",industry:"Technology / Defense",salaryRange:"$70,000-$115,000",match:"Strong",outlook:"High Growth",why:"DOD cybersecurity experience and clearances are extremely valuable in the private sector.",clearanceBonus:true,entryPath:"CompTIA Security+ certification (study 2-3 months), apply to defense contractors",education:"Security+ / CEH cert"},
-        {title:"Government Contractor (DoD)",sector:"Defense/Intel",industry:"Defense Contracting",salaryRange:"$75,000-$130,000",match:"Excellent",outlook:"Stable",why:"Your military experience and clearance make you immediately valuable to Booz Allen, SAIC, Leidos, and others.",clearanceBonus:true,entryPath:"Apply directly to major defense contractors on LinkedIn or ClearanceJobs.com",education:"Clearance required"},
-        {title:"EMT / Paramedic",sector:"Civilian",industry:"Emergency Medical Services",salaryRange:"$38,000-$65,000",match:"Strong",outlook:"High Growth",why:"Combat medics (68W, HM, 18D) can often test out of EMT requirements.",clearanceBonus:false,entryPath:"Enroll in EMT-Basic course, advance to Paramedic in 1-2 years",education:"EMT-B cert (4-8 weeks)"},
-        {title:"Project Manager",sector:"Civilian",industry:"Construction / Technology / Healthcare",salaryRange:"$70,000-$110,000",match:"Strong",outlook:"High Growth",why:"Military planning experience maps directly to project management.",clearanceBonus:false,entryPath:"Earn PMP certification, target companies with veteran hiring programs",education:"PMP Certification"},
-        {title:"TSA Officer / Border Patrol",sector:"Government",industry:"Homeland Security",salaryRange:"$45,000-$75,000",match:"Excellent",outlook:"Stable",why:"Direct pipeline from military service, veterans preference applies.",clearanceBonus:false,entryPath:"Apply on USAJobs.gov, process takes 3-6 months",education:"Federal training provided"},
-        {title:"Welder",sector:"Civilian",industry:"Manufacturing / Oil & Gas / Shipbuilding",salaryRange:"$48,000-$80,000",match:"Strong",outlook:"Stable",why:"High demand across shipbuilding, pipeline, and manufacturing. Overtime opportunities are substantial.",clearanceBonus:false,entryPath:"AWS welding cert via trade school or community college using GI Bill",education:"AWS Certification"},
-        {title:"Intelligence Analyst",sector:"Defense/Intel",industry:"Intelligence Community",salaryRange:"$70,000-$115,000",match:"Strong",outlook:"Stable",why:"Military intelligence experience and clearances are the #1 requirement for these roles.",clearanceBonus:true,entryPath:"Apply to CIA, NSA, DIA or defense contractors via ClearanceJobs.com",education:"Clearance + BA preferred"},
-        {title:"Heavy Equipment Operator",sector:"Civilian",industry:"Construction / Mining / Oil & Gas",salaryRange:"$55,000-$90,000",match:"Strong",outlook:"Stable",why:"Military combat engineers and motor transport operators have directly transferable skills.",clearanceBonus:false,entryPath:"NCCER certification via apprenticeship or Helmets to Hardhats program",education:"NCCER Operator Cert"},
-        {title:"Logistics Coordinator",sector:"Civilian",industry:"Supply Chain / Freight",salaryRange:"$50,000-$75,000",match:"Excellent",outlook:"High Growth",why:"Military logistics (92A, 88M, Storekeeper) is identical to civilian supply chain work.",clearanceBonus:false,entryPath:"Apply to Amazon, FedEx, UPS, or freight brokerages",education:"None required"},
-        {title:"Diesel Mechanic",sector:"Civilian",industry:"Transportation / Fleet Maintenance",salaryRange:"$52,000-$80,000",match:"Strong",outlook:"Stable",why:"Military vehicle mechanics (91B, 63 series, DC) are highly sought after.",clearanceBonus:false,entryPath:"ASE certification, apply to trucking companies or transit agencies",education:"ASE Cert"},
-        {title:"Safety Manager / EHS Specialist",sector:"Civilian",industry:"Construction / Manufacturing / Oil & Gas",salaryRange:"$60,000-$95,000",match:"Strong",outlook:"High Growth",why:"Military safety protocols and risk management experience are directly valuable.",clearanceBonus:false,entryPath:"OSHA 30 cert + CSP or CHST certification",education:"OSHA 30 cert"},
-        {title:"Corrections Officer",sector:"Government",industry:"State / Federal Corrections",salaryRange:"$45,000-$70,000",match:"Strong",outlook:"Stable",why:"Military discipline and physical fitness are exactly what the correctional system needs.",clearanceBonus:false,entryPath:"Apply to state DOC or Bureau of Prisons, veterans preference applies",education:"Academy training provided"},
-        {title:"IT Systems Administrator",sector:"Civilian",industry:"Technology",salaryRange:"$60,000-$95,000",match:"Strong",outlook:"High Growth",why:"Military IT and communications (25 series, IT rating) translates directly.",clearanceBonus:false,entryPath:"CompTIA A+ and Network+ certs, apply to IT staffing firms",education:"CompTIA A+ / Network+"},
-        {title:"Plumber / Pipefitter",sector:"Civilian",industry:"Skilled Trades",salaryRange:"$55,000-$100,000",match:"Strong",outlook:"High Growth",why:"Extremely high demand, strong union wages, GI Bill covers apprenticeship.",clearanceBonus:false,entryPath:"UA Plumbers & Pipefitters apprenticeship via Helmets to Hardhats",education:"5-year apprenticeship"},
-        {title:"Training Specialist / Instructional Designer",sector:"Civilian",industry:"Corporate / Government",salaryRange:"$55,000-$85,000",match:"Excellent",outlook:"Stable",why:"Military instructors (Drill Sergeants, MOS trainers) are natural training specialists.",clearanceBonus:false,entryPath:"ATD certification, apply to corporate L&D departments or government training contractors",education:"ATD cert helpful"},
-        {title:"Postal Inspector / Mail Carrier",sector:"Government",industry:"United States Postal Service",salaryRange:"$50,000-$85,000",match:"Strong",outlook:"Stable",why:"USPS offers veterans preference and career advancement paths.",clearanceBonus:false,entryPath:"Apply at usps.com/careers, veterans preference gives significant advantage",education:"None required"},
-        {title:"Real Estate Agent",sector:"Civilian",industry:"Real Estate",salaryRange:"$45,000-$120,000",match:"Good",outlook:"High Growth",why:"Veterans understand the military relocation process and connect well with the 1.3M military families moving annually.",clearanceBonus:false,entryPath:"State real estate license (3-6 months), target military communities near bases",education:"State RE License"}
-      ]);
-    }
-    setL("careers",false);
-  };
-  const openCareerDetail = async (career) => {
-    if (!hasAccess) { setShowPaywall(true); return; }
-    setSelectedCareer(career);
-    setCareerDetail(null);
-    setL("careerDetail",true);
-    const summary = buildExpSummary();
-    const prompt = `A veteran with this background: ${summary || "general military service"}
-is considering the career: "${career.title}" in the ${career.sector} sector.
-
-You MUST return ONLY a valid JSON object. No text before or after. No markdown. No backticks. Start your response with { and end with }.
-
-Use this exact structure:
-{"about":"3-4 sentences about this career","salaryBreakdown":{"entry":"$X – $Y","mid":"$X – $Y","senior":"$X – $Y","cleared":"$X – $Y or null","notes":"what drives salary variation"},"careerPath":[{"title":"Job Title","salary":"$X – $Y","description":"one sentence","timeframe":"Years 0-2"},{"title":"Next Role","salary":"$X – $Y","description":"one sentence","timeframe":"Years 2-5"},{"title":"Senior Role","salary":"$X – $Y","description":"one sentence","timeframe":"Years 5-10"},{"title":"Expert/Leadership","salary":"$X – $Y","description":"one sentence","timeframe":"Years 10+"}],"whyYouFit":["reason 1","reason 2","reason 3","reason 4"],"requiredSkills":["skill 1","skill 2","skill 3","skill 4","skill 5"],"gaps":["gap 1","gap 2"],"certifications":["cert 1","cert 2","cert 3"],"actionSteps":["step 1","step 2","step 3","step 4","step 5"]}`;
-
-    try {
-      const raw = await callClaude(prompt, "You are a military career transition expert. Return ONLY valid JSON starting with { and ending with }. Never include markdown, backticks, or explanatory text outside the JSON.");
-      const start = raw.indexOf("{");
-      const end = raw.lastIndexOf("}");
-      if (start === -1 || end === -1) throw new Error("No JSON found");
-      const jsonStr = raw.slice(start, end + 1);
-      const parsed = JSON.parse(jsonStr);
-      setCareerDetail({
-        about: parsed.about || (career.title)+" is a "+(career.sector||"")+" career well-suited for veterans.",
-        salaryBreakdown: {
-          entry: (parsed.salaryBreakdown && parsed.salaryBreakdown.entry) || career.salaryRange,
-          mid: (parsed.salaryBreakdown && parsed.salaryBreakdown.mid) || "",
-          senior: (parsed.salaryBreakdown && parsed.salaryBreakdown.senior) || "",
-          cleared: (parsed.salaryBreakdown && parsed.salaryBreakdown.cleared) || null,
-          notes: (parsed.salaryBreakdown && parsed.salaryBreakdown.notes) || "",
-        },
-        careerPath: Array.isArray(parsed.careerPath) ? parsed.careerPath : [],
-        whyYouFit: Array.isArray(parsed.whyYouFit) ? parsed.whyYouFit : [career.whyFit || "Your military background is directly transferable."],
-        requiredSkills: Array.isArray(parsed.requiredSkills) ? parsed.requiredSkills : (career.topSkills || []),
-        gaps: Array.isArray(parsed.gaps) ? parsed.gaps : [],
-        certifications: Array.isArray(parsed.certifications) ? parsed.certifications : [],
-        actionSteps: Array.isArray(parsed.actionSteps) ? parsed.actionSteps : [career.nextStep || "Research this career field further."],
-      });
-    } catch(err) {
-      setCareerDetail({
-        about: (career.title)+" is a "+(career.sector||"")+" role in "+(career.industry||"multiple industries")+". "+(career.description||"")+" Veterans are well-positioned for this career due to their disciplined work ethic, leadership experience, and mission-focused mindset.",
-        salaryBreakdown: { entry: career.salaryRange, mid: "", senior: "", cleared: null, notes: "Salary varies by location, experience, and certifications." },
-        careerPath: [
-          { title: "Entry-Level "+(career.title), salary: career.salaryRange, description: "Build foundational civilian experience and professional network.", timeframe: "Years 0–2" },
-          { title: "Mid-Level "+(career.title), salary: "", description: "Take on increased responsibility and specialize in a sub-field.", timeframe: "Years 2–5" },
-          { title: "Senior "+(career.title), salary: "", description: "Lead teams, mentor junior staff, manage larger programs.", timeframe: "Years 5–10" },
-          { title: "Director / Principal", salary: "", description: "Strategic leadership, executive decision-making, organizational impact.", timeframe: "Years 10+" },
-        ],
-        whyYouFit: [career.whyFit || "Your military background provides strong transferable skills.", "Veterans bring leadership and discipline that civilian employers highly value.", "Your service demonstrates mission focus and the ability to perform under pressure."],
-        requiredSkills: career.topSkills || [],
-        gaps: ["Consider gaining civilian industry certifications to complement your military training.", "Building a professional civilian network through LinkedIn and industry events will accelerate your transition."],
-        certifications: ["Research industry-specific certifications for this field.", "Consider PMP (Project Management Professional) as a broad credential.", "Check if your military training credits toward any civilian licenses."],
-        actionSteps: [career.nextStep || "Research job postings in this field on USAJOBS, LinkedIn, and Indeed.", "Update your resume to target this specific role using the Resume tab.", "Connect with veterans already working in this field through LinkedIn.", "Research employers who actively recruit veterans in this sector.", "Schedule informational interviews with professionals in this career."],
-      });
-    }
-    setL("careerDetail",false);
-  };
-  const genResume = async () => {
-    if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
-    setApiError("");
-    setL("resume",true);
-    setResume("");
-    setResumeData(null);
-    const expText = buildExpSummary();
-    const milSum = milExperiences.map(e =>
-      (e.branch||"Military") + " " + (e.rank||"") + " MOS:" + (e.mos||"") + " " + (e.mosTitle||"") +
-      " TOS:" + (e.tos||"unknown") +
-      ((e.asi&&e.asi.length) ? " ASIs:"+e.asi.map(a=>a.code+"-"+a.desc).join(",") : "") +
-      ((e.sqi&&e.sqi.length) ? " SQIs:"+e.sqi.map(s=>s.code+"-"+s.desc).join(",") : "") +
-      ((e.awards&&e.awards.length) ? " Awards:"+e.awards.join(",") : "") +
-      ((e.additionalDuties&&e.additionalDuties.length) ? " Duties:"+e.additionalDuties.join(",") : "") +
-      ((e.mosRoles&&e.mosRoles.length) ? " Roles:"+e.mosRoles.map(r=>r.title+"("+r.duration+")").join(",") : "") +
-      " Clearance:" + (e.clearanceLevel||"None") +
-      " Deployments:" + (e.deployments||"none") +
-      " Duties:" + (e.duties||"not described")
-    ).join(" | ");
-    const eduText = education.map(e=>(e.degree)+" in "+(e.field||"")+" — "+(e.institution||"")+" ("+(e.year||"")+")").join("; ");
-    try {
-      const formatInstructions = {
-        ats_chrono: "ATS CHRONOLOGICAL FORMAT: Simple clean layout. Standard section headers (Summary, Experience, Education, Skills, Certifications). Reverse chronological work history. No tables, no text boxes, no columns. Keyword-rich. ATS-safe fonts and structure.",
-        ats_combo: "ATS COMBINATION FORMAT: Open with a Skills Summary section listing 8-10 core competencies as keywords. Then reverse-chronological experience. Then education. ATS-optimized throughout with no tables or columns.",
-        traditional: "TRADITIONAL FORMAT: Conservative black and white. Clean serif-style formatting. Standard sections. No color, no design elements. Appropriate for government, legal, and formal industries.",
-        modern: "MODERN PROFESSIONAL FORMAT: Clean contemporary layout. Use subtle section dividers (——). Bold role titles. Clean hierarchy. Professional but polished. Suitable for corporate and private sector.",
-        executive: "EXECUTIVE FORMAT: Open with a strong executive profile paragraph. Follow with Core Competencies as two columns of keywords. Then Career Highlights with 3-4 major achievements with metrics. Then abbreviated experience. Emphasize leadership scope, P&L, team size, and strategic impact.",
-        federal: "FEDERAL/USAJOBS FORMAT: Extremely detailed. Include GS pay scale equivalent where applicable. List all positions with full addresses of employers, hours per week, supervisor names. Include detailed KSAs. Often 3-5 pages. List all training, awards, and certifications in full.",
-        harvard: "HARVARD STYLE: Single column, clean conservative layout. Name and contact centered at top with a line beneath. Section headers in small caps or bold with a line rule. Clean consistent formatting with strong use of white space.",
-        wharton: "WHARTON/MBA STYLE: Name bold and prominent. One-line title/brand statement. Experience entries lead with company and bold achievement metrics. Emphasis on quantified results, revenue impact, team sizes, and scope. Sharp and results-focused.",
-        minimalist: "MINIMALIST FORMAT: Maximum white space. Simple clean typography. Minimal use of dividers. Let content breathe. Easy to scan. Clean hierarchy with role, company, dates on one line.",
-        creative: "CREATIVE FORMAT: Use tasteful formatting with section color accents (use ASCII/text characters to simulate). Clear visual hierarchy. Creative but readable. Appropriate for design, media, and branding roles.",
-      };
-      const formatGuide = formatInstructions[resumeFormat] || formatInstructions.ats_chrono;
-      const contact = (personal.name||"") + " | " + (personal.email||"") + " | " + (personal.phone||"") + " | " + (personal.location||"") + (personal.linkedin ? " | " + personal.linkedin : "");
-      const eduText2 = education.map(e => (e.degree||"") + " " + (e.field||"") + " " + (e.institution||"") + " " + (e.year||"")).join("; ");
-      const prompt =
-        "You are a military-to-civilian resume expert. Create a complete professional resume.\n\n" +
-        "VETERAN MILITARY PROFILE:\n" + milSum + "\n\n" +
-        "CIVILIAN EXPERIENCE:\n" + expText + "\n\n" +
-        "EDUCATION:\n" + eduText2 + "\n\n" +
-        "SKILLS: " + (skills.technical||"") + "\n" +
-        "LEADERSHIP: " + (skills.leadership||"") + "\n" +
-        "LANGUAGES: " + (skills.languages||"") + "\n" +
-        "CERTIFICATIONS: " + (skills.certs||"") + "\n" +
-        (target.interests ? "INTERESTS/HOBBIES: " + target.interests + "\n" : "") +
-        "TARGET ROLE: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + "\n\n" +
-        "CONTACT: " + contact + "\n\n" +
-        "CRITICAL RULES — ZERO MILITARY JARGON ALLOWED:\n" +
-        "ABSOLUTE RULE: The resume must read as if written by a civilian professional. A civilian hiring manager should not be able to tell this person was in the military unless they choose to mention it. Every single military term MUST be replaced with civilian language.\n" +
-        "BANNED WORDS — never use these: NCO, NCOIC, OIC, MOS, AFSC, NEC, SGT, SSG, SFC, MSG, CSM, PFC, SPC, CPL, E-4, E-5, O-3, Soldier, Airman, Marine, Sailor, Guardian, Troop, Unit, Battalion, Brigade, Company, Platoon, Squad, TOC, SITREP, AAR, OPORD, TDY, PCS, ETS, TAD, SHARP (spell it out), Armorer (say Weapons Inventory Manager), Retention NCO (say Talent Acquisition Specialist), Drill Sergeant (say Training Instructor/Leadership Development Specialist), Airborne (say Parachute Operations Certified), MRE, Battle Rhythm, Hooah, Oorah, Hard Charger.\n" +
-        "TRANSLATION RULES:\n" +
-        "- NCO / Sergeant / Staff Sergeant = Team Leader / Operations Supervisor\n" +
-        "- NCOIC = Operations Lead / Team Supervisor\n" +
-        "- OIC = Program Manager / Department Lead\n" +
-        "- Unit Armorer = Weapons & Equipment Inventory Manager\n" +
-        "- SHARP Representative = Employee Relations & Compliance Coordinator\n" +
-        "- Retention NCO = Talent Acquisition & Career Development Specialist\n" +
-        "- Drill Sergeant = Leadership Development Instructor\n" +
-        "- Airborne qualified = Parachute Operations Certified (or just omit if not relevant)\n" +
-        "- Supply Sergeant = Inventory & Logistics Manager\n" +
-        "- Motor Transport = Fleet Operations & Vehicle Maintenance Manager\n" +
-        "- Battalion / Brigade = Organization / Division\n" +
-        "- Platoon of 40 soldiers = Team of 40 personnel\n" +
-        "- TOC = Operations Center\n" +
-        "- SITREP = Status Report\n" +
-        "- AAR = After-Action Review / Post-Project Debrief\n" +
-        "- COR = Contract Oversight Manager\n" +
-        "- Secret clearance = Active Secret Security Clearance (keep this — it is valuable)\n" +
-        "- TS/SCI = Active Top Secret/SCI Security Clearance (keep this — premium asset)\n" +
-        "1. Write every bullet point as a civilian achievement: Led [X people], managed [$X budget], reduced [X%], improved [outcome].\n" +
-        "2. Quantify ONLY using numbers the veteran explicitly provided. NEVER invent or fabricate metrics. If they gave no numbers for a task, write the bullet without numbers — an honest bullet beats a fabricated one.\n" +
-        "3. Start every bullet with a strong civilian action verb: Led, Managed, Coordinated, Developed, Implemented, Reduced, Increased, Trained, Oversaw, Delivered.\n" +
-        "4. Security clearances are the ONE military term to keep — they are premium salary assets.\n" +
-        "5. ATS keywords for: " + (target.title||"operations management, leadership, logistics") + "\n\n" +
-        "Return ONLY valid JSON, no markdown, starting with { ending with }.\n" +
-        "Keys: name, contact (string), summary (2-3 sentence professional paragraph), " +
-        "experience (array of {employer, title, dates, bullets:[4-6 strong civilian bullet strings]}), " +
-        "education (array of {degree, school, year}), " +
-        "skills (array of max 12 skill strings), " +
-        "certifications (array of strings), " +
-        "clearance (string or null), " +
-        "awards (array of strings)";
-      const raw = await callClaude(
-        prompt,
-        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) CIVILIAN AND GOVERNMENT JOBS: Treat every civilian or government job with the same rigor as military. 10) USE ALL QUALIFICATIONS: Every ASI, SQI, NEC, SEI, sub-role, and additional duty must appear somewhere in the resume.",
-        3500
-      );
-      const rStart = raw.indexOf("{");
-      const rEnd = raw.lastIndexOf("}");
-      if (rStart > -1 && rEnd > -1) {
-        try {
-          const rd = JSON.parse(raw.slice(rStart, rEnd + 1));
-          delete rd.careerPath; setResumeData(rd); setEditableResume(JSON.parse(JSON.stringify(rd))); setResumeEditMode(false);
-        } catch(pe) {
-          console.warn("Resume JSON parse failed, using text mode:", pe.message);
-        }
-      }
-      setResume(raw);
-      setL("resume",false);
-    } catch(e) {
-      console.error("Resume generation failed:", e);
-      setResume("Error generating resume: " + (e.message || "Please check your API key and try again."));
-      setL("resume",false);
-    }
-  };
-  const genCoverLetter = async () => {
-    if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
-    if (!resume && !resumeData && !uploadedResumeText) { alert("Please upload a resume file or generate one on the Build Resume tab."); return; }
-    setCoverLetterLoading(true);
-    setCoverLetter("");
-    const milSummary = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")+" ("+(e.tos||"")+"), MOS: "+(e.mos||"")).join("; ");
-    const resumeText = uploadedResumeText || resume || (resumeData ? JSON.stringify(resumeData) : "");
-    const prompt = `You are an expert military-to-civilian career counselor writing a compelling cover letter.
-
-VETERAN PROFILE:
-- Service: ${milSummary}
-- Name: ${personal.name||"[Name]"}
-
-TARGET JOB:
-- Title: ${coverLetterJob.title||"[Position]"}
-- Company: ${coverLetterJob.company||"[Company]"}
-- Job Description: ${coverLetterJob.description||"Not provided"}
-
-RESUME SUMMARY:
-${resumeText.slice(0,1500)}
-
-Write a professional, warm, and compelling 3-paragraph cover letter that:
-1. Opens with a strong hook connecting military service to the role
-2. Highlights 2-3 specific achievements from their service that directly apply
-3. Closes with confidence and a clear call to action
-4. Translates ALL military jargon into civilian language
-5. Is addressed to the hiring manager (use "Dear Hiring Manager" if no name given)
-6. Is between 250-350 words
-
-Return ONLY the cover letter text, no subject line, no extra commentary.`;
-    try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) CIVILIAN AND GOVERNMENT JOBS: Treat every civilian or government job with the same rigor as military. 10) USE ALL QUALIFICATIONS: Every ASI, SQI, NEC, SEI, sub-role, and additional duty must appear somewhere in the resume.", 1500);
-      setCoverLetter(raw);
-    } catch(e) {
-      setCoverLetter("Error generating cover letter. Please try again.");
-    }
-    setCoverLetterLoading(false);
-  };
-  const genInterviewPrep = async () => {
-    if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
-    setPrepLoading(true); setPrepQuestions([]);
-    const milSummary = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")+" MOS "+(e.mos||"")+" ("+(e.tos||"")+")").join("; ");
-    const prompt = `You are an elite interview coach for military veterans transitioning to civilian careers.
-
-VETERAN: ${milSummary}
-APPLYING FOR: ${prepJob.title||"a civilian role"} at ${prepJob.company||"a company"}
-INTERVIEW TYPE: ${prepJob.type}
-
-Generate 8 interview questions they will likely be asked, with a tailored answer strategy using their military background. Return ONLY valid JSON array:
-[{
-  "question": "Tell me about yourself.",
-  "whyAsked": "Sets the tone, they want your career story",
-  "answerStrategy": "Start with military service, bridge to civilian value, end with why this role",
-  "starExample": "Situation: As a [rank] in [branch]... Task: I was responsible for... Action: I implemented... Result: This led to...",
-  "tip": "Keep it under 2 minutes. Practice out loud."
-}]
-
-Make answers specific to their MOS and rank. Use the STAR method. Translate all military jargon.`;
-    try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) CIVILIAN AND GOVERNMENT JOBS: Treat every civilian or government job with the same rigor as military. 10) USE ALL QUALIFICATIONS: Every ASI, SQI, NEC, SEI, sub-role, and additional duty must appear somewhere in the resume.", 3000);
-      const clean = raw.replace(/```json|```/g,"").trim();
-      const s = clean.indexOf("["); const e = clean.lastIndexOf("]");
-      if(s===-1||e===-1) throw new Error("No array");
-      setPrepQuestions(JSON.parse(clean.slice(s,e+1)));
-    } catch(err) {
-      setPrepQuestions([{
-        question:"Tell me about yourself.",
-        whyAsked:"Opens the interview and sets the tone",
-        answerStrategy:"Lead with your military service, highlight your top 2-3 skills, connect to this specific role, end with your excitement about the opportunity.",
-        starExample:"I served "+milSummary+". I built strong skills in leadership and operations that I am excited to bring to this role.",
-        tip:"Practice this until it feels natural. This is your elevator pitch."
-      }]);
-    }
-    setPrepLoading(false);
-  };
-  const genFollowupEmail = async () => {
-    if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
-    setFollowupLoading(true); setFollowupEmail("");
-    const milSum = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")).join(", ");
-    const emailTypes = {
-      "thank-you": "a warm, professional thank-you email after an interview",
-      "follow-up": "a polite follow-up email checking on application status after 1 week of silence",
-      "negotiation": "a professional salary negotiation email asking for a higher offer",
-      "withdraw": "a gracious email withdrawing from consideration while keeping the door open"
-    };
-    const prompt = `Write ${emailTypes[followupCtx.outcome]||"a professional email"}.
-
-Veteran: ${personal.name||"[Name]"} | Service: ${milSum}
-Role: ${followupCtx.role||"the position"} at ${followupCtx.company||"your company"}
-Interviewer: ${followupCtx.interviewerName||"Hiring Manager"}
-Interview date: ${followupCtx.date||"recently"}
-
-Write a genuine, professional email that:
-- Is NOT overly formal or stiff
-- References something specific from the conversation if possible (be generic if no details)
-- Subtly reinforces their military background as an asset
-- Is under 150 words
-- Has a clear subject line on the first line starting with "Subject: "
-
-Return ONLY the email text including the subject line. No extra commentary.`;
-    try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered. 9) CIVILIAN AND GOVERNMENT JOBS: Treat every civilian or government job with the same rigor as military. 10) USE ALL QUALIFICATIONS: Every ASI, SQI, NEC, SEI, sub-role, and additional duty must appear somewhere in the resume.", 800);
-      setFollowupEmail(raw.trim());
-    } catch(err) {
-      setFollowupEmail("Subject: Thank You - " + (followupCtx.role||"Position") + " Interview\n\nDear " + (followupCtx.interviewerName||"Hiring Manager") + ",\n\nThank you for taking the time to meet with me regarding the " + (followupCtx.role||"position") + " role at " + (followupCtx.company||"your organization") + ". I enjoyed learning more about the team and am excited about the opportunity to bring my military leadership experience to your organization.\n\nPlease let me know if you need any additional information.\n\nBest regards,\n" + (personal.name||"[Your Name]"));
-    }
-    setFollowupLoading(false);
-  };
-  const runResumeReview = async () => {
-    if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
-    if (!resume && !resumeData && !uploadedResumeText) { alert("Please upload a resume file or generate one first."); return; }
-    setReviewLoading(true);
-    setResumeScore(null);
-    setResumeReview(null);
-    const resumeText = uploadedResumeText || resume || JSON.stringify(resumeData||{});
-    const prompt = `You are an expert resume reviewer for military-to-civilian career transitions. Analyze this resume and return ONLY valid JSON.
-
-RESUME:
-${resumeText.slice(0,2000)}
-
-TARGET JOB: ${target.title||"General civilian role"}
-
-Return this exact JSON structure:
-{
-  "overallScore": 82,
-  "grades": {
-    "impact": { "score": 85, "label": "Impact & Achievements" },
-    "clarity": { "score": 78, "label": "Clarity & Civilian Language" },
-    "keywords": { "score": 80, "label": "Keywords & ATS" },
-    "formatting": { "score": 88, "label": "Format & Length" },
-    "military": { "score": 72, "label": "Military Translation" }
-  },
-  "strengths": ["strength 1", "strength 2", "strength 3"],
-  "improvements": [
-    { "priority": "HIGH", "issue": "Issue title", "fix": "Specific fix to make" },
-    { "priority": "MEDIUM", "issue": "Issue title", "fix": "Specific fix to make" },
-    { "priority": "LOW", "issue": "Issue title", "fix": "Specific fix to make" }
-  ],
-  "missingKeywords": ["keyword1", "keyword2", "keyword3"],
-  "verdict": "One sentence overall assessment"
-}`;
-    try {
-      const raw = await callClaude(prompt, "You are an expert resume reviewer. Return ONLY valid JSON, no markdown, no commentary.", 1500);
-      const clean = raw.replace(/```json|```/g,"").trim();
-      const data = JSON.parse(clean);
-      setResumeScore(data.overallScore);
-      setResumeReview(data);
-    } catch(e) {
-      setResumeReview({ error: "Could not analyze resume. Make sure your resume is generated first." });
-    }
-    setReviewLoading(false);
-  };
-
-  const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
-
-  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Vet Resources","My Profile"];
-  const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
-  const DI = "Defense/Intel";
-  const RG = "Reserve/Guard (concurrent with civilian)";
-  const matchesSector = (c, filter) => filter==="All" || c.sector===filter || (filter===DI && c.sector===DI);
-  const filterCareers = (careers, filter) => careers.filter(c => matchesSector(c, filter));
-
   return (
-    <>
-      <style>{css}</style>
-      <div className="app">
-
-        {showPaywall&&(
-          <div className="pw-overlay" onClick={e=>e.target===e.currentTarget&&null}>
-            <div className="pw-box">
-              <div className="pw-head">
-                <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path"
-                  style={{width:"90px",height:"90px",objectFit:"contain",marginBottom:".6rem",filter:"drop-shadow(0 2px 8px rgba(0,0,0,.4))"}}/>
-                <p style={{color:"#a0c0e0",fontSize:".85rem",margin:0}}>AI-powered tools to translate your service into a civilian career</p>
-              </div>
-
-              <div style={{padding:"1.2rem 1.5rem 0"}}>
-                <div style={{border:"2.5px solid #1a3a6b",borderRadius:"10px",padding:"1.2rem",background:"linear-gradient(135deg,#f0f4ff,#e8edf5)",textAlign:"center"}}>
-
-                  <div style={{textAlign:"center",marginBottom:".4rem"}}>
-                    <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"3rem",color:"#1a3a6b",lineHeight:1}}>$4.99</div>
-                    <div style={{fontSize:".85rem",fontWeight:700,color:"#1a3a6b",marginTop:".2rem"}}>3-Day Trial</div>
-                    <div style={{fontSize:".78rem",color:"#5a7090",marginTop:".15rem"}}>then $14.99 / month — cancel anytime</div>
-                  </div>
-
-                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".3rem .8rem",textAlign:"left",fontSize:".78rem",color:"#2a4a6a"}}>
-                    {["AI Career Matching","Military Language Translator","AI Resume Builder","5 Resume Templates","Cover Letter Generator","Resume Score & Review","Job Application Tracker","Interview Prep Generator","Follow-Up Email Generator","Transition Timeline","Weekly Progress Dashboard","Veteran Resources Hub"].map((f,i)=>(
-                      <div key={i} style={{display:"flex",gap:".3rem",alignItems:"center"}}><span style={{color:"#1a7a40",fontWeight:700,fontSize:".8rem"}}>✓</span>{f}</div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="pw-divider">
-                <div/><span>OR ENTER ACCESS CODE</span><div/>
-              </div>
-              <div className="pw-code-row">
-                <input
-                  placeholder="Access Code"
-                  value={pwCode}
-                  className={pwCodeStatus==="valid"?"valid":pwCodeStatus==="invalid"?"invalid":""}
-                  onChange={e=>{setPwCode(e.target.value.toUpperCase());setPwCodeStatus("idle");setPwCodeMsg("");}}
-                  onKeyDown={e=>e.key==="Enter"&&redeemCode()}
-                  style={{textTransform:"uppercase",letterSpacing:".1em",fontWeight:600}}
-                />
-                <button className="pw-code-btn" onClick={redeemCode}>Apply</button>
-              </div>
-              {pwCodeMsg&&(
-                <div style={{padding:"0 1.5rem .5rem",fontSize:".8rem",color:pwCodeStatus==="valid"?"#1a7a40":"#c0392b",fontWeight:600}}>
-                  {pwCodeMsg}
-                </div>
-              )}
-
-              <div className="pw-footer">
-                <button className="pw-cta" onClick={()=>{
-                  const stripeLink = "https://buy.stripe.com/3cIaEX5Hfdhm52pasfenS01";
-                  window.location.href = stripeLink;
-                }}>
-                  Start 3-Day Trial — $4.99 →
-                </button>
-                <div style={{textAlign:"center",fontSize:".72rem",color:"#8aa0b8",margin:"-.1rem 0 .2rem"}}>
-                  $4.99 for 3 days · then $14.99/month · cancel anytime
-                </div>
-                <button className="pw-skip" onClick={()=>{setShowPaywall(false);}}>
-                  Not ready yet? Browse the app first (AI features locked)
-                </button>
-                <div style={{textAlign:"center",marginTop:".75rem",paddingBottom:".5rem",fontSize:".82rem",color:"#8aa0b8"}}>
-                  Already have an account?{"  "}
-                  <button style={{background:"none",border:"none",color:"#1a3a6b",fontWeight:700,cursor:"pointer",textDecoration:"underline",fontSize:".82rem",padding:0}}
-                    onClick={()=>{setShowPaywall(false);setShowAuth(true);setAuthMode("login");}}>
-                    Sign In →
-                  </button>
-                </div>
+        <div className={"panel "+(tab===6?"on":"")}>
+          {}
+          <div className="card">
+            <div style={{display:"flex",alignItems:"center",gap:".65rem"}}>
+              <span style={{fontSize:"1.35rem"}}>&#128269;</span>
+              <div>
+                <div style={{fontSize:"1rem",letterSpacing:".08em",color:"var(--gold-light)",fontWeight:700}}>Job Match Analyzer</div>
+                <div style={{fontSize:".78rem",color:"rgba(255,255,255,.5)",fontWeight:300}}>Paste a job posting - AI compares it to your resume and gives an honest score</div>
               </div>
             </div>
+            <textarea id="jma-url" placeholder="Paste job posting text here..." style={{width:"100%",minHeight:"60px",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:"8px",padding:".65rem",color:"#fff",fontSize:".82rem",marginBottom:".65rem"}} />
+            <button onClick={()=>runJobMatch()} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",color:"#0a1628",border:"none",borderRadius:"8px",padding:".5rem 1.1rem",fontWeight:700,fontSize:".82rem",cursor:"pointer"}}>Analyze Match</button>
+            <div id="jma-result" style={{marginTop:".65rem",fontSize:".84rem",lineHeight:1.6,whiteSpace:"pre-wrap"}}></div>
           </div>
-        )}
 
-        {showAuth&&(
-          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}}
-            onClick={e=>e.target===e.currentTarget&&setShowAuth(false)}>
-            <div style={{background:"#ffffff",borderRadius:"10px",width:"100%",maxWidth:"420px",boxShadow:"0 20px 60px rgba(0,0,0,.3)",overflow:"hidden"}}>
-
-              <div style={{background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",padding:"1.6rem 1.8rem 1.2rem",textAlign:"center",position:"relative"}}>
-                <button onClick={()=>setShowAuth(false)} style={{position:"absolute",top:".8rem",right:".8rem",background:"transparent",border:"none",color:"rgba(255,255,255,.7)",fontSize:"1.4rem",cursor:"pointer",lineHeight:1}}>✕</button>
-                <div style={{fontSize:"2rem",marginBottom:".4rem"}}>🎖</div>
-                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.4rem",letterSpacing:".1em",color:"#f0c040"}}>Veteran Career Path</div>
-                <div style={{fontSize:".82rem",color:"#b8d0f0",marginTop:".3rem"}}>Free account — save your profile and resumes</div>
-              </div>
-
-              <div style={{display:"flex",borderBottom:"2px solid #e8edf5",background:"#f8fafc"}}>
-                <button onClick={()=>{setAuthMode("login");setAuthErr("");setAuthOk("");}}
-                  style={{flex:1,padding:".7rem",background:"transparent",border:"none",borderBottom:authMode==="login"?"2.5px solid #1a3a6b":"2.5px solid transparent",marginBottom:"-2px",cursor:"pointer",fontWeight:authMode==="login"?700:400,color:authMode==="login"?"#1a3a6b":"#5a7090",fontSize:".9rem"}}>
-                  Sign In
-                </button>
-                <button onClick={()=>{setAuthMode("register");setAuthErr("");setAuthOk("");}}
-                  style={{flex:1,padding:".7rem",background:"transparent",border:"none",borderBottom:authMode==="register"?"2.5px solid #1a3a6b":"2.5px solid transparent",marginBottom:"-2px",cursor:"pointer",fontWeight:authMode==="register"?700:400,color:authMode==="register"?"#1a3a6b":"#5a7090",fontSize:".9rem"}}>
-                  Create Account
-                </button>
-              </div>
-
-              <div style={{padding:"1.4rem 1.8rem 1.6rem"}}>
-                {authErr&&<div style={{background:"#fff0f0",border:"1px solid #f0c0c0",borderRadius:"4px",padding:".55rem .8rem",fontSize:".82rem",color:"#a00",marginBottom:".75rem"}}>{authErr}</div>}
-                {authOk&&<div style={{background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".55rem .8rem",fontSize:".82rem",color:"#1a7a40",marginBottom:".75rem"}}>{authOk}</div>}
-
-                <button
-                  style={{width:"100%",padding:".7rem",background:"#ffffff",border:"1.5px solid #d0daea",borderRadius:"6px",cursor:"pointer",fontSize:".9rem",fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",gap:".7rem",color:"#1a2a3a",marginBottom:"1rem",boxShadow:"0 1px 4px rgba(0,0,0,.06)"}}
-                  onClick={async()=>{
-                    if(!fbAuth){setAuthErr("Firebase not configured. Contact the site owner.");return;}
-                    try{
-                      const provider=new firebase.auth.GoogleAuthProvider();
-                      await fbAuth.signInWithPopup(provider);
-                      setShowAuth(false);
-                    }catch(e){
-                      if(e.code==="auth/popup-closed-by-user") return;
-                      if(e.code==="auth/popup-blocked") setAuthErr("Popup blocked — allow popups for this site.");
-                      else setAuthErr("Google sign-in failed: "+(e.message||"Unknown error"));
-                    }
-                  }}>
-                  <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.66l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
-                  Continue with Google
-                </button>
-
-                <div style={{display:"flex",alignItems:"center",gap:".6rem",marginBottom:"1rem"}}>
-                  <div style={{flex:1,height:"1px",background:"#e0e8f0"}}/><span style={{fontSize:".72rem",color:"#8aa0b8",letterSpacing:".06em"}}>OR EMAIL</span><div style={{flex:1,height:"1px",background:"#e0e8f0"}}/>
-                </div>
-
-                {authMode==="register"&&(
-                  <div className="field" style={{marginBottom:".6rem"}}>
-                    <label>Full Name</label>
-                    <input placeholder="First Last" value={authForm.name} onChange={e=>setAuthForm(f=>({...f,name:e.target.value}))}/>
-                  </div>
-                )}
-                <div className="field" style={{marginBottom:".6rem"}}>
-                  <label>Email</label>
-                  <input placeholder="your@email.com" type="email" value={authForm.username}
-                    onChange={e=>setAuthForm(f=>({...f,username:e.target.value}))}
-                    onKeyDown={e=>e.key==="Enter"&&(authMode==="login"?handleLogin():handleRegister())}/>
-                </div>
-                <div className="field" style={{marginBottom:".8rem"}}>
-                  <label>Password</label>
-                  <input type="password" placeholder="Password" value={authForm.password}
-                    onChange={e=>setAuthForm(f=>({...f,password:e.target.value}))}
-                    onKeyDown={e=>e.key==="Enter"&&(authMode==="login"?handleLogin():handleRegister())}/>
-                </div>
-                {authMode==="register"&&(
-                  <div className="field" style={{marginBottom:".8rem"}}>
-                    <label>Confirm Password</label>
-                    <input type="password" placeholder="Re-enter password" value={authForm.confirmPassword}
-                      onChange={e=>setAuthForm(f=>({...f,confirmPassword:e.target.value}))}/>
-                  </div>
-                )}
-                <button style={{width:"100%",padding:".72rem",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",border:"none",borderRadius:"6px",cursor:"pointer",fontSize:".95rem",fontWeight:700,fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em"}}
-                  onClick={authMode==="login"?handleLogin:handleRegister}>
-                  {authMode==="login"?"Sign In →":"Create Free Account →"}
-                </button>
-
-                {authMode==="login"&&(
-                  <div style={{textAlign:"center",marginTop:".6rem"}}>
-                    <button style={{background:"transparent",border:"none",color:"#8aa0b8",fontSize:".78rem",cursor:"pointer",textDecoration:"underline"}}
-                      onClick={async()=>{
-                        if(!fbAuth||!authForm.username.trim()){setAuthErr("Enter your email first.");return;}
-                        try{
-                          await fbAuth.sendPasswordResetEmail(authForm.username.trim());
-                          setAuthOk("Reset email sent — check your inbox.");
-                        }catch(e){setAuthErr("Could not send reset email.");}
-                      }}>Forgot password?</button>
-                  </div>
-                )}
-
-                <div style={{textAlign:"center",marginTop:"1rem",paddingTop:".75rem",borderTop:"1px solid #e8edf5"}}>
-                  <button style={{background:"transparent",border:"none",color:"#8aa0b8",fontSize:".8rem",cursor:"pointer"}} onClick={()=>setShowAuth(false)}>
-                    Continue without an account
-                  </button>
-                </div>
+          {}
+          <div className="card">
+            <div style={{display:"flex",alignItems:"center",gap:".65rem"}}>
+              <span style={{fontSize:"1.35rem"}}>&#128101;</span>
+              <div>
+                <div style={{fontSize:"1rem",letterSpacing:".08em",color:"var(--gold-light)",fontWeight:700}}>LinkedIn Profile Builder</div>
+                <div style={{fontSize:".78rem",color:"rgba(255,255,255,.5)",fontWeight:300}}>Generate LinkedIn headline, About section, and experience bullets</div>
               </div>
             </div>
+            <button onClick={()=>runLinkedIn()} style={{background:"rgba(10,102,194,.8)",color:"#fff",border:"none",borderRadius:"8px",padding:".5rem 1.1rem",fontWeight:700,fontSize:".82rem",cursor:"pointer"}}>Generate LinkedIn Profile</button>
+            <div id="li-result" style={{marginTop:".65rem",fontSize:".84rem",lineHeight:1.6,whiteSpace:"pre-wrap"}}></div>
           </div>
-        )}
 
-        {showAdminSetup&&(
-          <div style={{position:"fixed",inset:0,background:"rgba(8,12,24,.97)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}}>
-            <div style={{background:"linear-gradient(160deg,#243560,#1e3530)",border:"1px solid rgba(201,168,76,.35)",borderRadius:"6px",width:"100%",maxWidth:"460px",overflow:"hidden"}}>
-              <div style={{background:"rgba(201,168,76,.12)",borderBottom:"1px solid rgba(201,168,76,.22)",padding:"1.2rem 1.4rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <div>
-                  <div style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".12em",fontSize:"1.2rem",color:"var(--gold-light)"}}>⚙ Site Owner Setup</div>
-                  <div style={{fontSize:".76rem",color:"var(--slate)",marginTop:".2rem"}}>This panel is only for the site owner — not visible to users</div>
-                </div>
-                <button onClick={()=>setShowAdminSetup(false)} style={{background:"transparent",border:"none",color:"var(--slate)",fontSize:"1.2rem",cursor:"pointer"}}>✕</button>
-              </div>
-              <div style={{padding:"1.5rem"}}>
-                {adminKeySet?(
-                  <div style={{background:"rgba(76,175,130,.1)",border:"1px solid rgba(76,175,130,.3)",borderRadius:"3px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".88rem",color:"var(--green)"}}>
-                    ✓ API key is configured — AI features are enabled
-                  </div>
-                ):(
-                  <div style={{background:"rgba(201,168,76,.08)",border:"1px solid rgba(201,168,76,.25)",borderRadius:"3px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".85rem",color:"var(--slate)",lineHeight:"1.6"}}>
-                  AI features are enabled via the Vercel proxy. If you need to override with a direct API key, enter it below.
-                  </div>
-                )}
-                <div style={{marginBottom:"1rem"}}>
-                  <label style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,display:"block",marginBottom:".4rem"}}>Anthropic API Key</label>
-                  <input
-                    type="password"
-                    placeholder="https://your-proxy.vercel.app/api/claude"
-                    value={adminKeyInput}
-                    onChange={e=>setAdminKeyInput(e.target.value)}
-                    style={{width:"100%",background:"rgba(255,255,255,.92)",border:"1.5px solid rgba(201,168,76,.5)",borderRadius:"3px",color:"#1a1a2e",padding:".65rem .85rem",fontFamily:"monospace",fontSize:".9rem"}}
-                  />
-                </div>
-                <button
-                  style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,var(--gold),var(--gold-light))",border:"none",borderRadius:"3px",color:"var(--navy)",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".12em",fontSize:"1rem",cursor:"pointer"}}
-                  onClick={()=>{
-                    const k = adminKeyInput.trim();
-                    if(k.length < 20){ alert("That doesn't look like a valid API key."); return; }
-                    if (k.startsWith("https://")) {
-                      localStorage.setItem("vcb_proxy_url", k);
-                      alert("Proxy URL saved! AI features are now enabled.");
-                      window.location.reload();
-                    } else {
-                      localStorage.setItem("vcb_admin_key", k);
-                    } try{sessionStorage.setItem("vcb_admin_key", k);}catch(e){} document.cookie="vcb_ak="+k+";max-age=31536000;path=/;SameSite=Strict";
-                    setAdminKeySet(true);
-                    setAdminKeyInput("");
-                    setShowAdminSetup(false);
-                    alert("API key saved! AI features are now enabled.");
-                  }}>
-                  Save API Key
-                </button>
-                {adminKeySet&&(
-                  <button
-                    style={{width:"100%",marginTop:".6rem",padding:".5rem",background:"transparent",border:"1px solid rgba(224,85,85,.3)",borderRadius:"3px",color:"#cc5555",fontFamily:"'Crimson Pro',serif",fontSize:".82rem",cursor:"pointer"}}
-                    onClick={()=>{
-                      if(window.confirm("Remove the API key? AI features will stop working.")){
-                        localStorage.removeItem("vcb_admin_key");
-                        setAdminKeySet(false);
-                      }
-                    }}>
-                    Remove API Key
-                  </button>
-                )}
+          {}
+          <div className="card">
+            <div style={{display:"flex",alignItems:"center",gap:".65rem"}}>
+              <span style={{fontSize:"1.35rem"}}>&#127908;</span>
+              <div>
+                <div style={{fontSize:"1rem",letterSpacing:".08em",color:"var(--gold-light)",fontWeight:700}}>Interview Simulator</div>
+                <div style={{fontSize:".78rem",color:"rgba(255,255,255,.5)",fontWeight:300}}>Get realistic interview questions with AI feedback on your answers</div>
               </div>
             </div>
+            <input id="int-role" placeholder="Target job title (e.g. Operations Manager)" style={{width:"100%",padding:".55rem .85rem",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:"8px",color:"#fff",fontSize:".85rem",marginBottom:".5rem"}} />
+            <button onClick={()=>runInterview()} style={{background:"linear-gradient(135deg,#1a7a40,#22a855)",color:"#fff",border:"none",borderRadius:"8px",padding:".5rem 1.1rem",fontWeight:700,fontSize:".82rem",cursor:"pointer"}}>Generate Interview Questions</button>
+            <div id="int-questions" style={{marginTop:".75rem"}}></div>
           </div>
-        )}
 
-        {currentUser?(
-          <div className="user-bar">
-            <div className="user-bar-left">
-              <div className="user-avatar">{currentUser.initials}</div>
-              <span>Signed in as <strong>{currentUser.name}</strong></span>
-              {hasUnsaved&&<span className="unsaved" title="Unsaved changes"/>}
-            </div>
-            <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
-              <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleSaveProfile}>
-                {hasUnsaved?"⏳ Saving…":"✓ Profile Saved"}
-              </button>
-              <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>setTab(3)}>
-                My Resumes ({savedResumes.length})
-              </button>
-              {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>⭐ $14.99/mo</button>}
-              <button className="btn-danger" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleLogout}>Sign Out</button>
-              {window.location.search.indexOf("admin=1")>-1&&<button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>SETUP</button>}
-            </div>
-          </div>
-        ):(
-          <div style={{background:"#1a3a6b",borderBottom:"1px solid #2456a0",padding:".45rem 1.2rem",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-            <span style={{fontSize:".78rem",color:"#90b8e0",letterSpacing:".02em"}}>
-              Not signed in — <span style={{color:"#b8d0f0"}}>your progress won't be saved</span>
-            </span>
-            <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".32rem .9rem",fontSize:".78rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em"}}
-              onClick={()=>setShowAuth(true)}>
-              Sign In / Create Account
-            </button>
-          </div>
-        )}
-
-        <div className="hdr">
-          <img
-            src={window.VCB_LOGO}
-            alt="Veteran to Civilian Career Transitions"
-            style={{display:"block",margin:"0 auto",width:"clamp(100px,35vw,220px)",height:"clamp(86px,30vw,190px)",objectFit:"contain",mixBlendMode:"screen",filter:"drop-shadow(0 2px 12px rgba(201,168,76,.2))"}}
-          />
-          <p style={{marginTop:".5rem"}}>From Service to Civilian Success</p>
-        </div>
-        <div className="tabs">
-          {TABS.map((t,i)=>(
-            <button key={i} className={"tab "+(tab===i?"active":"")} onClick={()=>setTab(i)}>
-              <span className="tab-n">{i+1}</span>{t}
-            </button>
-          ))}
-        </div>
-        <div className="steps">{TABS.map((_,i)=><div key={i} className={"sdot "+(tab===i?"on":"")}/>)}</div>
-
-        <div className="wrap">
-
-          <div className={"panel "+(tab===0?"on":"")}>
-            <div className="intro"><strong>Your service matters.</strong> Fill in your background below, or upload an existing resume to auto-fill your profile.</div>
-            <div style={{background:"linear-gradient(135deg,#f0f4ff,#e8edf8)",border:"1.5px solid #b0c4e0",borderRadius:"10px",padding:"1rem 1.2rem",marginBottom:"1rem"}}>
-              <div style={{fontWeight:700,fontSize:".9rem",color:"#1a3a6b",marginBottom:".3rem"}}>Have an Existing Resume?</div>
-              <div style={{fontSize:".78rem",color:"#5a7090",lineHeight:1.6,marginBottom:".75rem"}}>Upload your current resume (PDF, Word, or text file) and we will auto-fill your profile, then show you which fields still need attention.</div>
-              <div style={{display:"flex",alignItems:"center",gap:".75rem",flexWrap:"wrap"}}>
-                <label style={{display:"inline-flex",alignItems:"center",gap:".5rem",background:"var(--navy)",color:"#fff",padding:".5rem 1rem",borderRadius:"8px",cursor:"pointer",fontWeight:700,fontSize:".83rem"}}>Upload Resume
-                  <input type="file" accept=".pdf,.doc,.docx,.txt" style={{display:"none"}} onChange={async(e)=>{
-                    const file=e.target.files[0];if(!file)return;
-                    if(!isApiKeySet()){setShowAdminSetup(true);return;}
-                    showToast("Reading your resume...");
-                    try{
-                      const text=await new Promise((res,rej)=>{const r=new FileReader();r.onload=ev=>res(ev.target.result);r.onerror=rej;r.readAsText(file);});
-                      const prompt="Extract all information from this resume. Return ONLY valid JSON with no markdown: {name,email,phone,city,linkedin,experience:[{employer,title,startDate,endDate,current:bool,duties,isMilitary:bool}],education:[{institution,degree,field,year}],skills:{technical,certs},incompleteFields:[array of empty or incomplete field names]}\n\nRESUME:\n"+text.slice(0,5000);
-                      const raw=await callClaude(prompt,"You are a precise resume parser. Extract all data accurately.",2000);
-                      const js=raw.slice(raw.indexOf("{"),raw.lastIndexOf("}")+1);
-                      const p=JSON.parse(js);
-                      if(p.name)setPersonal(prev=>({...prev,name:p.name}));
-                      if(p.email)setPersonal(prev=>({...prev,email:p.email}));
-                      if(p.phone)setPersonal(prev=>({...prev,phone:p.phone}));
-                      if(p.city)setPersonal(prev=>({...prev,city:p.city}));
-                      if(p.linkedin)setPersonal(prev=>({...prev,linkedin:p.linkedin}));
-                      if(p.experience&&p.experience.length>0){const civs=p.experience.filter(e=>!e.isMilitary).map((e,i)=>({id:Date.now()+i,type:"Civilian Employment",employer:e.employer||"",jobTitle:e.title||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,duties:e.duties||"",branch:"",rank:"",mos:"",mosTitle:"",serviceType:"",unit:"",tos:"",deployments:"",awards:"",clearanceLevel:"None",clearanceStatus:"Active",sciAccess:false,polygraph:"None",asi:[],sqi:[],additionalDuties:[],mosRoles:[]}));if(civs.length>0)setCivExperiences(civs);}
-                      if(p.education&&p.education.length>0)setEducation(p.education.map((e,i)=>({id:i+1,institution:e.institution||"",degree:e.degree||"",field:e.field||"",year:e.year||"",pme:""})));
-                      if(p.skills){if(p.skills.technical)setSkills(s=>({...s,technical:p.skills.technical}));if(p.skills.certs)setSkills(s=>({...s,certs:p.skills.certs}));}
-                      showToast("Profile auto-filled from your resume!");
-                      const missing=p.incompleteFields||[];
-                      if(missing.length>0)setTimeout(()=>showToast("Still needs: "+missing.slice(0,3).join(", ")+(missing.length>3?" and more...":"")),3000);
-                    }catch(err){showToast("Could not read file. Try saving as .txt first.");}
-                  }}/>
-                </label>
-                <span style={{fontSize:".73rem",color:"#8aa0b8"}}>Supports PDF, Word, and plain text</span>
+          {}
+          <div className="card">
+            <div style={{display:"flex",alignItems:"center",gap:".65rem"}}>
+              <span style={{fontSize:"1.35rem"}}>&#128176;</span>
+              <div>
+                <div style={{fontSize:"1rem",letterSpacing:".08em",color:"var(--gold-light)",fontWeight:700}}>Salary Negotiation Coach</div>
+                <div style={{fontSize:".78rem",color:"rgba(255,255,255,.5)",fontWeight:300}}>Get your salary range, negotiation script, and counter-offer strategy</div>
               </div>
             </div>
+            <input id="sal-role" placeholder="Target role and location (e.g. Operations Manager, Dallas TX)" style={{width:"100%",padding:".5rem .75rem",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:"7px",color:"#fff",fontSize:".82rem",marginBottom:".5rem"}} />
+            <input id="sal-offer" placeholder="Current offer or target salary" style={{width:"100%",padding:".5rem .75rem",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:"7px",color:"#fff",fontSize:".82rem",marginBottom:".5rem"}} />
+            <button onClick={()=>runSalary()} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",color:"#0a1628",border:"none",borderRadius:"8px",padding:".5rem 1.1rem",fontWeight:700,fontSize:".82rem",cursor:"pointer"}}>Get Negotiation Strategy</button>
+            <div id="sal-result" style={{marginTop:".65rem",fontSize:".84rem",lineHeight:1.6,whiteSpace:"pre-wrap"}}></div>
+          </div>
 
-            <div className="card">
+          {}
+          <div className="card">
+            <div style={{display:"flex",alignItems:"center",gap:".65rem",marginBottom:".75rem"}}>
+              <span style={{fontSize:"1.35rem"}}>&#128203;</span>
+              <div>
+                <div style={{fontSize:"1rem",letterSpacing:".08em",color:"var(--gold-light)",fontWeight:700}}>Job Application Tracker</div>
+                <div style={{fontSize:".78rem",color:"rgba(255,255,255,.5)",fontWeight:300}}>Track applications - saves automatically to your account</div>
+              </div>
+            </div>
+            <JobTracker />
+          </div>
+
+          {}
+          <div className="card">
               <div className="ch" onClick={()=>toggleCollapse("personal")}>
                 <h3>Personal Information</h3>
                 <span className="chevron">▼</span>
@@ -5721,7 +4482,7 @@ Return this exact JSON structure:
                   <label>Job Description <span style={{fontWeight:400,color:"var(--dim)"}}>(paste key requirements for best results)</span></label>
                   <textarea rows={4} placeholder="Paste the job description or key requirements here..." value={coverLetterJob.description}
                     onChange={e=>setCoverLetterJob(j=>({...j,description:e.target.value}))}
-                    style={{width:"100%",resize:"vertical",padding:".55rem .75rem",border:"1.5px solid #c0d0e4",borderRadius:"4px",fontFamily:"inherit",fontSize:".88rem",boxSizing:"border-box"}}/>
+                    style={{width:"100%",padding:".55rem .75rem",border:"1.5px solid #c0d0e4",borderRadius:"4px",fontSize:".88rem",boxSizing:"border-box"}}/>
                 </div>
                 {hasAccess?(
                   <button className="btn-primary" onClick={genCoverLetter} disabled={coverLetterLoading}
@@ -5837,7 +4598,7 @@ Return this exact JSON structure:
                     <div style={{marginTop:".6rem"}}>
                       <div style={{fontSize:".75rem",color:"var(--dim)",marginBottom:".3rem"}}>Or paste your resume text directly:</div>
                       <textarea rows={4} placeholder="Paste your resume here..."
-                        style={{width:"100%",resize:"vertical",padding:".5rem .7rem",border:"1px solid #c0d0e4",borderRadius:"4px",fontFamily:"inherit",fontSize:".8rem",boxSizing:"border-box"}}
+                        style={{width:"100%",padding:".5rem .7rem",border:"1px solid #c0d0e4",borderRadius:"4px",fontSize:".8rem",boxSizing:"border-box"}}
                         onChange={e=>setUploadedResumeText(e.target.value)}/>
                     </div>
                   )}
@@ -5935,7 +4696,7 @@ Return this exact JSON structure:
 
             <div className="nav-row">
               <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
-              <button className="btn-sec" onClick={()=>setTab(6)}>My Profile →</button>
+              <button className="btn-sec" onClick={()=>setTab(7)}>My Profile →</button>
             </div>
           </div>
 
@@ -6026,7 +4787,7 @@ Return this exact JSON structure:
                     <button className="btn-primary" style={{width:"auto"}} onClick={()=>{
                       if(!newJob.company||!newJob.title) return;
                       saveJobs([...jobApps,{...newJob,id:Date.now(),date:newJob.date||new Date().toISOString().slice(0,10)}]);
-                      setNewJob({company:"",title:"",date:"",status:"Applied",notes:"",link:""});
+                      setNewJob({company:"",title:"",date:"",status:"Applied",link:""});
                       setShowAddJob(false);
                     }}>Save Application</button>
                   </div>
@@ -6315,12 +5076,18 @@ Return this exact JSON structure:
 
             <div className="nav-row" style={{marginTop:"1.5rem"}}>
               <button className="btn-sec" onClick={()=>setTab(3)}>← Cover Letter</button>
-              <button className="btn-sec" onClick={()=>setTab(6)}>My Profile →</button>
+              <button className="btn-sec" onClick={()=>setTab(7)}>My Profile →</button>
             </div>
           </div>
 
           <div className={"panel "+(tab===5?"on":"")}>
 
+            <div style={{background:"rgba(201,168,76,.08)",border:"1px solid rgba(201,168,76,.2)",borderRadius:"10px",padding:".85rem 1rem",marginBottom:"1rem",display:"flex",alignItems:"center",gap:".75rem",flexWrap:"wrap"}}>
+              <span style={{fontSize:".8rem",fontWeight:700,color:"var(--gold-light)",whiteSpace:"nowrap"}}>&#128279; Full Resource Hub:</span>
+              {[["&#128737; Crisis Help","veteran-mental-health-resources.html"],["&#127894; All Resources","vet-resources.html"],["&#9889; Benefits","va-benefits-checklist.html"],["&#128274; Disability Calc","va-disability-benefits-calculator.html"],["&#127891; VR&E Guide","vre-chapter31-guide.html"]].map(([label,page])=>(
+                <a key={page} href={"https://veterancareerpath.com/"+page} target="_blank" rel="noreferrer" style={{color:"rgba(255,255,255,.7)",textDecoration:"none",fontSize:".75rem",fontWeight:500,background:"rgba(255,255,255,.06)",padding:".25rem .6rem",borderRadius:"6px",border:"1px solid rgba(255,255,255,.1)"}}>{label}</a>
+              ))}
+            </div>
             <div className="crisis-banner">
               <div style={{fontSize:"2rem",flexShrink:0}}>🆘</div>
               <div style={{flex:1}}>
@@ -6380,7 +5147,7 @@ Return this exact JSON structure:
               )}
 
               {showHomelessForm&&!homelessSubmitted&&(
-                <div style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.12)",borderRadius:"8px",padding:"1.25rem",marginTop:".75rem"}}>
+                <div style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:"8px",padding:"1.25rem",marginTop:".75rem"}}>
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem",marginBottom:".75rem"}}>
                     <div className="field" style={{marginBottom:0}}>
                       <label style={{color:"#a0c0e0"}}>Your Name</label>
@@ -6412,7 +5179,7 @@ Return this exact JSON structure:
                     <label style={{color:"#a0c0e0"}}>Tell us about your situation (optional — share only what you are comfortable with)</label>
                     <textarea placeholder="Current living situation, what kind of work you are looking for, any urgent needs we should know about..." value={homelessForm.situation}
                       onChange={e=>setHomelessForm(f=>({...f,situation:e.target.value}))}
-                      style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff",minHeight:"80px"}}/>
+                      style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff",minHeight:"60px"}}/>
                   </div>
                   <div style={{display:"flex",gap:".75rem",flexWrap:"wrap",marginBottom:"1rem"}}>
                     <button onClick={async()=>{
@@ -6590,7 +5357,7 @@ Return this exact JSON structure:
 
             <div className="nav-row" style={{marginTop:"1.5rem"}}>
               <button className="btn-sec" onClick={()=>setTab(4)}>← Job Search Hub</button>
-              <button className="btn-sec" onClick={()=>setTab(6)}>My Profile →</button>
+              <button className="btn-sec" onClick={()=>setTab(7)}>My Profile →</button>
             </div>
           </div>
 
@@ -6629,7 +5396,7 @@ Return this exact JSON structure:
                   {careerTestMode==="basic"?careerTestStep<CAREER_TEST.sections.length?"Section "+(careerTestStep+1)+" of "+CAREER_TEST.sections.length:"Your Results":"Section "+(deepTestStep+1)+" of 6"}
                 </div>
               </div>
-              <button onClick={()=>setShowCareerTest(false)} style={{background:"transparent",border:"none",color:"#fff",fontSize:"1.4rem",cursor:"pointer"}}>✕</button>
+              <button onClick={()=>setShowCareerTest(false)} style={{background:"transparent",border:"none",color:"#fff",fontSize:"1.35rem",cursor:"pointer"}}>✕</button>
             </div>
             <div style={{height:"3px",background:"rgba(255,255,255,.08)",flexShrink:0}}>
               <div style={{height:"100%",background:"linear-gradient(90deg,#c8960a,#f0c040)",transition:"width .3s",width:(careerTestMode==="basic"?(careerTestStep/CAREER_TEST.sections.length*100):(deepTestStep/6*100))+"%"}}/>
@@ -6875,7 +5642,7 @@ Return this exact JSON structure:
           <div style={{background:"#fff",borderRadius:"16px 16px 0 0",width:"100%",maxWidth:"520px",padding:"1.5rem",boxShadow:"0 -8px 32px rgba(0,0,0,.2)"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1rem"}}>
               <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.2rem",letterSpacing:".1em",color:"#1a3a6b"}}>📋 Add Job to Tracker</div>
-              <button onClick={()=>setShowClipboardModal(false)} style={{background:"none",border:"none",fontSize:"1.4rem",cursor:"pointer",color:"#8aa0b8"}}>✕</button>
+              <button onClick={()=>setShowClipboardModal(false)} style={{background:"none",border:"none",fontSize:"1.35rem",cursor:"pointer",color:"#8aa0b8"}}>✕</button>
             </div>
             <div style={{fontSize:".82rem",color:"#5a7090",marginBottom:"1rem",padding:".6rem .8rem",background:"#f0f4ff",borderRadius:"8px",border:"1px solid #d0daea"}}>
               💡 We read your clipboard to pre-fill this form. Edit anything that looks wrong.
@@ -7135,7 +5902,9 @@ Return this exact JSON structure:
     </>
   );
 }
-    ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+    
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
     hideLoading();
 </script>
 

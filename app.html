@@ -51,13 +51,13 @@
   <script>
     try {
       const firebaseConfig = {
-        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
-        authDomain: "veteran-career-builder.firebaseapp.com",
-        projectId: "veteran-career-builder",
-        storageBucket: "veteran-career-builder.firebasestorage.app",
-        messagingSenderId: "REPLACE_SENDER_ID",
-        appId: "REPLACE_APP_ID"
-      };
+  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
+  authDomain: "veteran-career-builder.firebaseapp.com",
+  projectId: "veteran-career-builder",
+  storageBucket: "veteran-career-builder.firebasestorage.app",
+  messagingSenderId: "664123627374",
+  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
+};
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -2309,8 +2309,8 @@ function MyProfileHero(props) {
   <div style={{background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",borderRadius:"8px",padding:"1.5rem",color:"#fff",marginBottom:"1.2rem"}}>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:".75rem",marginBottom:"1.2rem"}}>
       <div>
-        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".12em",color:"#f0c040"}}>{personal.name||currentUser.name||"Veteran"}</div>
-        <div style={{fontSize:".85rem",color:"#b0cce8",marginTop:".15rem"}}>{personal.email||currentUser.email}</div>
+        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".12em",color:"#f0c040"}}>{personal.name||(currentUser&&currentUser.name)||"Veteran"}</div>
+        <div style={{fontSize:".85rem",color:"#b0cce8",marginTop:".15rem"}}>{personal.email||(currentUser&&currentUser.email)||""}</div>
       </div>
       <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".82rem",fontWeight:700,cursor:"pointer"}} onClick={handleSaveProfile}>
         {hasUnsaved?"⏳ Saving…":"✓ Profile Saved"}
@@ -2781,7 +2781,7 @@ function App() {
     setTlChecks(updated);
     localStorage.setItem("vcb_timeline", JSON.stringify(updated));
     if (currentUser && fbDb) {
-      try { fbDb.collection("profiles").doc(currentUser.uid).set({ timeline: updated, updatedAt: Date.now() }, { merge: true }); } catch(e) {}
+      try { fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).set({ timeline: updated, updatedAt: Date.now() }, { merge: true }); } catch(e) {}
     }
   };
 
@@ -3051,7 +3051,7 @@ function App() {
     setHasUnsaved(true);
     const timer = setTimeout(async () => {
       try {
-        await fbDb.collection("profiles").doc(currentUser.uid).set({
+        await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).set({
           personal, milExperiences, civExperiences, education, skills, target,
           serviceRecords, targetLocation, updatedAt: Date.now()
         }, { merge: true });
@@ -3115,7 +3115,7 @@ function App() {
   const handleSaveProfile = async () => {
     if (!currentUser) { setShowAuth(true); return; }
     try {
-      await fbDb.collection("profiles").doc(currentUser.uid).set({
+      await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).set({
         personal, milExperiences, civExperiences, education, skills, target,
         updatedAt: new Date().toISOString()
       }, { merge: true });
@@ -3142,7 +3142,7 @@ function App() {
         content: resume,
         createdAt: new Date().toISOString(),
       };
-      await fbDb.collection("profiles").doc(currentUser.uid)
+      await fbDb.collection("profiles").doc((currentUser&&currentUser.uid))
         .collection("resumes").doc(id).set(entry);
       setSavedResumes(prev => [entry, ...prev].slice(0, 20));
       showToast("Resume saved to your profile ✓");
@@ -3152,7 +3152,7 @@ function App() {
   const handleDeleteResume = async (id) => {
     if (!currentUser) return;
     try {
-      await fbDb.collection("profiles").doc(currentUser.uid)
+      await fbDb.collection("profiles").doc((currentUser&&currentUser.uid))
         .collection("resumes").doc(id.toString()).delete();
       setSavedResumes(prev => prev.filter(r => r.id !== id));
       showToast("Resume deleted");
@@ -3163,14 +3163,14 @@ function App() {
     const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
       job:coverLetterJob.title||"Cover Letter", company:coverLetterJob.company||"", content:coverLetter};
     setSavedCoverLetters(prev=>[entry,...prev].slice(0,20));
-    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc(currentUser.uid).collection("coverLetters").doc(entry.id.toString()).set(entry);}catch(e){}}
+    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection("coverLetters").doc(entry.id.toString()).set(entry);}catch(e){}}
     showToast("Cover letter saved to My Profile ✓");
   };
   const saveEmail = async () => {
     const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
       type:followupType||"Follow-Up Email", content:followupEmail};
     setSavedEmails(prev=>[entry,...prev].slice(0,20));
-    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc(currentUser.uid).collection("emails").doc(entry.id.toString()).set(entry);}catch(e){}}
+    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection("emails").doc(entry.id.toString()).set(entry);}catch(e){}}
     showToast("Email saved to My Profile ✓");
   };
   const saveScore = async () => {
@@ -3178,7 +3178,7 @@ function App() {
       score:resumeScore, label:resumeScore>=85?"Excellent":resumeScore>=75?"Strong":resumeScore>=65?"Good":"Needs Work",
       summary:resumeReview.summary||"", grades:resumeReview.grades||{}};
     setSavedScores(prev=>[entry,...prev].slice(0,10));
-    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc(currentUser.uid).collection("scores").doc(entry.id.toString()).set(entry);}catch(e){}}
+    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection("scores").doc(entry.id.toString()).set(entry);}catch(e){}}
     showToast("Score report saved to My Profile ✓");
   };
   const handleDeleteSaved = async (type,id) => {
@@ -3187,7 +3187,7 @@ function App() {
     else if(type==="sc") setSavedScores(prev=>prev.filter(x=>x.id!==id));
     if(currentUser&&fbDb){
       const col=type==="cl"?"coverLetters":type==="em"?"emails":"scores";
-      try{await fbDb.collection("profiles").doc(currentUser.uid).collection(col).doc(id.toString()).delete();}catch(e){}
+      try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection(col).doc(id.toString()).delete();}catch(e){}
     }
     showToast("Deleted");
   };
@@ -4062,8 +4062,8 @@ Return this exact JSON structure:
         {currentUser?(
           <div className="user-bar">
             <div className="user-bar-left">
-              <div className="user-avatar">{currentUser.initials}</div>
-              <span>Signed in as <strong>{currentUser.name}</strong></span>
+              <div className="user-avatar">{(currentUser&&currentUser.initials)}</div>
+              <span>Signed in as <strong>{currentUser&&currentUser.name}</strong></span>
               {hasUnsaved&&<span className="unsaved" title="Unsaved changes"/>}
             </div>
             <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PCS / ETS Move Calculator 2026 | Military Moving Allowances & Rules</title>
+<meta name="description" content="Calculate your exact PCS or ETS moving allowances: DITY/PPM, government move, weight entitlements by rank, TLE, DLA, TLA, mileage rates, and all DoD move rules for 2026.">
+<link rel="canonical" href="https://veterancareerpath.com/pcs-ets-move-calculator.html">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#0d1f3c;--navy2:#1a3a6b;--gold:#f0c040;--gold2:#c8960a;
+  --green:#1a7a40;--red:#c0392b;--slate:#4a5a6a;--dim:#5a6a7a;
+  --border:#dde3ec;--light:#f0f4fa;--white:#fff;
+}
+body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f4f6fa;line-height:1.7;font-size:15px;}
+
+/* NAV */
+nav{background:#0a1628;padding:.85rem 5%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.15);}
+.nav-logo{display:flex;align-items:center;gap:.65rem;text-decoration:none;}
+.nav-logo img{width:34px;height:34px;object-fit:contain;}
+.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.1em;color:#f0c040;}
+.nav-links{display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap;}
+.nav-links a{color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500;}
+.nav-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628!important;font-weight:700!important;padding:.4rem .9rem;border-radius:6px;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;z-index:999;flex-direction:column;padding:.5rem 0;border-top:1px solid rgba(201,168,76,.15);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;padding:.75rem 5%;border-bottom:1px solid rgba(255,255,255,.05);}
+@media(max-width:768px){.hamburger{display:flex;}.nav-links{display:none;}}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,#060f1e,#0d1f3c 50%,#1a3a6b);padding:3rem 5% 2.5rem;color:#fff;}
+.hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(200,150,10,.12);border:1px solid rgba(200,150,10,.35);border-radius:100px;padding:.28rem .85rem;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#f0c040;margin-bottom:.85rem;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4.5vw,3.2rem);letter-spacing:.06em;line-height:1.05;margin-bottom:.65rem;}
+.hero h1 span{color:#f0c040;}
+.hero p{font-size:.97rem;color:rgba(192,216,240,.85);max-width:580px;line-height:1.7;}
+
+/* MAIN LAYOUT */
+main{max-width:1100px;margin:0 auto;padding:2rem 5% 4rem;display:grid;grid-template-columns:1fr 340px;gap:1.75rem;align-items:start;}
+@media(max-width:900px){main{grid-template-columns:1fr;}}
+
+/* CARDS */
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.25rem;box-shadow:0 2px 12px rgba(26,58,107,.06);}
+.card-header{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:.9rem 1.25rem;display:flex;align-items:center;gap:.6rem;}
+.card-header h2{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.08em;color:#fff;}
+.card-header .icon{font-size:1.2rem;}
+.card-body{padding:1.25rem;}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
+.field{display:flex;flex-direction:column;gap:.3rem;}
+.field label{font-size:.78rem;font-weight:600;color:var(--navy);letter-spacing:.04em;text-transform:uppercase;}
+.field select,.field input{border:1.5px solid var(--border);border-radius:8px;padding:.6rem .85rem;font-size:.9rem;color:#1a2a3a;background:#fff;font-family:'Inter',sans-serif;width:100%;transition:border-color .2s;}
+.field select:focus,.field input:focus{outline:none;border-color:var(--navy2);}
+.field-full{grid-column:1/-1;}
+
+/* RADIO GROUP */
+.radio-group{display:flex;gap:.5rem;flex-wrap:wrap;}
+.radio-opt{flex:1;min-width:120px;}
+.radio-opt input{display:none;}
+.radio-opt label{display:block;text-align:center;padding:.55rem .75rem;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--slate);}
+.radio-opt input:checked+label{border-color:var(--navy2);background:#e8f0ff;color:var(--navy);}
+
+/* CALC BUTTON */
+.calc-btn{width:100%;padding:.85rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:10px;color:#0a1628;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.1em;cursor:pointer;margin-top:.75rem;transition:transform .15s,box-shadow .15s;}
+.calc-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,150,10,.35);}
+
+/* RESULTS */
+.results{display:none;}
+.results.show{display:block;}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;}
+@media(max-width:500px){.result-grid{grid-template-columns:1fr;}}
+.result-item{background:var(--light);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;}
+.result-item.highlight{background:linear-gradient(135deg,#f0fff4,#e0f8e8);border-color:#a0d8b0;}
+.result-item.warning{background:#fff8f0;border-color:#f0c8a0;}
+.result-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:.2rem;}
+.result-value{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.04em;color:var(--navy);}
+.result-value.green{color:var(--green);}
+.result-sub{font-size:.74rem;color:var(--dim);margin-top:.1rem;}
+.total-bar{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:12px;padding:1.25rem 1.5rem;color:#fff;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;}
+.total-bar .t-label{font-size:.8rem;opacity:.75;text-transform:uppercase;letter-spacing:.08em;}
+.total-bar .t-value{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.05em;color:#f0c040;}
+.total-bar .t-note{font-size:.75rem;opacity:.65;max-width:250px;}
+
+/* INFO SECTIONS */
+h3{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.08em;color:var(--navy);margin:1.25rem 0 .6rem;}
+.info-table{width:100%;border-collapse:collapse;font-size:.84rem;margin-bottom:1rem;}
+.info-table th{background:var(--navy);color:#fff;padding:.55rem .75rem;text-align:left;font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;}
+.info-table td{padding:.52rem .75rem;border-bottom:1px solid #f0f4fa;vertical-align:top;}
+.info-table tr:nth-child(even) td{background:#f8fafd;}
+.info-table tr:last-child td{border-bottom:none;}
+.badge{display:inline-block;border-radius:20px;padding:.15rem .55rem;font-size:.72rem;font-weight:700;}
+.badge-green{background:rgba(26,122,64,.1);color:var(--green);border:1px solid rgba(26,122,64,.25);}
+.badge-gold{background:rgba(200,150,10,.1);color:#8a6000;border:1px solid rgba(200,150,10,.25);}
+.badge-red{background:rgba(192,57,43,.08);color:var(--red);border:1px solid rgba(192,57,43,.2);}
+.alert{border-radius:10px;padding:.9rem 1.1rem;margin:.75rem 0;font-size:.88rem;line-height:1.65;}
+.alert-info{background:#f0f8ff;border-left:4px solid var(--navy2);}
+.alert-warn{background:#fffbf0;border-left:4px solid var(--gold2);}
+.alert-tip{background:#f0fff4;border-left:4px solid var(--green);}
+.alert strong{color:var(--navy);display:block;margin-bottom:.25rem;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;}
+
+/* SIDEBAR */
+.sidebar .card{margin-bottom:1rem;}
+.quick-stat{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--border);}
+.quick-stat:last-child{border-bottom:none;}
+.qs-label{font-size:.82rem;color:var(--slate);}
+.qs-value{font-weight:700;color:var(--navy);font-size:.88rem;}
+.timeline-item{display:flex;gap:.75rem;padding:.75rem 0;border-bottom:1px solid #f0f4fa;}
+.timeline-item:last-child{border-bottom:none;}
+.tl-dot{width:28px;height:28px;border-radius:50%;background:var(--navy2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;margin-top:.1rem;}
+.tl-time{font-size:.72rem;font-weight:700;color:var(--gold2);text-transform:uppercase;letter-spacing:.06em;}
+.tl-task{font-size:.83rem;color:#2a3a4a;font-weight:600;}
+.tl-note{font-size:.78rem;color:var(--dim);}
+
+/* FOOTER */
+footer{background:#0d1f3c;padding:2rem 5%;margin-top:2rem;}
+.footer-inner{max-width:1000px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-links{display:flex;gap:1.25rem;flex-wrap:wrap;}
+.footer-links a{color:#80a8d0;text-decoration:none;font-size:.8rem;}
+.footer-copy{font-size:.73rem;color:rgba(255,255,255,.25);}
+
+/* TABS */
+.tab-nav{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.25rem;overflow-x:auto;}
+.tab-btn{padding:.6rem 1rem;font-size:.82rem;font-weight:600;color:var(--dim);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:color .2s;}
+.tab-btn.active{color:var(--navy);border-bottom-color:var(--navy2);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+@media(max-width:600px){
+  .hero{padding:2rem 5% 1.75rem;}
+  .total-bar{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://veterancareerpath.com" class="nav-logo">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path" width="34" height="34">
+    <span>Veteran Career Path</span>
+  </a>
+  <div class="nav-links">
+    <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a>
+    <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Disability</a>
+    <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Careers</a>
+    <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">GI Bill</a>
+    <a href="https://veterancareerpath.com/app.html" class="nav-cta">AI Tools — $15/mo</a>
+  </div>
+  <button class="hamburger" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mob">
+  <a href="https://veterancareerpath.com/">Home</a>
+  <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a>
+  <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Disability Schedule</a>
+  <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html">PCS/ETS Calculator</a>
+  <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">GI Bill Guide</a>
+  <a href="https://veterancareerpath.com/app.html">AI Career Tools — $15/mo</a>
+</div>
+
+<section class="hero">
+  <div class="hero-badge">📦 2026 Rates · DoD JTR Updated</div>
+  <h1>PCS / ETS<br><span>Move Allowance Calculator</span></h1>
+  <p>Calculate your exact entitlements: weight allowance, DITY/PPM incentive pay, DLA, TLE, mileage reimbursement, and pro-gear. Based on 2026 DoD Joint Travel Regulations.</p>
+</section>
+
+<main>
+<div class="left-col">
+
+<!-- CALCULATOR -->
+<div class="card">
+  <div class="card-header"><span class="icon">🧮</span><h2>Move Entitlement Calculator</h2></div>
+  <div class="card-body">
+    <div class="form-grid">
+      <div class="field">
+        <label>Move Type</label>
+        <div class="radio-group">
+          <div class="radio-opt"><input type="radio" name="moveType" id="mt-pcs" value="pcs" checked><label for="mt-pcs">PCS</label></div>
+          <div class="radio-opt"><input type="radio" name="moveType" id="mt-ets" value="ets"><label for="mt-ets">ETS/Separation</label></div>
+          <div class="radio-opt"><input type="radio" name="moveType" id="mt-ret" value="ret"><label for="mt-ret">Retirement</label></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Pay Grade</label>
+        <select id="payGrade">
+          <option value="E1">E-1</option><option value="E2">E-2</option><option value="E3">E-3</option>
+          <option value="E4">E-4</option><option value="E5" selected>E-5</option><option value="E6">E-6</option>
+          <option value="E7">E-7</option><option value="E8">E-8</option><option value="E9">E-9</option>
+          <option value="W1">W-1</option><option value="W2">W-2</option><option value="W3">W-3</option>
+          <option value="W4">W-4</option><option value="W5">W-5</option>
+          <option value="O1">O-1</option><option value="O2">O-2</option><option value="O3">O-3</option>
+          <option value="O4">O-4</option><option value="O5">O-5</option><option value="O6">O-6</option>
+          <option value="O7">O-7+</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Dependents?</label>
+        <div class="radio-group">
+          <div class="radio-opt"><input type="radio" name="deps" id="dep-yes" value="yes" checked><label for="dep-yes">With Dependents</label></div>
+          <div class="radio-opt"><input type="radio" name="deps" id="dep-no" value="no"><label for="dep-no">Without Dependents</label></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Move Method</label>
+        <div class="radio-group">
+          <div class="radio-opt"><input type="radio" name="moveMethod" id="mm-gov" value="gov" checked><label for="mm-gov">Gov't Move (HHG)</label></div>
+          <div class="radio-opt"><input type="radio" name="moveMethod" id="mm-dity" value="dity"><label for="mm-dity">DITY / PPM</label></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Origin ZIP Code</label>
+        <input type="text" id="originZip" placeholder="e.g. 28310" maxlength="5">
+      </div>
+      <div class="field">
+        <label>Destination ZIP Code</label>
+        <input type="text" id="destZip" placeholder="e.g. 78201" maxlength="5">
+      </div>
+      <div class="field">
+        <label>Estimated Actual Weight (lbs)</label>
+        <input type="number" id="actualWeight" placeholder="e.g. 7500" min="0" max="20000">
+      </div>
+      <div class="field">
+        <label>Pro-Gear Weight (lbs)</label>
+        <input type="number" id="proGear" placeholder="e.g. 500" min="0" max="2000" value="0">
+      </div>
+      <div class="field field-full">
+        <label>Estimated Drive Distance (miles) — if known</label>
+        <input type="number" id="miles" placeholder="Leave blank to estimate from ZIPs" min="0">
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">⚡ CALCULATE MY ENTITLEMENTS</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="results card" id="results">
+  <div class="card-header"><span class="icon">💰</span><h2>Your Move Entitlements</h2></div>
+  <div class="card-body">
+    <div class="total-bar">
+      <div>
+        <div class="t-label">Estimated Total Entitlement</div>
+        <div class="t-value" id="totalVal">$0</div>
+      </div>
+      <div class="t-note" id="totalNote"></div>
+    </div>
+    <div class="result-grid" id="resultGrid"></div>
+    <div id="resultNotes"></div>
+  </div>
+</div>
+
+<!-- REFERENCE TABS -->
+<div class="card">
+  <div class="card-header"><span class="icon">📋</span><h2>Complete PCS/ETS Rules & Entitlements</h2></div>
+  <div class="card-body">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="showTab('weight')">Weight Limits</button>
+      <button class="tab-btn" onclick="showTab('dla')">DLA</button>
+      <button class="tab-btn" onclick="showTab('tle')">TLE/TLA</button>
+      <button class="tab-btn" onclick="showTab('dity')">DITY/PPM</button>
+      <button class="tab-btn" onclick="showTab('mileage')">Mileage</button>
+      <button class="tab-btn" onclick="showTab('rules')">Key Rules</button>
+      <button class="tab-btn" onclick="showTab('ets')">ETS Specifics</button>
+    </div>
+
+    <!-- WEIGHT TAB -->
+    <div class="tab-content active" id="tab-weight">
+      <div class="alert alert-info"><strong>2026 HHG Weight Entitlements (JTR Table 5-B)</strong>These are your maximum authorized household goods weights. Exceeding entitlement = you pay excess weight shipping costs.</div>
+      <table class="info-table">
+        <thead><tr><th>Pay Grade</th><th>With Dependents</th><th>Without Dependents</th><th>Pro-Gear</th></tr></thead>
+        <tbody>
+          <tr><td>E-1 to E-3</td><td>5,000 lbs</td><td>3,500 lbs</td><td>—</td></tr>
+          <tr><td>E-4</td><td>7,000 lbs</td><td>3,500 lbs</td><td>—</td></tr>
+          <tr><td>E-5 to E-6</td><td>9,000 lbs</td><td>7,000 lbs</td><td>500 lbs</td></tr>
+          <tr><td>E-7 to E-9</td><td>11,000 lbs</td><td>9,000 lbs</td><td>500 lbs</td></tr>
+          <tr><td>W-1 to W-2</td><td>12,000 lbs</td><td>10,000 lbs</td><td>500 lbs</td></tr>
+          <tr><td>W-3 to W-5</td><td>13,500 lbs</td><td>12,000 lbs</td><td>1,000 lbs</td></tr>
+          <tr><td>O-1 to O-3</td><td>13,500 lbs</td><td>12,000 lbs</td><td>500 lbs</td></tr>
+          <tr><td>O-4 to O-6</td><td>14,500 lbs</td><td>13,000 lbs</td><td>1,000 lbs</td></tr>
+          <tr><td>O-7+</td><td>18,000 lbs</td><td>18,000 lbs</td><td>1,000 lbs</td></tr>
+        </tbody>
+      </table>
+      <h3>What Counts as Pro-Gear?</h3>
+      <p style="font-size:.88rem;color:var(--slate);margin-bottom:.75rem;">Pro-gear (professional gear) is weight that doesn't count against your HHG entitlement. It must be items required for your military job or your spouse's career.</p>
+      <div class="alert alert-tip"><strong>✅ Counts as Pro-Gear</strong>Books, papers, and equipment required for your duties. Musical instruments for a professional musician spouse. Tools and equipment for technical trades used professionally.</div>
+      <div class="alert alert-warn"><strong>⚠️ Does NOT Count as Pro-Gear</strong>Recreational equipment (golf clubs, fishing gear, guns for sport). Exercise equipment. Hobby items. Collections.</div>
+      <h3>Unaccompanied Baggage (UB)</h3>
+      <p style="font-size:.88rem;color:var(--slate);">You can ship up to 1,000 lbs (with dependents) or 600 lbs (without) as unaccompanied baggage — this moves by air or express freight and arrives at your destination before your HHG. The weight comes out of your total HHG entitlement.</p>
+    </div>
+
+    <!-- DLA TAB -->
+    <div class="tab-content" id="tab-dla">
+      <div class="alert alert-info"><strong>Dislocation Allowance (DLA)</strong>DLA is a flat payment to help cover the incidental costs of a PCS move — deposits, utility connections, moving supplies. It is paid once per PCS order set.</div>
+      <table class="info-table">
+        <thead><tr><th>Pay Grade</th><th>With Dependents (2026)</th><th>Without Dependents (2026)</th></tr></thead>
+        <tbody>
+          <tr><td>E-1 to E-3</td><td>$1,212.45</td><td>$850.88</td></tr>
+          <tr><td>E-4</td><td>$1,389.84</td><td>$977.01</td></tr>
+          <tr><td>E-5</td><td>$1,523.29</td><td>$1,069.87</td></tr>
+          <tr><td>E-6</td><td>$1,650.04</td><td>$1,157.88</td></tr>
+          <tr><td>E-7</td><td>$1,855.33</td><td>$1,302.31</td></tr>
+          <tr><td>E-8</td><td>$2,009.20</td><td>$1,410.55</td></tr>
+          <tr><td>E-9</td><td>$2,144.88</td><td>$1,504.38</td></tr>
+          <tr><td>W-1 to W-2</td><td>$1,855.33</td><td>$1,302.31</td></tr>
+          <tr><td>W-3 to W-5 / O-1 to O-3</td><td>$2,144.88</td><td>$1,504.38</td></tr>
+          <tr><td>O-4 to O-6</td><td>$2,449.97</td><td>$1,718.99</td></tr>
+          <tr><td>O-7+</td><td>$2,869.94</td><td>$2,012.47</td></tr>
+        </tbody>
+      </table>
+      <div class="alert alert-warn"><strong>⚠️ When DLA is NOT Payable</strong>If the government provides quarters at both locations and you don't vacate. If moving into government quarters at the new duty station and already occupied government quarters. First PCS from training if you didn't have dependents before your initial training station.</div>
+      <div class="alert alert-tip"><strong>💡 DLA + DITY Tip</strong>If you do a full DITY move, you still receive DLA on top of your PPM incentive pay. They are separate entitlements.</div>
+    </div>
+
+    <!-- TLE TAB -->
+    <div class="tab-content" id="tab-tle">
+      <div class="alert alert-info"><strong>Temporary Lodging Expense (TLE) — CONUS</strong>TLE reimburses lodging and meal expenses when you can't occupy permanent quarters immediately before or after a PCS move within the continental U.S.</div>
+      <h3>TLE Rules</h3>
+      <table class="info-table">
+        <thead><tr><th>Item</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td>Maximum Duration</td><td>10 days total (can be split: up to 10 days at old station, new station, or split between both)</td></tr>
+          <tr><td>Lodging Rate</td><td>Up to local per diem lodging rate (varies by location). Typically $75–$200/night depending on market.</td></tr>
+          <tr><td>Meal & Incidental Rate</td><td>75% of per diem M&IE rate ($59.25–$96.75/day depending on location)</td></tr>
+          <tr><td>Effective Date</td><td>Starts day after you vacate old quarters or arrive at new duty station (whichever applies)</td></tr>
+          <tr><td>Receipts Required</td><td>Yes — lodging receipts required. Meals reimbursed at flat per diem rate.</td></tr>
+        </tbody>
+      </table>
+      <h3>TLA — Overseas (OCONUS)</h3>
+      <div class="alert alert-warn"><strong>Temporary Lodging Allowance (TLA)</strong>For OCONUS moves, TLA applies instead of TLE. TLA is paid at 100% of per diem for the first 30 days, then reduces. Maximum duration: 60 days (up to 90 days with command approval in some locations). Specific rates set by SECDEF for each OCONUS location — check current DTMO tables.</div>
+      <h3>Claiming TLE</h3>
+      <ul style="font-size:.88rem;color:var(--slate);padding-left:1.25rem;line-height:1.9;">
+        <li>File DD Form 1351-2 (Travel Voucher) with all receipts</li>
+        <li>Include lodging receipts and copy of PCS orders</li>
+        <li>Can file within 5 business days of completing move for advance pay or afterward for reimbursement</li>
+        <li>TLE at gaining installation requires finance office coordination</li>
+      </ul>
+    </div>
+
+    <!-- DITY TAB -->
+    <div class="tab-content" id="tab-dity">
+      <div class="alert alert-tip"><strong>DITY / PPM (Personally Procured Move) — How to Make Money on Your Move</strong>Instead of using the government movers, you handle your own move and get paid 95% of what the government would have paid a commercial carrier. If you move cheaper than that, you keep the difference as profit.</div>
+      <h3>How PPM Incentive Pay Works</h3>
+      <table class="info-table">
+        <thead><tr><th>Step</th><th>What Happens</th></tr></thead>
+        <tbody>
+          <tr><td>1. Request PPM</td><td>Contact your Transportation Office (TO) and request PPM authorization before moving. Do NOT move before authorization.</td></tr>
+          <tr><td>2. Get Weight Tickets</td><td>Weigh your truck/trailer empty (tare weight) at a certified scale BEFORE loading. Then weigh again full (gross weight). Difference = net weight shipped.</td></tr>
+          <tr><td>3. Government Calculates Rate</td><td>Government determines what a commercial carrier would have charged for that weight and distance. You receive 95% of that amount.</td></tr>
+          <tr><td>4. You Keep the Profit</td><td>If your actual moving costs were less than the 95% payment, you keep the difference — TAX-FREE up to the authorized entitlement.</td></tr>
+          <tr><td>5. Submit Paperwork</td><td>Submit weight tickets, receipts, and PPM packet to Finance within 45 days of arriving at new duty station.</td></tr>
+        </tbody>
+      </table>
+      <h3>PPM Rate Formula (2026)</h3>
+      <div class="alert alert-info">
+        <strong>Incentive Pay = Weight Shipped × Government Rate Per Pound × Distance × 95%</strong>
+        Current government rate averages $0.12–$0.22 per pound per 100 miles depending on origin/destination. Your Transportation Office will give you the exact rate for your specific move.
+      </div>
+      <h3>PPM Tips — Maximize Your Profit</h3>
+      <ul style="font-size:.88rem;color:var(--slate);padding-left:1.25rem;line-height:1.9;">
+        <li><strong>Rent a truck, don't hire movers.</strong> U-Haul or Penske costs $200–$800 vs. a government move worth $3,000–$10,000+</li>
+        <li><strong>Ship your car separately.</strong> POV shipment is a separate entitlement — don't mix it with PPM weight</li>
+        <li><strong>Get multiple weight tickets.</strong> If you make multiple loads, weigh each separately</li>
+        <li><strong>Keep ALL receipts.</strong> Gas, tolls, truck rental, boxes, packing materials — all deductible</li>
+        <li><strong>PPM profit is NOT taxed if within entitlement.</strong> Money above your entitlement weight IS taxable</li>
+        <li><strong>DITY advance.</strong> You can get 60% of estimated PPM payment in advance — ask your TO</li>
+      </ul>
+      <h3>Partial DITY</h3>
+      <p style="font-size:.88rem;color:var(--slate);">You can do a partial DITY — ship some items yourself and let the government ship the rest. Many service members ship small/valuable items themselves and have the government handle furniture. You get PPM pay on your self-moved weight.</p>
+    </div>
+
+    <!-- MILEAGE TAB -->
+    <div class="tab-content" id="tab-mileage">
+      <div class="alert alert-info"><strong>Monetary Allowance in Lieu of Transportation (MALT)</strong>For PCS moves, you're authorized MALT — mileage reimbursement for each POV used to drive to the new duty station.</div>
+      <table class="info-table">
+        <thead><tr><th>Item</th><th>2026 Rate</th></tr></thead>
+        <tbody>
+          <tr><td>MALT Rate (per mile, per authorized POV)</td><td>$0.21/mile</td></tr>
+          <tr><td>Maximum POVs Authorized</td><td>1 without dependents; 2 with dependents</td></tr>
+          <tr><td>Mileage Calculation</td><td>Defense Table of Official Distances (DTOD) — not Google Maps distance</td></tr>
+          <tr><td>Per Diem (en route)</td><td>$157/day (member) + additional for dependents</td></tr>
+          <tr><td>Per Diem Days Authorized</td><td>Distance ÷ 400 miles per day (rounded up), plus 1 travel day</td></tr>
+        </tbody>
+      </table>
+      <h3>Travel Days & Per Diem</h3>
+      <table class="info-table">
+        <thead><tr><th>Distance</th><th>Authorized Travel Days</th><th>Per Diem Est.</th></tr></thead>
+        <tbody>
+          <tr><td>0–400 miles</td><td>1 day</td><td>$157</td></tr>
+          <tr><td>401–800 miles</td><td>2 days</td><td>$314</td></tr>
+          <tr><td>801–1,200 miles</td><td>3 days</td><td>$471</td></tr>
+          <tr><td>1,201–1,600 miles</td><td>4 days</td><td>$628</td></tr>
+          <tr><td>1,601–2,000 miles</td><td>5 days</td><td>$785</td></tr>
+          <tr><td>2,000+ miles</td><td>6 days</td><td>$942</td></tr>
+        </tbody>
+      </table>
+      <div class="alert alert-warn"><strong>⚠️ MALT vs. TDY Travel</strong>MALT is only for PCS travel in a POV. If you fly, you don't receive MALT but can get airfare reimbursement up to coach rate. You cannot receive both MALT and airfare for the same move.</div>
+    </div>
+
+    <!-- RULES TAB -->
+    <div class="tab-content" id="tab-rules">
+      <h3>Critical PCS Rules Everyone Should Know</h3>
+      <div class="alert alert-warn"><strong>⚠️ Do NOT Move Before Orders Are Cut</strong>Moving before receiving official PCS orders means you pay for everything yourself. "Verbal orders" and "email notices" are NOT sufficient. Wait for the official DA Form 4651 or equivalent branch-specific orders document.</div>
+      <div class="alert alert-warn"><strong>⚠️ Storage Limits</strong>Government-funded storage at destination (NTS — Non-Temporary Storage) is authorized for up to 1 year for PCS. At origin, you can store up to 90 days in temporary storage (SIT — Storage in Transit). Excess time = you pay the bill.</div>
+      <div class="alert alert-info"><strong>ℹ️ 1 Year to Use Move Entitlement</strong>You have 1 year from your report date to use your PCS move entitlement. After 1 year, you lose it. Do not leave furniture at the old location and expect to move it a year later on the government's dime.</div>
+      <div class="alert alert-tip"><strong>💡 Dependent Pickup Point</strong>If your dependents live somewhere other than your current duty station, you may be authorized to ship HHG from the dependent's location as well as your current station — up to your total weight entitlement. Coordinate with your TO.</div>
+      <h3>POV Shipment (Car Shipping)</h3>
+      <table class="info-table">
+        <thead><tr><th>Item</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td>Authorized POVs</td><td>1 vehicle CONUS-to-OCONUS moves. CONUS-to-CONUS: not typically government-funded (you drive or ship at own cost, reimbursed via MALT)</td></tr>
+          <tr><td>OCONUS Locations</td><td>Hawaii, Alaska, and all overseas: 1 POV shipment authorized. Some OCONUS locations authorize 2 POVs.</td></tr>
+          <tr><td>Timeframe</td><td>Submit POV shipment request to TO at least 30 days before desired ship date</td></tr>
+          <tr><td>Vehicle Condition</td><td>Must be clean, no contraband, under 1/4 tank of fuel, battery connected, no major mechanical issues</td></tr>
+        </tbody>
+      </table>
+      <h3>Special Circumstances</h3>
+      <ul style="font-size:.88rem;color:var(--slate);padding-left:1.25rem;line-height:1.9;">
+        <li><strong>Pregnancy/Birth:</strong> If a dependent delivers during your move, you may receive additional TLE/TLA extensions</li>
+        <li><strong>Short Tours:</strong> Some OCONUS short tours (unaccompanied) authorize storing HHG in CONUS at government expense for the tour duration</li>
+        <li><strong>Marriage During PCS:</strong> If you marry after orders are cut but before you arrive, coordinate with your Transportation Office — dependent weight allowance may apply</li>
+        <li><strong>Divorce During PCS:</strong> Immediately notify your TO and Finance — entitlements change based on court orders and timing</li>
+        <li><strong>Death of Service Member:</strong> Dependents receive one final move entitlement to home of record or any CONUS location</li>
+      </ul>
+    </div>
+
+    <!-- ETS SPECIFICS -->
+    <div class="tab-content" id="tab-ets">
+      <div class="alert alert-info"><strong>ETS / Separation Move Entitlements</strong>When you separate (ETS) or retire, you receive one final move to your Home of Record (HOR) or Place of Enlistment/Induction (PLEAD) — whichever is more beneficial. For retirement, you also have the option of moving to any CONUS location.</div>
+      <h3>ETS Move Rules</h3>
+      <table class="info-table">
+        <thead><tr><th>Item</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td>Move Destination</td><td>Home of Record (HOR) on your DD-214, OR Place of Enlistment</td></tr>
+          <tr><td>Retirement Move</td><td>Any CONUS location. OCONUS if retiring overseas. Distance limited by DOT distance table.</td></tr>
+          <tr><td>Time Limit</td><td>1 year from separation/retirement date to complete the final move</td></tr>
+          <tr><td>DLA</td><td>Paid at ETS/Retirement — same rates as PCS DLA by grade</td></tr>
+          <tr><td>TLE</td><td>Up to 10 days authorized at new location if you can't immediately occupy permanent quarters</td></tr>
+          <tr><td>Weight Entitlement</td><td>Same as PCS entitlement for your grade — with or without dependents</td></tr>
+          <tr><td>DITY/PPM</td><td>Yes — authorized for ETS and retirement moves. Same rules as PCS PPM.</td></tr>
+        </tbody>
+      </table>
+      <h3>Separation Pay vs. Severance Pay</h3>
+      <div class="alert alert-warn"><strong>⚠️ Not a Moving Allowance — But You Need to Know</strong>Separation pay (Involuntary Separation Pay or VSP) and Severance Pay are different from moving allowances. If you receive separation pay, it may be recouped if you later receive VA disability compensation for the same period. Consult with a VA benefits advisor before separating.</div>
+      <h3>ETS Transition Timeline — Move Planning</h3>
+      <div style="font-size:.88rem;color:var(--slate);">
+        <div style="display:flex;gap:.75rem;padding:.6rem 0;border-bottom:1px solid #f0f4fa;"><span style="font-weight:700;color:var(--navy2);min-width:90px;">12 Mo Out</span><span>Contact Transportation Office. Register at Move.mil. Get weight estimate for HHG.</span></div>
+        <div style="display:flex;gap:.75rem;padding:.6rem 0;border-bottom:1px solid #f0f4fa;"><span style="font-weight:700;color:var(--navy2);min-width:90px;">9 Mo Out</span><span>Begin decluttering. Less weight = cheaper move if DITY. More weight = use government movers.</span></div>
+        <div style="display:flex;gap:.75rem;padding:.6rem 0;border-bottom:1px solid #f0f4fa;"><span style="font-weight:700;color:var(--navy2);min-width:90px;">6 Mo Out</span><span>Decide DITY vs. government move. Book government pack/ship dates if using government move.</span></div>
+        <div style="display:flex;gap:.75rem;padding:.6rem 0;border-bottom:1px solid #f0f4fa;"><span style="font-weight:700;color:var(--navy2);min-width:90px;">3 Mo Out</span><span>Request DLA initiation. Confirm weight entitlement with TO. Finalize move destination address.</span></div>
+        <div style="display:flex;gap:.75rem;padding:.6rem 0;border-bottom:1px solid #f0f4fa;"><span style="font-weight:700;color:var(--navy2);min-width:90px;">ETS Date</span><span>DLA paid. Final move begins. 1-year clock starts for using move entitlement.</span></div>
+        <div style="display:flex;gap:.75rem;padding:.6rem 0;"><span style="font-weight:700;color:var(--red);min-width:90px;">1 Yr Later</span><span>Move entitlement expires. If not used, it is permanently forfeited.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- end left col -->
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="card">
+    <div class="card-header"><span class="icon">⚡</span><h2>2026 Quick Rates</h2></div>
+    <div class="card-body">
+      <div class="quick-stat"><span class="qs-label">MALT Rate</span><span class="qs-value">$0.21/mile</span></div>
+      <div class="quick-stat"><span class="qs-label">Per Diem (Travel)</span><span class="qs-value">$157/day</span></div>
+      <div class="quick-stat"><span class="qs-label">PPM Incentive</span><span class="qs-value">95% of Govt Rate</span></div>
+      <div class="quick-stat"><span class="qs-label">TLE Maximum</span><span class="qs-value">10 days</span></div>
+      <div class="quick-stat"><span class="qs-label">Storage (CONUS)</span><span class="qs-value">90 days SIT</span></div>
+      <div class="quick-stat"><span class="qs-label">Storage (OCONUS)</span><span class="qs-value">Up to 1 year NTS</span></div>
+      <div class="quick-stat"><span class="qs-label">Move Entitlement Window</span><span class="qs-value">1 Year</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">📅</span><h2>PCS Action Timeline</h2></div>
+    <div class="card-body">
+      <div class="timeline-item"><div class="tl-dot">-12</div><div><div class="tl-time">12 Months Out</div><div class="tl-task">Register at Move.mil</div><div class="tl-note">Create account, inventory HHG</div></div></div>
+      <div class="timeline-item"><div class="tl-dot">-6</div><div><div class="tl-time">6 Months Out</div><div class="tl-task">Choose Move Type</div><div class="tl-note">DITY vs. Government. Book pack dates.</div></div></div>
+      <div class="timeline-item"><div class="tl-dot">-3</div><div><div class="tl-time">3 Months Out</div><div class="tl-task">Coordinate with TO</div><div class="tl-note">Confirm weight, DLA, schedule</div></div></div>
+      <div class="timeline-item"><div class="tl-dot">-30</div><div><div class="tl-time">30 Days Out</div><div class="tl-task">Pack & Label</div><div class="tl-note">Valuables list, photos of items</div></div></div>
+      <div class="timeline-item"><div class="tl-dot">GO</div><div><div class="tl-time">Move Day</div><div class="tl-task">Weight Tickets (DITY)</div><div class="tl-note">Empty + full weigh-in before loading</div></div></div>
+      <div class="timeline-item"><div class="tl-dot">+5</div><div><div class="tl-time">5 Days After</div><div class="tl-task">File Travel Voucher</div><div class="tl-note">DD 1351-2, all receipts, weight tickets</div></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">🔗</span><h2>Official Resources</h2></div>
+    <div class="card-body">
+      <ul style="list-style:none;font-size:.84rem;line-height:2.2;">
+        <li><a href="https://move.mil" target="_blank" rel="noopener" style="color:var(--navy2);font-weight:600;">Move.mil ↗</a> — Official DoD Move Site</li>
+        <li><a href="https://www.defensetravel.dod.mil" target="_blank" rel="noopener" style="color:var(--navy2);font-weight:600;">DTMO ↗</a> — Defense Travel Mgmt Office</li>
+        <li><a href="https://www.jtr.csd.disa.mil" target="_blank" rel="noopener" style="color:var(--navy2);font-weight:600;">JTR ↗</a> — Joint Travel Regulations</li>
+        <li><a href="https://www.militaryonesource.mil/moving-housing" target="_blank" rel="noopener" style="color:var(--navy2);font-weight:600;">Military OneSource ↗</a> — Move Support</li>
+        <li><a href="https://installations.militaryonesource.mil" target="_blank" rel="noopener" style="color:var(--navy2);font-weight:600;">Installation Finder ↗</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,#0a1628,#1a3a6b);border:none;">
+    <div style="padding:1.25rem;text-align:center;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.4rem;">AI Career Tools</div>
+      <p style="font-size:.82rem;color:rgba(192,216,240,.8);margin-bottom:1rem;">Resume builder, MOS translator, interview prep, federal resume, LinkedIn optimizer — all included.</p>
+      <a href="https://veterancareerpath.com/app.html" style="display:block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;padding:.7rem 1rem;border-radius:8px;text-decoration:none;font-size:.88rem;">Get Full Access — $15/mo</a>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="https://veterancareerpath.com">Home</a>
+      <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a>
+      <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Disability</a>
+      <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">GI Bill</a>
+      <a href="https://veterancareerpath.com/app.html">AI Tools</a>
+    </div>
+    <div class="footer-copy">Veteran Career Path · Not affiliated with DoD or VA · Rates based on 2026 JTR · Verify with your Transportation Office</div>
+  </div>
+</footer>
+
+<script>
+// Weight entitlements by pay grade
+const WEIGHTS = {
+  dep: {E1:5000,E2:5000,E3:5000,E4:7000,E5:9000,E6:9000,E7:11000,E8:11000,E9:11000,W1:12000,W2:12000,W3:13500,W4:13500,W5:13500,O1:13500,O2:13500,O3:13500,O4:14500,O5:14500,O6:14500,'O7+':18000},
+  nodep:{E1:3500,E2:3500,E3:3500,E4:3500,E5:7000,E6:7000,E7:9000,E8:9000,E9:9000,W1:10000,W2:10000,W3:12000,W4:12000,W5:12000,O1:12000,O2:12000,O3:12000,O4:13000,O5:13000,O6:13000,'O7+':18000}
+};
+const PROGEAR = {E1:0,E2:0,E3:0,E4:0,E5:500,E6:500,E7:500,E8:500,E9:500,W1:500,W2:500,W3:1000,W4:1000,W5:1000,O1:500,O2:500,O3:500,O4:1000,O5:1000,O6:1000,'O7+':1000};
+// DLA rates 2026
+const DLA = {
+  dep: {E1:1212,E2:1212,E3:1212,E4:1390,E5:1523,E6:1650,E7:1855,E8:2009,E9:2145,W1:1855,W2:1855,W3:2145,W4:2145,W5:2145,O1:2145,O2:2145,O3:2145,O4:2450,O5:2450,O6:2450,'O7+':2870},
+  nodep:{E1:851,E2:851,E3:851,E4:977,E5:1070,E6:1158,E7:1302,E8:1411,E9:1504,W1:1302,W2:1302,W3:1504,W4:1504,W5:1504,O1:1504,O2:1504,O3:1504,O4:1719,O5:1719,O6:1719,'O7+':2012}
+};
+
+function fmt(n){return '$'+Math.round(n).toLocaleString();}
+
+function calculate(){
+  const grade = document.getElementById('payGrade').value;
+  const hasDep = document.querySelector('input[name="deps"]:checked').value==='yes';
+  const method = document.querySelector('input[name="moveMethod"]:checked').value;
+  const moveType = document.querySelector('input[name="moveType"]:checked').value;
+  const actualW = parseFloat(document.getElementById('actualWeight').value)||0;
+  const proGear = parseFloat(document.getElementById('proGear').value)||0;
+  let miles = parseFloat(document.getElementById('miles').value)||0;
+  const originZ = document.getElementById('originZip').value;
+  const destZ = document.getElementById('destZip').value;
+
+  // Estimate miles if not provided
+  if(!miles && originZ && destZ){
+    // Simple estimation based on ZIP prefix difference
+    const o = parseInt(originZ.substring(0,3));
+    const d = parseInt(destZ.substring(0,3));
+    miles = Math.abs(o-d)*8+150; // rough approximation
+  }
+  if(!miles) miles=500; // default
+
+  const depKey = hasDep?'dep':'nodep';
+  const gradeKey = grade==='O7'?'O7+':grade;
+
+  const weightEntitlement = (WEIGHTS[depKey][gradeKey]||9000)+proGear;
+  const dlaAmt = DLA[depKey][gradeKey]||1523;
+
+  // MALT calculation
+  const povsAuth = hasDep?2:1;
+  const maltTotal = miles * 0.21 * povsAuth;
+
+  // Per diem en route
+  const travelDays = Math.ceil(miles/400)+1;
+  const perDiemTotal = travelDays * 157;
+
+  // TLE estimate (assume 5 days average)
+  const tleEstimate = 5 * (90+45); // avg lodging $90 + meals $45
+
+  // PPM/DITY calculation
+  let ppmEstimate = 0;
+  let govtMoveValue = 0;
+  const usedWeight = Math.min(actualW||weightEntitlement*.7, weightEntitlement);
+  const govtRatePerLbPer100mi = 0.17;
+  govtMoveValue = usedWeight * govtRatePerLbPer100mi * (miles/100);
+  ppmEstimate = govtMoveValue * 0.95;
+
+  // Build results
+  let items = [];
+  let total = 0;
+
+  items.push({label:'Weight Entitlement',value:weightEntitlement.toLocaleString()+' lbs',sub:'Your authorized HHG weight limit',highlight:false});
+  
+  items.push({label:'Dislocation Allowance (DLA)',value:fmt(dlaAmt),sub:'Flat payment — deposited to your account',highlight:true,dollar:dlaAmt});
+  total += dlaAmt;
+
+  items.push({label:'MALT Mileage ('+povsAuth+' POV)',value:fmt(maltTotal),sub:fmt(miles)+' miles × $0.21 × '+povsAuth+' vehicle(s)',highlight:true,dollar:maltTotal});
+  total += maltTotal;
+
+  items.push({label:'Per Diem En Route',value:fmt(perDiemTotal),sub:travelDays+' travel days × $157/day',highlight:true,dollar:perDiemTotal});
+  total += perDiemTotal;
+
+  items.push({label:'TLE Estimate (5 days)',value:fmt(tleEstimate),sub:'Lodging + meals at destination. Actual = receipts.',highlight:false,dollar:tleEstimate});
+  total += tleEstimate;
+
+  if(method==='dity'){
+    items.push({label:'PPM/DITY Incentive Estimate',value:fmt(ppmEstimate),sub:'95% of govt rate for '+(actualW||Math.round(weightEntitlement*.7)).toLocaleString()+' lbs, '+Math.round(miles)+' mi',highlight:true,dollar:ppmEstimate});
+    total += ppmEstimate;
+  } else {
+    items.push({label:'Government Move Value',value:fmt(govtMoveValue),sub:'Estimated commercial carrier cost (you don\'t receive this cash)',highlight:false});
+  }
+
+  // Render
+  let gridHtml = items.map(item=>`
+    <div class="result-item${item.highlight?' highlight':''}">
+      <div class="result-label">${item.label}</div>
+      <div class="result-value${item.highlight?' green':''}">${item.value}</div>
+      ${item.sub?`<div class="result-sub">${item.sub}</div>`:''}
+    </div>`).join('');
+
+  document.getElementById('resultGrid').innerHTML = gridHtml;
+  document.getElementById('totalVal').textContent = fmt(total);
+  document.getElementById('totalNote').textContent = method==='dity'
+    ? 'Cash entitlements including PPM incentive pay. Actual DITY profit depends on your real moving costs vs. govt rate.'
+    : 'Cash entitlements (DLA + MALT + Per Diem + TLE). Government move value is in-kind, not cash.';
+
+  const notes = `
+    <div class="alert alert-warn" style="margin-top:.75rem;">
+      <strong>⚠️ This is an Estimate Only</strong>
+      Actual entitlements are calculated by your Transportation Office based on official DTOD distances, current weight scales, and your specific orders. Always verify with your Finance Office and Transportation Office before making financial decisions.
+    </div>
+    ${method==='dity'?`<div class="alert alert-tip"><strong>💡 DITY Profit Tip</strong>If you can move for less than ${fmt(ppmEstimate)}, the difference is yours to keep. Renting a truck typically costs $300–$1,200 depending on distance — that's significant profit potential on this move.</div>`:''}
+  `;
+  document.getElementById('resultNotes').innerHTML = notes;
+  document.getElementById('results').classList.add('show');
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function showTab(id){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    b.classList.toggle('active',b.getAttribute('onclick').includes("'"+id+"'"));
+  });
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+// Nav
+document.getElementById('ham').addEventListener('click',function(){
+  this.classList.toggle('open');
+  document.getElementById('mob').classList.toggle('open');
+});
+</script>
+</body>
+</html>

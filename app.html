@@ -69,8 +69,8 @@
   <script>window.VCB_STRIPE_PK="pk_test_51TDAB4I88XNO7Y7PHRn7rhUBd9R6a06uT1IiYlJPHkGtGd2Dk2nSnIADrA1Qev4cVLa2WMz0E1qFIgTJXb1eTSSN00gzgmEdDp";</script>
   <script>window.VCB_LOGO="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png";</script>
   <script>window.VCB_PROXY_URL="https://vcp-proxy.vercel.app/api/claude";</script>
-  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
-  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
+  <link rel="icon" type="image/png" href="https://veterancareerpath.com/logo.png">
+  <link rel="apple-touch-icon" href="https://veterancareerpath.com/logo.png">
 
 <style>
 @media print {
@@ -2615,21 +2615,7 @@ function MyProfileContent(props) {
 
 function MyProfileTab(props) {
   const {tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
-  return (<div className={"panel "+(tab===6?"on":"")}>
-    {!currentUser?(
-      <div style={{textAlign:"center",padding:"3rem 1rem"}}>
-        <div style={{fontSize:"3rem",marginBottom:"1rem"}}>🔒</div>
-        <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",marginBottom:".75rem"}}>SIGN IN TO ACCESS YOUR PROFILE</h3>
-        <p style={{color:"#5a7090",fontSize:".9rem",margin:"0 auto 1.5rem",maxWidth:"360px",lineHeight:1.7}}>Save your service profile, resumes, and career matches across any device.</p>
-        <button className="btn-primary" style={{maxWidth:"280px",margin:"0 auto"}} onClick={()=>setShowAuth(true)}>
-          🔑 Sign In / Create Account
-        </button>
-      </div>
-    ):(
-      <MyProfileContent tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} />
-    )}
-
-  </div>);
+  return ();
 }
 
 function App() {
@@ -3715,7 +3701,7 @@ Return this exact JSON structure:
 
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
 
-  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Vet Resources","My Profile"];
+  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","My Profile"];
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
   const DI = "Defense/Intel";
   const RG = "Reserve/Guard (concurrent with civilian)";
@@ -5613,7 +5599,7 @@ Return this exact JSON structure:
 
             <div className="nav-row">
               <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
-              <button className="btn-sec" onClick={()=>setTab(6)}>My Profile →</button>
+              <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
             </div>
           </div>
 
@@ -6002,7 +5988,7 @@ Return this exact JSON structure:
 
             <div className="nav-row" style={{marginTop:"1.5rem"}}>
               <button className="btn-sec" onClick={()=>setTab(3)}>← Cover Letter</button>
-              <button className="btn-sec" onClick={()=>setTab(6)}>My Profile →</button>
+              <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
             </div>
           </div>
 
@@ -6281,7 +6267,7 @@ Return this exact JSON structure:
 
             <div className="nav-row" style={{marginTop:"1.5rem"}}>
               <button className="btn-sec" onClick={()=>setTab(4)}>← Job Search Hub</button>
-              <button className="btn-sec" onClick={()=>setTab(6)}>My Profile →</button>
+              <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
             </div>
           </div>
 

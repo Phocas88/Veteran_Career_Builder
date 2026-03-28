@@ -4,176 +4,213 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Full Career Assessment | Veteran Career Path</title>
-<meta name="description" content="Your personalized 60-question RIASEC career assessment. Subscriber-only. Detailed career matches, salary data, and printable report.">
+<meta name="description" content="60-question RIASEC career assessment built for veterans. Results saved to your account — take on phone, print from desktop.">
 <meta name="robots" content="noindex">
-<link rel="icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/logo.png">
+<link rel="apple-touch-icon" href="https://veterancareerpath.com/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+  try {
+    firebase.initializeApp({
+      apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+      authDomain: "veteran-career-builder.firebaseapp.com",
+      projectId: "veteran-career-builder",
+      storageBucket: "veteran-career-builder.firebasestorage.app",
+      messagingSenderId: "REPLACE_SENDER_ID",
+      appId: "REPLACE_APP_ID"
+    });
+    window.fbAuth = firebase.auth();
+    window.fbDb = firebase.firestore();
+  } catch(e) {
+    window.fbAuth = null; window.fbDb = null;
+  }
+</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --navy:#0a1628;--navy2:#1a3a6b;--gold:#f0c040;--gold2:#c8960a;
-  --green:#1a7a40;--red:#c0392b;--border:#dde3ec;
-  --r:#1a5c9a;--i:#6a2a9a;--a:#8a3a5a;--s:#1a7a40;--e:#c8960a;--c:#2a7090;
-}
+:root{--navy:#0a1628;--navy2:#1a3a6b;--gold:#f0c040;--gold2:#c8960a;--green:#1a7a40;}
+body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:100vh;overflow-x:hidden;}
 
-body{font-family:'Inter',sans-serif;background:#060e1a;color:#e8f0f8;min-height:100vh;overflow-x:hidden;}
-
-/* ACCESS GATE */
-#gate{position:fixed;inset:0;background:#060e1a;z-index:9999;display:flex;align-items:center;justify-content:center;padding:2rem;}
+/* GATE */
+#gate{position:fixed;inset:0;background:#060e1a;z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
 #gate.hidden{display:none;}
-.gate-box{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);border:1px solid rgba(240,192,64,.25);border-radius:16px;padding:2.5rem;text-align:center;max-width:460px;width:100%;}
-.gate-logo{width:56px;height:56px;object-fit:contain;margin-bottom:1.25rem;}
-.gate-title{font-family:\'Bebas Neue\',sans-serif;font-size:1.8rem;letter-spacing:.1em;color:var(--gold);margin-bottom:.5rem;}
-.gate-sub{font-size:.9rem;color:rgba(192,216,240,.7);line-height:1.65;margin-bottom:1.75rem;}
-.gate-btn{display:block;width:100%;padding:.9rem;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:\'Bebas Neue\',sans-serif;font-size:1.1rem;letter-spacing:.1em;border:none;border-radius:10px;cursor:pointer;text-decoration:none;margin-bottom:.75rem;}
-.gate-skip{font-size:.8rem;color:rgba(192,216,240,.5);text-decoration:none;}
-.gate-skip:hover{color:rgba(192,216,240,.8);}
+.gate-box{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);border:1px solid rgba(240,192,64,.2);border-radius:16px;padding:2.25rem;text-align:center;max-width:440px;width:100%;}
+.gate-logo{width:52px;height:52px;object-fit:contain;margin-bottom:1rem;}
+.gate-title{font-family:"Bebas Neue",sans-serif;font-size:1.7rem;letter-spacing:.1em;color:var(--gold);margin-bottom:.4rem;}
+.gate-sub{font-size:.87rem;color:rgba(192,216,240,.65);line-height:1.65;margin-bottom:1.5rem;}
+.gate-btn{display:block;width:100%;padding:.85rem;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:"Bebas Neue",sans-serif;font-size:1.05rem;letter-spacing:.08em;border:none;border-radius:10px;cursor:pointer;text-decoration:none;margin-bottom:.65rem;}
+.gate-skip{font-size:.78rem;color:rgba(192,216,240,.4);text-decoration:none;}
 
 /* TOPBAR */
-.topbar{background:rgba(6,14,26,.95);border-bottom:1px solid rgba(240,192,64,.12);padding:.75rem 5%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px);}
-.topbar-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
-.topbar-logo img{width:28px;height:28px;object-fit:contain;}
-.topbar-logo span{font-family:\'Bebas Neue\',sans-serif;font-size:.95rem;letter-spacing:.1em;color:var(--gold);}
-.topbar-right{display:flex;align-items:center;gap:1rem;}
-.topbar-step{font-size:.75rem;color:rgba(192,216,240,.5);font-weight:500;}
-.topbar-exit{color:rgba(192,216,240,.4);font-size:.8rem;text-decoration:none;transition:.2s;}
-.topbar-exit:hover{color:rgba(192,216,240,.8);}
+.topbar{background:rgba(6,14,26,.97);border-bottom:1px solid rgba(240,192,64,.1);padding:.7rem 5%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);}
+.topbar-logo{display:flex;align-items:center;gap:.55rem;text-decoration:none;}
+.topbar-logo img{width:26px;height:26px;object-fit:contain;}
+.topbar-logo span{font-family:"Bebas Neue",sans-serif;font-size:.9rem;letter-spacing:.1em;color:var(--gold);}
+.topbar-right{display:flex;align-items:center;gap:.85rem;}
+.topbar-step{font-size:.73rem;color:rgba(192,216,240,.45);}
+.topbar-exit{color:rgba(192,216,240,.35);font-size:.78rem;text-decoration:none;}
+.topbar-exit:hover{color:rgba(192,216,240,.7);}
 
-/* PROGRESS */
-.progress-bar{height:3px;background:rgba(255,255,255,.06);}
+.progress-bar{height:3px;background:rgba(255,255,255,.05);}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:width .4s ease;width:0%;}
 
 /* SCREENS */
-.screen{display:none;min-height:calc(100vh - 54px);}
+.screen{display:none;min-height:calc(100vh - 52px);}
 .screen.active{display:block;}
 
 /* INTRO */
-.intro-wrap{max-width:700px;margin:0 auto;padding:4rem 5%;}
-.intro-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.25);border-radius:100px;padding:.3rem 1rem;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
-.intro-h{font-family:\'Bebas Neue\',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);letter-spacing:.06em;color:#fff;line-height:1.05;margin-bottom:1rem;}
+.intro-wrap{max-width:700px;margin:0 auto;padding:3.5rem 5%;}
+.intro-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:100px;padding:.28rem .9rem;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;}
+.intro-h{font-family:"Bebas Neue",sans-serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:.06em;color:#fff;line-height:1.05;margin-bottom:.85rem;}
 .intro-h span{color:var(--gold);}
-.intro-p{font-size:1rem;color:rgba(192,216,240,.75);line-height:1.8;margin-bottom:2rem;max-width:560px;}
-.intro-stats{display:flex;gap:2rem;margin-bottom:2.5rem;flex-wrap:wrap;}
-.intro-stat .n{font-family:\'Bebas Neue\',sans-serif;font-size:2rem;letter-spacing:.04em;color:var(--gold);line-height:1;}
-.intro-stat .l{font-size:.7rem;color:rgba(192,216,240,.45);text-transform:uppercase;letter-spacing:.1em;margin-top:.15rem;}
-.intro-dims{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:2.5rem;}
-@media(max-width:500px){.intro-dims{grid-template-columns:1fr 1fr;}}
-.dim-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.85rem;display:flex;align-items:center;gap:.6rem;}
-.dim-card .icon{font-size:1.2rem;}
-.dim-card .label{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.8);}
-.start-btn{display:inline-flex;align-items:center;gap:.6rem;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:\'Bebas Neue\',sans-serif;font-size:1.2rem;letter-spacing:.1em;padding:1rem 2.5rem;border-radius:12px;border:none;cursor:pointer;transition:transform .15s,box-shadow .15s;}
-.start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(200,150,10,.4);}
-.instr{font-size:.82rem;color:rgba(192,216,240,.4);margin-top:1rem;}
+.intro-p{font-size:.95rem;color:rgba(192,216,240,.7);line-height:1.8;margin-bottom:1.75rem;max-width:560px;}
+.intro-callouts{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:2rem;}
+@media(max-width:480px){.intro-callouts{grid-template-columns:1fr;}}
+.callout{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.9rem 1rem;display:flex;gap:.65rem;align-items:flex-start;}
+.callout-icon{font-size:1.15rem;flex-shrink:0;margin-top:.05rem;}
+.callout-text{font-size:.8rem;color:rgba(192,216,240,.72);line-height:1.6;}
+.callout-text strong{color:#fff;display:block;margin-bottom:.15rem;font-size:.83rem;}
+.intro-stats{display:flex;gap:2rem;margin-bottom:2rem;flex-wrap:wrap;}
+.intro-stat .n{font-family:"Bebas Neue",sans-serif;font-size:1.9rem;color:var(--gold);line-height:1;}
+.intro-stat .l{font-size:.67rem;color:rgba(192,216,240,.4);text-transform:uppercase;letter-spacing:.1em;margin-top:.1rem;}
+.start-btn{display:inline-flex;align-items:center;gap:.6rem;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:"Bebas Neue",sans-serif;font-size:1.15rem;letter-spacing:.1em;padding:.9rem 2.2rem;border-radius:12px;border:none;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,150,10,.4);}
+.instr{font-size:.78rem;color:rgba(192,216,240,.32);margin-top:.8rem;}
+.save-note{background:rgba(26,58,107,.2);border:1px solid rgba(26,58,107,.35);border-radius:8px;padding:.65rem .9rem;margin-top:1rem;font-size:.78rem;color:rgba(192,216,240,.55);line-height:1.6;}
+.save-note strong{color:rgba(192,216,240,.85);}
 
 /* ASSESSMENT */
-.assess-wrap{max-width:740px;margin:0 auto;padding:2.5rem 5%;}
-.dim-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,.06);}
-.dim-icon-big{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
-.dim-title-text{font-family:\'Bebas Neue\',sans-serif;font-size:1.4rem;letter-spacing:.07em;color:#fff;line-height:1;}
-.dim-subtitle{font-size:.82rem;color:rgba(192,216,240,.5);margin-top:.25rem;}
-.dim-prog-text{font-size:.72rem;color:rgba(192,216,240,.4);margin-top:.2rem;}
-.questions-list{display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2rem;}
-.q-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1.25rem 1.5rem;transition:border-color .2s;}
-.q-card.answered{border-color:rgba(240,192,64,.2);background:rgba(240,192,64,.03);}
-.q-num{font-size:.67rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(192,216,240,.35);margin-bottom:.5rem;}
-.q-text{font-size:.95rem;color:rgba(255,255,255,.88);line-height:1.6;margin-bottom:1rem;}
-.scale-row{display:flex;gap:.4rem;align-items:center;}
-.scale-labels{display:flex;justify-content:space-between;font-size:.63rem;color:rgba(192,216,240,.35);margin-top:.4rem;}
-.scale-btn{flex:1;height:40px;border-radius:8px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.assess-wrap{max-width:700px;margin:0 auto;padding:2rem 5%;}
+.dim-header{display:flex;align-items:center;gap:.9rem;margin-bottom:1.75rem;padding-bottom:1.25rem;border-bottom:1px solid rgba(255,255,255,.06);}
+.dim-icon-big{width:48px;height:48px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.dim-name{font-family:"Bebas Neue",sans-serif;font-size:1.3rem;letter-spacing:.07em;color:#fff;line-height:1;}
+.dim-desc{font-size:.78rem;color:rgba(192,216,240,.45);margin-top:.22rem;}
+.dim-counter{font-size:.7rem;color:rgba(192,216,240,.35);margin-top:.18rem;}
+.q-list{display:flex;flex-direction:column;gap:1.1rem;margin-bottom:1.75rem;}
+.q-card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.065);border-radius:12px;padding:1.2rem 1.35rem;transition:border-color .2s;}
+.q-card.answered{border-color:rgba(240,192,64,.18);background:rgba(240,192,64,.025);}
+.q-num{font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(192,216,240,.3);margin-bottom:.45rem;}
+.q-text{font-size:.93rem;color:rgba(255,255,255,.87);line-height:1.6;margin-bottom:.95rem;}
+.scale-row{display:flex;gap:.35rem;}
+.scale-btn{flex:1;height:38px;border-radius:7px;border:1.5px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);color:rgba(255,255,255,.45);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .14s;}
 .scale-btn:hover{border-color:rgba(255,255,255,.25);color:#fff;}
 .scale-btn.sel{color:#fff;border-width:2px;font-weight:700;}
-.nav-row{display:flex;justify-content:space-between;align-items:center;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.06);}
-.nav-btn{display:flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;border:none;}
-.nav-back{background:rgba(255,255,255,.06);color:rgba(192,216,240,.7);}
-.nav-back:hover{background:rgba(255,255,255,.1);color:#fff;}
-.nav-next{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:\'Bebas Neue\',sans-serif;font-size:.95rem;letter-spacing:.06em;}
-.nav-next:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
-.nav-next:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,150,10,.35);}
-.q-remaining{font-size:.78rem;color:rgba(192,216,240,.4);}
+.scale-lbs{display:flex;justify-content:space-between;font-size:.6rem;color:rgba(192,216,240,.28);margin-top:.35rem;}
+.nav-row{display:flex;justify-content:space-between;align-items:center;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,.05);}
+.btn-back{display:flex;align-items:center;gap:.4rem;padding:.65rem 1.25rem;border-radius:9px;background:rgba(255,255,255,.05);color:rgba(192,216,240,.6);font-size:.84rem;font-weight:600;cursor:pointer;border:none;transition:all .18s;}
+.btn-back:hover{background:rgba(255,255,255,.09);color:#fff;}
+.btn-next{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:"Bebas Neue",sans-serif;font-size:.92rem;letter-spacing:.06em;padding:.7rem 1.6rem;border-radius:9px;border:none;cursor:pointer;transition:all .18s;}
+.btn-next:disabled{opacity:.3;cursor:not-allowed;}
+.btn-next:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(200,150,10,.35);}
+.q-remain{font-size:.75rem;color:rgba(192,216,240,.35);}
+
+/* SAVING SCREEN */
+.saving-wrap{max-width:400px;margin:8rem auto;text-align:center;padding:0 5%;}
+.saving-icon{font-size:2.5rem;margin-bottom:1rem;animation:spin 1.5s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.saving-title{font-family:"Bebas Neue",sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#fff;margin-bottom:.4rem;}
+.saving-sub{font-size:.85rem;color:rgba(192,216,240,.5);}
 
 /* RESULTS */
-.results-wrap{max-width:900px;margin:0 auto;padding:3rem 5% 5rem;}
-.results-hero{text-align:center;padding:3rem 0 2.5rem;position:relative;}
-.results-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(240,192,64,.08),transparent 70%);pointer-events:none;}
-.results-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.2);border-radius:100px;padding:.28rem .9rem;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
-.results-h{font-family:\'Bebas Neue\',sans-serif;font-size:clamp(2rem,4.5vw,3rem);letter-spacing:.07em;color:#fff;margin-bottom:.5rem;}
-.results-sub{font-size:.92rem;color:rgba(192,216,240,.6);margin-bottom:2rem;}
-.profile-type{display:inline-block;background:linear-gradient(135deg,rgba(240,192,64,.15),rgba(200,150,10,.05));border:1px solid rgba(240,192,64,.3);border-radius:12px;padding:.6rem 1.5rem;font-family:\'Bebas Neue\',sans-serif;font-size:1.2rem;letter-spacing:.1em;color:var(--gold);margin-bottom:2.5rem;}
+.results-wrap{max-width:860px;margin:0 auto;padding:3rem 5% 5rem;}
 
-/* DIMENSION BARS */
-.section-label{font-family:\'Bebas Neue\',sans-serif;font-size:1rem;letter-spacing:.1em;color:rgba(192,216,240,.5);text-transform:uppercase;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,.06);}
-.dim-bars{display:flex;flex-direction:column;gap:.85rem;margin-bottom:2.5rem;}
-.dim-bar-row{display:flex;align-items:center;gap:1rem;}
-.dim-bar-label{width:180px;flex-shrink:0;display:flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.8);}
-.dim-bar-icon{font-size:.95rem;}
-.dim-bar-track{flex:1;height:10px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;}
-.dim-bar-fill{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.16,1,.3,1);}
-.dim-bar-pct{width:36px;text-align:right;font-size:.78rem;font-weight:700;color:rgba(192,216,240,.6);}
-@media(max-width:500px){.dim-bar-label{width:120px;font-size:.73rem;}.dim-bar-icon{display:none;}}
+/* Share bar */
+.share-bar{background:rgba(26,58,107,.25);border:1px solid rgba(26,58,107,.4);border-radius:12px;padding:1rem 1.25rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.share-info{font-size:.82rem;color:rgba(192,216,240,.65);line-height:1.6;}
+.share-info strong{color:#fff;display:block;font-size:.88rem;margin-bottom:.1rem;}
+.share-btns{display:flex;gap:.5rem;flex-shrink:0;flex-wrap:wrap;}
+.share-btn{display:flex;align-items:center;gap:.35rem;padding:.5rem 1rem;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;}
+.share-copy{background:rgba(255,255,255,.08);color:rgba(192,216,240,.8);}
+.share-copy:hover{background:rgba(255,255,255,.14);color:#fff;}
+.share-print{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;}
+.share-print:hover{opacity:.9;}
 
-/* PERSONALITY TYPE */
-.type-card{background:linear-gradient(135deg,rgba(13,31,60,.8),rgba(26,58,107,.4));border:1px solid rgba(240,192,64,.15);border-radius:16px;padding:2rem;margin-bottom:2.5rem;}
-.type-header{display:flex;align-items:flex-start;gap:1.25rem;margin-bottom:1.25rem;}
-.type-icon-big{font-size:2.2rem;flex-shrink:0;margin-top:.1rem;}
-.type-name{font-family:\'Bebas Neue\',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#fff;line-height:1;margin-bottom:.3rem;}
-.type-combo{font-size:.8rem;color:var(--gold);font-weight:600;letter-spacing:.06em;}
-.type-desc{font-size:.9rem;color:rgba(192,216,240,.75);line-height:1.75;}
-.type-traits{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem;}
-.type-trait{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:.2rem .65rem;font-size:.72rem;font-weight:600;color:rgba(192,216,240,.7);}
+.results-hero{text-align:center;padding:2rem 0 2.5rem;position:relative;}
+.results-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(240,192,64,.06),transparent 65%);}
+.results-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.18);border-radius:100px;padding:.25rem .85rem;font-size:.66rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem;}
+.results-h{font-family:"Bebas Neue",sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.07em;color:#fff;margin-bottom:.35rem;}
+.results-sub{font-size:.88rem;color:rgba(192,216,240,.5);margin-bottom:1.75rem;}
+.profile-type{display:inline-block;background:linear-gradient(135deg,rgba(240,192,64,.12),rgba(200,150,10,.04));border:1px solid rgba(240,192,64,.25);border-radius:10px;padding:.55rem 1.4rem;font-family:"Bebas Neue",sans-serif;font-size:1.15rem;letter-spacing:.09em;color:var(--gold);margin-bottom:2rem;}
 
-/* CAREER CARDS */
-.career-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:2.5rem;}
-.career-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.25rem;transition:border-color .2s,transform .2s;}
-.career-card:hover{border-color:rgba(240,192,64,.2);transform:translateY(-2px);}
-.career-card.top{border-color:rgba(240,192,64,.25);background:rgba(240,192,64,.04);}
-.career-rank{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
-.career-title{font-weight:700;font-size:.95rem;color:#fff;margin-bottom:.35rem;line-height:1.3;}
-.career-salary{font-size:.82rem;font-weight:600;color:#4ade80;margin-bottom:.35rem;}
-.career-sector{display:inline-block;background:rgba(255,255,255,.06);border-radius:20px;padding:.15rem .55rem;font-size:.68rem;color:rgba(192,216,240,.5);font-weight:500;}
-.career-fit{display:flex;align-items:center;gap:.35rem;margin-top:.6rem;}
-.career-fit-bar{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
-.career-fit-fill{height:100%;border-radius:2px;}
-.career-fit-label{font-size:.65rem;color:rgba(192,216,240,.4);white-space:nowrap;}
+.sec-lbl{font-family:"Bebas Neue",sans-serif;font-size:.92rem;letter-spacing:.1em;color:rgba(192,216,240,.4);text-transform:uppercase;margin:2.5rem 0 .9rem;padding-bottom:.45rem;border-bottom:1px solid rgba(255,255,255,.05);}
 
-/* STRENGTHS */
-.strengths-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2.5rem;}
-@media(max-width:560px){.strengths-grid{grid-template-columns:1fr;}}
-.strength-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1.1rem;}
-.strength-icon{font-size:1.3rem;margin-bottom:.5rem;}
-.strength-title{font-weight:700;font-size:.88rem;color:#fff;margin-bottom:.3rem;}
-.strength-desc{font-size:.8rem;color:rgba(192,216,240,.6);line-height:1.6;}
+/* Dim bars */
+.dim-bars{display:flex;flex-direction:column;gap:.8rem;margin-bottom:.5rem;}
+.dim-bar-row{display:flex;align-items:center;gap:.9rem;}
+.dim-bar-lbl{width:175px;font-size:.8rem;font-weight:600;color:rgba(255,255,255,.75);display:flex;align-items:center;gap:.4rem;flex-shrink:0;}
+.dim-bar-track{flex:1;height:9px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden;}
+.dim-bar-fill{height:100%;border-radius:5px;transition:width 1.3s cubic-bezier(.16,1,.3,1);}
+.dim-bar-pct{width:34px;text-align:right;font-size:.75rem;font-weight:700;color:rgba(192,216,240,.5);}
+@media(max-width:480px){.dim-bar-lbl{width:115px;font-size:.72rem;}}
 
-/* NEXT STEPS */
-.steps-list{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2.5rem;}
-.step-item{display:flex;gap:1rem;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1rem 1.25rem;}
-.step-num{width:28px;height:28px;border-radius:50%;background:var(--navy2);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:\'Bebas Neue\',sans-serif;font-size:.9rem;flex-shrink:0;margin-top:.1rem;}
-.step-title{font-weight:700;font-size:.88rem;color:#fff;margin-bottom:.2rem;}
-.step-desc{font-size:.8rem;color:rgba(192,216,240,.6);line-height:1.6;}
+/* Type card */
+.type-card{background:linear-gradient(135deg,rgba(13,31,60,.85),rgba(26,58,107,.45));border:1px solid rgba(240,192,64,.13);border-radius:14px;padding:1.75rem;margin-bottom:.5rem;}
+.type-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem;}
+.type-icon{font-size:2rem;flex-shrink:0;}
+.type-name{font-family:"Bebas Neue",sans-serif;font-size:1.4rem;letter-spacing:.07em;color:#fff;line-height:1;margin-bottom:.25rem;}
+.type-dims{font-size:.77rem;color:var(--gold);font-weight:600;letter-spacing:.05em;}
+.type-desc{font-size:.88rem;color:rgba(192,216,240,.72);line-height:1.75;}
+.type-traits{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.9rem;}
+.trait{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:.18rem .62rem;font-size:.7rem;font-weight:600;color:rgba(192,216,240,.65);}
 
-/* CTA */
-.results-cta{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);border:1px solid rgba(240,192,64,.2);border-radius:16px;padding:2.5rem;text-align:center;margin-bottom:2rem;}
-.cta-title{font-family:\'Bebas Neue\',sans-serif;font-size:1.8rem;letter-spacing:.08em;color:var(--gold);margin-bottom:.5rem;}
-.cta-sub{font-size:.9rem;color:rgba(192,216,240,.7);margin-bottom:1.5rem;max-width:480px;margin-left:auto;margin-right:auto;}
-.cta-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;}
-.cta-primary{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:\'Bebas Neue\',sans-serif;font-size:1rem;letter-spacing:.08em;padding:.85rem 2rem;border-radius:10px;text-decoration:none;border:none;cursor:pointer;}
-.cta-secondary{background:rgba(255,255,255,.06);color:rgba(192,216,240,.8);font-size:.88rem;font-weight:600;padding:.85rem 1.75rem;border-radius:10px;border:1px solid rgba(255,255,255,.12);cursor:pointer;}
-.cta-secondary:hover{background:rgba(255,255,255,.1);}
+/* Career cards */
+.career-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:.85rem;margin-bottom:.5rem;}
+.career-card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.075);border-radius:12px;padding:1.1rem;}
+.career-card.top{border-color:rgba(240,192,64,.22);background:rgba(240,192,64,.035);}
+.c-rank{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.38rem;}
+.c-title{font-weight:700;font-size:.92rem;color:#fff;margin-bottom:.28rem;line-height:1.3;}
+.c-salary{font-size:.79rem;font-weight:600;color:#4ade80;margin-bottom:.28rem;}
+.c-sector{font-size:.67rem;color:rgba(192,216,240,.4);background:rgba(255,255,255,.05);display:inline-block;border-radius:20px;padding:.1rem .48rem;}
+.c-fit{display:flex;align-items:center;gap:.3rem;margin-top:.55rem;}
+.c-fit-bar{flex:1;height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;}
+.c-fit-fill{height:100%;border-radius:2px;}
+.c-fit-lbl{font-size:.62rem;color:rgba(192,216,240,.35);white-space:nowrap;}
+
+/* Strengths */
+.strength-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.5rem;}
+@media(max-width:540px){.strength-grid{grid-template-columns:1fr;}}
+.strength-card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.065);border-radius:11px;padding:1rem;}
+.s-icon{font-size:1.2rem;margin-bottom:.4rem;}
+.s-title{font-weight:700;font-size:.85rem;color:#fff;margin-bottom:.22rem;}
+.s-desc{font-size:.78rem;color:rgba(192,216,240,.55);line-height:1.6;}
+
+/* Steps */
+.steps{display:flex;flex-direction:column;gap:.7rem;margin-bottom:.5rem;}
+.step{display:flex;gap:.85rem;align-items:flex-start;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.065);border-radius:11px;padding:.95rem 1.1rem;}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--navy2);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:"Bebas Neue",sans-serif;font-size:.88rem;flex-shrink:0;margin-top:.05rem;}
+.step-title{font-weight:700;font-size:.85rem;color:#fff;margin-bottom:.18rem;}
+.step-desc{font-size:.78rem;color:rgba(192,216,240,.55);line-height:1.6;}
+
+/* Results CTA */
+.results-cta{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);border:1px solid rgba(240,192,64,.18);border-radius:14px;padding:2.25rem;text-align:center;margin-top:1rem;}
+.cta-title{font-family:"Bebas Neue",sans-serif;font-size:1.7rem;letter-spacing:.08em;color:var(--gold);margin-bottom:.4rem;}
+.cta-sub{font-size:.87rem;color:rgba(192,216,240,.65);line-height:1.7;margin-bottom:1.25rem;max-width:460px;margin-left:auto;margin-right:auto;}
+.cta-btns{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;}
+.cta-primary{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:"Bebas Neue",sans-serif;font-size:1rem;letter-spacing:.07em;padding:.8rem 1.9rem;border-radius:9px;text-decoration:none;border:none;cursor:pointer;}
+.cta-sec{background:rgba(255,255,255,.06);color:rgba(192,216,240,.75);font-size:.85rem;font-weight:600;padding:.8rem 1.5rem;border-radius:9px;border:1px solid rgba(255,255,255,.1);cursor:pointer;}
+.cta-sec:hover{background:rgba(255,255,255,.1);}
 
 /* PRINT */
 @media print{
-  #gate,#topbar,.cta-btns,.print-btn{display:none!important;}
-  body{background:#fff;color:#000;}
-  .results-hero,.type-card,.section-label,.dim-bars,.career-grid,.strengths-grid,.steps-list,.results-cta{color:#000;}
-  .results-h,.dim-title-text,.career-title,.strength-title,.step-title,.type-name,.cta-title{color:#000;}
-  .career-card,.strength-card,.step-item,.type-card{border:1px solid #ccc;background:#f9f9f9;}
+  #gate,.topbar,.progress-bar,.share-bar,.cta-btns{display:none!important;}
+  body{background:#fff!important;color:#000!important;}
+  .results-wrap{padding:0!important;max-width:100%!important;}
+  .results-h,.type-name,.sec-lbl,.cta-title{color:#000!important;}
+  .results-sub,.type-desc,.type-dims,.s-desc,.step-desc,.dim-bar-pct,.c-salary,.cta-sub{color:#333!important;}
+  .type-card,.career-card,.strength-card,.step{background:#f8f8f8!important;border:1px solid #ccc!important;}
   .dim-bar-fill{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+  .career-grid{grid-template-columns:repeat(3,1fr)!important;}
+  .strength-grid{grid-template-columns:1fr 1fr!important;}
 }
 
-.fade-in{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;}
-.fade-in.visible{opacity:1;transform:translateY(0);}
+.fade-in{opacity:0;transform:translateY(10px);transition:opacity .45s,transform .45s;}
+.fade-in.visible{opacity:1;transform:none;}
 </style>
 </head>
 <body>
@@ -181,97 +218,110 @@ body{font-family:'Inter',sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 <!-- ACCESS GATE -->
 <div id="gate">
   <div class="gate-box">
-    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" class="gate-logo" alt="Veteran Career Path">
+    <img src="https://veterancareerpath.com/logo.png" class="gate-logo" alt="Veteran Career Path">
     <div class="gate-title">Subscriber Access Required</div>
-    <p class="gate-sub">The Full 60-Question Career Assessment is included with your $15/month subscription — along with 7 other AI career tools built for veterans.</p>
+    <p class="gate-sub">The Full Career Assessment is included with your $15/month subscription — built specifically around your MOS, branch, and military background.</p>
     <a href="https://veterancareerpath.com/app.html" class="gate-btn">Subscribe — $15/month</a>
     <br>
-    <a href="https://veterancareerpath.com/veteran-career-test.html" class="gate-skip">← Take the free 10-question preview instead</a>
+    <a href="https://veterancareerpath.com/free-assessment.html" class="gate-skip">← Take the free 10-question preview instead</a>
   </div>
 </div>
 
 <!-- TOP BAR -->
 <div class="topbar" id="topbar">
   <a href="https://veterancareerpath.com" class="topbar-logo">
-    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="VCP" width="28" height="28">
+    <img src="https://veterancareerpath.com/logo.png" alt="VCP" width="26" height="26">
     <span>Veteran Career Path</span>
   </a>
   <div class="topbar-right">
-    <span class="topbar-step" id="topbar-step">Assessment</span>
+    <span class="topbar-step" id="topbar-step">Full Assessment</span>
     <a href="https://veterancareerpath.com/veteran-career-test.html" class="topbar-exit">Exit ✕</a>
   </div>
 </div>
 <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
 
-<!-- SCREEN: INTRO -->
+<!-- INTRO -->
 <div class="screen active" id="scr-intro">
   <div class="intro-wrap">
-    <div class="intro-badge">🎖 Subscriber Exclusive · Full RIASEC Assessment</div>
-    <h1 class="intro-h">Your Full<br><span>Career Profile</span></h1>
-    <p class="intro-p">60 targeted questions across 6 career dimensions. Developed from the RIASEC framework used by career counselors and the Department of Labor. Your results are specific to you — not a generic quiz.</p>
+    <div class="intro-badge">🎖 Subscriber Exclusive · Saved to Your Account</div>
+    <h1 class="intro-h">Full Military<br><span>Career Assessment</span></h1>
+    <p class="intro-p">60 questions built around how veterans think, lead, and operate — not a civilian quiz with military labels slapped on. Your results are tied to your account so you can take this on your phone and pull up the full report on any device.</p>
+    <div class="intro-callouts">
+      <div class="callout"><div class="callout-icon">🎯</div><div class="callout-text"><strong>MOS-Aware Matches</strong>Career matches weighted for defense contracting, federal agencies, and private sector roles that specifically value military background.</div></div>
+      <div class="callout"><div class="callout-icon">💰</div><div class="callout-text"><strong>Real Salary Ranges</strong>Compensation data for the actual civilian titles your background qualifies for — not generic BLS averages.</div></div>
+      <div class="callout"><div class="callout-icon">📱→🖥️</div><div class="callout-text"><strong>Take on Any Device</strong>Results saved to Firebase. Take the assessment on your phone and print the full report from your desktop.</div></div>
+      <div class="callout"><div class="callout-icon">🖨️</div><div class="callout-text"><strong>Printable Report</strong>Clean print layout. Bring it to a TAP counselor, VSO, or hiring manager meeting.</div></div>
+    </div>
     <div class="intro-stats">
       <div class="intro-stat"><div class="n">60</div><div class="l">Questions</div></div>
       <div class="intro-stat"><div class="n">6</div><div class="l">Dimensions</div></div>
       <div class="intro-stat"><div class="n">12+</div><div class="l">Career Matches</div></div>
       <div class="intro-stat"><div class="n">~12</div><div class="l">Minutes</div></div>
     </div>
-    <div class="intro-dims">
-      <div class="dim-card"><span class="icon">🔧</span><span class="label">Hands-On & Technical</span></div>
-      <div class="dim-card"><span class="icon">🔬</span><span class="label">Analytical & Research</span></div>
-      <div class="dim-card"><span class="icon">🎨</span><span class="label">Creative & Expressive</span></div>
-      <div class="dim-card"><span class="icon">🤝</span><span class="label">People & Helping</span></div>
-      <div class="dim-card"><span class="icon">🎯</span><span class="label">Leadership & Business</span></div>
-      <div class="dim-card"><span class="icon">📋</span><span class="label">Organized & Systems</span></div>
-    </div>
     <button class="start-btn" onclick="startAssessment()">Begin Assessment →</button>
-    <p class="instr">Rate each statement 1 (Strongly Disagree) to 5 (Strongly Agree). There are no right or wrong answers. Be honest — accuracy depends on it.</p>
+    <p class="instr">Rate each statement 1 (Strongly Disagree) to 5 (Strongly Agree). No right or wrong answers — accuracy requires honesty.</p>
+    <div class="save-note" id="save-note"><strong>Results will be saved to your account</strong> — sign into the <a href="https://veterancareerpath.com/app.html" style="color:#f0c040;">Career Builder app</a> first to ensure your results sync across devices.</div>
   </div>
 </div>
 
-<!-- SCREEN: ASSESSMENT -->
+<!-- ASSESSMENT -->
 <div class="screen" id="scr-assess">
   <div class="assess-wrap">
     <div class="dim-header">
       <div class="dim-icon-big" id="dim-icon"></div>
       <div>
-        <div class="dim-title-text" id="dim-title"></div>
-        <div class="dim-subtitle" id="dim-sub"></div>
-        <div class="dim-prog-text" id="dim-prog"></div>
+        <div class="dim-name" id="dim-name"></div>
+        <div class="dim-desc" id="dim-desc"></div>
+        <div class="dim-counter" id="dim-counter"></div>
       </div>
     </div>
-    <div class="questions-list" id="qlist"></div>
+    <div class="q-list" id="qlist"></div>
     <div class="nav-row">
-      <div>
-        <button class="nav-btn nav-back" id="btn-back" onclick="prevDim()" style="display:none">← Back</button>
-      </div>
-      <span class="q-remaining" id="q-remaining"></span>
-      <button class="nav-btn nav-next" id="btn-next" onclick="nextDim()" disabled>Next Section →</button>
+      <button class="btn-back" id="btn-back" onclick="prevDim()" style="display:none">← Back</button>
+      <span class="q-remain" id="q-remain"></span>
+      <button class="btn-next" id="btn-next" onclick="nextDim()" disabled>Next Section →</button>
     </div>
   </div>
 </div>
 
-<!-- SCREEN: RESULTS -->
+<!-- SAVING -->
+<div class="screen" id="scr-saving">
+  <div class="saving-wrap">
+    <div class="saving-icon">⚙️</div>
+    <div class="saving-title">Saving Your Results</div>
+    <div class="saving-sub">Storing to your account so you can access this from any device...</div>
+  </div>
+</div>
+
+<!-- RESULTS -->
 <div class="screen" id="scr-results">
   <div class="results-wrap" id="results-content"></div>
 </div>
 
 <script>
-// ─── ACCESS CHECK ──────────────────────────────────────────────────────────
+// ── ACCESS CHECK ─────────────────────────────────────────────────────────────
 (function(){
+  // Check URL for shared result ID first
+  var params = new URLSearchParams(window.location.search);
+  var resultId = params.get('result');
+  if(resultId){
+    // Loading shared result - no access check needed
+    document.getElementById('gate').classList.add('hidden');
+    loadSharedResult(resultId);
+    return;
+  }
+  // Check subscription
   var acc = {};
   try { acc = JSON.parse(localStorage.getItem('vcb_access') || '{}'); } catch(e) {}
   var valid = (acc.type === 'paid' && acc.stripeSession && acc.expiry > Date.now()) ||
               (acc.type === 'code' && acc.code);
-  if (valid) {
-    document.getElementById('gate').classList.add('hidden');
-  }
-  // Gate stays visible if not subscribed
+  if(valid) document.getElementById('gate').classList.add('hidden');
 })();
 
-// ─── ASSESSMENT DATA ────────────────────────────────────────────────────────
+// ── ASSESSMENT DATA ──────────────────────────────────────────────────────────
 var DIMS = [
-  {id:'realistic', title:'Hands-On & Technical', icon:'🔧', color:'#1a5c9a',
-   desc:'You prefer working with tools, physical environments, and concrete results.',
+  {id:'realistic', name:'Hands-On & Technical', icon:'🔧', color:'#1a5c9a',
+   desc:'Physical work, tools, systems, and tangible results.',
    questions:[
     'I enjoy working with tools, machinery, or physical equipment',
     'I prefer seeing concrete, tangible results from my work',
@@ -284,8 +334,8 @@ var DIMS = [
     'I am patient with detail-oriented physical tasks',
     'I take pride in precision and doing physical work well'
   ]},
-  {id:'investigative', title:'Analytical & Research', icon:'🔬', color:'#6a2a9a',
-   desc:'You are drawn to analysis, complex problem-solving, and intellectual depth.',
+  {id:'investigative', name:'Analytical & Research', icon:'🔬', color:'#6a2a9a',
+   desc:'Data, research, complex problems, and intellectual depth.',
    questions:[
     'I enjoy researching and investigating complex problems',
     'I like working with data, statistics, or analytical tools',
@@ -298,8 +348,8 @@ var DIMS = [
     'I enjoy tasks requiring precision and careful reasoning',
     'I value accuracy and thoroughness over speed'
   ]},
-  {id:'artistic', title:'Creative & Expressive', icon:'🎨', color:'#8a3a5a',
-   desc:'You value creativity, original thinking, and self-expression.',
+  {id:'artistic', name:'Creative & Expressive', icon:'🎨', color:'#8a3a5a',
+   desc:'Communication, design, original thinking, and self-expression.',
    questions:[
     'I enjoy creative work like writing, design, or media',
     'I like environments with creative freedom and few rigid rules',
@@ -312,8 +362,8 @@ var DIMS = [
     'I see myself as more imaginative than methodical',
     'I am energized when I can put my personal stamp on projects'
   ]},
-  {id:'social', title:'People & Helping', icon:'🤝', color:'#1a7a40',
-   desc:'You are motivated by helping, teaching, and working directly with people.',
+  {id:'social', name:'People & Helping', icon:'🤝', color:'#1a7a40',
+   desc:'Working with people, teaching, mentoring, and helping others succeed.',
    questions:[
     'I enjoy helping others solve personal or professional problems',
     'I am energized by working directly with people daily',
@@ -326,8 +376,8 @@ var DIMS = [
     'I feel fulfilled when someone I helped succeeds',
     'I enjoy building long-term relationships built on trust'
   ]},
-  {id:'enterprising', title:'Leadership & Business', icon:'🎯', color:'#c8960a',
-   desc:'You are driven to lead, persuade, and achieve measurable results.',
+  {id:'enterprising', name:'Leadership & Business', icon:'🎯', color:'#c8960a',
+   desc:'Leading, persuading, achieving measurable results, and driving mission.',
    questions:[
     'I enjoy leading teams and being responsible for outcomes',
     'I am comfortable making decisions with incomplete information',
@@ -340,8 +390,8 @@ var DIMS = [
     'I am willing to take calculated risks for bigger outcomes',
     'I thrive in fast-paced, high-stakes environments'
   ]},
-  {id:'conventional', title:'Organized & Systems', icon:'📋', color:'#2a7090',
-   desc:'You excel at organization, systems thinking, and detailed reliable work.',
+  {id:'conventional', name:'Organized & Systems', icon:'📋', color:'#2a7090',
+   desc:'Process, order, documentation, compliance, and systematic reliability.',
    questions:[
     'I like following established procedures and systems',
     'I prefer organized, structured work over ambiguous situations',
@@ -356,378 +406,430 @@ var DIMS = [
   ]}
 ];
 
-var SCALE_LABELS = ['Strongly Disagree','Disagree','Neutral','Agree','Strongly Agree'];
 var SCALE_COLORS = ['#c0392b','#e67e22','#7f8c8d','#27ae60','#1a6a3b'];
 
 var CAREERS = {
   realistic:[
-    {t:'Mechanical Engineer',s:'$75,000–$115,000',sec:'Engineering',icon:'⚙️'},
-    {t:'Aircraft Mechanic (A&P)',s:'$62,000–$100,000',sec:'Aviation',icon:'✈️'},
-    {t:'Fleet Manager',s:'$58,000–$95,000',sec:'Operations',icon:'🚛'},
-    {t:'Construction Project Manager',s:'$72,000–$118,000',sec:'Construction',icon:'🏗️'},
-    {t:'UAS / Drone Specialist',s:'$58,000–$98,000',sec:'Technology',icon:'🛸'},
-    {t:'Electrician / Journeyman',s:'$58,000–$98,000',sec:'Trades',icon:'⚡'}
+    {t:'Mechanical Engineer',s:'$75,000–$118,000',sec:'Engineering',icon:'⚙️'},
+    {t:'Aircraft Mechanic (A&P)',s:'$62,000–$102,000',sec:'Aviation',icon:'✈️'},
+    {t:'Fleet / Vehicle Operations Manager',s:'$58,000–$95,000',sec:'Logistics',icon:'🚛'},
+    {t:'Construction Project Manager',s:'$72,000–$120,000',sec:'Construction',icon:'🏗️'},
+    {t:'UAS / Drone Systems Specialist',s:'$58,000–$100,000',sec:'Defense Tech',icon:'🛸'},
+    {t:'Power Plant / Facilities Tech',s:'$58,000–$98,000',sec:'Utilities',icon:'⚡'}
   ],
   investigative:[
-    {t:'Intelligence Analyst',s:'$68,000–$132,000',sec:'Defense / Intel',icon:'🔍'},
-    {t:'Cybersecurity Analyst',s:'$78,000–$148,000',sec:'Technology',icon:'🔐'},
-    {t:'Data Analyst',s:'$68,000–$115,000',sec:'Technology',icon:'📊'},
-    {t:'Software Developer',s:'$88,000–$155,000',sec:'Technology',icon:'💻'},
-    {t:'Research Analyst',s:'$62,000–$102,000',sec:'Consulting',icon:'📈'},
-    {t:'Nuclear Reactor Operator',s:'$80,000–$130,000',sec:'Energy',icon:'⚛️'}
+    {t:'Intelligence Analyst (Cleared)',s:'$70,000–$135,000',sec:'Defense/Intel',icon:'🔍'},
+    {t:'Cybersecurity Analyst',s:'$80,000–$150,000',sec:'Technology',icon:'🔐'},
+    {t:'Data Analyst',s:'$70,000–$118,000',sec:'Technology',icon:'📊'},
+    {t:'Software Developer',s:'$90,000–$160,000',sec:'Technology',icon:'💻'},
+    {t:'Signals Intelligence (SIGINT) Analyst',s:'$75,000–$140,000',sec:'Defense/Intel',icon:'📡'},
+    {t:'Nuclear Engineer / Reactor Operator',s:'$82,000–$135,000',sec:'Energy',icon:'⚛️'}
   ],
   artistic:[
-    {t:'Public Affairs Specialist',s:'$58,000–$98,000',sec:'Communications',icon:'📢'},
-    {t:'UX / UI Designer',s:'$78,000–$135,000',sec:'Technology',icon:'🎨'},
-    {t:'Technical Writer',s:'$62,000–$98,000',sec:'Technology',icon:'✍️'},
-    {t:'Marketing Manager',s:'$68,000–$125,000',sec:'Business',icon:'📣'},
-    {t:'Training & Development Specialist',s:'$58,000–$95,000',sec:'HR / Education',icon:'📚'},
-    {t:'Instructional Designer',s:'$62,000–$105,000',sec:'Education',icon:'🎓'}
+    {t:'Public Affairs / Communications Specialist',s:'$58,000–$100,000',sec:'Communications',icon:'📢'},
+    {t:'UX / UI Designer',s:'$80,000–$138,000',sec:'Technology',icon:'🎨'},
+    {t:'Technical Writer / Documentation Specialist',s:'$62,000–$100,000',sec:'Technology',icon:'✍️'},
+    {t:'Marketing Manager',s:'$70,000–$128,000',sec:'Business',icon:'📣'},
+    {t:'Training & Development Specialist',s:'$58,000–$95,000',sec:'HR/Education',icon:'📚'},
+    {t:'Instructional Designer (Defense Contractor)',s:'$65,000–$110,000',sec:'Defense Education',icon:'🎓'}
   ],
   social:[
-    {t:'Registered Nurse',s:'$68,000–$115,000',sec:'Healthcare',icon:'🏥'},
-    {t:'HR Manager',s:'$68,000–$118,000',sec:'Business',icon:'👥'},
-    {t:'Social Worker (MSW)',s:'$48,000–$85,000',sec:'Social Services',icon:'🤲'},
-    {t:'Paramedic / EMT',s:'$50,000–$95,000',sec:'Healthcare',icon:'🚑'},
-    {t:'Recruiter / Talent Acquisition',s:'$58,000–$100,000',sec:'HR',icon:'🎯'},
-    {t:'Physician Assistant',s:'$112,000–$165,000',sec:'Healthcare',icon:'⚕️'}
+    {t:'Registered Nurse / Combat Medic → RN',s:'$70,000–$118,000',sec:'Healthcare',icon:'🏥'},
+    {t:'Veterans Service Officer (VSO)',s:'$48,000–$85,000',sec:'Government/VA',icon:'🎖️'},
+    {t:'Human Resources Manager',s:'$70,000–$120,000',sec:'Business',icon:'👥'},
+    {t:'Social Worker (MSW)',s:'$50,000–$88,000',sec:'Social Services',icon:'🤲'},
+    {t:'Military / Veteran Recruiter',s:'$60,000–$105,000',sec:'HR',icon:'🎯'},
+    {t:'Physician Assistant (with medical MOS)',s:'$115,000–$168,000',sec:'Healthcare',icon:'⚕️'}
   ],
   enterprising:[
-    {t:'Operations Manager',s:'$78,000–$135,000',sec:'Business',icon:'📋'},
-    {t:'Contracting Officer (GS)',s:'$72,000–$132,000',sec:'Government',icon:'📜'},
-    {t:'Program Manager',s:'$92,000–$165,000',sec:'Defense',icon:'🏆'},
-    {t:'Security Director',s:'$92,000–$162,000',sec:'Security',icon:'🛡️'},
-    {t:'Financial Advisor',s:'$68,000–$155,000',sec:'Finance',icon:'💰'},
-    {t:'Defense Contractor PM',s:'$105,000–$175,000',sec:'Defense',icon:'⭐'}
+    {t:'Operations Manager',s:'$80,000–$138,000',sec:'Business',icon:'📋'},
+    {t:'Contracting Officer (GS-12+)',s:'$75,000–$135,000',sec:'Government',icon:'📜'},
+    {t:'Program Manager (Defense Contractor)',s:'$95,000–$170,000',sec:'Defense',icon:'🏆'},
+    {t:'Corporate Security Director',s:'$95,000–$165,000',sec:'Security',icon:'🛡️'},
+    {t:'Financial Advisor / Wealth Manager',s:'$70,000–$160,000',sec:'Finance',icon:'💰'},
+    {t:'Executive Recruiter (Veteran Specialist)',s:'$75,000–$145,000',sec:'HR/Recruiting',icon:'⭐'}
   ],
   conventional:[
-    {t:'Supply Chain Manager',s:'$72,000–$118,000',sec:'Logistics',icon:'📦'},
-    {t:'Budget Analyst (GS)',s:'$68,000–$115,000',sec:'Government',icon:'💼'},
-    {t:'Information Systems Security Officer',s:'$82,000–$145,000',sec:'Cybersecurity',icon:'🔒'},
-    {t:'HR Specialist',s:'$58,000–$95,000',sec:'HR',icon:'📁'},
-    {t:'Accountant / CPA',s:'$62,000–$115,000',sec:'Finance',icon:'🧾'},
-    {t:'Federal Contracting Specialist',s:'$68,000–$125,000',sec:'Government',icon:'🏛️'}
+    {t:'Supply Chain / Logistics Manager',s:'$75,000–$120,000',sec:'Logistics',icon:'📦'},
+    {t:'Budget Analyst (GS-9 to GS-13)',s:'$70,000–$118,000',sec:'Government',icon:'💼'},
+    {t:'Information Systems Security Officer (ISSO)',s:'$85,000–$148,000',sec:'Cybersecurity',icon:'🔒'},
+    {t:'Federal HR Specialist',s:'$60,000–$98,000',sec:'Government',icon:'📁'},
+    {t:'Accountant / Government CPA',s:'$65,000–$118,000',sec:'Finance',icon:'🧾'},
+    {t:'Acquisitions / Procurement Specialist',s:'$70,000–$128,000',sec:'Government',icon:'🏛️'}
   ]
 };
 
 var STRENGTHS = {
-  realistic:['Mechanical aptitude','Operational discipline','Hands-on problem solving','Precision under pressure'],
-  investigative:['Analytical reasoning','Research depth','Systems thinking','Data-driven decision making'],
-  artistic:['Creative communication','Strategic messaging','Visual thinking','Adaptability'],
-  social:['Interpersonal leadership','Empathy at scale','Team cohesion','Training and mentoring'],
-  enterprising:['Mission-driven leadership','High-stakes decision making','Organizational influence','Results accountability'],
-  conventional:['Process mastery','Logistics precision','Administrative excellence','Compliance and accuracy']
+  realistic:['Mechanical aptitude & hands-on precision','Operational discipline under pressure','Technical troubleshooting in austere environments','Safety and equipment accountability'],
+  investigative:['Analytical reasoning and intelligence synthesis','Research depth and pattern recognition','Systems thinking from operational experience','Data-driven decision making under time pressure'],
+  artistic:['Strategic communications honed under command','Adaptability in rapidly changing environments','Mission messaging and public affairs instincts','Creative problem solving without a playbook'],
+  social:['Leading from the front — mission-first mentality','Mentoring junior personnel through hard situations','Building unit cohesion across diverse teams','Trauma-informed communication and crisis support'],
+  enterprising:['Command-level decision making under uncertainty','Mission accountability from top to bottom','High-stakes negotiation and resource management','Leading large organizations toward clear objectives'],
+  conventional:['METL-level process discipline and SOP mastery','Logistics and supply chain precision at scale','Financial accountability for multi-million dollar assets','Compliance and regulatory expertise from military law']
 };
 
 var TYPE_NAMES = {
-  'realistic-investigative':'The Technical Operator',
-  'realistic-conventional':'The Systems Technician',
-  'realistic-enterprising':'The Field Commander',
-  'investigative-realistic':'The Engineering Analyst',
-  'investigative-conventional':'The Precision Specialist',
-  'investigative-artistic':'The Strategic Thinker',
-  'artistic-investigative':'The Creative Analyst',
-  'artistic-social':'The Communicator',
-  'artistic-enterprising':'The Visionary Leader',
-  'social-enterprising':'The Mission Leader',
-  'social-conventional':'The Team Builder',
-  'social-realistic':'The Hands-On Helper',
-  'enterprising-social':'The Commander',
-  'enterprising-investigative':'The Strategic Leader',
-  'enterprising-conventional':'The Operational Director',
-  'conventional-enterprising':'The Program Manager',
-  'conventional-investigative':'The Data Strategist',
-  'conventional-realistic':'The Operations Specialist'
+  'realistic-investigative':'The Technical Operator','realistic-conventional':'The Systems Technician',
+  'realistic-enterprising':'The Field Commander','investigative-realistic':'The Engineering Analyst',
+  'investigative-conventional':'The Intelligence Specialist','investigative-artistic':'The Strategic Analyst',
+  'artistic-investigative':'The Creative Analyst','artistic-social':'The Military Communicator',
+  'artistic-enterprising':'The Visionary Commander','social-enterprising':'The People-First Leader',
+  'social-conventional':'The Team Builder','social-realistic':'The Hands-On Helper',
+  'enterprising-social':'The Combat-Proven Commander','enterprising-investigative':'The Strategic Leader',
+  'enterprising-conventional':'The Operational Director','conventional-enterprising':'The Mission Manager',
+  'conventional-investigative':'The Intelligence Administrator','conventional-realistic':'The Operations Specialist'
 };
 
-// ─── STATE ──────────────────────────────────────────────────────────────────
+// ── STATE ────────────────────────────────────────────────────────────────────
 var curDim = 0;
-var answers = {};  // {dimId: {qIdx: score}}
+var answers = {};
 var totalQ = DIMS.reduce(function(a,d){return a+d.questions.length;},0);
+var savedResultId = null;
+var currentResultData = null;
 
-// ─── NAVIGATION ─────────────────────────────────────────────────────────────
-function showScreen(id) {
+// ── FIREBASE ─────────────────────────────────────────────────────────────────
+function getUid(){
+  var auth = window.fbAuth;
+  if(auth && auth.currentUser) return auth.currentUser.uid;
+  return null;
+}
+
+function generateId(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+}
+
+function saveResultToFirebase(resultData, callback){
+  var db = window.fbDb;
+  var uid = getUid();
+  var id = generateId();
+
+  if(!db){
+    // No Firebase - store in localStorage as fallback
+    try { localStorage.setItem('vcp_assessment_' + id, JSON.stringify(resultData)); } catch(e){}
+    callback(id);
+    return;
+  }
+
+  var doc = {
+    id: id,
+    uid: uid || 'anon',
+    createdAt: Date.now(),
+    scores: resultData.scores,
+    typeName: resultData.typeName,
+    top1: resultData.top1,
+    top2: resultData.top2
+  };
+
+  // Save to a public results collection (readable by ID, not by other users)
+  db.collection('assessmentResults').doc(id).set(doc)
+    .then(function(){ callback(id); })
+    .catch(function(e){ 
+      // Fallback to localStorage
+      try { localStorage.setItem('vcp_assessment_' + id, JSON.stringify(resultData)); } catch(e2){}
+      callback(id); 
+    });
+
+  // Also save to user profile if signed in
+  if(uid){
+    db.collection('profiles').doc(uid).collection('assessments').doc(id).set(doc)
+      .catch(function(){});
+  }
+}
+
+function loadSharedResult(id){
+  showScreen('scr-saving');
+  document.getElementById('saving-title').textContent = 'Loading Your Results';
+  document.getElementById('saving-sub').textContent = 'Fetching your saved assessment...';
+
+  // Try Firebase first
+  var db = window.fbDb;
+  if(db){
+    db.collection('assessmentResults').doc(id).get()
+      .then(function(doc){
+        if(doc.exists){
+          renderResultsFromData(doc.data(), id);
+        } else {
+          tryLocalStorage(id);
+        }
+      })
+      .catch(function(){ tryLocalStorage(id); });
+  } else {
+    tryLocalStorage(id);
+  }
+}
+
+function tryLocalStorage(id){
+  var stored = localStorage.getItem('vcp_assessment_' + id);
+  if(stored){
+    try { renderResultsFromData(JSON.parse(stored), id); return; } catch(e){}
+  }
+  // Not found anywhere
+  document.getElementById('saving-title').textContent = 'Result Not Found';
+  document.getElementById('saving-sub').textContent = 'This result ID was not found. Please take the assessment again.';
+}
+
+// ── SCREENS ──────────────────────────────────────────────────────────────────
+function showScreen(id){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.getElementById(id).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function updateProgress() {
-  var answered = Object.values(answers).reduce(function(a,dim){
-    return a + Object.keys(dim).length;
-  }, 0);
-  var pct = Math.round((answered / totalQ) * 100);
-  document.getElementById('prog').style.width = pct + '%';
+function updateProgress(){
+  var answered = Object.values(answers).reduce(function(a,dim){return a+Object.keys(dim).length;},0);
+  document.getElementById('prog').style.width = Math.round((answered/totalQ)*100) + '%';
   document.getElementById('topbar-step').textContent = 'Section ' + (curDim+1) + ' of ' + DIMS.length;
 }
 
-function startAssessment() {
+function startAssessment(){
   showScreen('scr-assess');
   renderDim();
 }
 
-function renderDim() {
+function renderDim(){
   var dim = DIMS[curDim];
-  var dimAnswers = answers[dim.id] || {};
-
-  // Header
+  var dimAns = answers[dim.id] || {};
   var iconEl = document.getElementById('dim-icon');
   iconEl.textContent = dim.icon;
-  iconEl.style.background = dim.color + '25';
-  document.getElementById('dim-title').textContent = dim.title;
-  document.getElementById('dim-sub').textContent = dim.desc;
-  var answered = Object.keys(dimAnswers).length;
-  document.getElementById('dim-prog').textContent = 'Section ' + (curDim+1) + ' of ' + DIMS.length + ' · ' + dim.questions.length + ' questions';
+  iconEl.style.background = dim.color + '22';
+  document.getElementById('dim-name').textContent = dim.name;
+  document.getElementById('dim-desc').textContent = dim.desc;
+  document.getElementById('dim-counter').textContent = 'Section ' + (curDim+1) + ' of ' + DIMS.length + ' · ' + dim.questions.length + ' questions';
+  document.getElementById('btn-back').style.display = curDim === 0 ? 'none' : 'flex';
 
-  // Questions
   var list = document.getElementById('qlist');
   list.innerHTML = '';
-  dim.questions.forEach(function(q, qi) {
+  dim.questions.forEach(function(q, qi){
     var card = document.createElement('div');
-    card.className = 'q-card' + (dimAnswers[qi] ? ' answered' : '');
-    card.id = 'qcard-' + qi;
-
-    var btns = SCALE_LABELS.map(function(label, vi) {
-      var val = vi + 1;
-      var sel = dimAnswers[qi] === val;
-      return '<button class="scale-btn' + (sel ? ' sel' : '') + '" ' +
-        'style="' + (sel ? 'background:' + SCALE_COLORS[vi] + ';border-color:' + SCALE_COLORS[vi] + ';color:#fff;' : '') + '"' +
-        ' onclick="answer(' + qi + ',' + val + ',' + vi + ')" title="' + label + '">' + val + '</button>';
+    card.className = 'q-card' + (dimAns[qi] ? ' answered' : '');
+    card.id = 'qc' + qi;
+    var btns = [1,2,3,4,5].map(function(v,vi){
+      var sel = dimAns[qi] === v;
+      var style = sel ? 'background:' + SCALE_COLORS[vi] + ';border-color:' + SCALE_COLORS[vi] + ';color:#fff;' : '';
+      return '<button class="scale-btn' + (sel?' sel':'') + '" style="' + style + '" onclick="answer(' + qi + ',' + v + ',' + vi + ')">' + v + '</button>';
     }).join('');
-
-    card.innerHTML =
-      '<div class="q-num">Question ' + (qi+1) + ' of ' + dim.questions.length + '</div>' +
-      '<div class="q-text">' + q + '</div>' +
+    card.innerHTML = '<div class="q-num">Q' + (qi+1) + '</div><div class="q-text">' + q + '</div>' +
       '<div class="scale-row">' + btns + '</div>' +
-      '<div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>';
+      '<div class="scale-lbs"><span>Strongly Disagree</span><span>Strongly Agree</span></div>';
     list.appendChild(card);
   });
-
-  // Nav buttons
-  document.getElementById('btn-back').style.display = curDim === 0 ? 'none' : 'flex';
   updateNextBtn();
+  updateRemain();
   updateProgress();
-  updateRemaining();
 }
 
-function answer(qi, val, colorIdx) {
+function answer(qi, val, ci){
   var dim = DIMS[curDim];
-  if (!answers[dim.id]) answers[dim.id] = {};
+  if(!answers[dim.id]) answers[dim.id] = {};
   answers[dim.id][qi] = val;
-
-  // Update this question's card
-  var card = document.getElementById('qcard-' + qi);
-  if (card) {
+  var card = document.getElementById('qc' + qi);
+  if(card){
     card.className = 'q-card answered';
-    card.querySelectorAll('.scale-btn').forEach(function(btn, i) {
-      var isSelected = (i === colorIdx);
-      btn.className = 'scale-btn' + (isSelected ? ' sel' : '');
-      btn.style.cssText = isSelected
-        ? 'background:' + SCALE_COLORS[colorIdx] + ';border-color:' + SCALE_COLORS[colorIdx] + ';color:#fff;'
-        : '';
+    card.querySelectorAll('.scale-btn').forEach(function(b,i){
+      b.className = 'scale-btn' + (i===ci?' sel':'');
+      b.style.cssText = i===ci ? 'background:'+SCALE_COLORS[ci]+';border-color:'+SCALE_COLORS[ci]+';color:#fff;' : '';
     });
   }
   updateNextBtn();
-  updateRemaining();
+  updateRemain();
   updateProgress();
 }
 
-function updateNextBtn() {
+function updateNextBtn(){
   var dim = DIMS[curDim];
-  var dimAnswers = answers[dim.id] || {};
-  var allAnswered = Object.keys(dimAnswers).length === dim.questions.length;
+  var dimAns = answers[dim.id] || {};
+  var done = Object.keys(dimAns).length === dim.questions.length;
   var btn = document.getElementById('btn-next');
-  btn.disabled = !allAnswered;
-  btn.textContent = curDim === DIMS.length - 1
-    ? 'Get My Results →'
-    : 'Next Section →';
+  btn.disabled = !done;
+  btn.textContent = curDim === DIMS.length-1 ? 'Get My Results →' : 'Next Section →';
 }
 
-function updateRemaining() {
+function updateRemain(){
   var dim = DIMS[curDim];
-  var dimAnswers = answers[dim.id] || {};
-  var remaining = dim.questions.length - Object.keys(dimAnswers).length;
-  var el = document.getElementById('q-remaining');
-  el.textContent = remaining > 0 ? remaining + ' question' + (remaining===1?'':'s') + ' remaining' : '✓ All answered';
-  el.style.color = remaining === 0 ? '#4ade80' : 'rgba(192,216,240,.4)';
+  var dimAns = answers[dim.id] || {};
+  var rem = dim.questions.length - Object.keys(dimAns).length;
+  var el = document.getElementById('q-remain');
+  el.textContent = rem > 0 ? rem + ' remaining' : '✓ Complete';
+  el.style.color = rem === 0 ? '#4ade80' : 'rgba(192,216,240,.35)';
 }
 
-function nextDim() {
-  if (curDim < DIMS.length - 1) {
-    curDim++;
-    renderDim();
-    window.scrollTo({top:0,behavior:'smooth'});
-  } else {
-    showResults();
-  }
+function nextDim(){
+  if(curDim < DIMS.length-1){ curDim++; renderDim(); window.scrollTo({top:0,behavior:'smooth'}); }
+  else { computeAndSave(); }
+}
+function prevDim(){ if(curDim>0){ curDim--; renderDim(); window.scrollTo({top:0,behavior:'smooth'}); } }
+
+// ── COMPUTE AND SAVE ─────────────────────────────────────────────────────────
+function computeAndSave(){
+  showScreen('scr-saving');
+  // Calculate scores
+  var scores = {};
+  DIMS.forEach(function(dim){
+    var dimAns = answers[dim.id] || {};
+    var total = Object.values(dimAns).reduce(function(a,v){return a+v;},0);
+    scores[dim.id] = Math.round((total/(dim.questions.length*5))*100);
+  });
+  var sorted = Object.entries(scores).sort(function(a,b){return b[1]-a[1];});
+  var top1 = sorted[0][0], top2 = sorted[1][0];
+  var typeKey = top1 + '-' + top2;
+  var typeName = TYPE_NAMES[typeKey] || TYPE_NAMES[top2+'-'+top1] || 'The Versatile Veteran';
+
+  var resultData = { scores: scores, top1: top1, top2: top2, typeName: typeName, sorted: sorted };
+  currentResultData = resultData;
+
+  saveResultToFirebase(resultData, function(id){
+    savedResultId = id;
+    renderResultsFromData(resultData, id);
+  });
 }
 
-function prevDim() {
-  if (curDim > 0) {
-    curDim--;
-    renderDim();
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-}
-
-// ─── RESULTS ────────────────────────────────────────────────────────────────
-function showResults() {
+// ── RENDER RESULTS ───────────────────────────────────────────────────────────
+function renderResultsFromData(data, resultId){
   showScreen('scr-results');
   document.getElementById('prog').style.width = '100%';
   document.getElementById('topbar-step').textContent = 'Your Results';
 
-  // Calculate scores
-  var scores = {};
-  DIMS.forEach(function(dim) {
-    var dimAnswers = answers[dim.id] || {};
-    var total = Object.values(dimAnswers).reduce(function(a,v){return a+v;},0);
-    var max = dim.questions.length * 5;
-    scores[dim.id] = Math.round((total / max) * 100);
-  });
+  var scores = data.scores;
+  var top1 = data.top1, top2 = data.top2, typeName = data.typeName;
+  var sorted = data.sorted || Object.entries(scores).sort(function(a,b){return b[1]-a[1];});
 
-  // Sort dimensions
-  var sorted = Object.entries(scores).sort(function(a,b){return b[1]-a[1];});
-  var top1 = sorted[0][0];
-  var top2 = sorted[1][0];
+  var dim1 = DIMS.find(function(d){return d.id===top1;})||DIMS[0];
+  var dim2 = DIMS.find(function(d){return d.id===top2;})||DIMS[1];
 
-  // Get type name
-  var typeKey = top1 + '-' + top2;
-  var typeName = TYPE_NAMES[typeKey] || TYPE_NAMES[top2 + '-' + top1] || 'The Versatile Veteran';
-  var dim1 = DIMS.find(function(d){return d.id===top1;});
-  var dim2 = DIMS.find(function(d){return d.id===top2;});
-
-  // Get careers
-  var seen = {};
-  var allCareers = [];
-  sorted.forEach(function(pair, idx) {
-    var weight = sorted.length - idx;
-    (CAREERS[pair[0]] || []).forEach(function(c) {
-      if (!seen[c.t]) {
-        seen[c.t] = true;
-        allCareers.push({
-          title: c.t, salary: c.s, sector: c.sec, icon: c.icon,
-          score: scores[pair[0]] * weight
-        });
-      }
+  // Build careers list
+  var seen = {}; var allCareers = [];
+  sorted.forEach(function(pair,idx){
+    var w = sorted.length - idx;
+    (CAREERS[pair[0]]||[]).forEach(function(c){
+      if(!seen[c.t]){ seen[c.t]=true; allCareers.push({t:c.t,s:c.s,sec:c.sec,icon:c.icon,score:scores[pair[0]]*w}); }
     });
   });
   allCareers.sort(function(a,b){return b.score-a.score;});
-  var topCareers = allCareers.slice(0, 12);
+  var topCareers = allCareers.slice(0,12);
 
-  // Get strengths
-  var topStrengths = (STRENGTHS[top1] || []).concat(STRENGTHS[top2] || []).slice(0, 6);
+  // Strengths
+  var str1 = STRENGTHS[top1]||[];
+  var str2 = STRENGTHS[top2]||[];
+  var strengths = str1.slice(0,3).concat(str2.slice(0,3));
+
+  // Share URL
+  var shareUrl = 'https://veterancareerpath.com/career-assessment-full.html?result=' + resultId;
 
   // Build HTML
-  var dimBarsHtml = sorted.map(function(pair) {
-    var d = DIMS.find(function(x){return x.id===pair[0];});
+  var shareBar = '<div class="share-bar">' +
+    '<div class="share-info"><strong>Results Saved to Your Account</strong>Open this link on any device to view or print your full report.</div>' +
+    '<div class="share-btns">' +
+      '<button class="share-btn share-copy" onclick="copyLink()">📋 Copy Link</button>' +
+      '<button class="share-btn share-print" onclick="window.print()">🖨️ Print Report</button>' +
+    '</div></div>';
+
+  var dimBars = sorted.map(function(pair){
+    var d = DIMS.find(function(x){return x.id===pair[0];})||{};
     return '<div class="dim-bar-row fade-in">' +
-      '<div class="dim-bar-label"><span class="dim-bar-icon">' + d.icon + '</span>' + d.title + '</div>' +
-      '<div class="dim-bar-track"><div class="dim-bar-fill" style="width:0%;background:' + d.color + '" data-pct="' + pair[1] + '"></div></div>' +
-      '<div class="dim-bar-pct">' + pair[1] + '%</div>' +
-      '</div>';
+      '<div class="dim-bar-lbl">' + (d.icon||'') + ' ' + (d.name||pair[0]) + '</div>' +
+      '<div class="dim-bar-track"><div class="dim-bar-fill" style="width:0%;background:' + (d.color||'#888') + '" data-pct="' + pair[1] + '"></div></div>' +
+      '<div class="dim-bar-pct">' + pair[1] + '%</div></div>';
   }).join('');
 
-  var careerCardsHtml = topCareers.map(function(c, i) {
-    var pct = Math.round(60 + (c.score / (topCareers[0].score || 1)) * 40);
-    var fillColor = i < 3 ? '#f0c040' : i < 6 ? '#4ade80' : '#60a5fa';
-    return '<div class="career-card fade-in' + (i < 3 ? ' top' : '') + '">' +
-      '<div class="career-rank">' + (i < 3 ? '⭐ Top Match' : '#' + (i+1)) + '</div>' +
-      '<div class="career-title">' + (c.icon || '') + ' ' + c.title + '</div>' +
-      '<div class="career-salary">' + c.salary + '</div>' +
-      '<div class="career-sector">' + c.sector + '</div>' +
-      '<div class="career-fit">' +
-        '<div class="career-fit-bar"><div class="career-fit-fill" style="width:' + pct + '%;background:' + fillColor + '"></div></div>' +
-        '<span class="career-fit-label">' + pct + '% fit</span>' +
-      '</div>' +
-      '</div>';
+  var careerCards = topCareers.map(function(c,i){
+    var pct = Math.round(58 + (c.score/(topCareers[0].score||1))*42);
+    var fillColor = i<3?'#f0c040':i<6?'#4ade80':'#60a5fa';
+    return '<div class="career-card fade-in' + (i<3?' top':'') + '">' +
+      '<div class="c-rank">' + (i<3?'⭐ Top Match':'#'+(i+1)) + '</div>' +
+      '<div class="c-title">' + (c.icon||'') + ' ' + c.t + '</div>' +
+      '<div class="c-salary">' + c.s + '</div>' +
+      '<div class="c-sector">' + c.sec + '</div>' +
+      '<div class="c-fit"><div class="c-fit-bar"><div class="c-fit-fill" style="width:' + pct + '%;background:' + fillColor + '"></div></div>' +
+      '<span class="c-fit-lbl">' + pct + '% fit</span></div></div>';
   }).join('');
 
-  var strengthsHtml = topStrengths.map(function(s, i) {
+  var strengthCards = strengths.map(function(s,i){
     var icons = ['🎯','💪','🔍','⚡','🏆','🛡️'];
-    return '<div class="strength-card fade-in">' +
-      '<div class="strength-icon">' + icons[i] + '</div>' +
-      '<div class="strength-title">' + s + '</div>' +
-      '<div class="strength-desc">A proven strength from your military service that transfers directly into high-value civilian roles.</div>' +
-      '</div>';
+    return '<div class="strength-card fade-in"><div class="s-icon">' + icons[i] + '</div>' +
+      '<div class="s-title">' + s.split(' ')[0] + ' ' + (s.split(' ')[1]||'') + '</div>' +
+      '<div class="s-desc">' + s + '</div></div>';
   }).join('');
 
-  var stepsHtml = [
-    {title:'Build your targeted resume', desc:'Use the AI Resume Builder to translate your MOS experience into civilian language, optimized for your top career matches.'},
-    {title:'Translate your MOS code', desc:'Get a complete breakdown of how your specific military job code maps to civilian titles, certifications, and salary ranges.'},
-    {title:'Run a job match analysis', desc:'Paste a job posting into the Job Match Analyzer and get an honest score on how competitive you are — plus a gap-closing plan.'},
-    {title:'Optimize your LinkedIn profile', desc:'The LinkedIn Builder rewrites your profile in civilian language, targeting your top career dimension for maximum recruiter visibility.'},
-    {title:'Practice your interview answers', desc:'The Interview Simulator gives you tailored behavioral interview questions for your top career matches — with veteran-specific coaching.'}
-  ].map(function(s, i) {
-    return '<div class="step-item fade-in">' +
-      '<div class="step-num">' + (i+1) + '</div>' +
-      '<div><div class="step-title">' + s.title + '</div><div class="step-desc">' + s.desc + '</div></div>' +
-      '</div>';
+  var steps = [
+    {t:'Open the AI Resume Builder',d:'In the Career Builder app, your top career match auto-fills the target role. Paste your MOS duties and it generates a recruiter-ready resume in civilian language.'},
+    {t:'Run the MOS Translator',d:'Get a complete breakdown of what your specific MOS code means to a civilian employer — including related job titles, salary ranges, and certification pathways.'},
+    {t:'Use the Job Match Analyzer',d:'Paste any job posting and get an honest score on how competitive you are — plus a specific action plan to close any gaps.'},
+    {t:'Optimize Your LinkedIn with AI',d:'The LinkedIn Optimizer rewrites your profile summary and experience sections in civilian language tailored to your top career match.'},
+    {t:'Practice with Interview Simulator',d:'Get behavioral interview questions tailored to your top career matches, with STAR-format coaching built around military experience.'}
+  ].map(function(s,i){
+    return '<div class="step fade-in"><div class="step-num">'+(i+1)+'</div><div>' +
+      '<div class="step-title">'+s.t+'</div><div class="step-desc">'+s.d+'</div></div></div>';
   }).join('');
 
   document.getElementById('results-content').innerHTML =
+    shareBar +
     '<div class="results-hero fade-in">' +
-      '<div class="results-badge">✓ Full Assessment Complete · ' + Object.keys(answers).length*10 + ' Responses Analyzed</div>' +
-      '<h2 class="results-h">Your Career Profile</h2>' +
-      '<p class="results-sub">Based on your responses across all 6 RIASEC career dimensions</p>' +
+      '<div class="results-badge">✓ Full Assessment · ' + totalQ + ' Questions Analyzed</div>' +
+      '<h2 class="results-h">Your Military Career Profile</h2>' +
+      '<p class="results-sub">Based on your responses across all 6 RIASEC dimensions — matched to roles that value military background</p>' +
       '<div class="profile-type">' + dim1.icon + ' ' + dim2.icon + ' ' + typeName + '</div>' +
     '</div>' +
 
     '<div class="type-card fade-in">' +
-      '<div class="type-header">' +
-        '<div class="type-icon-big">' + dim1.icon + '</div>' +
-        '<div>' +
-          '<div class="type-name">' + typeName + '</div>' +
-          '<div class="type-combo">' + dim1.title + ' + ' + dim2.title + '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="type-desc">Your profile combines a strong ' + dim1.title.toLowerCase() + ' orientation with ' + dim2.title.toLowerCase() + ' tendencies. Veterans with this profile consistently succeed in roles that reward ' + (dim1.desc || '').toLowerCase() + ' This combination is particularly valuable in defense contracting, federal agencies, and private sector operations.</div>' +
-      '<div class="type-traits">' +
-        ['Mission-focused','Reliable under pressure','Adaptable','High accountability','Team-oriented','Self-disciplined'].map(function(t){return '<span class="type-trait">'+t+'</span>';}).join('') +
-      '</div>' +
+      '<div class="type-header"><div class="type-icon">' + dim1.icon + '</div><div>' +
+        '<div class="type-name">' + typeName + '</div>' +
+        '<div class="type-dims">' + dim1.name + ' + ' + dim2.name + '</div>' +
+      '</div></div>' +
+      '<div class="type-desc">Veterans with a ' + dim1.name.toLowerCase() + ' primary orientation and ' + dim2.name.toLowerCase() + ' secondary tendencies consistently transition into roles that require both ' + dim1.desc.toLowerCase() + ' and ' + dim2.desc.toLowerCase() + ' This profile is particularly strong for defense contracting, federal service, and private sector operations leadership.</div>' +
+      '<div class="type-traits">' + ['Mission-focused','Reliable under pressure','Adaptable','High accountability','Self-disciplined','Team-oriented'].map(function(t){return '<span class="trait">'+t+'</span>';}).join('') + '</div>' +
     '</div>' +
 
-    '<div class="section-label">Your 6 Career Dimensions</div>' +
-    '<div class="dim-bars">' + dimBarsHtml + '</div>' +
-
-    '<div class="section-label">Your Top 12 Career Matches</div>' +
-    '<div class="career-grid">' + careerCardsHtml + '</div>' +
-
-    '<div class="section-label">Your Key Transferable Strengths</div>' +
-    '<div class="strengths-grid">' + strengthsHtml + '</div>' +
-
-    '<div class="section-label">Your Next 5 Steps</div>' +
-    '<div class="steps-list">' + stepsHtml + '</div>' +
+    '<div class="sec-lbl">Your 6 Dimension Scores</div>' +
+    '<div class="dim-bars">' + dimBars + '</div>' +
+    '<div class="sec-lbl">Your Top 12 Career Matches</div>' +
+    '<div class="career-grid">' + careerCards + '</div>' +
+    '<div class="sec-lbl">Your Military Strengths (Civilian Value)</div>' +
+    '<div class="strength-grid">' + strengthCards + '</div>' +
+    '<div class="sec-lbl">Your Next 5 Steps</div>' +
+    '<div class="steps">' + steps + '</div>' +
 
     '<div class="results-cta fade-in">' +
       '<div class="cta-title">Put Your Results to Work</div>' +
-      '<p class="cta-sub">Your subscription includes 7 more AI tools built to turn this assessment into a civilian career. Start with the resume builder — paste your MOS and it does the rest.</p>' +
+      '<p class="cta-sub">Your subscription includes 7 more AI tools. Start with the Resume Builder — it reads your MOS and builds a recruiter-ready resume for your top career match.</p>' +
       '<div class="cta-btns">' +
         '<a href="https://veterancareerpath.com/app.html" class="cta-primary">Open AI Career Builder →</a>' +
-        '<button class="cta-secondary print-btn" onclick="window.print()">🖨 Print / Save PDF</button>' +
-        '<button class="cta-secondary" onclick="retake()">Retake Assessment</button>' +
+        '<button class="cta-sec" onclick="copyLink()">📋 Copy Results Link</button>' +
+        '<button class="cta-sec" onclick="window.print()">🖨️ Print Report</button>' +
+        '<button class="cta-sec" onclick="retake()">↺ Retake</button>' +
       '</div>' +
-    '</div>';
+    '</div>' +
+    '<div id="copy-confirm" style="text-align:center;margin-top:.75rem;font-size:.8rem;color:#4ade80;display:none">✓ Link copied! Open it on any device to view your results.</div>';
 
-  // Animate bars in
-  setTimeout(function() {
-    document.querySelectorAll('.dim-bar-fill').forEach(function(bar) {
-      bar.style.width = bar.getAttribute('data-pct') + '%';
+  // Animate
+  setTimeout(function(){
+    document.querySelectorAll('.dim-bar-fill').forEach(function(el){
+      el.style.width = el.getAttribute('data-pct') + '%';
     });
-    // Stagger fade-ins
-    document.querySelectorAll('.fade-in').forEach(function(el, i) {
-      setTimeout(function() {
-        el.classList.add('visible');
-      }, i * 60);
+    document.querySelectorAll('.fade-in').forEach(function(el,i){
+      setTimeout(function(){el.classList.add('visible');}, i*55);
     });
-  }, 100);
+  }, 120);
+
+  // Store share URL for copy button
+  window._shareUrl = shareUrl;
 }
 
-function retake() {
-  curDim = 0;
-  answers = {};
-  document.getElementById('prog').style.width = '0%';
-  showScreen('scr-intro');
+function copyLink(){
+  var url = window._shareUrl || window.location.href;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(function(){showCopyConfirm();});
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showCopyConfirm();
+  }
 }
+function showCopyConfirm(){
+  var el = document.getElementById('copy-confirm');
+  if(el){ el.style.display='block'; setTimeout(function(){el.style.display='none';},4000); }
+}
+function retake(){ curDim=0; answers={}; savedResultId=null; document.getElementById('prog').style.width='0%'; showScreen('scr-intro'); }
 </script>
 </body>
 </html>

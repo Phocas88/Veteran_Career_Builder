@@ -8,7 +8,8 @@
 <meta name="keywords" content="teaching careers veterans, troops to teachers, JROTC instructor veteran, veteran teacher alternative certification">
 <link rel="canonical" href="https://veterancareerpath.com/veteran-teaching-careers.html">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/logo.png">
+<link rel="apple-touch-icon" href="https://veterancareerpath.com/logo.png">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <style>
@@ -76,70 +77,119 @@ td{padding:.75rem 1rem;color:#3a4a5a;border-bottom:1px solid #eee}
 </head>
 <body>
 <style id="vcp-nav-css">
-.vcp-nav{background:#0a1628;padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000;border-bottom:1px solid rgba(201,168,76,.15);}
-.vcp-logo{display:flex;align-items:center;gap:.7rem;text-decoration:none;flex-shrink:0;}
-.vcp-logo img{width:34px;height:34px;object-fit:contain;}
-.vcp-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.1em;color:#f0c040;}
-.vcp-links{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
-.vcp-links a{color:#c0d8f0;text-decoration:none;font-size:.8rem;font-weight:500;white-space:nowrap;}
-.vcp-links a:hover{color:#fff;}
-.vcp-cta{background:linear-gradient(135deg,#c8960a,#e8aa10)!important;color:#0a1628!important;font-weight:700!important;padding:.38rem .9rem;border-radius:6px;}
-.vcp-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:.5rem;flex-shrink:0;}
+/* ── VCP UNIVERSAL NAV ── */
+.vcp-nav{background:#0a1628;padding:0 6%;display:flex;justify-content:space-between;align-items:stretch;position:sticky;top:0;z-index:1000;border-bottom:1px solid rgba(240,192,64,.12);height:57px;}
+.vcp-logo{display:flex;align-items:center;gap:.65rem;text-decoration:none;flex-shrink:0;margin-right:1.5rem;}
+.vcp-logo img{width:32px;height:32px;object-fit:contain;}
+.vcp-logo span{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:#f0c040;}
+/* Desktop links */
+.vcp-desk{display:flex;align-items:stretch;gap:0;flex:1;}
+.vcp-desk a,.vcp-more-btn{display:flex;align-items:center;padding:0 .75rem;color:#c0d8f0;text-decoration:none;font-size:.78rem;font-weight:500;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;background:none;border-top:none;border-left:none;border-right:none;cursor:pointer;font-family:'Inter',sans-serif;height:100%;}
+.vcp-desk a:hover,.vcp-more-btn:hover{color:#fff;border-bottom-color:rgba(240,192,64,.4);}
+.vcp-cta{background:linear-gradient(135deg,#c8960a,#e8aa10)!important;color:#0a1628!important;font-weight:700!important;border-radius:6px;margin:auto .5rem auto 1rem;padding:.38rem .9rem!important;height:auto!important;border-bottom:none!important;flex-shrink:0;}
+.vcp-cta:hover{opacity:.9;border-bottom:none!important;}
+/* Dropdown */
+.vcp-more-wrap{position:relative;display:flex;align-items:stretch;}
+.vcp-dropdown{display:none;position:absolute;top:57px;right:0;background:#08111e;border:1px solid rgba(240,192,64,.12);border-top:none;border-radius:0 0 12px 12px;box-shadow:0 12px 40px rgba(0,0,0,.5);width:680px;max-width:95vw;padding:1.25rem;grid-template-columns:1fr 1fr 1fr;gap:1rem;z-index:1001;}
+.vcp-more-wrap:hover .vcp-dropdown,.vcp-dropdown:hover{display:grid;}
+.vcp-drop-col h4{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,192,64,.6);margin-bottom:.6rem;padding-bottom:.35rem;border-bottom:1px solid rgba(255,255,255,.06);}
+.vcp-drop-col a{display:flex;align-items:center;gap:.4rem;color:rgba(192,216,240,.75);text-decoration:none;font-size:.8rem;padding:.3rem 0;transition:color .12s;}
+.vcp-drop-col a:hover{color:#fff;}
+.vcp-drop-col a .dico{font-size:.85rem;width:18px;flex-shrink:0;}
+/* Hamburger */
+.vcp-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:.5rem;flex-shrink:0;align-self:center;}
 .vcp-ham span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.25s;}
 .vcp-ham.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
 .vcp-ham.open span:nth-child(2){opacity:0;}
 .vcp-ham.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
-.vcp-mob{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;z-index:999;flex-direction:column;border-top:1px solid rgba(201,168,76,.12);max-height:84vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+/* Mobile menu */
+.vcp-mob{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;z-index:999;flex-direction:column;border-top:1px solid rgba(240,192,64,.12);max-height:84vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);}
 .vcp-mob.open{display:flex;}
-.vcp-mob a{color:rgba(255,255,255,.82);text-decoration:none;font-size:.88rem;font-weight:500;padding:.72rem 6%;border-bottom:1px solid rgba(255,255,255,.05);}
-.vcp-mob a:hover{background:rgba(255,255,255,.04);color:#fff;}
+.vcp-mob a{color:rgba(255,255,255,.82);text-decoration:none;font-size:.88rem;font-weight:500;padding:.7rem 6%;border-bottom:1px solid rgba(255,255,255,.05);}
+.vcp-mob a:hover{background:rgba(255,255,255,.04);}
 .vcp-mob .vcp-mob-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e!important;font-weight:700!important;text-align:center;margin:.65rem 1.25rem;border-radius:8px;padding:.7rem!important;border:none!important;}
-.vcp-mob .vcp-mob-sect{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,192,64,.7);padding:.55rem 6% .2rem;pointer-events:none;border-bottom:none!important;}
-@media(max-width:860px){.vcp-ham{display:flex;}.vcp-links{display:none!important;}}
+.vcp-mob-sect{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,192,64,.6);padding:.55rem 6% .2rem;pointer-events:none;border-bottom:none!important;}
+@media(max-width:900px){.vcp-desk{display:none!important;}.vcp-ham{display:flex;}}
 </style>
 <nav class="vcp-nav">
   <a href="https://veterancareerpath.com" class="vcp-logo">
-    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path" width="34" height="34">
+    <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="32" height="32">
     <span>Veteran Career Path</span>
   </a>
-  <div class="vcp-links">
+  <div class="vcp-desk">
     <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a>
     <a href="https://veterancareerpath.com/veteran-career-test.html">Career Test</a>
-    <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Guides</a>
     <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Disability</a>
     <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html">PCS Calculator</a>
-    <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">GI Bill</a>
+    <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Guides</a>
+    <div class="vcp-more-wrap">
+      <button class="vcp-more-btn">More ▾</button>
+      <div class="vcp-dropdown">
+        <div class="vcp-drop-col">
+          <h4>Transition Resources</h4>
+          <a href="https://veterancareerpath.com/gi-bill-school-comparison.html"><span class="dico">🎓</span>GI Bill Guide</a>
+          <a href="https://veterancareerpath.com/skillbridge-program-guide.html"><span class="dico">💼</span>SkillBridge Guide</a>
+          <a href="https://veterancareerpath.com/security-clearance-salary.html"><span class="dico">🔐</span>Clearance Salary</a>
+          <a href="https://veterancareerpath.com/veteran-hiring-companies.html"><span class="dico">🏢</span>Top 50 Employers</a>
+          <a href="https://veterancareerpath.com/military-civilian-resume.html"><span class="dico">📄</span>Resume Guide</a>
+          <a href="https://veterancareerpath.com/veteran-action-verbs.html"><span class="dico">✍️</span>Action Verbs</a>
+          <a href="https://veterancareerpath.com/mos-career-translator.html"><span class="dico">🔄</span>MOS Translator</a>
+        </div>
+        <div class="vcp-drop-col">
+          <h4>MOS / Rate / AFSC</h4>
+          <a href="https://veterancareerpath.com/army-mos-careers.html"><span class="dico">⭐</span>Army MOS</a>
+          <a href="https://veterancareerpath.com/navy-rate-careers.html"><span class="dico">⚓</span>Navy Rates</a>
+          <a href="https://veterancareerpath.com/marine-corps-mos-careers.html"><span class="dico">🦅</span>Marine Corps MOS</a>
+          <a href="https://veterancareerpath.com/air-force-afsc-careers.html"><span class="dico">✈️</span>Air Force AFSC</a>
+          <a href="https://veterancareerpath.com/coast-guard-rating-careers.html"><span class="dico">🔱</span>Coast Guard</a>
+          <a href="https://veterancareerpath.com/space-force-afsc-careers.html"><span class="dico">🛸</span>Space Force</a>
+        </div>
+        <div class="vcp-drop-col">
+          <h4>Benefits & Reference</h4>
+          <a href="https://veterancareerpath.com/va-disability-rating-schedule.html"><span class="dico">🏥</span>VA Disability Schedule</a>
+          <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html"><span class="dico">📦</span>PCS/ETS Calculator</a>
+          <a href="https://veterancareerpath.com/veteran-mental-health-resources.html"><span class="dico">🤝</span>Mental Health Resources</a>
+          <a href="https://veterancareerpath.com/blended-retirement-system-guide.html"><span class="dico">💰</span>BRS Retirement Guide</a>
+          <a href="https://veterancareerpath.com/veteran-certification-roadmap.html"><span class="dico">📋</span>Certification Roadmap</a>
+          <a href="https://veterancareerpath.com/veteran-career-test.html"><span class="dico">🎯</span>Free Career Assessment</a>
+          <a href="https://veterancareerpath.com/career-assessment-full.html"><span class="dico">⭐</span>Full Assessment ($15/mo)</a>
+        </div>
+      </div>
+    </div>
     <a href="https://veterancareerpath.com/app.html" class="vcp-cta">AI Tools — $15/mo</a>
   </div>
   <button class="vcp-ham" id="vcp-ham" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 <div class="vcp-mob" id="vcp-mob">
   <span class="vcp-mob-sect">AI Career Tools</span>
-  <a href="https://veterancareerpath.com/app.html" class="vcp-mob-cta">🚀 AI Career Builder — $15/mo</a>
-  <a href="https://veterancareerpath.com/veteran-career-test.html">🎯 Free Career Assessment</a>
+  <a href="https://veterancareerpath.com/app.html" class="vcp-mob-cta">🚀 AI Career Builder — $15/month</a>
+  <a href="https://veterancareerpath.com/free-assessment.html">🎯 Free Career Assessment (10 Questions)</a>
+  <a href="https://veterancareerpath.com/career-assessment-full.html">⭐ Full Assessment — Subscribers</a>
   <a href="https://veterancareerpath.com/mos-career-translator.html">🔄 MOS Translator</a>
   <span class="vcp-mob-sect">Transition Resources</span>
   <a href="https://veterancareerpath.com/military-transition-guide.html">📋 Military Transition Guide</a>
   <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">🏥 VA Disability Rating Schedule</a>
   <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html">📦 PCS / ETS Move Calculator</a>
   <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">🎓 GI Bill School Comparison</a>
-  <a href="https://veterancareerpath.com/skillbridge-program-guide (1).html">💼 SkillBridge Program Guide</a>
+  <a href="https://veterancareerpath.com/skillbridge-program-guide.html">💼 SkillBridge Program Guide</a>
   <a href="https://veterancareerpath.com/security-clearance-salary.html">🔐 Security Clearance Salary</a>
   <a href="https://veterancareerpath.com/veteran-hiring-companies.html">🏢 Top 50 Companies Hiring Vets</a>
-  <span class="vcp-mob-sect">MOS / Rate / AFSC Guides</span>
+  <a href="https://veterancareerpath.com/veteran-mental-health-resources.html">🤝 Mental Health Resources</a>
+  <span class="vcp-mob-sect">MOS / Rate / AFSC</span>
   <a href="https://veterancareerpath.com/army-mos-careers.html">⭐ Army MOS Careers</a>
   <a href="https://veterancareerpath.com/navy-rate-careers.html">⚓ Navy Rate Careers</a>
   <a href="https://veterancareerpath.com/marine-corps-mos-careers.html">🦅 Marine Corps MOS</a>
   <a href="https://veterancareerpath.com/air-force-afsc-careers.html">✈️ Air Force AFSC</a>
   <a href="https://veterancareerpath.com/coast-guard-rating-careers.html">🔱 Coast Guard Ratings</a>
   <a href="https://veterancareerpath.com/space-force-afsc-careers.html">🛸 Space Force AFSC</a>
-  <span class="vcp-mob-sect">Reference Guides</span>
+  <span class="vcp-mob-sect">Reference & Benefits</span>
   <a href="https://veterancareerpath.com/military-civilian-resume.html">📄 Military Resume Guide</a>
-  <a href="https://veterancareerpath.com/military-transition-guide.html">🗺️ Full Transition Guide</a>
+  <a href="https://veterancareerpath.com/veteran-certification-roadmap.html">📋 Certification Roadmap</a>
   <a href="https://veterancareerpath.com/veteran-action-verbs.html">✍️ Action Verbs List</a>
+  <a href="https://veterancareerpath.com/blended-retirement-system-guide.html">💰 Retirement Guide</a>
   <a href="https://veterancareerpath.com/">🏠 Back to Home</a>
 </div>
-<script>
+<script id="vcp-nav-js">
 (function(){
   var b=document.getElementById('vcp-ham'),m=document.getElementById('vcp-mob');
   if(!b||!m)return;

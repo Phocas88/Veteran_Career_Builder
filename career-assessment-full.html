@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Full Career Assessment | Veteran Career Path</title>
+<meta name="description" content="Your personalized 60-question RIASEC career assessment. Subscriber-only. Detailed career matches, salary data, and printable report.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#0a1628;--navy2:#1a3a6b;--gold:#f0c040;--gold2:#c8960a;
+  --green:#1a7a40;--red:#c0392b;--border:#dde3ec;
+  --r:#1a5c9a;--i:#6a2a9a;--a:#8a3a5a;--s:#1a7a40;--e:#c8960a;--c:#2a7090;
+}
+
+body{font-family:'Inter',sans-serif;background:#060e1a;color:#e8f0f8;min-height:100vh;overflow-x:hidden;}
+
+/* ACCESS GATE */
+#gate{position:fixed;inset:0;background:#060e1a;z-index:9999;display:flex;align-items:center;justify-content:center;padding:2rem;}
+#gate.hidden{display:none;}
+.gate-box{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);border:1px solid rgba(240,192,64,.25);border-radius:16px;padding:2.5rem;text-align:center;max-width:460px;width:100%;}
+.gate-logo{width:56px;height:56px;object-fit:contain;margin-bottom:1.25rem;}
+.gate-title{font-family:\'Bebas Neue\',sans-serif;font-size:1.8rem;letter-spacing:.1em;color:var(--gold);margin-bottom:.5rem;}
+.gate-sub{font-size:.9rem;color:rgba(192,216,240,.7);line-height:1.65;margin-bottom:1.75rem;}
+.gate-btn{display:block;width:100%;padding:.9rem;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:\'Bebas Neue\',sans-serif;font-size:1.1rem;letter-spacing:.1em;border:none;border-radius:10px;cursor:pointer;text-decoration:none;margin-bottom:.75rem;}
+.gate-skip{font-size:.8rem;color:rgba(192,216,240,.5);text-decoration:none;}
+.gate-skip:hover{color:rgba(192,216,240,.8);}
+
+/* TOPBAR */
+.topbar{background:rgba(6,14,26,.95);border-bottom:1px solid rgba(240,192,64,.12);padding:.75rem 5%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px);}
+.topbar-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+.topbar-logo img{width:28px;height:28px;object-fit:contain;}
+.topbar-logo span{font-family:\'Bebas Neue\',sans-serif;font-size:.95rem;letter-spacing:.1em;color:var(--gold);}
+.topbar-right{display:flex;align-items:center;gap:1rem;}
+.topbar-step{font-size:.75rem;color:rgba(192,216,240,.5);font-weight:500;}
+.topbar-exit{color:rgba(192,216,240,.4);font-size:.8rem;text-decoration:none;transition:.2s;}
+.topbar-exit:hover{color:rgba(192,216,240,.8);}
+
+/* PROGRESS */
+.progress-bar{height:3px;background:rgba(255,255,255,.06);}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:width .4s ease;width:0%;}
+
+/* SCREENS */
+.screen{display:none;min-height:calc(100vh - 54px);}
+.screen.active{display:block;}
+
+/* INTRO */
+.intro-wrap{max-width:700px;margin:0 auto;padding:4rem 5%;}
+.intro-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.25);border-radius:100px;padding:.3rem 1rem;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
+.intro-h{font-family:\'Bebas Neue\',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);letter-spacing:.06em;color:#fff;line-height:1.05;margin-bottom:1rem;}
+.intro-h span{color:var(--gold);}
+.intro-p{font-size:1rem;color:rgba(192,216,240,.75);line-height:1.8;margin-bottom:2rem;max-width:560px;}
+.intro-stats{display:flex;gap:2rem;margin-bottom:2.5rem;flex-wrap:wrap;}
+.intro-stat .n{font-family:\'Bebas Neue\',sans-serif;font-size:2rem;letter-spacing:.04em;color:var(--gold);line-height:1;}
+.intro-stat .l{font-size:.7rem;color:rgba(192,216,240,.45);text-transform:uppercase;letter-spacing:.1em;margin-top:.15rem;}
+.intro-dims{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:2.5rem;}
+@media(max-width:500px){.intro-dims{grid-template-columns:1fr 1fr;}}
+.dim-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.85rem;display:flex;align-items:center;gap:.6rem;}
+.dim-card .icon{font-size:1.2rem;}
+.dim-card .label{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.8);}
+.start-btn{display:inline-flex;align-items:center;gap:.6rem;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:\'Bebas Neue\',sans-serif;font-size:1.2rem;letter-spacing:.1em;padding:1rem 2.5rem;border-radius:12px;border:none;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(200,150,10,.4);}
+.instr{font-size:.82rem;color:rgba(192,216,240,.4);margin-top:1rem;}
+
+/* ASSESSMENT */
+.assess-wrap{max-width:740px;margin:0 auto;padding:2.5rem 5%;}
+.dim-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,.06);}
+.dim-icon-big{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+.dim-title-text{font-family:\'Bebas Neue\',sans-serif;font-size:1.4rem;letter-spacing:.07em;color:#fff;line-height:1;}
+.dim-subtitle{font-size:.82rem;color:rgba(192,216,240,.5);margin-top:.25rem;}
+.dim-prog-text{font-size:.72rem;color:rgba(192,216,240,.4);margin-top:.2rem;}
+.questions-list{display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2rem;}
+.q-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1.25rem 1.5rem;transition:border-color .2s;}
+.q-card.answered{border-color:rgba(240,192,64,.2);background:rgba(240,192,64,.03);}
+.q-num{font-size:.67rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(192,216,240,.35);margin-bottom:.5rem;}
+.q-text{font-size:.95rem;color:rgba(255,255,255,.88);line-height:1.6;margin-bottom:1rem;}
+.scale-row{display:flex;gap:.4rem;align-items:center;}
+.scale-labels{display:flex;justify-content:space-between;font-size:.63rem;color:rgba(192,216,240,.35);margin-top:.4rem;}
+.scale-btn{flex:1;height:40px;border-radius:8px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.scale-btn:hover{border-color:rgba(255,255,255,.25);color:#fff;}
+.scale-btn.sel{color:#fff;border-width:2px;font-weight:700;}
+.nav-row{display:flex;justify-content:space-between;align-items:center;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.06);}
+.nav-btn{display:flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;border:none;}
+.nav-back{background:rgba(255,255,255,.06);color:rgba(192,216,240,.7);}
+.nav-back:hover{background:rgba(255,255,255,.1);color:#fff;}
+.nav-next{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:\'Bebas Neue\',sans-serif;font-size:.95rem;letter-spacing:.06em;}
+.nav-next:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
+.nav-next:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,150,10,.35);}
+.q-remaining{font-size:.78rem;color:rgba(192,216,240,.4);}
+
+/* RESULTS */
+.results-wrap{max-width:900px;margin:0 auto;padding:3rem 5% 5rem;}
+.results-hero{text-align:center;padding:3rem 0 2.5rem;position:relative;}
+.results-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(240,192,64,.08),transparent 70%);pointer-events:none;}
+.results-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.2);border-radius:100px;padding:.28rem .9rem;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+.results-h{font-family:\'Bebas Neue\',sans-serif;font-size:clamp(2rem,4.5vw,3rem);letter-spacing:.07em;color:#fff;margin-bottom:.5rem;}
+.results-sub{font-size:.92rem;color:rgba(192,216,240,.6);margin-bottom:2rem;}
+.profile-type{display:inline-block;background:linear-gradient(135deg,rgba(240,192,64,.15),rgba(200,150,10,.05));border:1px solid rgba(240,192,64,.3);border-radius:12px;padding:.6rem 1.5rem;font-family:\'Bebas Neue\',sans-serif;font-size:1.2rem;letter-spacing:.1em;color:var(--gold);margin-bottom:2.5rem;}
+
+/* DIMENSION BARS */
+.section-label{font-family:\'Bebas Neue\',sans-serif;font-size:1rem;letter-spacing:.1em;color:rgba(192,216,240,.5);text-transform:uppercase;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,.06);}
+.dim-bars{display:flex;flex-direction:column;gap:.85rem;margin-bottom:2.5rem;}
+.dim-bar-row{display:flex;align-items:center;gap:1rem;}
+.dim-bar-label{width:180px;flex-shrink:0;display:flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.8);}
+.dim-bar-icon{font-size:.95rem;}
+.dim-bar-track{flex:1;height:10px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;}
+.dim-bar-fill{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.16,1,.3,1);}
+.dim-bar-pct{width:36px;text-align:right;font-size:.78rem;font-weight:700;color:rgba(192,216,240,.6);}
+@media(max-width:500px){.dim-bar-label{width:120px;font-size:.73rem;}.dim-bar-icon{display:none;}}
+
+/* PERSONALITY TYPE */
+.type-card{background:linear-gradient(135deg,rgba(13,31,60,.8),rgba(26,58,107,.4));border:1px solid rgba(240,192,64,.15);border-radius:16px;padding:2rem;margin-bottom:2.5rem;}
+.type-header{display:flex;align-items:flex-start;gap:1.25rem;margin-bottom:1.25rem;}
+.type-icon-big{font-size:2.2rem;flex-shrink:0;margin-top:.1rem;}
+.type-name{font-family:\'Bebas Neue\',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#fff;line-height:1;margin-bottom:.3rem;}
+.type-combo{font-size:.8rem;color:var(--gold);font-weight:600;letter-spacing:.06em;}
+.type-desc{font-size:.9rem;color:rgba(192,216,240,.75);line-height:1.75;}
+.type-traits{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem;}
+.type-trait{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:.2rem .65rem;font-size:.72rem;font-weight:600;color:rgba(192,216,240,.7);}
+
+/* CAREER CARDS */
+.career-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:2.5rem;}
+.career-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.25rem;transition:border-color .2s,transform .2s;}
+.career-card:hover{border-color:rgba(240,192,64,.2);transform:translateY(-2px);}
+.career-card.top{border-color:rgba(240,192,64,.25);background:rgba(240,192,64,.04);}
+.career-rank{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+.career-title{font-weight:700;font-size:.95rem;color:#fff;margin-bottom:.35rem;line-height:1.3;}
+.career-salary{font-size:.82rem;font-weight:600;color:#4ade80;margin-bottom:.35rem;}
+.career-sector{display:inline-block;background:rgba(255,255,255,.06);border-radius:20px;padding:.15rem .55rem;font-size:.68rem;color:rgba(192,216,240,.5);font-weight:500;}
+.career-fit{display:flex;align-items:center;gap:.35rem;margin-top:.6rem;}
+.career-fit-bar{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
+.career-fit-fill{height:100%;border-radius:2px;}
+.career-fit-label{font-size:.65rem;color:rgba(192,216,240,.4);white-space:nowrap;}
+
+/* STRENGTHS */
+.strengths-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2.5rem;}
+@media(max-width:560px){.strengths-grid{grid-template-columns:1fr;}}
+.strength-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1.1rem;}
+.strength-icon{font-size:1.3rem;margin-bottom:.5rem;}
+.strength-title{font-weight:700;font-size:.88rem;color:#fff;margin-bottom:.3rem;}
+.strength-desc{font-size:.8rem;color:rgba(192,216,240,.6);line-height:1.6;}
+
+/* NEXT STEPS */
+.steps-list{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2.5rem;}
+.step-item{display:flex;gap:1rem;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1rem 1.25rem;}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--navy2);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:\'Bebas Neue\',sans-serif;font-size:.9rem;flex-shrink:0;margin-top:.1rem;}
+.step-title{font-weight:700;font-size:.88rem;color:#fff;margin-bottom:.2rem;}
+.step-desc{font-size:.8rem;color:rgba(192,216,240,.6);line-height:1.6;}
+
+/* CTA */
+.results-cta{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);border:1px solid rgba(240,192,64,.2);border-radius:16px;padding:2.5rem;text-align:center;margin-bottom:2rem;}
+.cta-title{font-family:\'Bebas Neue\',sans-serif;font-size:1.8rem;letter-spacing:.08em;color:var(--gold);margin-bottom:.5rem;}
+.cta-sub{font-size:.9rem;color:rgba(192,216,240,.7);margin-bottom:1.5rem;max-width:480px;margin-left:auto;margin-right:auto;}
+.cta-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;}
+.cta-primary{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0a1628;font-family:\'Bebas Neue\',sans-serif;font-size:1rem;letter-spacing:.08em;padding:.85rem 2rem;border-radius:10px;text-decoration:none;border:none;cursor:pointer;}
+.cta-secondary{background:rgba(255,255,255,.06);color:rgba(192,216,240,.8);font-size:.88rem;font-weight:600;padding:.85rem 1.75rem;border-radius:10px;border:1px solid rgba(255,255,255,.12);cursor:pointer;}
+.cta-secondary:hover{background:rgba(255,255,255,.1);}
+
+/* PRINT */
+@media print{
+  #gate,#topbar,.cta-btns,.print-btn{display:none!important;}
+  body{background:#fff;color:#000;}
+  .results-hero,.type-card,.section-label,.dim-bars,.career-grid,.strengths-grid,.steps-list,.results-cta{color:#000;}
+  .results-h,.dim-title-text,.career-title,.strength-title,.step-title,.type-name,.cta-title{color:#000;}
+  .career-card,.strength-card,.step-item,.type-card{border:1px solid #ccc;background:#f9f9f9;}
+  .dim-bar-fill{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+}
+
+.fade-in{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- ACCESS GATE -->
+<div id="gate">
+  <div class="gate-box">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" class="gate-logo" alt="Veteran Career Path">
+    <div class="gate-title">Subscriber Access Required</div>
+    <p class="gate-sub">The Full 60-Question Career Assessment is included with your $15/month subscription — along with 7 other AI career tools built for veterans.</p>
+    <a href="https://veterancareerpath.com/app.html" class="gate-btn">Subscribe — $15/month</a>
+    <br>
+    <a href="https://veterancareerpath.com/veteran-career-test.html" class="gate-skip">← Take the free 10-question preview instead</a>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar" id="topbar">
+  <a href="https://veterancareerpath.com" class="topbar-logo">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="VCP" width="28" height="28">
+    <span>Veteran Career Path</span>
+  </a>
+  <div class="topbar-right">
+    <span class="topbar-step" id="topbar-step">Assessment</span>
+    <a href="https://veterancareerpath.com/veteran-career-test.html" class="topbar-exit">Exit ✕</a>
+  </div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+
+<!-- SCREEN: INTRO -->
+<div class="screen active" id="scr-intro">
+  <div class="intro-wrap">
+    <div class="intro-badge">🎖 Subscriber Exclusive · Full RIASEC Assessment</div>
+    <h1 class="intro-h">Your Full<br><span>Career Profile</span></h1>
+    <p class="intro-p">60 targeted questions across 6 career dimensions. Developed from the RIASEC framework used by career counselors and the Department of Labor. Your results are specific to you — not a generic quiz.</p>
+    <div class="intro-stats">
+      <div class="intro-stat"><div class="n">60</div><div class="l">Questions</div></div>
+      <div class="intro-stat"><div class="n">6</div><div class="l">Dimensions</div></div>
+      <div class="intro-stat"><div class="n">12+</div><div class="l">Career Matches</div></div>
+      <div class="intro-stat"><div class="n">~12</div><div class="l">Minutes</div></div>
+    </div>
+    <div class="intro-dims">
+      <div class="dim-card"><span class="icon">🔧</span><span class="label">Hands-On & Technical</span></div>
+      <div class="dim-card"><span class="icon">🔬</span><span class="label">Analytical & Research</span></div>
+      <div class="dim-card"><span class="icon">🎨</span><span class="label">Creative & Expressive</span></div>
+      <div class="dim-card"><span class="icon">🤝</span><span class="label">People & Helping</span></div>
+      <div class="dim-card"><span class="icon">🎯</span><span class="label">Leadership & Business</span></div>
+      <div class="dim-card"><span class="icon">📋</span><span class="label">Organized & Systems</span></div>
+    </div>
+    <button class="start-btn" onclick="startAssessment()">Begin Assessment →</button>
+    <p class="instr">Rate each statement 1 (Strongly Disagree) to 5 (Strongly Agree). There are no right or wrong answers. Be honest — accuracy depends on it.</p>
+  </div>
+</div>
+
+<!-- SCREEN: ASSESSMENT -->
+<div class="screen" id="scr-assess">
+  <div class="assess-wrap">
+    <div class="dim-header">
+      <div class="dim-icon-big" id="dim-icon"></div>
+      <div>
+        <div class="dim-title-text" id="dim-title"></div>
+        <div class="dim-subtitle" id="dim-sub"></div>
+        <div class="dim-prog-text" id="dim-prog"></div>
+      </div>
+    </div>
+    <div class="questions-list" id="qlist"></div>
+    <div class="nav-row">
+      <div>
+        <button class="nav-btn nav-back" id="btn-back" onclick="prevDim()" style="display:none">← Back</button>
+      </div>
+      <span class="q-remaining" id="q-remaining"></span>
+      <button class="nav-btn nav-next" id="btn-next" onclick="nextDim()" disabled>Next Section →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: RESULTS -->
+<div class="screen" id="scr-results">
+  <div class="results-wrap" id="results-content"></div>
+</div>
+
+<script>
+// ─── ACCESS CHECK ──────────────────────────────────────────────────────────
+(function(){
+  var acc = {};
+  try { acc = JSON.parse(localStorage.getItem('vcb_access') || '{}'); } catch(e) {}
+  var valid = (acc.type === 'paid' && acc.stripeSession && acc.expiry > Date.now()) ||
+              (acc.type === 'code' && acc.code);
+  if (valid) {
+    document.getElementById('gate').classList.add('hidden');
+  }
+  // Gate stays visible if not subscribed
+})();
+
+// ─── ASSESSMENT DATA ────────────────────────────────────────────────────────
+var DIMS = [
+  {id:'realistic', title:'Hands-On & Technical', icon:'🔧', color:'#1a5c9a',
+   desc:'You prefer working with tools, physical environments, and concrete results.',
+   questions:[
+    'I enjoy working with tools, machinery, or physical equipment',
+    'I prefer seeing concrete, tangible results from my work',
+    'I am comfortable in physical or operational environments',
+    'I enjoy maintaining, repairing, or building things',
+    'I like understanding how mechanical systems work',
+    'I prefer practical hands-on solutions over theory',
+    'I am drawn to technical trades or engineering',
+    'I enjoy structured tasks with clear procedures',
+    'I am patient with detail-oriented physical tasks',
+    'I take pride in precision and doing physical work well'
+  ]},
+  {id:'investigative', title:'Analytical & Research', icon:'🔬', color:'#6a2a9a',
+   desc:'You are drawn to analysis, complex problem-solving, and intellectual depth.',
+   questions:[
+    'I enjoy researching and investigating complex problems',
+    'I like working with data, statistics, or analytical tools',
+    'I am drawn to science, technology, engineering, or math',
+    'I enjoy solving puzzles or figuring out complex systems',
+    'I prefer thinking deeply before taking action',
+    'I enjoy reading, learning, and intellectual challenges',
+    'I am comfortable with abstract concepts and theories',
+    'I like identifying patterns in complex information',
+    'I enjoy tasks requiring precision and careful reasoning',
+    'I value accuracy and thoroughness over speed'
+  ]},
+  {id:'artistic', title:'Creative & Expressive', icon:'🎨', color:'#8a3a5a',
+   desc:'You value creativity, original thinking, and self-expression.',
+   questions:[
+    'I enjoy creative work like writing, design, or media',
+    'I like environments with creative freedom and few rigid rules',
+    'I express myself better through creating than following procedures',
+    'I am drawn to communication, marketing, or public affairs roles',
+    'I enjoy brainstorming new ideas and envisioning things differently',
+    'I find strictly structured environments limiting',
+    'I like roles where I can craft messages or visual content',
+    'I am comfortable with ambiguity when it gives creative latitude',
+    'I see myself as more imaginative than methodical',
+    'I am energized when I can put my personal stamp on projects'
+  ]},
+  {id:'social', title:'People & Helping', icon:'🤝', color:'#1a7a40',
+   desc:'You are motivated by helping, teaching, and working directly with people.',
+   questions:[
+    'I enjoy helping others solve personal or professional problems',
+    'I am energized by working directly with people daily',
+    'I find deep satisfaction in teaching or mentoring others',
+    'I am a natural listener and people come to me for guidance',
+    'I care deeply about the wellbeing of people I work with',
+    'I like healthcare, education, social services, or nonprofit work',
+    'I am comfortable managing interpersonal conflict',
+    'I prefer collaborative team work over independent work',
+    'I feel fulfilled when someone I helped succeeds',
+    'I enjoy building long-term relationships built on trust'
+  ]},
+  {id:'enterprising', title:'Leadership & Business', icon:'🎯', color:'#c8960a',
+   desc:'You are driven to lead, persuade, and achieve measurable results.',
+   questions:[
+    'I enjoy leading teams and being responsible for outcomes',
+    'I am comfortable making decisions with incomplete information',
+    'I like persuading, negotiating, and influencing others',
+    'I am driven by competition and achieving measurable results',
+    'I enjoy starting new initiatives or programs from scratch',
+    'I set ambitious goals and hold myself and others accountable',
+    'I am comfortable presenting to groups publicly',
+    'I am motivated by earning potential and financial growth',
+    'I am willing to take calculated risks for bigger outcomes',
+    'I thrive in fast-paced, high-stakes environments'
+  ]},
+  {id:'conventional', title:'Organized & Systems', icon:'📋', color:'#2a7090',
+   desc:'You excel at organization, systems thinking, and detailed reliable work.',
+   questions:[
+    'I like following established procedures and systems',
+    'I prefer organized, structured work over ambiguous situations',
+    'I enjoy managing records, data, files, and documentation',
+    'I take pride in accuracy and attention to detail',
+    'I am comfortable with numbers, budgets, or financial systems',
+    'I like clearly defined expectations and responsibilities',
+    'I plan ahead rather than responding to situations ad hoc',
+    'I find satisfaction in completing checklists and deadlines',
+    'I am reliable, consistent, and methodical',
+    'I am comfortable with administrative or compliance work'
+  ]}
+];
+
+var SCALE_LABELS = ['Strongly Disagree','Disagree','Neutral','Agree','Strongly Agree'];
+var SCALE_COLORS = ['#c0392b','#e67e22','#7f8c8d','#27ae60','#1a6a3b'];
+
+var CAREERS = {
+  realistic:[
+    {t:'Mechanical Engineer',s:'$75,000–$115,000',sec:'Engineering',icon:'⚙️'},
+    {t:'Aircraft Mechanic (A&P)',s:'$62,000–$100,000',sec:'Aviation',icon:'✈️'},
+    {t:'Fleet Manager',s:'$58,000–$95,000',sec:'Operations',icon:'🚛'},
+    {t:'Construction Project Manager',s:'$72,000–$118,000',sec:'Construction',icon:'🏗️'},
+    {t:'UAS / Drone Specialist',s:'$58,000–$98,000',sec:'Technology',icon:'🛸'},
+    {t:'Electrician / Journeyman',s:'$58,000–$98,000',sec:'Trades',icon:'⚡'}
+  ],
+  investigative:[
+    {t:'Intelligence Analyst',s:'$68,000–$132,000',sec:'Defense / Intel',icon:'🔍'},
+    {t:'Cybersecurity Analyst',s:'$78,000–$148,000',sec:'Technology',icon:'🔐'},
+    {t:'Data Analyst',s:'$68,000–$115,000',sec:'Technology',icon:'📊'},
+    {t:'Software Developer',s:'$88,000–$155,000',sec:'Technology',icon:'💻'},
+    {t:'Research Analyst',s:'$62,000–$102,000',sec:'Consulting',icon:'📈'},
+    {t:'Nuclear Reactor Operator',s:'$80,000–$130,000',sec:'Energy',icon:'⚛️'}
+  ],
+  artistic:[
+    {t:'Public Affairs Specialist',s:'$58,000–$98,000',sec:'Communications',icon:'📢'},
+    {t:'UX / UI Designer',s:'$78,000–$135,000',sec:'Technology',icon:'🎨'},
+    {t:'Technical Writer',s:'$62,000–$98,000',sec:'Technology',icon:'✍️'},
+    {t:'Marketing Manager',s:'$68,000–$125,000',sec:'Business',icon:'📣'},
+    {t:'Training & Development Specialist',s:'$58,000–$95,000',sec:'HR / Education',icon:'📚'},
+    {t:'Instructional Designer',s:'$62,000–$105,000',sec:'Education',icon:'🎓'}
+  ],
+  social:[
+    {t:'Registered Nurse',s:'$68,000–$115,000',sec:'Healthcare',icon:'🏥'},
+    {t:'HR Manager',s:'$68,000–$118,000',sec:'Business',icon:'👥'},
+    {t:'Social Worker (MSW)',s:'$48,000–$85,000',sec:'Social Services',icon:'🤲'},
+    {t:'Paramedic / EMT',s:'$50,000–$95,000',sec:'Healthcare',icon:'🚑'},
+    {t:'Recruiter / Talent Acquisition',s:'$58,000–$100,000',sec:'HR',icon:'🎯'},
+    {t:'Physician Assistant',s:'$112,000–$165,000',sec:'Healthcare',icon:'⚕️'}
+  ],
+  enterprising:[
+    {t:'Operations Manager',s:'$78,000–$135,000',sec:'Business',icon:'📋'},
+    {t:'Contracting Officer (GS)',s:'$72,000–$132,000',sec:'Government',icon:'📜'},
+    {t:'Program Manager',s:'$92,000–$165,000',sec:'Defense',icon:'🏆'},
+    {t:'Security Director',s:'$92,000–$162,000',sec:'Security',icon:'🛡️'},
+    {t:'Financial Advisor',s:'$68,000–$155,000',sec:'Finance',icon:'💰'},
+    {t:'Defense Contractor PM',s:'$105,000–$175,000',sec:'Defense',icon:'⭐'}
+  ],
+  conventional:[
+    {t:'Supply Chain Manager',s:'$72,000–$118,000',sec:'Logistics',icon:'📦'},
+    {t:'Budget Analyst (GS)',s:'$68,000–$115,000',sec:'Government',icon:'💼'},
+    {t:'Information Systems Security Officer',s:'$82,000–$145,000',sec:'Cybersecurity',icon:'🔒'},
+    {t:'HR Specialist',s:'$58,000–$95,000',sec:'HR',icon:'📁'},
+    {t:'Accountant / CPA',s:'$62,000–$115,000',sec:'Finance',icon:'🧾'},
+    {t:'Federal Contracting Specialist',s:'$68,000–$125,000',sec:'Government',icon:'🏛️'}
+  ]
+};
+
+var STRENGTHS = {
+  realistic:['Mechanical aptitude','Operational discipline','Hands-on problem solving','Precision under pressure'],
+  investigative:['Analytical reasoning','Research depth','Systems thinking','Data-driven decision making'],
+  artistic:['Creative communication','Strategic messaging','Visual thinking','Adaptability'],
+  social:['Interpersonal leadership','Empathy at scale','Team cohesion','Training and mentoring'],
+  enterprising:['Mission-driven leadership','High-stakes decision making','Organizational influence','Results accountability'],
+  conventional:['Process mastery','Logistics precision','Administrative excellence','Compliance and accuracy']
+};
+
+var TYPE_NAMES = {
+  'realistic-investigative':'The Technical Operator',
+  'realistic-conventional':'The Systems Technician',
+  'realistic-enterprising':'The Field Commander',
+  'investigative-realistic':'The Engineering Analyst',
+  'investigative-conventional':'The Precision Specialist',
+  'investigative-artistic':'The Strategic Thinker',
+  'artistic-investigative':'The Creative Analyst',
+  'artistic-social':'The Communicator',
+  'artistic-enterprising':'The Visionary Leader',
+  'social-enterprising':'The Mission Leader',
+  'social-conventional':'The Team Builder',
+  'social-realistic':'The Hands-On Helper',
+  'enterprising-social':'The Commander',
+  'enterprising-investigative':'The Strategic Leader',
+  'enterprising-conventional':'The Operational Director',
+  'conventional-enterprising':'The Program Manager',
+  'conventional-investigative':'The Data Strategist',
+  'conventional-realistic':'The Operations Specialist'
+};
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+var curDim = 0;
+var answers = {};  // {dimId: {qIdx: score}}
+var totalQ = DIMS.reduce(function(a,d){return a+d.questions.length;},0);
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateProgress() {
+  var answered = Object.values(answers).reduce(function(a,dim){
+    return a + Object.keys(dim).length;
+  }, 0);
+  var pct = Math.round((answered / totalQ) * 100);
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('topbar-step').textContent = 'Section ' + (curDim+1) + ' of ' + DIMS.length;
+}
+
+function startAssessment() {
+  showScreen('scr-assess');
+  renderDim();
+}
+
+function renderDim() {
+  var dim = DIMS[curDim];
+  var dimAnswers = answers[dim.id] || {};
+
+  // Header
+  var iconEl = document.getElementById('dim-icon');
+  iconEl.textContent = dim.icon;
+  iconEl.style.background = dim.color + '25';
+  document.getElementById('dim-title').textContent = dim.title;
+  document.getElementById('dim-sub').textContent = dim.desc;
+  var answered = Object.keys(dimAnswers).length;
+  document.getElementById('dim-prog').textContent = 'Section ' + (curDim+1) + ' of ' + DIMS.length + ' · ' + dim.questions.length + ' questions';
+
+  // Questions
+  var list = document.getElementById('qlist');
+  list.innerHTML = '';
+  dim.questions.forEach(function(q, qi) {
+    var card = document.createElement('div');
+    card.className = 'q-card' + (dimAnswers[qi] ? ' answered' : '');
+    card.id = 'qcard-' + qi;
+
+    var btns = SCALE_LABELS.map(function(label, vi) {
+      var val = vi + 1;
+      var sel = dimAnswers[qi] === val;
+      return '<button class="scale-btn' + (sel ? ' sel' : '') + '" ' +
+        'style="' + (sel ? 'background:' + SCALE_COLORS[vi] + ';border-color:' + SCALE_COLORS[vi] + ';color:#fff;' : '') + '"' +
+        ' onclick="answer(' + qi + ',' + val + ',' + vi + ')" title="' + label + '">' + val + '</button>';
+    }).join('');
+
+    card.innerHTML =
+      '<div class="q-num">Question ' + (qi+1) + ' of ' + dim.questions.length + '</div>' +
+      '<div class="q-text">' + q + '</div>' +
+      '<div class="scale-row">' + btns + '</div>' +
+      '<div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>';
+    list.appendChild(card);
+  });
+
+  // Nav buttons
+  document.getElementById('btn-back').style.display = curDim === 0 ? 'none' : 'flex';
+  updateNextBtn();
+  updateProgress();
+  updateRemaining();
+}
+
+function answer(qi, val, colorIdx) {
+  var dim = DIMS[curDim];
+  if (!answers[dim.id]) answers[dim.id] = {};
+  answers[dim.id][qi] = val;
+
+  // Update this question's card
+  var card = document.getElementById('qcard-' + qi);
+  if (card) {
+    card.className = 'q-card answered';
+    card.querySelectorAll('.scale-btn').forEach(function(btn, i) {
+      var isSelected = (i === colorIdx);
+      btn.className = 'scale-btn' + (isSelected ? ' sel' : '');
+      btn.style.cssText = isSelected
+        ? 'background:' + SCALE_COLORS[colorIdx] + ';border-color:' + SCALE_COLORS[colorIdx] + ';color:#fff;'
+        : '';
+    });
+  }
+  updateNextBtn();
+  updateRemaining();
+  updateProgress();
+}
+
+function updateNextBtn() {
+  var dim = DIMS[curDim];
+  var dimAnswers = answers[dim.id] || {};
+  var allAnswered = Object.keys(dimAnswers).length === dim.questions.length;
+  var btn = document.getElementById('btn-next');
+  btn.disabled = !allAnswered;
+  btn.textContent = curDim === DIMS.length - 1
+    ? 'Get My Results →'
+    : 'Next Section →';
+}
+
+function updateRemaining() {
+  var dim = DIMS[curDim];
+  var dimAnswers = answers[dim.id] || {};
+  var remaining = dim.questions.length - Object.keys(dimAnswers).length;
+  var el = document.getElementById('q-remaining');
+  el.textContent = remaining > 0 ? remaining + ' question' + (remaining===1?'':'s') + ' remaining' : '✓ All answered';
+  el.style.color = remaining === 0 ? '#4ade80' : 'rgba(192,216,240,.4)';
+}
+
+function nextDim() {
+  if (curDim < DIMS.length - 1) {
+    curDim++;
+    renderDim();
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else {
+    showResults();
+  }
+}
+
+function prevDim() {
+  if (curDim > 0) {
+    curDim--;
+    renderDim();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+// ─── RESULTS ────────────────────────────────────────────────────────────────
+function showResults() {
+  showScreen('scr-results');
+  document.getElementById('prog').style.width = '100%';
+  document.getElementById('topbar-step').textContent = 'Your Results';
+
+  // Calculate scores
+  var scores = {};
+  DIMS.forEach(function(dim) {
+    var dimAnswers = answers[dim.id] || {};
+    var total = Object.values(dimAnswers).reduce(function(a,v){return a+v;},0);
+    var max = dim.questions.length * 5;
+    scores[dim.id] = Math.round((total / max) * 100);
+  });
+
+  // Sort dimensions
+  var sorted = Object.entries(scores).sort(function(a,b){return b[1]-a[1];});
+  var top1 = sorted[0][0];
+  var top2 = sorted[1][0];
+
+  // Get type name
+  var typeKey = top1 + '-' + top2;
+  var typeName = TYPE_NAMES[typeKey] || TYPE_NAMES[top2 + '-' + top1] || 'The Versatile Veteran';
+  var dim1 = DIMS.find(function(d){return d.id===top1;});
+  var dim2 = DIMS.find(function(d){return d.id===top2;});
+
+  // Get careers
+  var seen = {};
+  var allCareers = [];
+  sorted.forEach(function(pair, idx) {
+    var weight = sorted.length - idx;
+    (CAREERS[pair[0]] || []).forEach(function(c) {
+      if (!seen[c.t]) {
+        seen[c.t] = true;
+        allCareers.push({
+          title: c.t, salary: c.s, sector: c.sec, icon: c.icon,
+          score: scores[pair[0]] * weight
+        });
+      }
+    });
+  });
+  allCareers.sort(function(a,b){return b.score-a.score;});
+  var topCareers = allCareers.slice(0, 12);
+
+  // Get strengths
+  var topStrengths = (STRENGTHS[top1] || []).concat(STRENGTHS[top2] || []).slice(0, 6);
+
+  // Build HTML
+  var dimBarsHtml = sorted.map(function(pair) {
+    var d = DIMS.find(function(x){return x.id===pair[0];});
+    return '<div class="dim-bar-row fade-in">' +
+      '<div class="dim-bar-label"><span class="dim-bar-icon">' + d.icon + '</span>' + d.title + '</div>' +
+      '<div class="dim-bar-track"><div class="dim-bar-fill" style="width:0%;background:' + d.color + '" data-pct="' + pair[1] + '"></div></div>' +
+      '<div class="dim-bar-pct">' + pair[1] + '%</div>' +
+      '</div>';
+  }).join('');
+
+  var careerCardsHtml = topCareers.map(function(c, i) {
+    var pct = Math.round(60 + (c.score / (topCareers[0].score || 1)) * 40);
+    var fillColor = i < 3 ? '#f0c040' : i < 6 ? '#4ade80' : '#60a5fa';
+    return '<div class="career-card fade-in' + (i < 3 ? ' top' : '') + '">' +
+      '<div class="career-rank">' + (i < 3 ? '⭐ Top Match' : '#' + (i+1)) + '</div>' +
+      '<div class="career-title">' + (c.icon || '') + ' ' + c.title + '</div>' +
+      '<div class="career-salary">' + c.salary + '</div>' +
+      '<div class="career-sector">' + c.sector + '</div>' +
+      '<div class="career-fit">' +
+        '<div class="career-fit-bar"><div class="career-fit-fill" style="width:' + pct + '%;background:' + fillColor + '"></div></div>' +
+        '<span class="career-fit-label">' + pct + '% fit</span>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+
+  var strengthsHtml = topStrengths.map(function(s, i) {
+    var icons = ['🎯','💪','🔍','⚡','🏆','🛡️'];
+    return '<div class="strength-card fade-in">' +
+      '<div class="strength-icon">' + icons[i] + '</div>' +
+      '<div class="strength-title">' + s + '</div>' +
+      '<div class="strength-desc">A proven strength from your military service that transfers directly into high-value civilian roles.</div>' +
+      '</div>';
+  }).join('');
+
+  var stepsHtml = [
+    {title:'Build your targeted resume', desc:'Use the AI Resume Builder to translate your MOS experience into civilian language, optimized for your top career matches.'},
+    {title:'Translate your MOS code', desc:'Get a complete breakdown of how your specific military job code maps to civilian titles, certifications, and salary ranges.'},
+    {title:'Run a job match analysis', desc:'Paste a job posting into the Job Match Analyzer and get an honest score on how competitive you are — plus a gap-closing plan.'},
+    {title:'Optimize your LinkedIn profile', desc:'The LinkedIn Builder rewrites your profile in civilian language, targeting your top career dimension for maximum recruiter visibility.'},
+    {title:'Practice your interview answers', desc:'The Interview Simulator gives you tailored behavioral interview questions for your top career matches — with veteran-specific coaching.'}
+  ].map(function(s, i) {
+    return '<div class="step-item fade-in">' +
+      '<div class="step-num">' + (i+1) + '</div>' +
+      '<div><div class="step-title">' + s.title + '</div><div class="step-desc">' + s.desc + '</div></div>' +
+      '</div>';
+  }).join('');
+
+  document.getElementById('results-content').innerHTML =
+    '<div class="results-hero fade-in">' +
+      '<div class="results-badge">✓ Full Assessment Complete · ' + Object.keys(answers).length*10 + ' Responses Analyzed</div>' +
+      '<h2 class="results-h">Your Career Profile</h2>' +
+      '<p class="results-sub">Based on your responses across all 6 RIASEC career dimensions</p>' +
+      '<div class="profile-type">' + dim1.icon + ' ' + dim2.icon + ' ' + typeName + '</div>' +
+    '</div>' +
+
+    '<div class="type-card fade-in">' +
+      '<div class="type-header">' +
+        '<div class="type-icon-big">' + dim1.icon + '</div>' +
+        '<div>' +
+          '<div class="type-name">' + typeName + '</div>' +
+          '<div class="type-combo">' + dim1.title + ' + ' + dim2.title + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="type-desc">Your profile combines a strong ' + dim1.title.toLowerCase() + ' orientation with ' + dim2.title.toLowerCase() + ' tendencies. Veterans with this profile consistently succeed in roles that reward ' + (dim1.desc || '').toLowerCase() + ' This combination is particularly valuable in defense contracting, federal agencies, and private sector operations.</div>' +
+      '<div class="type-traits">' +
+        ['Mission-focused','Reliable under pressure','Adaptable','High accountability','Team-oriented','Self-disciplined'].map(function(t){return '<span class="type-trait">'+t+'</span>';}).join('') +
+      '</div>' +
+    '</div>' +
+
+    '<div class="section-label">Your 6 Career Dimensions</div>' +
+    '<div class="dim-bars">' + dimBarsHtml + '</div>' +
+
+    '<div class="section-label">Your Top 12 Career Matches</div>' +
+    '<div class="career-grid">' + careerCardsHtml + '</div>' +
+
+    '<div class="section-label">Your Key Transferable Strengths</div>' +
+    '<div class="strengths-grid">' + strengthsHtml + '</div>' +
+
+    '<div class="section-label">Your Next 5 Steps</div>' +
+    '<div class="steps-list">' + stepsHtml + '</div>' +
+
+    '<div class="results-cta fade-in">' +
+      '<div class="cta-title">Put Your Results to Work</div>' +
+      '<p class="cta-sub">Your subscription includes 7 more AI tools built to turn this assessment into a civilian career. Start with the resume builder — paste your MOS and it does the rest.</p>' +
+      '<div class="cta-btns">' +
+        '<a href="https://veterancareerpath.com/app.html" class="cta-primary">Open AI Career Builder →</a>' +
+        '<button class="cta-secondary print-btn" onclick="window.print()">🖨 Print / Save PDF</button>' +
+        '<button class="cta-secondary" onclick="retake()">Retake Assessment</button>' +
+      '</div>' +
+    '</div>';
+
+  // Animate bars in
+  setTimeout(function() {
+    document.querySelectorAll('.dim-bar-fill').forEach(function(bar) {
+      bar.style.width = bar.getAttribute('data-pct') + '%';
+    });
+    // Stagger fade-ins
+    document.querySelectorAll('.fade-in').forEach(function(el, i) {
+      setTimeout(function() {
+        el.classList.add('visible');
+      }, i * 60);
+    });
+  }, 100);
+}
+
+function retake() {
+  curDim = 0;
+  answers = {};
+  document.getElementById('prog').style.width = '0%';
+  showScreen('scr-intro');
+}
+</script>
+</body>
+</html>

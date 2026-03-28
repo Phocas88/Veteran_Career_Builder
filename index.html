@@ -908,33 +908,78 @@ footer {
 <body>
 
 <!-- NAV -->
-<nav style="background:#0a1628;padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.15)">
-  <a href="https://veterancareerpath.com" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
-    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" style="width:36px;height:36px;object-fit:contain" alt="Veteran Career Path">
-    <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;color:#f0c040">Veteran Career Path</span>
+<style id="vcp-nav-css">
+.vcp-nav{background:#0a1628;padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000;border-bottom:1px solid rgba(201,168,76,.15);}
+.vcp-logo{display:flex;align-items:center;gap:.7rem;text-decoration:none;flex-shrink:0;}
+.vcp-logo img{width:34px;height:34px;object-fit:contain;}
+.vcp-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.1em;color:#f0c040;}
+.vcp-links{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.vcp-links a{color:#c0d8f0;text-decoration:none;font-size:.8rem;font-weight:500;white-space:nowrap;}
+.vcp-links a:hover{color:#fff;}
+.vcp-cta{background:linear-gradient(135deg,#c8960a,#e8aa10)!important;color:#0a1628!important;font-weight:700!important;padding:.38rem .9rem;border-radius:6px;}
+.vcp-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:.5rem;flex-shrink:0;}
+.vcp-ham span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.25s;}
+.vcp-ham.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.vcp-ham.open span:nth-child(2){opacity:0;}
+.vcp-ham.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.vcp-mob{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;z-index:999;flex-direction:column;border-top:1px solid rgba(201,168,76,.12);max-height:84vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.vcp-mob.open{display:flex;}
+.vcp-mob a{color:rgba(255,255,255,.82);text-decoration:none;font-size:.88rem;font-weight:500;padding:.72rem 6%;border-bottom:1px solid rgba(255,255,255,.05);}
+.vcp-mob a:hover{background:rgba(255,255,255,.04);color:#fff;}
+.vcp-mob .vcp-mob-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e!important;font-weight:700!important;text-align:center;margin:.65rem 1.25rem;border-radius:8px;padding:.7rem!important;border:none!important;}
+.vcp-mob .vcp-mob-sect{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,192,64,.7);padding:.55rem 6% .2rem;pointer-events:none;border-bottom:none!important;}
+@media(max-width:860px){.vcp-ham{display:flex;}.vcp-links{display:none!important;}}
+</style>
+<nav class="vcp-nav">
+  <a href="https://veterancareerpath.com" class="vcp-logo">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path" width="34" height="34">
+    <span>Veteran Career Path</span>
   </a>
-  <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap" class="nav-links">
-    <a href="https://veterancareerpath.com/veteran-career-test.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Career Test</a>
-    <a href="https://veterancareerpath.com/mos-career-translator.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">MOS Translator</a>
-    <a href="https://veterancareerpath.com/training.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Training</a>
-    <a href="https://veterancareerpath.com/army-mos-careers.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">MOS Guides</a>
-    <a href="https://veterancareerpath.com/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.82rem;padding:.45rem 1rem;border-radius:6px;text-decoration:none">Launch App</a>
+  <div class="vcp-links">
+    <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a>
+    <a href="https://veterancareerpath.com/veteran-career-test.html">Career Test</a>
+    <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Guides</a>
+    <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Disability</a>
+    <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html">PCS Calculator</a>
+    <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">GI Bill</a>
+    <a href="https://veterancareerpath.com/app.html" class="vcp-cta">AI Tools — $15/mo</a>
   </div>
-  <button class="hamburger" id="hamburger-btn" aria-label="Menu"><span></span><span></span><span></span></button>
+  <button class="vcp-ham" id="vcp-ham" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
-<div class="mobile-menu" id="mobile-menu">
-  <a href="https://veterancareerpath.com/">Home</a>
-  <a href="https://veterancareerpath.com/veteran-career-test.html">Career Test</a>
-  <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
-  <a href="https://veterancareerpath.com/training.html">Training Library</a>
-  <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Career Guides</a>
-  <a href="https://veterancareerpath.com/veteran-action-verbs.html">Action Verbs</a>
-  <a href="https://veterancareerpath.com/veteran-hiring-companies.html">Top 50 Companies</a>
-  <a href="https://veterancareerpath.com/security-clearance-salary.html">Clearance Salary</a>
-  <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">GI Bill Guide</a>
-  <a href="https://veterancareerpath.com/app.html" class="mobile-cta">Launch App</a>
+<div class="vcp-mob" id="vcp-mob">
+  <span class="vcp-mob-sect">AI Career Tools</span>
+  <a href="https://veterancareerpath.com/app.html" class="vcp-mob-cta">🚀 AI Career Builder — $15/mo</a>
+  <a href="https://veterancareerpath.com/veteran-career-test.html">🎯 Free Career Assessment</a>
+  <a href="https://veterancareerpath.com/mos-career-translator.html">🔄 MOS Translator</a>
+  <span class="vcp-mob-sect">Transition Resources</span>
+  <a href="https://veterancareerpath.com/military-transition-guide.html">📋 Military Transition Guide</a>
+  <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">🏥 VA Disability Rating Schedule</a>
+  <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html">📦 PCS / ETS Move Calculator</a>
+  <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">🎓 GI Bill School Comparison</a>
+  <a href="https://veterancareerpath.com/skillbridge-program-guide (1).html">💼 SkillBridge Program Guide</a>
+  <a href="https://veterancareerpath.com/security-clearance-salary.html">🔐 Security Clearance Salary</a>
+  <a href="https://veterancareerpath.com/veteran-hiring-companies.html">🏢 Top 50 Companies Hiring Vets</a>
+  <span class="vcp-mob-sect">MOS / Rate / AFSC Guides</span>
+  <a href="https://veterancareerpath.com/army-mos-careers.html">⭐ Army MOS Careers</a>
+  <a href="https://veterancareerpath.com/navy-rate-careers.html">⚓ Navy Rate Careers</a>
+  <a href="https://veterancareerpath.com/marine-corps-mos-careers.html">🦅 Marine Corps MOS</a>
+  <a href="https://veterancareerpath.com/air-force-afsc-careers.html">✈️ Air Force AFSC</a>
+  <a href="https://veterancareerpath.com/coast-guard-rating-careers.html">🔱 Coast Guard Ratings</a>
+  <a href="https://veterancareerpath.com/space-force-afsc-careers.html">🛸 Space Force AFSC</a>
+  <span class="vcp-mob-sect">Reference Guides</span>
+  <a href="https://veterancareerpath.com/military-civilian-resume.html">📄 Military Resume Guide</a>
+  <a href="https://veterancareerpath.com/military-transition-guide.html">🗺️ Full Transition Guide</a>
+  <a href="https://veterancareerpath.com/veteran-action-verbs.html">✍️ Action Verbs List</a>
+  <a href="https://veterancareerpath.com/">🏠 Back to Home</a>
 </div>
-
+<script>
+(function(){
+  var b=document.getElementById('vcp-ham'),m=document.getElementById('vcp-mob');
+  if(!b||!m)return;
+  b.addEventListener('click',function(e){e.stopPropagation();b.classList.toggle('open');m.classList.toggle('open');});
+  document.addEventListener('click',function(e){if(!b.contains(e.target)&&!m.contains(e.target)){b.classList.remove('open');m.classList.remove('open');}});
+})();
+</script>
 <!-- HERO -->
 <section class="hero">
   <div class="hero-left">
@@ -1171,9 +1216,9 @@ footer {
   <!-- ══ ALL RESOURCES SECTION ══════════════════════════════════════════ -->
   <section style="padding:5rem 6%;background:#f4f6fb">
     <div style="max-width:1100px;margin:0 auto">
-      <div class="section-label" style="text-align:center">600+ Pages of Veteran Resources</div>
-      <h2 class="section-title" style="text-align:center">Everything a Veteran Needs<br>in One Place</h2>
-      <p class="section-body" style="text-align:center;max-width:600px;margin:0 auto 3rem">Free tools, guides, and resources. AI-powered subscriber tools. Benefits information, disability resources, career pathways, and mental health support.</p>
+      <div class="section-label" style="text-align:center;color:#c8960a">600+ Pages of Veteran Resources</div>
+      <h2 class="section-title" style="text-align:center;color:#0a1628">Everything a Veteran Needs<br>in One Place</h2>
+      <p class="section-body" style="text-align:center;max-width:600px;margin:0 auto 3rem;color:#3a4a5a;font-weight:400">Free tools, guides, and resources. AI-powered subscriber tools. Benefits information, disability resources, career pathways, and mental health support.</p>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:3rem">
 
@@ -1261,14 +1306,14 @@ footer {
   </section>
 
 <section class="pricing-section" id="pricing">
-  <div class="section-label">Simple pricing</div>
-  <h2 class="section-title">Try it risk-free</h2>
-  <p class="section-body" style="margin:0 auto;">Start your trial for less than a cup of coffee. Cancel any time: no questions asked.</p>
+  <div class="section-label">Pricing</div>
+  <h2 class="section-title">$15/month.<br>All 8 AI Tools.</h2>
+  <p class="section-body" style="margin:0 auto;">No trials. No tiers. Cancel anytime.</p>
 
   <div class="pricing-card">
     <div class="price-trial"><sup>$</sup>15</div>
-    <div class="price-label">Monthly Subscription</div>
-    <div class="price-then">then $115 / month: cancel anytime</div>
+    <div class="price-label">per month</div>
+    <div class="price-then" style="color:#c8960a;font-weight:600;font-size:.88rem">All 8 AI tools · Full access · Cancel anytime</div>
 
     <ul class="pricing-features">
       <li>AI Career Matching</li>
@@ -1276,15 +1321,15 @@ footer {
       <li>AI Resume Builder</li>
       <li>5 Resume Templates</li>
       <li>Cover Letter Generator</li>
-      <li>Resume Score & Review</li>
+      <li>Resume Score &amp; Review</li>
       <li>Interview Prep Generator</li>
-      <li>Transition Timeline</li>
       <li>Job Application Tracker</li>
-      <li>Veteran Resources Hub</li>
+      <li>ETS Transition Timeline</li>
+      <li>Full 60-Question Career Assessment</li>
     </ul>
 
-    <a href="https://veterancareerpath.com/app.html" class="btn-pricing">Start Monthly Subscription for $15 →</a>
-    <p class="pricing-fine">No commitment · Cancel anytime · Full access from day one</p>
+    <a href="https://veterancareerpath.com/app.html" class="btn-pricing">Subscribe — $15/month →</a>
+    <p class="pricing-fine">No commitment · Cancel anytime · Full access immediately</p>
   </div>
 </section>
 
@@ -1304,7 +1349,7 @@ footer {
 <section class="cta-section">
   <h2 class="cta-title">Your service has value.<br><span>Make sure they see it.</span></h2>
   <p class="cta-sub">You've already done the hard part. Now let's make sure the civilian world knows it.</p>
-  <a href="https://veterancareerpath.com/app.html" class="btn-hero" style="font-size:1.1rem;padding:1rem 2.5rem;">Get Started: $15 Trial →</a>
+  <a href="https://veterancareerpath.com/app.html" class="btn-hero" style="font-size:1.1rem;padding:1rem 2.5rem;">Subscribe — $15/month →</a>
   <p class="cta-disclaimer">Not affiliated with the U.S. Department of Defense or the Department of Veterans Affairs.</p>
 </section>
 
@@ -1584,8 +1629,8 @@ function showResults() {
     '<div class="lock-badge">' +
     '<div style="font-size:1.5rem;margin-bottom:.4rem">🔒</div>' +
     '<p>Get your full AI-personalized report: 15 career matches with salary ranges, recommended degrees, certifications, and a complete personality breakdown</p>' +
-    '<a href="https://veterancareerpath.com/app.html">Unlock Full Results, $15 Trial</a>' +
-    '<div style="font-size:.72rem;color:#80a8d0;margin-top:.5rem">then $115/month, cancel anytime</div>' +
+    '<a href="https://veterancareerpath.com/app.html">Subscribe — $15/month</a>' +
+    '<div style="font-size:.72rem;color:#80a8d0;margin-top:.5rem">$15/month · cancel anytime</div>' +
     '</div></div>';
 }
 
@@ -1622,44 +1667,48 @@ renderQuestion();
     </div>
   </div>
 </section>
-<footer style="background:#0d1f3c;padding:2.5rem 6%">
-  <div style="max-width:1000px;margin:0 auto">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1.5rem;margin-bottom:2rem">
+<footer style="background:#0d1f3c;padding:2.5rem 6%;margin-top:2rem;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.5rem;margin-bottom:2rem;">
       <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem">Resources</div>
-        <a href="https://veterancareerpath.com/veteran-career-test.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Career Assessment</a>
-        <a href="https://veterancareerpath.com/mos-career-translator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">MOS Translator</a>
-        <a href="https://veterancareerpath.com/military-civilian-resume.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Resume Guide</a>
-        <a href="https://veterancareerpath.com/military-transition-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Transition Guide</a>
-        <a href="https://veterancareerpath.com/training.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Training Library</a>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">AI Tools</div>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Career Builder App</a>
+        <a href="https://veterancareerpath.com/veteran-career-test.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Free Career Assessment</a>
+        <a href="https://veterancareerpath.com/mos-career-translator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">MOS Translator</a>
+        <a href="https://veterancareerpath.com/military-civilian-resume.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Resume Guide</a>
       </div>
       <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem">Quick Reference</div>
-        <a href="https://veterancareerpath.com/veteran-action-verbs.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Action Verbs Guide</a>
-        <a href="https://veterancareerpath.com/veteran-hiring-companies.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Top 50 Companies</a>
-        <a href="https://veterancareerpath.com/military-civilian-salary.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Salary Comparison</a>
-        <a href="https://veterancareerpath.com/security-clearance-salary.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Clearance Salary</a>
-        <a href="https://veterancareerpath.com/gi-bill-school-comparison.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">GI Bill Schools</a>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">Resources</div>
+        <a href="https://veterancareerpath.com/military-transition-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Transition Guide</a>
+        <a href="https://veterancareerpath.com/va-disability-rating-schedule.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">VA Disability Schedule</a>
+        <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">PCS / ETS Calculator</a>
+        <a href="https://veterancareerpath.com/gi-bill-school-comparison.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">GI Bill Guide</a>
+        <a href="https://veterancareerpath.com/security-clearance-salary.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Clearance Salary</a>
+        <a href="https://veterancareerpath.com/veteran-hiring-companies.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Top 50 Employers</a>
+        <a href="https://veterancareerpath.com/skillbridge-program-guide (1).html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">SkillBridge Guide</a>
+        <a href="https://veterancareerpath.com/veteran-action-verbs.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Action Verbs</a>
       </div>
       <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem">MOS Guides</div>
-        <a href="https://veterancareerpath.com/army-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Army MOS Careers</a>
-        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Marine Corps MOS</a>
-        <a href="https://veterancareerpath.com/navy-rate-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Navy Rate Careers</a>
-        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Air Force AFSC</a>
-        <a href="https://veterancareerpath.com/coast-guard-rating-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Coast Guard</a>
-        <a href="https://veterancareerpath.com/space-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Space Force AFSC</a>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">MOS Guides</div>
+        <a href="https://veterancareerpath.com/army-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Army MOS Careers</a>
+        <a href="https://veterancareerpath.com/navy-rate-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Navy Rate Careers</a>
+        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Marine Corps MOS</a>
+        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Air Force AFSC</a>
+        <a href="https://veterancareerpath.com/coast-guard-rating-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Coast Guard Ratings</a>
+        <a href="https://veterancareerpath.com/space-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Space Force AFSC</a>
       </div>
       <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem">Company</div>
-        <a href="https://veterancareerpath.com" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Home</a>
-        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Launch App</a>
-        <a href="https://veterancareerpath.com/contact.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Contact</a>
-        <a href="https://veterancareerpath.com/privacy-policy.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Privacy Policy</a>
-        <a href="https://veterancareerpath.com/terms-of-service.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem">Terms of Service</a>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">Company</div>
+        <a href="https://veterancareerpath.com" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Home</a>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Launch App</a>
+        <a href="https://veterancareerpath.com/contact.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Contact</a>
+        <a href="https://veterancareerpath.com/privacy-policy.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Privacy Policy</a>
+        <a href="https://veterancareerpath.com/terms-of-service.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Terms of Service</a>
       </div>
     </div>
-    <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:1.25rem;text-align:center;font-size:.73rem;color:rgba(255,255,255,.25)">Veteran Career Path &bull; Built by a veteran, for veterans &bull; &copy; 2026 &bull; Not affiliated with any U.S. government agency</div>
+    <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:1.25rem;text-align:center;font-size:.73rem;color:rgba(255,255,255,.25);">
+      Veteran Career Path &bull; Built by a veteran, for veterans &bull; &copy; 2026 &bull; Not affiliated with any U.S. government agency
+    </div>
   </div>
 </footer>
 

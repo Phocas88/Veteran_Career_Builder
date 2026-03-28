@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
-<title>Terms of Service — Veteran Career Path</title>
+<title>Terms of Service - Veteran Career Path</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Source+Serif+4:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
@@ -94,16 +94,48 @@ footer {
 .footer-links a:hover { color: var(--cream); }
 .footer-copy { font-size: .72rem; color: rgba(106,130,160,.5); }
 </style>
+
+<style id="mobile-nav-css">
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;box-shadow:0 8px 24px rgba(0,0,0,.4);max-height:85vh;overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;font-weight:500;padding:.75rem 6%;border-bottom:1px solid rgba(255,255,255,.05)}
+.mobile-menu .mobile-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e !important;font-weight:700;text-align:center;margin:.75rem 1.5rem;border-radius:8px;padding:.75rem !important;border:none !important}
+@media(max-width:768px){.hamburger{display:flex}.nav-links{display:none !important}}
+</style>
 </head>
 <body>
 
-<nav>
-  <a href="https://veterancareerpath.com" class="nav-logo">
-    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="" style="height:30px;width:30px;object-fit:contain;">
-    Veteran <span>Career Path</span>
+<nav style="background:#0a1628;padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.15)">
+  <a href="https://veterancareerpath.com" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" style="width:36px;height:36px;object-fit:contain" alt="Veteran Career Path">
+    <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;color:#f0c040">Veteran Career Path</span>
   </a>
-  <a href="https://veterancareerpath.com" class="nav-back">← Back to Home</a>
+  <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap" class="nav-links">
+    <a href="https://veterancareerpath.com/veteran-career-test.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Career Test</a>
+    <a href="https://veterancareerpath.com/mos-career-translator.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">MOS Translator</a>
+    <a href="https://veterancareerpath.com/training.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">Training</a>
+    <a href="https://veterancareerpath.com/army-mos-careers.html" style="color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500">MOS Guides</a>
+    <a href="https://veterancareerpath.com/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.82rem;padding:.45rem 1rem;border-radius:6px;text-decoration:none">Launch App</a>
+  </div>
+  <button class="hamburger" id="hamburger-btn" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="https://veterancareerpath.com/">Home</a>
+  <a href="https://veterancareerpath.com/veteran-career-test.html">Career Test</a>
+  <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
+  <a href="https://veterancareerpath.com/training.html">Training Library</a>
+  <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Career Guides</a>
+  <a href="https://veterancareerpath.com/veteran-action-verbs.html">Action Verbs</a>
+  <a href="https://veterancareerpath.com/veteran-hiring-companies.html">Top 50 Companies</a>
+  <a href="https://veterancareerpath.com/security-clearance-salary.html">Clearance Salary</a>
+  <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">GI Bill Guide</a>
+  <a href="https://veterancareerpath.com/app.html" class="mobile-cta">Launch App</a>
+</div>
 
 <div class="page-header">
   <div class="label">Legal</div>
@@ -141,11 +173,11 @@ footer {
 
   <h2>4. Subscription, Trial, and Billing</h2>
 
-  <h3>Free Trial</h3>
-  <p>We offer a 3-day trial period for $4.99. During this trial, you have full access to all paid features of the platform.</p>
+  <h3>Monthly Subscription</h3>
+  <p>We offer a monthly subscription period for $15. During this trial, you have full access to all paid features of the platform.</p>
 
   <h3>Subscription</h3>
-  <p>After the trial period ends, your subscription automatically renews at $14.99 per month unless you cancel before the trial expires. By starting a trial, you authorize us to charge your payment method the trial fee immediately, and then the monthly subscription fee on a recurring basis.</p>
+  <p>After the subscription period ends, your subscription automatically renews at $115 per month unless you cancel before the subscription cancels. By starting a trial, you authorize us to charge your payment method the subscription fee immediately, and then the monthly subscription fee on a recurring basis.</p>
 
   <h3>Cancellation</h3>
   <p>You may cancel your subscription at any time through your account settings or by contacting us at <a href="https://veterancareerpath.com/contact.html">Contact Form →</a>. Cancellation takes effect at the end of the current billing period. You will retain access to paid features until the period ends. We do not provide prorated refunds for partial months.</p>
@@ -190,7 +222,7 @@ footer {
 
   <h2>8. AI-Generated Content</h2>
   <div class="warning-box">
-    <p><strong>Important:</strong> AI-generated content — including career matches, resume content, cover letters, interview questions, and transition timelines — is produced automatically and may contain errors, inaccuracies, or outdated information. You are solely responsible for reviewing, editing, and verifying all AI-generated content before using it in any professional, legal, or official context.</p>
+    <p><strong>Important:</strong> AI-generated content - including career matches, resume content, cover letters, interview questions, and transition timelines - is produced automatically and may contain errors, inaccuracies, or outdated information. You are solely responsible for reviewing, editing, and verifying all AI-generated content before using it in any professional, legal, or official context.</p>
   </div>
   <p>Veteran Career Path does not guarantee that AI-generated content will result in job interviews, offers, or employment. Career outcomes depend on many factors outside our control.</p>
   <p>AI responses are generated based on the information you provide. The more accurate and complete your profile, the better the results. Garbage in, garbage out applies here as it does everywhere.</p>
@@ -248,3 +280,4 @@ footer {
 
 <footer>
   <div style="font-family:'Bebas Neue',sans-serif;font-size:
+<script>(function(){var btn=document.getElementById("hamburger-btn");var menu=document.getElementById("mobile-menu");if(!btn||!menu)return;btn.addEventListener("click",function(){btn.classList.toggle("open");menu.classList.toggle("open");});menu.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){btn.classList.remove("open");menu.classList.remove("open");});});document.addEventListener("click",function(e){if(!btn.contains(e.target)&&!menu.contains(e.target)){btn.classList.remove("open");menu.classList.remove("open");}});})();</script>

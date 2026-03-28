@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veteran Career Newsletter Generator - Monthly Email Builder | Veteran Career Path</title>
+<meta name="description" content="Generate monthly veteran career newsletters and weekly job alert emails. VA news, career tips, and resource highlights formatted for email marketing platforms.">
+<meta name="keywords" content="veteran career newsletter generator, VA news digest, veteran job alert email, military career newsletter template">
+<link rel="canonical" href="https://veterancareerpath.com/tools-newsletter.html">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,sans-serif;background:#0a1628;color:#fff;min-height:100vh;line-height:1.6}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mmenu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;max-height:85vh;overflow-y:auto}
+.mmenu.open{display:flex}
+.mmenu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;padding:.75rem 6%;border-bottom:1px solid rgba(255,255,255,.05)}
+.mcta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e !important;font-weight:700;text-align:center;margin:.75rem 1.5rem;border-radius:8px;padding:.75rem !important}
+@media(max-width:768px){.hamburger{display:flex}.nav-links{display:none !important}}
+.tool-wrap{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+.tool-hero{text-align:center;padding:2.5rem 1.5rem 1.5rem;background:linear-gradient(160deg,#0a1628,#1a3a6b 60%,#1a5c9a);position:relative;overflow:hidden}
+.tool-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,.1),transparent 70%)}
+.tool-hero-inner{position:relative;max-width:700px;margin:0 auto}
+.tbadge{display:inline-block;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:.25rem .85rem;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#c9a84c;margin-bottom:.75rem}
+.tool-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.08em;color:#fff;margin-bottom:.5rem;line-height:1.1}
+.tool-hero h1 span{color:#f0c040}
+.tool-hero p{font-size:.9rem;color:rgba(255,255,255,.6);max-width:550px;margin:0 auto;font-weight:300;line-height:1.7}
+.tool-tabs{display:flex;gap:.5rem;background:rgba(255,255,255,.04);border-radius:10px;padding:.4rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.tool-tab{padding:.5rem 1rem;border-radius:7px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.5);transition:all .15s;font-family:inherit}
+.tool-tab.active{background:rgba(255,255,255,.1);color:#fff}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:.35rem;letter-spacing:.05em;text-transform:uppercase}
+input[type=text],input[type=date],select,textarea{width:100%;padding:.65rem .9rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:.88rem;font-family:inherit;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:rgba(201,168,76,.5)}
+textarea{resize:vertical;min-height:100px}
+select option{background:#1a2a4a;color:#fff}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.5rem;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.btn-gold{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,150,10,.3)}
+.btn-blue{background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff}
+.btn-blue:hover{transform:translateY(-1px)}
+.btn-green{background:linear-gradient(135deg,#1a7a40,#22a855);color:#fff}
+.btn-green:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none !important}
+.result-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.25rem 1.5rem;margin-top:1.25rem;display:none}
+.result-box.show{display:block}
+.result-box h3{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.75rem}
+.result-text{font-size:.88rem;line-height:1.8;color:rgba(255,255,255,.85);white-space:pre-wrap}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.card-tool{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.25rem;margin-bottom:.75rem}
+.paywall{background:linear-gradient(135deg,rgba(200,150,10,.1),rgba(200,150,10,.05));border:1px solid rgba(200,150,10,.3);border-radius:12px;padding:1.5rem;text-align:center;margin-top:1.25rem}
+.paywall h3{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem}
+.paywall p{font-size:.85rem;color:rgba(255,255,255,.6);margin-bottom:1rem;font-weight:300}
+.tip{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:.75rem 1rem;font-size:.82rem;color:rgba(255,255,255,.7);margin-bottom:1rem;line-height:1.6}
+.tip strong{color:#f0c040}
+@media(max-width:600px){.tool-wrap{padding:1.25rem 1rem}}
+</style>
+</head>
+<body>
+<style id="vcp-nav-css">
+.vcp-nav{background:#0a1628;padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000;border-bottom:1px solid rgba(201,168,76,.15);}
+.vcp-logo{display:flex;align-items:center;gap:.7rem;text-decoration:none;flex-shrink:0;}
+.vcp-logo img{width:34px;height:34px;object-fit:contain;}
+.vcp-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.1em;color:#f0c040;}
+.vcp-links{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.vcp-links a{color:#c0d8f0;text-decoration:none;font-size:.8rem;font-weight:500;white-space:nowrap;}
+.vcp-links a:hover{color:#fff;}
+.vcp-cta{background:linear-gradient(135deg,#c8960a,#e8aa10)!important;color:#0a1628!important;font-weight:700!important;padding:.38rem .9rem;border-radius:6px;}
+.vcp-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:.5rem;flex-shrink:0;}
+.vcp-ham span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.25s;}
+.vcp-ham.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.vcp-ham.open span:nth-child(2){opacity:0;}
+.vcp-ham.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.vcp-mob{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;z-index:999;flex-direction:column;border-top:1px solid rgba(201,168,76,.12);max-height:84vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.vcp-mob.open{display:flex;}
+.vcp-mob a{color:rgba(255,255,255,.82);text-decoration:none;font-size:.88rem;font-weight:500;padding:.72rem 6%;border-bottom:1px solid rgba(255,255,255,.05);}
+.vcp-mob a:hover{background:rgba(255,255,255,.04);color:#fff;}
+.vcp-mob .vcp-mob-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e!important;font-weight:700!important;text-align:center;margin:.65rem 1.25rem;border-radius:8px;padding:.7rem!important;border:none!important;}
+.vcp-mob .vcp-mob-sect{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,192,64,.7);padding:.55rem 6% .2rem;pointer-events:none;border-bottom:none!important;}
+@media(max-width:860px){.vcp-ham{display:flex;}.vcp-links{display:none!important;}}
+</style>
+<nav class="vcp-nav">
+  <a href="https://veterancareerpath.com" class="vcp-logo">
+    <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path" width="34" height="34">
+    <span>Veteran Career Path</span>
+  </a>
+  <div class="vcp-links">
+    <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a>
+    <a href="https://veterancareerpath.com/veteran-career-test.html">Career Test</a>
+    <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Guides</a>
+    <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Disability</a>
+    <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html">PCS Calculator</a>
+    <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">GI Bill</a>
+    <a href="https://veterancareerpath.com/app.html" class="vcp-cta">AI Tools — $15/mo</a>
+  </div>
+  <button class="vcp-ham" id="vcp-ham" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="vcp-mob" id="vcp-mob">
+  <span class="vcp-mob-sect">AI Career Tools</span>
+  <a href="https://veterancareerpath.com/app.html" class="vcp-mob-cta">🚀 AI Career Builder — $15/mo</a>
+  <a href="https://veterancareerpath.com/veteran-career-test.html">🎯 Free Career Assessment</a>
+  <a href="https://veterancareerpath.com/mos-career-translator.html">🔄 MOS Translator</a>
+  <span class="vcp-mob-sect">Transition Resources</span>
+  <a href="https://veterancareerpath.com/military-transition-guide.html">📋 Military Transition Guide</a>
+  <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">🏥 VA Disability Rating Schedule</a>
+  <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html">📦 PCS / ETS Move Calculator</a>
+  <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">🎓 GI Bill School Comparison</a>
+  <a href="https://veterancareerpath.com/skillbridge-program-guide (1).html">💼 SkillBridge Program Guide</a>
+  <a href="https://veterancareerpath.com/security-clearance-salary.html">🔐 Security Clearance Salary</a>
+  <a href="https://veterancareerpath.com/veteran-hiring-companies.html">🏢 Top 50 Companies Hiring Vets</a>
+  <span class="vcp-mob-sect">MOS / Rate / AFSC Guides</span>
+  <a href="https://veterancareerpath.com/army-mos-careers.html">⭐ Army MOS Careers</a>
+  <a href="https://veterancareerpath.com/navy-rate-careers.html">⚓ Navy Rate Careers</a>
+  <a href="https://veterancareerpath.com/marine-corps-mos-careers.html">🦅 Marine Corps MOS</a>
+  <a href="https://veterancareerpath.com/air-force-afsc-careers.html">✈️ Air Force AFSC</a>
+  <a href="https://veterancareerpath.com/coast-guard-rating-careers.html">🔱 Coast Guard Ratings</a>
+  <a href="https://veterancareerpath.com/space-force-afsc-careers.html">🛸 Space Force AFSC</a>
+  <span class="vcp-mob-sect">Reference Guides</span>
+  <a href="https://veterancareerpath.com/military-civilian-resume.html">📄 Military Resume Guide</a>
+  <a href="https://veterancareerpath.com/military-transition-guide.html">🗺️ Full Transition Guide</a>
+  <a href="https://veterancareerpath.com/veteran-action-verbs.html">✍️ Action Verbs List</a>
+  <a href="https://veterancareerpath.com/">🏠 Back to Home</a>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('vcp-ham'),m=document.getElementById('vcp-mob');
+  if(!b||!m)return;
+  b.addEventListener('click',function(e){e.stopPropagation();b.classList.toggle('open');m.classList.toggle('open');});
+  document.addEventListener('click',function(e){if(!b.contains(e.target)&&!m.contains(e.target)){b.classList.remove('open');m.classList.remove('open');}});
+})();
+</script>
+
+<section class="tool-hero">
+  <div class="tool-hero-inner">
+    <div class="tbadge">&#128240; Admin Tool</div>
+    <h1>Newsletter <span>Generator</span></h1>
+    <p>Generate monthly veteran career newsletters and weekly job alert emails. AI-written content formatted for Mailchimp, ConvertKit, or any email platform.</p>
+  </div>
+</section>
+<div class="tool-wrap">
+
+<div class="tip"><strong>Admin Tool - Newsletter Generator.</strong> Generate a monthly veteran career newsletter with current VA news, job market updates, and resource highlights. Copy the output and send via your email platform (Mailchimp, ConvertKit, etc.).</div>
+
+<div class="card-tool">
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:#f0c040;margin-bottom:1rem">Newsletter Parameters</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+    <div class="field"><label>Month and Year</label>
+      <input type="text" id="nl-month" placeholder="e.g. January 2026">
+    </div>
+    <div class="field"><label>Newsletter Focus</label>
+      <select id="nl-focus">
+        <option>General veteran career transition</option>
+        <option>VA benefits and disability</option>
+        <option>Education and GI Bill</option>
+        <option>Federal employment and Schedule A</option>
+        <option>Cybersecurity and tech careers</option>
+        <option>Healthcare careers for veterans</option>
+        <option>Disabled veteran resources</option>
+        <option>SkillBridge and transition programs</option>
+      </select>
+    </div>
+  </div>
+  <div class="field"><label>Featured Tool or Resource This Month (optional)</label>
+    <input type="text" id="nl-feature" placeholder="e.g. Interview Simulator, VA Benefits Checklist, Job Match Analyzer">
+  </div>
+  <div class="field"><label>Any Specific Topics to Include</label>
+    <textarea id="nl-topics" style="min-height:80px" placeholder="e.g. Recent VA policy changes, upcoming hiring events, certification deadlines..."></textarea>
+  </div>
+  <div class="field"><label>Newsletter Tone</label>
+    <select id="nl-tone">
+      <option>Professional and informative</option>
+      <option>Conversational and encouraging</option>
+      <option>Direct and action-focused (military style)</option>
+    </select>
+  </div>
+  <button class="btn btn-gold" id="nl-btn" onclick="runNewsletter()">&#128240; Generate Newsletter</button>
+</div>
+
+<div class="result-box" id="nl-result">
+  <h3>Newsletter Draft</h3>
+  <div class="result-text"></div>
+  <div style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap">
+    <button class="btn btn-blue" onclick="copyNL()" style="font-size:.78rem;padding:.45rem .9rem">Copy All Text</button>
+    <button class="btn btn-blue" onclick="window.print()" style="font-size:.78rem;padding:.45rem .9rem">Print / Save PDF</button>
+  </div>
+</div>
+
+<div style="margin-top:2rem;padding:1.25rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px">
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.65rem">Weekly Job Alert Email Template</div>
+  <div style="font-size:.82rem;color:rgba(255,255,255,.6);margin-bottom:.75rem;font-weight:300">Generate a job alert email based on MOS categories for your subscriber list.</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+    <div class="field"><label>MOS Category / Career Field</label>
+      <input type="text" id="ja-field" placeholder="e.g. Cybersecurity, Logistics, Healthcare">
+    </div>
+    <div class="field"><label>Geographic Focus</label>
+      <input type="text" id="ja-geo" placeholder="e.g. National, Texas, Remote-only">
+    </div>
+  </div>
+  <button class="btn btn-gold" id="ja-btn" onclick="runJobAlert()" style="background:linear-gradient(135deg,#1a3a6b,#1a5c9a)">Generate Job Alert Email</button>
+  <div class="result-box" id="ja-result" style="margin-top:1rem">
+    <h3>Job Alert Email</h3>
+    <div class="result-text"></div>
+  </div>
+</div>
+</div>
+<footer style="background:#0d1f3c;padding:2.5rem 6%;margin-top:2rem;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.5rem;margin-bottom:2rem;">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">AI Tools</div>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Career Builder App</a>
+        <a href="https://veterancareerpath.com/veteran-career-test.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Free Career Assessment</a>
+        <a href="https://veterancareerpath.com/mos-career-translator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">MOS Translator</a>
+        <a href="https://veterancareerpath.com/military-civilian-resume.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Resume Guide</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">Resources</div>
+        <a href="https://veterancareerpath.com/military-transition-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Transition Guide</a>
+        <a href="https://veterancareerpath.com/va-disability-rating-schedule.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">VA Disability Schedule</a>
+        <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">PCS / ETS Calculator</a>
+        <a href="https://veterancareerpath.com/gi-bill-school-comparison.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">GI Bill Guide</a>
+        <a href="https://veterancareerpath.com/security-clearance-salary.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Clearance Salary</a>
+        <a href="https://veterancareerpath.com/veteran-hiring-companies.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Top 50 Employers</a>
+        <a href="https://veterancareerpath.com/skillbridge-program-guide (1).html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">SkillBridge Guide</a>
+        <a href="https://veterancareerpath.com/veteran-action-verbs.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Action Verbs</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">MOS Guides</div>
+        <a href="https://veterancareerpath.com/army-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Army MOS Careers</a>
+        <a href="https://veterancareerpath.com/navy-rate-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Navy Rate Careers</a>
+        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Marine Corps MOS</a>
+        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Air Force AFSC</a>
+        <a href="https://veterancareerpath.com/coast-guard-rating-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Coast Guard Ratings</a>
+        <a href="https://veterancareerpath.com/space-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Space Force AFSC</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">Company</div>
+        <a href="https://veterancareerpath.com" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Home</a>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Launch App</a>
+        <a href="https://veterancareerpath.com/contact.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Contact</a>
+        <a href="https://veterancareerpath.com/privacy-policy.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Privacy Policy</a>
+        <a href="https://veterancareerpath.com/terms-of-service.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Terms of Service</a>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:1.25rem;text-align:center;font-size:.73rem;color:rgba(255,255,255,.25);">
+      Veteran Career Path &bull; Built by a veteran, for veterans &bull; &copy; 2026 &bull; Not affiliated with any U.S. government agency
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  var b=document.getElementById("hbtn"),m=document.getElementById("mmenu");
+  if(!b||!m)return;
+  b.addEventListener("click",function(){b.classList.toggle("open");m.classList.toggle("open");});
+  m.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){b.classList.remove("open");m.classList.remove("open");});});
+  document.addEventListener("click",function(e){if(!b.contains(e.target)&&!m.contains(e.target)){b.classList.remove("open");m.classList.remove("open");}});
+})();
+</script>
+<script>
+const PROXY = "https://vcp-proxy.vercel.app/api/claude";
+
+async function askClaude(prompt, system, btnId, resultId, resultTitle) {
+  const btn = document.getElementById(btnId);
+  const box = document.getElementById(resultId);
+  if(!btn || !box) return;
+  
+  const origHTML = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating...';
+  
+  try {
+    const res = await fetch(PROXY, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 2000,
+        system: system || "You are a veteran career coach. Be direct, specific, and actionable.",
+        messages: [{role: "user", content: prompt}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || "Error generating response. Please try again.";
+    
+    box.querySelector('.result-text').textContent = text;
+    if(resultTitle) box.querySelector('h3').textContent = resultTitle;
+    box.classList.add('show');
+    box.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+  } catch(err) {
+    box.querySelector('.result-text').textContent = "Connection error. Please check your internet and try again.";
+    box.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = origHTML;
+  }
+}
+
+function val(id) { return (document.getElementById(id)||{}).value || ''; }
+function requireFields(ids) {
+  for(var id of ids) {
+    if(!val(id).trim()) {
+      document.getElementById(id).focus();
+      document.getElementById(id).style.borderColor = '#e74c3c';
+      setTimeout(function(){document.getElementById(id).style.borderColor = '';}, 2000);
+      return false;
+    }
+  }
+  return true;
+}
+</script>
+<script>
+async function runNewsletter() {
+  const prompt = `Generate a professional veteran career newsletter for ${val('nl-month') || 'this month'}.
+
+FOCUS: ${val('nl-focus')}
+FEATURED TOOL: ${val('nl-feature') || 'Veteran Career Path tools'}
+ADDITIONAL TOPICS: ${val('nl-topics') || 'General career transition news'}
+TONE: ${val('nl-tone')}
+
+Generate a complete newsletter with:
+
+SUBJECT LINE: [Compelling subject line - under 60 characters]
+PREVIEW TEXT: [40-character preview text]
+
+---
+
+[NEWSLETTER HEADER]
+Veterans Career Digest | ${val('nl-month') || 'Monthly Issue'}
+
+[OPENING - 2-3 sentences, warm and direct]
+
+SECTION 1: THIS MONTH IN VETERAN CAREER NEWS
+[3-4 relevant news items or policy updates relevant to veteran career transitions. Include context on why each matters. Format as brief news items with headlines.]
+
+SECTION 2: FEATURED RESOURCE
+[Spotlight on the featured tool or resource. 3-4 sentences on what it is, who it's for, and a call to action.]
+
+SECTION 3: CAREER TIP OF THE MONTH
+[One actionable, specific career tip relevant to the focus area. 100-150 words. Make it immediately useful.]
+
+SECTION 4: UPCOMING DEADLINES AND DATES
+[3-4 relevant deadlines - VA claim seasons, GI Bill windows, federal hiring dates, etc.]
+
+SECTION 5: QUICK LINKS
+- [Link description 1]: veterancareerpath.com/[page]
+- [Link description 2]: veterancareerpath.com/[page]
+- [Link description 3]: veterancareerpath.com/[page]
+
+[CLOSING - 2 sentences, call to action]
+
+[UNSUBSCRIBE FOOTER PLACEHOLDER]`;
+
+  await askClaude(prompt,
+    "You are a veteran career newsletter editor. Write engaging, informative content that veterans will actually read and find useful. Be specific, avoid generic advice, and make every section actionable. Use a tone appropriate to the selection made.",
+    'nl-btn', 'nl-result', 'Newsletter Draft');
+}
+
+async function runJobAlert() {
+  if(!requireFields(['ja-field'])) return;
+  
+  const prompt = `Generate a weekly job alert email for veterans interested in ${val('ja-field')} careers in ${val('ja-geo') || 'the United States'}.
+
+Create a complete email:
+
+SUBJECT: [Weekly Job Alert - specific and compelling]
+PREVIEW TEXT: [Short preview under 40 chars]
+
+---
+
+[HEADER]
+Weekly Job Alert: ${val('ja-field')} Opportunities for Veterans
+
+[INTRO - 2 sentences on the current ${val('ja-field')} job market for veterans]
+
+TOP COMPANIES HIRING NOW:
+[6-8 companies currently known to be actively hiring in this field, with:
+- Company name
+- Role types available  
+- Why it's good for veterans
+- Application link placeholder]
+
+YOUR NEXT STEP:
+[One specific action item]
+
+TOOLS TO HELP:
+- Job Match Analyzer: veterancareerpath.com/tools-job-match.html
+- ${val('ja-field')} Cert Roadmap: veterancareerpath.com/veteran-certification-roadmap.html
+- Interview Simulator: veterancareerpath.com/tools-interview-simulator.html
+
+[FOOTER PLACEHOLDER]`;
+
+  await askClaude(prompt,
+    "You are a veteran career recruiter writing targeted job alert emails. Be specific about companies, roles, and why they're good for veterans. Make the email feel like it comes from someone who knows the veteran job market.",
+    'ja-btn', 'ja-result', 'Job Alert Email');
+}
+
+function copyNL() {
+  var text = document.querySelector('#nl-result .result-text').textContent;
+  navigator.clipboard.writeText(text).then(function(){ alert('Copied!'); });
+}
+</script>
+</body>
+</html>

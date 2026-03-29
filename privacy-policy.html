@@ -114,37 +114,37 @@ footer {
 
 <style id="vcp-nav-css">
 *{box-sizing:border-box;}
-.vcp-nav{background:#0a1628;padding:0 4%;display:flex;justify-content:space-between;align-items:stretch;position:sticky;top:0;z-index:2000;border-bottom:1px solid rgba(240,192,64,.12);height:56px;}
+html,body{overflow-x:hidden;max-width:100%;}
+.vcp-nav{background:#0a1628;padding:0 4%;display:flex;justify-content:space-between;align-items:stretch;position:sticky;top:0;z-index:2000;border-bottom:1px solid rgba(240,192,64,.12);height:56px;width:100%;}
 .vcp-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0;}
 .vcp-logo img{width:30px;height:30px;object-fit:contain;}
 .vcp-logo-text{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;}
-.vcp-desk{display:flex;align-items:stretch;gap:0;flex:1;padding-left:.75rem;min-width:0;}
-.vcp-desk>a,.vcp-more-btn{display:flex;align-items:center;padding:0 .65rem;color:#c0d8f0;text-decoration:none;font-size:.75rem;font-weight:500;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;background:none;border-top:none;border-left:none;border-right:none;cursor:pointer;font-family:'Inter',sans-serif;}
+.vcp-desk{display:flex;align-items:stretch;gap:0;flex:1;padding-left:.75rem;min-width:0;overflow:hidden;}
+.vcp-desk>a,.vcp-more-btn{display:flex;align-items:center;padding:0 .65rem;color:#c0d8f0;text-decoration:none;font-size:.75rem;font-weight:500;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;background:none;border-top:none;border-left:none;border-right:none;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0;}
 .vcp-desk>a:hover,.vcp-more-btn:hover{color:#fff;border-bottom-color:rgba(240,192,64,.4);}
 .vcp-more-btn.active{color:#fff;border-bottom-color:#f0c040;}
-
-/* SEARCH */
-.vcp-search-wrap{display:flex;align-items:center;margin:auto .5rem auto auto;position:relative;}
-.vcp-search-input{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:20px;padding:.3rem .85rem .3rem 2rem;color:#fff;font-size:.78rem;font-family:'Inter',sans-serif;width:160px;transition:width .25s,border-color .2s;outline:none;}
-.vcp-search-input:focus{width:220px;border-color:rgba(240,192,64,.4);background:rgba(255,255,255,.1);}
-.vcp-search-input::placeholder{color:rgba(255,255,255,.3);}
-.vcp-search-icon{position:absolute;left:.65rem;color:rgba(255,255,255,.35);font-size:.78rem;pointer-events:none;}
-.vcp-search-results{position:absolute;top:calc(100% + 8px);right:0;background:#0d1a2d;border:1px solid rgba(240,192,64,.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.5);width:300px;max-height:380px;overflow-y:auto;z-index:3000;display:none;}
-.vcp-search-results.open{display:block;}
-.vcp-sr-item{display:block;padding:.55rem .9rem;color:rgba(192,216,240,.8);text-decoration:none;font-size:.8rem;border-bottom:1px solid rgba(255,255,255,.05);transition:background .1s;}
-.vcp-sr-item:hover{background:rgba(255,255,255,.06);color:#fff;}
-.vcp-sr-cat{font-size:.62rem;color:rgba(240,192,64,.5);text-transform:uppercase;letter-spacing:.1em;display:block;}
-.vcp-sr-none{padding:.75rem .9rem;color:rgba(192,216,240,.4);font-size:.82rem;}
-
 .vcp-cta-link{background:linear-gradient(135deg,#c8960a,#e8aa10)!important;color:#0a1628!important;font-weight:700!important;border-radius:6px;margin:auto 0 auto .5rem;padding:.32rem .8rem!important;height:auto!important;border-bottom:none!important;white-space:nowrap;flex-shrink:0;font-size:.73rem!important;}
 .vcp-cta-link:hover{opacity:.9;border-bottom:none!important;}
+.vcp-search-wrap{display:flex;align-items:center;margin:auto .5rem auto auto;position:relative;flex-shrink:0;}
+.vcp-search-input{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:20px;padding:.3rem .85rem .3rem 2rem;color:#fff;font-size:.78rem;font-family:'Inter',sans-serif;width:155px;transition:width .25s,border-color .2s;outline:none;}
+.vcp-search-input:focus{width:210px;border-color:rgba(240,192,64,.4);background:rgba(255,255,255,.1);}
+.vcp-search-input::placeholder{color:rgba(255,255,255,.3);}
+.vcp-search-icon{position:absolute;left:.65rem;color:rgba(255,255,255,.35);font-size:.78rem;pointer-events:none;}
+.vcp-search-results{position:fixed;top:56px;right:1rem;background:#0d1a2d;border:1px solid rgba(240,192,64,.2);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.6);width:340px;max-width:calc(100vw - 2rem);max-height:420px;overflow-y:auto;z-index:3000;display:none;}
+.vcp-search-results.open{display:block;}
+.vcp-sr-header{padding:.5rem .9rem;font-size:.65rem;color:rgba(240,192,64,.5);font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.07);}
+.vcp-sr-item{display:block;padding:.6rem .9rem;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;}
+.vcp-sr-item:hover{background:rgba(255,255,255,.06);}
+.vcp-sr-title{font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.15rem;}
+.vcp-sr-snippet{font-size:.73rem;color:rgba(192,216,240,.5);line-height:1.4;}
+.vcp-sr-snippet em{color:rgba(240,192,64,.8);font-style:normal;font-weight:600;}
+.vcp-sr-none{padding:.9rem;color:rgba(192,216,240,.4);font-size:.82rem;text-align:center;}
+.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.4);font-size:.82rem;text-align:center;}
 .vcp-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;flex-shrink:0;align-self:center;margin-left:.35rem;}
 .vcp-ham span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.25s;}
 .vcp-ham.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
 .vcp-ham.open span:nth-child(2){opacity:0;}
 .vcp-ham.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
-
-/* DROPDOWN */
 .vcp-drop{display:none;position:fixed;top:56px;left:0;right:0;background:#0a1628;border-bottom:2px solid rgba(240,192,64,.15);box-shadow:0 8px 32px rgba(0,0,0,.6);z-index:1999;max-height:80vh;overflow-y:auto;}
 .vcp-drop.open{display:grid;grid-template-columns:1fr 1fr 1fr;}
 .vcp-drop-col{padding:1.25rem 1rem 1.5rem;border-right:1px solid rgba(255,255,255,.05);}
@@ -153,14 +153,21 @@ footer {
 .vcp-drop-grp-title{font-size:.62rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:rgba(240,192,64,.55);margin-bottom:.45rem;padding-bottom:.35rem;border-bottom:1px solid rgba(255,255,255,.07);}
 .vcp-drop-col a{display:block;color:rgba(192,216,240,.7);text-decoration:none;font-size:.78rem;font-weight:500;padding:.28rem 0;transition:color .1s;}
 .vcp-drop-col a:hover{color:#fff;}
-
-/* MOBILE */
-.vcp-mob{display:none;position:fixed;top:56px;left:0;right:0;background:#08111e;z-index:1999;flex-direction:column;border-top:1px solid rgba(240,192,64,.1);max-height:82vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.vcp-mob{display:none;position:fixed;top:56px;left:0;right:0;background:#08111e;z-index:1999;flex-direction:column;border-top:1px solid rgba(240,192,64,.1);max-height:82vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);width:100%;}
 .vcp-mob.open{display:flex;}
-.vcp-mob a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.87rem;font-weight:500;padding:.65rem 5%;border-bottom:1px solid rgba(255,255,255,.04);}
+.vcp-mob a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.87rem;font-weight:500;padding:.65rem 5%;border-bottom:1px solid rgba(255,255,255,.04);display:block;}
 .vcp-mob a:hover{background:rgba(255,255,255,.04);color:#fff;}
 .vcp-mob-cta{background:linear-gradient(135deg,#c8960a,#e8aa10)!important;color:#08111e!important;font-weight:700!important;text-align:center;margin:.6rem 1.25rem;border-radius:8px;padding:.65rem!important;border:none!important;}
 .vcp-mob-sect{font-size:.62rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:rgba(240,192,64,.55);padding:.55rem 5% .2rem;border-bottom:none!important;pointer-events:none;}
+.vcp-mob-search{padding:.65rem 5%;border-bottom:1px solid rgba(255,255,255,.07);}
+.vcp-mob-search input{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:20px;padding:.45rem 1rem;color:#fff;font-size:.88rem;font-family:'Inter',sans-serif;outline:none;}
+.vcp-mob-search input::placeholder{color:rgba(255,255,255,.3);}
+.vcp-mob-sr{padding:0 5% .5rem;display:none;}
+.vcp-mob-sr.open{display:block;}
+.vcp-mob-sr a{display:block;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;}
+.vcp-mob-sr-title{font-size:.85rem;font-weight:600;color:#fff;}
+.vcp-mob-sr-snip{font-size:.75rem;color:rgba(192,216,240,.5);margin-top:.1rem;line-height:1.4;}
+.vcp-mob-sr-snip em{color:rgba(240,192,64,.8);font-style:normal;}
 @media(max-width:960px){.vcp-desk{display:none!important;}.vcp-search-wrap{display:none!important;}.vcp-ham{display:flex;}}
 </style>
 <nav class="vcp-nav">
@@ -179,8 +186,8 @@ footer {
   </div>
   <div class="vcp-search-wrap" id="vcp-search-wrap">
     <span class="vcp-search-icon">&#128269;</span>
-    <input class="vcp-search-input" id="vcp-search-input" type="text" placeholder="Search pages..." autocomplete="off">
-    <div class="vcp-search-results" id="vcp-search-results"></div>
+    <input class="vcp-search-input" id="vcp-si" type="text" placeholder="Search site content..." autocomplete="off" aria-label="Search">
+    <div class="vcp-search-results" id="vcp-sr"></div>
   </div>
   <button class="vcp-ham" id="vcp-ham" aria-label="Open menu"><span></span><span></span><span></span></button>
 </nav>
@@ -308,6 +315,10 @@ footer {
   </div>
 </div>
 <div class="vcp-mob" id="vcp-mob">
+<div class="vcp-mob-search">
+  <input type="text" id="vcp-mob-si" placeholder="Search site content..." autocomplete="off">
+</div>
+<div class="vcp-mob-sr" id="vcp-mob-sr"></div>
 <span class="vcp-mob-sect">AI Career Tools</span>
 <a href="https://veterancareerpath.com/app.html" class="vcp-mob-cta">AI Career Builder</a>
 <a href="https://veterancareerpath.com/free-assessment.html">Free Career Assessment</a>
@@ -419,11 +430,12 @@ footer {
   var drop=document.getElementById('vcp-drop');
   var ham=document.getElementById('vcp-ham');
   var mob=document.getElementById('vcp-mob');
-  var si=document.getElementById('vcp-search-input');
-  var sr=document.getElementById('vcp-search-results');
+  var si=document.getElementById('vcp-si');
+  var sr=document.getElementById('vcp-sr');
+  var msi=document.getElementById('vcp-mob-si');
+  var msr=document.getElementById('vcp-mob-sr');
 
-  var PAGES=[{"url": "https://veterancareerpath.com/app.html", "label": "AI Career Builder", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/free-assessment.html", "label": "Free Career Assessment", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/career-assessment-full.html", "label": "Full Assessment (Subscribers)", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/mos-career-translator.html", "label": "MOS Translator", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/tools-job-match.html", "label": "Job Match Analyzer", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/tools-federal-resume.html", "label": "Federal Resume Builder", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/tools-interview-simulator.html", "label": "Interview Simulator", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/tools-linkedin-builder.html", "label": "LinkedIn Builder", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/tools-salary-negotiator.html", "label": "Salary Negotiator", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/tools-cert-advisor.html", "label": "Certification Advisor", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/tools-job-tracker.html", "label": "Job Application Tracker", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/training.html", "label": "Training Library", "cat": "AI Career Tools"}, {"url": "https://veterancareerpath.com/military-transition-guide.html", "label": "Military Transition Guide", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/tap-transition-guide.html", "label": "TAP Program Guide", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/dd214-decoder.html", "label": "DD-214 Decoder", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/military-civilian-resume.html", "label": "Military Resume Guide", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/veteran-resume-examples.html", "label": "Resume Examples", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/veteran-cover-letter-examples.html", "label": "Cover Letter Examples", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/veteran-action-verbs.html", "label": "Action Verbs List", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/military-acronyms-civilian-guide.html", "label": "Military Acronyms Guide", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/veteran-interview-questions.html", "label": "Interview Questions", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/veteran-salary-negotiation-scripts.html", "label": "Salary Negotiation", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/veteran-linkedin-guide.html", "label": "LinkedIn for Veterans", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/veteran-networking-guide.html", "label": "Networking Guide", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/veteran-job-fair-guide.html", "label": "Job Fair Guide", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/should-i-reenlist-calculator.html", "label": "Reenlist Calculator", "cat": "Transition Guides"}, {"url": "https://veterancareerpath.com/veteran-career-test.html", "label": "Career Assessment", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/veteran-cybersecurity-careers.html", "label": "Cybersecurity Careers", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/veteran-healthcare-careers.html", "label": "Healthcare Careers", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/veteran-law-enforcement-careers.html", "label": "Law Enforcement Careers", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/veteran-government-contractor-careers.html", "label": "Gov Contractor Careers", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/veteran-project-management-careers.html", "label": "Project Management", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/veteran-teaching-careers.html", "label": "Teaching Careers", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/veteran-trucking-careers.html", "label": "Trucking / CDL Careers", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/veteran-real-estate-careers.html", "label": "Real Estate Careers", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/veteran-entrepreneurship.html", "label": "Entrepreneurship", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/remote-careers-disabled-veterans.html", "label": "Remote Careers", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/clearance-jobs-guide.html", "label": "Cleared Jobs Guide", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/military-civilian-salary.html", "label": "Salary Comparison", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/veteran-success-stories.html", "label": "Success Stories", "cat": "Career Pathways"}, {"url": "https://veterancareerpath.com/army-mos-careers.html", "label": "Army MOS Careers", "cat": "MOS / Rate / AFSC"}, {"url": "https://veterancareerpath.com/navy-rate-careers.html", "label": "Navy Rate Careers", "cat": "MOS / Rate / AFSC"}, {"url": "https://veterancareerpath.com/marine-corps-mos-careers.html", "label": "Marine Corps MOS", "cat": "MOS / Rate / AFSC"}, {"url": "https://veterancareerpath.com/air-force-afsc-careers.html", "label": "Air Force AFSC", "cat": "MOS / Rate / AFSC"}, {"url": "https://veterancareerpath.com/coast-guard-rating-careers.html", "label": "Coast Guard Ratings", "cat": "MOS / Rate / AFSC"}, {"url": "https://veterancareerpath.com/space-force-afsc-careers.html", "label": "Space Force AFSC", "cat": "MOS / Rate / AFSC"}, {"url": "https://veterancareerpath.com/usajobs-guide.html", "label": "USAJobs Guide", "cat": "Federal & Government Jobs"}, {"url": "https://veterancareerpath.com/veterans-preference-guide.html", "label": "Veterans' Preference", "cat": "Federal & Government Jobs"}, {"url": "https://veterancareerpath.com/schedule-a-federal-hiring.html", "label": "Schedule A Hiring", "cat": "Federal & Government Jobs"}, {"url": "https://veterancareerpath.com/federal-gs-grade-estimator.html", "label": "GS Grade Estimator", "cat": "Federal & Government Jobs"}, {"url": "https://veterancareerpath.com/military-to-federal-pay-chart.html", "label": "Military to GS Pay Chart", "cat": "Federal & Government Jobs"}, {"url": "https://veterancareerpath.com/userra-employment-rights.html", "label": "USERRA Rights", "cat": "Federal & Government Jobs"}, {"url": "https://veterancareerpath.com/veteran-ada-accommodations.html", "label": "ADA Accommodations", "cat": "Federal & Government Jobs"}, {"url": "https://veterancareerpath.com/veteran-hiring-companies.html", "label": "Top 50 Employers", "cat": "Federal & Government Jobs"}, {"url": "https://veterancareerpath.com/top-companies-hiring-veterans-2025.html", "label": "Top 100 Companies", "cat": "Federal & Government Jobs"}, {"url": "https://veterancareerpath.com/va-disability-rating-schedule.html", "label": "VA Disability Rating Schedule", "cat": "VA Benefits & Disability"}, {"url": "https://veterancareerpath.com/va-disability-rating-guide.html", "label": "VA Disability Rating Guide", "cat": "VA Benefits & Disability"}, {"url": "https://veterancareerpath.com/va-disability-benefits-calculator.html", "label": "Disability Calculator", "cat": "VA Benefits & Disability"}, {"url": "https://veterancareerpath.com/va-disability-claim-checklist.html", "label": "Claim Checklist", "cat": "VA Benefits & Disability"}, {"url": "https://veterancareerpath.com/va-benefits-checklist.html", "label": "VA Benefits Checklist", "cat": "VA Benefits & Disability"}, {"url": "https://veterancareerpath.com/va-home-loan-guide.html", "label": "VA Home Loan", "cat": "VA Benefits & Disability"}, {"url": "https://veterancareerpath.com/champva-guide.html", "label": "CHAMPVA Guide", "cat": "VA Benefits & Disability"}, {"url": "https://veterancareerpath.com/tricare-after-separation.html", "label": "TRICARE After Separation", "cat": "VA Benefits & Disability"}, {"url": "https://veterancareerpath.com/vre-chapter31-guide.html", "label": "VR&E Chapter 31", "cat": "VA Benefits & Disability"}, {"url": "https://veterancareerpath.com/gi-bill-school-comparison.html", "label": "GI Bill School Comparison", "cat": "Education & GI Bill"}, {"url": "https://veterancareerpath.com/gi-bill-bah-maximizer.html", "label": "GI Bill BAH Maximizer", "cat": "Education & GI Bill"}, {"url": "https://veterancareerpath.com/gi-bill-vs-vre-calculator.html", "label": "GI Bill vs VR&E", "cat": "Education & GI Bill"}, {"url": "https://veterancareerpath.com/veteran-certification-roadmap.html", "label": "Certification Roadmap", "cat": "Education & GI Bill"}, {"url": "https://veterancareerpath.com/skillbridge-program-guide.html", "label": "SkillBridge Guide", "cat": "Education & GI Bill"}, {"url": "https://veterancareerpath.com/security-clearance-salary.html", "label": "Clearance Salary Guide", "cat": "Education & GI Bill"}, {"url": "https://veterancareerpath.com/military-retirement-pay-calculator.html", "label": "Retirement Pay Calculator", "cat": "Pay, Retirement & Finance"}, {"url": "https://veterancareerpath.com/blended-retirement-system-guide.html", "label": "Blended Retirement (BRS)", "cat": "Pay, Retirement & Finance"}, {"url": "https://veterancareerpath.com/tsp-guide-for-veterans.html", "label": "TSP Guide", "cat": "Pay, Retirement & Finance"}, {"url": "https://veterancareerpath.com/sgli-vgli-guide.html", "label": "SGLI to VGLI", "cat": "Pay, Retirement & Finance"}, {"url": "https://veterancareerpath.com/survivor-benefit-plan-guide.html", "label": "Survivor Benefit Plan", "cat": "Pay, Retirement & Finance"}, {"url": "https://veterancareerpath.com/pcs-ets-move-calculator.html", "label": "PCS/ETS Calculator", "cat": "Pay, Retirement & Finance"}, {"url": "https://veterancareerpath.com/scra-guide-for-veterans.html", "label": "SCRA Guide", "cat": "Legal & Rights"}, {"url": "https://veterancareerpath.com/character-discharge-upgrade.html", "label": "Discharge Upgrade", "cat": "Legal & Rights"}, {"url": "https://veterancareerpath.com/military-divorce-guide.html", "label": "Military Divorce Guide", "cat": "Legal & Rights"}, {"url": "https://veterancareerpath.com/military-recall-policies.html", "label": "Military Recall Policies", "cat": "Legal & Rights"}, {"url": "https://veterancareerpath.com/military-spouse-resources.html", "label": "Military Spouse Resources", "cat": "Legal & Rights"}, {"url": "https://veterancareerpath.com/state-veteran-benefits.html", "label": "All States Guide", "cat": "State Benefits"}, {"url": "https://veterancareerpath.com/california-veteran-benefits.html", "label": "California Benefits", "cat": "State Benefits"}, {"url": "https://veterancareerpath.com/florida-veteran-benefits.html", "label": "Florida Benefits", "cat": "State Benefits"}, {"url": "https://veterancareerpath.com/texas-veteran-benefits.html", "label": "Texas Benefits", "cat": "State Benefits"}, {"url": "https://veterancareerpath.com/virginia-veteran-benefits.html", "label": "Virginia Benefits", "cat": "State Benefits"}, {"url": "https://veterancareerpath.com/veteran-friendly-cities.html", "label": "Best Cities for Vets", "cat": "State Benefits"}, {"url": "https://veterancareerpath.com/veteran-mental-health-resources.html", "label": "Mental Health Resources", "cat": "Support & Wellness"}];
-
+  // Dropdown
   function closeAll(){
     if(drop)drop.classList.remove('open');
     if(btn)btn.classList.remove('active');
@@ -448,38 +460,118 @@ footer {
     });
   }
   document.addEventListener('click',function(e){
-    var inside=(btn&&btn.contains(e.target))||(drop&&drop.contains(e.target))||
-               (ham&&ham.contains(e.target))||(mob&&mob.contains(e.target))||
-               (si&&si.contains(e.target))||(sr&&sr.contains(e.target));
-    if(!inside){closeAll();if(sr)sr.classList.remove('open');}
+    var el=e.target;
+    var inside=false;
+    [btn,drop,ham,mob,si,sr,msi,msr].forEach(function(n){if(n&&n.contains(el))inside=true;});
+    if(!inside){closeAll();closeSearch();}
   });
 
-  // SEARCH
-  if(si&&sr){
-    si.addEventListener('input',function(){
-      var q=this.value.trim().toLowerCase();
-      if(!q){sr.classList.remove('open');sr.innerHTML='';return;}
-      var hits=PAGES.filter(function(p){
-        return p.label.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q)||p.url.toLowerCase().includes(q);
-      }).slice(0,12);
-      if(!hits.length){
-        sr.innerHTML='<div class="vcp-sr-none">No pages found for "'+q+'"</div>';
-      }else{
-        sr.innerHTML=hits.map(function(p){
-          return '<a class="vcp-sr-item" href="'+p.url+'"><span class="vcp-sr-cat">'+p.cat+'</span>'+p.label+'</a>';
-        }).join('');
-      }
-      sr.classList.add('open');
-    });
-    si.addEventListener('keydown',function(e){
-      if(e.key==='Escape'){sr.classList.remove('open');this.blur();}
-      if(e.key==='Enter'){
-        var first=sr.querySelector('.vcp-sr-item');
-        if(first)window.location.href=first.href;
-      }
-    });
-    sr.addEventListener('click',function(e){e.stopPropagation();});
+  // Full-text search
+  var IDX=null,IDX_LOADING=false,IDX_CBS=[];
+  var SIDX='https://veterancareerpath.com/search_index.json';
+
+  function loadIdx(cb){
+    if(IDX){cb(IDX);return;}
+    IDX_CBS.push(cb);
+    if(IDX_LOADING)return;
+    IDX_LOADING=true;
+    fetch(SIDX).then(function(r){return r.json();}).then(function(d){
+      IDX=d;IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];
+    }).catch(function(){IDX=[];IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];});
   }
+
+  function doSearch(idx,q){
+    var terms=q.toLowerCase().replace(/[^a-z0-9 ]/g,' ').trim().split(' ').filter(function(t){return t.length>1;});
+    if(!terms.length)return[];
+    var out=[];
+    for(var i=0;i<idx.length;i++){
+      var p=idx[i];
+      var haystack=(p.title+' '+p.desc+' '+p.text).toLowerCase();
+      var score=0;
+      var miss=false;
+      for(var j=0;j<terms.length;j++){
+        var t=terms[j];
+        var tc=0,c=0,pos=0;
+        while((pos=haystack.indexOf(t,pos))>=0){tc++;pos++;}
+        // Title hits worth more
+        var ttc=0,tpos=0,tl=p.title.toLowerCase();
+        while((tpos=tl.indexOf(t,tpos))>=0){ttc++;tpos++;}
+        var dtc=0,dpos=0,dl=(p.desc||'').toLowerCase();
+        while((dpos=dl.indexOf(t,dpos))>=0){dtc++;dpos++;}
+        if(!tc){miss=true;break;}
+        score+=ttc*15+dtc*6+(tc-ttc-dtc)*1;
+      }
+      if(miss||score===0)continue;
+      // Build snippet
+      var snip='';
+      var body=p.text||'';
+      var blow=body.toLowerCase();
+      var fp=blow.indexOf(terms[0]);
+      if(fp>=0){
+        var s=Math.max(0,fp-55),e=Math.min(body.length,fp+terms[0].length+80);
+        snip=(s>0?'...':'')+body.slice(s,e).replace(/[<>]/g,'')+(e<body.length?'...':'');
+      }else{snip=(p.desc||'').slice(0,130);}
+      // Highlight
+      for(var k=0;k<terms.length;k++){
+        snip=snip.replace(new RegExp('('+terms[k]+')','gi'),'<em>$1</em>');
+      }
+      var titHL=p.title;
+      for(var k=0;k<terms.length;k++){
+        titHL=titHL.replace(new RegExp('('+terms[k]+')','gi'),'<em>$1</em>');
+      }
+      out.push({url:p.url,title:titHL,snip:snip,score:score});
+    }
+    out.sort(function(a,b){return b.score-a.score;});
+    return out.slice(0,15);
+  }
+
+  function renderSR(results,q,container,mob){
+    if(!results.length){
+      container.innerHTML='<div class="vcp-sr-none">No results for "'+q+'"</div>';
+      container.classList.add('open');return;
+    }
+    var h='<div class="vcp-sr-header">'+results.length+' results for "'+q+'"</div>';
+    h+=results.map(function(r){
+      if(mob)return '<a href="'+r.url+'"><div class="vcp-mob-sr-title">'+r.title+'</div><div class="vcp-mob-sr-snip">'+r.snip+'</div></a>';
+      return '<a class="vcp-sr-item" href="'+r.url+'"><div class="vcp-sr-title">'+r.title+'</div><div class="vcp-sr-snippet">'+r.snip+'</div></a>';
+    }).join('');
+    container.innerHTML=h;
+    container.classList.add('open');
+  }
+
+  function closeSearch(){
+    if(sr){sr.classList.remove('open');}
+    if(msr){msr.classList.remove('open');}
+  }
+
+  var dt=null;
+  function onInput(input,container,isMob){
+    clearTimeout(dt);
+    var q=input.value.trim();
+    if(q.length<2){container.classList.remove('open');container.innerHTML='';return;}
+    container.innerHTML='<div class="vcp-sr-loading">Searching...</div>';
+    container.classList.add('open');
+    dt=setTimeout(function(){
+      loadIdx(function(idx){renderSR(doSearch(idx,q),q,container,isMob);});
+    },220);
+  }
+
+  if(si&&sr){
+    si.addEventListener('input',function(){onInput(si,sr,false);});
+    si.addEventListener('keydown',function(e){
+      if(e.key==='Escape'){closeSearch();this.blur();}
+      if(e.key==='Enter'){var f=sr.querySelector('.vcp-sr-item');if(f)window.location.href=f.href;}
+      if(e.key==='ArrowDown'){var f=sr.querySelector('.vcp-sr-item');if(f){f.focus();e.preventDefault();}}
+    });
+    si.addEventListener('focus',function(){loadIdx(function(){});});
+  }
+  if(msi&&msr){
+    msi.addEventListener('input',function(){onInput(msi,msr,true);});
+    msi.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){var f=msr.querySelector('a');if(f)window.location.href=f.href;}
+    });
+  }
+  if(ham)ham.addEventListener('mouseenter',function(){loadIdx(function(){});});
 })();
 </script>
 <div class="page-header">

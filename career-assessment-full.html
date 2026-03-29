@@ -72,7 +72,7 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 .intro-h span{color:var(--gold);}
 .intro-p{font-size:.95rem;color:rgba(192,216,240,.7);line-height:1.8;margin-bottom:1.75rem;max-width:560px;}
 .intro-callouts{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:2rem;}
-@media(max-width:480px){.intro-callouts{grid-template-columns:1fr;}}
+@media(max-width:480px){.intro-callouts{grid-template-columns:1fr;}
 .callout{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.9rem 1rem;display:flex;gap:.65rem;align-items:flex-start;}
 .callout-icon{font-size:1.15rem;flex-shrink:0;margin-top:.05rem;}
 .callout-text{font-size:.8rem;color:rgba(192,216,240,.72);line-height:1.6;}
@@ -114,7 +114,7 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 /* SAVING SCREEN */
 .saving-wrap{max-width:400px;margin:8rem auto;text-align:center;padding:0 5%;}
 .saving-icon{font-size:2.5rem;margin-bottom:1rem;animation:spin 1.5s linear infinite;display:inline-block;}
-@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes spin{to{transform:rotate(360deg);}
 .saving-title{font-family:"Bebas Neue",sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#fff;margin-bottom:.4rem;}
 .saving-sub{font-size:.85rem;color:rgba(192,216,240,.5);}
 
@@ -148,7 +148,7 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 .dim-bar-track{flex:1;height:9px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden;}
 .dim-bar-fill{height:100%;border-radius:5px;transition:width 1.3s cubic-bezier(.16,1,.3,1);}
 .dim-bar-pct{width:34px;text-align:right;font-size:.75rem;font-weight:700;color:rgba(192,216,240,.5);}
-@media(max-width:480px){.dim-bar-lbl{width:115px;font-size:.72rem;}}
+@media(max-width:480px){.dim-bar-lbl{width:115px;font-size:.72rem;}
 
 /* Type card */
 .type-card{background:linear-gradient(135deg,rgba(13,31,60,.85),rgba(26,58,107,.45));border:1px solid rgba(240,192,64,.13);border-radius:14px;padding:1.75rem;margin-bottom:.5rem;}
@@ -175,7 +175,7 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 
 /* Strengths */
 .strength-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.5rem;}
-@media(max-width:540px){.strength-grid{grid-template-columns:1fr;}}
+@media(max-width:540px){.strength-grid{grid-template-columns:1fr;}
 .strength-card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.065);border-radius:11px;padding:1rem;}
 .s-icon{font-size:1.2rem;margin-bottom:.4rem;}
 .s-title{font-weight:700;font-size:.85rem;color:#fff;margin-bottom:.22rem;}
@@ -212,6 +212,43 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 
 .fade-in{opacity:0;transform:translateY(10px);transition:opacity .45s,transform .45s;}
 .fade-in.visible{opacity:1;transform:none;}
+
+/* RESUME COMPARISON */
+.compare-wrap{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.4rem;margin-bottom:1.5rem;}
+.compare-intro{font-size:.85rem;color:rgba(192,216,240,.65);line-height:1.7;margin-bottom:1rem;}
+.compare-fields{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;}
+@media(max-width:560px){.compare-fields{grid-template-columns:1fr;}
+.compare-field label{display:block;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(192,216,240,.5);margin-bottom:.35rem;}
+.compare-field input,.compare-field textarea,.compare-field select{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:8px;padding:.6rem .85rem;color:#fff;font-family:'Inter',sans-serif;font-size:.85rem;}
+.compare-field textarea{min-height:80px;resize:vertical;line-height:1.6;}
+.compare-field input:focus,.compare-field textarea:focus,.compare-field select:focus{outline:none;border-color:rgba(240,192,64,.4);}
+.compare-field input::placeholder,.compare-field textarea::placeholder{color:rgba(255,255,255,.25);}
+.compare-field-full{grid-column:1/-1;}
+.compare-btn{background:linear-gradient(135deg,#1a3a6b,#2a5a9b);color:#fff;border:none;border-radius:9px;padding:.72rem 1.5rem;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:.5rem;}
+.compare-btn:hover{background:linear-gradient(135deg,#2a5a9b,#1a3a6b);}
+.compare-btn.loading{opacity:.6;cursor:wait;}
+.compare-result{margin-top:1.1rem;display:none;}
+.compare-result.show{display:block;}
+.cr-header{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:rgba(192,216,240,.6);margin-bottom:.75rem;}
+.blend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.85rem;}
+.blend-card{border-radius:12px;padding:1.1rem;position:relative;}
+.blend-card.strong{background:linear-gradient(135deg,rgba(240,192,64,.1),rgba(200,150,10,.04));border:1px solid rgba(240,192,64,.25);}
+.blend-card.good{background:rgba(26,122,64,.08);border:1px solid rgba(26,122,64,.2);}
+.blend-card.possible{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);}
+.blend-badge{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.45rem;}
+.blend-card.strong .blend-badge{color:var(--gold);}
+.blend-card.good .blend-badge{color:#4ade80;}
+.blend-card.possible .blend-badge{color:rgba(192,216,240,.45);}
+.blend-title{font-weight:700;font-size:.9rem;color:#fff;margin-bottom:.28rem;line-height:1.3;}
+.blend-salary{font-size:.78rem;font-weight:600;color:#4ade80;margin-bottom:.28rem;}
+.blend-why{font-size:.75rem;color:rgba(192,216,240,.6);line-height:1.55;}
+.blend-tags{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.55rem;}
+.blend-tag{background:rgba(255,255,255,.06);border-radius:20px;padding:.1rem .45rem;font-size:.67rem;color:rgba(192,216,240,.5);}
+.blend-tag.match{background:rgba(240,192,64,.1);color:rgba(240,192,64,.8);}
+.compare-loading{text-align:center;padding:2rem;color:rgba(192,216,240,.5);font-size:.88rem;}
+.compare-loading .spin{width:28px;height:28px;border:3px solid rgba(240,192,64,.15);border-top-color:#f0c040;border-radius:50%;animation:sp .8s linear infinite;display:inline-block;margin-bottom:.65rem;}
+@keyframes sp{to{transform:rotate(360deg);}
+
 </style>
 <meta property="og:title" content="Full Veteran Career Assessment | 60 Questions">
 <meta property="og:description" content="60-question RIASEC career assessment built for veterans. Detailed career matches, salary data, and printable report saved to your account.">
@@ -223,7 +260,7 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 <meta name="twitter:title" content="Full Veteran Career Assessment | 60 Questions">
 <meta name="twitter:description" content="60-question RIASEC career assessment built for veterans. Detailed career matches, salary data, and printable report saved to your account.">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","name":"Full Veteran Career Assessment | 60 Questions","description":"60-question RIASEC career assessment built for veterans. Detailed career matches, salary data, and printable report saved to your account.","url":"https://veterancareerpath.com/career-assessment-full.html","publisher":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://veterancareerpath.com"},{"@type":"ListItem","position":2,"name":"Full Veteran Career Assessment | 60 Questions"}]}}
+{"@context":"https://schema.org","@type":"WebPage","name":"Full Veteran Career Assessment | 60 Questions","description":"60-question RIASEC career assessment built for veterans. Detailed career matches, salary data, and printable report saved to your account.","url":"https://veterancareerpath.com/career-assessment-full.html","publisher":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://veterancareerpath.com"},{"@type":"ListItem","position":2,"name":"Full Veteran Career Assessment | 60 Questions"}]}
 </script>
 </head>
 <body>
@@ -271,7 +308,7 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
     <div class="intro-stats">
       <div class="intro-stat"><div class="n">60</div><div class="l">Questions</div></div>
       <div class="intro-stat"><div class="n">6</div><div class="l">Dimensions</div></div>
-      <div class="intro-stat"><div class="n">12+</div><div class="l">Career Matches</div></div>
+      <div class="intro-stat"><div class="n">200+</div><div class="l">Career Options</div></div>
       <div class="intro-stat"><div class="n">~12</div><div class="l">Minutes</div></div>
     </div>
     <button class="start-btn" onclick="startAssessment()">Begin Assessment →</button>
@@ -426,52 +463,241 @@ var SCALE_COLORS = ['#c0392b','#e67e22','#7f8c8d','#27ae60','#1a6a3b'];
 
 var CAREERS = {
   realistic:[
-    {t:'Mechanical Engineer',s:'$75,000–$118,000',sec:'Engineering',icon:'⚙️'},
-    {t:'Aircraft Mechanic (A&P)',s:'$62,000–$102,000',sec:'Aviation',icon:'✈️'},
-    {t:'Fleet / Vehicle Operations Manager',s:'$58,000–$95,000',sec:'Logistics',icon:'🚛'},
-    {t:'Construction Project Manager',s:'$72,000–$120,000',sec:'Construction',icon:'🏗️'},
-    {t:'UAS / Drone Systems Specialist',s:'$58,000–$100,000',sec:'Defense Tech',icon:'🛸'},
-    {t:'Power Plant / Facilities Tech',s:'$58,000–$98,000',sec:'Utilities',icon:'⚡'}
+    // Trades & Technical
+    {t:'Electrician',s:'$52,000–$98,000',sec:'Trades'},
+    {t:'Plumber / Pipefitter',s:'$52,000–$95,000',sec:'Trades'},
+    {t:'HVAC Technician',s:'$48,000–$88,000',sec:'Trades'},
+    {t:'Welding Inspector / Welder',s:'$45,000–$82,000',sec:'Trades'},
+    {t:'Industrial Maintenance Mechanic',s:'$50,000–$88,000',sec:'Manufacturing'},
+    {t:'CNC Machinist / Operator',s:'$46,000–$80,000',sec:'Manufacturing'},
+    {t:'Quality Control Inspector',s:'$44,000–$75,000',sec:'Manufacturing'},
+    // Mechanical / Engineering
+    {t:'Mechanical Engineer',s:'$72,000–$118,000',sec:'Engineering'},
+    {t:'Industrial Engineer',s:'$70,000–$115,000',sec:'Engineering'},
+    {t:'Manufacturing Engineer',s:'$68,000–$112,000',sec:'Engineering'},
+    {t:'Facilities / Plant Engineer',s:'$62,000–$105,000',sec:'Engineering'},
+    {t:'Structural Engineer',s:'$68,000–$115,000',sec:'Engineering'},
+    {t:'Civil Engineer',s:'$65,000–$110,000',sec:'Engineering'},
+    // Aviation & Defense
+    {t:'Aircraft Mechanic (A&P)',s:'$58,000–$102,000',sec:'Aviation'},
+    {t:'Aviation Inspector (FAA)',s:'$62,000–$110,000',sec:'Aviation'},
+    {t:'UAS / Drone Systems Specialist',s:'$55,000–$100,000',sec:'Defense Tech'},
+    {t:'Explosive Ordnance Disposal (EOD) Contractor',s:'$70,000–$130,000',sec:'Defense'},
+    {t:'Armorer / Weapons Systems Specialist',s:'$45,000–$85,000',sec:'Defense'},
+    // Transportation / Logistics
+    {t:'Fleet Manager',s:'$55,000–$92,000',sec:'Logistics'},
+    {t:'Transportation Manager',s:'$58,000–$95,000',sec:'Logistics'},
+    {t:'CDL Driver / Owner Operator',s:'$48,000–$90,000',sec:'Transportation'},
+    {t:'Logistics Coordinator',s:'$42,000–$72,000',sec:'Logistics'},
+    {t:'Warehouse Operations Manager',s:'$50,000–$88,000',sec:'Logistics'},
+    {t:'Port Operations Supervisor',s:'$55,000–$90,000',sec:'Maritime'},
+    // Construction
+    {t:'Construction Project Manager',s:'$68,000–$120,000',sec:'Construction'},
+    {t:'Construction Superintendent',s:'$72,000–$128,000',sec:'Construction'},
+    {t:'Building Inspector',s:'$52,000–$85,000',sec:'Government'},
+    {t:'Estimator / Cost Estimator',s:'$55,000–$95,000',sec:'Construction'},
+    // Energy & Utilities
+    {t:'Power Plant Operator',s:'$55,000–$100,000',sec:'Energy'},
+    {t:'Nuclear Plant Operator',s:'$80,000–$125,000',sec:'Energy'},
+    {t:'Oil & Gas Field Technician',s:'$55,000–$100,000',sec:'Energy'},
+    {t:'Solar / Wind Technician',s:'$45,000–$80,000',sec:'Energy'},
+    {t:'Utility Line Worker',s:'$52,000–$95,000',sec:'Utilities'},
+    // Safety & Emergency
+    {t:'Safety Manager / HSE Officer',s:'$58,000–$100,000',sec:'Safety'},
+    {t:'Emergency Management Coordinator',s:'$50,000–$88,000',sec:'Government'},
+    {t:'Firefighter',s:'$48,000–$85,000',sec:'Public Safety'},
+    {t:'HAZMAT Technician',s:'$50,000–$92,000',sec:'Safety'}
   ],
   investigative:[
-    {t:'Intelligence Analyst (Cleared)',s:'$70,000–$135,000',sec:'Defense/Intel',icon:'🔍'},
-    {t:'Cybersecurity Analyst',s:'$80,000–$150,000',sec:'Technology',icon:'🔐'},
-    {t:'Data Analyst',s:'$70,000–$118,000',sec:'Technology',icon:'📊'},
-    {t:'Software Developer',s:'$90,000–$160,000',sec:'Technology',icon:'💻'},
-    {t:'Signals Intelligence (SIGINT) Analyst',s:'$75,000–$140,000',sec:'Defense/Intel',icon:'📡'},
-    {t:'Nuclear Engineer / Reactor Operator',s:'$82,000–$135,000',sec:'Energy',icon:'⚛️'}
+    // Cybersecurity & IT
+    {t:'Cybersecurity Analyst',s:'$75,000–$150,000',sec:'Technology'},
+    {t:'Penetration Tester / Ethical Hacker',s:'$85,000–$160,000',sec:'Technology'},
+    {t:'Security Operations Center (SOC) Analyst',s:'$60,000–$110,000',sec:'Technology'},
+    {t:'Cloud Security Engineer',s:'$90,000–$165,000',sec:'Technology'},
+    {t:'Information Systems Security Officer (ISSO)',s:'$80,000–$148,000',sec:'Cybersecurity'},
+    {t:'IT Systems Administrator',s:'$55,000–$95,000',sec:'Technology'},
+    {t:'Network Engineer',s:'$65,000–$120,000',sec:'Technology'},
+    {t:'DevOps / Cloud Engineer',s:'$85,000–$155,000',sec:'Technology'},
+    // Intelligence & Analysis
+    {t:'Intelligence Analyst (Cleared)',s:'$65,000–$135,000',sec:'Defense/Intel'},
+    {t:'SIGINT / HUMINT Analyst',s:'$70,000–$140,000',sec:'Defense/Intel'},
+    {t:'All-Source Analyst',s:'$68,000–$130,000',sec:'Defense/Intel'},
+    {t:'Geospatial Intelligence (GEOINT) Analyst',s:'$65,000–$125,000',sec:'Defense/Intel'},
+    {t:'Open Source Intelligence (OSINT) Analyst',s:'$55,000–$100,000',sec:'Defense/Intel'},
+    {t:'Counterintelligence Specialist',s:'$70,000–$135,000',sec:'Defense/Intel'},
+    {t:'Threat Analyst / Red Cell Analyst',s:'$72,000–$140,000',sec:'Defense/Intel'},
+    // Data & Science
+    {t:'Data Analyst',s:'$62,000–$115,000',sec:'Technology'},
+    {t:'Data Scientist',s:'$85,000–$160,000',sec:'Technology'},
+    {t:'Business Intelligence Analyst',s:'$65,000–$115,000',sec:'Business'},
+    {t:'Statistician / Quantitative Analyst',s:'$75,000–$140,000',sec:'Finance/Tech'},
+    {t:'Research Analyst',s:'$55,000–$100,000',sec:'Consulting'},
+    // Software & Engineering
+    {t:'Software Developer',s:'$80,000–$155,000',sec:'Technology'},
+    {t:'Systems Engineer',s:'$78,000–$145,000',sec:'Technology'},
+    {t:'Database Administrator',s:'$68,000–$120,000',sec:'Technology'},
+    // Science & Medical
+    {t:'Nuclear Engineer',s:'$85,000–$140,000',sec:'Energy/Defense'},
+    {t:'Environmental Scientist',s:'$52,000–$95,000',sec:'Environmental'},
+    {t:'Forensic Scientist / Crime Lab Tech',s:'$48,000–$88,000',sec:'Law Enforcement'},
+    {t:'Biomedical Equipment Technician',s:'$48,000–$80,000',sec:'Healthcare'},
+    {t:'Pharmacist / Clinical Pharmacist',s:'$110,000–$145,000',sec:'Healthcare'},
+    {t:'Physical Therapist',s:'$70,000–$110,000',sec:'Healthcare'},
+    // Finance & Risk
+    {t:'Financial Analyst',s:'$62,000–$120,000',sec:'Finance'},
+    {t:'Risk Manager / Risk Analyst',s:'$70,000–$130,000',sec:'Finance'},
+    {t:'Actuary',s:'$90,000–$165,000',sec:'Finance'},
+    {t:'Insurance Underwriter',s:'$58,000–$100,000',sec:'Finance'}
   ],
   artistic:[
-    {t:'Public Affairs / Communications Specialist',s:'$58,000–$100,000',sec:'Communications',icon:'📢'},
-    {t:'UX / UI Designer',s:'$80,000–$138,000',sec:'Technology',icon:'🎨'},
-    {t:'Technical Writer / Documentation Specialist',s:'$62,000–$100,000',sec:'Technology',icon:'✍️'},
-    {t:'Marketing Manager',s:'$70,000–$128,000',sec:'Business',icon:'📣'},
-    {t:'Training & Development Specialist',s:'$58,000–$95,000',sec:'HR/Education',icon:'📚'},
-    {t:'Instructional Designer (Defense Contractor)',s:'$65,000–$110,000',sec:'Defense Education',icon:'🎓'}
+    // Communications & Media
+    {t:'Public Affairs Officer / Specialist',s:'$55,000–$100,000',sec:'Communications'},
+    {t:'Corporate Communications Manager',s:'$65,000–$115,000',sec:'Communications'},
+    {t:'Journalist / Defense Reporter',s:'$40,000–$80,000',sec:'Media'},
+    {t:'Copywriter / Content Strategist',s:'$50,000–$95,000',sec:'Marketing'},
+    {t:'Social Media Manager',s:'$45,000–$80,000',sec:'Marketing'},
+    {t:'Broadcast / Video Producer',s:'$48,000–$85,000',sec:'Media'},
+    {t:'Podcast Producer',s:'$40,000–$75,000',sec:'Media'},
+    // Design
+    {t:'UX / UI Designer',s:'$70,000–$135,000',sec:'Technology'},
+    {t:'Graphic Designer',s:'$42,000–$80,000',sec:'Design'},
+    {t:'Web Designer',s:'$48,000–$90,000',sec:'Technology'},
+    {t:'Motion Graphics / Video Editor',s:'$45,000–$85,000',sec:'Media'},
+    {t:'Architect (licensed)',s:'$72,000–$125,000',sec:'Construction'},
+    {t:'Interior Designer',s:'$42,000–$75,000',sec:'Design'},
+    // Writing & Documentation
+    {t:'Technical Writer / Documentation Specialist',s:'$58,000–$100,000',sec:'Technology'},
+    {t:'Grant Writer / Proposal Writer',s:'$52,000–$90,000',sec:'Nonprofit/Gov'},
+    {t:'Contract / Proposal Writer (Defense)',s:'$65,000–$115,000',sec:'Defense'},
+    {t:'Policy Analyst / Writer',s:'$58,000–$100,000',sec:'Government'},
+    // Training & Education
+    {t:'Instructional Designer (Defense Contractor)',s:'$60,000–$110,000',sec:'Defense Education'},
+    {t:'Training & Development Specialist',s:'$52,000–$95,000',sec:'HR/Education'},
+    {t:'Corporate Trainer',s:'$48,000–$85,000',sec:'HR/Education'},
+    {t:'Secondary Teacher (STEM / JROTC)',s:'$42,000–$72,000',sec:'Education'},
+    {t:'College / University Instructor',s:'$48,000–$80,000',sec:'Education'},
+    // Marketing
+    {t:'Marketing Manager',s:'$65,000–$125,000',sec:'Business'},
+    {t:'Brand Manager',s:'$68,000–$120,000',sec:'Business'},
+    {t:'Digital Marketing Specialist',s:'$48,000–$88,000',sec:'Marketing'},
+    {t:'Event / Conference Planner',s:'$42,000–$75,000',sec:'Events'}
   ],
   social:[
-    {t:'Registered Nurse / Combat Medic → RN',s:'$70,000–$118,000',sec:'Healthcare',icon:'🏥'},
-    {t:'Veterans Service Officer (VSO)',s:'$48,000–$85,000',sec:'Government/VA',icon:'🎖️'},
-    {t:'Human Resources Manager',s:'$70,000–$120,000',sec:'Business',icon:'👥'},
-    {t:'Social Worker (MSW)',s:'$50,000–$88,000',sec:'Social Services',icon:'🤲'},
-    {t:'Military / Veteran Recruiter',s:'$60,000–$105,000',sec:'HR',icon:'🎯'},
-    {t:'Physician Assistant (with medical MOS)',s:'$115,000–$168,000',sec:'Healthcare',icon:'⚕️'}
+    // Healthcare — Direct
+    {t:'Registered Nurse (RN)',s:'$68,000–$118,000',sec:'Healthcare'},
+    {t:'Combat Medic / EMT-to-RN Bridge',s:'$50,000–$95,000',sec:'Healthcare'},
+    {t:'Licensed Practical Nurse (LPN)',s:'$48,000–$72,000',sec:'Healthcare'},
+    {t:'Paramedic / Advanced EMT',s:'$45,000–$90,000',sec:'Healthcare'},
+    {t:'Medical Assistant',s:'$38,000–$55,000',sec:'Healthcare'},
+    {t:'Respiratory Therapist',s:'$55,000–$90,000',sec:'Healthcare'},
+    {t:'Radiologic Technologist',s:'$55,000–$85,000',sec:'Healthcare'},
+    {t:'Surgical Technologist',s:'$50,000–$78,000',sec:'Healthcare'},
+    {t:'Physician Assistant (PA)',s:'$108,000–$165,000',sec:'Healthcare'},
+    {t:'Nurse Practitioner (NP)',s:'$100,000–$155,000',sec:'Healthcare'},
+    // Healthcare — Management
+    {t:'Healthcare Administrator',s:'$65,000–$115,000',sec:'Healthcare'},
+    {t:'VA / Federal Healthcare Coordinator',s:'$55,000–$95,000',sec:'VA/Government'},
+    {t:'Hospital Operations Manager',s:'$70,000–$120,000',sec:'Healthcare'},
+    // Mental Health & Social Services
+    {t:'Licensed Clinical Social Worker (LCSW)',s:'$52,000–$90,000',sec:'Social Services'},
+    {t:'Mental Health Counselor',s:'$48,000–$82,000',sec:'Social Services'},
+    {t:'Substance Abuse Counselor',s:'$40,000–$70,000',sec:'Social Services'},
+    {t:'Veterans Service Officer (VSO)',s:'$42,000–$82,000',sec:'Government/VA'},
+    {t:'Case Manager (VA / Government)',s:'$45,000–$78,000',sec:'Social Services'},
+    {t:'School Counselor',s:'$48,000–$80,000',sec:'Education'},
+    // HR & Talent
+    {t:'Human Resources Manager',s:'$65,000–$120,000',sec:'Business'},
+    {t:'HR Business Partner',s:'$60,000–$110,000',sec:'Business'},
+    {t:'Talent Acquisition / Recruiter',s:'$52,000–$100,000',sec:'HR'},
+    {t:'Military / Veteran Recruiter',s:'$55,000–$105,000',sec:'HR'},
+    {t:'Organizational Development Specialist',s:'$58,000–$100,000',sec:'HR'},
+    {t:'Employee Relations Manager',s:'$60,000–$105,000',sec:'HR'},
+    // Education & Training
+    {t:'Teacher (K-12, any subject)',s:'$40,000–$72,000',sec:'Education'},
+    {t:'JROTC Instructor',s:'$42,000–$75,000',sec:'Education'},
+    {t:'Corporate Training Manager',s:'$60,000–$105,000',sec:'HR/Education'},
+    {t:'College Advisor / Veterans Certifying Official',s:'$42,000–$72,000',sec:'Education'},
+    // Nonprofit & Community
+    {t:'Nonprofit Program Director',s:'$48,000–$88,000',sec:'Nonprofit'},
+    {t:'Veterans Outreach Coordinator',s:'$40,000–$68,000',sec:'Nonprofit/VA'},
+    {t:'Community Services Director',s:'$52,000–$90,000',sec:'Government'}
   ],
   enterprising:[
-    {t:'Operations Manager',s:'$80,000–$138,000',sec:'Business',icon:'📋'},
-    {t:'Contracting Officer (GS-12+)',s:'$75,000–$135,000',sec:'Government',icon:'📜'},
-    {t:'Program Manager (Defense Contractor)',s:'$95,000–$170,000',sec:'Defense',icon:'🏆'},
-    {t:'Corporate Security Director',s:'$95,000–$165,000',sec:'Security',icon:'🛡️'},
-    {t:'Financial Advisor / Wealth Manager',s:'$70,000–$160,000',sec:'Finance',icon:'💰'},
-    {t:'Executive Recruiter (Veteran Specialist)',s:'$75,000–$145,000',sec:'HR/Recruiting',icon:'⭐'}
+    // Operations & Management
+    {t:'Operations Manager',s:'$72,000–$135,000',sec:'Business'},
+    {t:'General Manager',s:'$70,000–$140,000',sec:'Business'},
+    {t:'Plant / Facility Manager',s:'$72,000–$125,000',sec:'Manufacturing'},
+    {t:'Director of Operations',s:'$90,000–$165,000',sec:'Business'},
+    {t:'Chief Operating Officer (COO)',s:'$110,000–$220,000',sec:'Executive'},
+    {t:'Franchise Owner / Operator',s:'$55,000–$200,000',sec:'Entrepreneurship'},
+    {t:'Small Business Owner',s:'$50,000–$250,000',sec:'Entrepreneurship'},
+    // Government & Defense
+    {t:'Contracting Officer (GS-12 to GS-15)',s:'$72,000–$145,000',sec:'Government'},
+    {t:'Program Manager (Federal / Defense)',s:'$90,000–$170,000',sec:'Defense/Gov'},
+    {t:'Defense Acquisition Specialist',s:'$72,000–$135,000',sec:'Defense'},
+    {t:'Foreign Service Officer',s:'$55,000–$140,000',sec:'Government'},
+    {t:'Congressional Liaison / Legislative Affairs',s:'$65,000–$120,000',sec:'Government'},
+    {t:'Intelligence Community Manager',s:'$90,000–$160,000',sec:'Defense/Intel'},
+    // Sales & Business Development
+    {t:'Sales Manager / Regional Director',s:'$65,000–$160,000',sec:'Sales'},
+    {t:'Business Development Manager',s:'$70,000–$150,000',sec:'Business'},
+    {t:'Defense Sales Representative',s:'$80,000–$175,000',sec:'Defense'},
+    {t:'Account Executive (B2B)',s:'$60,000–$130,000',sec:'Sales'},
+    {t:'Real Estate Broker / Investor',s:'$50,000–$200,000',sec:'Real Estate'},
+    // Finance
+    {t:'Financial Advisor / Wealth Manager',s:'$65,000–$160,000',sec:'Finance'},
+    {t:'Investment Banker (entry/associate)',s:'$85,000–$200,000',sec:'Finance'},
+    {t:'Private Equity Analyst',s:'$90,000–$200,000',sec:'Finance'},
+    {t:'Management Consultant',s:'$85,000–$175,000',sec:'Consulting'},
+    {t:'Strategy Consultant (Big 4 / Boutique)',s:'$90,000–$185,000',sec:'Consulting'},
+    // Security & Law Enforcement
+    {t:'Corporate Security Director',s:'$90,000–$165,000',sec:'Security'},
+    {t:'FBI / DEA Special Agent',s:'$72,000–$130,000',sec:'Federal LE'},
+    {t:'Secret Service Agent',s:'$72,000–$128,000',sec:'Federal LE'},
+    {t:'Border Patrol / CBP Officer',s:'$55,000–$95,000',sec:'Federal LE'},
+    {t:'Police Officer / Sheriff',s:'$48,000–$88,000',sec:'Law Enforcement'},
+    {t:'Probation / Parole Officer',s:'$45,000–$78,000',sec:'Law Enforcement'},
+    // HR & Leadership
+    {t:'Chief Human Resources Officer (CHRO)',s:'$100,000–$200,000',sec:'HR/Executive'},
+    {t:'Executive Recruiter',s:'$70,000–$180,000',sec:'HR/Recruiting'}
   ],
   conventional:[
-    {t:'Supply Chain / Logistics Manager',s:'$75,000–$120,000',sec:'Logistics',icon:'📦'},
-    {t:'Budget Analyst (GS-9 to GS-13)',s:'$70,000–$118,000',sec:'Government',icon:'💼'},
-    {t:'Information Systems Security Officer (ISSO)',s:'$85,000–$148,000',sec:'Cybersecurity',icon:'🔒'},
-    {t:'Federal HR Specialist',s:'$60,000–$98,000',sec:'Government',icon:'📁'},
-    {t:'Accountant / Government CPA',s:'$65,000–$118,000',sec:'Finance',icon:'🧾'},
-    {t:'Acquisitions / Procurement Specialist',s:'$70,000–$128,000',sec:'Government',icon:'🏛️'}
+    // Logistics & Supply Chain
+    {t:'Supply Chain Manager',s:'$68,000–$118,000',sec:'Logistics'},
+    {t:'Logistics Manager',s:'$62,000–$110,000',sec:'Logistics'},
+    {t:'Inventory Control Manager',s:'$50,000–$88,000',sec:'Logistics'},
+    {t:'Purchasing Manager',s:'$62,000–$108,000',sec:'Business'},
+    {t:'Import / Export Specialist',s:'$50,000–$85,000',sec:'Logistics'},
+    {t:'Freight Broker',s:'$45,000–$95,000',sec:'Transportation'},
+    // Finance & Accounting
+    {t:'Budget Analyst (GS-9 to GS-13)',s:'$65,000–$115,000',sec:'Government'},
+    {t:'Accountant / CPA',s:'$60,000–$118,000',sec:'Finance'},
+    {t:'Financial Manager',s:'$72,000–$130,000',sec:'Finance'},
+    {t:'Payroll Manager',s:'$58,000–$95,000',sec:'Finance'},
+    {t:'Tax Analyst / Tax Manager',s:'$60,000–$110,000',sec:'Finance'},
+    {t:'Auditor (Internal / Government)',s:'$55,000–$100,000',sec:'Finance/Gov'},
+    {t:'Cost Analyst',s:'$58,000–$100,000',sec:'Defense/Finance'},
+    // Government & Admin
+    {t:'Government Program Analyst',s:'$58,000–$108,000',sec:'Government'},
+    {t:'Federal HR Specialist',s:'$55,000–$98,000',sec:'Government'},
+    {t:'Acquisitions / Procurement Specialist',s:'$62,000–$125,000',sec:'Government'},
+    {t:'Contract Administrator',s:'$55,000–$100,000',sec:'Government/Defense'},
+    {t:'Administrative Manager',s:'$50,000–$85,000',sec:'Business'},
+    {t:'Records / Compliance Manager',s:'$50,000–$88,000',sec:'Business'},
+    // Cybersecurity & IT (Process-focused)
+    {t:'Cybersecurity Compliance Analyst (ISSO/ISSM)',s:'$80,000–$145,000',sec:'Cybersecurity'},
+    {t:'IT Project Manager (PMP)',s:'$80,000–$140,000',sec:'Technology'},
+    {t:'Database Administrator',s:'$62,000–$115,000',sec:'Technology'},
+    {t:'Systems Analyst',s:'$65,000–$110,000',sec:'Technology'},
+    {t:'Quality Assurance Engineer',s:'$62,000–$110,000',sec:'Technology'},
+    // Real Estate & Property
+    {t:'Property Manager',s:'$45,000–$80,000',sec:'Real Estate'},
+    {t:'Real Estate Appraiser',s:'$52,000–$95,000',sec:'Real Estate'},
+    {t:'Title / Escrow Officer',s:'$48,000–$80,000',sec:'Real Estate'},
+    // Insurance
+    {t:'Insurance Claims Adjuster',s:'$45,000–$80,000',sec:'Insurance'},
+    {t:'Underwriter',s:'$55,000–$100,000',sec:'Insurance'},
+    {t:'Benefits Administrator',s:'$48,000–$80,000',sec:'HR/Finance'}
   ]
 };
 
@@ -706,6 +932,7 @@ function renderResultsFromData(data, resultId){
   document.getElementById('topbar-step').textContent = 'Your Results';
 
   var scores = data.scores;
+  _comparisonScores = scores; // store for comparison tool
   var top1 = data.top1, top2 = data.top2, typeName = data.typeName;
   var sorted = data.sorted || Object.entries(scores).sort(function(a,b){return b[1]-a[1];});
 
@@ -721,7 +948,12 @@ function renderResultsFromData(data, resultId){
     });
   });
   allCareers.sort(function(a,b){return b.score-a.score;});
-  var topCareers = allCareers.slice(0,12);
+  // Calculate minimum score threshold for "genuine" alignment
+  var maxScore = allCareers.length > 0 ? allCareers[0].score : 1;
+  var threshold = maxScore * 0.45; // must score at least 45% of top
+  var topCareers = allCareers.filter(function(c){ return c.score >= threshold; });
+  if(topCareers.length < 8) topCareers = allCareers.slice(0,8);
+  if(topCareers.length > 24) topCareers = allCareers.slice(0,24);
 
   // Strengths
   var str1 = STRENGTHS[top1]||[];
@@ -748,7 +980,9 @@ function renderResultsFromData(data, resultId){
   }).join('');
 
   var careerCards = topCareers.map(function(c,i){
-    var pct = Math.round(58 + (c.score/(topCareers[0].score||1))*42);
+    // Honest alignment score: scale from actual score ratio
+    var ratio = c.score / (topCareers[0].score || 1);
+    var pct = Math.round(40 + ratio * 55); // range 40-95%, no false 100s
     var fillColor = i<3?'#f0c040':i<6?'#4ade80':'#60a5fa';
     return '<div class="career-card fade-in' + (i<3?' top':'') + '">' +
       '<div class="c-rank">' + (i<3?'⭐ Top Match':'#'+(i+1)) + '</div>' +
@@ -797,7 +1031,58 @@ function renderResultsFromData(data, resultId){
 
     '<div class="sec-lbl">Your 6 Dimension Scores</div>' +
     '<div class="dim-bars">' + dimBars + '</div>' +
-    '<div class="sec-lbl">Your Top 12 Career Matches</div>' +
+    '<div class="sec-lbl">Blend Your Experience with Your Assessment</div>' +
+    '<div class="compare-wrap fade-in">' +
+      '<p class="compare-intro">Your assessment shows what you are naturally wired for. But what you have already <em>done</em> matters just as much. Enter your background below and we will cross-reference your assessment results with your real experience to show which careers sit at the intersection — roles where your personality AND your resume point in the same direction.</p>' +
+      '<div class="compare-fields">' +
+        '<div class="compare-field">' +
+          '<label>Your MOS / Rate / AFSC</label>' +
+          '<input type="text" id="cmpMOS" placeholder="e.g. 11B, HM, 2W1X1, 0311">' +
+        '</div>' +
+        '<div class="compare-field">' +
+          '<label>Rank at Separation</label>' +
+          '<select id="cmpRank">' +
+            '<option value="">Select rank</option>' +
+            '<option>E-4 and below</option><option>E-5 (SGT / Petty Officer 2nd Class)</option>' +
+            '<option>E-6 (SSG / PO1)</option><option>E-7 (SFC / CPO)</option>' +
+            '<option>E-8 (MSG / Senior CPO)</option><option>E-9 (SGM / MCPO)</option>' +
+            '<option>W-1 to W-2</option><option>W-3 to W-5</option>' +
+            '<option>O-1 to O-3</option><option>O-4 to O-6</option><option>O-7+</option>' +
+          '</select>' +
+        '</div>' +
+        '<div class="compare-field">' +
+          '<label>Years of Service</label>' +
+          '<select id="cmpYOS">' +
+            '<option value="">Select</option>' +
+            '<option>1-3 years</option><option>4-6 years</option><option>7-10 years</option>' +
+            '<option>11-15 years</option><option>16-20 years</option><option>20+ years</option>' +
+          '</select>' +
+        '</div>' +
+        '<div class="compare-field">' +
+          '<label>Security Clearance</label>' +
+          '<select id="cmpClearance">' +
+            '<option value="none">None / Expired</option>' +
+            '<option value="secret">Secret (Active)</option>' +
+            '<option value="ts">Top Secret (Active)</option>' +
+            '<option value="tssci">TS/SCI (Active)</option>' +
+          '</select>' +
+        '</div>' +
+        '<div class="compare-field compare-field-full">' +
+          '<label>Key Duties and Skills (brief summary)</label>' +
+          '<textarea id="cmpDuties" placeholder="e.g. Led a 12-person team, managed $2M equipment, conducted intelligence analysis, trained 40+ personnel on systems, coordinated logistics for multi-unit operations..."></textarea>' +
+        '</div>' +
+        '<div class="compare-field compare-field-full">' +
+          '<label>Civilian Experience (if any)</label>' +
+          '<input type="text" id="cmpCivilian" placeholder="e.g. EMT for 2 years, worked retail management part-time, or leave blank">' +
+        '</div>' +
+      '</div>' +
+      '<button class="compare-btn" id="compareBtn" onclick="runComparison()">🎯 Find My Best-Fit Careers</button>' +
+      '<div class="compare-result" id="compareResult">' +
+        '<div class="compare-loading" id="compareLoading" style="display:none"><div class="spin"></div><br>Analyzing your background against your assessment...</div>' +
+        '<div id="compareOutput"></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="sec-lbl">Your Career Matches — ' + topCareers.length + ' Roles Aligned to Your Profile</div>' +
     '<div class="career-grid">' + careerCards + '</div>' +
     '<div class="sec-lbl">Your Military Strengths (Civilian Value)</div>' +
     '<div class="strength-grid">' + strengthCards + '</div>' +
@@ -846,6 +1131,125 @@ function showCopyConfirm(){
   if(el){ el.style.display='block'; setTimeout(function(){el.style.display='none';},4000); }
 }
 function retake(){ curDim=0; answers={}; savedResultId=null; document.getElementById('prog').style.width='0%'; showScreen('scr-intro'); }
+
+// ── RESUME vs ASSESSMENT COMPARISON ──────────────────────────────────────────
+var _comparisonScores = null; // set when results render
+
+function runComparison(){
+  var mos = (document.getElementById('cmpMOS').value||'').trim();
+  var rank = document.getElementById('cmpRank').value||'';
+  var yos = document.getElementById('cmpYOS').value||'';
+  var clearance = document.getElementById('cmpClearance').value||'none';
+  var duties = (document.getElementById('cmpDuties').value||'').trim();
+  var civilian = (document.getElementById('cmpCivilian').value||'').trim();
+
+  if(!mos && !duties){ alert('Enter at least your MOS and a brief duty description.'); return; }
+
+  var btn = document.getElementById('compareBtn');
+  var loading = document.getElementById('compareLoading');
+  var output = document.getElementById('compareOutput');
+  var result = document.getElementById('compareResult');
+
+  btn.classList.add('loading');
+  btn.textContent = '⏳ Analyzing...';
+  loading.style.display = 'block';
+  output.innerHTML = '';
+  result.classList.add('show');
+
+  // Build prompt using assessment scores + experience
+  var scores = _comparisonScores || {};
+  var sorted = Object.entries(scores).sort(function(a,b){return b[1]-a[1];});
+  var topDims = sorted.slice(0,3).map(function(p){return p[0] + ' (' + p[1] + '%)';}).join(', ');
+
+  var prompt = 'You are a veteran career counselor. A veteran has completed a RIASEC career personality assessment AND provided their military background. Cross-reference both to identify their best career matches.\n\n' +
+    'ASSESSMENT RESULTS (RIASEC scores):\n' + sorted.map(function(p){return p[0]+': '+p[1]+'%';}).join('\n') + '\n\n' +
+    'MILITARY BACKGROUND:\n' +
+    'MOS/Rate/AFSC: ' + (mos||'Not provided') + '\n' +
+    'Rank: ' + (rank||'Not provided') + '\n' +
+    'Years of Service: ' + (yos||'Not provided') + '\n' +
+    'Security Clearance: ' + clearance + '\n' +
+    'Key Duties/Skills: ' + (duties||'Not provided') + '\n' +
+    'Civilian Experience: ' + (civilian||'None') + '\n\n' +
+    'Return ONLY a JSON object with this exact structure — no markdown, no explanation outside the JSON:\n' +
+    '{\n' +
+    '  "strong": [\n' +
+    '    {"title":"Career Title","salary":"$XX,000-$XX,000","why":"1-2 sentences: WHY this role matches BOTH their assessment and experience specifically","tags":["tag1","tag2","tag3"]}\n' +
+    '  ],\n' +
+    '  "good": [\n' +
+    '    {"title":"Career Title","salary":"$XX,000-$XX,000","why":"1-2 sentences","tags":["tag1","tag2"]}\n' +
+    '  ],\n' +
+    '  "possible": [\n' +
+    '    {"title":"Career Title","salary":"$XX,000-$XX,000","why":"1-2 sentences","tags":["tag1"]}\n' +
+    '  ]\n' +
+    '}\n\n' +
+    'Rules:\n' +
+    '- "strong" = 3-5 careers where BOTH their personality AND their experience directly qualify them\n' +
+    '- "good" = 3-5 careers where their assessment aligns well and experience partially qualifies them\n' +
+    '- "possible" = 3-5 careers where their assessment fits but they would need additional training or certification\n' +
+    '- Be REALISTIC. Do not suggest careers requiring 4+ years of school unless they already have relevant education\n' +
+    '- Include specific salary ranges appropriate to their rank/experience level\n' +
+    '- The "why" must mention their specific MOS/duties, not be generic\n' +
+    '- If they have an active clearance (Secret, TS, TS/SCI), prioritize cleared roles where relevant\n' +
+    '- Return exactly the JSON structure, nothing else';
+
+  var proxyUrl = window.VCB_PROXY_URL || 'https://vcp-proxy.vercel.app/api/claude';
+
+  fetch(proxyUrl, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1500,
+      messages: [{role:'user', content: prompt}]
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    var text = (data.content||[]).map(function(b){return b.text||'';}).join('');
+    // Strip markdown if present
+    text = text.replace(/```json[\s\S]*?```/g,'').replace(/^```[a-z]*/mg,'').replace(/```$/mg,'').trim();
+    var parsed = JSON.parse(text);
+    renderComparison(parsed);
+  })
+  .catch(function(e){
+    console.error('Comparison error:', e);
+    output.innerHTML = '<p style="color:rgba(192,216,240,.5);font-size:.85rem;padding:.5rem 0">Could not load personalized results. Check your connection and try again.</p>';
+  })
+  .finally(function(){
+    btn.classList.remove('loading');
+    btn.textContent = '🎯 Find My Best-Fit Careers';
+    loading.style.display = 'none';
+  });
+}
+
+function renderComparison(data){
+  var output = document.getElementById('compareOutput');
+  
+  function makeCards(items, tier){
+    return (items||[]).map(function(c){
+      var tags = (c.tags||[]).map(function(t){
+        var isMatch = t.toLowerCase().includes('clearance')||t.toLowerCase().includes('mos')||t.toLowerCase().includes('military')||t.toLowerCase().includes('veteran');
+        return '<span class="blend-tag' + (isMatch?' match':'') + '">' + t + '</span>';
+      }).join('');
+      return '<div class="blend-card ' + tier + '">' +
+        '<div class="blend-badge">' + (tier==='strong'?'✦ Strong Match':tier==='good'?'✓ Good Fit':'◇ Growth Path') + '</div>' +
+        '<div class="blend-title">' + c.title + '</div>' +
+        '<div class="blend-salary">' + c.salary + '</div>' +
+        '<div class="blend-why">' + c.why + '</div>' +
+        '<div class="blend-tags">' + tags + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  output.innerHTML =
+    '<div class="cr-header" style="margin-top:.75rem">Strong Matches — Your Assessment + Experience Both Point Here</div>' +
+    '<div class="blend-grid">' + makeCards(data.strong,'strong') + '</div>' +
+    '<div class="cr-header" style="margin-top:1rem">Good Fits — Strong Personality Alignment, Resume Gets You In the Door</div>' +
+    '<div class="blend-grid">' + makeCards(data.good,'good') + '</div>' +
+    '<div class="cr-header" style="margin-top:1rem">Growth Paths — Your Assessment Fits, Some Additional Training Needed</div>' +
+    '<div class="blend-grid">' + makeCards(data.possible,'possible') + '</div>';
+}
+
 </script>
 </body>
 </html>

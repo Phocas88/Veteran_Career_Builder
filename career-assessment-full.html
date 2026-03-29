@@ -320,9 +320,11 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 <!-- ASSESSMENT -->
 <div class="screen" id="scr-assess">
   <div class="assess-wrap">
+    <!-- Section progress dots -->
+    <div id="dim-dots" style="display:flex;gap:.4rem;margin-bottom:1.25rem;justify-content:center;flex-wrap:wrap;"></div>
     <div class="dim-header">
       <div class="dim-icon-big" id="dim-icon"></div>
-      <div>
+      <div style="flex:1;min-width:0;">
         <div class="dim-name" id="dim-name"></div>
         <div class="dim-desc" id="dim-desc"></div>
         <div class="dim-counter" id="dim-counter"></div>
@@ -730,6 +732,59 @@ var savedResultId = null;
 var currentResultData = null;
 
 // ── FIREBASE ─────────────────────────────────────────────────────────────────
+// Load profile data from Firebase to prefill the comparison tool
+var _profileData = null;
+(function loadProfileFromFirebase(){
+  var auth = window.fbAuth;
+  var db = window.fbDb;
+  if(!auth || !db) return;
+  auth.onAuthStateChanged(function(user){
+    if(!user) return;
+    db.collection('profiles').doc(user.uid).get().then(function(doc){
+      if(!doc.exists) return;
+      var data = doc.data();
+      _profileData = data;
+      // Show banner
+      var banner = document.getElementById('profile-loaded-banner');
+      if(banner) banner.style.display = 'block';
+      // Pre-fill comparison fields if they exist (shown after assessment completes)
+      prefillComparisonFromProfile(data);
+    }).catch(function(){});
+  });
+})();
+
+function prefillComparisonFromProfile(data){
+  var milExps = data.milExperiences || data.experiences || [];
+  var firstMil = milExps.find(function(e){return e.type && e.type.includes('Military');}) || milExps[0];
+  if(!firstMil) return;
+
+  // MOS field
+  var mosEl = document.getElementById('cmpMOS');
+  if(mosEl && !mosEl.value && firstMil.mos) mosEl.value = firstMil.mos + (firstMil.mosTitle ? ' (' + firstMil.mosTitle + ')' : '');
+
+  // Rank field
+  var rankEl = document.getElementById('cmpRank');
+  if(rankEl && firstMil.rank){
+    var opts = rankEl.options;
+    for(var i=0;i<opts.length;i++){
+      if(opts[i].text.includes(firstMil.rank)){ rankEl.selectedIndex=i; break; }
+    }
+  }
+
+  // Clearance
+  var clrEl = document.getElementById('cmpClearance');
+  if(clrEl && firstMil.clearanceLevel){
+    var cl = (firstMil.clearanceLevel||'').toLowerCase();
+    if(cl.includes('ts/sci') || cl.includes('tssci')) clrEl.value='tssci';
+    else if(cl.includes('top secret')) clrEl.value='ts';
+    else if(cl.includes('secret')) clrEl.value='secret';
+  }
+
+  // Duties
+  var dutEl = document.getElementById('cmpDuties');
+  if(dutEl && !dutEl.value && firstMil.duties) dutEl.value = firstMil.duties.slice(0, 500);
+}
+
 function getUid(){
   var auth = window.fbAuth;
   if(auth && auth.currentUser) return auth.currentUser.uid;
@@ -836,7 +891,19 @@ function renderDim(){
   iconEl.style.background = dim.color + '22';
   document.getElementById('dim-name').textContent = dim.name;
   document.getElementById('dim-desc').textContent = dim.desc;
-  document.getElementById('dim-counter').textContent = 'Section ' + (curDim+1) + ' of ' + DIMS.length + ' · ' + dim.questions.length + ' questions';
+  document.getElementById('dim-counter').textContent = 'Section ' + (curDim+1) + ' of ' + DIMS.length + ' — ' + dim.questions.length + ' questions';
+
+  // Render progress dots
+  var dotsEl = document.getElementById('dim-dots');
+  if(dotsEl){
+    dotsEl.innerHTML = DIMS.map(function(d,i){
+      var allAnswered = Object.keys(answers[d.id]||{}).length === d.questions.length;
+      var isCurrent = i === curDim;
+      var color = allAnswered ? d.color : isCurrent ? d.color : 'rgba(255,255,255,.1)';
+      var size = isCurrent ? '36px' : '28px';
+      return '<div title="'+d.name+'" style="width:'+size+';height:'+size+';border-radius:50%;background:'+color+';display:flex;align-items:center;justify-content:center;font-size:'+(isCurrent?'1rem':'.82rem')+';cursor:pointer;transition:all .2s;border:2px solid '+(isCurrent?'#fff':'transparent')+';box-shadow:'+(isCurrent?'0 0 0 3px rgba(255,255,255,.15)':'none')+'" onclick="jumpToDim('+i+')">'+(allAnswered?'✓':d.icon)+'</div>';
+    }).join('');
+  }
   document.getElementById('btn-back').style.display = curDim === 0 ? 'none' : 'flex';
 
   var list = document.getElementById('qlist');

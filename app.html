@@ -44,7 +44,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-      const firebaseConfig = {
+    const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -1412,6 +1412,10 @@ body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-
 .user-bar button:hover{background:rgba(255,255,255,.18);}
 .tabs{display:flex;background:#ffffff;border-bottom:2px solid var(--border);padding:0 .5rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(26,58,107,.06);}
 .tab{flex:1;padding:.75rem .5rem .65rem;background:transparent;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:.82rem;color:#7a90a8;letter-spacing:.1em;transition:all .2s;}
+.tab.ai-tab{background:rgba(200,150,10,.05);border-bottom-color:rgba(200,150,10,.15);}
+.tab.ai-tab:hover{background:rgba(200,150,10,.1);color:#c8960a;}
+.tab.ai-tab.active{color:#c8960a!important;border-bottom-color:#c8960a!important;background:rgba(200,150,10,.08)!important;}
+.tabs-separator{display:flex;align-items:center;color:#dde3ec;font-size:.6rem;letter-spacing:.08em;flex-shrink:0;padding:0 .25rem;user-select:none;font-weight:700;}
 .tab.on,.tab.active{color:var(--navy);border-bottom-color:var(--gold);background:linear-gradient(180deg,transparent,rgba(200,150,10,.04));}
 .tab:hover:not(.on):not(.active){color:var(--navy);background:rgba(26,58,107,.03);}
 .tab-n{font-size:.55rem;display:block;opacity:.6;margin-top:.1rem;font-family:'Inter',sans-serif;font-weight:500;}
@@ -3600,7 +3604,7 @@ function App() {
   const buildExpSummary = () => {
     const milParts = milExperiences.map(e=>{
       const rolesStr = (e.mosRoles||[]).length
-        ? "Sub-roles: "+(e.mosRoles.map(r=>r.title+" ("+r.duration+")").join(", "))
+        ? "Positions held: "+(e.mosRoles.map(r=>[r.title,r.rankAtRole,r.fromYear&&r.toYear?r.fromYear+"-"+r.toYear:"",r.keyDuty].filter(Boolean).join(", ")).join(" | "))
         : "";
       const awardsStr = (e.awards||[]).length ? "Awards: "+((e.awards||[]).join(", ")) : "";
       const qualStr = [
@@ -3639,7 +3643,7 @@ function App() {
           (e.asi&&e.asi.length) ? "ASIs: " + e.asi.map(a=>a.code+" - "+a.desc).join(", ") : null,
           (e.sqi&&e.sqi.length) ? "SQIs: " + e.sqi.map(s=>s.code+" - "+s.desc).join(", ") : null,
           (e.additionalDuties&&e.additionalDuties.length) ? "Additional Duties: " + e.additionalDuties.join(", ") : null,
-          (e.mosRoles&&e.mosRoles.length) ? "Roles held: " + e.mosRoles.map(r=>r.title+" ("+r.duration+")").join(", ") : null,
+          (e.mosRoles&&e.mosRoles.length) ? "Career progression: " + e.mosRoles.map(r=>(r.fromYear?r.fromYear:"")+(r.toYear?"-"+r.toYear:"")+" "+r.rankAtRole+" "+r.title+(r.keyDuty?": "+r.keyDuty:"")).filter(s=>s.trim()).join(" → ") : null,
           (e.awards&&e.awards.length) ? "Awards: " + e.awards.join(", ") : null,
           (e.clearanceLevel&&e.clearanceLevel!=="None") ? "Clearance: " + e.clearanceLevel + " " + (e.clearanceStatus||"Active") : null,
           "Duties: " + (e.duties||"not described"),
@@ -3861,7 +3865,7 @@ Use this exact structure:
       ((e.sqi&&e.sqi.length) ? " SQIs:"+e.sqi.map(s=>s.code+"-"+s.desc).join(",") : "") +
       ((e.awards&&e.awards.length) ? " Awards:"+e.awards.join(",") : "") +
       ((e.additionalDuties&&e.additionalDuties.length) ? " Duties:"+e.additionalDuties.join(",") : "") +
-      ((e.mosRoles&&e.mosRoles.length) ? " Roles:"+e.mosRoles.map(r=>r.title+"("+r.duration+")").join(",") : "") +
+      ((e.mosRoles&&e.mosRoles.length) ? " Progression:"+e.mosRoles.map(r=>(r.fromYear||"")+"-"+(r.toYear||"")+" "+r.rankAtRole+" "+r.title).join(" → ") : "") +
       " Clearance:" + (e.clearanceLevel||"None") +
       " Deployments:" + (e.deployments||"none") +
       " Duties:" + (e.duties||"not described")
@@ -4123,6 +4127,7 @@ Return this exact JSON structure:
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
 
   const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","My Profile"];
+  const AI_TABS = [2,3,4]; // tabs that are AI-powered tools
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
   const DI = "Defense/Intel";
   const RG = "Reserve/Guard (concurrent with civilian)";
@@ -4424,9 +4429,13 @@ Return this exact JSON structure:
         </div>
         <div className="tabs">
           {TABS.map((t,i)=>(
-            <button key={i} className={"tab "+(tab===i?"active":"")} onClick={()=>setTab(i)}>
-              <span className="tab-n">{i+1}</span>{t}
-            </button>
+            <React.Fragment key={i}>
+              {i===2&&<div className="tabs-separator">AI</div>}
+              {i===5&&<div className="tabs-separator">·</div>}
+              <button className={"tab "+(AI_TABS.includes(i)?"ai-tab ":"")+(tab===i?"active":"")} onClick={()=>setTab(i)}>
+                <span className="tab-n">{AI_TABS.includes(i)?"🤖":i+1}</span>{t}
+              </button>
+            </React.Fragment>
           ))}
         </div>
         <div className="steps">{TABS.map((_,i)=><div key={i} className={"sdot "+(tab===i?"on":"")}/>)}</div>
@@ -4555,40 +4564,76 @@ Return this exact JSON structure:
                     <div className="qual-section">
                       <span className="qual-label">Roles Held Under This MOS</span>
                       <div className="hint" style={{marginBottom:".5rem"}}>
-                        Many veterans hold multiple official roles within their MOS — Truck Master, OPS Clerk, Motor Sergeant, Training NCO, etc. Add each role you held and how long.
+                        Add each official position you held under this MOS — even within the same contract. Example: 88M as Operator (E-4, 2020-2022) → Dispatcher (E-5, 2022-2024) → Platoon Sergeant (E-6, 2024-2026). This shows career progression, not just time served.
                       </div>
                       {(exp.mosRoles||[]).map((role,ri)=>(
-                        <div key={ri} style={{display:"flex",gap:".5rem",alignItems:"flex-end",marginBottom:".4rem",background:"rgba(255,255,255,.05)",padding:".6rem .7rem",borderRadius:"3px",border:"1px solid rgba(201,168,76,.18)"}}>
-                          <div className="field" style={{flex:2,marginBottom:0}}>
-                            <label>Role / Position</label>
-                            <input placeholder="e.g. Truck Master, OPS Clerk, Motor Sergeant, Training NCO..."
-                              value={role.title}
-                              onChange={e=>{
-                                const updated=[...(exp.mosRoles||[])];
-                                updated[ri]={...updated[ri],title:e.target.value};
-                                upMilExp(exp.id,"mosRoles",updated);
-                              }}/>
-                          </div>
-                          <div className="field" style={{flex:1,marginBottom:0}}>
-                            <label>Duration</label>
-                            <input placeholder="e.g. 2 years, 6 months"
-                              value={role.duration}
-                              onChange={e=>{
-                                const updated=[...(exp.mosRoles||[])];
-                                updated[ri]={...updated[ri],duration:e.target.value};
-                                upMilExp(exp.id,"mosRoles",updated);
-                              }}/>
-                          </div>
-                          <button className="btn-rm" style={{marginBottom:".05rem"}}
-                            onClick={()=>{
+                        <div key={ri} style={{marginBottom:".65rem",background:"rgba(255,255,255,.04)",border:"1px solid rgba(201,168,76,.22)",borderRadius:"8px",padding:".85rem .9rem",position:"relative"}}>
+                          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".55rem"}}>
+                            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:".82rem",letterSpacing:".1em",color:"#f0c040"}}>Position {ri+1}</span>
+                            <button className="btn-rm" onClick={()=>{
                               const updated=(exp.mosRoles||[]).filter((_,i)=>i!==ri);
                               upMilExp(exp.id,"mosRoles",updated);
-                            }}>✕</button>
+                            }}>✕ Remove</button>
+                          </div>
+                          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:".5rem",marginBottom:".5rem"}}>
+                            <div className="field" style={{marginBottom:0}}>
+                              <label>Official Position / Role Title</label>
+                              <input placeholder="e.g. Truck Master, Platoon Sergeant, OPS NCO, Dispatcher..."
+                                value={role.title}
+                                onChange={e=>{
+                                  const updated=[...(exp.mosRoles||[])];
+                                  updated[ri]={...updated[ri],title:e.target.value};
+                                  upMilExp(exp.id,"mosRoles",updated);
+                                }}/>
+                            </div>
+                            <div className="field" style={{marginBottom:0}}>
+                              <label>Rank at This Position</label>
+                              <input placeholder="e.g. E-4, E-6, E-7"
+                                value={role.rankAtRole||""}
+                                onChange={e=>{
+                                  const updated=[...(exp.mosRoles||[])];
+                                  updated[ri]={...updated[ri],rankAtRole:e.target.value};
+                                  upMilExp(exp.id,"mosRoles",updated);
+                                }}/>
+                            </div>
+                          </div>
+                          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:".5rem"}}>
+                            <div className="field" style={{marginBottom:0}}>
+                              <label>From (Year)</label>
+                              <input type="number" placeholder="2020" min="1990" max="2030"
+                                value={role.fromYear||""}
+                                onChange={e=>{
+                                  const updated=[...(exp.mosRoles||[])];
+                                  updated[ri]={...updated[ri],fromYear:e.target.value};
+                                  upMilExp(exp.id,"mosRoles",updated);
+                                }}/>
+                            </div>
+                            <div className="field" style={{marginBottom:0}}>
+                              <label>To (Year)</label>
+                              <input type="number" placeholder="2022" min="1990" max="2030"
+                                value={role.toYear||""}
+                                onChange={e=>{
+                                  const updated=[...(exp.mosRoles||[])];
+                                  updated[ri]={...updated[ri],toYear:e.target.value};
+                                  upMilExp(exp.id,"mosRoles",updated);
+                                }}/>
+                            </div>
+                            <div className="field" style={{marginBottom:0}}>
+                              <label>Key Responsibility</label>
+                              <input placeholder="e.g. Led 12-vehicle convoy ops"
+                                value={role.keyDuty||""}
+                                onChange={e=>{
+                                  const updated=[...(exp.mosRoles||[])];
+                                  updated[ri]={...updated[ri],keyDuty:e.target.value};
+                                  upMilExp(exp.id,"mosRoles",updated);
+                                }}/>
+                            </div>
+                          </div>
                         </div>
                       ))}
                       <button className="btn-chip" style={{width:"100%",marginTop:".3rem"}}
-                        onClick={()=>upMilExp(exp.id,"mosRoles",[...(exp.mosRoles||[]),{title:"",duration:""}])}>
-                        + Add Role / Position Held
+                        onClick={()=>upMilExp(exp.id,"mosRoles",[...(exp.mosRoles||[]),{title:"",rankAtRole:"",fromYear:"",toYear:"",keyDuty:""}])}>
+                        + Add Position / Role Under This MOS
                       </button>
                     </div>
 

@@ -139,6 +139,34 @@ body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f2f5fa;font-size:1
   .calc-body{padding:.9rem;}
   .sc-bd{padding:.9rem;}
 }
+
+/* Mobile table overflow fix */
+@media(max-width:700px){
+  /* Make table horizontally scrollable but don't let it bust the page */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100vw;}
+  .ct{font-size:.72rem;min-width:480px;}
+  .ct td,.ct th{padding:.38rem .5rem;}
+  .ct th{white-space:normal;font-size:.65rem;}
+  /* Hide the secondary conditions column on small screens */
+  .ct td:last-child,.ct th:last-child{display:none;}
+  .pct{min-width:26px;height:20px;font-size:.62rem;padding:0 3px;}
+  .pay-tbl{font-size:.72rem;min-width:420px;}
+  .pay-tbl td,.pay-tbl th{padding:.38rem .45rem;}
+  .hero{padding:1.5rem 4%!important;}
+  .hero h1{font-size:clamp(1.6rem,6vw,2.2rem)!important;}
+  .wrap{padding:1rem 3% 3rem!important;}
+  /* Sidebar becomes a compact horizontal scroll on mobile */
+  .sidebar{margin-bottom:.75rem;}
+  .sb-box{max-height:120px;overflow-y:hidden;overflow-x:auto;flex-wrap:nowrap;padding:.5rem;}
+  .sb-link{flex-shrink:0;white-space:nowrap;}
+  /* Calc grid */
+  .calc-grid{grid-template-columns:1fr!important;}
+  /* Result breakdown */
+  .rb-row{font-size:.73rem;}
+}
+@media(max-width:400px){
+  .ct{min-width:360px;font-size:.65rem;}
+}
 </style>
 <meta property="og:title" content="VA Disability Rating Schedule 2026 | CFR 38 Part 4">
 <meta property="og:description" content="Complete 2026 VA disability rating schedule. Every condition, rating percentage, and compensation calculator with dependents, spouse A&A, children, and parents.">

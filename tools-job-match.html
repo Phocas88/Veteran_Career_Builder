@@ -556,13 +556,13 @@ html,body{overflow-x:hidden;max-width:100%;}
   <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem">Subscriber Tool</div>
   <p style="color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:1.5rem;font-weight:300;line-height:1.7">This tool is included with your Veteran Career Path subscription. Sign in to access it - your profile data will pre-fill the form automatically.</p>
   <a href="https://veterancareerpath.com/app.html" style="display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none;margin-bottom:.75rem">Sign In to App</a>
-  <div style="font-size:.78rem;color:rgba(255,255,255,.35);margin-top:.75rem">Don't have a subscription? <a href="https://veterancareerpath.com/app.html" style="color:#c0d8f0">Start $15/month subscription - from $15</a></div>
+  <div style="font-size:.78rem;color:rgba(255,255,255,.35);margin-top:.75rem">Don't have a subscription? <a href="https://veterancareerpath.com/app.html" style="color:#c0d8f0">Start $15/month subscription - </div>
 </div>
   <div id="paywall-wall" style="display:none;text-align:center;padding:3rem 1.5rem;max-width:500px;margin:0 auto">
   <div style="font-size:3rem;margin-bottom:1rem">&#9889;</div>
   <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem">Subscription Required</div>
   <p style="color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:1.5rem;font-weight:300;line-height:1.7">This AI-powered tool is included with a Veteran Career Path subscription. Your profile data auto-fills the form - no re-entering your military background.</p>
-  <a href="https://veterancareerpath.com/app.html" style="display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none">Subscribe — $15/month - from $15</a>
+  <a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none">Subscribe — $15/month - 
   <div style="font-size:.78rem;color:rgba(255,255,255,.35);margin-top:.75rem">Already subscribed? <a href="https://veterancareerpath.com/app.html" style="color:#c0d8f0">Sign in to the app</a> to access this tool</div>
 </div>
 <div style="text-align:center;padding:1.25rem 0;background:transparent;">
@@ -580,7 +580,20 @@ html,body{overflow-x:hidden;max-width:100%;}
       <div class="pb-text">Profile loaded: <span class="pb-name" id="pb-name"></span> &bull; <a href="https://veterancareerpath.com/app.html" style="color:#c0d8f0;font-size:.78rem">Edit profile in app</a></div>
     </div>
     
-<div class="tip"><strong>Your profile auto-filled below.</strong> Just paste or link the job posting - the AI will compare it against your full military background and give you an honest analysis.</div>
+<div class="tip"><strong>Your profile auto-filled below.</strong>
+<br>Or use the <strong>Resume vs Job</strong> tab below to paste your resume and a specific job description for a direct comparison.</div>
+
+<!-- Mode tabs -->
+<div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+  <button id="tab-profile" class="mode-tab active" onclick="switchMode('profile')">🪖 Profile-Based Analysis</button>
+  <button id="tab-resume" class="mode-tab" onclick="switchMode('resume')">📄 Resume vs Job Posting</button>
+</div>
+<style>
+.mode-tab{padding:.45rem 1rem;border-radius:8px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(192,216,240,.75);font-weight:600;font-size:.82rem;cursor:pointer;transition:all .15s;}
+.mode-tab.active{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;border-color:transparent;}
+#resume-mode{display:none;}
+</style>
+<div id="profile-mode"> Just paste or link the job posting - the AI will compare it against your full military background and give you an honest analysis.</div>
 <div class="card-tool">
   <div class="section-head">Job Posting</div>
   <div class="field">
@@ -605,7 +618,41 @@ html,body{overflow-x:hidden;max-width:100%;}
     <a href="https://veterancareerpath.com/app.html" class="btn btn-gold" style="font-size:.78rem;padding:.45rem .9rem">Build Resume for This Role</a>
   </div>
 </div>
+  </div><!-- end profile-mode -->
+
+<!-- RESUME vs JOB MODE -->
+<div id="resume-mode">
+  <div class="tip"><strong>Honest resume-to-job comparison.</strong> Paste your actual resume and the full job description. AI gives you a realistic match score, identifies exact gaps, and tells you what to rewrite.</div>
+  <div class="card-tool">
+    <div class="section-head">Your Resume</div>
+    <div class="field">
+      <label>Paste your full resume text</label>
+      <textarea id="rv-resume" style="min-height:200px" placeholder="Paste your entire resume here — all sections, all experience..."></textarea>
+    </div>
   </div>
+  <div class="card-tool">
+    <div class="section-head">The Job Posting</div>
+    <div class="field">
+      <label>Paste the complete job description</label>
+      <textarea id="rv-job" style="min-height:160px" placeholder="Paste the full job description including requirements, qualifications, and responsibilities..."></textarea>
+    </div>
+    <div class="field" style="margin-top:.75rem;">
+      <label>Your target industry / context (optional)</label>
+      <input type="text" id="rv-context" placeholder="e.g. Federal government, defense contractor, tech company, healthcare...">
+    </div>
+    <button class="btn btn-gold" id="rv-btn" onclick="runResumeVsJob()">📊 Get Honest Match Score</button>
+  </div>
+  <div class="result-box" id="rv-result">
+    <div class="result-title">Your Resume vs Job Analysis</div>
+    <div class="result-text" id="rv-text"></div>
+    <div style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap;">
+      <button class="btn btn-blue" onclick="window.print()" style="font-size:.78rem;padding:.45rem .9rem;">Print Report</button>
+      <a href="https://veterancareerpath.com/app.html" class="btn btn-gold" style="font-size:.78rem;padding:.45rem .9rem;">AI Resume Builder →</a>
+    </div>
+  </div>
+</div>
+
+</div><!-- end tool-content -->
 </div>
 <footer style="background:#0d1f3c;padding:2.5rem 6%;margin-top:2rem;">
   <div style="max-width:1100px;margin:0 auto;">
@@ -946,6 +993,76 @@ RESUME TIPS for this specific application:
     'You are a brutally honest veteran career advisor. Give real scores - most veterans score 45-75, not 90+. Use specific details from their military background. Veterans need accurate assessments, not inflated encouragement.',
     { btn: 'jm-btn', result: 'jm-result', btnLabel: '&#128269; Analyze My Match', maxTokens: 2500 });
 });
+
+function switchMode(mode) {
+  document.getElementById('profile-mode').style.display = mode==='profile' ? '' : 'none';
+  document.getElementById('resume-mode').style.display = mode==='resume' ? '' : 'none';
+  document.getElementById('tab-profile').classList.toggle('active', mode==='profile');
+  document.getElementById('tab-resume').classList.toggle('active', mode==='resume');
+}
+
+function runResumeVsJob() {
+  var resume = (document.getElementById('rv-resume').value||'').trim();
+  var job = (document.getElementById('rv-job').value||'').trim();
+  var ctx = (document.getElementById('rv-context').value||'').trim();
+
+  if (!resume || !job) { alert('Please paste both your resume and the job description.'); return; }
+
+  var btn = document.getElementById('rv-btn');
+  var result = document.getElementById('rv-result');
+  var textEl = document.getElementById('rv-text');
+  btn.textContent = 'Analyzing...';
+  btn.disabled = true;
+  result.style.display = 'block';
+  textEl.innerHTML = '<div style="color:rgba(192,216,240,.5)">Comparing your resume against the job description...</div>';
+
+  var prompt = 'You are a veteran career counselor and expert resume coach. Analyze how well this resume matches the job description.\n\n' +
+    'RESUME:\n' + resume.slice(0,3000) + '\n\n' +
+    'JOB DESCRIPTION:\n' + job.slice(0,2000) + '\n\n' +
+    (ctx ? 'CONTEXT: ' + ctx + '\n\n' : '') +
+    'Provide a structured analysis with these exact sections:\n' +
+    '**MATCH SCORE: X/100**\n' +
+    'One sentence honest verdict.\n\n' +
+    '**WHAT MATCHES WELL**\n' +
+    '3-5 specific strengths from the resume that directly address job requirements.\n\n' +
+    '**CRITICAL GAPS**\n' +
+    '3-5 specific requirements in the job description that are missing or weak in the resume.\n\n' +
+    '**MILITARY LANGUAGE TO TRANSLATE**\n' +
+    'List any military jargon, acronyms, or terms in the resume that a civilian recruiter may not understand. Give the civilian equivalent.\n\n' +
+    '**TOP 3 REWRITES**\n' +
+    'Give the 3 most impactful specific changes. For each: show the BEFORE text from the resume and the improved AFTER version.\n\n' +
+    '**KEYWORDS TO ADD**\n' +
+    '5-8 keywords from the job description that should appear in the resume but currently do not. These are likely ATS filters.\n\n' +
+    'Be specific and honest. If the resume is not a good fit, say so directly with the reasons.';
+
+  fetch(window.VCB_PROXY_URL || 'https://vcp-proxy.vercel.app/api/claude', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1200,
+      messages: [{role:'user', content: prompt}]
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var text = (data.content||[]).map(function(b){return b.text||'';}).join('');
+    // Convert markdown to HTML
+    text = text
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/^(#{1,3}\s.+)$/gm, function(m){return '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:.95rem;letter-spacing:.07em;color:#f0c040;margin:1rem 0 .35rem;">'+m.replace(/^#+\s/,'')+'</div>';})
+      .replace(/\n/g, '<br>');
+    textEl.innerHTML = text;
+    btn.textContent = '📊 Get Honest Match Score';
+    btn.disabled = false;
+  })
+  .catch(function(e){
+    textEl.innerHTML = '<div style="color:#ff8080">Analysis failed. Check connection and try again.</div>';
+    btn.textContent = '📊 Get Honest Match Score';
+    btn.disabled = false;
+  });
+}
+
 </script>
 </body>
 </html>

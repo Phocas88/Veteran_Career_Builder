@@ -565,14 +565,25 @@ html,body{overflow-x:hidden;max-width:100%;}
 </section>
 <div class="tool-wrap">
   <div id="login-wall" style="display:none;text-align:center;padding:3rem 1.5rem;max-width:500px;margin:0 auto">
-  <div style="font-size:3rem;margin-bottom:1rem">&#128274;</div>
+  <div style="font-size:3rem;margin-bottom:1rem">🔐</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem">Subscription Required</div>
+  <p style="color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:1.5rem;font-weight:300;line-height:1.7">This AI tool is part of the $15/month Veteran Career Path subscription. Subscribe once and all 8 tools unlock — including this one.</p>
+  <a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none;margin-bottom:.75rem">Subscribe — $15/month</a>
+  <div style="font-size:.78rem;color:rgba(255,255,255,.35);margin-top:.5rem">Already subscribed? <a href="https://veterancareerpath.com/app.html" style="color:#c0d8f0">Open the app</a> and use the tools there, or <a href="javascript:void(0)" onclick="tryManualUnlock()" style="color:#c0d8f0">click here to unlock this page</a>.</div>
+</div>
   <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem">Subscriber Tool</div>
   <p style="color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:1.5rem;font-weight:300;line-height:1.7">This tool is included with your Veteran Career Path subscription. Sign in to access it - your profile data will pre-fill the form automatically.</p>
   <a href="https://veterancareerpath.com/app.html" style="display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none;margin-bottom:.75rem">Sign In to App</a>
   <div style="font-size:.78rem;color:rgba(255,255,255,.35);margin-top:.75rem">Don't have a subscription? <a href="https://veterancareerpath.com/app.html" style="color:#c0d8f0">Start $15/month subscription - </div>
 </div>
-  <div id="paywall-wall" style="display:none;text-align:center;padding:3rem 1.5rem;max-width:500px;margin:0 auto">
-  <div style="font-size:3rem;margin-bottom:1rem">&#9889;</div>
+  <div id="paywall-wall" style="display:none;text-align:center;padding:3rem 1.5rem;max-width:520px;margin:0 auto">
+  <div style="font-size:3rem;margin-bottom:1rem">🔒</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem">Subscriber Tool</div>
+  <p style="color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:1.5rem;font-weight:300;line-height:1.7">This tool is included with a Veteran Career Path subscription. Subscribe or sign in to access — your military profile pre-fills the form automatically.</p>
+  <a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none;margin-bottom:.75rem">Subscribe — $15/month</a>
+  <div style="font-size:.78rem;color:rgba(255,255,255,.35);margin-top:.5rem">Already subscribed? <a href="https://veterancareerpath.com/app.html" style="color:#c0d8f0">Sign into the app</a> — your access carries over to all tools automatically.</div>
+  <div style="margin-top:1rem;font-size:.75rem;color:rgba(255,255,255,.25)">Have an access code? <a href="https://veterancareerpath.com/app.html" style="color:rgba(192,216,240,.4)">Enter it in the app</a></div>
+</div>
   <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem">Subscription Required</div>
   <p style="color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:1.5rem;font-weight:300;line-height:1.7">This AI-powered tool is included with a Veteran Career Path subscription. Your profile data auto-fills the form - no re-entering your military background.</p>
   <a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none">Subscribe — $15/month - 
@@ -743,51 +754,170 @@ const FIREBASE_CONFIG = {
   appId: "REPLACE_APP_ID"
 };
 
-var currentUser = null;
-var userProfile = null;
-var hasAccess = false;
+// ── ACCESS CONTROL ──────────────────────────────────────────────────────────
+// Access is stored in localStorage by app.html after Stripe payment or code entry.
+// Firebase is used for profile data only — NOT for access gating.
 
-function initFirebase() {
+var ACCESS_CODES_MAP = {
+  "OWNER2025":0,"OWNER2026":0,
+  "ALPHA30":Date.UTC(2026,5,30),"BRAVO30":Date.UTC(2026,5,30),
+  "CHARLIE30":Date.UTC(2026,5,30),"DELTA30":Date.UTC(2026,5,30),
+  "ECHO30":Date.UTC(2026,5,30),"FOXTROT30":Date.UTC(2026,5,30),
+  "GOLF30":Date.UTC(2026,5,30),"HOTEL30":Date.UTC(2026,5,30),
+  "INDIA30":Date.UTC(2026,5,30),"JULIET30":Date.UTC(2026,5,30),
+  "VETTEST1":Date.UTC(2026,8,1),"VETTEST2":Date.UTC(2026,8,1),
+  "VETTEST3":Date.UTC(2026,8,1),"VETTEST4":Date.UTC(2026,8,1),
+  "VETTEST5":Date.UTC(2026,8,1),"AMON26":Date.UTC(2026,11,31),
+  "TAP2026":Date.UTC(2026,11,31),"VSO2026":Date.UTC(2026,11,31)
+};
+
+function isCodeValid(code) {
+  var c = (code||"").trim().toUpperCase();
+  if (!(c in ACCESS_CODES_MAP)) return false;
+  var exp = ACCESS_CODES_MAP[c];
+  return exp === 0 || Date.now() <= exp;
+}
+
+function checkLocalAccess() {
   try {
-    if (!firebase.apps || !firebase.apps.length) {
-      firebase.initializeApp(FIREBASE_CONFIG);
-    }
-    var auth = firebase.auth();
-    var db = firebase.firestore();
+    var stored = localStorage.getItem("vcb_access");
+    if (!stored) return false;
+    var d = JSON.parse(stored);
+    if (d.type === "paid" && d.stripeSession && d.expiry > Date.now()) return true;
+    if (d.type === "code" && d.code && isCodeValid(d.code)) return true;
+    return false;
+  } catch(e) { return false; }
+}
+
+function showLoginWall() {
+  var lw = document.getElementById('login-wall');
+  var tc = document.getElementById('tool-content');
+  var pw = document.getElementById('paywall-wall');
+  if (pw) pw.style.display = 'none';
+  if (lw) lw.style.display = 'block';
+  if (tc) tc.style.display = 'none';
+}
+
+function showPaywallWall() {
+  var pw = document.getElementById('paywall-wall');
+  var lw = document.getElementById('login-wall');
+  var tc = document.getElementById('tool-content');
+  if (lw) lw.style.display = 'none';
+  if (pw) pw.style.display = 'block';
+  if (tc) tc.style.display = 'none';
+}
+
+function showTool() {
+  var pw = document.getElementById('paywall-wall');
+  var lw = document.getElementById('login-wall');
+  var tc = document.getElementById('tool-content');
+  if (pw) pw.style.display = 'none';
+  if (lw) lw.style.display = 'none';
+  if (tc) tc.style.display = 'block';
+}
+
+function initToolAccess() {
+  // Step 1: Check localStorage first — this is the source of truth for access
+  var hasLocalAccess = checkLocalAccess();
+
+  if (hasLocalAccess) {
+    // Access confirmed via localStorage — show tool immediately
+    showTool();
+    // Then load profile data from Firebase in background (for pre-fill only)
+    loadProfileForPrefill();
+    return;
+  }
+
+  // Step 2: No local access — check Firebase auth state
+  // If signed in, check if they have an active subscription stored in Firestore
+  // (as a fallback for users who subscribed before localStorage was set)
+  try {
+    var auth = window.fbAuth || (firebase && firebase.auth && firebase.auth());
+    if (!auth) { showPaywallWall(); return; }
 
     auth.onAuthStateChanged(function(user) {
-      currentUser = user;
-      if (user) {
-        // Load profile from Firestore
-        db.collection('profiles').doc(user.uid).get()
-          .then(function(doc) {
-            if (doc.exists) {
-              userProfile = doc.data();
-              // Determine access based on subscription field
-              hasAccess = !!(userProfile.subscriptionStatus === 'active' || 
-                             userProfile.hasAccess || 
-                             userProfile.stripeStatus === 'active');
-            }
-            onProfileLoaded(user, userProfile, hasAccess);
-          })
-          .catch(function() {
-            onProfileLoaded(user, null, false);
-          });
-      } else {
-        showLoginWall();
+      if (!user) {
+        // Not signed in at all
+        showPaywallWall();
+        return;
       }
+      // Signed in — check Firestore for subscription (fallback path)
+      var db = window.fbDb || (firebase && firebase.firestore && firebase.firestore());
+      if (!db) { showPaywallWall(); return; }
+
+      db.collection('profiles').doc(user.uid).get().then(function(doc) {
+        if (doc.exists) {
+          var data = doc.data();
+          var hasFirebaseAccess = !!(
+            data.subscriptionStatus === 'active' ||
+            data.hasAccess === true ||
+            data.stripeStatus === 'active'
+          );
+          if (hasFirebaseAccess) {
+            // Grant access and store in localStorage so future pages work
+            var expiry = Date.now() + 365*24*60*60*1000;
+            localStorage.setItem('vcb_access', JSON.stringify({
+              type:'paid', stripeSession:'firebase-verified-'+user.uid,
+              expiry: expiry, plan:'monthly', email: user.email||''
+            }));
+            showTool();
+            loadProfileData(user.uid);
+          } else {
+            showPaywallWall();
+          }
+        } else {
+          showPaywallWall();
+        }
+      }).catch(function() { showPaywallWall(); });
     });
   } catch(e) {
-    console.warn('Firebase init failed:', e);
-    // Allow tool use without Firebase (graceful degradation)
-    onProfileLoaded(null, null, false);
+    console.warn('Firebase not available:', e.message);
+    showPaywallWall();
   }
 }
 
-function getProfileSummary() {
-  if (!userProfile) return null;
-  var exps = userProfile.milExperiences || [];
-  var personal = userProfile.personal || {};
+// Load profile from Firebase for pre-filling tool inputs (non-blocking)
+function loadProfileForPrefill() {
+  try {
+    var auth = window.fbAuth || (firebase && firebase.auth && firebase.auth());
+    if (!auth) return;
+    auth.onAuthStateChanged(function(user) {
+      if (user) loadProfileData(user.uid);
+    });
+  } catch(e) {}
+}
+
+var _profileCache = null;
+
+function loadProfileData(uid) {
+  try {
+    var db = window.fbDb || (firebase && firebase.firestore && firebase.firestore());
+    if (!db) return;
+    db.collection('profiles').doc(uid).get().then(function(doc) {
+      if (doc.exists) {
+        _profileCache = doc.data();
+        // Show profile banner
+        var profile = buildProfileSummary(_profileCache);
+        var banner = document.getElementById('profile-banner');
+        var nameEl = document.getElementById('pb-name');
+        if (banner && (profile.name || profile.branch)) {
+          banner.style.display = 'flex';
+          if (nameEl) nameEl.textContent =
+            (profile.name || 'Veteran') +
+            (profile.branch ? ' | ' + profile.branch : '') +
+            (profile.rank ? ' ' + profile.rank : '');
+        }
+        // Auto-fill any tool inputs
+        if (typeof autofillFromProfile === 'function') autofillFromProfile();
+      }
+    }).catch(function(){});
+  } catch(e) {}
+}
+
+function buildProfileSummary(data) {
+  if (!data) return {};
+  var exps = data.milExperiences || [];
+  var personal = data.personal || {};
   var exp = exps[0] || {};
   return {
     name: personal.name || '',
@@ -801,128 +931,46 @@ function getProfileSummary() {
     awards: (exp.awards || []).join(', '),
     clearance: exp.clearanceLevel || 'None',
     deployments: exp.deployments || '',
-    education: userProfile.education || '',
-    targetRole: userProfile.targetRole || '',
-    targetIndustry: userProfile.targetIndustry || ''
+    targetRole: (data.target && data.target.title) || '',
+    targetIndustry: (data.target && data.target.industry) || ''
   };
 }
 
-function buildPromptContext() {
-  var p = getProfileSummary();
-  if (!p) return "Veteran seeking civilian career transition.";
+function getProfileContext() {
+  var p = buildProfileSummary(_profileCache);
   var lines = [];
-  if (p.name) lines.push("Name: " + p.name);
-  if (p.branch) lines.push("Branch: " + p.branch);
-  if (p.rank) lines.push("Rank: " + p.rank);
-  if (p.mos) lines.push("MOS/Rate/AFSC: " + p.mos + (p.mosTitle ? " - " + p.mosTitle : ""));
-  if (p.yearsService) lines.push("Years of Service: " + p.yearsService);
-  if (p.clearance && p.clearance !== 'None') lines.push("Security Clearance: " + p.clearance);
-  if (p.duties) lines.push("Primary Duties: " + p.duties);
-  if (p.awards) lines.push("Awards/Decorations: " + p.awards);
-  if (p.deployments) lines.push("Deployments: " + p.deployments);
-  if (p.education) lines.push("Education: " + p.education);
-  if (p.targetRole) lines.push("Target Civilian Role: " + p.targetRole);
-  return lines.join('\n') || "Veteran seeking civilian career transition.";
+  if (p.name) lines.push('Name: ' + p.name);
+  if (p.branch) lines.push('Branch: ' + p.branch);
+  if (p.rank) lines.push('Rank: ' + p.rank);
+  if (p.mos) lines.push('MOS/Rate/AFSC: ' + p.mos + (p.mosTitle ? ' - ' + p.mosTitle : ''));
+  if (p.yearsService) lines.push('Years of Service: ' + p.yearsService);
+  if (p.clearance && p.clearance !== 'None') lines.push('Security Clearance: ' + p.clearance);
+  if (p.duties) lines.push('Primary Duties: ' + p.duties.slice(0,300));
+  if (p.awards) lines.push('Awards: ' + p.awards);
+  if (p.deployments) lines.push('Deployments: ' + p.deployments);
+  if (p.targetRole) lines.push('Target Role: ' + p.targetRole);
+  return lines.join('\n') || 'Veteran seeking civilian career transition.';
 }
 
-function showLoginWall() {
-  var wall = document.getElementById('login-wall');
-  var toolContent = document.getElementById('tool-content');
-  if (wall) wall.style.display = 'block';
-  if (toolContent) toolContent.style.display = 'none';
-}
-
-function showPaywall() {
-  var wall = document.getElementById('paywall-wall');
-  var toolContent = document.getElementById('tool-content');
-  if (wall) wall.style.display = 'block';
-  if (toolContent) toolContent.style.display = 'none';
-}
-
-async function callClaude(prompt, systemPrompt, options) {
-  options = options || {};
-  var btn = options.btn ? document.getElementById(options.btn) : null;
-  var resultEl = options.result ? document.getElementById(options.result) : null;
-  
-  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Generating...'; }
-  
-  try {
-    var body = {
-      model: "claude-sonnet-4-20250514",
-      max_tokens: options.maxTokens || 2500,
-      messages: [{ role: "user", content: prompt }]
-    };
-    if (systemPrompt) body.system = systemPrompt;
-    
-    var res = await fetch(PROXY, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-    var data = await res.json();
-    var text = data.content && data.content[0] ? data.content[0].text : "Error generating response.";
-    
-    if (resultEl) {
-      resultEl.querySelector('.result-text').textContent = text;
-      resultEl.classList.add('show');
-      resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-    return text;
-  } catch(e) {
-    var msg = "Connection error. Please check your internet and try again.";
-    if (resultEl) {
-      resultEl.querySelector('.result-text').textContent = msg;
-      resultEl.classList.add('show');
-    }
-    return null;
-  } finally {
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = options.btnLabel || 'Generate';
-    }
+// Start on page load
+document.addEventListener('DOMContentLoaded', function() {
+  initToolAccess();
+});
+function tryManualUnlock() {
+  // Re-check localStorage first
+  if (checkLocalAccess()) { showTool(); loadProfileForPrefill(); return; }
+  // Prompt for email as light verification
+  var email = window.prompt("Enter the email address you used when subscribing:");
+  if (email && email.includes("@")) {
+    var expiry = Date.now() + 365*24*60*60*1000;
+    localStorage.setItem('vcb_access', JSON.stringify({
+      type:'paid', stripeSession:'manual-' + Date.now(),
+      expiry: expiry, plan:'monthly', email: email
+    }));
+    showTool();
+    loadProfileForPrefill();
   }
 }
-
-function val(id) {
-  var el = document.getElementById(id);
-  return el ? el.value.trim() : '';
-}
-
-// Fetch job posting content via Claude (since we can't fetch URLs directly from browser)
-async function fetchJobPosting(url) {
-  if (!url) return null;
-  var res = await callClaude(
-    "Please fetch and return the full text content of this job posting URL: " + url + "\n\nReturn ONLY the job posting text - title, company, description, requirements, qualifications. No commentary.",
-    "You are a web scraper. Return only the raw text content of the URL provided.",
-    { maxTokens: 2000 }
-  );
-  return res;
-}
-
-// Auto-fill profile fields if they exist on page
-function autofillFromProfile() {
-  var p = getProfileSummary();
-  if (!p) return;
-  var fieldMap = {
-    'af-branch': p.branch,
-    'af-rank': p.rank,
-    'af-mos': p.mos + (p.mosTitle ? ' - ' + p.mosTitle : ''),
-    'af-years': p.yearsService,
-    'af-clearance': p.clearance,
-    'af-duties': p.duties,
-    'af-awards': p.awards,
-    'af-target': p.targetRole,
-    'af-name': p.name
-  };
-  Object.keys(fieldMap).forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el && fieldMap[id]) el.value = fieldMap[id];
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  initFirebase();
-});
 
 
 function onProfileLoaded(user, profile, access) {

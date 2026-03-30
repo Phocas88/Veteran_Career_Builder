@@ -4,10 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TAP Counselor Resource Pack | Veteran Career Path</title>
-<meta name="description" content="Free resource pack for TAP counselors and VSOs — printable one-pager with QR codes linking to every major veteran career, benefits, and transition tool on VeteranCareerPath.com.">
+<meta name="description" content="Free printable resource guide for TAP counselors and VSOs. Every veteran career, benefits, and transition tool on VeteranCareerPath.com — organized and print-ready.">
 <link rel="canonical" href="https://veterancareerpath.com/tap-resource-pack.html">
 <link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/logo.png">
-<link rel="manifest" href="/manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
@@ -489,258 +488,238 @@ html,body{overflow-x:hidden;max-width:100%;}
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;color:#1a2a3a;}
+
+/* ── SCREEN STYLES (non-print) ─────────────────────────────────────────────── */
 .hero{background:linear-gradient(160deg,#060f1e,#0d1f3c 55%,#1a3a6b);padding:2.5rem 5% 2rem;color:#fff;}
 .hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(200,150,10,.12);border:1px solid rgba(200,150,10,.3);border-radius:100px;padding:.25rem .85rem;font-size:.68rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#f0c040;margin-bottom:.75rem;}
 .hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.9rem,4vw,2.8rem);letter-spacing:.06em;line-height:1.05;margin-bottom:.5rem;}
 .hero h1 em{color:#f0c040;font-style:normal;}
 .hero p{font-size:.9rem;color:rgba(192,216,240,.8);max-width:620px;line-height:1.7;}
-.wrap{max-width:1060px;margin:0 auto;padding:1.75rem 5% 3rem;}
-.intro-card{background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 1px 6px rgba(26,58,107,.05);}
-.intro-card h2{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#0d1f3c;margin-bottom:.75rem;}
-.intro-card p{font-size:.88rem;line-height:1.75;color:#3a4a5a;margin-bottom:.75rem;}
-.intro-card p:last-child{margin-bottom:0;}
-.contact-box{background:#eef6ff;border:1px solid rgba(26,58,107,.2);border-left:4px solid #1a3a6b;border-radius:8px;padding:1rem 1.1rem;margin:1rem 0;font-size:.85rem;color:#1a2a3a;line-height:1.7;}
-.contact-box strong{color:#0d1f3c;}
-.btn-print{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.92rem;padding:.75rem 1.75rem;border-radius:9px;cursor:pointer;border:none;margin-bottom:1rem;margin-right:.5rem;font-family:'Inter',sans-serif;}
-.btn-print:hover{opacity:.9;}
+.screen-wrap{max-width:860px;margin:0 auto;padding:2rem 5%;}
+.info-card{background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;box-shadow:0 1px 6px rgba(26,58,107,.05);}
+.info-card h2{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#0d1f3c;margin-bottom:.75rem;}
+.info-card p{font-size:.87rem;line-height:1.75;color:#3a4a5a;margin-bottom:.65rem;}
+.info-card p:last-child{margin-bottom:0;}
+.contact-box{background:#eef6ff;border:1px solid rgba(26,58,107,.2);border-left:4px solid #1a3a6b;border-radius:8px;padding:.9rem 1rem;font-size:.84rem;color:#1a2a3a;line-height:1.7;margin:1rem 0;}
+.btn-row{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:1rem;}
+.btn-print{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.9rem;padding:.72rem 1.6rem;border-radius:9px;cursor:pointer;border:none;font-family:'Inter',sans-serif;}
+.btn-view{display:inline-flex;align-items:center;gap:.4rem;background:#0d1f3c;color:#fff;font-weight:700;font-size:.9rem;padding:.72rem 1.6rem;border-radius:9px;text-decoration:none;}
 
-/* PRINTABLE PACK */
-.pack{background:#fff;border:2px solid #0d1f3c;border-radius:12px;overflow:hidden;max-width:800px;margin:0 auto;}
-.pack-header{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);padding:1.5rem 2rem;text-align:center;}
-.pack-header-logo{width:48px;height:48px;margin-bottom:.5rem;object-fit:contain;filter:brightness(0) invert(1);}
-.pack-header h1{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.12em;color:#f0c040;margin-bottom:.15rem;}
-.pack-header p{font-size:.82rem;color:rgba(192,216,240,.75);}
-.pack-body{padding:1.5rem 2rem;}
-.pack-intro{font-size:.85rem;color:#3a4a5a;line-height:1.7;margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:2px solid #f0f4fa;}
-.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
-@media(max-width:600px){.pack-grid{grid-template-columns:1fr;}}
-.pack-section{border:1px solid #dde3ec;border-radius:10px;overflow:hidden;}
-.pack-section-header{background:#f8fafd;padding:.55rem .85rem;font-family:'Bebas Neue',sans-serif;font-size:.88rem;letter-spacing:.1em;color:#0d1f3c;border-bottom:1px solid #dde3ec;display:flex;align-items:center;gap:.4rem;}
-.pack-links{padding:.5rem .85rem;}
-.pack-link{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid #f8fafd;gap:.5rem;}
+/* ── PACK (the printable sheet) ────────────────────────────────────────────── */
+.pack{background:#fff;border:2px solid #0d1f3c;border-radius:12px;overflow:hidden;max-width:860px;margin:0 auto 2rem;}
+
+.pack-header{background:#0d1f3c;padding:1.1rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+.pack-header-logo{width:36px;height:36px;object-fit:contain;filter:brightness(0) invert(1);flex-shrink:0;}
+.pack-header-text h1{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:.1em;color:#f0c040;line-height:1;}
+.pack-header-text p{font-size:.72rem;color:rgba(192,216,240,.6);margin-top:.15rem;}
+
+.pack-intro{padding:.75rem 1.5rem;background:#f8fafd;border-bottom:1px solid #e8ecf4;font-size:.78rem;color:#3a4a5a;line-height:1.6;}
+.pack-intro strong{color:#0d1f3c;}
+
+.pack-body{padding:1rem 1.5rem;}
+
+/* 2-column grid for link sections */
+.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem;}
+
+/* Each category block */
+.pack-cat{border:1px solid #e0e6f0;border-radius:8px;overflow:hidden;}
+.pack-cat-header{background:#0d1f3c;padding:.45rem .75rem;display:flex;align-items:center;gap:.4rem;}
+.pack-cat-header span{font-family:'Bebas Neue',sans-serif;font-size:.82rem;letter-spacing:.1em;color:#fff;}
+.pack-cat-header .cat-icon{font-size:.95rem;}
+
+/* Link rows */
+.pack-link{display:flex;justify-content:space-between;align-items:baseline;padding:.28rem .75rem;border-bottom:1px solid #f0f4fa;gap:.5rem;}
 .pack-link:last-child{border-bottom:none;}
-.pack-link-text{font-size:.78rem;font-weight:600;color:#1a2a3a;flex:1;}
-.pack-link-url{font-size:.65rem;color:#8a9ab0;font-family:monospace;flex-shrink:0;}
-.pack-qr{width:40px;height:40px;background:#f0f4fa;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:#8a9ab0;text-align:center;flex-shrink:0;}
-.pack-footer{background:#f8fafd;padding:.85rem 2rem;border-top:2px solid #f0f4fa;text-align:center;font-size:.72rem;color:#8a9ab0;}
-.pack-footer strong{color:#0d1f3c;}
+.pack-link-name{font-size:.75rem;font-weight:600;color:#1a2a3a;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pack-link-url{font-size:.65rem;color:#7a8fa8;font-family:monospace;flex-shrink:0;white-space:nowrap;}
 
-.crisis-section{background:linear-gradient(135deg,#1a0505,#3a0808);border-radius:8px;padding:.85rem 1rem;margin:1rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;}
-.crisis-section .cs-text h4{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.08em;color:#fff;margin-bottom:.2rem;}
-.crisis-section .cs-text p{font-size:.72rem;color:rgba(255,180,180,.75);}
-.crisis-btns{display:flex;gap:.35rem;flex-wrap:wrap;}
-.crisis-btns a{background:rgba(200,50,50,.25);border:1px solid rgba(200,50,50,.4);color:#ffb0b0;font-size:.72rem;font-weight:700;padding:.28rem .6rem;border-radius:5px;text-decoration:none;}
+/* MOS row — horizontal layout */
+.mos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#e0e6f0;margin-bottom:.85rem;}
+.mos-cell{background:#fff;padding:.35rem .65rem;}
+.mos-cell-branch{font-size:.73rem;font-weight:700;color:#0d1f3c;}
+.mos-cell-url{font-size:.63rem;color:#7a8fa8;font-family:monospace;}
 
-@media print{
-  .vcp-nav,.vcp-drop,.vcp-mob,.intro-card,.btn-print{display:none!important;}
-  body{background:#fff!important;}
-  .pack{border:1px solid #0d1f3c;max-width:100%;margin:0;}
-  .pack-header{background:#0d1f3c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  .crisis-section{background:#3a0808!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  .pack-section-header{background:#f8fafd!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+/* Crisis strip */
+.pack-crisis{background:#2a0505;padding:.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.pack-crisis-text h3{font-family:'Bebas Neue',sans-serif;font-size:.88rem;letter-spacing:.08em;color:#fff;margin-bottom:.1rem;}
+.pack-crisis-text p{font-size:.67rem;color:rgba(255,180,180,.65);}
+.pack-crisis-btns{display:flex;gap:.4rem;flex-wrap:wrap;}
+.pack-crisis-btn{background:rgba(200,50,50,.22);border:1px solid rgba(200,50,50,.4);color:#ffb0b0;font-size:.67rem;font-weight:700;padding:.22rem .6rem;border-radius:5px;white-space:nowrap;}
+
+.pack-footer{background:#f8fafd;border-top:1px solid #e8ecf4;padding:.6rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;}
+.pack-footer-main{font-size:.72rem;font-weight:700;color:#0d1f3c;}
+.pack-footer-sub{font-size:.65rem;color:#8a9ab0;}
+
+/* ── PRINT STYLES ──────────────────────────────────────────────────────────── */
+@media print {
+  @page{margin:.4in .35in;size:letter portrait;}
+  body{background:#fff!important;font-size:10pt;}
+  .vcp-nav,.vcp-drop,.vcp-mob,.hero,.screen-wrap,.info-card{display:none!important;}
+  .pack{border:1.5pt solid #0d1f3c;border-radius:0;max-width:100%;margin:0;box-shadow:none;}
+  .pack-header{background:#0d1f3c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:.6rem .85rem;}
+  .pack-header-text h1{font-size:14pt!important;}
+  .pack-header-text p{font-size:7pt!important;}
+  .pack-intro{padding:.4rem .85rem;font-size:7pt;}
+  .pack-body{padding:.5rem .85rem;}
+  .pack-grid{gap:.45rem;margin-bottom:.45rem;}
+  .pack-cat-header{background:#0d1f3c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:.3rem .55rem;}
+  .pack-cat-header span{font-size:8pt!important;}
+  .pack-link{padding:.18rem .55rem;}
+  .pack-link-name{font-size:7.5pt;}
+  .pack-link-url{font-size:6.5pt;}
+  .mos-grid{margin-bottom:.45rem;}
+  .mos-cell{padding:.22rem .5rem;}
+  .mos-cell-branch{font-size:7.5pt;}
+  .mos-cell-url{font-size:6.5pt;}
+  .pack-crisis{background:#1a0202!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:.45rem .85rem;}
+  .pack-crisis-text h3{font-size:8.5pt!important;}
+  .pack-crisis-text p{font-size:6.5pt!important;}
+  .pack-crisis-btn{font-size:6.5pt!important;}
+  .pack-footer{padding:.35rem .85rem;}
+  .pack-footer-main{font-size:7pt;}
+  .pack-footer-sub{font-size:6pt;}
 }
 </style>
 </head>
 <body>
+
+<!-- Screen hero (hidden on print) -->
 <div class="hero">
   <div class="hero-badge">🎖 TAP Counselors · VSOs · Installation Offices</div>
   <h1>TAP Counselor<br><em>Resource Pack</em></h1>
-  <p>Free printable resource guide for TAP counselors, VSOs, and installation transition offices. Print one for every transitioning service member — every tool and resource is free to access, no account required.</p>
+  <p>Free printable resource guide for TAP counselors, VSOs, and installation transition offices. Every tool on this sheet is free to access — no account, no payment required.</p>
 </div>
 
-<div class="wrap">
-  <div class="intro-card">
+<div class="screen-wrap">
+  <div class="info-card">
     <h2>For TAP Counselors and VSOs</h2>
-    <p>Veteran Career Path is a free platform covering every stage of military transition — career tools, VA benefits calculators, MOS guides, GI Bill resources, mental health, legal rights, and state benefits. The resources listed in this pack require no account and no payment. The AI tools are $15/month but are not required to use the free resources.</p>
-    <p>This one-pager can be printed and handed to service members at their TAP appointment as a reference they can use long after they leave service. We also have an installation-specific version available — contact us to request a customized pack for your installation or VSO chapter.</p>
+    <p>Veteran Career Path is a free platform covering every stage of military transition — career tools, VA benefits calculators, MOS guides, GI Bill resources, mental health, legal rights, and state benefits. Everything listed on this sheet requires no account and no payment. The AI tools are $15/month but are not required.</p>
+    <p>Print this sheet and hand it to service members at their TAP appointment. It fits on one page and contains the URLs they need for every major resource.</p>
     <div class="contact-box">
-      <strong>Want to partner with us or get customized materials for your installation?</strong><br>
-      Email us at <a href="/cdn-cgi/l/email-protection#91e5f0e1d1e7f4e5f4e3f0fff2f0e3f4f4e3e1f0e5f9bff2fefc" style="color:#1a3a6b;font-weight:600;"><span class="__cf_email__" data-cfemail="72061302320417061700131c1113001717000213061a5c111d1f">[email&#160;protected]</span></a> · We work with TAP offices, VSOs, and veteran nonprofits at no cost.
+      <strong>Want to partner with us or get installation-specific materials?</strong><br>
+      Email <a href="mailto:tap@veterancareerpath.com" style="color:#1a3a6b;font-weight:600;">tap@veterancareerpath.com</a> — we work with TAP offices and VSOs at no cost.
     </div>
-    <button class="btn-print" onclick="window.print()">🖨️ Print Resource Pack</button>
-    <a href="https://veterancareerpath.com" style="display:inline-flex;align-items:center;gap:.4rem;background:#0d1f3c;color:#fff;font-weight:700;font-size:.92rem;padding:.75rem 1.75rem;border-radius:9px;text-decoration:none;margin-bottom:1rem;">View Full Platform →</a>
-  </div>
-
-  <!-- PRINTABLE PACK -->
-  <div class="pack" id="printable-pack">
-    <div class="pack-header">
-      <img src="https://veterancareerpath.com/logo.png" alt="VCP" class="pack-header-logo">
-      <h1>VETERAN CAREER PATH</h1>
-      <p>veterancareerpath.com · The Complete Platform for Veterans & Transitioning Service Members</p>
-    </div>
-    <div class="pack-body">
-      <div class="pack-intro">
-        <strong>VeteranCareerPath.com</strong> is a free platform with 600+ pages covering career transition, VA benefits, education, finance, legal rights, and mental health resources. No account required for any of the resources below. Bookmark this page or scan any QR code to go directly to the tool.
-      </div>
-
-      <div class="pack-grid">
-
-        <div class="pack-section">
-          <div class="pack-section-header">🎯 Career Transition</div>
-          <div class="pack-links">
-            <div class="pack-link">
-              <span class="pack-link-text">Free Career Assessment (10 questions)</span>
-              <span class="pack-link-url">veterancareerpath.com/free-assessment.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">MOS → Civilian Career Translator</span>
-              <span class="pack-link-url">veterancareerpath.com/mos-career-translator.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">Military Resume Guide</span>
-              <span class="pack-link-url">veterancareerpath.com/military-civilian-resume.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">Action Verbs & Power Nouns (600+)</span>
-              <span class="pack-link-url">veterancareerpath.com/veteran-action-verbs.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">Federal Jobs Search (live USAJobs)</span>
-              <span class="pack-link-url">veterancareerpath.com/federal-jobs-search.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">ETS Transition Checklist (personalized)</span>
-              <span class="pack-link-url">veterancareerpath.com/ets-transition-checklist.html</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="pack-section">
-          <div class="pack-section-header">🏥 VA Benefits</div>
-          <div class="pack-links">
-            <div class="pack-link">
-              <span class="pack-link-text">VA Disability Rating Schedule 2026</span>
-              <span class="pack-link-url">veterancareerpath.com/va-disability-rating-schedule.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">Compensation Calculator (with dependents)</span>
-              <span class="pack-link-url">veterancareerpath.com/va-disability-benefits-calculator.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">VA Disability Claim Checklist</span>
-              <span class="pack-link-url">veterancareerpath.com/va-disability-claim-checklist.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">VA Home Loan Guide</span>
-              <span class="pack-link-url">veterancareerpath.com/va-home-loan-guide.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">TRICARE After Separation</span>
-              <span class="pack-link-url">veterancareerpath.com/tricare-after-separation.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">Full VA Benefits Checklist</span>
-              <span class="pack-link-url">veterancareerpath.com/va-benefits-checklist.html</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="pack-section">
-          <div class="pack-section-header">🎓 Education & GI Bill</div>
-          <div class="pack-links">
-            <div class="pack-link">
-              <span class="pack-link-text">GI Bill School Comparison Tool</span>
-              <span class="pack-link-url">veterancareerpath.com/gi-bill-school-comparison.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">GI Bill BAH Maximizer</span>
-              <span class="pack-link-url">veterancareerpath.com/gi-bill-bah-maximizer.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">GI Bill vs VR&E Calculator</span>
-              <span class="pack-link-url">veterancareerpath.com/gi-bill-vs-vre-calculator.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">SkillBridge Program Guide</span>
-              <span class="pack-link-url">veterancareerpath.com/skillbridge-program-guide.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">Certification Roadmap</span>
-              <span class="pack-link-url">veterancareerpath.com/veteran-certification-roadmap.html</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="pack-section">
-          <div class="pack-section-header">💰 Finance & Legal</div>
-          <div class="pack-links">
-            <div class="pack-link">
-              <span class="pack-link-text">Reenlist vs Separate Calculator</span>
-              <span class="pack-link-url">veterancareerpath.com/should-i-reenlist-calculator.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">Military Retirement Pay Calculator</span>
-              <span class="pack-link-url">veterancareerpath.com/military-retirement-pay-calculator.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">PCS / ETS Move Calculator</span>
-              <span class="pack-link-url">veterancareerpath.com/pcs-ets-move-calculator.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">SCRA Legal Rights Guide</span>
-              <span class="pack-link-url">veterancareerpath.com/scra-guide-for-veterans.html</span>
-            </div>
-            <div class="pack-link">
-              <span class="pack-link-text">State Veterans Benefits (all 50)</span>
-              <span class="pack-link-url">veterancareerpath.com/state-veteran-benefits.html</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- MOS GUIDES -->
-      <div class="pack-section" style="margin-bottom:1rem;">
-        <div class="pack-section-header">⭐ MOS / Rate / AFSC Career Guides (561 guides, all branches)</div>
-        <div class="pack-links" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;">
-          <div class="pack-link" style="flex-direction:column;align-items:flex-start;padding:.4rem .85rem;">
-            <span class="pack-link-text">Army MOS</span>
-            <span class="pack-link-url">veterancareerpath.com/army-mos-careers.html</span>
-          </div>
-          <div class="pack-link" style="flex-direction:column;align-items:flex-start;padding:.4rem .85rem;">
-            <span class="pack-link-text">Navy Rates</span>
-            <span class="pack-link-url">veterancareerpath.com/navy-rate-careers.html</span>
-          </div>
-          <div class="pack-link" style="flex-direction:column;align-items:flex-start;padding:.4rem .85rem;">
-            <span class="pack-link-text">Marine Corps MOS</span>
-            <span class="pack-link-url">veterancareerpath.com/marine-corps-mos-careers.html</span>
-          </div>
-          <div class="pack-link" style="flex-direction:column;align-items:flex-start;padding:.4rem .85rem;border-bottom:none;">
-            <span class="pack-link-text">Air Force AFSC</span>
-            <span class="pack-link-url">veterancareerpath.com/air-force-afsc-careers.html</span>
-          </div>
-          <div class="pack-link" style="flex-direction:column;align-items:flex-start;padding:.4rem .85rem;border-bottom:none;">
-            <span class="pack-link-text">Coast Guard</span>
-            <span class="pack-link-url">veterancareerpath.com/coast-guard-rating-careers.html</span>
-          </div>
-          <div class="pack-link" style="flex-direction:column;align-items:flex-start;padding:.4rem .85rem;border-bottom:none;">
-            <span class="pack-link-text">Space Force</span>
-            <span class="pack-link-url">veterancareerpath.com/space-force-afsc-careers.html</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- CRISIS STRIP -->
-      <div class="crisis-section">
-        <div class="cs-text">
-          <h4>🆘 If You or a Veteran Are in Crisis</h4>
-          <p>Veterans Crisis Line — free, confidential, 24/7</p>
-        </div>
-        <div class="crisis-btns">
-          <a href="tel:988">📞 Call/Text 988 — Press 1</a>
-          <a href="sms:838255">💬 Text 838255</a>
-          <a href="https://veterancareerpath.com/veteran-mental-health-resources.html">Find Local Help</a>
-        </div>
-      </div>
-
-    </div>
-    <div class="pack-footer">
-      <strong>VeteranCareerPath.com</strong> — Free for all veterans. Built by a veteran, for veterans. Not affiliated with DoD or VA.<br>
-      All resources require no account. AI tools ($15/month) are optional. Print as many copies as needed.
+    <div class="btn-row">
+      <button class="btn-print" onclick="window.print()">🖨️ Print Resource Pack</button>
+      <a href="https://veterancareerpath.com" class="btn-view">View Full Platform →</a>
     </div>
   </div>
-
 </div>
+
+<!-- ══ PRINTABLE ONE-PAGER ══════════════════════════════════════════════════ -->
+<div class="screen-wrap">
+<div class="pack">
+
+  <div class="pack-header">
+    <img src="https://veterancareerpath.com/logo.png" alt="VCP" class="pack-header-logo">
+    <div class="pack-header-text">
+      <h1>VETERAN CAREER PATH — RESOURCE GUIDE</h1>
+      <p>veterancareerpath.com &nbsp;·&nbsp; Free for all veterans &nbsp;·&nbsp; No account required for resources below &nbsp;·&nbsp; AI tools $15/month</p>
+    </div>
+  </div>
+
+  <div class="pack-intro">
+    <strong>VeteranCareerPath.com</strong> has 600+ pages covering career transition, VA benefits, education, finance, legal rights, and mental health. All resources below are free with no account required. Bookmark the page or type any URL to go directly to the tool.
+  </div>
+
+  <div class="pack-body">
+
+    <!-- Row 1: Career Transition + VA Benefits -->
+    <div class="pack-grid">
+
+      <div class="pack-cat">
+        <div class="pack-cat-header"><span class="cat-icon">🎯</span><span>Career Transition</span></div>
+        <div class="pack-link"><span class="pack-link-name">Free Career Assessment (10 questions)</span><span class="pack-link-url">veterancareerpath.com/free-assessment.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">MOS → Civilian Career Translator</span><span class="pack-link-url">veterancareerpath.com/mos-career-translator.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">Military Resume Guide</span><span class="pack-link-url">veterancareerpath.com/military-civilian-resume.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">Action Verbs &amp; Power Nouns (600+)</span><span class="pack-link-url">veterancareerpath.com/veteran-action-verbs.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">Veteran Interview Questions</span><span class="pack-link-url">veterancareerpath.com/veteran-interview-questions.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">ETS Transition Checklist (personalized)</span><span class="pack-link-url">veterancareerpath.com/ets-transition-checklist.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">Federal Job Search (live USAJobs data)</span><span class="pack-link-url">veterancareerpath.com/federal-jobs-search.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">Veterans' Preference Guide</span><span class="pack-link-url">veterancareerpath.com/veterans-preference-guide.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">SkillBridge Program Guide</span><span class="pack-link-url">veterancareerpath.com/skillbridge-program-guide.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">DD-214 Decoder</span><span class="pack-link-url">veterancareerpath.com/dd214-decoder.html</span></div>
+      </div>
+
+      <div class="pack-cat">
+        <div class="pack-cat-header"><span class="cat-icon">🏥</span><span>VA Benefits &amp; Disability</span></div>
+        <div class="pack-link"><span class="pack-link-name">VA Disability Rating Schedule 2026 (full CFR 38)</span><span class="pack-link-url">veterancareerpath.com/va-disability-rating-schedule.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">Combined Rating Calculator (with dependents)</span><span class="pack-link-url">veterancareerpath.com/va-disability-benefits-calculator.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">VA Disability Claim Checklist</span><span class="pack-link-url">veterancareerpath.com/va-disability-claim-checklist.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">VA Home Loan Guide</span><span class="pack-link-url">veterancareerpath.com/va-home-loan-guide.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">TRICARE After Separation</span><span class="pack-link-url">veterancareerpath.com/tricare-after-separation.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">CHAMPVA Guide (dependents of 100% disabled vets)</span><span class="pack-link-url">veterancareerpath.com/champva-guide.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">VR&amp;E Chapter 31 (Vocational Rehab)</span><span class="pack-link-url">veterancareerpath.com/vre-chapter31-guide.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">Discharge Upgrade Guide</span><span class="pack-link-url">veterancareerpath.com/character-discharge-upgrade.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">SGLI to VGLI Conversion Guide</span><span class="pack-link-url">veterancareerpath.com/sgli-vgli-guide.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">Full VA Benefits Checklist</span><span class="pack-link-url">veterancareerpath.com/va-benefits-checklist.html</span></div>
+      </div>
+
+    </div>
+
+    <!-- Row 2: Education + Finance & Legal -->
+    <div class="pack-grid">
+
+      <div class="pack-cat">
+        <div class="pack-cat-header"><span class="cat-icon">🎓</span><span>Education &amp; GI Bill</span></div>
+        <div class="pack-link"><span class="pack-link-name">GI Bill School Comparison Tool</span><span class="pack-link-url">veterancareerpath.com/gi-bill-school-comparison.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">GI Bill BAH Maximizer</span><span class="pack-link-url">veterancareerpath.com/gi-bill-bah-maximizer.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">GI Bill vs VR&amp;E Calculator</span><span class="pack-link-url">veterancareerpath.com/gi-bill-vs-vre-calculator.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">Certification Roadmap (MOS to cert)</span><span class="pack-link-url">veterancareerpath.com/veteran-certification-roadmap.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">Security Clearance Salary Guide</span><span class="pack-link-url">veterancareerpath.com/security-clearance-salary.html</span></div>
+      </div>
+
+      <div class="pack-cat">
+        <div class="pack-cat-header"><span class="cat-icon">💰</span><span>Finance &amp; Legal Rights</span></div>
+        <div class="pack-link"><span class="pack-link-name">Reenlist vs Separate Calculator (full financial)</span><span class="pack-link-url">veterancareerpath.com/should-i-reenlist-calculator.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">Military Retirement Pay Calculator</span><span class="pack-link-url">veterancareerpath.com/military-retirement-pay-calculator.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">PCS / ETS Move Calculator</span><span class="pack-link-url">veterancareerpath.com/pcs-ets-move-calculator.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">SCRA Legal Rights Guide</span><span class="pack-link-url">veterancareerpath.com/scra-guide-for-veterans.html</span></div>
+        <div class="pack-link"><span class="pack-link-name">State Veterans Benefits (all 50 states)</span><span class="pack-link-url">veterancareerpath.com/state-veteran-benefits.html</span></div>
+      </div>
+
+    </div>
+
+    <!-- MOS Guides — full width 6-col -->
+    <div class="pack-cat" style="margin-bottom:.85rem;">
+      <div class="pack-cat-header"><span class="cat-icon">⭐</span><span>MOS / Rate / AFSC Career Guides &mdash; 561 individual guides, all 6 branches, all free</span></div>
+      <div class="mos-grid">
+        <div class="mos-cell"><div class="mos-cell-branch">⭐ Army (229 MOS codes)</div><div class="mos-cell-url">veterancareerpath.com/army-mos-careers.html</div></div>
+        <div class="mos-cell"><div class="mos-cell-branch">⚓ Navy (all Rates &amp; NECs)</div><div class="mos-cell-url">veterancareerpath.com/navy-rate-careers.html</div></div>
+        <div class="mos-cell"><div class="mos-cell-branch">🦅 Marine Corps (all MOS codes)</div><div class="mos-cell-url">veterancareerpath.com/marine-corps-mos-careers.html</div></div>
+        <div class="mos-cell"><div class="mos-cell-branch">✈️ Air Force (all AFSC codes)</div><div class="mos-cell-url">veterancareerpath.com/air-force-afsc-careers.html</div></div>
+        <div class="mos-cell"><div class="mos-cell-branch">🔱 Coast Guard (all Ratings)</div><div class="mos-cell-url">veterancareerpath.com/coast-guard-rating-careers.html</div></div>
+        <div class="mos-cell"><div class="mos-cell-branch">🛸 Space Force (all AFSC codes)</div><div class="mos-cell-url">veterancareerpath.com/space-force-afsc-careers.html</div></div>
+      </div>
+    </div>
+
+    <!-- Crisis strip -->
+    <div class="pack-crisis">
+      <div class="pack-crisis-text">
+        <h3>🆘 If You or a Veteran Are in Crisis — Veterans Crisis Line &mdash; Free, Confidential, 24/7</h3>
+        <p>Real people who understand service. Immediate support, no cost, no judgment.</p>
+      </div>
+      <div class="pack-crisis-btns">
+        <span class="pack-crisis-btn">📞 Call or Text 988, then Press 1</span>
+        <span class="pack-crisis-btn">💬 Text 838255</span>
+        <span class="pack-crisis-btn">Chat: veteranscrisisline.net</span>
+        <span class="pack-crisis-btn">Local help: veterancareerpath.com/veteran-mental-health-resources.html</span>
+      </div>
+    </div>
+
+  </div><!-- /pack-body -->
+
+  <div class="pack-footer">
+    <div class="pack-footer-main">VeteranCareerPath.com &mdash; Built by a veteran, for veterans &mdash; tap@veterancareerpath.com</div>
+    <div class="pack-footer-sub">Not affiliated with DoD or the VA &nbsp;·&nbsp; All resources free &nbsp;·&nbsp; AI tools $15/month &nbsp;·&nbsp; Print as many copies as needed</div>
+  </div>
+
+</div><!-- /pack -->
+</div><!-- /screen-wrap -->
 
 <footer style="background:#0d1f3c;padding:1.5rem 5%;margin-top:2rem;">
-  <p style="font-size:.72rem;color:rgba(192,216,240,.25);text-align:center
+  <p style="font-size:.72rem;color:rgba(192,216,240,.25);text-align:center;">Veteran Career Path &nbsp;·&nbsp; tap@veterancareerpath.com &nbsp;·&nbsp; Not affiliated with DoD or the Department of Veterans Affairs</p>
+</footer>
+
+</body>
+</html>

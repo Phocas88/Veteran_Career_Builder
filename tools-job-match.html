@@ -596,12 +596,9 @@ html,body{overflow-x:hidden;max-width:100%;}
 <div class="card-tool">
   <div class="section-head">Job Posting</div>
   <div class="field">
-    <label>Job Posting URL (AI will read the full posting)</label>
-    <input type="url" id="jm-url" placeholder="https://www.linkedin.com/jobs/... or any job board URL">
-  </div>
-  <div class="field">
-    <label>Or paste the job posting text directly</label>
-    <textarea id="jm-text" style="min-height:160px" placeholder="Paste the full job description here..."></textarea>
+    <label>Paste the Full Job Description</label>
+    <textarea id="jm-text" style="min-height:200px" placeholder="Copy the entire job posting from LinkedIn, USAJobs, Indeed, or any job board and paste it here. Include the title, requirements, responsibilities, and qualifications for the most accurate analysis."></textarea>
+    <div style="font-size:.72rem;color:rgba(192,216,240,.4);margin-top:.35rem;">💡 Tip: Select all text on the job page (Ctrl+A), copy (Ctrl+C), and paste here. The more complete the posting, the better the analysis.</div>
   </div>
   <div class="field">
     <label>Additional skills or certs to consider (optional)</label>
@@ -844,31 +841,16 @@ document.addEventListener("DOMContentLoaded",function(){
 
 <script>
 document.getElementById('jm-btn').addEventListener('click', async function() {
-  var url = val('jm-url');
   var text = val('jm-text');
   var extra = val('jm-extra');
-  
-  if (!url && !text) {
-    alert('Please provide a job posting URL or paste the job text.');
+
+  if (!text || text.length < 50) {
+    alert('Please paste the job description text. Copy the full posting from LinkedIn, Indeed, USAJobs, or any job board and paste it in the text area.');
     return;
   }
-  
+
   var profileContext = buildPromptContext();
   var jobContent = text;
-  
-  // If URL provided, ask Claude to fetch it
-  if (url && !text) {
-    document.getElementById('jm-btn').disabled = true;
-    document.getElementById('jm-btn').innerHTML = '<span class="spinner"></span> Fetching job posting...';
-    jobContent = await callClaude(
-      'Please retrieve and return the complete text of this job posting: ' + url + '\n\nReturn ONLY the raw job posting content - job title, company, location, salary if listed, full description, requirements, and qualifications. No commentary.',
-      'You are a web content extractor. Return only the job posting text from the URL.',
-      { maxTokens: 2000 }
-    );
-    document.getElementById('jm-btn').disabled = false;
-    document.getElementById('jm-btn').innerHTML = '&#128269; Analyze My Match';
-    if (!jobContent) { alert('Could not fetch that URL. Please paste the job text directly.'); return; }
-  }
   
   var prompt = 'VETERAN MILITARY PROFILE:\n' + profileContext;
   if (extra) prompt += '\nAdditional Skills/Certs: ' + extra;

@@ -649,129 +649,86 @@ function doSearch(page) {
   var keyword = document.getElementById('s-keyword').value.trim() || 'veteran';
   var location = document.getElementById('s-location').value.trim();
   var grade = document.getElementById('s-grade').value;
-  var clear = document.getElementById('s-clear').value;
   var vetOnly = document.getElementById('s-vet').checked;
   var remote = document.getElementById('s-remote').checked;
 
-  lastQuery = {keyword,location,grade,clear,vetOnly,remote};
   currentPage = page;
-
   document.getElementById('loading').style.display = 'block';
   document.getElementById('results-section').style.display = 'none';
 
-  // USAJobs API - requires user agent header but works from browser too
-  // We proxy through a public CORS-friendly approach
-  // USAJobs has a public API at data.usajobs.gov
-  var params = new URLSearchParams({
-    Keyword: keyword,
-    ResultsPerPage: 10,
-    Page: page,
-    WhoMayApply: vetOnly ? 'veterans' : 'public',
-  });
-  if(location) params.append('LocationName', location);
-  if(remote) params.append('RemoteIndicator', 'True');
+  // Build USAJobs search URL with all filters pre-applied
+  // USAJobs API requires a server-side key (CORS blocked from browser)
+  // We deep-link to USAJobs with all parameters pre-filled
+  var usaUrl = buildUSAJobsURL(keyword, location, grade, vetOnly, remote);
 
-  var apiUrl = 'https://data.usajobs.gov/api/search?' + params.toString();
-
-  fetch(apiUrl, {
-    headers: {
-      'Host': 'data.usajobs.gov',
-      'User-Agent': 'veterancareerpath.com',
-      'Authorization-Key': '' // Public endpoints work without key for basic search
-    }
-  })
-  .then(function(r) {
-    if(!r.ok) throw new Error('API error ' + r.status);
-    return r.json();
-  })
-  .then(function(data) {
-    renderResults(data, keyword);
-  })
-  .catch(function(err) {
-    console.error('USAJobs API error:', err);
-    // Fallback: redirect to USAJobs with search params
-    renderFallback(keyword, location);
-  });
+  // Show the curated results panel with direct USAJobs link
+  setTimeout(function() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('results-section').style.display = 'block';
+    renderSearchPanel(keyword, location, grade, vetOnly, remote, usaUrl);
+  }, 600);
 }
 
-function renderResults(data, keyword) {
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('results-section').style.display = 'block';
-
-  var items = (data.SearchResult && data.SearchResult.SearchResultItems) || [];
-  var total = (data.SearchResult && data.SearchResult.SearchResultCountAll) || 0;
-
-  document.getElementById('results-count').textContent = total.toLocaleString() + ' federal positions found';
-  document.getElementById('results-sub').textContent = 'Showing page ' + currentPage + ' · Source: USAJobs.gov';
-
-  if(!items.length) {
-    document.getElementById('job-list').innerHTML = '<div class="no-results"><h3>No Results Found</h3><p>Try broader keywords or remove location filters. <a href="https://www.usajobs.gov/Search/?k=' + encodeURIComponent(keyword) + '" target="_blank" style="color:#1a3a6b;font-weight:600;">Search USAJobs directly →</a></p></div>';
-    return;
+function buildUSAJobsURL(keyword, location, grade, vetOnly, remote) {
+  var base = 'https://www.usajobs.gov/Search/Results';
+  var params = [];
+  if(keyword) params.push('k=' + encodeURIComponent(keyword));
+  if(location) params.push('l=' + encodeURIComponent(location));
+  if(grade) {
+    var gradeMap = {'1':'1,2,3,4','5':'5,6,7','9':'9,10,11','12':'12,13','14':'14,15'};
+    if(gradeMap[grade]) params.push('gs=' + gradeMap[grade]);
   }
+  if(vetOnly) params.push('hp=veterans');
+  if(remote) params.push('remoteIndicator=True');
+  return base + (params.length ? '?' + params.join('&') : '');
+}
 
-  var html = items.map(function(item) {
-    var j = item.MatchedObjectDescriptor || {};
-    var title = j.PositionTitle || 'Federal Position';
-    var org = (j.OrganizationName || j.DepartmentName || '');
-    var loc = (j.PositionLocationDisplay || '');
-    var pay = j.PositionRemuneration && j.PositionRemuneration[0];
-    var salary = pay ? '$' + parseInt(pay.MinimumRange).toLocaleString() + ' – $' + parseInt(pay.MaximumRange).toLocaleString() + '/yr' : '';
-    var url = j.ApplyURI && j.ApplyURI[0] ? j.ApplyURI[0] : 'https://www.usajobs.gov';
-    var closeDate = j.ApplicationCloseDate ? 'Closes: ' + j.ApplicationCloseDate.split('T')[0] : '';
-    var grade = (j.JobGrade || []).map(function(g){return 'GS-' + g.Code;}).join(', ');
-    var whoMay = (j.UserArea && j.UserArea.Details && j.UserArea.Details.WhoMayApply && j.UserArea.Details.WhoMayApply.Name) || '';
-    var isVet = whoMay.toLowerCase().includes('veteran');
-    var isRemote = (j.PositionLocationDisplay||'').toLowerCase().includes('remote') || (j.UserArea&&j.UserArea.Details&&j.UserArea.Details.Telework);
-    var desc = (j.QualificationSummary || j.UserArea && j.UserArea.Details && j.UserArea.Details.Requirements || '').slice(0,200);
+function renderSearchPanel(keyword, location, grade, vetOnly, remote, usaUrl) {
+  document.getElementById('results-count').textContent = 'Search results for "' + keyword + '"' + (location ? ' in ' + location : '');
+  document.getElementById('results-sub').textContent = 'Results open directly on USAJobs.gov — the official federal job board';
 
-    return '<div class="job-card">' +
-      '<div class="job-title"><a href="' + url + '" target="_blank" rel="noopener">' + title + '</a></div>' +
-      '<div class="job-org">' + org + '</div>' +
-      '<div class="job-meta">' +
-        (loc ? '<span class="meta-tag">📍 ' + loc + '</span>' : '') +
-        (grade ? '<span class="meta-tag">🏛 ' + grade + '</span>' : '') +
-        (isVet ? '<span class="meta-tag vet">🎖 Veterans Preference</span>' : '') +
-        (isRemote ? '<span class="meta-tag remote">💻 Remote Eligible</span>' : '') +
-      '</div>' +
-      (salary ? '<div class="job-salary">' + salary + '</div>' : '') +
-      (closeDate ? '<div class="job-close">⏰ ' + closeDate + '</div>' : '') +
-      (desc ? '<div class="job-desc">' + desc.replace(/[<>]/g,'') + '</div>' : '') +
-      '<a href="' + url + '" target="_blank" rel="noopener" class="apply-btn">Apply on USAJobs →</a>' +
-    '</div>';
-  }).join('');
+  var gradeLabels = {'1':'GS-1 to GS-4','5':'GS-5 to GS-7','9':'GS-9 to GS-11','12':'GS-12 to GS-13','14':'GS-14 to GS-15'};
+
+  var filters = [];
+  if(vetOnly) filters.push('🎖 Veterans Preference');
+  if(remote) filters.push('💻 Remote Eligible');
+  if(grade && gradeLabels[grade]) filters.push('🏛 ' + gradeLabels[grade]);
+
+  var html = '<div style="background:#eef6ff;border:1px solid rgba(26,58,107,.2);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1rem;">' +
+    '<div style="font-weight:700;color:#0d1f3c;font-size:.95rem;margin-bottom:.35rem;">Your search is ready on USAJobs.gov</div>' +
+    '<div style="font-size:.82rem;color:#3a5a7a;margin-bottom:.75rem;">All your filters are pre-applied: ' + (filters.length ? filters.join(' · ') : 'All openings') + '</div>' +
+    '<a href="' + usaUrl + '" target="_blank" rel="noopener" class="apply-btn" style="font-size:.92rem;padding:.65rem 1.5rem;display:inline-block;">Open ' + keyword + ' search on USAJobs →</a>' +
+  '</div>' +
+  
+  // Quick tip cards
+  '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem;">' +
+  
+  '<div class="job-card">' +
+    '<div class="job-title" style="font-size:.82rem;">💡 Veterans Preference Tip</div>' +
+    '<div class="job-desc" style="display:block;margin-top:.35rem;">When you apply through USAJobs, your veterans preference (5-point or 10-point) automatically adds to your score. <a href="/veterans-preference-guide.html" style="color:#1a3a6b;font-weight:600;">Learn how preference works →</a></div>' +
+  '</div>' +
+  
+  '<div class="job-card">' +
+    '<div class="job-title" style="font-size:.82rem;">📄 Federal Resume Required</div>' +
+    '<div class="job-desc" style="display:block;margin-top:.35rem;">Federal resumes are 3-5 pages minimum. A standard civilian resume will be rejected. <a href="/tools-federal-resume.html" style="color:#1a3a6b;font-weight:600;">AI Federal Resume Builder →</a></div>' +
+  '</div>' +
+
+  '<div class="job-card">' +
+    '<div class="job-title" style="font-size:.82rem;">🏛 What GS Grade Are You?</div>' +
+    '<div class="job-desc" style="display:block;margin-top:.35rem;">Your rank and experience map to a GS grade. Applying to the wrong grade wastes time. <a href="/federal-gs-grade-estimator.html" style="color:#1a3a6b;font-weight:600;">GS Grade Estimator →</a></div>' +
+  '</div>' +
+
+  '<div class="job-card"><div class="job-title" style="font-size:.82rem;">⏱ Federal Hiring Takes Time</div><div class="job-desc" style="display:block;margin-top:.35rem;">Federal hiring averages 3-6 months. Apply to multiple positions simultaneously and continue your search while waiting for responses.</div></div>' +
+
+  '</div>';
 
   document.getElementById('job-list').innerHTML = html;
-
-  // Pagination
-  var totalPages = Math.ceil(Math.min(total, 500) / 10);
-  var pgHtml = '';
-  if(totalPages > 1) {
-    pgHtml += '<button class="pg-btn" onclick="doSearch(' + Math.max(1,currentPage-1) + ')" ' + (currentPage<=1?'disabled':'') + '>← Prev</button>';
-    var start = Math.max(1, currentPage-2);
-    var end = Math.min(totalPages, start+4);
-    for(var p=start;p<=end;p++){
-      pgHtml += '<button class="pg-btn' + (p===currentPage?' active':'') + '" onclick="doSearch(' + p + ')">' + p + '</button>';
-    }
-    pgHtml += '<button class="pg-btn" onclick="doSearch(' + Math.min(totalPages,currentPage+1) + ')" ' + (currentPage>=totalPages?'disabled':'') + '>Next →</button>';
-  }
-  document.getElementById('pagination').innerHTML = pgHtml;
-}
-
-function renderFallback(keyword, location) {
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('results-section').style.display = 'block';
-  document.getElementById('results-count').textContent = 'Search USAJobs Directly';
-  document.getElementById('results-sub').textContent = 'Our direct API connection is unavailable — click below to search on USAJobs.gov';
-  var uUrl = 'https://www.usajobs.gov/Search/?k=' + encodeURIComponent(keyword) + (location?'&l='+encodeURIComponent(location):'');
-  document.getElementById('job-list').innerHTML = '<div class="no-results">' +
-    '<h3>Search on USAJobs Directly</h3>' +
-    '<p style="margin-bottom:1rem;">USAJobs.gov is the official federal job board. Your veterans preference automatically applies when you create a profile.</p>' +
-    '<a href="' + uUrl + '" target="_blank" class="apply-btn" style="font-size:.92rem;padding:.7rem 1.5rem;">Search "' + keyword + '" on USAJobs →</a>' +
-    '</div>';
+  document.getElementById('pagination').innerHTML = '';
 }
 
 // Auto-search on load
 window.addEventListener('load', function(){ doSearch(1); });
+var lastQuery = {};
 </script>
 </body>
 </html>

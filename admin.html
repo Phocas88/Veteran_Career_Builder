@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VCP Admin Panel</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+  try{
+    firebase.initializeApp({
+      apiKey:"REPLACE_YOUR_FIREBASE_KEY",
+      authDomain:"veteran-career-builder.firebaseapp.com",
+      projectId:"veteran-career-builder",
+      storageBucket:"veteran-career-builder.firebasestorage.app",
+      messagingSenderId:"REPLACE_SENDER_ID",
+      appId:"REPLACE_APP_ID"
+    });
+    window.db = firebase.firestore();
+  }catch(e){ window.db=null; console.warn('Firebase not configured'); }
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-height:100vh;}
+
+/* LOGIN SCREEN */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+.login-box{background:#0d1f3c;border:1px solid rgba(240,192,64,.2);border-radius:16px;padding:2.5rem;width:100%;max-width:400px;text-align:center;}
+.login-logo{width:56px;margin-bottom:1rem;}
+.login-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.25rem;}
+.login-sub{font-size:.82rem;color:rgba(192,216,240,.45);margin-bottom:2rem;}
+.login-box input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:9px;padding:.75rem 1rem;color:#fff;font-size:1.1rem;font-family:monospace;letter-spacing:.2em;text-align:center;outline:none;margin-bottom:.85rem;}
+.login-box input:focus{border-color:rgba(240,192,64,.4);}
+.login-btn{width:100%;padding:.82rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:9px;color:#0a1628;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;cursor:pointer;transition:all .18s;}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,150,10,.35);}
+.login-error{color:#ff8080;font-size:.82rem;margin-top:.5rem;display:none;}
+
+/* ADMIN DASHBOARD */
+.dashboard{display:none;padding:1.5rem 5%;max-width:1200px;margin:0 auto;}
+.dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem;}
+.dash-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.1em;color:#f0c040;}
+.dash-user{font-size:.8rem;color:rgba(192,216,240,.4);}
+.logout-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(192,216,240,.6);padding:.4rem .9rem;border-radius:7px;font-size:.78rem;cursor:pointer;}
+
+/* STAT CARDS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.85rem;margin-bottom:1.5rem;}
+.stat-card{background:#0d1f3c;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1rem 1.1rem;}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:#f0c040;line-height:1;}
+.stat-l{font-size:.72rem;color:rgba(192,216,240,.4);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem;}
+.stat-sub{font-size:.75rem;color:rgba(192,216,240,.3);margin-top:.15rem;}
+
+/* TABS */
+.tabs{display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+.tab{padding:.45rem 1.1rem;border-radius:8px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(192,216,240,.6);font-weight:600;font-size:.82rem;cursor:pointer;transition:all .15s;}
+.tab:hover{border-color:rgba(240,192,64,.3);color:#fff;}
+.tab.active{background:rgba(240,192,64,.1);border-color:rgba(240,192,64,.3);color:#f0c040;}
+
+/* CONTENT PANELS */
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* ITEM CARD */
+.item-card{background:#0d1f3c;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1rem 1.1rem;margin-bottom:.65rem;}
+.item-card:hover{border-color:rgba(255,255,255,.12);}
+.item-header{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;margin-bottom:.4rem;flex-wrap:wrap;}
+.item-title{font-weight:700;font-size:.92rem;color:#fff;}
+.item-badge{font-size:.68rem;font-weight:700;padding:.15rem .55rem;border-radius:20px;white-space:nowrap;}
+.badge-pending{background:rgba(200,150,10,.15);border:1px solid rgba(200,150,10,.3);color:#f0c040;}
+.badge-approved{background:rgba(26,122,64,.15);border:1px solid rgba(26,122,64,.3);color:#4ade80;}
+.item-meta{font-size:.75rem;color:rgba(192,216,240,.45);line-height:1.6;margin-bottom:.5rem;}
+.item-body{font-size:.82rem;color:rgba(192,216,240,.7);line-height:1.65;margin-bottom:.65rem;}
+.item-actions{display:flex;gap:.45rem;flex-wrap:wrap;}
+.btn-approve{background:#1a7a40;color:#fff;border:none;border-radius:6px;padding:.35rem .85rem;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .15s;}
+.btn-approve:hover{background:#2a9a50;}
+.btn-reject{background:rgba(192,57,43,.4);color:#ffb0b0;border:1px solid rgba(192,57,43,.4);border-radius:6px;padding:.35rem .85rem;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .15s;}
+.btn-reject:hover{background:rgba(192,57,43,.7);}
+.btn-view{background:rgba(255,255,255,.07);color:rgba(192,216,240,.7);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.35rem .85rem;font-size:.78rem;cursor:pointer;}
+.btn-view:hover{background:rgba(255,255,255,.12);}
+
+/* FORM — Add Entry */
+.add-form{background:#0d1f3c;border:1px solid rgba(240,192,64,.15);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem;}
+.add-form h3{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.85rem;}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.65rem;margin-bottom:.65rem;}
+.field label{display:block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(192,216,240,.45);margin-bottom:.2rem;}
+.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:7px;padding:.5rem .75rem;color:#fff;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(240,192,64,.4);}
+.field textarea{min-height:80px;resize:vertical;}
+.field select option{background:#0d1f3c;}
+.add-btn{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;border:none;border-radius:8px;padding:.65rem 1.5rem;font-weight:700;font-size:.88rem;cursor:pointer;margin-top:.25rem;}
+.add-btn:hover{opacity:.9;}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:2.5rem;color:rgba(192,216,240,.35);font-size:.88rem;}
+.empty h3{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:rgba(240,192,64,.4);margin-bottom:.35rem;}
+
+/* LOADING */
+.loading{text-align:center;padding:2rem;color:rgba(192,216,240,.35);font-size:.85rem;}
+
+/* TOAST */
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1a7a40;color:#fff;padding:.65rem 1.25rem;border-radius:8px;font-size:.85rem;font-weight:600;display:none;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.4);}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ───────────────────────────────────────────────────────────────── -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <img src="https://veterancareerpath.com/logo.png" alt="VCP" class="login-logo">
+    <div class="login-title">VCP Admin</div>
+    <div class="login-sub">Veteran Career Path · Content Management</div>
+    <input type="password" id="pin-input" placeholder="Enter PIN" maxlength="6"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">UNLOCK DASHBOARD</button>
+    <div class="login-error" id="login-error">Incorrect PIN. Try again.</div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ───────────────────────────────────────────────────────────── -->
+<div class="dashboard" id="dashboard">
+
+  <div class="dash-header">
+    <div>
+      <div class="dash-title">VCP Admin Dashboard</div>
+      <div class="dash-user">Veteran Career Path · Content Management Panel</div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Log Out</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card"><div class="stat-n" id="stat-salary-pending">—</div><div class="stat-l">Salary Submissions</div><div class="stat-sub">Pending approval</div></div>
+    <div class="stat-card"><div class="stat-n" id="stat-story-pending">—</div><div class="stat-l">Success Stories</div><div class="stat-sub">Pending approval</div></div>
+    <div class="stat-card"><div class="stat-n" id="stat-salary-total">—</div><div class="stat-l">Total Salary Entries</div><div class="stat-sub">Live on site</div></div>
+    <div class="stat-card"><div class="stat-n" id="stat-story-total">—</div><div class="stat-l">Total Stories</div><div class="stat-sub">Live on site</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('salary',this)">💰 Salary Data</button>
+    <button class="tab" onclick="switchTab('stories',this)">🎖 Success Stories</button>
+    <button class="tab" onclick="switchTab('add-salary',this)">+ Add Salary Entry</button>
+    <button class="tab" onclick="switchTab('add-story',this)">+ Add Story</button>
+  </div>
+
+  <!-- SALARY PENDING -->
+  <div class="panel active" id="panel-salary">
+    <div id="salary-pending-list"><div class="loading">Loading salary submissions...</div></div>
+  </div>
+
+  <!-- STORIES PENDING -->
+  <div class="panel" id="panel-stories">
+    <div id="story-pending-list"><div class="loading">Loading story submissions...</div></div>
+  </div>
+
+  <!-- ADD SALARY -->
+  <div class="panel" id="panel-add-salary">
+    <div class="add-form">
+      <h3>➕ Add Salary Entry (publishes immediately)</h3>
+      <div class="form-grid">
+        <div class="field"><label>Branch</label>
+          <select id="as-branch"><option>Army</option><option>Navy</option><option>Marine Corps</option><option>Air Force</option><option>Coast Guard</option><option>Space Force</option></select></div>
+        <div class="field"><label>MOS / Rate / AFSC</label><input id="as-mos" placeholder="e.g. 88M"></div>
+        <div class="field"><label>Rank at Separation</label>
+          <select id="as-rank"><option>E-4 and below</option><option>E-5</option><option>E-6</option><option>E-7</option><option>E-8</option><option>E-9</option><option>W-1 to W-3</option><option>O-1 to O-3</option><option>O-4+</option></select></div>
+        <div class="field"><label>Years of Service</label>
+          <select id="as-yos"><option>1-4 yrs</option><option>5-8 yrs</option><option>9-12 yrs</option><option>13-16 yrs</option><option>17+ yrs</option></select></div>
+        <div class="field"><label>Civilian Job Title</label><input id="as-title" placeholder="e.g. Program Manager"></div>
+        <div class="field"><label>Industry</label>
+          <select id="as-sector"><option>Defense Contractor</option><option>Federal Government</option><option>Technology</option><option>Healthcare</option><option>Logistics / Supply Chain</option><option>Finance / Banking</option><option>Law Enforcement / Security</option><option>Construction / Engineering</option><option>Education</option><option>Sales / Business Development</option><option>Other</option></select></div>
+        <div class="field"><label>Annual Salary ($)</label><input id="as-salary" type="number" placeholder="75000"></div>
+        <div class="field"><label>Clearance</label>
+          <select id="as-clear"><option value="none">None</option><option value="secret">Secret</option><option value="ts">Top Secret</option><option value="tssci">TS/SCI</option></select></div>
+        <div class="field"><label>State / Region</label><input id="as-state" placeholder="e.g. Virginia, Remote"></div>
+        <div class="field"><label>Years Since Separation</label>
+          <select id="as-since"><option>Less than 1 year</option><option>1-2 years</option><option>3-5 years</option><option>5+ years</option></select></div>
+      </div>
+      <button class="add-btn" onclick="addSalary()">➕ Add Entry — Publish Immediately</button>
+    </div>
+  </div>
+
+  <!-- ADD STORY -->
+  <div class="panel" id="panel-add-story">
+    <div class="add-form">
+      <h3>➕ Add Success Story (publishes immediately)</h3>
+      <div class="form-grid">
+        <div class="field"><label>Branch</label>
+          <select id="ss-branch"><option>Army</option><option>Navy</option><option>Marine Corps</option><option>Air Force</option><option>Coast Guard</option><option>Space Force</option></select></div>
+        <div class="field"><label>MOS / Rate / AFSC</label><input id="ss-mos" placeholder="e.g. 11B"></div>
+        <div class="field"><label>Rank at Separation</label>
+          <select id="ss-rank"><option>E-4 and below</option><option>E-5</option><option>E-6</option><option>E-7</option><option>E-8</option><option>E-9</option><option>W-1 to W-3</option><option>O-1 to O-3</option><option>O-4+</option></select></div>
+        <div class="field"><label>Years of Service</label>
+          <select id="ss-yos"><option>1-4 years</option><option>5-8 years</option><option>9-12 years</option><option>13-16 years</option><option>17-20 years</option><option>20+ years</option></select></div>
+        <div class="field"><label>Name / Handle</label><input id="ss-name" placeholder="e.g. Marcus T., Anonymous"></div>
+        <div class="field"><label>Civilian Role Landed</label><input id="ss-role" placeholder="e.g. Program Manager at Boeing"></div>
+        <div class="field"><label>Salary Range</label>
+          <select id="ss-salary"><option value="">Prefer not to say</option><option>Under $45,000</option><option>$45,000-$60,000</option><option>$60,000-$80,000</option><option>$80,000-$100,000</option><option>$100,000-$130,000</option><option>$130,000-$160,000</option><option>$160,000+</option></select></div>
+        <div class="field"><label>How Long to Find Job?</label>
+          <select id="ss-time"><option>Before I separated</option><option>Within 1 month</option><option>1-3 months</option><option>3-6 months</option><option>6-12 months</option><option>Over 12 months</option></select></div>
+      </div>
+      <div class="field" style="margin-bottom:.65rem;"><label>Story / What Helped Most</label>
+        <textarea id="ss-story" placeholder="What did you do to land the job? What would you tell the next veteran with your MOS?"></textarea></div>
+      <button class="add-btn" onclick="addStory()">➕ Add Story — Publish Immediately</button>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+var ADMIN_PIN = '1988';
+var authed = false;
+
+function doLogin() {
+  var pin = document.getElementById('pin-input').value;
+  if(pin === ADMIN_PIN) {
+    authed = true;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadAll();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('pin-input').value = '';
+  }
+}
+
+function doLogout() {
+  authed = false;
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pin-input').value = '';
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+function toast(msg, color) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color || '#1a7a40';
+  t.style.display = 'block';
+  setTimeout(function(){ t.style.display = 'none'; }, 2500);
+}
+
+function loadAll() {
+  if(!window.db){ 
+    document.getElementById('salary-pending-list').innerHTML = '<div class="empty"><h3>Firebase Not Connected</h3>Add your Firebase config to see submissions.</div>';
+    document.getElementById('story-pending-list').innerHTML = '<div class="empty"><h3>Firebase Not Connected</h3>Add your Firebase config to see submissions.</div>';
+    ['stat-salary-pending','stat-story-pending','stat-salary-total','stat-story-total'].forEach(function(id){
+      document.getElementById(id).textContent = '—';
+    });
+    return;
+  }
+  loadSalaryData();
+  loadStoryData();
+}
+
+// ── SALARY ────────────────────────────────────────────────────────────────────
+function loadSalaryData() {
+  var db = window.db;
+  // Count pending
+  db.collection('salaryData').where('approved','==',false).get().then(function(snap){
+    document.getElementById('stat-salary-pending').textContent = snap.size;
+    renderSalaryPending(snap);
+  });
+  // Count total approved
+  db.collection('salaryData').where('approved','==',true).get().then(function(snap){
+    document.getElementById('stat-salary-total').textContent = snap.size;
+  });
+}
+
+function renderSalaryPending(snap) {
+  var list = document.getElementById('salary-pending-list');
+  if(snap.empty){ list.innerHTML = '<div class="empty"><h3>All Clear ✓</h3>No pending salary submissions.</div>'; return; }
+  list.innerHTML = '';
+  snap.forEach(function(doc){
+    var d = doc.data();
+    var div = document.createElement('div');
+    div.className = 'item-card';
+    div.id = 'sal-' + doc.id;
+    div.innerHTML =
+      '<div class="item-header">' +
+        '<div class="item-title">' + d.mos + ' — ' + d.title + '</div>' +
+        '<span class="item-badge badge-pending">Pending</span>' +
+      '</div>' +
+      '<div class="item-meta">' + d.branch + ' · ' + d.rank + ' · ' + d.yos + ' · ' + d.sector + '<br>' +
+        '<strong style="color:#4ade80">$' + (d.salary||0).toLocaleString() + '/yr</strong>' +
+        (d.clearance && d.clearance!=='none' ? ' · 🔐 ' + d.clearance.toUpperCase() : '') +
+        ' · ' + (d.state||'') +
+        '<br><span style="color:rgba(192,216,240,.3)">Submitted: ' + (d.submittedAt||'').slice(0,10) + '</span>' +
+      '</div>' +
+      '<div class="item-actions">' +
+        '<button class="btn-approve" data-id="' + doc.id + '" onclick="approveSalary(this)">✓ Approve</button>' +
+        '<button class="btn-reject" data-id="' + doc.id + '" onclick="deleteSalary(this)">✕ Delete</button>' +
+      '</div>';
+    list.appendChild(div);
+  });
+}
+
+function approveSalary(btn) {
+  var id = btn.dataset.id;
+  btn.disabled = true; btn.textContent = '...';
+  window.db.collection('salaryData').doc(id).update({approved:true})
+    .then(function(){
+      var card = document.getElementById('sal-' + id);
+      card.querySelector('.item-badge').className = 'item-badge badge-approved';
+      card.querySelector('.item-badge').textContent = 'Approved ✓';
+      card.querySelector('.item-actions').innerHTML = '<span style="color:#4ade80;font-size:.78rem;font-weight:700;">✓ Live on site</span>';
+      var n = parseInt(document.getElementById('stat-salary-pending').textContent) - 1;
+      document.getElementById('stat-salary-pending').textContent = Math.max(0, n);
+      toast('✓ Salary entry approved and live');
+    }).catch(function(e){ btn.textContent = 'Error'; toast('Error: ' + e.message, '#c0392b'); });
+}
+
+function deleteSalary(btn) {
+  if(!confirm('Delete this submission permanently?')) return;
+  var id = btn.dataset.id;
+  window.db.collection('salaryData').doc(id).delete()
+    .then(function(){
+      document.getElementById('sal-' + id).remove();
+      toast('Submission deleted', '#5a6a7a');
+    }).catch(function(e){ toast('Error: ' + e.message, '#c0392b'); });
+}
+
+function addSalary() {
+  var sal = parseInt(document.getElementById('as-salary').value);
+  var mos = document.getElementById('as-mos').value.trim().toUpperCase();
+  var title = document.getElementById('as-title').value.trim();
+  if(!sal || !mos || !title){ alert('Branch, MOS, job title, and salary are required.'); return; }
+  var data = {
+    branch: document.getElementById('as-branch').value,
+    mos: mos, rank: document.getElementById('as-rank').value,
+    yos: document.getElementById('as-yos').value,
+    title: title, sector: document.getElementById('as-sector').value,
+    salary: sal, clearance: document.getElementById('as-clear').value,
+    state: document.getElementById('as-state').value.trim(),
+    since: document.getElementById('as-since').value,
+    approved: true, submittedAt: new Date().toISOString()
+  };
+  window.db.collection('salaryData').add(data)
+    .then(function(){
+      toast('✓ Salary entry added and live');
+      var n = parseInt(document.getElementById('stat-salary-total').textContent||'0') + 1;
+      document.getElementById('stat-salary-total').textContent = n;
+      ['as-mos','as-title','as-salary','as-state'].forEach(function(id){ document.getElementById(id).value=''; });
+    }).catch(function(e){ toast('Error: '+e.message,'#c0392b'); });
+}
+
+// ── STORIES ───────────────────────────────────────────────────────────────────
+function loadStoryData() {
+  var db = window.db;
+  db.collection('successStories').where('approved','==',false).get().then(function(snap){
+    document.getElementById('stat-story-pending').textContent = snap.size;
+    renderStoryPending(snap);
+  });
+  db.collection('successStories').where('approved','==',true).get().then(function(snap){
+    document.getElementById('stat-story-total').textContent = snap.size;
+  });
+}
+
+function renderStoryPending(snap) {
+  var list = document.getElementById('story-pending-list');
+  if(snap.empty){ list.innerHTML = '<div class="empty"><h3>All Clear ✓</h3>No pending story submissions.</div>'; return; }
+  list.innerHTML = '';
+  snap.forEach(function(doc){
+    var d = doc.data();
+    var div = document.createElement('div');
+    div.className = 'item-card';
+    div.id = 'str-' + doc.id;
+    div.innerHTML =
+      '<div class="item-header">' +
+        '<div class="item-title">' + (d.name||'Anonymous') + ' — ' + (d.role||'') + '</div>' +
+        '<span class="item-badge badge-pending">Pending</span>' +
+      '</div>' +
+      '<div class="item-meta">' + (d.branch||'') + ' ' + (d.mos||'') + ' · ' + (d.rank||'') + ' · ' + (d.yos||'') +
+        (d.salary && d.salary!=='Prefer not to say' ? ' · <strong style="color:#4ade80">'+d.salary+'</strong>' : '') +
+        ' · Found job: ' + (d.time||'') +
+        '<br><span style="color:rgba(192,216,240,.3)">Submitted: ' + (d.submittedAt||'').slice(0,10) + '</span>' +
+      '</div>' +
+      '<div class="item-body">' + (d.story||'').slice(0,300).replace(/[<>]/g,'') + (d.story && d.story.length>300?'...':'') + '</div>' +
+      '<div class="item-actions">' +
+        '<button class="btn-approve" data-id="' + doc.id + '" onclick="approveStory(this)">✓ Approve</button>' +
+        '<button class="btn-reject" data-id="' + doc.id + '" onclick="deleteStory(this)">✕ Delete</button>' +
+      '</div>';
+    list.appendChild(div);
+  });
+}
+
+function approveStory(btn) {
+  var id = btn.dataset.id;
+  btn.disabled = true; btn.textContent = '...';
+  window.db.collection('successStories').doc(id).update({approved:true})
+    .then(function(){
+      var card = document.getElementById('str-' + id);
+      card.querySelector('.item-badge').className = 'item-badge badge-approved';
+      card.querySelector('.item-badge').textContent = 'Approved ✓';
+      card.querySelector('.item-actions').innerHTML = '<span style="color:#4ade80;font-size:.78rem;font-weight:700;">✓ Live on site</span>';
+      var n = parseInt(document.getElementById('stat-story-pending').textContent) - 1;
+      document.getElementById('stat-story-pending').textContent = Math.max(0, n);
+      toast('✓ Story approved and live');
+    }).catch(function(e){ btn.textContent = 'Error'; toast('Error: '+e.message,'#c0392b'); });
+}
+
+function deleteStory(btn) {
+  if(!confirm('Delete this story permanently?')) return;
+  var id = btn.dataset.id;
+  window.db.collection('successStories').doc(id).delete()
+    .then(function(){ document.getElementById('str-'+id).remove(); toast('Story deleted','#5a6a7a'); })
+    .catch(function(e){ toast('Error: '+e.message,'#c0392b'); });
+}
+
+function addStory() {
+  var story = document.getElementById('ss-story').value.trim();
+  var role = document.getElementById('ss-role').value.trim();
+  if(!story || story.length < 30 || !role){ alert('Role and story (30+ characters) are required.'); return; }
+  var data = {
+    branch: document.getElementById('ss-branch').value,
+    mos: document.getElementById('ss-mos').value.trim(),
+    rank: document.getElementById('ss-rank').value,
+    yos: document.getElementById('ss-yos').value,
+    name: document.getElementById('ss-name').value.trim() || 'Anonymous',
+    role: role, salary: document.getElementById('ss-salary').value,
+    time: document.getElementById('ss-time').value,
+    story: story, approved: true,
+    submittedAt: new Date().toISOString(), date: new Date().toISOString().slice(0,7)
+  };
+  window.db.collection('successStories').add(data)
+    .then(function(){
+      toast('✓ Story added and live');
+      var n = parseInt(document.getElementById('stat-story-total').textContent||'0') + 1;
+      document.getElementById('stat-story-total').textContent = n;
+      ['ss-mos','ss-name','ss-role','ss-story'].forEach(function(id){ document.getElementById(id).value=''; });
+    }).catch(function(e){ toast('Error: '+e.message,'#c0392b'); });
+}
+
+// Focus PIN input on load
+document.getElementById('pin-input').focus();
+</script>
+</body>
+</html>

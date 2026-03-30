@@ -44,7 +44,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-const firebaseConfig = {
+  const firebaseConfig = {
   apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
   authDomain: "veteran-career-builder.firebaseapp.com",
   projectId: "veteran-career-builder",
@@ -2039,6 +2039,62 @@ const CERTS_LIBRARY = [
 ];
 
 
+// ── ACCESS CODES — defined at module level so useState initializer can use them ──
+// These must be outside any React component to avoid hoisting issues with const.
+var ACCESS_CODES_MAP = {
+  // Permanent codes (site owner / admin)
+  "OWNER2025":     0,
+  "OWNER2026":     0,
+  // 30-day tester codes
+  "ALPHA30":       Date.UTC(2026, 5, 30),
+  "BRAVO30":       Date.UTC(2026, 5, 30),
+  "CHARLIE30":     Date.UTC(2026, 5, 30),
+  "DELTA30":       Date.UTC(2026, 5, 30),
+  "ECHO30":        Date.UTC(2026, 5, 30),
+  "FOXTROT30":     Date.UTC(2026, 5, 30),
+  "GOLF30":        Date.UTC(2026, 5, 30),
+  "HOTEL30":       Date.UTC(2026, 5, 30),
+  "INDIA30":       Date.UTC(2026, 5, 30),
+  "JULIET30":      Date.UTC(2026, 5, 30),
+  // Named tester codes
+  "VETTEST1":      Date.UTC(2026, 8, 1),
+  "VETTEST2":      Date.UTC(2026, 8, 1),
+  "VETTEST3":      Date.UTC(2026, 8, 1),
+  "VETTEST4":      Date.UTC(2026, 8, 1),
+  "VETTEST5":      Date.UTC(2026, 8, 1),
+  "AMON26":        Date.UTC(2026, 11, 31),
+  "TAP2026":       Date.UTC(2026, 11, 31),
+  "VSO2026":       Date.UTC(2026, 11, 31),
+};
+
+function isCodeValid(code) {
+  var c = (code||"").trim().toUpperCase();
+  if (!(c in ACCESS_CODES_MAP)) return { valid: false, reason: "invalid" };
+  var expiry = ACCESS_CODES_MAP[c];
+  if (expiry === 0) return { valid: true, reason: "permanent" };
+  if (Date.now() > expiry) return { valid: false, reason: "expired" };
+  return { valid: true, reason: "timed", expiry: expiry };
+}
+
+function checkAccess() {
+  var stored = localStorage.getItem("vcb_access");
+  if (!stored) return false;
+  try {
+    var d = JSON.parse(stored);
+    if (d.type === "paid") {
+      if (!d.stripeSession) { localStorage.removeItem("vcb_access"); return false; }
+      if (d.expiry > Date.now()) return true;
+      localStorage.removeItem("vcb_access"); return false;
+    }
+    if (d.type === "code" && d.code) {
+      var check = isCodeValid(d.code);
+      if (!check.valid) { localStorage.removeItem("vcb_access"); return false; }
+      return true;
+    }
+    return false;
+  } catch(e) { return false; }
+}
+
 function openToolsDrawer() {
   document.getElementById('tools-drawer').classList.add('open');
   document.getElementById('tools-overlay').classList.add('open');
@@ -3217,57 +3273,8 @@ function App() {
   // ── ACCESS CODE SYSTEM ──────────────────────────────────────────────────────
   // Format: CODE -> expiry timestamp (ms). 0 = never expires.
   // Add new codes here. Date.UTC(year, month-1, day) for expiry.
-  // Example: Date.UTC(2026, 3, 20) = April 20 2026
-  const ACCESS_CODES = {
-    // Permanent codes (site owner / admin)
-    "OWNER2025":          0,
-    // 30-day tester codes — add expiry date when you hand them out
-    "ALPHA30":            Date.UTC(2026, 3, 20),
-    "BRAVO30":            Date.UTC(2026, 3, 20),
-    "CHARLIE30":          Date.UTC(2026, 3, 20),
-    "DELTA30":            Date.UTC(2026, 3, 20),
-    "ECHO30":             Date.UTC(2026, 3, 20),
-    "FOXTROT30":          Date.UTC(2026, 3, 20),
-    "GOLF30":             Date.UTC(2026, 3, 20),
-    "HOTEL30":            Date.UTC(2026, 3, 20),
-    "INDIA30":            Date.UTC(2026, 3, 20),
-    "JULIET30":           Date.UTC(2026, 3, 20),
-    // Special named codes (give to specific people)
-    "VETTEST1":           Date.UTC(2026, 4, 20),
-    "VETTEST2":           Date.UTC(2026, 4, 20),
-    "VETTEST3":           Date.UTC(2026, 4, 20),
-    "VETTEST4":           Date.UTC(2026, 4, 20),
-    "VETTEST5":           Date.UTC(2026, 4, 20),
-    "AMON26":             Date.UTC(2026, 5, 21),
-  };
-
-  const isCodeValid = (code) => {
-    if (!(code in ACCESS_CODES)) return { valid: false, reason: "invalid" };
-    const expiry = ACCESS_CODES[code];
-    if (expiry === 0) return { valid: true, reason: "permanent" };
-    if (Date.now() > expiry) return { valid: false, reason: "expired" };
-    return { valid: true, reason: "timed", expiry };
-  };
-
-  const checkAccess = () => {
-    const stored = localStorage.getItem("vcb_access");
-    if (!stored) return false;
-    try {
-      const d = JSON.parse(stored);
-      // Paid access MUST have a stripeSession marker — clears old test grants
-      if (d.type === "paid") {
-        if (!d.stripeSession) { localStorage.removeItem("vcb_access"); return false; }
-        if (d.expiry > Date.now()) return true;
-        localStorage.removeItem("vcb_access"); return false;
-      }
-      if (d.type === "code" && d.code) {
-        const check = isCodeValid(d.code);
-        if (!check.valid) { localStorage.removeItem("vcb_access"); return false; }
-        return true;
-      }
-      return false;
-    } catch(e) { return false; }
-  };
+  // ACCESS_CODES, isCodeValid, checkAccess defined at module level (see below component)
+  // They are referenced here as module-level vars so useState initializer can call them
   const [hasAccess, setHasAccess] = useState(() => checkAccess());
   const [showPaywall, setShowPaywall] = useState(() => !checkAccess());
   const [pwPlan, setPwPlan] = useState("monthly");
@@ -3277,7 +3284,7 @@ function App() {
 
   const redeemCode = () => {
     const code = pwCode.trim().toUpperCase();
-    const check = isCodeValid(code);
+    const check = isCodeValid(code); // calls module-level function
     if (check.valid) {
       localStorage.setItem("vcb_access", JSON.stringify({ type:"code", code }));
       const expMsg = check.reason === "permanent"

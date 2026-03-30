@@ -808,27 +808,30 @@ var currentResultData = null;
 // Load profile data from Firebase to prefill the comparison tool
 var _profileData = null;
 (function loadProfileFromFirebase(){
+  // First try localStorage cache (set by app.html when user signs in/saves profile)
+  try {
+    var cached = localStorage.getItem('vcb_profile');
+    if(cached) {
+      var data = JSON.parse(cached);
+      _profileData = data;
+      // Will be applied when results render
+      return; // Don't need Firebase if we have cache
+    }
+  } catch(e) {}
+
+  // Fallback: try Firebase
   var auth = window.fbAuth;
   var db = window.fbDb;
-  // If Firebase not configured, show the gate
-  if(!auth || !db){
-    // Will show gate when results render - handled in prefillComparisonFromProfile with null data
-    return;
-  }
+  if(!auth || !db){ return; } // No cache, no Firebase — gate will show
+
   auth.onAuthStateChanged(function(user){
-    if(!user){
-      // Not signed in — gate will show when results render
-      // We call with empty data to trigger gate display
-      prefillComparisonFromProfile({});
-      return;
-    }
+    if(!user){ return; } // Not signed in — gate will show
     db.collection('profiles').doc(user.uid).get().then(function(doc){
       var data = doc.exists ? doc.data() : {};
       _profileData = data;
-      prefillComparisonFromProfile(data);
-    }).catch(function(){
-      prefillComparisonFromProfile({});
-    });
+      // Cache it for future tool pages
+      try { localStorage.setItem('vcb_profile', JSON.stringify(data)); } catch(e) {}
+    }).catch(function(){});
   });
 })();
 

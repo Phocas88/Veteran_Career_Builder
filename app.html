@@ -3417,6 +3417,9 @@ function App() {
             if ((data.education && data.education.length)) setEducation(data.education);
             if (data.skills) setSkills(data.skills);
             if (data.target) setTarget(data.target);
+            // Cache profile to localStorage so standalone tool pages can read it
+            // without needing their own Firebase init
+            try { localStorage.setItem("vcb_profile", JSON.stringify(data)); } catch(e) {}
           }
           // Load saved resumes
           const resumesSnap = await fbDb.collection("profiles").doc(firebaseUser.uid)
@@ -3499,6 +3502,8 @@ function App() {
     setCurrentUser(null);
     setSavedResumes([]);
     setHasUnsaved(false);
+    // Clear localStorage caches
+    try { localStorage.removeItem("vcb_profile"); localStorage.removeItem("vcb_access"); } catch(e) {}
     // Reset form fields
     setPersonal({ name:"", email:"", phone:"", location:"", linkedin:"" });
     setExperiences([newMilExp()]);
@@ -3509,10 +3514,18 @@ function App() {
   const handleSaveProfile = async () => {
     if (!currentUser) { setShowAuth(true); return; }
     try {
-      await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).set({
+      const profileData = {
         personal, milExperiences, civExperiences, education, skills, target,
         updatedAt: new Date().toISOString()
-      }, { merge: true });
+      };
+      await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).set(
+        profileData, { merge: true }
+      );
+      // Cache profile in localStorage so standalone tool pages can read it
+      // without needing their own Firebase init
+      try {
+        localStorage.setItem("vcb_profile", JSON.stringify(profileData));
+      } catch(e) {}
       showToast("Profile saved ✓");
       setHasUnsaved(false);
     } catch(e) { showToast("Save failed — check connection"); }

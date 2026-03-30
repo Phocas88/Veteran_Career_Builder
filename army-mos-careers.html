@@ -399,23 +399,27 @@ html,body{overflow-x:hidden;max-width:100%;}
   function doSearch(idx,q){
     var terms=q.toLowerCase().replace(/[^a-z0-9 ]/g,' ').trim().split(' ').filter(function(t){return t.length>1;});
     if(!terms.length)return[];
+    // Also try searching for the raw query (handles "88m", "11b" etc)
+    var rawTerm=q.toLowerCase().trim();
     var out=[];
     for(var i=0;i<idx.length;i++){
       var p=idx[i];
-      var haystack=(p.title+' '+p.desc+' '+p.text).toLowerCase();
+      var kw=(p.keywords||'').toLowerCase();
+      var haystack=(p.title+' '+p.desc+' '+kw+' '+p.text).toLowerCase();
       var score=0;
       var miss=false;
       for(var j=0;j<terms.length;j++){
         var t=terms[j];
-        var tc=0,c=0,pos=0;
+        var tc=0,pos=0;
         while((pos=haystack.indexOf(t,pos))>=0){tc++;pos++;}
-        // Title hits worth more
         var ttc=0,tpos=0,tl=p.title.toLowerCase();
         while((tpos=tl.indexOf(t,tpos))>=0){ttc++;tpos++;}
         var dtc=0,dpos=0,dl=(p.desc||'').toLowerCase();
         while((dpos=dl.indexOf(t,dpos))>=0){dtc++;dpos++;}
+        var ktc=0,kpos=0;
+        while((kpos=kw.indexOf(t,kpos))>=0){ktc++;kpos++;}
         if(!tc){miss=true;break;}
-        score+=ttc*15+dtc*6+(tc-ttc-dtc)*1;
+        score+=ttc*20+dtc*8+ktc*12+(tc-ttc-dtc-ktc)*1;
       }
       if(miss||score===0)continue;
       // Build snippet

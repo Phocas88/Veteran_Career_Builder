@@ -596,9 +596,14 @@ html,body{overflow-x:hidden;max-width:100%;}
 <div class="card-tool">
   <div class="section-head">Job Posting</div>
   <div class="field">
-    <label>Paste the Full Job Description</label>
-    <textarea id="jm-text" style="min-height:200px" placeholder="Copy the entire job posting from LinkedIn, USAJobs, Indeed, or any job board and paste it here. Include the title, requirements, responsibilities, and qualifications for the most accurate analysis."></textarea>
-    <div style="font-size:.72rem;color:rgba(192,216,240,.4);margin-top:.35rem;">💡 Tip: Select all text on the job page (Ctrl+A), copy (Ctrl+C), and paste here. The more complete the posting, the better the analysis.</div>
+    <label>Job Posting URL <span style="font-weight:400;opacity:.55">(optional — for reference)</span></label>
+    <input type="url" id="jm-url" placeholder="https://www.linkedin.com/jobs/view/... or any job board URL">
+    <div style="font-size:.72rem;color:rgba(192,216,240,.4);margin-top:.3rem;">The URL is included as context. Paste the full text below for the actual analysis.</div>
+  </div>
+  <div class="field">
+    <label>Paste the Full Job Description <span style="color:#e07020;font-weight:700;font-size:.8em;">★ Required</span></label>
+    <textarea id="jm-text" style="min-height:200px" placeholder="Copy the entire job posting and paste it here — job title, company, responsibilities, requirements, qualifications. The more complete, the better the analysis."></textarea>
+    <div style="font-size:.72rem;color:rgba(192,216,240,.4);margin-top:.3rem;">💡 On any job page: Ctrl+A → Ctrl+C → paste here. Or copy just the key sections.</div>
   </div>
   <div class="field">
     <label>Additional skills or certs to consider (optional)</label>
@@ -841,16 +846,17 @@ document.addEventListener("DOMContentLoaded",function(){
 
 <script>
 document.getElementById('jm-btn').addEventListener('click', async function() {
+  var url = val('jm-url');
   var text = val('jm-text');
   var extra = val('jm-extra');
 
   if (!text || text.length < 50) {
-    alert('Please paste the job description text. Copy the full posting from LinkedIn, Indeed, USAJobs, or any job board and paste it in the text area.');
+    alert('Please paste the job description in the text area. Copy the full posting from LinkedIn, Indeed, USAJobs, or any job board.');
     return;
   }
 
   var profileContext = buildPromptContext();
-  var jobContent = text;
+  var jobContent = (url ? 'Job URL: ' + url + '\n\n' : '') + text;
   
   var prompt = 'VETERAN MILITARY PROFILE:\n' + profileContext;
   if (extra) prompt += '\nAdditional Skills/Certs: ' + extra;

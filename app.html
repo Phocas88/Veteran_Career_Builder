@@ -45,13 +45,13 @@
   <script>
     try {
       const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+        authDomain: "veteran-career-builder.firebaseapp.com",
+        projectId: "veteran-career-builder",
+        storageBucket: "veteran-career-builder.firebasestorage.app",
+        messagingSenderId: "REPLACE_SENDER_ID",
+        appId: "REPLACE_APP_ID"
+      };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -1429,6 +1429,33 @@ body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-
 .tab.ai-tab:hover{background:rgba(200,150,10,.1);color:#c8960a;}
 .tab.ai-tab.active{color:#c8960a!important;border-bottom-color:#c8960a!important;background:rgba(200,150,10,.08)!important;}
 .tabs-separator{display:flex;align-items:center;color:#dde3ec;font-size:.6rem;letter-spacing:.08em;flex-shrink:0;padding:0 .25rem;user-select:none;font-weight:700;}
+/* ── AI TOOLS QUICK NAV ─────────────────────────────────────────────────── */
+.tools-fab{position:fixed;right:1rem;bottom:5.5rem;z-index:900;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:50%;width:52px;height:52px;cursor:pointer;box-shadow:0 4px 18px rgba(200,150,10,.5);display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:transform .18s;}
+.tools-fab:hover{transform:scale(1.08);}
+.tools-drawer{position:fixed;right:0;top:0;bottom:0;width:280px;background:#0a1628;border-left:1.5px solid rgba(240,192,64,.2);z-index:950;transform:translateX(100%);transition:transform .25s ease;box-shadow:-6px 0 32px rgba(0,0,0,.5);display:flex;flex-direction:column;}
+.tools-drawer.open{transform:translateX(0);}
+.tools-drawer-header{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);padding:1rem 1.1rem;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.tools-drawer-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:#f0c040;}
+.tools-drawer-close{background:none;border:none;color:rgba(192,216,240,.5);font-size:1.1rem;cursor:pointer;padding:.25rem;}
+.tools-drawer-close:hover{color:#fff;}
+.tools-drawer-body{overflow-y:auto;flex:1;padding:.65rem .75rem;}
+.tools-drawer-section{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,192,64,.45);padding:.65rem .25rem .25rem;margin-top:.25rem;}
+.tools-drawer-link{display:flex;align-items:center;gap:.65rem;padding:.6rem .65rem;border-radius:8px;text-decoration:none;transition:background .12s;margin-bottom:.2rem;}
+.tools-drawer-link:hover{background:rgba(255,255,255,.06);}
+.tools-drawer-link.active-tool{background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.15);}
+.tdl-icon{font-size:1.1rem;flex-shrink:0;width:28px;text-align:center;}
+.tdl-text{flex:1;}
+.tdl-name{font-size:.82rem;font-weight:700;color:#fff;line-height:1.2;}
+.tdl-sub{font-size:.68rem;color:rgba(192,216,240,.4);margin-top:.08rem;}
+.tdl-badge{font-size:.6rem;font-weight:700;background:rgba(240,192,64,.12);border:1px solid rgba(240,192,64,.2);color:#f0c040;border-radius:20px;padding:.08rem .4rem;white-space:nowrap;}
+.tdl-badge.free{background:rgba(26,122,64,.12);border-color:rgba(26,122,64,.2);color:#4ade80;}
+.tools-drawer-footer{padding:.75rem;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;}
+.tools-drawer-footer a{display:block;text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:rgba(192,216,240,.5);font-size:.75rem;padding:.45rem;text-decoration:none;transition:all .15s;}
+.tools-drawer-footer a:hover{border-color:rgba(240,192,64,.2);color:#f0c040;}
+.tools-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:940;}
+.tools-overlay.open{display:block;}
+@media(max-width:480px){.tools-drawer{width:260px;}}
+
 .tab.on,.tab.active{color:var(--navy);border-bottom-color:var(--gold);background:linear-gradient(180deg,transparent,rgba(200,150,10,.04));}
 .tab:hover:not(.on):not(.active){color:var(--navy);background:rgba(26,58,107,.03);}
 .tab-n{font-size:.55rem;display:block;opacity:.6;margin-top:.1rem;font-family:'Inter',sans-serif;font-weight:500;}
@@ -2010,6 +2037,16 @@ const CERTS_LIBRARY = [
   "Certified Nursing Assistant (CNA)","Licensed Practical Nurse (LPN)",
   "Registered Nurse (RN)","Combat Medic Certification (68W)",
 ];
+
+
+function openToolsDrawer() {
+  document.getElementById('tools-drawer').classList.add('open');
+  document.getElementById('tools-overlay').classList.add('open');
+}
+function closeToolsDrawer() {
+  document.getElementById('tools-drawer').classList.remove('open');
+  document.getElementById('tools-overlay').classList.remove('open');
+}
 
 function newMilExp() {
   return { 
@@ -6473,7 +6510,7 @@ Return this exact JSON structure:
 
 
 
-          <div className={"panel "+(tab===5?"on":"")}>
+          <div className={"panel "+(tab===99?"on":"")}>
 
 
             <div className="crisis-banner">
@@ -6756,6 +6793,100 @@ Return this exact JSON structure:
         </div>
       </div>
 
+
+
+
+      {/* ── AI TOOLS QUICK NAV DRAWER ── */}
+      <div className="tools-overlay" id="tools-overlay" onClick={()=>closeToolsDrawer()}></div>
+      <button className="tools-fab" id="tools-fab" onClick={()=>openToolsDrawer()} title="AI Tools">🛠️</button>
+      <div className="tools-drawer" id="tools-drawer">
+        <div className="tools-drawer-header">
+          <span className="tools-drawer-title">AI Career Tools</span>
+          <button className="tools-drawer-close" onClick={()=>closeToolsDrawer()}>✕</button>
+        </div>
+        <div className="tools-drawer-body">
+          <div className="tools-drawer-section">Inside This App</div>
+          <a className="tools-drawer-link active-tool" href="#" onClick={(e)=>{e.preventDefault();setTab(0);closeToolsDrawer();}}>
+            <span className="tdl-icon">👤</span>
+            <span className="tdl-text"><span className="tdl-name">Profile & Qualifications</span><span className="tdl-sub">Your military background, MOS, clearance</span></span>
+          </a>
+          <a className="tools-drawer-link active-tool" href="#" onClick={(e)=>{e.preventDefault();setTab(1);closeToolsDrawer();}}>
+            <span className="tdl-icon">🎯</span>
+            <span className="tdl-text"><span className="tdl-name">Career Pathways</span><span className="tdl-sub">AI-matched career recommendations</span></span>
+          </a>
+          <a className="tools-drawer-link active-tool" href="#" onClick={(e)=>{e.preventDefault();setTab(2);closeToolsDrawer();}}>
+            <span className="tdl-icon">📄</span>
+            <span className="tdl-text"><span className="tdl-name">AI Resume Builder</span><span className="tdl-sub">5 templates, ATS-optimized</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link active-tool" href="#" onClick={(e)=>{e.preventDefault();setTab(3);closeToolsDrawer();}}>
+            <span className="tdl-icon">✉️</span>
+            <span className="tdl-text"><span className="tdl-name">Cover Letter & Review</span><span className="tdl-sub">AI cover letters + resume score</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link active-tool" href="#" onClick={(e)=>{e.preventDefault();setTab(4);closeToolsDrawer();}}>
+            <span className="tdl-icon">🔍</span>
+            <span className="tdl-text"><span className="tdl-name">Job Search Hub</span><span className="tdl-sub">Tracker, interview prep, follow-ups</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+
+          <div className="tools-drawer-section">Standalone AI Tools</div>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-job-match.html" target="_blank">
+            <span className="tdl-icon">🎯</span>
+            <span className="tdl-text"><span className="tdl-name">Job Match Analyzer</span><span className="tdl-sub">Paste any job posting, get honest score</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-federal-resume.html" target="_blank">
+            <span className="tdl-icon">🏛</span>
+            <span className="tdl-text"><span className="tdl-name">Federal Resume Builder</span><span className="tdl-sub">USAJobs-format with KSAs</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-interview-simulator.html" target="_blank">
+            <span className="tdl-icon">🎤</span>
+            <span className="tdl-text"><span className="tdl-name">Interview Simulator</span><span className="tdl-sub">STAR coaching for any role</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-linkedin-builder.html" target="_blank">
+            <span className="tdl-icon">🔗</span>
+            <span className="tdl-text"><span className="tdl-name">LinkedIn Optimizer</span><span className="tdl-sub">Civilian-language profile rewrite</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-salary-negotiator.html" target="_blank">
+            <span className="tdl-icon">💰</span>
+            <span className="tdl-text"><span className="tdl-name">Salary Negotiator</span><span className="tdl-sub">Scripts + clearance leverage tactics</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-cert-advisor.html" target="_blank">
+            <span className="tdl-icon">📊</span>
+            <span className="tdl-text"><span className="tdl-name">Certification Advisor</span><span className="tdl-sub">Which certs to pursue + GI Bill use</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+
+          <div className="tools-drawer-section">Free Resources</div>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/mos-career-translator.html" target="_blank">
+            <span className="tdl-icon">🔄</span>
+            <span className="tdl-text"><span className="tdl-name">MOS Translator</span><span className="tdl-sub">Any MOS to civilian titles</span></span>
+            <span className="tdl-badge free">Free</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/career-assessment-full.html" target="_blank">
+            <span className="tdl-icon">🧠</span>
+            <span className="tdl-text"><span className="tdl-name">Full Career Assessment</span><span className="tdl-sub">60-question RIASEC + resume blend</span></span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/federal-jobs-search.html" target="_blank">
+            <span className="tdl-icon">🏛</span>
+            <span className="tdl-text"><span className="tdl-name">Federal Job Search</span><span className="tdl-sub">Live USAJobs filtered listings</span></span>
+            <span className="tdl-badge free">Free</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/veteran-salary-data.html" target="_blank">
+            <span className="tdl-icon">💵</span>
+            <span className="tdl-text"><span className="tdl-name">Salary Data by MOS</span><span className="tdl-sub">Crowdsourced real veteran salaries</span></span>
+            <span className="tdl-badge free">Free</span>
+          </a>
+        </div>
+        <div className="tools-drawer-footer">
+          <a href="https://veterancareerpath.com" target="_blank">← Back to VeteranCareerPath.com</a>
+        </div>
+      </div>
 
 
       {!hasAccess&&<div style={{position:"fixed",bottom:0,left:0,right:0,background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",color:"#fff",zIndex:99999,boxShadow:"0 -2px 16px rgba(0,0,0,.4)"}}>

@@ -66,13 +66,13 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 .screen.active{display:block;}
 
 /* INTRO */
-.intro-wrap{max-width:700px;margin:0 auto;padding:3.5rem 5%;}
+.intro-wrap{max-width:760px;margin:0 auto;padding:3rem 5%;}
 .intro-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:100px;padding:.28rem .9rem;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;}
 .intro-h{font-family:"Bebas Neue",sans-serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:.06em;color:#fff;line-height:1.05;margin-bottom:.85rem;}
 .intro-h span{color:var(--gold);}
 .intro-p{font-size:.95rem;color:rgba(192,216,240,.7);line-height:1.8;margin-bottom:1.75rem;max-width:560px;}
 .intro-callouts{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:2rem;}
-@media(max-width:480px){.intro-callouts{grid-template-columns:1fr;}
+@media(max-width:480px){.intro-callouts{grid-template-columns:1fr;}.intro-stats{gap:1rem;}.intro-stat .n{font-size:1.8rem;}
 .callout{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.9rem 1rem;display:flex;gap:.65rem;align-items:flex-start;}
 .callout-icon{font-size:1.15rem;flex-shrink:0;margin-top:.05rem;}
 .callout-text{font-size:.8rem;color:rgba(192,216,240,.72);line-height:1.6;}
@@ -87,13 +87,13 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 .save-note strong{color:rgba(192,216,240,.85);}
 
 /* ASSESSMENT */
-.assess-wrap{max-width:700px;margin:0 auto;padding:2rem 5%;}
+.assess-wrap{max-width:760px;margin:0 auto;padding:2rem 5%;}
 .dim-header{display:flex;align-items:center;gap:.9rem;margin-bottom:1.75rem;padding-bottom:1.25rem;border-bottom:1px solid rgba(255,255,255,.06);}
 .dim-icon-big{width:48px;height:48px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
 .dim-name{font-family:"Bebas Neue",sans-serif;font-size:1.3rem;letter-spacing:.07em;color:#fff;line-height:1;}
 .dim-desc{font-size:.78rem;color:rgba(192,216,240,.45);margin-top:.22rem;}
 .dim-counter{font-size:.7rem;color:rgba(192,216,240,.35);margin-top:.18rem;}
-.q-list{display:flex;flex-direction:column;gap:1.1rem;margin-bottom:1.75rem;}
+.q-list{display:flex;flex-direction:column;gap:.9rem;margin-bottom:1.75rem;}
 .q-card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.065);border-radius:12px;padding:1.2rem 1.35rem;transition:border-color .2s;}
 .q-card.answered{border-color:rgba(240,192,64,.18);background:rgba(240,192,64,.025);}
 .q-num{font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(192,216,240,.3);margin-bottom:.45rem;}
@@ -297,13 +297,10 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
     <h1 class="intro-h">Full Military<br><span>Career Assessment</span></h1>
     <p class="intro-p">60 questions built around how veterans think, lead, and operate. Not a civilian quiz with military labels. Your results tie to your account so you can take it on your phone and pull up the full printable report from any device.</p>
     <div class="intro-callouts">
-      <div class="callout"><div class="callout-icon">🎖️</div><div class="callout-text"><strong>Built for Your DD-214</strong>Built for your DD-214, your MOS, your clearance. 60 questions matched to how veterans actually think and work. Not civilian career quiz templates.</div></div>
-      <div class="callout"><div class="callout-icon">💰</div><div class="callout-text"><strong>Defense and Federal Salaries</strong>Get salary ranges for defense contractors, federal agencies, and private sector roles your background qualifies for. Real numbers, not national averages.</div></div>
-      <div class="callout"><div class="callout-icon">📱</div><div class="callout-text"><strong>Take on Phone, Print on Desktop</strong>Results saved to your account. Take it on your phone. Pull up the full report and print it from your desktop. Any device, any time.</div></div>
-      <div class="callout"><div class="callout-icon">🖨️</div><div class="callout-text"><strong>Printable Professional Report</strong>Clean print layout. Bring it to a TAP counselor, VSO appointment, or hand it to a hiring manager.</div></div>
-    </div><div class="callout-text"><strong>Salary Ranges That Apply to You</strong>Compensation data for defense contractors, federal agencies, and private sector roles your background qualifies for. Not generic BLS averages that ignore clearance premiums.</div></div>
-      <div class="callout"><div class="callout-icon">📱</div><div class="callout-text"><strong>Take It on Your Phone</strong>Results save to your account automatically. Take the assessment on your phone during lunch, pull up the full printable report from your desktop later.</div></div>
-      <div class="callout"><div class="callout-icon">🖨️</div><div class="callout-text"><strong>Bring It to Your TAP Appointment</strong>Clean, professional print layout. Take it to your VSO, TAP counselor, or into a hiring manager interview as talking points.</div></div>
+      <div class="callout"><div class="callout-icon">🎖️</div><div class="callout-text"><strong>Built for Veterans</strong>60 questions matched to how veterans think and operate. Your MOS, clearance, and DD-214 experience all factor into the results.</div></div>
+      <div class="callout"><div class="callout-icon">💰</div><div class="callout-text"><strong>Real Salary Data</strong>Defense contractors, federal agencies, and private sector roles — with clearance premiums included. Not generic BLS averages.</div></div>
+      <div class="callout"><div class="callout-icon">📱</div><div class="callout-text"><strong>Any Device, Any Time</strong>Results saved to your account. Take it on your phone, pull up the full report on desktop, print anytime.</div></div>
+      <div class="callout"><div class="callout-icon">🧠</div><div class="callout-text"><strong>Assessment + Resume Blend</strong>After results, enter your MOS and experience — AI cross-references your personality profile with your actual background for curated matches.</div></div>
     </div>
     <div class="intro-stats">
       <div class="intro-stat"><div class="n">60</div><div class="l">Questions</div></div>

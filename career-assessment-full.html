@@ -734,32 +734,77 @@ var _profileData = null;
 (function loadProfileFromFirebase(){
   var auth = window.fbAuth;
   var db = window.fbDb;
-  if(!auth || !db) return;
+  // If Firebase not configured, show the gate
+  if(!auth || !db){
+    // Will show gate when results render - handled in prefillComparisonFromProfile with null data
+    return;
+  }
   auth.onAuthStateChanged(function(user){
-    if(!user) return;
+    if(!user){
+      // Not signed in — gate will show when results render
+      // We call with empty data to trigger gate display
+      prefillComparisonFromProfile({});
+      return;
+    }
     db.collection('profiles').doc(user.uid).get().then(function(doc){
-      if(!doc.exists) return;
-      var data = doc.data();
+      var data = doc.exists ? doc.data() : {};
       _profileData = data;
-      // Show banner
-      var banner = document.getElementById('profile-loaded-banner');
-      if(banner) banner.style.display = 'block';
-      // Pre-fill comparison fields if they exist (shown after assessment completes)
       prefillComparisonFromProfile(data);
-    }).catch(function(){});
+    }).catch(function(){
+      prefillComparisonFromProfile({});
+    });
   });
 })();
 
 function prefillComparisonFromProfile(data){
   var milExps = data.milExperiences || data.experiences || [];
   var firstMil = milExps.find(function(e){return e.type && e.type.includes('Military');}) || milExps[0];
-  if(!firstMil) return;
 
-  // MOS field
+  // Determine if profile has enough data for blended analysis
+  var hasData = firstMil && (firstMil.mos || firstMil.duties || firstMil.rank);
+
+  // Update the blend status dot
+  var dot = document.getElementById('blend-status-dot');
+  if(dot) dot.style.background = hasData ? '#1a7a40' : '#5a6a7a';
+
+  // Gate logic
+  var gate = document.getElementById('blend-gate');
+  var blendContent = document.getElementById('blend-content');
+  var banner = document.getElementById('blend-profile-banner');
+
+  if(!hasData){
+    // Show gate — profile incomplete or no profile saved
+    if(gate) gate.style.display = 'block';
+    if(blendContent) blendContent.style.display = 'none';
+    return;
+  }
+
+  // Profile has data — hide gate, show content with prefilled banner
+  if(gate) gate.style.display = 'none';
+  if(blendContent) blendContent.style.display = 'block';
+  if(banner) banner.style.display = 'flex';
+
+  // Pre-fill MOS
   var mosEl = document.getElementById('cmpMOS');
-  if(mosEl && !mosEl.value && firstMil.mos) mosEl.value = firstMil.mos + (firstMil.mosTitle ? ' (' + firstMil.mosTitle + ')' : '');
+  if(mosEl && firstMil.mos){
+    // Build rich MOS string from mosRoles progression if available
+    var mosStr = firstMil.mos;
+    if(firstMil.mosTitle) mosStr += ' (' + firstMil.mosTitle + ')';
+    if(firstMil.mosRoles && firstMil.mosRoles.length){
+      var progression = firstMil.mosRoles
+        .filter(function(r){return r.title;})
+        .map(function(r){
+          var parts = [r.title];
+          if(r.rankAtRole) parts.push(r.rankAtRole);
+          if(r.fromYear && r.toYear) parts.push(r.fromYear+'-'+r.toYear);
+          return parts.join(' ');
+        }).join(' → ');
+      if(progression) mosStr += ' | Progression: ' + progression;
+    }
+    mosEl.value = mosStr;
+  }
 
-  // Rank field
+  // Pre-fill rank
   var rankEl = document.getElementById('cmpRank');
   if(rankEl && firstMil.rank){
     var opts = rankEl.options;
@@ -768,18 +813,58 @@ function prefillComparisonFromProfile(data){
     }
   }
 
-  // Clearance
+  // Pre-fill YOS from dates if available
+  var yosEl = document.getElementById('cmpYOS');
+  if(yosEl && firstMil.startDate && (firstMil.endDate || firstMil.current)){
+    var start = parseInt(firstMil.startDate);
+    var end = firstMil.current ? new Date().getFullYear() : parseInt(firstMil.endDate);
+    if(start && end){
+      var yrs = end - start;
+      var yosVal = yrs <= 3 ? '1-3 years' : yrs <= 6 ? '4-6 years' : yrs <= 10 ? '7-10 years' :
+                   yrs <= 15 ? '11-15 years' : yrs <= 20 ? '16-20 years' : '20+ years';
+      var yosOpts = yosEl.options;
+      for(var j=0;j<yosOpts.length;j++){
+        if(yosOpts[j].value === yosVal || yosOpts[j].text === yosVal){ yosEl.selectedIndex=j; break; }
+      }
+    }
+  }
+
+  // Pre-fill clearance
   var clrEl = document.getElementById('cmpClearance');
   if(clrEl && firstMil.clearanceLevel){
     var cl = (firstMil.clearanceLevel||'').toLowerCase();
-    if(cl.includes('ts/sci') || cl.includes('tssci')) clrEl.value='tssci';
+    if(cl.includes('ts/sci')||cl.includes('tssci')) clrEl.value='tssci';
     else if(cl.includes('top secret')) clrEl.value='ts';
     else if(cl.includes('secret')) clrEl.value='secret';
   }
 
-  // Duties
+  // Pre-fill duties — combine all mosRoles key duties + main duties block
   var dutEl = document.getElementById('cmpDuties');
-  if(dutEl && !dutEl.value && firstMil.duties) dutEl.value = firstMil.duties.slice(0, 500);
+  if(dutEl){
+    var dutyParts = [];
+    if(firstMil.duties) dutyParts.push(firstMil.duties);
+    if(firstMil.mosRoles && firstMil.mosRoles.length){
+      firstMil.mosRoles.forEach(function(r){
+        if(r.keyDuty) dutyParts.push(r.title + ': ' + r.keyDuty);
+      });
+    }
+    // Also pull civilian experience duties if any
+    var civExps = data.civExperiences || [];
+    civExps.slice(0,2).forEach(function(c){
+      if(c.duties) dutyParts.push('Civilian — ' + (c.jobTitle||'') + ': ' + c.duties.slice(0,100));
+    });
+    dutEl.value = dutyParts.join(' | ').slice(0, 700);
+  }
+
+  // Pre-fill civilian experience field from civExperiences
+  var civEl = document.getElementById('cmpCivilian');
+  if(civEl){
+    var civExps2 = data.civExperiences || [];
+    var civStr = civExps2.filter(function(c){return c.jobTitle||c.employer;})
+      .map(function(c){return (c.jobTitle||'')+(c.employer?' at '+c.employer:'');})
+      .slice(0,3).join(', ');
+    if(civStr) civEl.value = civStr;
+  }
 }
 
 function getUid(){
@@ -1095,55 +1180,68 @@ function renderResultsFromData(data, resultId){
 
     '<div class="sec-lbl">Your 6 Dimension Scores</div>' +
     '<div class="dim-bars">' + dimBars + '</div>' +
-    '<div class="sec-lbl">Blend Your Experience with Your Assessment</div>' +
-    '<div class="compare-wrap fade-in">' +
-      '<p class="compare-intro">Your assessment shows what you are naturally wired for. But what you have already <em>done</em> matters just as much. Enter your background below and we will cross-reference your assessment results with your real experience to show which careers sit at the intersection — roles where your personality AND your resume point in the same direction.</p>' +
-      '<div class="compare-fields">' +
-        '<div class="compare-field">' +
-          '<label>Your MOS / Rate / AFSC</label>' +
-          '<input type="text" id="cmpMOS" placeholder="e.g. 11B, HM, 2W1X1, 0311">' +
-        '</div>' +
-        '<div class="compare-field">' +
-          '<label>Rank at Separation</label>' +
-          '<select id="cmpRank">' +
-            '<option value="">Select rank</option>' +
-            '<option>E-4 and below</option><option>E-5 (SGT / Petty Officer 2nd Class)</option>' +
-            '<option>E-6 (SSG / PO1)</option><option>E-7 (SFC / CPO)</option>' +
-            '<option>E-8 (MSG / Senior CPO)</option><option>E-9 (SGM / MCPO)</option>' +
-            '<option>W-1 to W-2</option><option>W-3 to W-5</option>' +
-            '<option>O-1 to O-3</option><option>O-4 to O-6</option><option>O-7+</option>' +
-          '</select>' +
-        '</div>' +
-        '<div class="compare-field">' +
-          '<label>Years of Service</label>' +
-          '<select id="cmpYOS">' +
-            '<option value="">Select</option>' +
-            '<option>1-3 years</option><option>4-6 years</option><option>7-10 years</option>' +
-            '<option>11-15 years</option><option>16-20 years</option><option>20+ years</option>' +
-          '</select>' +
-        '</div>' +
-        '<div class="compare-field">' +
-          '<label>Security Clearance</label>' +
-          '<select id="cmpClearance">' +
-            '<option value="none">None / Expired</option>' +
-            '<option value="secret">Secret (Active)</option>' +
-            '<option value="ts">Top Secret (Active)</option>' +
-            '<option value="tssci">TS/SCI (Active)</option>' +
-          '</select>' +
-        '</div>' +
-        '<div class="compare-field compare-field-full">' +
-          '<label>Key Duties and Skills (brief summary)</label>' +
-          '<textarea id="cmpDuties" placeholder="e.g. Led a 12-person team, managed $2M equipment, conducted intelligence analysis, trained 40+ personnel on systems, coordinated logistics for multi-unit operations..."></textarea>' +
-        '</div>' +
-        '<div class="compare-field compare-field-full">' +
-          '<label>Civilian Experience (if any)</label>' +
-          '<input type="text" id="cmpCivilian" placeholder="e.g. EMT for 2 years, worked retail management part-time, or leave blank">' +
-        '</div>' +
+    '<div class="sec-lbl" style="display:flex;align-items:center;gap:.6rem">Blend Your Experience with Your Assessment <span id="blend-status-dot" style="width:10px;height:10px;border-radius:50%;background:#5a6a7a;flex-shrink:0;display:inline-block;"></span></div>' +
+    '<div class="compare-wrap fade-in" id="compare-wrap">' +
+      '<div id="blend-gate" style="display:none;background:rgba(26,58,107,.18);border:1.5px solid rgba(240,192,64,.25);border-radius:12px;padding:1.5rem;text-align:center;margin-bottom:1rem;">' +
+        '<div style="font-size:2rem;margin-bottom:.65rem;">📋</div>' +
+        '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.4rem;">Complete Your Resume Profile First</div>' +
+        '<p style="font-size:.83rem;color:rgba(192,216,240,.65);line-height:1.7;margin-bottom:1rem;">To get career matches that combine your personality assessment with your actual military experience, we need your profile data — MOS, rank, duties, clearance. Build your resume profile in the app first, then come back here. The results will pull automatically.</p>' +
+        '<a href="https://veterancareerpath.com/app.html" style="display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.88rem;padding:.72rem 1.5rem;border-radius:9px;text-decoration:none;margin-bottom:.65rem;">Build My Resume Profile →</a>' +
+        '<div style="font-size:.72rem;color:rgba(192,216,240,.3);margin-top:.4rem;">After saving your profile in the app, refresh this page or sign in — your data will auto-populate here.</div>' +
       '</div>' +
-      '<button class="compare-btn" id="compareBtn" onclick="runComparison()">🎯 Find My Best-Fit Careers</button>' +
-      '<div class="compare-result" id="compareResult">' +
-        '<div class="compare-loading" id="compareLoading" style="display:none"><div class="spin"></div><br>Analyzing your background against your assessment...</div>' +
-        '<div id="compareOutput"></div>' +
+      '<div id="blend-content">' +
+        '<div id="blend-profile-banner" style="display:none;background:rgba(26,122,64,.12);border:1px solid rgba(26,122,64,.25);border-radius:8px;padding:.65rem 1rem;margin-bottom:.85rem;display:flex;align-items:center;gap:.6rem;">' +
+          '<span style="font-size:1rem;">✅</span>' +
+          '<span style="font-size:.8rem;color:rgba(192,216,240,.8);">Profile loaded from your resume builder — <strong style="color:#4ade80;">fields pre-filled from your saved data.</strong> Review and click the button to run your blended analysis.</span>' +
+        '</div>' +
+        '<p class="compare-intro">Your assessment reveals your natural wiring. Your military background reveals your real credentials. The blend shows careers where <em>both</em> point in the same direction — roles where your personality AND your resume qualify you.</p>' +
+        '<div class="compare-fields">' +
+          '<div class="compare-field">' +
+            '<label>Your MOS / Rate / AFSC</label>' +
+            '<input type="text" id="cmpMOS" placeholder="e.g. 11B, HM, 2W1X1, 0311">' +
+          '</div>' +
+          '<div class="compare-field">' +
+            '<label>Rank at Separation</label>' +
+            '<select id="cmpRank">' +
+              '<option value="">Select rank</option>' +
+              '<option>E-4 and below</option><option>E-5 (SGT / Petty Officer 2nd Class)</option>' +
+              '<option>E-6 (SSG / PO1)</option><option>E-7 (SFC / CPO)</option>' +
+              '<option>E-8 (MSG / Senior CPO)</option><option>E-9 (SGM / MCPO)</option>' +
+              '<option>W-1 to W-2</option><option>W-3 to W-5</option>' +
+              '<option>O-1 to O-3</option><option>O-4 to O-6</option><option>O-7+</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="compare-field">' +
+            '<label>Years of Service</label>' +
+            '<select id="cmpYOS">' +
+              '<option value="">Select</option>' +
+              '<option>1-3 years</option><option>4-6 years</option><option>7-10 years</option>' +
+              '<option>11-15 years</option><option>16-20 years</option><option>20+ years</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="compare-field">' +
+            '<label>Security Clearance</label>' +
+            '<select id="cmpClearance">' +
+              '<option value="none">None / Expired</option>' +
+              '<option value="secret">Secret (Active)</option>' +
+              '<option value="ts">Top Secret (Active)</option>' +
+              '<option value="tssci">TS/SCI (Active)</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="compare-field compare-field-full">' +
+            '<label>Key Duties & Skills</label>' +
+            '<textarea id="cmpDuties" placeholder="e.g. Led 12-person team, managed $2M equipment, conducted intelligence analysis, trained 40+ personnel..."></textarea>' +
+          '</div>' +
+          '<div class="compare-field compare-field-full">' +
+            '<label>Civilian Experience (if any)</label>' +
+            '<input type="text" id="cmpCivilian" placeholder="e.g. EMT for 2 years, retail management part-time, or leave blank">' +
+          '</div>' +
+        '</div>' +
+        '<button class="compare-btn" id="compareBtn" onclick="runComparison()">🎯 Find My Best-Fit Careers — Blended Analysis</button>' +
+        '<div class="compare-result" id="compareResult">' +
+          '<div class="compare-loading" id="compareLoading" style="display:none"><div class="spin"></div><br>Cross-referencing your assessment with your military background...</div>' +
+          '<div id="compareOutput"></div>' +
+        '</div>' +
       '</div>' +
     '</div>' +
     '<div class="sec-lbl">Your Career Matches — ' + topCareers.length + ' Roles Aligned to Your Profile</div>' +
@@ -1173,6 +1271,13 @@ function renderResultsFromData(data, resultId){
     document.querySelectorAll('.fade-in').forEach(function(el,i){
       setTimeout(function(){el.classList.add('visible');}, i*55);
     });
+    // Re-run profile prefill now that DOM is ready (results just rendered)
+    if(_profileData){
+      prefillComparisonFromProfile(_profileData);
+    } else {
+      // Profile not yet loaded — show gate until Firebase responds
+      prefillComparisonFromProfile({});
+    }
   }, 120);
 
   // Store share URL for copy button

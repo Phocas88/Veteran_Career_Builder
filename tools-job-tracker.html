@@ -730,12 +730,20 @@ async function callClaude(prompt, system, opts) {
   if (btn){btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Generating...';}
   if (out){out.style.display="block";out.innerHTML='<div class="loading"><div class="spinner"></div><p>Analyzing your background...</p></div>';}
   try {
-    var body = {model:"claude-sonnet-4-5-20251001",max_tokens:maxTok,messages:[{role:"user",content:prompt}]};
+    var body = {model:"claude-haiku-4-5-20251001",max_tokens:maxTok,messages:[{role:"user",content:prompt}]};
     if (system) body.system = system;
     var r = await fetch(PROXY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
     if (!r.ok) {
       var err = await r.json().catch(function(){return {};});
-      throw new Error("API error "+r.status+(err.error?": "+err.error:""));
+      var msg = err.error || err.error_message || "";
+      if (r.status === 404) {
+        throw new Error("Proxy not found (404) — redeploy your Vercel proxy: cd vcp-proxy && vercel --prod");
+      } else if (r.status === 401 || r.status === 403) {
+        throw new Error("API key invalid (" + r.status + ") — check ANTHROPIC_API_KEY in Vercel environment variables");
+      } else if (r.status === 500 && !msg) {
+        throw new Error("Proxy server error — check Vercel function logs");
+      }
+      throw new Error("API error " + r.status + (msg ? ": " + msg : ""));
     }
     var data = await r.json();
     var text = (data.content||[]).map(function(b){return b.text||"";}).join("")||data.text||"";
@@ -855,12 +863,20 @@ async function callClaude(prompt, system, opts) {
   if (btn){btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Generating...';}
   if (out){out.style.display="block";out.innerHTML='<div class="loading"><div class="spinner"></div><p>Analyzing your background...</p></div>';}
   try {
-    var body = {model:"claude-sonnet-4-5-20251001",max_tokens:maxTok,messages:[{role:"user",content:prompt}]};
+    var body = {model:"claude-haiku-4-5-20251001",max_tokens:maxTok,messages:[{role:"user",content:prompt}]};
     if (system) body.system = system;
     var r = await fetch(PROXY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
     if (!r.ok) {
       var err = await r.json().catch(function(){return {};});
-      throw new Error("API error "+r.status+(err.error?": "+err.error:""));
+      var msg = err.error || err.error_message || "";
+      if (r.status === 404) {
+        throw new Error("Proxy not found (404) — redeploy your Vercel proxy: cd vcp-proxy && vercel --prod");
+      } else if (r.status === 401 || r.status === 403) {
+        throw new Error("API key invalid (" + r.status + ") — check ANTHROPIC_API_KEY in Vercel environment variables");
+      } else if (r.status === 500 && !msg) {
+        throw new Error("Proxy server error — check Vercel function logs");
+      }
+      throw new Error("API error " + r.status + (msg ? ": " + msg : ""));
     }
     var data = await r.json();
     var text = (data.content||[]).map(function(b){return b.text||"";}).join("")||data.text||"";

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PCS/ETS Move Calculator 2026 | Military Moving Allowances</title>
-<meta name="description" content="Calculate your PCS or ETS move entitlements: DITY/PPM pay, weight allowance, DLA, TLE, mileage. Based on 2026 DoD Joint Travel Regulations.">
+<title>Military PCS Move Calculator 2026 | DITY/PPM Weight Allowance & ETS Move Costs</title>
+<meta name="description" content="Free military PCS and ETS move calculator for 2026. Calculate DITY/PPM pay, PCS weight allowance by rank, DLA, MALT mileage, TLE, and total move reimbursement.">>
 <link rel="canonical" href="https://veterancareerpath.com/pcs-ets-move-calculator.html">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/logo.png">
@@ -144,16 +144,16 @@ footer{background:#0d1f3c;padding:2rem 5%;margin-top:2rem;}
 }
 </style>
 <meta property="og:title" content="PCS/ETS Move Calculator 2026 | Military Moving Allowances">
-<meta property="og:description" content="Calculate your PCS or ETS move entitlements: DITY/PPM pay, weight allowance, DLA, TLE, mileage. Based on 2026 DoD Joint Travel Regulations.">
+<meta property="og:description" content="Calculate your PCS or ETS move entitlements: DITY/Estimate your PCS/ETS move costs — PPM pay, weight allowance, DLA, TLE, MALT. Based on 2026 JTR. PPM is an estimate; get exact authorization from your TMO.">
 <meta property="og:url" content="https://veterancareerpath.com/pcs-ets-move-calculator.html">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://veterancareerpath.com/logo.png">
 <meta property="og:site_name" content="Veteran Career Path">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PCS/ETS Move Calculator 2026 | Military Moving Allowances">
-<meta name="twitter:description" content="Calculate your PCS or ETS move entitlements: DITY/PPM pay, weight allowance, DLA, TLE, mileage. Based on 2026 DoD Joint Travel Regulations.">
+<meta name="twitter:description" content="Calculate your PCS or ETS move entitlements: DITY/Estimate your PCS/ETS move costs — PPM pay, weight allowance, DLA, TLE, MALT. Based on 2026 JTR. PPM is an estimate; get exact authorization from your TMO.">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","name":"PCS/ETS Move Calculator 2026 | Military Moving Allowances","description":"Calculate your PCS or ETS move entitlements: DITY/PPM pay, weight allowance, DLA, TLE, mileage. Based on 2026 DoD Joint Travel Regulations.","url":"https://veterancareerpath.com/pcs-ets-move-calculator.html","publisher":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://veterancareerpath.com"},{"@type":"ListItem","position":2,"name":"PCS/ETS Move Calculator 2026 | Military Moving Allowances"}]}}
+{"@context":"https://schema.org","@type":"WebPage","name":"PCS/ETS Move Calculator 2026 | Military Moving Allowances","description":"Calculate your PCS or ETS move entitlements: DITY/Estimate your PCS/ETS move costs — PPM pay, weight allowance, DLA, TLE, MALT. Based on 2026 JTR. PPM is an estimate; get exact authorization from your TMO.","url":"https://veterancareerpath.com/pcs-ets-move-calculator.html","publisher":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://veterancareerpath.com"},{"@type":"ListItem","position":2,"name":"PCS/ETS Move Calculator 2026 | Military Moving Allowances"}]}}
 </script>
 </head>
 <body>
@@ -1100,7 +1100,15 @@ function calculate(){
   let items = [];
   let total = 0;
 
-  items.push({label:'Weight Entitlement',value:weightEntitlement.toLocaleString()+' lbs',sub:'Your authorized HHG weight limit',highlight:false});
+  // ── ACCURACY DISCLAIMER IN RESULTS ────────────────────────────────────────
+  const disclaimerItem = {
+    label: '⚠️ PPM Estimate Accuracy',
+    value: '~85–95% accurate',
+    sub: 'DoD PPM uses zip-to-zip linehaul rate tables + fuel surcharge. Our formula ($0.17/lb/100mi) is an approximation. Get exact PPM authorization from your TMO before deciding.',
+    highlight: true
+  };
+
+    items.push({label:'Weight Entitlement',value:weightEntitlement.toLocaleString()+' lbs',sub:'Your authorized HHG weight limit',highlight:false});
   
   items.push({label:'Dislocation Allowance (DLA)',value:fmt(dlaAmt),sub:'Flat payment — deposited to your account',highlight:true,dollar:dlaAmt});
   total += dlaAmt;

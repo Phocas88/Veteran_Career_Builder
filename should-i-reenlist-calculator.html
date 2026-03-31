@@ -600,20 +600,46 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
       </select>
     </div>
   </div>
-  <div class="sec-label">Housing & Dependents</div>
+  <div class="sec-label">Housing, Location & Family</div>
   <div class="field-row">
-    <div class="field"><label>BAH Tier</label>
+    <div class="field"><label>BAH Location Tier</label>
       <select id="m-bah">
-        <option value="high">High (DC/NYC/LA/San Diego)</option>
-        <option value="mid" selected>Mid (Ft. Campbell, Bragg, Hood)</option>
-        <option value="low">Low (Rural/smaller bases)</option>
+        <optgroup label="High Cost — $2,600–3,200+/mo">
+          <option value="high_dc">Washington DC / NOVA (E5 w/dep: $3,174)</option>
+          <option value="high_sd">San Diego CA (E5 w/dep: $3,045)</option>
+          <option value="high_ny">NYC / Northern NJ (E5 w/dep: $3,300)</option>
+          <option value="high_la">Los Angeles CA (E5 w/dep: $3,066)</option>
+          <option value="high_sea">Seattle / Joint Base Lewis (E5 w/dep: $2,847)</option>
+        </optgroup>
+        <optgroup label="Mid Cost — $1,600–2,200/mo">
+          <option value="mid_bragg">Ft. Liberty NC (E5 w/dep: $1,851)</option>
+          <option value="mid_hood">Ft. Cavazos TX (E5 w/dep: $1,716)</option>
+          <option value="mid_campbell">Ft. Campbell KY/TN (E5 w/dep: $1,629)</option>
+          <option value="mid_polk">Ft. Johnson LA (E5 w/dep: $1,389)</option>
+          <option value="mid_carson">Ft. Carson CO (E5 w/dep: $2,013)</option>
+          <option value="mid_drum">Ft. Drum NY (E5 w/dep: $1,716)</option>
+          <option value="mid_jblm" selected>Ft. Stewart GA (E5 w/dep: $1,494)</option>
+          <option value="mid_benning">Ft. Moore GA (E5 w/dep: $1,494)</option>
+        </optgroup>
+        <optgroup label="Low Cost — $1,100–1,500/mo">
+          <option value="low_sill">Ft. Sill OK (E5 w/dep: $1,197)</option>
+          <option value="low_riley">Ft. Riley KS (E5 w/dep: $1,173)</option>
+          <option value="low_hood2">Ft. Huachuca AZ (E5 w/dep: $1,311)</option>
+          <option value="low_other">Other rural/small installation</option>
+        </optgroup>
       </select>
+      <div class="hint">BAH amounts shown for E-5. Your actual BAH is calculated from your grade and family size below.</div>
     </div>
-    <div class="field"><label>Dependents</label>
-      <select id="m-dep">
-        <option value="no">No dependents</option>
-        <option value="yes" selected>With dependents</option>
+    <div class="field"><label>Number of Dependents</label>
+      <select id="m-deps">
+        <option value="0">0 — No dependents (single)</option>
+        <option value="1">1 — Spouse only</option>
+        <option value="2" selected>2 — Spouse + 1 child</option>
+        <option value="3">3 — Spouse + 2 children</option>
+        <option value="4">4 — Spouse + 3 children</option>
+        <option value="5">5 — Spouse + 4+ children</option>
       </select>
+      <div class="hint">Used for BAH rate, VA disability pay, food costs, and childcare estimates.</div>
     </div>
   </div>
   <div class="sec-label">Additional Military Pay</div>
@@ -629,33 +655,23 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
       </select>
     </div>
   </div>
-  <div class="sec-label">VA Disability (Counts on Civilian Side)</div>
-  <div class="field-row">
-    <div class="field"><label>Expected VA Rating (%)</label>
-      <select id="va-rating">
-        <option value="0">0% / None</option>
-        <option value="10">10% — $175/mo</option>
-        <option value="20">20% — $346/mo</option>
-        <option value="30">30% — $536+/mo</option>
-        <option value="40">40% — $772+/mo</option>
-        <option value="50" selected>50% — $1,099+/mo</option>
-        <option value="60">60% — $1,395+/mo</option>
-        <option value="70">70% — $1,759+/mo</option>
-        <option value="80">80% — $2,044+/mo</option>
-        <option value="90">90% — $2,297+/mo</option>
-        <option value="100">100% P&T — $3,737+/mo</option>
-      </select>
-      <div class="hint">Tax-free income you keep after separating. Rates vary by family size.</div>
-    </div>
-    <div class="field"><label>Family Size (for VA pay)</label>
-      <select id="va-family">
-        <option value="1">Veteran only</option>
-        <option value="2" selected>Vet + spouse</option>
-        <option value="3">Vet + spouse + 1 child</option>
-        <option value="4">Vet + spouse + 2 children</option>
-        <option value="5">Vet + spouse + 3+ children</option>
-      </select>
-    </div>
+  <div class="sec-label">VA Disability — After You Separate</div>
+  <div class="field">
+    <label>Expected VA Rating (%)</label>
+    <select id="va-rating">
+      <option value="0">0% / None</option>
+      <option value="10">10% — $175/mo</option>
+      <option value="20">20% — $346/mo</option>
+      <option value="30">30% — $536+/mo</option>
+      <option value="40">40% — $772+/mo</option>
+      <option value="50" selected>50% — $1,099+/mo</option>
+      <option value="60">60% — $1,395+/mo</option>
+      <option value="70">70% — $1,759+/mo</option>
+      <option value="80">80% — $2,044+/mo</option>
+      <option value="90">90% — $2,297+/mo</option>
+      <option value="100">100% P&T — $3,737+/mo</option>
+    </select>
+    <div class="hint">⚠️ VA disability compensation is <strong>NOT collected while on active duty</strong>. It counts only on your civilian side — paid after separation. Rate based on your dependent count above.</div>
   </div>
 </div>
 
@@ -692,19 +708,9 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
     </div>
   </div>
 
-  <div class="sec-label">Food</div>
+  <div class="sec-label">Food <span style="font-size:.68rem;font-weight:400;color:#6a7a8a">(family size pulled from Dependents above)</span></div>
   <div class="field-row">
-    <div class="field"><label>Family Size</label>
-      <select id="c-family">
-        <option value="1">Just me (1 person)</option>
-        <option value="2" selected>2 people</option>
-        <option value="3">3 people</option>
-        <option value="4">4 people</option>
-        <option value="5">5 people</option>
-        <option value="6">6+ people</option>
-      </select>
-    </div>
-    <div class="field"><label>Spending Style</label>
+    <div class="field"><label>Food Budget Style</label>
       <select id="c-food-style">
         <option value="thrifty">Thrifty (cook most meals)</option>
         <option value="moderate" selected>Moderate (mix of cooking + dining out)</option>
@@ -842,7 +848,39 @@ var BASE_PAY = {
   O4:{2:5799,4:6899,6:7633,8:8064,10:8471,12:8769,14:9160,16:9160,18:9160},
   O5:{2:6730,4:7752,6:8413,8:8767,10:9199,12:9683,14:10200,16:10200,18:10200}
 };
-var BAH = {high:{no:2650,yes:2950},mid:{no:1620,yes:1850},low:{no:1100,yes:1260}};
+// 2026 BAH monthly rates by location tier — E-5 base (scales by grade)
+// Source: DoD BAH tables 2026. E-5 shown. Other grades apply a multiplier.
+// Grade multipliers approx: E4=0.92, E5=1.0, E6=1.06, E7=1.13, O1=1.08, O3=1.22, O4=1.32
+var BAH_E5 = {
+  high_dc: {no:2634, yes:3174},
+  high_sd: {no:2526, yes:3045},
+  high_ny: {no:2745, yes:3300},
+  high_la: {no:2544, yes:3066},
+  high_sea:{no:2361, yes:2847},
+  mid_bragg:{no:1533, yes:1851},
+  mid_hood: {no:1422, yes:1716},
+  mid_campbell:{no:1350, yes:1629},
+  mid_polk: {no:1152, yes:1389},
+  mid_carson:{no:1671, yes:2013},
+  mid_drum: {no:1422, yes:1716},
+  mid_jblm: {no:1239, yes:1494},
+  mid_benning:{no:1239, yes:1494},
+  low_sill: {no:993,  yes:1197},
+  low_riley:{no:972,  yes:1173},
+  low_hood2:{no:1086, yes:1311},
+  low_other:{no:912,  yes:1101}
+};
+var GRADE_BAH_MULT = {
+  E4:0.91,E5:1.0,E6:1.06,E7:1.13,E8:1.19,E9:1.24,
+  W1:1.08,W2:1.15,W3:1.21,W4:1.26,W4:1.26,
+  O1:1.08,O2:1.15,O3:1.22,O4:1.32,O5:1.38
+};
+function getBAH(tier, depCount, grade) {
+  var depKey = depCount > 0 ? 'yes' : 'no';
+  var base = (BAH_E5[tier] || BAH_E5['mid_jblm'])[depKey];
+  var mult = GRADE_BAH_MULT[grade] || 1.0;
+  return Math.round(base * mult);
+}
 var BAS_MONTHLY = 452.56;
 // 2026 VA Disability Monthly Rates by family size
 var VA_RATES = {
@@ -879,21 +917,26 @@ function sv(id){return document.getElementById(id).value;}
 
 function runCalc(){
   // ── INPUTS ──────────────────────────────────────────────────────────────
-  var grade=sv('m-grade'), yos=iv('m-yos'), bahTier=sv('m-bah'), dep=sv('m-dep');
-  var mBonus=iv('m-bonus'), retSys=sv('m-ret');
-  var vaRating=parseInt(sv('va-rating')), vaFamily=Math.min(5,parseInt(sv('va-family')));
+  var grade=sv('m-grade'), yos=iv('m-yos'), bahTier=sv('m-bah'), retSys=sv('m-ret');
+  var mBonus=iv('m-bonus');
+  // Single dependent count drives BAH, VA rates, food, childcare
+  var depsN = parseInt(sv('m-deps')) || 0;
+  var dep = depsN > 0 ? 'yes' : 'no';
+  // VA family size: 1=alone, 2=w/spouse, 3+=w/spouse+children
+  var vaFamily = Math.min(5, depsN > 0 ? depsN + 1 : 1); // +1 for veteran themselves
+  var vaRating = parseInt(sv('va-rating'));
 
   var cSalary=iv('c-salary'), cBonus=iv('c-bonus');
   var c401kPct=iv('c-401k'), cColaRate=iv('c-cola')/100;
   var cHousing=iv('c-housing'), cUtilities=iv('c-utilities');
-  var cFoodStyle=sv('c-food-style'), cFamilyN=Math.min(6,parseInt(sv('c-family')));
+  var cFoodStyle=sv('c-food-style'), cFamilyN=Math.min(6, depsN + 1); // +1 for veteran
   var cHealth=iv('c-health'), cHealthEmp=iv('c-health-emp');
   var cCarPay=iv('c-car-pay'), cCarIns=iv('c-car-ins'), cGas=iv('c-gas');
   var cChildcare=iv('c-childcare'), cOther=iv('c-other');
 
   // ── MILITARY MONTHLY ────────────────────────────────────────────────────
   var bp=getBasePay(grade,yos);
-  var bah=BAH[bahTier][dep];
+  var bah=getBAH(bahTier, depsN, grade);
   var bas=BAS_MONTHLY;
   var tspM=retSys==='brs'?bp*0.04:0;
   var sgli=27.60;
@@ -914,7 +957,9 @@ function runCalc(){
   var vaMo=vaR[vaFamily]||0;
 
   // Military net monthly cash in pocket
-  var mNetMo=(bp+bah+bas+mBonusMo)-mTax-mFoodOOP-mCarPay-mCarIns-mGas-mChildcare-mUtilities-sgli-mOther+vaMo;
+  // ⚠️ VA disability is NOT collected on active duty (exception: retirees with CRDP/CRSC)
+  // VA comp only counted on civilian side post-separation
+  var mNetMo=(bp+bah+bas+mBonusMo)-mTax-mFoodOOP-mCarPay-mCarIns-mGas-mChildcare-mUtilities-sgli-mOther;
 
   // ── CIVILIAN MONTHLY ────────────────────────────────────────────────────
   var cGrossMo=cSalary/12, cBonusMo=cBonus/12;
@@ -995,7 +1040,7 @@ function runCalc(){
     ['Other / Personal',-mOther,-cOther,true],
     ['TSP / 401(k) (your share)',-tspM,-c401kEmployee,true],
     ['SGLI (life insurance)',-sgli,0,true],
-    ['VA Disability (tax-free)',vaMo,vaMo,false],
+    ['VA Disability (after separation only)',0,vaMo,false],
     ['NET Monthly Take-Home',mNetMo,cNetMo,false],
   ];
   var bHtml=bItems.map(function(bi){
@@ -1025,7 +1070,7 @@ function runCalc(){
     ['Retirement (TSP/401k match)',tspMatchAnn,c401kMatchAnn,retSys==='brs'?'BRS: ~4% match after 2 yrs':'Legacy: no match (pension instead)'],
     ['Bonus / Incentive',mBonus,cBonus,'Annual or reenlistment bonus'],
     ['Tax Advantage (BAH+BAS tax-free)',taxSaveAnn,0,'Saves ~22% on '+(bah+bas)+'*12 in tax-exempt allowances'],
-    ['VA Disability (annual, tax-free)',vaMo*12,vaMo*12,'You receive this on BOTH paths. Tax-exempt income.'],
+    ['VA Disability (post-separation, tax-free)',0,vaMo*12,'Paid after separation. NOT collected on active duty (except CRDP retirees).'],
     ['Transportation',-((mCarPay+mCarIns+mGas)*12),-((cCarPay+cCarIns+cGas)*12),'Military slightly lower (closer to base, lower insurance)'],
     ['Childcare',-mChildcare*12,-cChildcare*12,'CDCs subsidized ~55% below market. Huge family benefit.'],
     ['SGLI',-sgli*12,0,'Life insurance premium (military only)'],

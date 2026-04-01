@@ -937,10 +937,28 @@ const BRANCH_EMBLEMS = {
   "Army": "⭐",
   "Marine Corps": "🦅",
   "Navy": "⚓",
-  "Air Force": "✈",
-  "Space Force": "🛸",
-  "Coast Guard": "🔱"
+  "Air Force": "✈️",
+  "Space Force": "🛡️",
+  "Coast Guard": "⚓"
 };
+
+// Professional SVG insignia — used wherever branch logos are displayed
+const BRANCH_LOGOS = {
+  "Army":        "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzgiIGZpbGw9IiM0YjUzMjAiIHN0cm9rZT0iI2M4OTYwYSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHBvbHlnb24gcG9pbnRzPSI0MCwxMCA0NiwyOCA2NSwyOCA1MCwzOSA1Niw1OCA0MCw0NiAyNCw1OCAzMCwzOSAxNSwyOCAzNCwyOCIgZmlsbD0iI2YwYzA0MCIgc3Ryb2tlPSIjYzg5NjBhIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI0MCIgeT0iNzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZjBjMDQwIiBsZXR0ZXItc3BhY2luZz0iMSI+VS5TLiBBUk1ZPC90ZXh0Pgo8L3N2Zz4=",
+  "Navy":        "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzgiIGZpbGw9IiMwMDMwODciIHN0cm9rZT0iI2M4OTYwYSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPCEtLSBBbmNob3IgLS0+CiAgPGxpbmUgeDE9IjQwIiB5MT0iMTgiIHgyPSI0MCIgeTI9IjYyIiBzdHJva2U9IiNmMGMwNDAiIHN0cm9rZS13aWR0aD0iMy41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iMjgiIHkxPSI1OCIgeDI9IjUyIiB5Mj0iNTgiIHN0cm9rZT0iI2YwYzA0MCIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjIyIiByPSI1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmMGMwNDAiIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIyNiIgeTE9IjM1IiB4Mj0iNTQiIHkyPSIzNSIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBBbmNob3IgZmx1a2VzIC0tPgogIDxwYXRoIGQ9Ik0yOCA1OCBRMjIgNTIgMjQgNDYiIHN0cm9rZT0iI2YwYzA0MCIgc3Ryb2tlLXdpZHRoPSIyLjUiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik01MiA1OCBRNTggNTIgNTYgNDYiIHN0cm9rZT0iI2YwYzA0MCIgc3Ryb2tlLXdpZHRoPSIyLjUiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDx0ZXh0IHg9IjQwIiB5PSI3NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmMGMwNDAiIGxldHRlci1zcGFjaW5nPSIxIj5VLlMuIE5BVlk8L3RleHQ+Cjwvc3ZnPg==",
+  "Marine Corps":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzgiIGZpbGw9IiM4YjAwMDAiIHN0cm9rZT0iI2M4OTYwYSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPCEtLSBHbG9iZSAoY2lyY2xlIHdpdGggbGF0aXR1ZGUvbG9uZ2l0dWRlIGxpbmVzKSAtLT4KICA8Y2lyY2xlIGN4PSIzOCIgY3k9IjQwIiByPSIxNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8ZWxsaXBzZSBjeD0iMzgiIGN5PSI0MCIgcng9IjgiIHJ5PSIxNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDxsaW5lIHgxPSIyMiIgeTE9IjQwIiB4Mj0iNTQiIHkyPSI0MCIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDxsaW5lIHgxPSIyNCIgeTE9IjMzIiB4Mj0iNTIiIHkyPSIzMyIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8bGluZSB4MT0iMjQiIHkxPSI0NyIgeDI9IjUyIiB5Mj0iNDciIHN0cm9rZT0iI2YwYzA0MCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPCEtLSBBbmNob3IgYmVoaW5kIGdsb2JlIC0tPgogIDxsaW5lIHgxPSI1MCIgeTE9IjI2IiB4Mj0iNTAiIHkyPSI1OCIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSIyOSIgcj0iMy41IiBmaWxsPSJub25lIiBzdHJva2U9IiNmMGMwNDAiIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSI0NCIgeTE9IjM2IiB4Mj0iNTYiIHkyPSIzNiIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI0NCIgeTE9IjU4IiB4Mj0iNTYiIHkyPSI1OCIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gRWFnbGUgKHNpbXBsaWZpZWQpIC0tPgogIDxwYXRoIGQ9Ik0zMCAyMiBRNDAgMTUgNTAgMjIgUTQ1IDI2IDQwIDI0IFEzNSAyNiAzMCAyMloiIGZpbGw9IiNmMGMwNDAiLz4KICA8dGV4dCB4PSI0MCIgeT0iNzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjUuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmMGMwNDAiIGxldHRlci1zcGFjaW5nPSIwLjUiPlUuUy4gTUFSSU5FUzwvdGV4dD4KPC9zdmc+",
+  "Air Force":   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzgiIGZpbGw9IiMwMDMwOGYiIHN0cm9rZT0iI2M4OTYwYSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPCEtLSBDZW50cmFsIHN0YXIgLS0+CiAgPHBvbHlnb24gcG9pbnRzPSI0MCwyNiA0MywzNSA1MywzNSA0NSw0MSA0OCw1MSA0MCw0NSAzMiw1MSAzNSw0MSAyNywzNSAzNywzNSIgZmlsbD0iI2YwYzA0MCIvPgogIDwhLS0gTGVmdCB3aW5nIC0tPgogIDxwYXRoIGQ9Ik0yNyA0MCBRMTggMzUgMTIgMzggUTE2IDQyIDIyIDQyIFEyNSA0MiAyNyA0MFoiIGZpbGw9IiNmMGMwNDAiIG9wYWNpdHk9IjAuOSIvPgogIDxwYXRoIGQ9Ik0yNiA0MyBRMTcgNDEgMTMgNDUgUTE3IDQ3IDIzIDQ2IFEyNSA0NSAyNiA0M1oiIGZpbGw9IiNmMGMwNDAiIG9wYWNpdHk9IjAuNyIvPgogIDxwYXRoIGQ9Ik0yNSA0NiBRMTggNDYgMTUgNTAgUTE5IDUxIDI0IDUwIFEyNSA0OSAyNSA0NloiIGZpbGw9IiNmMGMwNDAiIG9wYWNpdHk9IjAuNSIvPgogIDwhLS0gUmlnaHQgd2luZyAtLT4KICA8cGF0aCBkPSJNNTMgNDAgUTYyIDM1IDY4IDM4IFE2NCA0MiA1OCA0MiBRNTUgNDIgNTMgNDBaIiBmaWxsPSIjZjBjMDQwIiBvcGFjaXR5PSIwLjkiLz4KICA8cGF0aCBkPSJNNTQgNDMgUTYzIDQxIDY3IDQ1IFE2MyA0NyA1NyA0NiBRNTUgNDUgNTQgNDNaIiBmaWxsPSIjZjBjMDQwIiBvcGFjaXR5PSIwLjciLz4KICA8cGF0aCBkPSJNNTUgNDYgUTYyIDQ2IDY1IDUwIFE2MSA1MSA1NiA1MCBRNTUgNDkgNTUgNDZaIiBmaWxsPSIjZjBjMDQwIiBvcGFjaXR5PSIwLjUiLz4KICA8dGV4dCB4PSI0MCIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjUuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmMGMwNDAiIGxldHRlci1zcGFjaW5nPSIwLjUiPlUuUy4gQUlSIEZPUkNFPC90ZXh0Pgo8L3N2Zz4=",
+  "Space Force": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzgiIGZpbGw9IiMxYTFmMmUiIHN0cm9rZT0iIzRhOTBkOSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPCEtLSBTdGFycyBiYWNrZ3JvdW5kIC0tPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjEiIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIwLjYiLz4KICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjE4IiByPSIxLjIiIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIwLjciLz4KICA8Y2lyY2xlIGN4PSIxNSIgY3k9IjQ1IiByPSIwLjgiIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIwLjUiLz4KICA8Y2lyY2xlIGN4PSI2NSIgY3k9IjUyIiByPSIxIiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iMjUiIGN5PSI2MiIgcj0iMC44IiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC40Ii8+CiAgPGNpcmNsZSBjeD0iNTUiIGN5PSI2MyIgcj0iMSIgZmlsbD0id2hpdGUiIG9wYWNpdHk9IjAuNSIvPgogIDwhLS0gVVNTRiBEZWx0YSBzeW1ib2wgKG9mZmljaWFsIC0gdXB3YXJkIHBvaW50aW5nIGRlbHRhL2NoZXZyb24pIC0tPgogIDwhLS0gT3V0ZXIgZGVsdGEgcmluZyAtLT4KICA8cGF0aCBkPSJNNDAgMTQgTDYyIDU4IEwxOCA1OCBaIiBmaWxsPSJub25lIiBzdHJva2U9IiM0YTkwZDkiIHN0cm9rZS13aWR0aD0iMy41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPCEtLSBJbm5lciBkZWx0YSAtLT4KICA8cGF0aCBkPSJNNDAgMjQgTDU2IDU1IEwyNCA1NSBaIiBmaWxsPSJub25lIiBzdHJva2U9IiM0YTkwZDkiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPCEtLSBPcmJpdCBlbGxpcHNlIHRocm91Z2ggZGVsdGEgLS0+CiAgPGVsbGlwc2UgY3g9IjQwIiBjeT0iNDMiIHJ4PSIyMiIgcnk9IjgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2YwYzA0MCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1kYXNoYXJyYXk9IjQsMiIvPgogIDwhLS0gQ2VudGVyIHN0YXIgLS0+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSI0MyIgcj0iMyIgZmlsbD0iI2YwYzA0MCIvPgogIDx0ZXh0IHg9IjQwIiB5PSI3NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiM0YTkwZDkiIGxldHRlci1zcGFjaW5nPSIwLjUiPlUuUy4gU1BBQ0UgRk9SQ0U8L3RleHQ+Cjwvc3ZnPg==",
+  "Coast Guard": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzgiIGZpbGw9IiMwMDI4NjgiIHN0cm9rZT0iI2M4OTYwYSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPCEtLSBVU0NHIFNoaWVsZCBzaGFwZSAtLT4KICA8cGF0aCBkPSJNNDAgMTQgTDU4IDIyIEw1OCA0NiBRNTggNTggNDAgNjYgUTIyIDU4IDIyIDQ2IEwyMiAyMiBaIiBmaWxsPSIjMDAyODY4IiBzdHJva2U9IiNmMGMwNDAiIHN0cm9rZS13aWR0aD0iMi41Ii8+CiAgPCEtLSBSYWNpbmcgc3RyaXBlIChkaWFnb25hbCkgLSB0aGUgaWNvbmljIFVTQ0cgbWFyayAtLT4KICA8cGF0aCBkPSJNMjUgNTIgTDU1IDI2IiBzdHJva2U9IiNCRjBBMzAiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTI1IDQ2IEw0OSAyNiIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBBbmNob3IgLS0+CiAgPGxpbmUgeDE9IjQwIiB5MT0iMjYiIHgyPSI0MCIgeTI9IjUwIiBzdHJva2U9IiNmMGMwNDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSIyOSIgcj0iMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDxsaW5lIHgxPSIzNCIgeTE9IjM2IiB4Mj0iNDYiIHkyPSIzNiIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGxpbmUgeDE9IjM0IiB5MT0iNTAiIHgyPSI0NiIgeTI9IjUwIiBzdHJva2U9IiNmMGMwNDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8dGV4dCB4PSI0MCIgeT0iNzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjUuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmMGMwNDAiIGxldHRlci1zcGFjaW5nPSIwLjUiPkNPQVNUIEdVQVJEPC90ZXh0Pgo8L3N2Zz4="
+};
+
+// Helper: render a branch logo <img> or fallback emoji
+function branchLogo(branch, size) {
+  size = size || 40;
+  var src = BRANCH_LOGOS[branch];
+  if (!src) return BRANCH_EMBLEMS[branch] || "🎖";
+  return '<img src="' + src + '" alt="' + branch + '" width="' + size + '" height="' + size + '" style="vertical-align:middle;border-radius:50%;" onerror="this.style.display='none'">';
+}
 const SERVICE_TYPES = ["Active Duty","Reserve","National Guard","Active Guard Reserve (AGR)","Retired","Separated/Veteran","Discharged"];
 const EXP_TYPES = ["Military Service","Reserve/Guard (concurrent with civilian)","Civilian Employment","DoD/Government Contractor","Other Government (Federal/State)"];
 
@@ -2471,7 +2489,13 @@ function CareerTab(props) {
         {milExperiences.map(exp=>(
           <div className="card" key={exp.id} style={{borderColor:"rgba(201,168,76,.35)"}}>
             <div className="ch" style={{background:"rgba(201,168,76,.1)"}}>
-              <h3>🎖️ {exp.branch} {exp.rank ? "— "+exp.rank : ""}</h3>
+              <h3 style={{display:"flex",alignItems:"center",gap:".5rem"}}>
+              {typeof BRANCH_LOGOS!=="undefined"&&BRANCH_LOGOS[exp.branch]
+                ? React.createElement("img",{src:BRANCH_LOGOS[exp.branch],alt:exp.branch,width:32,height:32,style:{borderRadius:"50%",flexShrink:0}})
+                : "🎖️"
+              }
+              {exp.branch} {exp.rank ? "— "+exp.rank : ""}
+              </h3>
               <span className="ch-sub">{exp.serviceType}{exp.tos ? " · "+exp.tos : ""}</span>
             </div>
             <div className="cb">
@@ -2754,6 +2778,11 @@ function RankInsignia({branch,grade,color}) {
     const sp = [{x:18,y:11},{x:10,y:16},{x:26,y:16},{x:8,y:8},{x:28,y:8}].slice(0,ns);
     return React.createElement("svg",{viewBox:"0 0 36 22",width:32,height:22,style:{flexShrink:0}},...sp.map((p,si)=>React.createElement("text",{key:si,x:p.x,y:p.y,textAnchor:"middle",fontSize:11,fill:c},"★")));
   }
+  // Use professional SVG logo
+  var logoSrc = (typeof BRANCH_LOGOS !== "undefined") ? BRANCH_LOGOS[branch] : null;
+  if (logoSrc) {
+    return React.createElement("img",{src:logoSrc,alt:branch,width:44,height:44,style:{borderRadius:"50%",verticalAlign:"middle",display:"block"}});
+  }
   return React.createElement("span",{style:{fontSize:"1.2rem"}},BRANCH_EMBLEMS[branch]||"⭐");
 }
 
@@ -2784,7 +2813,10 @@ function MyProfileHero(props) {
         const bColor = BRANCH_COLORS[exp.branch]||BRANCH_COLORS["Army"];
         return (
           <div key={exp.id} style={{background:bColor.bg,border:"1px solid rgba(255,255,255,.15)",borderRadius:"10px",padding:".85rem 1.1rem",minWidth:"175px",flex:"1 1 175px",maxWidth:"240px"}}>
-            <div style={{fontWeight:700,fontSize:".85rem",color:"#f0d060",letterSpacing:".08em",textTransform:"uppercase",marginBottom:".55rem",borderBottom:"1px solid rgba(255,255,255,.15)",paddingBottom:".4rem"}}>
+            <div style={{display:"flex",alignItems:"center",gap:".5rem",fontWeight:700,fontSize:".85rem",color:"#f0d060",letterSpacing:".08em",textTransform:"uppercase",marginBottom:".55rem",borderBottom:"1px solid rgba(255,255,255,.15)",paddingBottom:".4rem"}}>
+              {typeof BRANCH_LOGOS!=="undefined"&&BRANCH_LOGOS[exp.branch]
+                ?React.createElement("img",{src:BRANCH_LOGOS[exp.branch],alt:exp.branch,width:24,height:24,style:{borderRadius:"50%",flexShrink:0}})
+                :null}
               {exp.branch}
             </div>
             <div style={{fontSize:".76rem",color:"rgba(255,255,255,.9)",marginBottom:".22rem"}}>

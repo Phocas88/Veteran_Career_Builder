@@ -45,14 +45,14 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
   <script>
     try {
-    const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+      const firebaseConfig = {
+        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+        authDomain: "veteran-career-builder.firebaseapp.com",
+        projectId: "veteran-career-builder",
+        storageBucket: "veteran-career-builder.firebasestorage.app",
+        messagingSenderId: "REPLACE_SENDER_ID",
+        appId: "REPLACE_APP_ID"
+      };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -943,7 +943,7 @@ const BRANCH_EMBLEMS = {
 };
 
 // Professional SVG insignia — used wherever branch logos are displayed
-const BRANCH_LOGOS = {
+window.BRANCH_LOGOS = {
   "Army":        "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzgiIGZpbGw9IiM0YjUzMjAiIHN0cm9rZT0iI2M4OTYwYSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHBvbHlnb24gcG9pbnRzPSI0MCwxMCA0NiwyOCA2NSwyOCA1MCwzOSA1Niw1OCA0MCw0NiAyNCw1OCAzMCwzOSAxNSwyOCAzNCwyOCIgZmlsbD0iI2YwYzA0MCIgc3Ryb2tlPSIjYzg5NjBhIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI0MCIgeT0iNzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZjBjMDQwIiBsZXR0ZXItc3BhY2luZz0iMSI+VS5TLiBBUk1ZPC90ZXh0Pgo8L3N2Zz4=",
   "Navy":        "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzgiIGZpbGw9IiMwMDMwODciIHN0cm9rZT0iI2M4OTYwYSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPCEtLSBBbmNob3IgLS0+CiAgPGxpbmUgeDE9IjQwIiB5MT0iMTgiIHgyPSI0MCIgeTI9IjYyIiBzdHJva2U9IiNmMGMwNDAiIHN0cm9rZS13aWR0aD0iMy41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iMjgiIHkxPSI1OCIgeDI9IjUyIiB5Mj0iNTgiIHN0cm9rZT0iI2YwYzA0MCIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjIyIiByPSI1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmMGMwNDAiIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIyNiIgeTE9IjM1IiB4Mj0iNTQiIHkyPSIzNSIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBBbmNob3IgZmx1a2VzIC0tPgogIDxwYXRoIGQ9Ik0yOCA1OCBRMjIgNTIgMjQgNDYiIHN0cm9rZT0iI2YwYzA0MCIgc3Ryb2tlLXdpZHRoPSIyLjUiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik01MiA1OCBRNTggNTIgNTYgNDYiIHN0cm9rZT0iI2YwYzA0MCIgc3Ryb2tlLXdpZHRoPSIyLjUiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDx0ZXh0IHg9IjQwIiB5PSI3NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmMGMwNDAiIGxldHRlci1zcGFjaW5nPSIxIj5VLlMuIE5BVlk8L3RleHQ+Cjwvc3ZnPg==",
   "Marine Corps":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzgiIGZpbGw9IiM4YjAwMDAiIHN0cm9rZT0iI2M4OTYwYSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPCEtLSBHbG9iZSAoY2lyY2xlIHdpdGggbGF0aXR1ZGUvbG9uZ2l0dWRlIGxpbmVzKSAtLT4KICA8Y2lyY2xlIGN4PSIzOCIgY3k9IjQwIiByPSIxNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8ZWxsaXBzZSBjeD0iMzgiIGN5PSI0MCIgcng9IjgiIHJ5PSIxNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDxsaW5lIHgxPSIyMiIgeTE9IjQwIiB4Mj0iNTQiIHkyPSI0MCIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDxsaW5lIHgxPSIyNCIgeTE9IjMzIiB4Mj0iNTIiIHkyPSIzMyIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8bGluZSB4MT0iMjQiIHkxPSI0NyIgeDI9IjUyIiB5Mj0iNDciIHN0cm9rZT0iI2YwYzA0MCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPCEtLSBBbmNob3IgYmVoaW5kIGdsb2JlIC0tPgogIDxsaW5lIHgxPSI1MCIgeTE9IjI2IiB4Mj0iNTAiIHkyPSI1OCIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSIyOSIgcj0iMy41IiBmaWxsPSJub25lIiBzdHJva2U9IiNmMGMwNDAiIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSI0NCIgeTE9IjM2IiB4Mj0iNTYiIHkyPSIzNiIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI0NCIgeTE9IjU4IiB4Mj0iNTYiIHkyPSI1OCIgc3Ryb2tlPSIjZjBjMDQwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gRWFnbGUgKHNpbXBsaWZpZWQpIC0tPgogIDxwYXRoIGQ9Ik0zMCAyMiBRNDAgMTUgNTAgMjIgUTQ1IDI2IDQwIDI0IFEzNSAyNiAzMCAyMloiIGZpbGw9IiNmMGMwNDAiLz4KICA8dGV4dCB4PSI0MCIgeT0iNzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjUuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmMGMwNDAiIGxldHRlci1zcGFjaW5nPSIwLjUiPlUuUy4gTUFSSU5FUzwvdGV4dD4KPC9zdmc+",
@@ -957,7 +957,14 @@ function branchLogo(branch, size) {
   size = size || 40;
   var src = BRANCH_LOGOS[branch];
   if (!src) return BRANCH_EMBLEMS[branch] || "🎖";
-  return '<img src="' + src + '" alt="' + branch + '" width="' + size + '" height="' + size + '" style="vertical-align:middle;border-radius:50%;" onerror="this.style.display='none'">';
+  var img = document.createElement("img");
+  img.src = src;
+  img.alt = branch;
+  img.width = size;
+  img.height = size;
+  img.style.cssText = "vertical-align:middle;border-radius:50%;display:inline-block;";
+  img.onerror = function(){ this.style.display = "none"; };
+  return img.outerHTML;
 }
 const SERVICE_TYPES = ["Active Duty","Reserve","National Guard","Active Guard Reserve (AGR)","Retired","Separated/Veteran","Discharged"];
 const EXP_TYPES = ["Military Service","Reserve/Guard (concurrent with civilian)","Civilian Employment","DoD/Government Contractor","Other Government (Federal/State)"];
@@ -1458,7 +1465,7 @@ const css = `
 body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-size:15px;}
 .app{min-height:100vh;background:var(--bg);}
 .hdr{text-align:center;padding:2rem 1rem 1.75rem;background:linear-gradient(160deg,#0a1628 0%,#1a3a6b 50%,#1e4a8a 100%);position:relative;overflow:hidden;}
-.hdr::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;}
+.hdr::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width=%2760%27 height=%2760%27 viewBox=%270 0 60 60%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cg fill=%27none%27%3E%3Cg fill=%27%23ffffff%27 fill-opacity=%270.02%27%3E%3Cpath d=%27M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%27/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;}
 .hdr h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4.5vw,3.2rem);letter-spacing:.14em;color:#f5d060;text-shadow:0 2px 16px rgba(0,0,0,.3);position:relative;}
 .hdr p{font-size:.9rem;color:#c0d8f0;letter-spacing:.05em;font-weight:500;position:relative;}
 .tagline{font-size:.78rem;color:#80a8d0;margin-top:.15rem;font-style:italic;position:relative;}
@@ -2490,8 +2497,8 @@ function CareerTab(props) {
           <div className="card" key={exp.id} style={{borderColor:"rgba(201,168,76,.35)"}}>
             <div className="ch" style={{background:"rgba(201,168,76,.1)"}}>
               <h3 style={{display:"flex",alignItems:"center",gap:".5rem"}}>
-              {typeof BRANCH_LOGOS!=="undefined"&&BRANCH_LOGOS[exp.branch]
-                ? React.createElement("img",{src:BRANCH_LOGOS[exp.branch],alt:exp.branch,width:32,height:32,style:{borderRadius:"50%",flexShrink:0}})
+              {window.BRANCH_LOGOS&&window.BRANCH_LOGOS[exp.branch]
+                ? React.createElement("img",{src:window.BRANCH_LOGOS[exp.branch],alt:exp.branch,width:32,height:32,style:{borderRadius:"50%",flexShrink:0},onError:function(e){e.target.style.display="none";}})
                 : "🎖️"
               }
               {exp.branch} {exp.rank ? "— "+exp.rank : ""}
@@ -2778,10 +2785,8 @@ function RankInsignia({branch,grade,color}) {
     const sp = [{x:18,y:11},{x:10,y:16},{x:26,y:16},{x:8,y:8},{x:28,y:8}].slice(0,ns);
     return React.createElement("svg",{viewBox:"0 0 36 22",width:32,height:22,style:{flexShrink:0}},...sp.map((p,si)=>React.createElement("text",{key:si,x:p.x,y:p.y,textAnchor:"middle",fontSize:11,fill:c},"★")));
   }
-  // Use professional SVG logo
-  var logoSrc = (typeof BRANCH_LOGOS !== "undefined") ? BRANCH_LOGOS[branch] : null;
-  if (logoSrc) {
-    return React.createElement("img",{src:logoSrc,alt:branch,width:44,height:44,style:{borderRadius:"50%",verticalAlign:"middle",display:"block"}});
+  if (window.BRANCH_LOGOS && window.BRANCH_LOGOS[branch]) {
+    return React.createElement("img",{src:window.BRANCH_LOGOS[branch],alt:branch,width:44,height:44,style:{borderRadius:"50%",verticalAlign:"middle",display:"block"},onError:function(e){e.target.style.display="none";}});
   }
   return React.createElement("span",{style:{fontSize:"1.2rem"}},BRANCH_EMBLEMS[branch]||"⭐");
 }
@@ -2814,8 +2819,8 @@ function MyProfileHero(props) {
         return (
           <div key={exp.id} style={{background:bColor.bg,border:"1px solid rgba(255,255,255,.15)",borderRadius:"10px",padding:".85rem 1.1rem",minWidth:"175px",flex:"1 1 175px",maxWidth:"240px"}}>
             <div style={{display:"flex",alignItems:"center",gap:".5rem",fontWeight:700,fontSize:".85rem",color:"#f0d060",letterSpacing:".08em",textTransform:"uppercase",marginBottom:".55rem",borderBottom:"1px solid rgba(255,255,255,.15)",paddingBottom:".4rem"}}>
-              {typeof BRANCH_LOGOS!=="undefined"&&BRANCH_LOGOS[exp.branch]
-                ?React.createElement("img",{src:BRANCH_LOGOS[exp.branch],alt:exp.branch,width:24,height:24,style:{borderRadius:"50%",flexShrink:0}})
+              {window.BRANCH_LOGOS&&window.BRANCH_LOGOS[exp.branch]
+                ?React.createElement("img",{src:window.BRANCH_LOGOS&&window.BRANCH_LOGOS[exp.branch],alt:exp.branch,width:24,height:24,style:{borderRadius:"50%",flexShrink:0},onError:function(e){e.target.style.display="none";}})
                 :null}
               {exp.branch}
             </div>

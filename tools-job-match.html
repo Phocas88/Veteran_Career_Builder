@@ -65,6 +65,90 @@ select option{background:#1a2a4a;color:#fff}
 @media print{nav,.mmenu,.hamburger,footer,.tool-hero,#tool-actions{display:none !important}body{background:#fff;color:#000}.result-text{color:#000;background:#fff}.result-box{border:none;background:#fff}}
 @media(max-width:600px){.tool-wrap{padding:1.25rem 1rem}}
 .adsbygoogle{min-height:0!important;}
+
+/* ── JOB MATCH RESULT CARDS ──────────────────────────────────────────────── */
+#jm-result{display:none;margin-top:1.25rem;}
+
+/* Score ring */
+.jm-score-row{display:flex;align-items:center;gap:1.5rem;background:linear-gradient(135deg,#0d1f3c,#1a3a6b);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1rem;flex-wrap:wrap;}
+.jm-score-ring{width:90px;height:90px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;font-weight:800;border:4px solid;}
+.jm-score-ring .jm-score-num{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.05em;line-height:1;}
+.jm-score-ring .jm-score-lbl{font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-top:2px;}
+.jm-score-ring.score-strong{border-color:#4ade80;color:#4ade80;background:rgba(74,222,128,.1);}
+.jm-score-ring.score-good{border-color:#f0c040;color:#f0c040;background:rgba(240,192,64,.1);}
+.jm-score-ring.score-low{border-color:#ff8080;color:#ff8080;background:rgba(255,128,128,.1);}
+.jm-score-meta{flex:1;min-width:180px;}
+.jm-score-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.08em;color:#fff;margin-bottom:.25rem;}
+.jm-score-verdict{font-size:.88rem;color:rgba(192,216,240,.8);line-height:1.65;}
+.jm-verdict-badge{display:inline-block;padding:.2rem .75rem;border-radius:20px;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;}
+.jm-verdict-badge.yes{background:rgba(74,222,128,.2);color:#4ade80;border:1px solid rgba(74,222,128,.3);}
+.jm-verdict-badge.maybe{background:rgba(240,192,64,.2);color:#f0c040;border:1px solid rgba(240,192,64,.3);}
+.jm-verdict-badge.not-yet{background:rgba(255,128,128,.15);color:#ff8080;border:1px solid rgba(255,128,128,.25);}
+
+/* Section cards */
+.jm-section{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem 1.25rem;margin-bottom:.85rem;}
+.jm-section-head{display:flex;align-items:center;gap:.5rem;font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,.07);}
+.jm-section.strengths{border-left:3px solid #4ade80;}
+.jm-section.strengths .jm-section-head{color:#4ade80;}
+.jm-section.gaps{border-left:3px solid #f0c040;}
+.jm-section.gaps .jm-section-head{color:#f0c040;}
+.jm-section.action{border-left:3px solid #60a5fa;}
+.jm-section.action .jm-section-head{color:#60a5fa;}
+.jm-section.alternatives{border-left:3px solid #c084fc;}
+.jm-section.alternatives .jm-section-head{color:#c084fc;}
+.jm-section.resume-tips{border-left:3px solid #fb923c;}
+.jm-section.resume-tips .jm-section-head{color:#fb923c;}
+
+/* Items inside sections */
+.jm-item{display:flex;gap:.6rem;align-items:flex-start;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.jm-item:last-child{border-bottom:none;}
+.jm-item-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:.45rem;}
+.jm-section.strengths .jm-item-dot{background:#4ade80;}
+.jm-section.gaps .jm-item-dot{background:#f0c040;}
+.jm-section.action .jm-item-dot{background:#60a5fa;}
+.jm-section.alternatives .jm-item-dot{background:#c084fc;}
+.jm-section.resume-tips .jm-item-dot{background:#fb923c;}
+.jm-item-text{font-size:.84rem;color:rgba(192,216,240,.85);line-height:1.65;}
+
+/* Alt role cards */
+.jm-alt-card{background:rgba(192,132,252,.07);border:1px solid rgba(192,132,252,.2);border-radius:8px;padding:.65rem .9rem;margin-bottom:.45rem;}
+.jm-alt-title{font-weight:700;font-size:.88rem;color:#c084fc;margin-bottom:.2rem;}
+.jm-alt-why{font-size:.78rem;color:rgba(192,216,240,.65);line-height:1.55;}
+
+/* Save bar */
+.jm-save-bar{background:linear-gradient(135deg,rgba(26,58,107,.5),rgba(13,31,60,.8));border:1px solid rgba(240,192,64,.25);border-radius:12px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:.85rem;}
+.jm-save-fields{display:flex;gap:.6rem;flex:1;flex-wrap:wrap;min-width:200px;}
+.jm-save-fields input{flex:1;min-width:120px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:.45rem .7rem;color:#fff;font-size:.8rem;font-family:inherit;}
+.jm-save-fields input::placeholder{color:rgba(255,255,255,.3);}
+.btn-save-job{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.8rem;border:none;border-radius:8px;padding:.5rem 1.1rem;cursor:pointer;white-space:nowrap;font-family:inherit;}
+.btn-save-job:hover{opacity:.9;}
+.btn-save-job.saved{background:rgba(74,222,128,.2);border:1px solid #4ade80;color:#4ade80;}
+
+/* Saved jobs panel */
+.jm-saved-panel{margin-top:1.5rem;}
+.jm-saved-head{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;}
+.jm-saved-count{background:rgba(240,192,64,.2);color:#f0c040;border-radius:20px;padding:.1rem .55rem;font-size:.72rem;}
+.jm-saved-empty{font-size:.82rem;color:rgba(192,216,240,.3);text-align:center;padding:1.5rem;border:1px dashed rgba(255,255,255,.1);border-radius:10px;}
+.jm-saved-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.85rem 1rem;margin-bottom:.55rem;display:flex;align-items:flex-start;gap:.85rem;}
+.jm-saved-score{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.05em;flex-shrink:0;width:44px;text-align:center;line-height:1;}
+.jm-saved-score-lbl{font-size:.55rem;color:rgba(192,216,240,.4);text-transform:uppercase;letter-spacing:.08em;}
+.jm-saved-info{flex:1;min-width:0;}
+.jm-saved-title{font-weight:700;font-size:.88rem;color:#fff;margin-bottom:.18rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.jm-saved-company{font-size:.75rem;color:rgba(192,216,240,.55);margin-bottom:.25rem;}
+.jm-saved-verdict{font-size:.7rem;padding:.1rem .45rem;border-radius:20px;display:inline-block;font-weight:700;}
+.jm-saved-verdict.yes{background:rgba(74,222,128,.15);color:#4ade80;}
+.jm-saved-verdict.maybe{background:rgba(240,192,64,.15);color:#f0c040;}
+.jm-saved-verdict.not-yet{background:rgba(255,128,128,.1);color:#ff8080;}
+.jm-saved-actions{display:flex;gap:.4rem;flex-shrink:0;align-items:center;}
+.jm-saved-del{background:none;border:1px solid rgba(255,255,255,.1);border-radius:6px;color:rgba(255,255,255,.3);font-size:.7rem;padding:.25rem .5rem;cursor:pointer;}
+.jm-saved-del:hover{border-color:#ff8080;color:#ff8080;}
+.jm-saved-date{font-size:.65rem;color:rgba(192,216,240,.25);margin-top:.2rem;}
+@media(max-width:600px){
+  .jm-score-ring{width:72px;height:72px;}
+  .jm-score-ring .jm-score-num{font-size:1.5rem;}
+  .jm-save-fields{flex-direction:column;}
+}
+
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <meta property="og:title" content="AI Job Match Analyzer for Veterans | VeteranCareerPath">
@@ -626,13 +710,48 @@ html,body{overflow-x:hidden;max-width:100%;}
   </div>
   <button class="btn btn-gold" id="jm-btn">&#128269; Analyze My Match</button>
 </div>
-<div class="result-box" id="jm-result">
-  <div class="result-title">Your Match Analysis</div>
-  <div class="result-text"></div>
-  <div id="tool-actions" style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap">
-    <button class="btn btn-blue" onclick="window.print()" style="font-size:.78rem;padding:.45rem .9rem">Print Report</button>
-    <a href="https://veterancareerpath.com/app.html" class="btn btn-gold" style="font-size:.78rem;padding:.45rem .9rem">Build Resume for This Role</a>
+<div id="jm-result">
+  <!-- Score + verdict row -->
+  <div class="jm-score-row" id="jm-score-row">
+    <div class="jm-score-ring score-good" id="jm-score-ring">
+      <span class="jm-score-num" id="jm-score-num">—</span>
+      <span class="jm-score-lbl">/ 100</span>
+    </div>
+    <div class="jm-score-meta">
+      <div id="jm-verdict-badge" class="jm-verdict-badge maybe">Analyzing…</div>
+      <div class="jm-score-title" id="jm-score-title">Job Match Analysis</div>
+      <div class="jm-score-verdict" id="jm-score-verdict">Running your analysis…</div>
+    </div>
   </div>
+
+  <!-- Save this job bar -->
+  <div class="jm-save-bar">
+    <div style="font-size:.75rem;font-weight:700;color:#f0c040;white-space:nowrap;">💾 Save This Job</div>
+    <div class="jm-save-fields">
+      <input id="jm-save-title" type="text" placeholder="Job title" maxlength="60">
+      <input id="jm-save-company" type="text" placeholder="Company (optional)" maxlength="50">
+    </div>
+    <button class="btn-save-job" id="jm-save-btn" onclick="saveCurrentJob()">Save Job →</button>
+  </div>
+
+  <!-- Sections rendered here -->
+  <div id="jm-sections"></div>
+
+  <!-- Action buttons -->
+  <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.85rem;">
+    <button class="btn btn-blue" onclick="window.print()" style="font-size:.78rem;padding:.5rem 1rem;">🖨️ Print Report</button>
+    <a href="https://veterancareerpath.com/app.html" class="btn btn-gold" style="font-size:.78rem;padding:.5rem 1rem;text-decoration:none;">📄 Build Resume for This Role</a>
+  </div>
+</div>
+
+<!-- Saved Jobs Panel -->
+<div class="jm-saved-panel" id="jm-saved-panel" style="display:none;">
+  <div class="jm-saved-head">
+    💼 Saved Jobs <span class="jm-saved-count" id="jm-saved-count">0</span>
+    <div style="flex:1;"></div>
+    <button onclick="clearAllSaved()" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:.7rem;cursor:pointer;">Clear all</button>
+  </div>
+  <div id="jm-saved-list"></div>
 </div>
   </div><!-- end profile-mode -->
 
@@ -904,48 +1023,236 @@ document.addEventListener("DOMContentLoaded",function(){
 </script>
 
 <script>
+// ── SAVED JOBS SYSTEM ─────────────────────────────────────────────────────
+var _lastAnalysis = null; // holds current result for saving
+
+function getsavedJobs() {
+  try { return JSON.parse(localStorage.getItem('vcp_saved_jobs') || '[]'); } catch(e) { return []; }
+}
+function saveJobsToStorage(jobs) {
+  try { localStorage.setItem('vcp_saved_jobs', JSON.stringify(jobs)); } catch(e) {}
+}
+function saveCurrentJob() {
+  if (!_lastAnalysis) { alert('Run an analysis first.'); return; }
+  var title = (document.getElementById('jm-save-title').value || '').trim();
+  var company = (document.getElementById('jm-save-company').value || '').trim();
+  if (!title) { alert('Enter a job title to save.'); document.getElementById('jm-save-title').focus(); return; }
+
+  var jobs = getsavedJobs();
+  var job = {
+    id: Date.now(),
+    title: title,
+    company: company,
+    score: _lastAnalysis.score,
+    verdict: _lastAnalysis.verdict,
+    summary: _lastAnalysis.summary,
+    url: document.getElementById('jm-url') ? document.getElementById('jm-url').value : '',
+    savedAt: new Date().toLocaleDateString()
+  };
+  jobs.unshift(job);
+  if (jobs.length > 50) jobs = jobs.slice(0, 50); // cap at 50
+  saveJobsToStorage(jobs);
+
+  var btn = document.getElementById('jm-save-btn');
+  btn.textContent = '✓ Saved!';
+  btn.classList.add('saved');
+  setTimeout(function() { btn.textContent = 'Save Job →'; btn.classList.remove('saved'); }, 2000);
+
+  renderSavedJobs();
+}
+function deleteSavedJob(id) {
+  var jobs = getsavedJobs().filter(function(j) { return j.id !== id; });
+  saveJobsToStorage(jobs);
+  renderSavedJobs();
+}
+function clearAllSaved() {
+  if (!confirm('Clear all saved jobs?')) return;
+  saveJobsToStorage([]);
+  renderSavedJobs();
+}
+function renderSavedJobs() {
+  var jobs = getsavedJobs();
+  var panel = document.getElementById('jm-saved-panel');
+  var list = document.getElementById('jm-saved-list');
+  var count = document.getElementById('jm-saved-count');
+  if (!panel || !list) return;
+  count.textContent = jobs.length;
+  panel.style.display = jobs.length > 0 ? '' : 'none';
+  if (jobs.length === 0) { list.innerHTML = ''; return; }
+  list.innerHTML = jobs.map(function(j) {
+    var scoreColor = j.score >= 70 ? '#4ade80' : j.score >= 50 ? '#f0c040' : '#ff8080';
+    var vClass = j.verdict === 'yes' ? 'yes' : j.verdict === 'not-yet' ? 'not-yet' : 'maybe';
+    var vLabel = j.verdict === 'yes' ? '✓ Apply Now' : j.verdict === 'not-yet' ? '⚠ Not Yet' : '→ Apply with Caveats';
+    return '<div class="jm-saved-card">' +
+      '<div style="text-align:center;flex-shrink:0;">' +
+        '<div class="jm-saved-score" style="color:' + scoreColor + ';">' + (j.score || '?') + '</div>' +
+        '<div class="jm-saved-score-lbl">/100</div>' +
+      '</div>' +
+      '<div class="jm-saved-info">' +
+        '<div class="jm-saved-title">' + j.title + '</div>' +
+        (j.company ? '<div class="jm-saved-company">' + j.company + '</div>' : '') +
+        '<span class="jm-saved-verdict ' + vClass + '">' + vLabel + '</span>' +
+        (j.summary ? '<div style="font-size:.72rem;color:rgba(192,216,240,.45);margin-top:.3rem;line-height:1.5;">' + j.summary.slice(0,100) + '…</div>' : '') +
+        '<div class="jm-saved-date">Saved ' + j.savedAt + (j.url ? ' · <a href="' + j.url + '" target="_blank" style="color:#60a5fa;font-size:.65rem;">View Posting ↗</a>' : '') + '</div>' +
+      '</div>' +
+      '<div class="jm-saved-actions">' +
+        '<button class="jm-saved-del" onclick="deleteSavedJob(' + j.id + ')">✕</button>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+// ── RENDER RESULT CARDS ────────────────────────────────────────────────────
+function renderJobMatchResult(data) {
+  var score = parseInt(data.score) || 0;
+  var scoreClass = score >= 70 ? 'score-strong' : score >= 50 ? 'score-good' : 'score-low';
+  var verdictClass = data.verdict === 'yes' ? 'yes' : data.verdict === 'not-yet' ? 'not-yet' : 'maybe';
+  var verdictLabel = data.verdict === 'yes' ? '✓ Apply Now' : data.verdict === 'not-yet' ? '⚠ Not Ready Yet' : '→ Apply with Caveats';
+
+  // Score ring
+  document.getElementById('jm-score-ring').className = 'jm-score-ring ' + scoreClass;
+  document.getElementById('jm-score-num').textContent = score;
+  document.getElementById('jm-verdict-badge').className = 'jm-verdict-badge ' + verdictClass;
+  document.getElementById('jm-verdict-badge').textContent = verdictLabel;
+  document.getElementById('jm-score-title').textContent = data.jobTitle || 'Job Match Analysis';
+  document.getElementById('jm-score-verdict').textContent = data.summary || '';
+  document.getElementById('jm-result').style.display = 'block';
+
+  function makeItems(arr, cls) {
+    if (!arr || !arr.length) return '';
+    return arr.map(function(item) {
+      return '<div class="jm-item"><div class="jm-item-dot"></div><div class="jm-item-text">' + item + '</div></div>';
+    }).join('');
+  }
+
+  var sections = '';
+
+  // Strengths
+  if (data.strengths && data.strengths.length) {
+    sections += '<div class="jm-section strengths">' +
+      '<div class="jm-section-head">💪 Your Strongest Qualifications</div>' +
+      makeItems(data.strengths) + '</div>';
+  }
+
+  // Gaps
+  if (data.gaps && data.gaps.length) {
+    sections += '<div class="jm-section gaps">' +
+      '<div class="jm-section-head">⚠️ Gaps to Address</div>' +
+      makeItems(data.gaps) + '</div>';
+  }
+
+  // Should you apply + recommendation
+  if (data.recommendation) {
+    sections += '<div class="jm-section action">' +
+      '<div class="jm-section-head">🎯 Recommendation</div>' +
+      '<div class="jm-item"><div class="jm-item-dot"></div><div class="jm-item-text">' + data.recommendation + '</div></div>' +
+      '</div>';
+  }
+
+  // 90-day plan
+  if (data.actionPlan && data.actionPlan.length) {
+    sections += '<div class="jm-section action">' +
+      '<div class="jm-section-head">📅 90-Day Action Plan</div>' +
+      makeItems(data.actionPlan) + '</div>';
+  }
+
+  // Resume tips
+  if (data.resumeTips && data.resumeTips.length) {
+    sections += '<div class="jm-section resume-tips">' +
+      '<div class="jm-section-head">📄 Resume Tips for This Application</div>' +
+      makeItems(data.resumeTips) + '</div>';
+  }
+
+  // Alternative roles
+  if (data.alternatives && data.alternatives.length) {
+    sections += '<div class="jm-section alternatives">' +
+      '<div class="jm-section-head">🔀 Similar Roles That May Fit Better</div>' +
+      data.alternatives.map(function(alt) {
+        return '<div class="jm-alt-card"><div class="jm-alt-title">' +
+          (alt.title || alt) + '</div>' +
+          (alt.why ? '<div class="jm-alt-why">' + alt.why + '</div>' : '') +
+          '</div>';
+      }).join('') + '</div>';
+  }
+
+  document.getElementById('jm-sections').innerHTML = sections;
+
+  // Store for saving
+  _lastAnalysis = data;
+
+  // Pre-fill save fields if we can detect a job title
+  if (data.jobTitle && !document.getElementById('jm-save-title').value) {
+    document.getElementById('jm-save-title').value = data.jobTitle;
+  }
+
+  // Scroll to result
+  document.getElementById('jm-result').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── JM BUTTON HANDLER ──────────────────────────────────────────────────────
 document.getElementById('jm-btn').addEventListener('click', async function() {
-  var url = val('jm-url');
+  var url = (document.getElementById('jm-url') || {value:''}).value.trim();
   var text = val('jm-text');
   var extra = val('jm-extra');
 
   if (!text || text.length < 50) {
-    alert('Please paste the job description in the text area. Copy the full posting from LinkedIn, Indeed, USAJobs, or any job board.');
+    alert('Please paste the job description. Copy the full posting from LinkedIn, Indeed, USAJobs, or any job board.');
     return;
   }
 
   var profileContext = buildPromptContext();
   var jobContent = (url ? 'Job URL: ' + url + '\n\n' : '') + text;
-  
+
   var prompt = 'VETERAN MILITARY PROFILE:\n' + profileContext;
   if (extra) prompt += '\nAdditional Skills/Certs: ' + extra;
   prompt += '\n\nJOB POSTING:\n' + jobContent;
-  prompt += `\n\nProvide a complete honest job match analysis:
+  prompt += '\n\nReturn ONLY valid JSON (no markdown fences, no text outside JSON):\n' +
+    '{\n' +
+    '  "score": <integer 0-100 — be honest, most veterans score 45-75>,\n' +
+    '  "jobTitle": "<job title extracted from posting>",\n' +
+    '  "verdict": "<one of: yes | maybe | not-yet>",\n' +
+    '  "summary": "<1-2 sentence honest verdict — why this score, what is the single biggest factor>",\n' +
+    '  "strengths": ["<specific strength citing veteran MOS/duties vs job requirement>", "<strength>", "<strength>", "<strength>"],\n' +
+    '  "gaps": ["<specific gap — what is missing or needs translation>", "<gap>"],\n' +
+    '  "recommendation": "<2-3 sentences: should they apply, under what conditions, what to watch for>",\n' +
+    '  "actionPlan": ["<step 1 — specific, time-bound>", "<step 2>", "<step 3>"],\n' +
+    '  "resumeTips": ["<specific tip for this application — what to emphasize or reframe>", "<tip>", "<tip>"],\n' +
+    '  "alternatives": [{"title": "<similar role>", "why": "<one sentence why it is a better fit>"}, {"title": "<role>", "why": "<why>"}]\n' +
+    '}';
 
-MATCH SCORE: X/100
-One sentence explaining the score.
+  var btn = document.getElementById('jm-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Analyzing…';
+  document.getElementById('jm-result').style.display = 'none';
 
-YOUR STRONGEST QUALIFICATIONS (from the veteran's actual background):
-- [3-5 specific strengths with direct connection to job requirements]
+  try {
+    var body = {
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1800,
+      system: 'You are a brutally honest veteran career advisor. Score accurately — most veterans score 45-75, not 90+. Reference the specific MOS and duties from the profile. Never give inflated scores. Return ONLY valid JSON.',
+      messages: [{role: 'user', content: prompt}]
+    };
+    var r = await fetch(PROXY, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+    if (!r.ok) throw new Error('API error ' + r.status);
+    var data = await r.json();
+    var text2 = (data.content||[]).map(function(b){return b.text||'';}).join('');
+    text2 = text2.replace(/```json|```/g,'').trim();
+    var parsed = JSON.parse(text2);
+    renderJobMatchResult(parsed);
+  } catch(e) {
+    document.getElementById('jm-result').style.display = 'block';
+    document.getElementById('jm-sections').innerHTML =
+      '<div style="color:#ff8080;padding:1rem;border:1px solid rgba(255,100,100,.3);border-radius:8px;">⚠️ ' + e.message +
+      '<br><small style="opacity:.6">Check proxy is deployed and ANTHROPIC_API_KEY is set.</small></div>';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '&#128269; Analyze My Match';
+  }
+});
 
-GAPS TO ADDRESS (be direct):
-- [What's missing or needs civilian translation]
-
-SHOULD YOU APPLY? [Yes/Yes with caveats/Apply while building X skill]
-[2-3 sentence recommendation]
-
-IF NOT QUITE THERE - 90-Day Action Plan:
-[Specific steps to become competitive: certs, experience, framing]
-
-SIMILAR ROLES that may be a better current fit:
-[2-3 alternatives based on their background]
-
-RESUME TIPS for this specific application:
-[3 specific things to emphasize or reframe for this role]`;
-
-  await callClaude(prompt,
-    'You are a brutally honest veteran career advisor. Give real scores - most veterans score 45-75, not 90+. Use specific details from their military background. Veterans need accurate assessments, not inflated encouragement.',
-    { btn: 'jm-btn', result: 'jm-result', btnLabel: '&#128269; Analyze My Match', maxTokens: 2500 });
+// Init saved jobs on page load
+document.addEventListener('DOMContentLoaded', function() {
+  renderSavedJobs();
 });
 
 function switchMode(mode) {
@@ -994,7 +1301,7 @@ function runResumeVsJob() {
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1200,
+      max_tokens: 2000,
       messages: [{role:'user', content: prompt}]
     })
   })

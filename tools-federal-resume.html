@@ -33,7 +33,7 @@ body{font-family:Inter,sans-serif;background:#0a1628;color:#fff;min-height:100vh
 .tool-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.08em;color:#fff;margin-bottom:.5rem;line-height:1.1}
 .tool-hero h1 span{color:#f0c040}
 .tool-hero p{font-size:.9rem;color:rgba(255,255,255,.6);max-width:550px;margin:0 auto;font-weight:300;line-height:1.7}
-.tool-wrap{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+.tool-wrap{max-width:800px;margin:0 auto;padding:1.25rem 1.5rem}
 .profile-banner{background:rgba(26,122,64,.1);border:1px solid rgba(26,122,64,.2);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
 .profile-banner .pb-icon{font-size:1.25rem}
 .profile-banner .pb-text{font-size:.82rem;color:rgba(255,255,255,.7);font-weight:300}
@@ -64,6 +64,7 @@ select option{background:#1a2a4a;color:#fff}
 .tip strong{color:#f0c040}
 @media print{nav,.mmenu,.hamburger,footer,.tool-hero,#tool-actions{display:none !important}body{background:#fff;color:#000}.result-text{color:#000;background:#fff}.result-box{border:none;background:#fff}}
 @media(max-width:600px){.tool-wrap{padding:1.25rem 1rem}}
+.adsbygoogle{min-height:0!important;}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <meta property="og:title" content="AI Federal Resume Builder for Veterans | USAJobs Ready">
@@ -646,24 +647,30 @@ html,body{overflow-x:hidden;max-width:100%;}
       <button onclick="copyFedResume()" class="btn btn-blue" style="font-size:.78rem;padding:.45rem .9rem;">📋 Copy Plain Text</button>
     </div>
   </div>
-  <div id="fed-resume-doc" style="
+  <div style="font-size:.75rem;color:rgba(192,216,240,.5);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;">
+    <span style="color:#f0c040;">✏️</span> Click anywhere in the resume to edit before printing. Fill in any <span style="background:rgba(255,200,0,.2);padding:0 .3rem;border-radius:3px;color:#f0c040;">[bracketed placeholders]</span> with your actual information.
+  </div>
+  <div id="fed-resume-doc" contenteditable="true" spellcheck="true" style="
     background:#fff;
     color:#1a1a1a;
     font-family:'Times New Roman',Times,serif;
     font-size:11pt;
-    line-height:1.5;
-    padding:1in;
+    line-height:1.6;
+    padding:.75in 1in;
     max-width:8.5in;
     margin:0 auto;
-    box-shadow:0 4px 24px rgba(0,0,0,.15);
+    box-shadow:0 4px 24px rgba(0,0,0,.2);
     border-radius:4px;
     min-height:11in;
+    outline:2px dashed rgba(240,192,64,.3);
+    cursor:text;
   ">
     <div id="fed-resume-content" style="color:#1a1a1a;">
       <!-- Resume rendered here -->
     </div>
   </div>
-  <p style="font-size:.72rem;color:rgba(192,216,240,.35);margin-top:.75rem;text-align:center;">Federal resumes are intentionally 4-6 pages. Brevity is penalized in federal hiring. Do not shorten. Copy text into USAJobs Work Experience fields.</p>
+  <p style="font-size:.72rem;color:rgba(192,216,240,.35);margin-top:.75rem;text-align:center;">✏️ Click anywhere to edit before printing. Yellow highlights = fill these in. Federal resumes are 4-6 pages — brevity is penalized in federal hiring.</p>
+  <style>@media print{#fed-resume-doc{outline:none!important;box-shadow:none!important;} #fed-result > *:not(#fed-resume-doc){display:none!important;}}</style>
 </div>
   </div>
 </div><!-- end tool-content -->
@@ -936,55 +943,101 @@ function copyFedResume() {
 
 // Render the AI text as a properly formatted federal resume
 function renderFedResumeHTML(rawText, contactInfo) {
-  // Split into sections by ALL-CAPS headers
-  var lines = rawText.split('\n');
+  // Clean up markdown artifacts the AI might produce
+  var text = rawText
+    .replace(/\*\*\*(.+?)\*\*\*/g, '$1')   // ***bold italic*** → plain
+    .replace(/\*\*(.+?)\*\*/g, '$1')        // **bold** → plain (handle via HTML)
+    .replace(/^```[\s\S]*?```/gm, '')        // code blocks
+    .replace(/`([^`]+)`/g, '$1')             // inline code
+    .trim();
+
+  var lines = text.split('\n');
   var html = '';
   var inBullets = false;
 
-  // Header block
-  html += '<div style="text-align:center;margin-bottom:18pt;border-bottom:2px solid #000;padding-bottom:12pt;">';
-  html += '<div style="font-size:16pt;font-weight:bold;letter-spacing:1px;">' + (contactInfo.name || 'YOUR NAME') + '</div>';
-  html += '<div style="font-size:10pt;margin-top:4pt;">' + (contactInfo.address || 'City, State ZIP') + ' | ' + (contactInfo.phone || 'Phone') + ' | ' + (contactInfo.email || 'Email') + '</div>';
-  html += '<div style="font-size:10pt;">U.S. Citizen | Veterans Preference: ' + (contactInfo.preference || 'See DD-214') + '</div>';
+  // Highlight unfilled placeholders
+  function markPlaceholders(str) {
+    return str.replace(/\[([^\]]+)\]/g,
+      '<span style="background:#fff3cd;color:#856404;border-radius:2px;padding:0 2px;">[' +
+      '$1' + ']</span>');
+  }
+
+  // Header block — always use entered contact info
+  html += '<div style="text-align:center;margin-bottom:16pt;border-bottom:2.5px solid #000;padding-bottom:10pt;">';
+  html += '<div style="font-size:15pt;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;">' +
+    (contactInfo.name || '<span style="background:#fff3cd;color:#856404;">[YOUR FULL NAME]</span>') + '</div>';
+  html += '<div style="font-size:10pt;margin-top:4pt;color:#333;">';
+  var contactParts = [];
+  if (contactInfo.address) contactParts.push(contactInfo.address);
+  else contactParts.push('<span style="background:#fff3cd;color:#856404;">[City, State ZIP]</span>');
+  if (contactInfo.phone) contactParts.push(contactInfo.phone);
+  else contactParts.push('<span style="background:#fff3cd;color:#856404;">[Phone]</span>');
+  if (contactInfo.email) contactParts.push(contactInfo.email);
+  else contactParts.push('<span style="background:#fff3cd;color:#856404;">[Email]</span>');
+  html += contactParts.join(' &nbsp;|&nbsp; ') + '</div>';
+  html += '<div style="font-size:9.5pt;margin-top:3pt;color:#555;">U.S. Citizen &nbsp;|&nbsp; Veterans Preference: ' +
+    (contactInfo.preference || 'Honorable Discharge') +
+    ' &nbsp;|&nbsp; Security Clearance: <span id="clearance-inline">[See Profile]</span></div>';
   html += '</div>';
 
   lines.forEach(function(line) {
+    var orig = line;
     line = line.trim();
-    if (!line) { if (inBullets) { html += '</ul>'; inBullets = false; } html += '<div style="margin-bottom:6pt;"></div>'; return; }
-    
-    // Section headers (all caps or starts with ##)
-    var isHeader = /^#{1,3}\s/.test(line) || (/^[A-Z][A-Z\s&\/\-(),]+$/.test(line) && line.length > 3 && line.length < 80);
-    if (isHeader) {
+    if (!line) {
       if (inBullets) { html += '</ul>'; inBullets = false; }
-      var headerText = line.replace(/^#{1,3}\s*/, '');
-      html += '<div style="font-size:11pt;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #000;margin:14pt 0 6pt;padding-bottom:2pt;">' + headerText + '</div>';
+      html += '<div style="height:6pt;"></div>';
       return;
     }
+
+    // Skip lines that are just the contact info we already printed
+    if (line.match(/^(name|address|phone|email|city|state):/i) && line.length < 80) return;
+
+    // Section headers: ## Header or ALL CAPS line (3+ words or known keywords)
+    var strippedHeader = line.replace(/^#{1,3}\s*/, '');
+    var isHashHeader = /^#{1,3}\s/.test(line);
+    var isAllCaps = /^[A-Z][A-Z\s&\/\-():,]+$/.test(line) && line.length > 4 && line.length < 80;
+    var isKnownSection = /^(PROFESSIONAL SUMMARY|PROFESSIONAL EXPERIENCE|EXPERIENCE|EDUCATION|CERTIFICATIONS|TRAINING|SKILLS|AWARDS|VETERANS PREFERENCE|CONTACT|OBJECTIVE|SUMMARY|REFERENCES)/i.test(line);
     
-    // Job title / position lines (bold + employer info)
-    if (/^[A-Z].*\|.*\|/.test(line) || /Hours?:/.test(line) || /Supervisor:/.test(line) || /GS Equivalent/.test(line)) {
+    if (isHashHeader || isAllCaps || isKnownSection) {
       if (inBullets) { html += '</ul>'; inBullets = false; }
-      html += '<div style="font-size:10.5pt;font-weight:bold;margin-top:8pt;">' + line.replace(/\|/g, ' | ') + '</div>';
+      html += '<div style="font-size:10.5pt;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;' +
+        'border-bottom:1.5px solid #000;margin:14pt 0 5pt;padding-bottom:2pt;">' +
+        strippedHeader + '</div>';
       return;
     }
-    
-    // Bullet points
-    if (/^[•\-\*]/.test(line)) {
-      if (!inBullets) { html += '<ul style="margin:4pt 0 4pt 18pt;padding:0;">'; inBullets = true; }
-      html += '<li style="margin-bottom:4pt;">' + line.replace(/^[•\-\*]\s*/, '') + '</li>';
-      return;
-    }
-    
-    // Bold subheadings (lines ending with colon)
-    if (/^[A-Z][^.]+:$/.test(line) && line.length < 60) {
+
+    // Position/employer lines with | separators
+    if (/\|/.test(line) && line.split('|').length >= 2 && line.length < 200) {
       if (inBullets) { html += '</ul>'; inBullets = false; }
-      html += '<div style="font-weight:bold;margin-top:6pt;">' + line + '</div>';
+      html += '<div style="font-size:10.5pt;font-weight:bold;margin-top:8pt;margin-bottom:2pt;">' +
+        markPlaceholders(line.replace(/\|/g, ' &nbsp;|&nbsp; ')) + '</div>';
       return;
     }
-    
-    // Regular paragraph text
+
+    // Key-value pairs (Label: value)
+    if (/^(Salary|Hours|Supervisor|GS Grade|Grade|Dates|Location|Series|Organization|Department|Agency):/i.test(line)) {
+      if (inBullets) { html += '</ul>'; inBullets = false; }
+      html += '<div style="font-size:10pt;color:#333;margin-bottom:2pt;">' + markPlaceholders(line) + '</div>';
+      return;
+    }
+
+    // Bullet points — • - * at start
+    if (/^[•\-\*]\s/.test(line)) {
+      if (!inBullets) { html += '<ul style="margin:4pt 0 6pt 20pt;padding:0;list-style:disc;">'; inBullets = true; }
+      html += '<li style="margin-bottom:4pt;line-height:1.55;">' + markPlaceholders(line.replace(/^[•\-\*]\s*/, '')) + '</li>';
+      return;
+    }
+
+    // Bold label (ends with colon, short)
+    if (/^[A-Z][^.]+:$/.test(line) && line.length < 50) {
+      if (inBullets) { html += '</ul>'; inBullets = false; }
+      html += '<div style="font-weight:bold;margin-top:6pt;font-size:10.5pt;">' + line + '</div>';
+      return;
+    }
+
+    // Regular paragraph
     if (inBullets) { html += '</ul>'; inBullets = false; }
-    html += '<div style="margin-bottom:3pt;">' + line + '</div>';
+    html += '<div style="margin-bottom:3pt;line-height:1.55;">' + markPlaceholders(line) + '</div>';
   });
 
   if (inBullets) html += '</ul>';

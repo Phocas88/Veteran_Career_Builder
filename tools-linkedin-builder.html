@@ -33,7 +33,7 @@ body{font-family:Inter,sans-serif;background:#0a1628;color:#fff;min-height:100vh
 .tool-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.08em;color:#fff;margin-bottom:.5rem;line-height:1.1}
 .tool-hero h1 span{color:#f0c040}
 .tool-hero p{font-size:.9rem;color:rgba(255,255,255,.6);max-width:550px;margin:0 auto;font-weight:300;line-height:1.7}
-.tool-wrap{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+.tool-wrap{max-width:800px;margin:0 auto;padding:1.25rem 1.5rem}
 .profile-banner{background:rgba(26,122,64,.1);border:1px solid rgba(26,122,64,.2);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
 .profile-banner .pb-icon{font-size:1.25rem}
 .profile-banner .pb-text{font-size:.82rem;color:rgba(255,255,255,.7);font-weight:300}
@@ -57,13 +57,18 @@ select option{background:#1a2a4a;color:#fff}
 .result-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.25rem 1.5rem;margin-top:1.25rem;display:none}
 .result-box.show{display:block}
 .result-box .result-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.75rem}
-.result-text{font-size:.88rem;line-height:1.8;color:rgba(255,255,255,.85);white-space:pre-wrap}
+.result-text{font-size:.88rem;line-height:1.8;color:rgba(255,255,255,.85);}
+.res-para{margin-bottom:.75rem;}
+.res-h{font-family:"Bebas Neue",sans-serif;font-size:1rem;letter-spacing:.08em;color:#f0c040;margin:1.25rem 0 .4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(240,192,64,.2);}
+.res-li{padding:.25rem 0 .25rem 1rem;border-left:2px solid rgba(240,192,64,.3);margin-bottom:.25rem;color:rgba(192,216,240,.9);}
+.res-li::before{content:"→ ";color:#f0c040;font-weight:700;}
 .spinner{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .tip{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-left:3px solid #c9a84c;border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:rgba(255,255,255,.7);margin-bottom:1.25rem;line-height:1.6}
 .tip strong{color:#f0c040}
 @media print{nav,.mmenu,.hamburger,footer,.tool-hero,#tool-actions{display:none !important}body{background:#fff;color:#000}.result-text{color:#000;background:#fff}.result-box{border:none;background:#fff}}
 @media(max-width:600px){.tool-wrap{padding:1.25rem 1rem}}
+.adsbygoogle{min-height:0!important;}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <meta property="og:title" content="AI LinkedIn Profile Builder for Veterans">
@@ -747,11 +752,19 @@ async function callClaude(prompt, system, opts) {
     if (!text) throw new Error("Empty response from AI");
     var html = text
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-      .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+      // Section headers ## or **SECTION**
       .replace(/^#{1,3}\s+(.+)$/gm,'<div class="res-h">$1</div>')
-      .replace(/^[-•*]\s+(.+)$/gm,'<div class="res-li">• $1</div>')
-      .replace(/\n\n+/g,"</p><p>").replace(/\n/g,"<br>");
-    if (out) out.innerHTML = '<p>'+html+'</p>';
+      .replace(/^\*\*([A-Z][^*]{3,60})\*\*\s*$/gm,'<div class="res-h">$1</div>')
+      // Bold inline
+      .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+      // Italic
+      .replace(/\*([^*]+)\*/g,"<em>$1</em>")
+      // Bullet points
+      .replace(/^[-•]\s+(.+)$/gm,'<div class="res-li">$1</div>')
+      // Blank lines = paragraph breaks
+      .replace(/\n\n+/g,'</div><div class="res-para">')
+      .replace(/\n/g,"<br>");
+    if (out) out.innerHTML = '<div class="res-para">'+html+'</div>';
     if (btn){btn.disabled=false;btn.innerHTML=label;}
     return text;
   } catch(e) {
@@ -950,33 +963,30 @@ document.getElementById('li-btn').addEventListener('click', async function() {
   var prompt = 'COMPLETE VETERAN PROFILE (all military + civilian + federal experience):\n' + fullProfile;
   if (target) prompt += '\n\nTarget Career: ' + target;
   if (wins) prompt += '\nKey Achievements to Highlight: ' + wins;
-  prompt += `\n\nGenerate a complete professional LinkedIn profile:
-
-**HEADLINE** (120 characters max - civilian keywords, no military jargon)
-[Headline]
-
-**ABOUT SECTION** (1800 characters max - first person, compelling civilian narrative, strong opening hook)
-[About section - do NOT start with "I served in the military"]
-
-**EXPERIENCE - Most Recent Military Position**
-*Title:* [Civilian-equivalent job title - not military rank/title]
-*Company:* U.S. [Branch] - United States Military
-*Dates:* [Based on years of service]
-
-• [Achievement bullet - action verb + what + scale + result]
-• [Achievement bullet]
-• [Achievement bullet]
-• [Achievement bullet]
-• [Achievement bullet]
-
-**TOP 15 SKILLS TO ADD** (comma-separated)
-[Skills]
-
-**FEATURED SECTION SUGGESTION**
-[What to feature - certificates, project, recognition]
-
-**CONNECTION REQUEST TEMPLATE** (for target industry contacts - 40 words max)
-[Template]`;
+  prompt += '\n\nGenerate a complete professional LinkedIn profile in this EXACT structure:\n\n' +
+  '## HEADLINE OPTIONS\n' +
+  'Option 1: [120-char civilian headline — value offer | role | differentiator]\n' +
+  'Option 2: [alternative angle — different hook]\n' +
+  'Option 3: [clearance/technical angle if applicable]\n\n' +
+  '## ABOUT SECTION\n' +
+  '[Write 3 paragraphs in first person. Para 1: compelling hook — what you DO and the scale of it, not where you served. Para 2: specific accomplishments with numbers. Para 3: what you are looking for and a call to action. Max 2000 chars. No military acronyms without translation.]\n\n' +
+  '## EXPERIENCE — POSITION 1 (most recent)\n' +
+  'Title: [civilian job title equivalent]\n' +
+  'Organization: U.S. [Branch] | [approximate dates]\n' +
+  '- [Achievement: action verb + what + measurable result]\n' +
+  '- [Achievement: action verb + what + measurable result]\n' +
+  '- [Achievement: action verb + what + measurable result]\n' +
+  '- [Achievement: action verb + what + measurable result]\n' +
+  '- [Achievement: action verb + what + measurable result]\n\n' +
+  (civExps.length > 0 ? '## EXPERIENCE — CIVILIAN POSITIONS\n[Rewrite each civilian position with achievement bullets, civilian language]\n\n' : '') +
+  '## TOP 15 SKILLS\n' +
+  '[15 LinkedIn skill keywords comma-separated, ATS-optimized for target role]\n\n' +
+  '## FEATURED SECTION\n' +
+  '[Specific recommendation: what to pin — cert, project, commendation letter, article]\n\n' +
+  '## CONNECTION MESSAGE TEMPLATE\n' +
+  '[40-word max InMail/connection request for someone in target industry]\n\n' +
+  '## 3 PROFILE QUICK WINS\n' +
+  '[Three things to do in the next 24 hours to increase visibility]';
 
   await callClaude(prompt,
     'You are a LinkedIn profile expert for military-to-civilian transitions. Write compelling profiles that civilian recruiters love. Never use military acronyms without explanation. Quantify everything. Make the opening hook impossible to ignore.',

@@ -62,11 +62,11 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:width .4s ease;width:0%;}
 
 /* SCREENS */
-.screen{display:none;min-height:calc(100vh - 52px);}
+.screen{display:none;}
 .screen.active{display:block;}
 
 /* INTRO */
-.intro-wrap{max-width:760px;margin:0 auto;padding:3rem 5%;}
+
 .intro-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:100px;padding:.28rem .9rem;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;}
 .intro-h{font-family:"Bebas Neue",sans-serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:.06em;color:#fff;line-height:1.05;margin-bottom:.85rem;}
 .intro-h span{color:var(--gold);}
@@ -87,7 +87,7 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 .save-note strong{color:rgba(192,216,240,.85);}
 
 /* ASSESSMENT */
-.assess-wrap{max-width:700px;margin:0 auto;padding:1.75rem 5%;}
+
 .dim-header{display:flex;align-items:center;gap:.85rem;margin-bottom:1.25rem;padding:1rem 1.15rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;}
 .dim-icon-big{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
 .dim-name{font-family:"Bebas Neue",sans-serif;font-size:1.3rem;letter-spacing:.07em;color:#fff;margin-bottom:.1rem;line-height:1;}
@@ -195,7 +195,7 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 .saving-sub{font-size:.85rem;color:rgba(192,216,240,.5);}
 
 /* RESULTS */
-.results-wrap{max-width:860px;margin:0 auto;padding:3rem 5% 5rem;}
+
 
 /* Share bar */
 .share-bar{background:rgba(26,58,107,.25);border:1px solid rgba(26,58,107,.4);border-radius:12px;padding:1rem 1.25rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
@@ -415,6 +415,62 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 .bc-avoid-item strong{color:rgba(255,180,160,.9);font-size:.88rem;}
 .bc-avoid-reason{font-size:.78rem;color:rgba(192,216,240,.55);line-height:1.6;margin-top:.25rem;display:block;}
 
+
+/* ── DESKTOP LAYOUT IMPROVEMENTS ─────────────────────────────────────────── */
+.screen{display:none;} /* remove min-height that caused blank space */
+#scr-intro  { display:none; }
+#scr-assess { display:none; }
+#scr-saving { display:none; }
+#scr-results{ display:none; }
+.screen.active { display:block; }
+
+/* Wider content areas on desktop */
+.intro-wrap{max-width:900px;margin:0 auto;padding:2.5rem 5% 3rem;}
+.assess-wrap{max-width:820px;margin:0 auto;padding:1.5rem 5% 2rem;}
+.results-wrap{max-width:1100px;margin:0 auto;padding:2rem 5% 3rem;}
+
+/* Better grids on desktop - use more space */
+.career-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:.85rem;margin-bottom:1.25rem;
+}
+.blend-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:.85rem;margin-bottom:1rem;
+}
+.strength-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:.75rem;margin-bottom:1.25rem;
+}
+.intro-callouts{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:1rem;margin-bottom:2rem;
+}
+
+/* Question layout — two-column scale on desktop */
+@media(min-width:768px){
+  .assess-wrap{padding:2rem 5%;}
+  .results-wrap{padding:2.5rem 5% 3rem;}
+  .scale-row{gap:.5rem;}
+  .scale-btn{min-height:48px;font-size:.9rem;}
+  .blend-grid{grid-template-columns:repeat(auto-fill,minmax(320px,1fr));}
+  .career-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
+}
+@media(min-width:1200px){
+  .blend-grid{grid-template-columns:repeat(3,1fr);}
+  .career-grid{grid-template-columns:repeat(4,1fr);}
+  .strength-grid{grid-template-columns:repeat(3,1fr);}
+}
+
+/* Reduce blank bottom space */
+.cta-wrap{padding:2rem 0 1rem;}
+.next-steps-grid{margin-bottom:1.5rem;}
+
+.adsbygoogle{min-height:0!important;}
 </style>
 <meta property="og:title" content="Full Veteran Career Assessment | 60 Questions">
 <meta property="og:description" content="60-question RIASEC career assessment built for veterans. Detailed career matches, salary data, and printable report saved to your account.">

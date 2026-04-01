@@ -161,19 +161,33 @@ html,body{overflow-x:hidden;max-width:100%;}
 </nav>
 <div class="vcp-drop" id="vcp-drop">
   <div class="vcp-drop-col">
-<div class="vcp-drop-grp"><div class="vcp-drop-grp-title">AI Career Tools</div>
-<a href="https://veterancareerpath.com/app.html">AI Career Builder</a>
-<a href="https://veterancareerpath.com/free-assessment.html">Free Career Assessment</a>
-<a href="https://veterancareerpath.com/career-assessment-full.html">Full Assessment (Subscribers)</a>
-<a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
-<a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
-<a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume Builder</a>
-<a href="https://veterancareerpath.com/tools-interview-simulator.html">Interview Simulator</a>
-<a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Builder</a>
-<a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Negotiator</a>
-<a href="https://veterancareerpath.com/tools-cert-advisor.html">Certification Advisor</a>
-<a href="https://veterancareerpath.com/tools-job-tracker.html">Job Application Tracker</a>
-<a href="https://veterancareerpath.com/training.html">Training Library</a>
+<div class="vcp-drop-grp"><div class="vcp-drop-grp-title">AI Tools — $15/mo</div>
+<a href="https://veterancareerpath.com/app.html">🤖 AI Career Builder App</a>
+<a href="https://veterancareerpath.com/tools-job-match.html">🎯 Job Match Analyzer</a>
+<a href="https://veterancareerpath.com/tools-federal-resume.html">🏛 Federal Resume Builder</a>
+<a href="https://veterancareerpath.com/tools-interview-simulator.html">🎤 Interview Simulator</a>
+<a href="https://veterancareerpath.com/tools-linkedin-builder.html">🔗 LinkedIn Optimizer</a>
+<a href="https://veterancareerpath.com/tools-salary-negotiator.html">💰 Salary Negotiator</a>
+<a href="https://veterancareerpath.com/tools-cert-advisor.html">📋 Certification Advisor</a>
+<a href="https://veterancareerpath.com/tools-job-tracker.html">📁 Job Application Tracker</a>
+<a href="https://veterancareerpath.com/career-assessment-full.html">🧠 Full Career Assessment (AI)</a>
+<a href="https://veterancareerpath.com/mos-career-translator.html">🔄 Real MOS Experience Translator (AI)</a>
+<a href="https://veterancareerpath.com/dd214-decoder.html">📋 DD-214 Decoder</a>
+<a href="https://veterancareerpath.com/clearance-job-match.html">🔐 Clearance Job Match</a>
+<a href="https://veterancareerpath.com/linkedin-profile-rewriter.html">🔵 LinkedIn Profile Rewriter</a>
+<a href="https://veterancareerpath.com/federal-resume-builder-ai.html">🏛 Federal Resume AI Builder</a>
+<a href="https://veterancareerpath.com/salary-negotiation-roleplay.html">🎯 Salary Negotiation Role-Play</a>
+<a href="https://veterancareerpath.com/transition-timeline-planner.html">📅 Transition Timeline Planner</a>
+<a href="https://veterancareerpath.com/veteran-business-funding.html">💼 Veteran Business Funding</a>
+<a href="https://veterancareerpath.com/va-home-loan-analyzer.html">🏠 VA Home Loan Analyzer</a>
+</div>
+<div class="vcp-drop-grp"><div class="vcp-drop-grp-title">Free Tools</div>
+<a href="https://veterancareerpath.com/free-assessment.html">Free 10-Question Career Assessment</a>
+<a href="https://veterancareerpath.com/federal-jobs-search.html">Federal Job Search</a>
+<a href="https://veterancareerpath.com/should-i-reenlist-calculator.html">Reenlist vs Separate Calculator</a>
+<a href="https://veterancareerpath.com/pcs-ets-move-calculator.html">PCS/DITY Move Calculator</a>
+<a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Disability Calculator</a>
+<a href="https://veterancareerpath.com/vet-resources.html">Veteran Resources Directory</a>
 </div>
 <div class="vcp-drop-grp"><div class="vcp-drop-grp-title">Transition Guides</div>
 <a href="https://veterancareerpath.com/military-transition-guide.html">Military Transition Guide</a>
@@ -578,8 +592,25 @@ html,body{overflow-x:hidden;max-width:100%;}
       <div class="pb-text">Profile loaded: <span class="pb-name" id="pb-name"></span> &bull; <a href="https://veterancareerpath.com/app.html" style="color:#c0d8f0;font-size:.78rem">Edit profile in app</a></div>
     </div>
     
-<div class="tip"><strong>Profile auto-loaded.</strong> Federal resumes are 4-6 pages with KSA narratives - completely different from civilian resumes. Enter your target GS grade and job series.</div>
+<div class="tip"><strong>Profile auto-loaded.</strong> Federal resumes are 4-6 pages with KSA narratives — completely different from civilian resumes. Fill in any blanks and your info will be saved for next time.</div>
+
 <div class="card-tool">
+  <div class="section-head">Your Contact Information</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+    <div class="field"><label>Full Legal Name</label>
+      <input id="fed-name" type="text" placeholder="First Middle Last" oninput="saveField('fed-name',this.value)"></div>
+    <div class="field"><label>Phone Number</label>
+      <input id="fed-phone" type="tel" placeholder="(555) 555-5555" oninput="saveField('fed-phone',this.value)"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+    <div class="field"><label>Email Address</label>
+      <input id="fed-email" type="email" placeholder="your.email@gmail.com" oninput="saveField('fed-email',this.value)"></div>
+    <div class="field"><label>City, State, ZIP</label>
+      <input id="fed-address" type="text" placeholder="e.g. San Antonio, TX 78201" oninput="saveField('fed-address',this.value)"></div>
+  </div>
+</div>
+
+<div class="card-tool" style="margin-top:.75rem">
   <div class="section-head">Federal Job Target</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
     <div class="field"><label>Target GS Grade</label>
@@ -590,31 +621,49 @@ html,body{overflow-x:hidden;max-width:100%;}
         <option value="GS-14 to GS-15">GS-14 to GS-15 (exec track)</option>
       </select>
     </div>
-    <div class="field"><label>Job Series</label>
+    <div class="field"><label>Job Series & Title</label>
       <input id="fed-series" type="text" placeholder="e.g. 0343 Management Analyst"></div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
     <div class="field"><label>Target Agency</label>
       <input id="fed-agency" type="text" placeholder="e.g. Department of Veterans Affairs"></div>
-    <div class="field"><label>Disability Rating (veterans preference)</label>
+    <div class="field"><label>Veterans Preference</label>
       <select id="fed-rating">
         <option value="no service-connected disability">No rating</option>
-        <option value="service-connected disability below 30%">Below 30% (5-pt preference)</option>
-        <option value="service-connected disability of 30% or more">30%+ (10-pt preference)</option>
-        <option value="Purple Heart recipient">Purple Heart (10-pt preference)</option>
+        <option value="service-connected disability below 30%">Below 30% (5-point preference)</option>
+        <option value="service-connected disability of 30% or more">30%+ (10-point preference)</option>
+        <option value="Purple Heart recipient">Purple Heart (10-point preference)</option>
       </select>
     </div>
   </div>
-  <button class="btn btn-navy" id="fed-btn">&#127963; Generate Federal Resume</button>
+  <button class="btn btn-navy" id="fed-btn">&#127963; Generate My Federal Resume</button>
 </div>
-<div class="result-box" id="fed-result">
-  <div class="result-title">Your Federal Resume</div>
-  <div class="result-text"></div>
-  <div id="tool-actions" style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap">
-    <button class="btn btn-blue" onclick="navigator.clipboard.writeText(document.querySelector('#fed-result .result-text').textContent).then(()=>alert('Copied!'))" style="font-size:.78rem;padding:.45rem .9rem">Copy Text</button>
-    <button class="btn btn-blue" onclick="window.print()" style="font-size:.78rem;padding:.45rem .9rem">Print / PDF</button>
-    <a href="https://veterancareerpath.com/schedule-a-federal-hiring.html" class="btn btn-gold" style="font-size:.78rem;padding:.45rem .9rem;text-decoration:none">Schedule A Hiring Guide</a>
+<div id="fed-result" style="display:none;margin-top:1.25rem;">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#f0c040;">📄 Your Federal Resume Draft</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+      <button onclick="printFedResume()" class="btn btn-blue" style="font-size:.78rem;padding:.45rem .9rem;">🖨️ Print / Save PDF</button>
+      <button onclick="copyFedResume()" class="btn btn-blue" style="font-size:.78rem;padding:.45rem .9rem;">📋 Copy Plain Text</button>
+    </div>
   </div>
+  <div id="fed-resume-doc" style="
+    background:#fff;
+    color:#1a1a1a;
+    font-family:'Times New Roman',Times,serif;
+    font-size:11pt;
+    line-height:1.5;
+    padding:1in;
+    max-width:8.5in;
+    margin:0 auto;
+    box-shadow:0 4px 24px rgba(0,0,0,.15);
+    border-radius:4px;
+    min-height:11in;
+  ">
+    <div id="fed-resume-content" style="color:#1a1a1a;">
+      <!-- Resume rendered here -->
+    </div>
+  </div>
+  <p style="font-size:.72rem;color:rgba(192,216,240,.35);margin-top:.75rem;text-align:center;">Federal resumes are intentionally 4-6 pages. Brevity is penalized in federal hiring. Do not shorten. Copy text into USAJobs Work Experience fields.</p>
 </div>
   </div>
 </div><!-- end tool-content -->
@@ -655,19 +704,55 @@ function getProfile() {
 }
 
 function profileContext() {
-  var d = getProfile(); if (!d) return "Veteran seeking civilian career transition.";
-  var ex = (d.milExperiences||d.experiences||[])[0]||{}, p=d.personal||{}, t=d.target||{};
+  var d = getProfile();
+  if (!d) return "Veteran seeking civilian career transition.";
+  var p = d.personal||{}, t = d.target||{}, sk = d.skills||{};
+  var milExps = d.milExperiences||d.experiences||[];
+  var civExps = d.civExperiences||d.civilianExperiences||[];
   var lines = [];
+
   if (p.name) lines.push("Name: "+p.name);
-  if (ex.branch) lines.push("Branch: "+ex.branch);
-  if (ex.rank) lines.push("Rank: "+ex.rank);
-  if (ex.mos) lines.push("MOS: "+ex.mos+(ex.mosTitle?" ("+ex.mosTitle+")":""));
-  if (ex.tos) lines.push("Years of Service: "+ex.tos);
-  if (ex.clearanceLevel&&ex.clearanceLevel!=="None") lines.push("Clearance: "+ex.clearanceLevel);
-  if (ex.duties) lines.push("Key Duties: "+ex.duties.slice(0,300));
-  if (ex.awards&&ex.awards.length) lines.push("Awards: "+(Array.isArray(ex.awards)?ex.awards.join(", "):ex.awards));
-  if (t.title) lines.push("Target Role: "+t.title);
-  if (t.industry) lines.push("Target Industry: "+t.industry);
+
+  // ALL military positions
+  if (milExps.length > 0) {
+    lines.push("\n=== MILITARY EXPERIENCE ("+milExps.length+" position"+(milExps.length>1?"s":"")+") ===");
+    milExps.forEach(function(ex, i) {
+      lines.push("\nMilitary Position "+(i+1)+":");
+      if (ex.branch) lines.push("  Branch: "+ex.branch);
+      if (ex.rank) lines.push("  Rank: "+ex.rank);
+      if (ex.mos) lines.push("  MOS/Rate/AFSC: "+ex.mos+(ex.mosTitle?" ("+ex.mosTitle+")":""));
+      if (ex.unit) lines.push("  Unit: "+ex.unit);
+      if (ex.tos) lines.push("  Time in Service: "+ex.tos);
+      if (ex.clearanceLevel&&ex.clearanceLevel!=="None") lines.push("  Clearance: "+ex.clearanceLevel);
+      if (ex.duties) lines.push("  Key Duties: "+ex.duties.slice(0,400));
+      if (ex.awards&&ex.awards.length) lines.push("  Awards: "+(Array.isArray(ex.awards)?ex.awards.join(", "):ex.awards));
+      if (ex.startDate||ex.endDate) lines.push("  Dates: "+(ex.startDate||"")+" to "+(ex.endDate||"Present"));
+    });
+  }
+
+  // ALL civilian / federal positions
+  if (civExps.length > 0) {
+    lines.push("\n=== CIVILIAN / FEDERAL EXPERIENCE ("+civExps.length+" position"+(civExps.length>1?"s":"")+") ===");
+    civExps.forEach(function(ex, i) {
+      lines.push("\nCivilian Position "+(i+1)+":");
+      if (ex.title||ex.jobTitle) lines.push("  Title: "+(ex.title||ex.jobTitle));
+      if (ex.company||ex.employer) lines.push("  Employer: "+(ex.company||ex.employer));
+      if (ex.duties||ex.description) lines.push("  Duties: "+(ex.duties||ex.description||"").slice(0,300));
+      if (ex.startDate||ex.endDate) lines.push("  Dates: "+(ex.startDate||"")+" to "+(ex.endDate||"Present"));
+    });
+  }
+
+  // Skills
+  if (sk.technical) lines.push("\nTechnical Skills: "+sk.technical);
+  if (sk.leadership) lines.push("Leadership Skills: "+sk.leadership);
+  if (sk.languages) lines.push("Languages: "+sk.languages);
+  if (sk.certs) lines.push("Certifications: "+sk.certs);
+
+  // Target
+  if (t.title||t.industry) {
+    lines.push("\nTarget Role: "+(t.title||"")+(t.industry?" | "+t.industry:""));
+  }
+
   return lines.join("\n")||"Veteran seeking civilian career transition.";
 }
 // aliases used by various tool scripts
@@ -813,16 +898,148 @@ document.addEventListener("DOMContentLoaded",function(){
 })();
 </script>
 <script>
+// Save contact fields to localStorage
+function saveField(id, val) {
+  try {
+    var saved = JSON.parse(localStorage.getItem('vcp_fed_contact') || '{}');
+    saved[id] = val;
+    localStorage.setItem('vcp_fed_contact', JSON.stringify(saved));
+  } catch(e) {}
+}
+// Load saved contact fields on init
+(function loadSavedContact() {
+  try {
+    var saved = JSON.parse(localStorage.getItem('vcp_fed_contact') || '{}');
+    var d = getProfile();
+    // Pre-fill from profile if available
+    var p = d && d.personal || {};
+    var fields = {
+      'fed-name': saved['fed-name'] || p.name || '',
+      'fed-phone': saved['fed-phone'] || p.phone || '',
+      'fed-email': saved['fed-email'] || p.email || '',
+      'fed-address': saved['fed-address'] || p.location || '',
+    };
+    Object.keys(fields).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && fields[id]) { el.value = fields[id]; el.style.borderColor = 'rgba(26,122,64,.4)'; }
+    });
+  } catch(e) {}
+})();
+
+function printFedResume() { window.print(); }
+function copyFedResume() {
+  var el = document.getElementById('fed-resume-content');
+  if (!el) return;
+  var text = el.innerText;
+  navigator.clipboard.writeText(text).then(function() { alert('Resume text copied! Paste into USAJobs Work Experience fields.'); });
+}
+
+// Render the AI text as a properly formatted federal resume
+function renderFedResumeHTML(rawText, contactInfo) {
+  // Split into sections by ALL-CAPS headers
+  var lines = rawText.split('\n');
+  var html = '';
+  var inBullets = false;
+
+  // Header block
+  html += '<div style="text-align:center;margin-bottom:18pt;border-bottom:2px solid #000;padding-bottom:12pt;">';
+  html += '<div style="font-size:16pt;font-weight:bold;letter-spacing:1px;">' + (contactInfo.name || 'YOUR NAME') + '</div>';
+  html += '<div style="font-size:10pt;margin-top:4pt;">' + (contactInfo.address || 'City, State ZIP') + ' | ' + (contactInfo.phone || 'Phone') + ' | ' + (contactInfo.email || 'Email') + '</div>';
+  html += '<div style="font-size:10pt;">U.S. Citizen | Veterans Preference: ' + (contactInfo.preference || 'See DD-214') + '</div>';
+  html += '</div>';
+
+  lines.forEach(function(line) {
+    line = line.trim();
+    if (!line) { if (inBullets) { html += '</ul>'; inBullets = false; } html += '<div style="margin-bottom:6pt;"></div>'; return; }
+    
+    // Section headers (all caps or starts with ##)
+    var isHeader = /^#{1,3}\s/.test(line) || (/^[A-Z][A-Z\s&\/\-(),]+$/.test(line) && line.length > 3 && line.length < 80);
+    if (isHeader) {
+      if (inBullets) { html += '</ul>'; inBullets = false; }
+      var headerText = line.replace(/^#{1,3}\s*/, '');
+      html += '<div style="font-size:11pt;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #000;margin:14pt 0 6pt;padding-bottom:2pt;">' + headerText + '</div>';
+      return;
+    }
+    
+    // Job title / position lines (bold + employer info)
+    if (/^[A-Z].*\|.*\|/.test(line) || /Hours?:/.test(line) || /Supervisor:/.test(line) || /GS Equivalent/.test(line)) {
+      if (inBullets) { html += '</ul>'; inBullets = false; }
+      html += '<div style="font-size:10.5pt;font-weight:bold;margin-top:8pt;">' + line.replace(/\|/g, ' | ') + '</div>';
+      return;
+    }
+    
+    // Bullet points
+    if (/^[•\-\*]/.test(line)) {
+      if (!inBullets) { html += '<ul style="margin:4pt 0 4pt 18pt;padding:0;">'; inBullets = true; }
+      html += '<li style="margin-bottom:4pt;">' + line.replace(/^[•\-\*]\s*/, '') + '</li>';
+      return;
+    }
+    
+    // Bold subheadings (lines ending with colon)
+    if (/^[A-Z][^.]+:$/.test(line) && line.length < 60) {
+      if (inBullets) { html += '</ul>'; inBullets = false; }
+      html += '<div style="font-weight:bold;margin-top:6pt;">' + line + '</div>';
+      return;
+    }
+    
+    // Regular paragraph text
+    if (inBullets) { html += '</ul>'; inBullets = false; }
+    html += '<div style="margin-bottom:3pt;">' + line + '</div>';
+  });
+
+  if (inBullets) html += '</ul>';
+  return html;
+}
+
 document.getElementById('fed-btn').addEventListener('click', async function() {
-  var profileContext = buildPromptContext();
-  var gs = val('fed-gs'); var series = val('fed-series');
-  var agency = val('fed-agency'); var rating = val('fed-rating');
-  if (!series) { alert('Please enter a target job series.'); document.getElementById('fed-series').focus(); return; }
+  var name = val('fed-name'), phone = val('fed-phone');
+  var email = val('fed-email'), address = val('fed-address');
+  var gs = val('fed-gs'), series = val('fed-series');
+  var agency = val('fed-agency'), rating = val('fed-rating');
   
-  var prompt = 'VETERAN MILITARY PROFILE:\n' + profileContext;
-  prompt += '\nTarget GS Grade: ' + gs + '\nJob Series: ' + series;
-  prompt += '\nTarget Agency: ' + (agency || 'Federal agency');
-  prompt += '\nVeterans Preference: ' + rating;
+  if (!series) { alert('Please enter a target job series (e.g. 0343 Management Analyst).'); document.getElementById('fed-series').focus(); return; }
+  if (!name)   { alert('Please enter your full name in the Contact Information section.'); document.getElementById('fed-name').focus(); return; }
+
+  // Build comprehensive profile
+  var d = getProfile();
+  var profileStr = (function() {
+    if (!d) return buildPromptContext();
+    var lines = [], p = d.personal||{}, sk = d.skills||{}, t = d.target||{};
+    var milExps = d.milExperiences||d.experiences||[];
+    if (milExps.length) {
+      lines.push('MILITARY EXPERIENCE (' + milExps.length + ' position' + (milExps.length>1?'s':'') + '):');
+      milExps.forEach(function(ex, i) {
+        lines.push('Position ' + (i+1) + ': ' + (ex.rank||'') + ', ' + (ex.branch||''));
+        if (ex.mos) lines.push('  MOS: ' + ex.mos + (ex.mosTitle?' — '+ex.mosTitle:''));
+        if (ex.tos) lines.push('  Service: ' + ex.tos + ' years');
+        if (ex.clearanceLevel && ex.clearanceLevel!=='None') lines.push('  Clearance: ' + ex.clearanceLevel);
+        if (ex.duties) lines.push('  Duties: ' + ex.duties);
+        if (ex.accomplishments) lines.push('  Accomplishments: ' + ex.accomplishments);
+        if (ex.awards && ex.awards.length) lines.push('  Awards: ' + (Array.isArray(ex.awards)?ex.awards.join(', '):ex.awards));
+      });
+    }
+    var civExps = d.civilianExperiences||d.civExperiences||[];
+    if (civExps.length) {
+      lines.push('CIVILIAN EXPERIENCE:');
+      civExps.forEach(function(ex) { lines.push('  ' + (ex.title||'') + ' at ' + (ex.employer||'')); });
+    }
+    if (sk.technical)  lines.push('Technical Skills: ' + sk.technical);
+    if (sk.certs)      lines.push('Certifications: ' + sk.certs);
+    if (sk.leadership) lines.push('Leadership: ' + sk.leadership);
+    var edu = d.education||{};
+    if (edu.degree)    lines.push('Education: ' + edu.degree + (edu.school?' from '+edu.school:''));
+    if (t.title)       lines.push('Target Role: ' + t.title);
+    return lines.join('\n') || buildPromptContext();
+  })();
+
+  var contactInfo = { name: name, phone: phone, email: email, address: address, preference: rating };
+
+  var prompt = 'APPLICANT CONTACT INFO:\n';
+  prompt += 'Name: ' + name + '\nAddress: ' + (address||'[City, State ZIP]');
+  prompt += '\nPhone: ' + (phone||'[Phone]') + '\nEmail: ' + (email||'[Email]');
+  prompt += '\n\nMILITARY PROFILE:\n' + profileStr;
+  prompt += '\n\nTARGET POSITION:\nGS Grade: ' + gs + '\nJob Series: ' + series;
+  prompt += '\nAgency: ' + (agency||'Federal agency') + '\nVeterans Preference: ' + rating;
   prompt += `\n\nGenerate a complete federal resume in USAJOBS format:
 
 CONTACT INFORMATION
@@ -855,9 +1072,38 @@ VETERANS PREFERENCE DOCUMENTATION
 IMPORTANT NOTES FOR THIS APPLICATION:
 • [3 specific tips to customize before submitting]`;
 
-  await callClaude(prompt,
-    'You are a federal resume expert who has helped hundreds of veterans get federal jobs. Federal resumes are very different - detailed KSA content, specific formatting, and veterans preference language. Generate realistic content using the profile provided.',
-    { btn: 'fed-btn', result: 'fed-result', btnLabel: '&#127963; Generate Federal Resume', maxTokens: 2500 });
+  var btn = document.getElementById('fed-btn');
+  var resultDiv = document.getElementById('fed-result');
+  var contentDiv = document.getElementById('fed-resume-content');
+  
+  btn.disabled = true;
+  btn.textContent = 'Generating... (this takes ~20 seconds)';
+  resultDiv.style.display = 'none';
+
+  try {
+    var body = {
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2800,
+      system: 'You are an expert federal resume writer specializing in military-to-government transitions. You write detailed, KSA-rich federal resumes in proper USAJOBS format. Federal resumes are 4-6 pages — be verbose and detailed. Every bullet should be 2-3 sentences with specifics and metrics. Never write a resume shorter than a civilian would expect. Include all required USAJobs fields.',
+      messages: [{role: 'user', content: prompt}]
+    };
+    var resp = await fetch(PROXY, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    var data = await resp.json();
+    var text = (data.content||[]).map(function(b){return b.text||'';}).join('');
+    
+    if (!text) throw new Error('No content returned');
+    
+    // Render as formatted HTML resume document
+    contentDiv.innerHTML = renderFedResumeHTML(text, contactInfo);
+    resultDiv.style.display = 'block';
+    resultDiv.scrollIntoView({behavior:'smooth', block:'start'});
+    
+  } catch(e) {
+    alert('Error generating resume: ' + e.message + '. Check your proxy is deployed and API key is set.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '\u{1F3DB} Generate My Federal Resume';
+  }
 });
 </script>
 </body>

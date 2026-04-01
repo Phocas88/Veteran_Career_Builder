@@ -273,6 +273,29 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 .cta-sec{background:rgba(255,255,255,.06);color:rgba(192,216,240,.75);font-size:.85rem;font-weight:600;padding:.8rem 1.5rem;border-radius:9px;border:1px solid rgba(255,255,255,.1);cursor:pointer;}
 .cta-sec:hover{background:rgba(255,255,255,.1);}
 
+.bc-summary{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;border-left:4px solid #f0c040;}
+.bc-summary-label{font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.5rem;}
+.bc-summary-text{color:rgba(192,216,240,.85);font-size:.87rem;line-height:1.75;}
+.bc-section-head{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.09em;padding:.6rem 1rem;border-radius:8px;margin:1.25rem 0 .75rem;}
+.bc-section-head.strong{background:linear-gradient(135deg,rgba(26,58,107,.3),rgba(26,58,107,.1));color:#88aaff;border-left:3px solid #4a7aff;}
+.bc-section-head.good{background:linear-gradient(135deg,rgba(26,122,64,.2),rgba(26,122,64,.05));color:#88dd88;border-left:3px solid #2a9a2a;}
+.bc-section-head.possible{background:rgba(255,255,255,.05);color:rgba(192,216,240,.7);border-left:3px solid rgba(192,216,240,.2);}
+.bc-section-head.avoid{background:rgba(200,80,50,.15);color:#ff9999;border-left:3px solid #c0392b;}
+.blend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.85rem;margin-bottom:.5rem;}
+.blend-card-strong{background:linear-gradient(145deg,#0d1f3c,#152a4a);border:1px solid rgba(74,122,255,.3);border-radius:12px;padding:1.1rem 1.25rem;}
+.blend-card-good{background:linear-gradient(145deg,#0d2a18,#0f2d1b);border:1px solid rgba(42,154,42,.25);border-radius:12px;padding:1.1rem 1.25rem;}
+.blend-card-possible{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1.1rem 1.25rem;}
+.bc-tier-label{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin-bottom:.35rem;}
+.bc-title{font-weight:700;font-size:1rem;color:#fff;margin-bottom:.3rem;line-height:1.3;}
+.bc-salary{font-size:.78rem;color:#f0c040;font-weight:600;margin-bottom:.45rem;}
+.bc-why{font-size:.81rem;color:rgba(192,216,240,.78);line-height:1.65;margin-bottom:.5rem;}
+.blend-tag{display:inline-block;background:rgba(255,255,255,.07);color:rgba(192,216,240,.6);padding:.12rem .45rem;border-radius:20px;font-size:.67rem;font-weight:600;margin:.15rem .1rem 0 0;}
+.blend-tag.match{background:rgba(26,122,64,.25);color:#90e8b0;}
+.bc-clear-badge{display:inline-block;background:rgba(200,150,10,.2);border:1px solid rgba(200,150,10,.3);color:#f0c040;font-size:.67rem;font-weight:700;padding:.12rem .45rem;border-radius:20px;margin-top:.4rem;}
+.bc-avoid-section{margin-top:1.5rem;}
+.bc-avoid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.65rem;}
+.bc-avoid-item{background:rgba(200,80,50,.1);border:1px solid rgba(200,80,50,.2);border-radius:8px;padding:.75rem 1rem;font-size:.82rem;color:rgba(192,216,240,.75);}
+.bc-avoid-reason{font-size:.75rem;color:rgba(192,216,240,.5);line-height:1.55;}
 /* PRINT */
 @media print{
   #gate,.topbar,.progress-bar,.share-bar,.cta-btns{display:none!important;}
@@ -324,6 +347,73 @@ body{font-family:"Inter",sans-serif;background:#060e1a;color:#e8f0f8;min-height:
 .compare-loading{text-align:center;padding:2rem;color:rgba(192,216,240,.5);font-size:.88rem;}
 .compare-loading .spin{width:28px;height:28px;border:3px solid rgba(240,192,64,.15);border-top-color:#f0c040;border-radius:50%;animation:sp .8s linear infinite;display:inline-block;margin-bottom:.65rem;}
 @keyframes sp{to{transform:rotate(360deg);}
+
+
+/* ── IMPROVED RESULTS LAYOUT ─────────────────────────────────────────────── */
+.blend-card-strong{
+  background:linear-gradient(145deg,#0d1f3c,#162842);
+  border:1.5px solid rgba(74,122,255,.35);
+  border-radius:14px;padding:1.25rem;
+  position:relative;overflow:hidden;
+}
+.blend-card-strong::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#4a7aff,#88aaff);
+}
+.blend-card-good{
+  background:linear-gradient(145deg,#0a2518,#0d2d1e);
+  border:1.5px solid rgba(42,154,42,.3);
+  border-radius:14px;padding:1.25rem;
+  position:relative;overflow:hidden;
+}
+.blend-card-good::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#2a9a2a,#4ade80);
+}
+.blend-card-possible{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:1.25rem;
+  position:relative;overflow:hidden;
+}
+.blend-card-possible::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:rgba(255,255,255,.15);
+}
+.bc-tier-label{font-size:.64rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.45rem;opacity:.75;}
+.bc-title{font-weight:700;font-size:1.05rem;color:#fff;margin-bottom:.35rem;line-height:1.3;}
+.bc-salary{font-size:.8rem;font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.bc-why{font-size:.82rem;color:rgba(192,216,240,.8);line-height:1.7;margin-bottom:.6rem;}
+.bc-section-head{
+  font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;
+  padding:.7rem 1.1rem;border-radius:10px;margin:1.5rem 0 .85rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.bc-section-head.strong{
+  background:linear-gradient(135deg,rgba(26,58,107,.4),rgba(26,58,107,.15));
+  color:#88aaff;border-left:4px solid #4a7aff;
+}
+.bc-section-head.good{
+  background:linear-gradient(135deg,rgba(26,90,26,.4),rgba(26,90,26,.15));
+  color:#4ade80;border-left:4px solid #2a9a2a;
+}
+.bc-section-head.possible{
+  background:rgba(255,255,255,.06);
+  color:rgba(192,216,240,.7);border-left:4px solid rgba(255,255,255,.2);
+}
+.bc-summary{
+  background:linear-gradient(135deg,rgba(240,192,64,.08),rgba(240,192,64,.03));
+  border:1px solid rgba(240,192,64,.2);
+  border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;
+}
+.bc-summary-label{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.5rem;}
+.bc-summary-text{font-size:.88rem;color:rgba(192,216,240,.85);line-height:1.8;}
+.bc-avoid-item{
+  background:rgba(200,80,50,.08);border:1px solid rgba(200,80,50,.2);
+  border-radius:10px;padding:.85rem 1rem;
+}
+.bc-avoid-item strong{color:rgba(255,180,160,.9);font-size:.88rem;}
+.bc-avoid-reason{font-size:.78rem;color:rgba(192,216,240,.55);line-height:1.6;margin-top:.25rem;display:block;}
 
 </style>
 <meta property="og:title" content="Full Veteran Career Assessment | 60 Questions">
@@ -1210,17 +1300,22 @@ function renderResultsFromData(data, resultId){
   }).join('');
 
   var careerCards = topCareers.map(function(c,i){
-    // Honest alignment score: scale from actual score ratio
     var ratio = c.score / (topCareers[0].score || 1);
-    var pct = Math.round(40 + ratio * 55); // range 40-95%, no false 100s
+    var pct = Math.round(40 + ratio * 55);
     var fillColor = i<3?'#f0c040':i<6?'#4ade80':'#60a5fa';
-    return '<div class="career-card fade-in' + (i<3?' top':'') + '">' +
-      '<div class="c-rank">' + (i<3?'⭐ Top Match':'#'+(i+1)) + '</div>' +
+    var rankLabel = i===0?'🥇 Best Match':i===1?'🥈 #2 Match':i===2?'🥉 #3 Match':'#'+(i+1);
+    var topBorder = i<3?'border-top:3px solid '+(i===0?'#f0c040':i===1?'#c0c8d0':'#cd7f32')+';':'';
+    return '<div class="career-card fade-in' + (i<3?' top':'') + '" style="'+topBorder+'">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem;">' +
+        '<div class="c-rank">' + rankLabel + '</div>' +
+        '<div style="font-size:.67rem;background:rgba(255,255,255,.07);color:rgba(192,216,240,.5);padding:.1rem .45rem;border-radius:20px;">' + c.sec + '</div>' +
+      '</div>' +
       '<div class="c-title">' + (c.icon||'') + ' ' + c.t + '</div>' +
       '<div class="c-salary">' + c.s + '</div>' +
-      '<div class="c-sector">' + c.sec + '</div>' +
       '<div class="c-fit"><div class="c-fit-bar"><div class="c-fit-fill" style="width:' + pct + '%;background:' + fillColor + '"></div></div>' +
-      '<span class="c-fit-lbl">' + pct + '% fit</span></div></div>';
+      '<span class="c-fit-lbl">' + pct + '% personality fit</span></div>' +
+      '<div style="font-size:.67rem;color:rgba(192,216,240,.3);margin-top:.4rem;">Based on your ' + top1.charAt(0).toUpperCase()+top1.slice(1) + ' + ' + top2.charAt(0).toUpperCase()+top2.slice(1) + ' profile</div>' +
+      '</div>';
   }).join('');
 
   var strengthCards = strengths.map(function(s,i){
@@ -1246,8 +1341,11 @@ function renderResultsFromData(data, resultId){
     '<div class="results-hero fade-in">' +
       '<div class="results-badge">✓ Full Assessment · ' + totalQ + ' Questions Analyzed</div>' +
       '<h2 class="results-h">Your Military Career Profile</h2>' +
-      '<p class="results-sub">Based on your responses across all 6 RIASEC dimensions, matched to roles that value military background</p>' +
+      '<p class="results-sub">Your results combine 6 personality dimensions with your military background to surface careers where both your wiring and your experience point in the same direction.</p>' +
       '<div class="profile-type">' + dim1.icon + ' ' + dim2.icon + ' ' + typeName + '</div>' +
+      '<div style="display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin-top:1rem;">' +
+        sorted.slice(0,3).map(function(p){return '<div style="text-align:center;"><div style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;color:'+({'realistic':'#1a5c9a','investigative':'#6a2a9a','artistic':'#8a3a5a','social':'#1a7a5a','enterprising':'#8a4a00','conventional':'#3a5a7a'}[p[0]]||'#f0c040')+'">'+p[1]+'%</div><div style="font-size:.65rem;color:rgba(192,216,240,.45);text-transform:uppercase;letter-spacing:.08em;">'+p[0]+'</div></div>';}).join('') +
+      '</div>' +
     '</div>' +
 
     '<div class="type-card fade-in">' +
@@ -1259,7 +1357,7 @@ function renderResultsFromData(data, resultId){
       '<div class="type-traits">' + ['Mission-focused','Reliable under pressure','Adaptable','High accountability','Self-disciplined','Team-oriented'].map(function(t){return '<span class="trait">'+t+'</span>';}).join('') + '</div>' +
     '</div>' +
 
-    '<div class="sec-lbl">Your 6 Dimension Scores</div>' +
+    '<div class="sec-lbl" style="display:flex;align-items:center;gap:.75rem;"><span>📊</span><span>Your 6 Personality Dimension Scores</span><div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div></div>' +
     '<div class="dim-bars">' + dimBars + '</div>' +
     '<div class="sec-lbl" style="display:flex;align-items:center;gap:.6rem">Blend Your Experience with Your Assessment <span id="blend-status-dot" style="width:10px;height:10px;border-radius:50%;background:#5a6a7a;flex-shrink:0;display:inline-block;"></span></div>' +
     '<div class="compare-wrap fade-in" id="compare-wrap">' +
@@ -1325,11 +1423,14 @@ function renderResultsFromData(data, resultId){
         '</div>' +
       '</div>' +
     '</div>' +
-    '<div class="sec-lbl">Your Career Matches — ' + topCareers.length + ' Roles Aligned to Your Profile</div>' +
-    '<div class="career-grid">' + careerCards + '</div>' +
+    '<div class="sec-lbl" style="display:flex;align-items:center;gap:.6rem;margin-top:1.75rem;">' +
+    '<span>🎯</span><span>Career Matches — ' + topCareers.length + ' Roles Aligned to Your Assessment</span>' +
+    '<div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>' +
+    '<span style="font-size:.65rem;color:rgba(192,216,240,.35);">Personality-based score · enhanced by profile below</span></div>' +
+    '<div class="career-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.85rem;margin-bottom:1.5rem;">' + careerCards + '</div>' +
     '<div class="sec-lbl">Your Military Strengths (Civilian Value)</div>' +
     '<div class="strength-grid">' + strengthCards + '</div>' +
-    '<div class="sec-lbl">Your Next 5 Steps</div>' +
+    '<div class="sec-lbl" style="display:flex;align-items:center;gap:.6rem;margin-top:1.75rem;"><span>⚡</span><span>Your Next 5 Steps</div>' +
     '<div class="steps">' + steps + '</div>' +
 
     '<div class="results-cta fade-in">' +
@@ -1411,36 +1512,138 @@ function runComparison(){
   var sorted = Object.entries(scores).sort(function(a,b){return b[1]-a[1];});
   var topDims = sorted.slice(0,3).map(function(p){return p[0] + ' (' + p[1] + '%)';}).join(', ');
 
-  var prompt = 'You are a veteran career counselor. A veteran has completed a RIASEC career personality assessment AND provided their military background. Cross-reference both to identify their best career matches.\n\n' +
-    'ASSESSMENT RESULTS (RIASEC scores):\n' + sorted.map(function(p){return p[0]+': '+p[1]+'%';}).join('\n') + '\n\n' +
-    'MILITARY BACKGROUND:\n' +
-    'MOS/Rate/AFSC: ' + (mos||'Not provided') + '\n' +
-    'Rank: ' + (rank||'Not provided') + '\n' +
-    'Years of Service: ' + (yos||'Not provided') + '\n' +
-    'Security Clearance: ' + clearance + '\n' +
-    'Key Duties/Skills: ' + (duties||'Not provided') + '\n' +
-    'Civilian Experience: ' + (civilian||'None') + '\n\n' +
-    'Return ONLY a JSON object with this exact structure — no markdown, no explanation outside the JSON:\n' +
+  // Build COMPREHENSIVE profile context — all MOS, all experiences, civilian + gov jobs
+  var fullProfileCtx = (function(){
+    var d;
+    try { d = JSON.parse(localStorage.getItem('vcb_profile') || 'null'); } catch(e) {}
+    if (!d) return profileContext ? profileContext() : "No profile data — assess based on assessment scores only.";
+
+    var lines = [];
+    var p = d.personal || {}, t = d.target || {};
+    var sk = d.skills || {};
+
+    if (p.name)       lines.push("Name: " + p.name);
+    if (p.location)   lines.push("Location: " + p.location);
+
+    // ALL military experiences (not just first)
+    var milExps = d.milExperiences || d.experiences || [];
+    if (milExps.length) {
+      lines.push("\n=== MILITARY BACKGROUND (" + milExps.length + " position" + (milExps.length>1?"s":"") + ") ===");
+      milExps.forEach(function(ex, i) {
+        lines.push("Position " + (i+1) + ":");
+        if (ex.branch)         lines.push("  Branch: " + ex.branch);
+        if (ex.rank)           lines.push("  Rank: " + ex.rank);
+        if (ex.mos)            lines.push("  MOS/Rate/AFSC: " + ex.mos + (ex.mosTitle ? " — " + ex.mosTitle : ""));
+        if (ex.tos)            lines.push("  Years of Service: " + ex.tos);
+        if (ex.clearanceLevel && ex.clearanceLevel !== "None")
+                               lines.push("  Security Clearance: " + ex.clearanceLevel);
+        if (ex.duties)         lines.push("  Key Duties: " + ex.duties);
+        if (ex.accomplishments) lines.push("  Accomplishments: " + ex.accomplishments);
+        if (ex.awards && ex.awards.length)
+                               lines.push("  Awards: " + (Array.isArray(ex.awards) ? ex.awards.join(", ") : ex.awards));
+        if (ex.unitType)       lines.push("  Unit Type: " + ex.unitType);
+        if (ex.deployments)    lines.push("  Deployments: " + ex.deployments);
+      });
+    }
+
+    // Civilian work history
+    var civExps = d.civilianExperiences || d.civExperiences || [];
+    if (civExps.length) {
+      lines.push("\n=== CIVILIAN WORK HISTORY (" + civExps.length + " position" + (civExps.length>1?"s":"") + ") ===");
+      civExps.forEach(function(ex, i) {
+        lines.push("Civilian Position " + (i+1) + ":");
+        if (ex.title)    lines.push("  Title: " + ex.title);
+        if (ex.employer) lines.push("  Employer: " + ex.employer);
+        if (ex.industry) lines.push("  Industry: " + ex.industry);
+        if (ex.years)    lines.push("  Duration: " + ex.years);
+        if (ex.duties)   lines.push("  Duties: " + ex.duties);
+      });
+    }
+
+    // Federal/government jobs
+    var fedExps = d.federalExperiences || d.govExperiences || [];
+    if (fedExps.length) {
+      lines.push("\n=== FEDERAL/GOVERNMENT EXPERIENCE ===");
+      fedExps.forEach(function(ex) {
+        if (ex.title)   lines.push("  Title: " + ex.title);
+        if (ex.agency)  lines.push("  Agency: " + ex.agency);
+        if (ex.gsGrade) lines.push("  GS Grade: " + ex.gsGrade);
+        if (ex.duties)  lines.push("  Duties: " + ex.duties);
+      });
+    }
+
+    // Skills
+    lines.push("\n=== SKILLS & CERTIFICATIONS ===");
+    if (sk.technical)    lines.push("Technical Skills: " + sk.technical);
+    if (sk.leadership)   lines.push("Leadership Skills: " + sk.leadership);
+    if (sk.languages)    lines.push("Languages: " + sk.languages);
+    if (sk.certs)        lines.push("Certifications Already Held: " + sk.certs);
+
+    // Education
+    var edu = d.education || {};
+    if (edu.degree || edu.school) {
+      lines.push("\n=== EDUCATION ===");
+      if (edu.degree) lines.push("Degree: " + edu.degree);
+      if (edu.school) lines.push("School: " + edu.school);
+      if (edu.major)  lines.push("Major: " + edu.major);
+      if (edu.gpa)    lines.push("GPA: " + edu.gpa);
+    }
+
+    // Target
+    lines.push("\n=== CAREER GOALS ===");
+    if (t.title)     lines.push("Target Role: " + t.title);
+    if (t.industry)  lines.push("Target Industry: " + t.industry);
+    if (t.keywords)  lines.push("Target Keywords: " + t.keywords);
+    if (t.interests) lines.push("Career Interests: " + t.interests);
+    if (t.openTo)    lines.push("Open To: " + t.openTo);
+
+    return lines.join("\n") || "Veteran — profile data incomplete. Base recommendations on assessment scores.";
+  })();
+
+  var prompt = 'You are a rigorous veteran career counselor doing a REAL career assessment — not a feel-good exercise. ' +
+    'A veteran has completed a 60-question RIASEC personality test and provided their full background. ' +
+    'Your job is to be HONEST and SPECIFIC. The results must reflect their ACTUAL scores and ACTUAL background — not generic suggestions.\n\n' +
+
+    'RIASEC SCORES (100 = max, these are their actual personality scores):\n' +
+    sorted.map(function(p){return p[0]+': '+p[1]+'% — '+({'R':'Realistic (hands-on, technical, practical)','I':'Investigative (analytical, research, problem-solving)','A':'Artistic (creative, expression, unstructured work)','S':'Social (helping, teaching, counseling people)','E':'Enterprising (leadership, persuasion, business, sales)','C':'Conventional (organization, data, systems, detail)'}[p[0]]||p[0]);}).join('\n') + '\n\n' +
+
+    'THEIR TOP 2 TYPES: ' + sorted[0][0] + ' (' + sorted[0][1] + '%) and ' + sorted[1][0] + ' (' + sorted[1][1] + '%)\n' +
+    'LOWEST TYPE: ' + sorted[sorted.length-1][0] + ' (' + sorted[sorted.length-1][1] + '%) — careers heavy in this type are likely a poor fit.\n\n' +
+
+    'COMPLETE MILITARY & CIVILIAN BACKGROUND:\n' + fullProfileCtx + '\n\n' +
+
+    'CRITICAL RULES FOR YOUR RESPONSE:\n' +
+    '1. CAREER DIVERSITY IS MANDATORY. Your 15 career suggestions MUST span at least 5 different industries. Do NOT suggest 5 healthcare jobs, or 5 IT jobs, or cluster around one field. Spread across: operations/logistics, technology, federal/government, business/finance, skilled trades, law enforcement/security, healthcare, education, entrepreneurship, and defense contracting as appropriate.\n' +
+    '2. SCORE THE MATCH HONESTLY. If their MOS was logistics (88M, 92A, etc.) and their top RIASEC is E+C — suggest Operations Manager, Supply Chain Director, Procurement Specialist, not just healthcare. If their MOS was medical — healthcare is appropriate. Match the actual background.\n' +
+    '3. REFERENCE THEIR ACTUAL MOS. Every "why" must specifically mention their MOS code or duties. Generic reasons like "military leadership experience" are NOT acceptable.\n' +
+    '4. BE REALISTIC ABOUT PAY. Use 2026 salary data. Senior NCO (E7-E9) with 15+ years = $75K-$120K realistic range. Junior enlisted (E1-E4) = $45K-$70K. Officers = $85K-$150K.\n' +
+    '5. FLAG MISMATCH HONESTLY. If a career sounds good but their low score in a key dimension (e.g., low S means avoid counseling-heavy roles) makes it a poor fit — say so.\n' +
+    '6. CLEARANCE = PREMIUM. If they have TS/SCI, at least 2 cleared contractor roles must appear in "strong" unless their background truly does not support it.\n\n' +
+
+    'Return ONLY valid JSON, no markdown fences, no text outside the JSON:\n' +
     '{\n' +
+    '  "summary": "2-3 sentence honest assessment of their overall career profile — what makes them stand out and what field best fits the intersection of their personality and experience",\n' +
     '  "strong": [\n' +
-    '    {"title":"Career Title","salary":"$XX,000-$XX,000","why":"1-2 sentences: WHY this role matches BOTH their assessment and experience specifically","tags":["tag1","tag2","tag3"]}\n' +
+    '    {"title":"Exact Job Title","salary":"$XX,000–$XX,000","industry":"Industry Name","why":"SPECIFIC reason citing their actual MOS/duties and how their top RIASEC scores support this","tags":["tag1","tag2","tag3"],"clearance":true_or_false}\n' +
     '  ],\n' +
     '  "good": [\n' +
-    '    {"title":"Career Title","salary":"$XX,000-$XX,000","why":"1-2 sentences","tags":["tag1","tag2"]}\n' +
+    '    {"title":"Exact Job Title","salary":"$XX,000–$XX,000","industry":"Industry Name","why":"Specific reason","tags":["tag1","tag2"],"clearance":false}\n' +
     '  ],\n' +
     '  "possible": [\n' +
-    '    {"title":"Career Title","salary":"$XX,000-$XX,000","why":"1-2 sentences","tags":["tag1"]}\n' +
-    '  ]\n' +
+    '    {"title":"Exact Job Title","salary":"$XX,000–$XX,000","industry":"Industry Name","why":"What training/cert is needed and why their scores still fit","tags":["tag1"],"clearance":false}\n' +
+    '  ],\n' +
+    '  "avoid": ["Career type 1 — reason why their scores/background make this a poor fit","Career type 2"]\n' +
     '}\n\n' +
-    'Rules:\n' +
-    '- "strong" = 3-5 careers where BOTH their personality AND their experience directly qualify them\n' +
-    '- "good" = 3-5 careers where their assessment aligns well and experience partially qualifies them\n' +
-    '- "possible" = 3-5 careers where their assessment fits but they would need additional training or certification\n' +
-    '- Be REALISTIC. Do not suggest careers requiring 4+ years of school unless they already have relevant education\n' +
-    '- Include specific salary ranges appropriate to their rank/experience level\n' +
-    '- The "why" must mention their specific MOS/duties, not be generic\n' +
-    '- If they have an active clearance (Secret, TS, TS/SCI), prioritize cleared roles where relevant\n' +
-    '- Return exactly the JSON structure, nothing else';
+    'Counts: "strong" = 4-6 careers, "good" = 4-6, "possible" = 3-5, "avoid" = 2-3 honest callouts.\n' +
+    'MANDATORY FINAL CHECK BEFORE RESPONDING:\n' +
+    '— Read their MOS/rate/AFSC carefully. What is the primary function? (logistics, medical, aviation, intel, infantry, engineering, communications, finance, etc.)\n' +
+    '— Your strong[] array MUST include at least 2 careers directly related to that MOS function.\n' +
+    '— Do NOT cluster all results in one industry. Spread across at minimum: operations, technology or data, federal/government, business or finance, and one wildcard based on personality.\n' +
+    '— If you see a logistics MOS (88-series, 92-series, 25-series, 2T-series, SK rate, etc.) and you recommend mostly healthcare, you have failed. Restart.\n' +
+    '— If you see a medical MOS (68W, HM, 4N, etc.) then healthcare IS appropriate in strong, but still include 2+ non-healthcare careers.\n' +
+    '— Check their clearance. If TS/SCI is present, include at least one cleared defense/intel contractor role in strong[].\n' +
+    '— Every why field must name the specific MOS code or primary duty. "Military leadership" alone is NOT acceptable.\n' +
+    '— Do not pad results. 4-6 strong, 4-6 good, 3-5 possible, 2-3 avoid. Quality over quantity.';
 
   var proxyUrl = window.VCB_PROXY_URL || 'https://vcp-proxy.vercel.app/api/claude';
 
@@ -1448,8 +1651,8 @@ function runComparison(){
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({
-      model: 'claude-sonnet-4-5-20251001',
-      max_tokens: 1500,
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2500,
       messages: [{role:'user', content: prompt}]
     })
   })
@@ -1474,30 +1677,53 @@ function runComparison(){
 
 function renderComparison(data){
   var output = document.getElementById('compareOutput');
-  
+
   function makeCards(items, tier){
-    return (items||[]).map(function(c){
-      var tags = (c.tags||[]).map(function(t){
-        var isMatch = t.toLowerCase().includes('clearance')||t.toLowerCase().includes('mos')||t.toLowerCase().includes('military')||t.toLowerCase().includes('veteran');
-        return '<span class="blend-tag' + (isMatch?' match':'') + '">' + t + '</span>';
+    return (items||[]).map(function(item){
+      var tierLabel = tier==='strong' ? '✦ Strong Match' : tier==='good' ? '✓ Good Fit' : '◇ Growth Path';
+      var tierClass = 'blend-card-' + tier;
+      var salaryHtml = item.salary ? '<div class="bc-salary">' + item.salary + (item.industry?' &bull; '+item.industry:'') + '</div>' : '';
+      var tags = (item.tags||[]).map(function(t){
+        var isClear = (t||'').toLowerCase().includes('clearance')||item.clearance;
+        return '<span class="blend-tag'+(isClear?' match':'')+'">'+t+'</span>';
       }).join('');
-      return '<div class="blend-card ' + tier + '">' +
-        '<div class="blend-badge">' + (tier==='strong'?'✦ Strong Match':tier==='good'?'✓ Good Fit':'◇ Growth Path') + '</div>' +
-        '<div class="blend-title">' + c.title + '</div>' +
-        '<div class="blend-salary">' + c.salary + '</div>' +
-        '<div class="blend-why">' + c.why + '</div>' +
-        '<div class="blend-tags">' + tags + '</div>' +
-      '</div>';
+      var clearBadge = item.clearance ? '<span class="bc-clear-badge">🔐 Clearance Premium</span>' : '';
+      return '<div class="blend-card '+tierClass+'">' +
+        '<div class="bc-tier-label">'+tierLabel+'</div>' +
+        '<div class="bc-title">'+item.title+'</div>' +
+        salaryHtml +
+        '<div class="bc-why">'+item.why+'</div>' +
+        (tags ? '<div class="blend-tags">'+tags+'</div>' : '') +
+        clearBadge +
+        '</div>';
     }).join('');
   }
 
+  var summaryHtml = data.summary ?
+    '<div class="bc-summary"><div class="bc-summary-label">📊 Your Career Profile Assessment</div>' +
+    '<p class="bc-summary-text">'+data.summary+'</p></div>' : '';
+
+  var avoidHtml = '';
+  if (data.avoid && data.avoid.length) {
+    avoidHtml = '<div class="bc-avoid-section">' +
+      '<div class="bc-section-head avoid">⚠️ Honest Reality Check — These May Not Be Your Best Fit</div>' +
+      '<div class="bc-avoid-grid">' +
+      data.avoid.map(function(a){
+        var parts = a.split(' — ');
+        return '<div class="bc-avoid-item"><strong>'+parts[0]+'</strong>'+(parts[1]?'<br><span class="bc-avoid-reason">'+parts[1]+'</span>':'')+'</div>';
+      }).join('') +
+      '</div></div>';
+  }
+
   output.innerHTML =
-    '<div class="cr-header" style="margin-top:.75rem">Strong Matches — Your Assessment + Experience Both Point Here</div>' +
+    summaryHtml +
+    '<div class="bc-section-head strong">✦ Strong Matches — Your Scores &amp; Background Both Point Here</div>' +
     '<div class="blend-grid">' + makeCards(data.strong,'strong') + '</div>' +
-    '<div class="cr-header" style="margin-top:1rem">Good Fits — Strong Personality Alignment, Resume Gets You In the Door</div>' +
+    '<div class="bc-section-head good">✓ Good Fits — Strong Personality Alignment, Experience Gets You In the Door</div>' +
     '<div class="blend-grid">' + makeCards(data.good,'good') + '</div>' +
-    '<div class="cr-header" style="margin-top:1rem">Growth Paths — Your Assessment Fits, Some Additional Training Needed</div>' +
-    '<div class="blend-grid">' + makeCards(data.possible,'possible') + '</div>';
+    '<div class="bc-section-head possible">◇ Growth Paths — Your Personality Fits, Some Additional Training Needed</div>' +
+    '<div class="blend-grid">' + makeCards(data.possible,'possible') + '</div>' +
+    avoidHtml;
 }
 
 </script>

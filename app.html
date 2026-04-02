@@ -47,13 +47,13 @@
   <script>
     try {
       const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
+        apiKey: "REPLACE_YOUR_FIREBASE_KEY",
+        authDomain: "veteran-career-builder.firebaseapp.com",
+        projectId: "veteran-career-builder",
+        storageBucket: "veteran-career-builder.firebasestorage.app",
+        messagingSenderId: "REPLACE_SENDER_ID",
+        appId: "REPLACE_APP_ID"
+      };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
       window.fbDb = firebase.firestore();
@@ -1369,31 +1369,69 @@ const UNIVERSITIES = [
 ];
 
 const RESUME_FORMATS = [
-  {id:"ats_chrono",label:"ATS Chronological",desc:"Most common. Reverse-order work history, ATS keyword-optimized. Best for online job applications."},
-  {id:"ats_combo",label:"ATS Combination",desc:"Blends skills summary and work history. Strong for veterans with diverse experience across multiple roles."},
-  {id:"traditional",label:"Traditional",desc:"Conservative black and white. Best for government, legal, finance, and formal industries."},
-  {id:"modern",label:"Modern Professional",desc:"Clean lines, subtle formatting accents. Great for corporate, tech, and private-sector roles."},
-  {id:"executive",label:"Executive",desc:"Leadership-focused. Emphasizes strategy, scope, achievements, and organizational impact. Best for O-5+ and senior NCOs."},
-  {id:"federal",label:"Federal / USAJobs",desc:"Detailed and comprehensive format required for federal government positions on USAJOBS. Much longer than a standard resume."},
-  {id:"harvard",label:"Harvard Style",desc:"Clean single-column, highly credible. Conservative and polished — strong for professional and academic roles."},
-  {id:"wharton",label:"Wharton / MBA Style",desc:"Business-oriented, achievement-heavy, results-driven with sharp formatting. Ideal for corporate and business leadership roles."},
-  {id:"minimalist",label:"Minimalist",desc:"Simple typography, generous white space, easy to scan. Great for professional roles where clarity matters most."},
-  {id:"creative",label:"Creative",desc:"Visual styling for design, media, branding, and creative industries. Not recommended for most veteran-to-civilian transitions."},
+  {id:"ats_chrono",label:"ATS Chronological",badge:"Most Common",desc:"Reverse-order work history, keyword-optimized for applicant tracking systems. Best for most online applications. Recommended for 90% of veteran transitions."},
+  {id:"ats_combo",label:"ATS Combination",badge:"Veterans Recommended",desc:"Opens with a skills summary block, then reverse-chronological experience. Ideal for veterans with diverse roles or pivoting careers — shows what you can do before where you did it."},
+  {id:"functional",label:"Functional (Skills-First)",badge:"Career Changers",desc:"Groups experience by skill category rather than timeline. Best if you have an employment gap, significant career pivot (e.g. infantry → healthcare), or want to downplay time between jobs."},
+  {id:"federal",label:"Federal / USAJobs",badge:"Gov Jobs",desc:"Detailed OPM-compliant format required for federal government jobs on USAJOBS. Much longer than a standard resume — includes hours/week, supervisor info, and detailed KSAs. Required for GS positions."},
+  {id:"executive",label:"Executive",badge:"O-5+ & Senior NCOs",desc:"Leadership-focused. Opens with an executive summary, core competencies grid, and career highlights. Best for O-5+ and senior NCOs targeting management and director-level civilian roles."},
+  {id:"traditional",label:"Traditional",badge:"Conservative Industries",desc:"Clean, conservative single-column. Best for law enforcement, government, legal, finance, and formal industries where simple clarity signals professionalism."},
+  {id:"modern",label:"Modern Professional",badge:"Corporate & Tech",desc:"Clean contemporary layout with subtle visual hierarchy. Great for corporate, tech, and private-sector roles where first impressions matter."},
+  {id:"harvard",label:"Harvard Style",badge:"Academic & Professional",desc:"Single-column, clean, highly credible. Conservative and polished — the same format used by Harvard MBA graduates. Strong for consulting, law, policy, and professional roles."},
+  {id:"wharton",label:"Wharton / MBA Style",badge:"Business Leadership",desc:"Achievement-heavy, results-driven with sharp formatting. Education listed first. Ideal for MBA programs, business leadership, and corporate strategy roles."},
+  {id:"minimalist",label:"Minimalist",badge:"Standout Clarity",desc:"Maximum white space, simple typography. Easy to scan in under 10 seconds. Great when you want your content to speak without competition from formatting."},
+  {id:"creative",label:"Creative",badge:"Design & Media",desc:"Visual layout for design, media, branding, and creative industries. Not recommended for most veteran-to-civilian transitions — choose ATS formats for most corporate roles."},
 ];
 
 
 const MOS_DATA = {
+  // ── ARMY ──────────────────────────────────────────────────────────────────
   "11A":{ title:"Infantry Officer", branch:"Army" },
   "11B":{ title:"Infantryman", branch:"Army" },
   "11C":{ title:"Indirect Fire Infantryman", branch:"Army" },
+  "11Z":{ title:"Infantry Senior Sergeant", branch:"Army" },
   "12A":{ title:"Engineer Officer", branch:"Army" },
   "12B":{ title:"Combat Engineer", branch:"Army" },
   "12C":{ title:"Bridge Crewmember", branch:"Army" },
+  "12D":{ title:"Diver", branch:"Army" },
+  "12N":{ title:"Horizontal Construction Engineer", branch:"Army" },
+  "12P":{ title:"Prime Power Production Specialist", branch:"Army" },
+  "12R":{ title:"Interior Electrician", branch:"Army" },
+  "12T":{ title:"Technical Engineer", branch:"Army" },
+  "12W":{ title:"Carpentry and Masonry Specialist", branch:"Army" },
+  "12Y":{ title:"Geospatial Engineer", branch:"Army" },
+  "12Z":{ title:"Combat Engineering Senior Sergeant", branch:"Army" },
   "13A":{ title:"Field Artillery Officer", branch:"Army" },
+  "13B":{ title:"Cannon Crewmember", branch:"Army" },
+  "13D":{ title:"Field Artillery Automated Tactical Data Systems Specialist", branch:"Army" },
   "13F":{ title:"Fire Support Specialist", branch:"Army" },
+  "13J":{ title:"Fire Control Specialist", branch:"Army" },
+  "13M":{ title:"Multiple Launch Rocket System Crew Member", branch:"Army" },
+  "13P":{ title:"MLRS Operations Fire Direction Specialist", branch:"Army" },
+  "13R":{ title:"Field Artillery Firefinder Radar Operator", branch:"Army" },
+  "13Z":{ title:"Field Artillery Senior Sergeant", branch:"Army" },
+  "14A":{ title:"Air Defense Artillery Officer", branch:"Army" },
+  "14G":{ title:"Air Defense Battle Management System Operator", branch:"Army" },
+  "14H":{ title:"Air Defense Enhanced Early Warning System Operator", branch:"Army" },
+  "14P":{ title:"Air and Missile Defense Crew Member", branch:"Army" },
+  "14S":{ title:"Avenger Crewmember", branch:"Army" },
   "14T":{ title:"Patriot MIM-104 Operator/Maintainer", branch:"Army" },
+  "14Z":{ title:"Air Defense Artillery Senior Sergeant", branch:"Army" },
   "15A":{ title:"Aviation Officer", branch:"Army" },
+  "15B":{ title:"Aircraft Powerplant Repairer", branch:"Army" },
+  "15D":{ title:"Aircraft Powertrain Repairer", branch:"Army" },
+  "15E":{ title:"Unmanned Aircraft Systems Repairer", branch:"Army" },
+  "15F":{ title:"Aircraft Electrician", branch:"Army" },
+  "15G":{ title:"Aircraft Structural Repairer", branch:"Army" },
+  "15H":{ title:"Aircraft Pneudraulics Repairer", branch:"Army" },
+  "15N":{ title:"Avionic Mechanic", branch:"Army" },
+  "15P":{ title:"Aviation Operations Specialist", branch:"Army" },
+  "15Q":{ title:"Air Traffic Control Operator", branch:"Army" },
+  "15R":{ title:"AH-64 Attack Helicopter Repairer", branch:"Army" },
+  "15S":{ title:"OH-58D Helicopter Repairer", branch:"Army" },
+  "15T":{ title:"UH-60 Helicopter Repairer", branch:"Army" },
+  "15U":{ title:"CH-47 Helicopter Repairer", branch:"Army" },
   "15W":{ title:"UAS Operator", branch:"Army" },
+  "15Y":{ title:"AH-64D Armament/Electrical/Avionic Systems Repairer", branch:"Army" },
   "18A":{ title:"Special Forces Officer", branch:"Army" },
   "18B":{ title:"Special Forces Weapons Sergeant", branch:"Army" },
   "18C":{ title:"Special Forces Engineer Sergeant", branch:"Army" },
@@ -1403,50 +1441,414 @@ const MOS_DATA = {
   "18Z":{ title:"Special Forces Senior Sergeant", branch:"Army" },
   "19D":{ title:"Cavalry Scout", branch:"Army" },
   "19K":{ title:"M1 Armor Crewman", branch:"Army" },
+  "19Z":{ title:"Armor Senior Sergeant", branch:"Army" },
+  "25A":{ title:"Signal Officer", branch:"Army" },
   "25B":{ title:"IT Specialist", branch:"Army" },
+  "25C":{ title:"Radio Operator-Maintainer", branch:"Army" },
+  "25D":{ title:"Cyber Network Defender", branch:"Army" },
+  "25E":{ title:"Electromagnetic Spectrum Manager", branch:"Army" },
+  "25L":{ title:"Cable Systems Installer-Maintainer", branch:"Army" },
+  "25M":{ title:"Multimedia Illustrator", branch:"Army" },
+  "25N":{ title:"Nodal Network Systems Operator-Maintainer", branch:"Army" },
+  "25P":{ title:"Microwave Systems Operator-Maintainer", branch:"Army" },
+  "25Q":{ title:"Multichannel Transmission Systems Operator-Maintainer", branch:"Army" },
+  "25R":{ title:"Visual Information Equipment Operator-Maintainer", branch:"Army" },
   "25S":{ title:"Satellite Communication Systems Operator", branch:"Army" },
   "25U":{ title:"Signal Support Systems Specialist", branch:"Army" },
+  "25V":{ title:"Combat Documentation/Production Specialist", branch:"Army" },
+  "25W":{ title:"Telecommunications Operations Chief", branch:"Army" },
+  "25X":{ title:"Chief Signal Officer", branch:"Army" },
+  "25Z":{ title:"Visual Information Operations Chief", branch:"Army" },
+  "27A":{ title:"Judge Advocate (JAG Officer)", branch:"Army" },
   "27D":{ title:"Paralegal Specialist", branch:"Army" },
+  "29E":{ title:"Electronic Warfare Specialist", branch:"Army" },
+  "31A":{ title:"Military Police Officer", branch:"Army" },
   "31B":{ title:"Military Police", branch:"Army" },
   "31D":{ title:"Criminal Investigation Agent", branch:"Army" },
+  "31E":{ title:"Internment/Resettlement Specialist", branch:"Army" },
+  "31K":{ title:"Military Working Dog Handler", branch:"Army" },
+  "35A":{ title:"Military Intelligence Officer", branch:"Army" },
   "35F":{ title:"Intelligence Analyst", branch:"Army" },
+  "35G":{ title:"Geospatial Intelligence Imagery Analyst", branch:"Army" },
+  "35H":{ title:"Collection Manager", branch:"Army" },
   "35L":{ title:"Counterintelligence Agent", branch:"Army" },
   "35M":{ title:"Human Intelligence Collector", branch:"Army" },
   "35N":{ title:"SIGINT Analyst", branch:"Army" },
   "35P":{ title:"Cryptologic Linguist", branch:"Army" },
+  "35Q":{ title:"Cryptologic Network Warfare Specialist", branch:"Army" },
+  "35S":{ title:"Signals Collector/Analyst", branch:"Army" },
+  "35T":{ title:"Military Intelligence Systems Maintainer/Integrator", branch:"Army" },
+  "36A":{ title:"Financial Management Officer", branch:"Army" },
+  "36B":{ title:"Financial Management Technician", branch:"Army" },
+  "37F":{ title:"Psychological Operations Specialist", branch:"Army" },
+  "38A":{ title:"Civil Affairs Officer", branch:"Army" },
+  "38B":{ title:"Civil Affairs Specialist", branch:"Army" },
   "42A":{ title:"Human Resources Specialist", branch:"Army" },
+  "42B":{ title:"Human Resources Officer", branch:"Army" },
+  "46A":{ title:"Public Affairs Officer", branch:"Army" },
+  "46Q":{ title:"Public Affairs Specialist", branch:"Army" },
+  "46R":{ title:"Public Affairs Broadcast Specialist", branch:"Army" },
+  "51A":{ title:"Acquisition Manager", branch:"Army" },
+  "51C":{ title:"Acquisition, Logistics and Technology Contracting", branch:"Army" },
+  "56A":{ title:"Chaplain", branch:"Army" },
   "56M":{ title:"Religious Affairs Specialist", branch:"Army" },
+  "60A":{ title:"Operational Medicine Officer", branch:"Army" },
+  "61A":{ title:"Internist", branch:"Army" },
+  "65D":{ title:"Physician Assistant", branch:"Army" },
+  "66B":{ title:"Women's Health Nurse Practitioner", branch:"Army" },
   "68A":{ title:"Biomedical Equipment Specialist", branch:"Army" },
+  "68B":{ title:"Orthopedic Specialist", branch:"Army" },
+  "68C":{ title:"Practical Nursing Specialist", branch:"Army" },
+  "68D":{ title:"Operating Room Specialist", branch:"Army" },
+  "68E":{ title:"Dental Specialist", branch:"Army" },
+  "68F":{ title:"Physical Therapy Specialist", branch:"Army" },
+  "68G":{ title:"Patient Administration Specialist", branch:"Army" },
+  "68H":{ title:"Optical Laboratory Specialist", branch:"Army" },
+  "68J":{ title:"Medical Logistics Specialist", branch:"Army" },
+  "68K":{ title:"Medical Laboratory Specialist", branch:"Army" },
+  "68M":{ title:"Nutrition Care Specialist", branch:"Army" },
+  "68P":{ title:"Radiology Specialist", branch:"Army" },
+  "68Q":{ title:"Pharmacy Specialist", branch:"Army" },
+  "68R":{ title:"Veterinary Food Inspection Specialist", branch:"Army" },
+  "68S":{ title:"Preventive Medicine Specialist", branch:"Army" },
+  "68T":{ title:"Animal Care Specialist", branch:"Army" },
+  "68V":{ title:"Respiratory Specialist", branch:"Army" },
   "68W":{ title:"Combat Medic Specialist", branch:"Army" },
+  "68X":{ title:"Behavioral Health Specialist", branch:"Army" },
+  "68Z":{ title:"Chief Medical NCO", branch:"Army" },
   "74D":{ title:"CBRN Specialist", branch:"Army" },
+  "79R":{ title:"Recruiter", branch:"Army" },
+  "79S":{ title:"Career Counselor", branch:"Army" },
+  "79T":{ title:"Recruiting and Retention NCO", branch:"Army" },
+  "88A":{ title:"Transportation Officer", branch:"Army" },
+  "88H":{ title:"Cargo Specialist", branch:"Army" },
+  "88K":{ title:"Watercraft Operator", branch:"Army" },
+  "88L":{ title:"Watercraft Engineer", branch:"Army" },
   "88M":{ title:"Motor Transport Operator", branch:"Army" },
+  "88N":{ title:"Transportation Management Coordinator", branch:"Army" },
+  "88Z":{ title:"Transportation Senior Sergeant", branch:"Army" },
+  "89A":{ title:"Ammunition Stock Control and Accounting Specialist", branch:"Army" },
   "89B":{ title:"Ammunition Specialist", branch:"Army" },
+  "89D":{ title:"Explosive Ordnance Disposal Specialist", branch:"Army" },
+  "91A":{ title:"Ordnance Officer", branch:"Army" },
   "91B":{ title:"Wheeled Vehicle Mechanic", branch:"Army" },
+  "91C":{ title:"Utilities Equipment Repairer", branch:"Army" },
+  "91D":{ title:"Power Generation Equipment Repairer", branch:"Army" },
+  "91E":{ title:"Allied Trade Specialist", branch:"Army" },
+  "91F":{ title:"Small Arms/Artillery Repairer", branch:"Army" },
+  "91H":{ title:"Track Vehicle Repairer", branch:"Army" },
+  "91J":{ title:"Quartermaster and Chemical Equipment Repairer", branch:"Army" },
+  "91L":{ title:"Construction Equipment Repairer", branch:"Army" },
+  "91M":{ title:"Bradley Fighting Vehicle Systems Maintainer", branch:"Army" },
+  "91P":{ title:"Artillery Mechanic", branch:"Army" },
+  "91S":{ title:"Stryker Systems Maintainer", branch:"Army" },
+  "91X":{ title:"Maintenance Senior Sergeant", branch:"Army" },
+  "91Z":{ title:"Mechanical Maintenance Supervisor", branch:"Army" },
   "92A":{ title:"Automated Logistical Specialist", branch:"Army" },
   "92F":{ title:"Petroleum Supply Specialist", branch:"Army" },
+  "92G":{ title:"Culinary Specialist", branch:"Army" },
+  "92L":{ title:"Petroleum Laboratory Specialist", branch:"Army" },
+  "92M":{ title:"Mortuary Affairs Specialist", branch:"Army" },
+  "92R":{ title:"Parachute Rigger", branch:"Army" },
+  "92S":{ title:"Shower/Laundry and Clothing Repair Specialist", branch:"Army" },
+  "92W":{ title:"Water Treatment Specialist", branch:"Army" },
+  "92Y":{ title:"Unit Supply Specialist", branch:"Army" },
+  "92Z":{ title:"Senior Logistician", branch:"Army" },
+  "94A":{ title:"Land Combat Electronic Missile System Repairer", branch:"Army" },
+  "94D":{ title:"Air Traffic Control Equipment Repairer", branch:"Army" },
+  "94E":{ title:"Radio and Communications Security Repairer", branch:"Army" },
+  "94F":{ title:"Computer Detection Systems Repairer", branch:"Army" },
+  "94H":{ title:"Test Measurement and Diagnostic Equipment Maintenance", branch:"Army" },
+  "94M":{ title:"Radar Repairer", branch:"Army" },
+  "94R":{ title:"Avionic and Survivability Equipment Repairer", branch:"Army" },
+  "94S":{ title:"PATRIOT System Repairer", branch:"Army" },
+  "94T":{ title:"AVENGER System Repairer", branch:"Army" },
+  "94W":{ title:"Electronic Maintenance Chief", branch:"Army" },
+  "94X":{ title:"Senior Electronic Maintenance Chief", branch:"Army" },
+  "94Z":{ title:"Senior Electronic Maintenance Chief WO", branch:"Army" },
+  // ── MARINE CORPS ──────────────────────────────────────────────────────────
+  "0111":{ title:"Administrative Specialist", branch:"Marine Corps" },
+  "0161":{ title:"Postal Clerk", branch:"Marine Corps" },
+  "0211":{ title:"Counterintelligence/HUMINT Specialist", branch:"Marine Corps" },
+  "0231":{ title:"Intelligence Specialist", branch:"Marine Corps" },
+  "0261":{ title:"Geographic Intelligence Specialist", branch:"Marine Corps" },
   "0311":{ title:"Rifleman", branch:"Marine Corps" },
   "0321":{ title:"Reconnaissance Marine", branch:"Marine Corps" },
+  "0331":{ title:"Machine Gunner", branch:"Marine Corps" },
   "0341":{ title:"Mortarman", branch:"Marine Corps" },
   "0351":{ title:"Infantry Assaultman", branch:"Marine Corps" },
+  "0352":{ title:"Antitank Missileman", branch:"Marine Corps" },
+  "0411":{ title:"Maintenance Management Specialist", branch:"Marine Corps" },
+  "0431":{ title:"Logistics/Embarkation Specialist", branch:"Marine Corps" },
+  "0451":{ title:"Airborne and Air Delivery Specialist", branch:"Marine Corps" },
+  "0481":{ title:"Landing Support Specialist", branch:"Marine Corps" },
+  "0511":{ title:"MAGTF Planning Specialist", branch:"Marine Corps" },
+  "0612":{ title:"Field Wireman", branch:"Marine Corps" },
   "0621":{ title:"Field Radio Operator", branch:"Marine Corps" },
-  "0211":{ title:"Counterintelligence/HUMINT Specialist", branch:"Marine Corps" },
-  "HM":{ title:"Hospital Corpsman", branch:"Navy" },
-  "IT":{ title:"Information Systems Technician", branch:"Navy" },
+  "0629":{ title:"Radio Chief", branch:"Marine Corps" },
+  "0631":{ title:"Network Administrator", branch:"Marine Corps" },
+  "0651":{ title:"Cyber Network Operator", branch:"Marine Corps" },
+  "0689":{ title:"Cyber Warfare Chief", branch:"Marine Corps" },
+  "1141":{ title:"Electrician", branch:"Marine Corps" },
+  "1142":{ title:"Electrical Equipment Repair Specialist", branch:"Marine Corps" },
+  "1161":{ title:"Refrigeration and Air Conditioning Mechanic", branch:"Marine Corps" },
+  "1371":{ title:"Combat Engineer", branch:"Marine Corps" },
+  "1391":{ title:"Bulk Fuel Specialist", branch:"Marine Corps" },
+  "2111":{ title:"Small Arms Repairer/Technician", branch:"Marine Corps" },
+  "2131":{ title:"Towed Artillery Systems Technician", branch:"Marine Corps" },
+  "2146":{ title:"Main Battle Tank Repairer/Technician", branch:"Marine Corps" },
+  "2147":{ title:"Light Armored Vehicle Repairer/Technician", branch:"Marine Corps" },
+  "2161":{ title:"Machinist", branch:"Marine Corps" },
+  "2171":{ title:"Electro-optical Ordnance Repairer", branch:"Marine Corps" },
+  "2311":{ title:"Ammunition Technician", branch:"Marine Corps" },
+  "2336":{ title:"EOD Technician", branch:"Marine Corps" },
+  "2621":{ title:"Signals Intelligence Analyst", branch:"Marine Corps" },
+  "2631":{ title:"Electronic Intelligence (ELINT) Analyst", branch:"Marine Corps" },
+  "2651":{ title:"Special Communications Signals Collection Analyst", branch:"Marine Corps" },
+  "2671":{ title:"Arabic Linguist", branch:"Marine Corps" },
+  "2676":{ title:"Pashto Linguist", branch:"Marine Corps" },
+  "3043":{ title:"Supply Administration and Operations", branch:"Marine Corps" },
+  "3051":{ title:"Warehouse Clerk", branch:"Marine Corps" },
+  "3052":{ title:"Packaging Specialist", branch:"Marine Corps" },
+  "3112":{ title:"Traffic Management Specialist", branch:"Marine Corps" },
+  "3212":{ title:"Water Support Technician", branch:"Marine Corps" },
+  "3381":{ title:"Food Service Specialist", branch:"Marine Corps" },
+  "4341":{ title:"Combat Correspondent", branch:"Marine Corps" },
+  "4421":{ title:"Legal Services Specialist", branch:"Marine Corps" },
+  "4612":{ title:"Combat Camera", branch:"Marine Corps" },
+  "5512":{ title:"Explosive Ordnance Disposal", branch:"Marine Corps" },
+  "5521":{ title:"Criminal Investigator", branch:"Marine Corps" },
+  "5811":{ title:"Military Police", branch:"Marine Corps" },
+  "5821":{ title:"Criminal Investigator", branch:"Marine Corps" },
+  "6042":{ title:"Aircraft Maintenance Administration Specialist", branch:"Marine Corps" },
+  "6046":{ title:"Aircraft Maintenance Chief", branch:"Marine Corps" },
+  "6072":{ title:"Aircraft Intermediate Maintenance", branch:"Marine Corps" },
+  "6113":{ title:"Fixed-Wing Aircraft Mechanic", branch:"Marine Corps" },
+  "6122":{ title:"Helicopter Power Plants Mechanic", branch:"Marine Corps" },
+  "6131":{ title:"Helicopter Dynamic Components Mechanic", branch:"Marine Corps" },
+  "6153":{ title:"Tiltrotor Mechanic", branch:"Marine Corps" },
+  "6173":{ title:"Helicopter Crew Chief", branch:"Marine Corps" },
+  "6218":{ title:"Fixed-Wing Avionics Technician", branch:"Marine Corps" },
+  "6312":{ title:"Fixed-Wing Aircraft Ordnance Systems Technician", branch:"Marine Corps" },
+  "7011":{ title:"Expeditionary Airfield Systems Technician", branch:"Marine Corps" },
+  "7041":{ title:"Aviation Operations Specialist", branch:"Marine Corps" },
+  "7212":{ title:"LAAD Gunner", branch:"Marine Corps" },
+  "7242":{ title:"Air Traffic Controller", branch:"Marine Corps" },
+  "7251":{ title:"Air Traffic Controller", branch:"Marine Corps" },
+  "8011":{ title:"Recruiting Officer", branch:"Marine Corps" },
+  "8821":{ title:"Recruiter", branch:"Marine Corps" },
+  // ── NAVY ──────────────────────────────────────────────────────────────────
+  "AB":{ title:"Aviation Boatswain's Mate", branch:"Navy" },
+  "AC":{ title:"Air Traffic Controller", branch:"Navy" },
+  "AD":{ title:"Aviation Machinist's Mate", branch:"Navy" },
+  "AE":{ title:"Aviation Electrician's Mate", branch:"Navy" },
+  "AG":{ title:"Aerographer's Mate", branch:"Navy" },
+  "AM":{ title:"Aviation Structural Mechanic", branch:"Navy" },
+  "AME":{ title:"Aviation Structural Mechanic (Safety Equipment)", branch:"Navy" },
+  "AO":{ title:"Aviation Ordnanceman", branch:"Navy" },
+  "AS":{ title:"Aviation Support Equipment Technician", branch:"Navy" },
+  "AT":{ title:"Aviation Electronics Technician", branch:"Navy" },
+  "AW":{ title:"Naval Aircrewman", branch:"Navy" },
+  "AZ":{ title:"Aviation Maintenance Administrationman", branch:"Navy" },
   "BM":{ title:"Boatswain's Mate", branch:"Navy" },
-  "CTI":{ title:"Cryptologic Technician Interpretive", branch:"Navy" },
-  "CTN":{ title:"Cryptologic Technician Networks", branch:"Navy" },
+  "BU":{ title:"Builder (Seabee)", branch:"Navy" },
+  "CE":{ title:"Construction Electrician (Seabee)", branch:"Navy" },
+  "CM":{ title:"Construction Mechanic (Seabee)", branch:"Navy" },
+  "CS":{ title:"Culinary Specialist", branch:"Navy" },
+  "CSS":{ title:"Culinary Specialist (Submarine)", branch:"Navy" },
+  "CTI":{ title:"Cryptologic Technician (Interpretive)", branch:"Navy" },
+  "CTM":{ title:"Cryptologic Technician (Maintenance)", branch:"Navy" },
+  "CTN":{ title:"Cryptologic Technician (Networks)", branch:"Navy" },
+  "CTR":{ title:"Cryptologic Technician (Collection)", branch:"Navy" },
+  "CTT":{ title:"Cryptologic Technician (Technical)", branch:"Navy" },
+  "DC":{ title:"Damage Controlman", branch:"Navy" },
+  "DK":{ title:"Disbursing Clerk", branch:"Navy" },
+  "DT":{ title:"Dental Technician", branch:"Navy" },
+  "EA":{ title:"Engineering Aide", branch:"Navy" },
+  "EM":{ title:"Electrician's Mate", branch:"Navy" },
+  "EMN":{ title:"Electrician's Mate (Nuclear)", branch:"Navy" },
+  "EN":{ title:"Engineman", branch:"Navy" },
+  "EO":{ title:"Equipment Operator (Seabee)", branch:"Navy" },
+  "EOD":{ title:"Explosive Ordnance Disposal Technician", branch:"Navy" },
+  "ET":{ title:"Electronics Technician", branch:"Navy" },
+  "ETN":{ title:"Electronics Technician (Nuclear)", branch:"Navy" },
+  "EW":{ title:"Electronic Warfare Technician", branch:"Navy" },
+  "FC":{ title:"Fire Controlman", branch:"Navy" },
+  "FT":{ title:"Fire Control Technician (Submarine)", branch:"Navy" },
+  "GM":{ title:"Gunner's Mate", branch:"Navy" },
+  "GS":{ title:"Gas Turbine Systems Technician", branch:"Navy" },
+  "HM":{ title:"Hospital Corpsman", branch:"Navy" },
+  "HT":{ title:"Hull Maintenance Technician", branch:"Navy" },
+  "IC":{ title:"Interior Communications Electrician", branch:"Navy" },
   "IS":{ title:"Intelligence Specialist", branch:"Navy" },
+  "IT":{ title:"Information Systems Technician", branch:"Navy" },
+  "LN":{ title:"Legalman", branch:"Navy" },
+  "LS":{ title:"Logistics Specialist", branch:"Navy" },
+  "LSS":{ title:"Logistics Specialist (Submarine)", branch:"Navy" },
   "MA":{ title:"Master-at-Arms", branch:"Navy" },
-  "EOD":{ title:"Explosive Ordnance Disposal", branch:"Navy" },
+  "MC":{ title:"Mass Communication Specialist", branch:"Navy" },
+  "MM":{ title:"Machinist's Mate", branch:"Navy" },
+  "MMN":{ title:"Machinist's Mate (Nuclear)", branch:"Navy" },
+  "MN":{ title:"Mineman", branch:"Navy" },
+  "MR":{ title:"Machinery Repairman", branch:"Navy" },
+  "MT":{ title:"Missile Technician", branch:"Navy" },
+  "MU":{ title:"Musician", branch:"Navy" },
+  "ND":{ title:"Navy Diver", branch:"Navy" },
+  "OS":{ title:"Operations Specialist", branch:"Navy" },
+  "PR":{ title:"Aircrew Survival Equipmentman", branch:"Navy" },
+  "PS":{ title:"Personnel Specialist", branch:"Navy" },
+  "QM":{ title:"Quartermaster", branch:"Navy" },
+  "RP":{ title:"Religious Program Specialist", branch:"Navy" },
+  "SB":{ title:"Special Warfare Boat Operator", branch:"Navy" },
+  "SH":{ title:"Ship's Serviceman", branch:"Navy" },
   "SO":{ title:"Special Warfare Operator (SEAL)", branch:"Navy" },
-  "1N0":{ title:"Operations Intelligence Analyst", branch:"Air Force" },
+  "STG":{ title:"Sonar Technician (Surface)", branch:"Navy" },
+  "STS":{ title:"Sonar Technician (Submarine)", branch:"Navy" },
+  "SW":{ title:"Steelworker (Seabee)", branch:"Navy" },
+  "TM":{ title:"Torpedoman's Mate", branch:"Navy" },
+  "UT":{ title:"Utilitiesman (Seabee)", branch:"Navy" },
+  "YN":{ title:"Yeoman", branch:"Navy" },
+  "YNS":{ title:"Yeoman (Submarine)", branch:"Navy" },
+  // ── AIR FORCE ─────────────────────────────────────────────────────────────
+  "1A0":{ title:"In-Flight Refueling", branch:"Air Force" },
+  "1A1":{ title:"Flight Engineer", branch:"Air Force" },
+  "1A2":{ title:"Aircraft Loadmaster", branch:"Air Force" },
+  "1A3":{ title:"Airborne Mission Systems Operator", branch:"Air Force" },
+  "1A6":{ title:"Flight Attendant", branch:"Air Force" },
+  "1A7":{ title:"Aerial Gunner", branch:"Air Force" },
+  "1A8":{ title:"Airborne Cryptologic Language Analyst", branch:"Air Force" },
+  "1B4":{ title:"Cyberspace Defense Operations", branch:"Air Force" },
+  "1C0":{ title:"Aviation Resource Management", branch:"Air Force" },
+  "1C1":{ title:"Air Traffic Control", branch:"Air Force" },
+  "1C2":{ title:"Combat Control", branch:"Air Force" },
+  "1C3":{ title:"Command Post", branch:"Air Force" },
+  "1C4":{ title:"Tactical Air Control Party", branch:"Air Force" },
+  "1C5":{ title:"Command and Control Battle Management", branch:"Air Force" },
+  "1C6":{ title:"Space Systems Operations", branch:"Air Force" },
+  "1C7":{ title:"Airfield Management", branch:"Air Force" },
+  "1C8":{ title:"Radar, Airfield and Weather Systems", branch:"Air Force" },
+  "1D7":{ title:"Cyberspace Systems Operations", branch:"Air Force" },
+  "1G0":{ title:"Intelligence", branch:"Air Force" },
+  "1N0":{ title:"Intelligence Analyst (Operations)", branch:"Air Force" },
+  "1N1":{ title:"Geospatial Intelligence", branch:"Air Force" },
+  "1N2":{ title:"Signals Intelligence Analysis", branch:"Air Force" },
+  "1N3":{ title:"Cryptologic Language Analyst", branch:"Air Force" },
   "1N4":{ title:"Fusion Analyst", branch:"Air Force" },
-  "3D0":{ title:"Cyberspace Operations", branch:"Air Force" },
+  "1P0":{ title:"Aircrew Flight Equipment", branch:"Air Force" },
+  "1S0":{ title:"Safety", branch:"Air Force" },
+  "1T0":{ title:"Survival, Evasion, Resistance, and Escape (SERE)", branch:"Air Force" },
+  "1T2":{ title:"Pararescue", branch:"Air Force" },
+  "1U0":{ title:"Remotely Piloted Aircraft Sensor Operator", branch:"Air Force" },
+  "1W0":{ title:"Weather", branch:"Air Force" },
+  "2A2":{ title:"Integrated Avionics", branch:"Air Force" },
+  "2A3":{ title:"A-10/F-15 Avionics Systems", branch:"Air Force" },
+  "2A5":{ title:"Aerospace Maintenance", branch:"Air Force" },
+  "2A6":{ title:"Aerospace Propulsion", branch:"Air Force" },
+  "2A7":{ title:"Aircraft Fuel Systems", branch:"Air Force" },
+  "2A8":{ title:"Mobility Air Forces Aircraft Maintenance", branch:"Air Force" },
+  "2A9":{ title:"Bomber/Special Integrated Communication/Navigation Systems", branch:"Air Force" },
+  "2F0":{ title:"Fuels", branch:"Air Force" },
+  "2G0":{ title:"Logistics Plans", branch:"Air Force" },
+  "2M0":{ title:"Missile and Space Systems Electronic Maintenance", branch:"Air Force" },
+  "2P0":{ title:"Precision Measurement Equipment Laboratory", branch:"Air Force" },
+  "2R0":{ title:"Maintenance Management Analysis", branch:"Air Force" },
+  "2S0":{ title:"Material Management", branch:"Air Force" },
+  "2T0":{ title:"Traffic Management", branch:"Air Force" },
+  "2T1":{ title:"Vehicle Operations", branch:"Air Force" },
   "2T2":{ title:"Air Transportation", branch:"Air Force" },
+  "2T3":{ title:"Vehicle and Vehicular Equipment Maintenance", branch:"Air Force" },
+  "2W0":{ title:"Munitions Systems", branch:"Air Force" },
+  "2W1":{ title:"Nuclear Weapons", branch:"Air Force" },
+  "3D0":{ title:"Cyberspace Operations", branch:"Air Force" },
+  "3D1":{ title:"Client Systems", branch:"Air Force" },
+  "3E0":{ title:"Electrical Systems", branch:"Air Force" },
+  "3E1":{ title:"Heating, Ventilation, Air Conditioning (HVAC)", branch:"Air Force" },
+  "3E2":{ title:"Pavements and Construction Equipment", branch:"Air Force" },
+  "3E3":{ title:"Structural", branch:"Air Force" },
+  "3E4":{ title:"Utilities Systems", branch:"Air Force" },
+  "3E5":{ title:"Engineering", branch:"Air Force" },
+  "3E6":{ title:"Operations Management", branch:"Air Force" },
+  "3E7":{ title:"Fire Protection", branch:"Air Force" },
+  "3E8":{ title:"Explosive Ordnance Disposal", branch:"Air Force" },
+  "3E9":{ title:"Emergency Management", branch:"Air Force" },
+  "3N0":{ title:"Public Affairs", branch:"Air Force" },
+  "3P0":{ title:"Security Forces", branch:"Air Force" },
+  "3S0":{ title:"Personnel", branch:"Air Force" },
+  "3S2":{ title:"Education and Training", branch:"Air Force" },
+  "3S3":{ title:"Manpower", branch:"Air Force" },
+  "4A0":{ title:"Health Services Management", branch:"Air Force" },
+  "4B0":{ title:"Bioenvironmental Engineering", branch:"Air Force" },
+  "4C0":{ title:"Mental Health", branch:"Air Force" },
+  "4D0":{ title:"Diet Therapy", branch:"Air Force" },
+  "4E0":{ title:"Public Health", branch:"Air Force" },
+  "4H0":{ title:"Cardiopulmonary Laboratory", branch:"Air Force" },
+  "4J0":{ title:"Physical Medicine", branch:"Air Force" },
+  "4M0":{ title:"Aerospace and Operational Physiology", branch:"Air Force" },
   "4N0":{ title:"Aerospace Medical Service", branch:"Air Force" },
+  "4P0":{ title:"Pharmacy", branch:"Air Force" },
+  "4R0":{ title:"Diagnostic Imaging", branch:"Air Force" },
+  "4T0":{ title:"Medical Laboratory", branch:"Air Force" },
+  "4V0":{ title:"Optometry", branch:"Air Force" },
+  "4Y0":{ title:"Dental Assistant", branch:"Air Force" },
+  "5J0":{ title:"Paralegal", branch:"Air Force" },
+  "5R0":{ title:"Chaplain Assistant", branch:"Air Force" },
   "6C0":{ title:"Contracting", branch:"Air Force" },
+  "6F0":{ title:"Financial Management and Comptroller", branch:"Air Force" },
+  "6S0":{ title:"Special Duty Assignment Pay", branch:"Air Force" },
   "7S0":{ title:"Special Investigations", branch:"Air Force" },
+  "8A100":{ title:"Developmental Education", branch:"Air Force" },
+  "8B000":{ title:"Military Training Instructor", branch:"Air Force" },
+  "8G000":{ title:"Honor Guard", branch:"Air Force" },
+  "8R000":{ title:"Recruiter", branch:"Air Force" },
+  // ── COAST GUARD ──────────────────────────────────────────────────────────
+  "AET":{ title:"Aviation Electrical Technician", branch:"Coast Guard" },
+  "AMT":{ title:"Aviation Maintenance Technician", branch:"Coast Guard" },
+  "AST":{ title:"Aviation Survival Technician (Rescue Swimmer)", branch:"Coast Guard" },
+  "BM":{ title:"Boatswain's Mate", branch:"Coast Guard" },
+  "CS":{ title:"Culinary Specialist", branch:"Coast Guard" },
+  "DC":{ title:"Damage Controlman", branch:"Coast Guard" },
+  "ELC":{ title:"Electrician's Mate", branch:"Coast Guard" },
+  "EM":{ title:"Electrician's Mate", branch:"Coast Guard" },
+  "ET":{ title:"Electronics Technician", branch:"Coast Guard" },
+  "GM":{ title:"Gunner's Mate", branch:"Coast Guard" },
+  "HS":{ title:"Health Services Technician", branch:"Coast Guard" },
+  "IS":{ title:"Intelligence Specialist", branch:"Coast Guard" },
+  "IT":{ title:"Information Systems Technician", branch:"Coast Guard" },
+  "IV":{ title:"Marine Science Technician", branch:"Coast Guard" },
+  "MA":{ title:"Maritime Enforcement Specialist", branch:"Coast Guard" },
+  "ME":{ title:"Maritime Enforcement Specialist", branch:"Coast Guard" },
+  "MK":{ title:"Machinery Technician", branch:"Coast Guard" },
+  "MST":{ title:"Marine Science Technician", branch:"Coast Guard" },
+  "MSD":{ title:"Musician", branch:"Coast Guard" },
+  "OS":{ title:"Operations Specialist", branch:"Coast Guard" },
+  "PA":{ title:"Public Affairs Specialist", branch:"Coast Guard" },
+  "PS":{ title:"Personnel Specialist", branch:"Coast Guard" },
+  "SK":{ title:"Storekeeper", branch:"Coast Guard" },
+  "YN":{ title:"Yeoman", branch:"Coast Guard" },
+  // ── SPACE FORCE ───────────────────────────────────────────────────────────
+  "1C6X1":{ title:"Space Systems Operations (Missile Warning)", branch:"Space Force" },
+  "1C6X2":{ title:"Space Systems Operations (Space Control)", branch:"Space Force" },
+  "1C6X3":{ title:"Space Systems Operations (Satellite)", branch:"Space Force" },
+  "1C6X4":{ title:"Space Systems Operations (Electronic Warfare)", branch:"Space Force" },
+  "1N0X1":{ title:"Operations Intelligence", branch:"Space Force" },
+  "1N4X1":{ title:"Fusion Analyst", branch:"Space Force" },
+  "2M0X1":{ title:"Missile and Space Systems Electronic Maintenance", branch:"Space Force" },
+  "2M0X2":{ title:"Missile and Space Systems Maintenance", branch:"Space Force" },
+  "3D0X1":{ title:"Cyberspace Operations", branch:"Space Force" },
+  "3D1X1":{ title:"Client Systems", branch:"Space Force" },
+  "6C0X1":{ title:"Contracting", branch:"Space Force" },
+  "6F0X1":{ title:"Financial Management", branch:"Space Force" },
 };
+
+// ── BRANCH-FILTERED MOS LOOKUP ──────────────────────────────────────────────
+// Groups all codes by branch for the searchable dropdown
+function getMosByBranch(branch) {
+  return Object.entries(MOS_DATA)
+    .filter(([code, data]) => data.branch === branch)
+    .map(([code, data]) => ({ code, title: data.title }))
+    .sort((a, b) => a.code.localeCompare(b.code));
+}
+
 
 // ─── STYLES ──────────────────────────────────────────────────────────────────
 const css = `
@@ -1583,12 +1985,13 @@ body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-
 @keyframes sp{to{transform:rotate(360deg)}}
 .save-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:.65rem 1.5rem;border-radius:24px;font-size:.85rem;z-index:9999;box-shadow:0 4px 20px rgba(26,58,107,.3);}
 .api-err{background:#fff5f5;border:1px solid #fcd0d0;border-left:4px solid var(--red);color:#900;border-radius:var(--radius-sm);padding:.65rem 1rem;font-size:.83rem;margin:.5rem 0;}
-.format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:.65rem;margin-bottom:.85rem;}
+.format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:.55rem;margin-bottom:.85rem;}
 .format-card{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:.75rem .9rem;cursor:pointer;transition:all .2s;background:#fff;}
 .format-card:hover{border-color:var(--navy);box-shadow:var(--shadow);}
 .format-card.selected{border-color:var(--gold);background:linear-gradient(135deg,#fffbeb,#fff8d8);box-shadow:0 0 0 3px rgba(200,150,10,.15);}
-.format-card h4{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:.2rem;}
+.format-card h4{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:.2rem;margin-top:.15rem;}
 .format-card p{font-size:.72rem;color:var(--slate);line-height:1.4;}
+.format-card.selected .format-card-badge{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3);color:#fff;}
 .prof-hero{background:linear-gradient(135deg,#0a1628,#1a3a6b);color:#fff;border-radius:var(--radius);padding:1.4rem 1.6rem;margin-bottom:1.1rem;box-shadow:0 4px 20px rgba(26,58,107,.2);}
 .qual-chip{display:inline-flex;align-items:center;gap:.3rem;background:linear-gradient(135deg,#eef3fa,#e8eef8);border:1px solid #b0c4da;border-radius:20px;padding:.25rem .6rem;font-size:.75rem;color:var(--navy);}
 .qual-chip button{background:transparent;border:none;color:var(--red);cursor:pointer;font-size:.85rem;padding:0 .1rem;}
@@ -2726,7 +3129,7 @@ function CareerTab(props) {
             {loading.careers?"Analyzing Your Full Qualifications Profile...":"🔍  Find My Best Career Matches"}
           </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock All 8 AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
                 )}
       
         {loading.careers&&<div className="loading"><div className="spin"/><span>Analyzing your qualifications and finding career matches...</span></div>}
@@ -3147,7 +3550,7 @@ function MyProfileSaved(props) {
         </div>
       ):(
         <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>
-          ⭐ Subscribe — $15/mo · All 8 Tools
+          ⭐ Subscribe — $15/mo · All 16 AI Tools
         </button>
       )}
       <button className="btn-sec" onClick={handleSaveProfile}>💾 Save All Progress</button>
@@ -4007,6 +4410,7 @@ Use this exact structure:
       const formatInstructions = {
         ats_chrono: "ATS CHRONOLOGICAL FORMAT: Simple clean layout. Standard section headers (Summary, Experience, Education, Skills, Certifications). Reverse chronological work history. No tables, no text boxes, no columns. Keyword-rich. ATS-safe fonts and structure.",
         ats_combo: "ATS COMBINATION FORMAT: Open with a Skills Summary section listing 8-10 core competencies as keywords. Then reverse-chronological experience. Then education. ATS-optimized throughout with no tables or columns.",
+        functional: "FUNCTIONAL (SKILLS-FIRST) FORMAT: Section order: 1) Professional Profile (3 sentences), 2) Core Competencies (10-12 keywords), 3) Functional Skill Groups — create 2-3 sections named after skill categories (Leadership & Management, Technical Operations, Medical/Healthcare, etc.) with 3-4 bullets each, 4) Employment History (brief: title, org, dates only — no bullets), 5) Education. This format de-emphasizes employment gaps and career pivots by leading with what the veteran CAN DO.",
         traditional: "TRADITIONAL FORMAT: Conservative black and white. Clean serif-style formatting. Standard sections. No color, no design elements. Appropriate for government, legal, and formal industries.",
         modern: "MODERN PROFESSIONAL FORMAT: Clean contemporary layout. Use subtle section dividers (——). Bold role titles. Clean hierarchy. Professional but polished. Suitable for corporate and private sector.",
         executive: "EXECUTIVE FORMAT: Open with a strong executive profile paragraph. Follow with Core Competencies as two columns of keywords. Then Career Highlights with 3-4 major achievements with metrics. Then abbreviated experience. Emphasize leadership scope, P&L, team size, and strategic impact.",
@@ -4258,7 +4662,7 @@ Return this exact JSON structure:
 
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
 
-  const TABS = ["Profile & Qualifications","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","My Profile"];
+  const TABS = ["My Service Record","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Saved Work"];
   const AI_TABS = [2,3,4]; // tabs that are AI-powered tools
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
   const DI = "Defense/Intel";
@@ -4288,7 +4692,7 @@ Return this exact JSON structure:
                   <div style={{textAlign:"center",marginBottom:".4rem"}}>
                     <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"3rem",color:"#1a3a6b",lineHeight:1}}>$15</div>
                     <div style={{fontSize:".85rem",fontWeight:700,color:"#1a3a6b",marginTop:".2rem"}}>Monthly Subscription</div>
-                    <div style={{fontSize:".78rem",color:"#5a7090",marginTop:".15rem"}}>$15/month — all 8 AI tools</div>
+                    <div style={{fontSize:".78rem",color:"#5a7090",marginTop:".15rem"}}>$15/month — 16 AI tools</div>
                   </div>
 
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".3rem .8rem",textAlign:"left",fontSize:".78rem",color:"#2a4a6a"}}>
@@ -4333,7 +4737,7 @@ Return this exact JSON structure:
                   Subscribe Now — $15/mo →
                 </button>
                 <div style={{textAlign:"center",fontSize:".72rem",color:"#8aa0b8",margin:"-.1rem 0 .2rem"}}>
-                  $15/month · all 8 AI tools · cancel anytime
+                  $15/month · 16 AI tools · cancel anytime
                 </div>
                 <div style={{marginTop:".85rem",textAlign:"center"}}>
                   <button
@@ -4684,10 +5088,70 @@ Return this exact JSON structure:
                     <div className="g3">
                       <div className="field">
                         <label>Primary MOS / Rate / AFSC</label>
-                        <input placeholder="e.g. 11B, 68W, HM, 3D0" value={exp.mos}
-                          onChange={e=>upMilExp(exp.id,"mos",e.target.value.toUpperCase())}/>
-                        {exp.mosTitle&&<span className="mos-pill">↳ {exp.mosTitle}</span>}
-                        <span className="hint">Don't know the code? Type your job title.</span>
+                        <div style={{position:"relative"}}>
+                          <input
+                            placeholder="Type code (11B, HM, 3D0...) or job title"
+                            value={exp.mos}
+                            onChange={e=>{
+                              const val = e.target.value.toUpperCase();
+                              upMilExp(exp.id,"mos",val);
+                            }}
+                            style={{paddingRight:"2.5rem"}}
+                          />
+                          {exp.mosTitle&&(
+                            <span className="mos-pill" style={{display:"block",marginTop:".3rem"}}>
+                              ✓ {exp.mosTitle}
+                            </span>
+                          )}
+                        </div>
+                        <span className="hint">
+                          Type your code above — it auto-fills the title. Or browse by branch:
+                        </span>
+                        <details style={{marginTop:".35rem",border:"1px solid #d0dae8",borderRadius:"6px",background:"#fafcff"}}>
+                          <summary style={{padding:".4rem .75rem",cursor:"pointer",fontSize:".82rem",fontWeight:600,color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                            Browse {exp.branch} {exp.branch==="Navy"?"Rates":exp.branch==="Air Force"||exp.branch==="Space Force"?"AFSCs":"MOS codes"} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{getMosByBranch(exp.branch).length} codes ›</span>
+                          </summary>
+                          <div style={{padding:".35rem .6rem .5rem"}}>
+                            <input
+                              placeholder={`Search ${exp.branch} codes...`}
+                              style={{width:"100%",padding:".35rem .6rem",border:"1px solid #c8d4e4",borderRadius:"4px",fontSize:".82rem",marginBottom:".4rem",boxSizing:"border-box"}}
+                              onChange={e=>{
+                                const q=e.target.value.toLowerCase();
+                                const items=document.querySelectorAll(`.mos-lookup-item-${exp.id}`);
+                                items.forEach(item=>{
+                                  item.style.display=(item.dataset.code.toLowerCase().includes(q)||item.dataset.title.toLowerCase().includes(q))?"flex":"none";
+                                });
+                              }}
+                            />
+                            <div style={{maxHeight:"160px",overflowY:"auto",display:"flex",flexWrap:"wrap",gap:".25rem"}}>
+                              {getMosByBranch(exp.branch).map(m=>(
+                                <button
+                                  key={m.code}
+                                  className={`mos-lookup-item-${exp.id}`}
+                                  data-code={m.code}
+                                  data-title={m.title}
+                                  onClick={()=>upMilExp(exp.id,"mos",m.code)}
+                                  style={{
+                                    background:exp.mos===m.code?"#1a3a6b":"#eef2f8",
+                                    color:exp.mos===m.code?"#fff":"#1a3a6b",
+                                    border:"1px solid",
+                                    borderColor:exp.mos===m.code?"#1a3a6b":"#c0d0e4",
+                                    borderRadius:"4px",
+                                    padding:".2rem .5rem",
+                                    fontSize:".75rem",
+                                    cursor:"pointer",
+                                    display:"flex",
+                                    alignItems:"center",
+                                    gap:".3rem",
+                                    textAlign:"left"
+                                  }}>
+                                  <strong>{m.code}</strong>
+                                  <span style={{color:exp.mos===m.code?"rgba(255,255,255,.8)":"#5a7090",fontSize:".7rem"}}>{m.title.slice(0,28)}{m.title.length>28?"...":""}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </details>
                       </div>
                       <div className="field">
                         <label>Total Time in Service (TOS)</label>
@@ -5517,16 +5981,17 @@ Return this exact JSON structure:
                   {RESUME_FORMATS.map(f=>(
                     <div key={f.id} className={"format-card "+(resumeFormat===f.id?"selected":"")} onClick={()=>{
                           setResumeFormat(f.id);
-                          const tmplMap={"ats_chrono":"ats_chrono","ats_combo":"ats_combo","traditional":"traditional","modern":"modern","executive":"executive","federal":"federal","harvard":"harvard","wharton":"wharton","minimalist":"minimalist","creative":"modern"};
-                          setResumeTemplate(tmplMap[f.id]||"modern");
+                          const tmplMap={"ats_chrono":"ats_chrono","ats_combo":"ats_combo","functional":"ats_combo","traditional":"traditional","modern":"modern","executive":"executive","federal":"federal","harvard":"harvard","wharton":"wharton","minimalist":"minimalist","creative":"modern"};
+                          setResumeTemplate(tmplMap[f.id]||"ats_chrono");
                         }}>
+                      {f.badge&&<div style={{display:"inline-block",background:resumeFormat===f.id?"rgba(255,255,255,.2)":"rgba(26,58,107,.1)",border:"1px solid",borderColor:resumeFormat===f.id?"rgba(255,255,255,.35)":"rgba(26,58,107,.2)",borderRadius:"20px",padding:".08rem .45rem",fontSize:".62rem",fontWeight:700,color:resumeFormat===f.id?"#fff":"#1a3a6b",letterSpacing:".05em",marginBottom:".3rem"}}>{f.badge}</div>}
                       <h4>{f.label}</h4>
                       <p>{f.desc}</p>
                     </div>
                   ))}
                 </div>
-                <div style={{fontSize:".78rem",color:"var(--dim)",marginTop:".25rem",fontStyle:"italic"}}>
-                  💡 For most veteran transitions: <strong style={{color:"var(--gold-light)"}}>ATS Chronological</strong>, <strong style={{color:"var(--gold-light)"}}>ATS Combination</strong>, or <strong style={{color:"var(--gold-light)"}}>Federal/USAJobs</strong> are the strongest choices.
+                <div style={{fontSize:".78rem",color:"var(--dim)",marginTop:".35rem",fontStyle:"italic",lineHeight:1.65}}>
+                  💡 <strong style={{fontStyle:"normal"}}>Not sure which to pick?</strong> Use <strong style={{color:"var(--gold-light)",fontStyle:"normal"}}>ATS Chronological</strong> for most jobs · <strong style={{color:"var(--gold-light)",fontStyle:"normal"}}>Federal</strong> for USAJOBS · <strong style={{color:"var(--gold-light)",fontStyle:"normal"}}>Functional</strong> if pivoting careers or have a gap · <strong style={{color:"var(--gold-light)",fontStyle:"normal"}}>Executive</strong> if you led organizations of 100+ people
                 </div>
                 <div style={{marginTop:".75rem",padding:".75rem",background:"#f8fafc",border:"1px solid #e0e8f0",borderRadius:"6px",display:"flex",alignItems:"center",gap:".75rem"}}>
                   <input type="checkbox" id="includeClearance" checked={includeClearance} onChange={e=>setIncludeClearance(e.target.checked)} style={{width:"auto",cursor:"pointer"}}/>
@@ -5543,7 +6008,7 @@ Return this exact JSON structure:
                 {loading.resume?"Crafting Your Resume...":`📄  Generate My ${(RESUME_FORMATS.find(f=>f.id===resumeFormat) ? RESUME_FORMATS.find(f=>f.id===resumeFormat).label : "Professional")||"Professional"} Resume`}
               </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock All 8 AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
                 )}
             {loading.resume&&<div className="loading"><div className="spin"/><span>Generating your resume — this may take 15-30 seconds...</span></div>}
             {resume&&!loading.resume&&(
@@ -5552,8 +6017,11 @@ Return this exact JSON structure:
 
 
                   <div style={{background:"#f0f2f8",borderBottom:"1px solid #d0d8e8",padding:".65rem 1rem",display:"flex",gap:".4rem",flexWrap:"wrap",alignItems:"center"}}>
-                    <span style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#3a5070",marginRight:".2rem"}}>Preview Style:</span>
-                    {[{id:"ats_chrono",l:"ATS Chrono"},{id:"ats_combo",l:"ATS Combo"},{id:"traditional",l:"Traditional"},{id:"modern",l:"Modern"},{id:"classic",l:"Classic"},{id:"executive",l:"Executive"},{id:"federal",l:"Federal"},{id:"harvard",l:"Harvard"},{id:"wharton",l:"Wharton"},{id:"minimalist",l:"Minimalist"}].map(t=>(
+                    <div style={{marginRight:".4rem"}}>
+                      <span style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#3a5070"}}>Visual Style:</span>
+                      <span style={{fontSize:".65rem",color:"#8aa0b8",marginLeft:".3rem",fontStyle:"italic"}}>changes appearance only — re-generate to change content format</span>
+                    </div>
+                    {[{id:"ats_chrono",l:"ATS Chrono"},{id:"ats_combo",l:"ATS Combo"},{id:"functional",l:"Functional"},{id:"traditional",l:"Traditional"},{id:"modern",l:"Modern"},{id:"classic",l:"Classic"},{id:"executive",l:"Executive"},{id:"federal",l:"Federal"},{id:"harvard",l:"Harvard"},{id:"wharton",l:"Wharton"},{id:"minimalist",l:"Minimalist"}].map(t=>(
                       <button key={t.id} onClick={()=>setResumeTemplate(t.id)}
                         style={{padding:".28rem .75rem",borderRadius:"3px",border:"1.5px solid",fontSize:".74rem",cursor:"pointer",fontWeight:resumeTemplate===t.id?700:400,
                           background:resumeTemplate===t.id?"#1a3a6b":"#fff",
@@ -5939,6 +6407,55 @@ Return this exact JSON structure:
 
                       </div>
                     
+
+
+                        {resumeTemplate==="functional"&&(
+                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#000",padding:"1.5rem 2rem",lineHeight:1.45}}>
+                            <div style={{textAlign:"center",marginBottom:"10pt"}}>
+                              <div style={{fontSize:"15pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".04em"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"9pt",color:"#333",marginTop:"3pt"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",fontWeight:700,color:"#1a3a6b",marginTop:"2pt"}}>{resumeData.clearance}</div>}
+                            </div>
+                            {resumeData.summary&&(
+                              <div style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"2px solid #1a3a6b"}}>
+                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"3pt"}}>Professional Profile</div>
+                                <div style={{fontSize:"9.5pt",lineHeight:1.65}}>{resumeData.summary}</div>
+                              </div>
+                            )}
+                            <div style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"1px solid #ddd"}}>
+                              <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"6pt"}}>Core Competencies</div>
+                              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"3pt"}}>
+                                {(resumeData.skills||[]).map((s,i)=>(<div key={i} style={{fontSize:"9pt",padding:"2pt 4pt",background:"#f0f4fa",border:"1px solid #d0dcea"}}>&#9632; {s}</div>))}
+                              </div>
+                            </div>
+                            {["Leadership & Management","Technical Skills","Operations & Logistics","Intelligence & Analysis","Medical & Healthcare","Training & Education"].filter(cat=>(resumeData.experience||[]).some(()=>true)).slice(0,1).map(()=>(
+                              <div key="exp" style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"1px solid #ddd"}}>
+                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"6pt"}}>Relevant Experience</div>
+                                {(resumeData.experience||[]).map((job,i)=>(
+                                  <div key={i} style={{marginBottom:"7pt"}}>
+                                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+                                      <span style={{fontWeight:700,fontSize:"10pt"}}>{job.title}</span>
+                                      <span style={{fontSize:"8.5pt",color:"#555"}}>{job.dates}</span>
+                                    </div>
+                                    <div style={{fontStyle:"italic",fontSize:"9pt",color:"#444",marginBottom:"3pt"}}>{job.employer}</div>
+                                    {(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",paddingLeft:"10pt",marginBottom:"2pt",lineHeight:1.55}}>&#8226; {b}</div>))}
+                                  </div>
+                                ))}
+                              </div>
+                            ))}
+                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem"}}>
+                              <div>
+                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"4pt",borderBottom:"1px solid #ddd",paddingBottom:"2pt"}}>Education & Training</div>
+                                {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:"4pt"}}><strong>{e.degree}</strong><br/><span style={{color:"#555"}}>{e.school} {e.year}</span></div>))}
+                              </div>
+                              <div>
+                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"4pt",borderBottom:"1px solid #ddd",paddingBottom:"2pt"}}>Certifications</div>
+                                {(resumeData.certifications||[]).map((cert,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:"2pt"}}>&#9632; {cert}</div>))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
 ) : (
                       <div style={{width:"100%",maxWidth:"760px",background:"#fff",boxShadow:"0 4px 20px rgba(0,0,0,.15)",padding:"2rem 2.4rem",fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
                         {resume.split("\\n").map((line,i)=>{
@@ -6012,7 +6529,7 @@ Return this exact JSON structure:
                     {coverLetterLoading?"✍ Writing your cover letter...":"✉ Generate Cover Letter"}
                   </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock All 8 AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
                 )}
                 {coverLetter&&(
                   <>
@@ -6141,7 +6658,7 @@ Return this exact JSON structure:
                     {reviewLoading?"🔍 Analyzing your resume...":"📊 Score My Resume"}
                   </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock All 8 AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
                 )}
 
                 {resumeReview&&resumeReview.error&&(
@@ -6416,7 +6933,7 @@ Return this exact JSON structure:
                     {prepLoading?"🎤 Preparing your questions...":"🎤 Generate Interview Questions"}
                   </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock All 8 AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
                 )}
                 {prepQuestions.length>0&&(
                   <>
@@ -6474,7 +6991,7 @@ Return this exact JSON structure:
                     {followupLoading?"✍ Writing your email...":"📧 Generate Email"}
                   </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock All 8 AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
                 )}
                 {followupEmail&&(
                   <>
@@ -7044,7 +7561,7 @@ Return this exact JSON structure:
 
       {!hasAccess&&<div style={{position:"fixed",bottom:0,left:0,right:0,background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",color:"#fff",zIndex:99999,boxShadow:"0 -2px 16px rgba(0,0,0,.4)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".5rem 1rem .3rem",flexWrap:"wrap",gap:".4rem"}}>
-          <div style={{fontSize:".72rem",color:"#f0c040",fontWeight:700,letterSpacing:".06em",textTransform:"uppercase"}}>🔒 $15/mo Unlocks All 8 AI Tools</div>
+          <div style={{fontSize:".72rem",color:"#f0c040",fontWeight:700,letterSpacing:".06em",textTransform:"uppercase"}}>🔒 $15/mo · 16 AI Tools</div>
           <button onClick={()=>setShowPaywall(true)} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"6px",color:"#0a1628",fontWeight:700,fontSize:".82rem",padding:".4rem 1rem",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Subscribe — $15/month →</button>
         </div>
         <div style={{display:"flex",overflowX:"auto",gap:".4rem",padding:".2rem 1rem .5rem",scrollbarWidth:"none"}}>

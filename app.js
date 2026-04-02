@@ -1,0 +1,6996 @@
+const { useState, useEffect, useRef } = React;
+    const fbAuth = window.fbAuth;
+    const fbDb = window.fbDb;
+
+
+
+// ─── STATIC DATA ─────────────────────────────────────────────────────────────
+// ── MILITARY JARGON TRANSLATOR ─────────────────────────────────────────────
+const MIL_JARGON = {
+  "NCOIC":"Team Supervisor / Operations Lead",
+  "OIC":"Department Manager / Program Lead",
+  "CDR":"Commander / Director",
+  "XO":"Deputy Director / Operations Manager",
+  "1SG":"Senior Operations Supervisor",
+  "CSM":"Senior Advisor / Chief of Staff",
+  "NCO":"Team Leader / Supervisor",
+  "SNCO":"Senior Team Leader",
+  "AO":"Area of Operations",
+  "AOR":"Area of Responsibility",
+  "OPORD":"Operations Plan",
+  "SITREP":"Status Report",
+  "AAR":"Post-Project Review / Lessons Learned",
+  "SOP":"Standard Operating Procedure",
+  "PMCS":"Preventive Maintenance Program",
+  "TOC":"Operations Center",
+  "COP":"Operations Dashboard / Common Picture",
+  "OPTEMPO":"Operational Tempo / Workload Intensity",
+  "TDY":"Temporary Business Travel",
+  "TAD":"Temporary Duty Assignment",
+  "PME":"Professional Development / Leadership Training",
+  "PCS":"Relocation",
+  "MOB":"Deployment / Mobilization",
+  "MOS":"Career Specialty",
+  "AFSC":"Career Specialty Code",
+  "NEC":"Navy Job Classification",
+  "PBO":"Asset / Property Manager",
+  "SSA":"Supply Chain / Distribution Center",
+  "MHE":"Material Handling Equipment / Forklifts",
+  "Chain of Command":"Reporting Structure",
+  "Unit Cohesion":"Team Unity",
+  "Battle Rhythm":"Recurring Operating Cadence",
+  "Tasker":"Action Item / Work Order",
+  "Deadlined":"Equipment Out of Service",
+  "Force Multiplier":"Efficiency / Capability Enhancement",
+  "Hooah":"(omit - military slang)",
+  "Oorah":"(omit - military slang)",
+  "Hard Charger":"High Performer / Self-Starter",
+};
+
+const BRANCHES = ["Army","Navy","Marine Corps","Air Force","Space Force","Coast Guard"];
+
+// ── RANK DATA BY BRANCH ──────────────────────────────────────────────────────
+const RANKS = {
+  "Army": {
+    enlisted: [
+      { grade:"E-1", title:"Private", abbr:"PVT", insignia:"⬜" },
+      { grade:"E-2", title:"Private Second Class", abbr:"PV2", insignia:"▲" },
+      { grade:"E-3", title:"Private First Class", abbr:"PFC", insignia:"▲▲" },
+      { grade:"E-4", title:"Specialist", abbr:"SPC", insignia:"◆" },
+      { grade:"E-4", title:"Corporal", abbr:"CPL", insignia:"◆◆" },
+      { grade:"E-5", title:"Sergeant", abbr:"SGT", insignia:"⬡⬡⬡" },
+      { grade:"E-6", title:"Staff Sergeant", abbr:"SSG", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Sergeant First Class", abbr:"SFC", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"Master Sergeant", abbr:"MSG", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"First Sergeant", abbr:"1SG", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Sergeant Major", abbr:"SGM", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Command Sergeant Major", abbr:"CSM", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Sergeant Major of the Army", abbr:"SMA", insignia:"★" },
+    ],
+    warrant: [
+      { grade:"W-1", title:"Warrant Officer 1", abbr:"WO1", insignia:"▬" },
+      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CW2", insignia:"▬▬" },
+      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CW3", insignia:"▬▬▬" },
+      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CW4", insignia:"▬▬▬▬" },
+      { grade:"W-5", title:"Chief Warrant Officer 5", abbr:"CW5", insignia:"▬▬▬▬▬" },
+    ],
+    officer: [
+      { grade:"O-1", title:"Second Lieutenant", abbr:"2LT", insignia:"▧" },
+      { grade:"O-2", title:"First Lieutenant", abbr:"1LT", insignia:"▧▧" },
+      { grade:"O-3", title:"Captain", abbr:"CPT", insignia:"✦" },
+      { grade:"O-4", title:"Major", abbr:"MAJ", insignia:"🔶" },
+      { grade:"O-5", title:"Lieutenant Colonel", abbr:"LTC", insignia:"⬟" },
+      { grade:"O-6", title:"Colonel", abbr:"COL", insignia:"🦅" },
+      { grade:"O-7", title:"Brigadier General", abbr:"BG", insignia:"★" },
+      { grade:"O-8", title:"Major General", abbr:"MG", insignia:"★★" },
+      { grade:"O-9", title:"Lieutenant General", abbr:"LTG", insignia:"★★★" },
+      { grade:"O-10", title:"General", abbr:"GEN", insignia:"★★★★" },
+    ]
+  },
+  "Marine Corps": {
+    enlisted: [
+      { grade:"E-1", title:"Private", abbr:"Pvt", insignia:"⬜" },
+      { grade:"E-2", title:"Private First Class", abbr:"PFC", insignia:"▲" },
+      { grade:"E-3", title:"Lance Corporal", abbr:"LCpl", insignia:"⬡" },
+      { grade:"E-4", title:"Corporal", abbr:"Cpl", insignia:"⬡⬡" },
+      { grade:"E-5", title:"Sergeant", abbr:"Sgt", insignia:"⬡⬡⬡" },
+      { grade:"E-6", title:"Staff Sergeant", abbr:"SSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Gunnery Sergeant", abbr:"GySgt", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"Master Sergeant", abbr:"MSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"First Sergeant", abbr:"1stSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Master Gunnery Sergeant", abbr:"MGySgt", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Sergeant Major", abbr:"SgtMaj", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Sergeant Major of the Marine Corps", abbr:"SgtMajMC", insignia:"★" },
+    ],
+    warrant: [
+      { grade:"W-1", title:"Warrant Officer 1", abbr:"WO1", insignia:"▬" },
+      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CWO2", insignia:"▬▬" },
+      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CWO3", insignia:"▬▬▬" },
+      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CWO4", insignia:"▬▬▬▬" },
+      { grade:"W-5", title:"Chief Warrant Officer 5", abbr:"CWO5", insignia:"▬▬▬▬▬" },
+    ],
+    officer: [
+      { grade:"O-1", title:"Second Lieutenant", abbr:"2ndLt", insignia:"▧" },
+      { grade:"O-2", title:"First Lieutenant", abbr:"1stLt", insignia:"▧▧" },
+      { grade:"O-3", title:"Captain", abbr:"Capt", insignia:"✦" },
+      { grade:"O-4", title:"Major", abbr:"Maj", insignia:"🔶" },
+      { grade:"O-5", title:"Lieutenant Colonel", abbr:"LtCol", insignia:"⬟" },
+      { grade:"O-6", title:"Colonel", abbr:"Col", insignia:"🦅" },
+      { grade:"O-7", title:"Brigadier General", abbr:"BGen", insignia:"★" },
+      { grade:"O-8", title:"Major General", abbr:"MajGen", insignia:"★★" },
+      { grade:"O-9", title:"Lieutenant General", abbr:"LtGen", insignia:"★★★" },
+      { grade:"O-10", title:"General", abbr:"Gen", insignia:"★★★★" },
+    ]
+  },
+  "Navy": {
+    enlisted: [
+      { grade:"E-1", title:"Seaman Recruit", abbr:"SR", insignia:"⬜" },
+      { grade:"E-2", title:"Seaman Apprentice", abbr:"SA", insignia:"▲▲" },
+      { grade:"E-3", title:"Seaman", abbr:"SN", insignia:"▲▲▲" },
+      { grade:"E-4", title:"Petty Officer Third Class", abbr:"PO3", insignia:"⬡" },
+      { grade:"E-5", title:"Petty Officer Second Class", abbr:"PO2", insignia:"⬡⬡" },
+      { grade:"E-6", title:"Petty Officer First Class", abbr:"PO1", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Chief Petty Officer", abbr:"CPO", insignia:"⚓" },
+      { grade:"E-8", title:"Senior Chief Petty Officer", abbr:"SCPO", insignia:"⚓⚓" },
+      { grade:"E-9", title:"Master Chief Petty Officer", abbr:"MCPO", insignia:"⚓⚓⚓" },
+      { grade:"E-9", title:"Fleet Master Chief", abbr:"FLTCM", insignia:"★" },
+      { grade:"E-9", title:"Master Chief Petty Officer of the Navy", abbr:"MCPON", insignia:"★" },
+    ],
+    warrant: [
+      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CWO2", insignia:"▬▬" },
+      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CWO3", insignia:"▬▬▬" },
+      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CWO4", insignia:"▬▬▬▬" },
+      { grade:"W-5", title:"Chief Warrant Officer 5", abbr:"CWO5", insignia:"▬▬▬▬▬" },
+    ],
+    officer: [
+      { grade:"O-1", title:"Ensign", abbr:"ENS", insignia:"▧" },
+      { grade:"O-2", title:"Lieutenant Junior Grade", abbr:"LTJG", insignia:"▧▧" },
+      { grade:"O-3", title:"Lieutenant", abbr:"LT", insignia:"✦" },
+      { grade:"O-4", title:"Lieutenant Commander", abbr:"LCDR", insignia:"🔶" },
+      { grade:"O-5", title:"Commander", abbr:"CDR", insignia:"⬟" },
+      { grade:"O-6", title:"Captain", abbr:"CAPT", insignia:"🦅" },
+      { grade:"O-7", title:"Rear Admiral Lower Half", abbr:"RDML", insignia:"★" },
+      { grade:"O-8", title:"Rear Admiral Upper Half", abbr:"RADM", insignia:"★★" },
+      { grade:"O-9", title:"Vice Admiral", abbr:"VADM", insignia:"★★★" },
+      { grade:"O-10", title:"Admiral", abbr:"ADM", insignia:"★★★★" },
+    ]
+  },
+  "Air Force": {
+    enlisted: [
+      { grade:"E-1", title:"Airman Basic", abbr:"AB", insignia:"⬜" },
+      { grade:"E-2", title:"Airman", abbr:"Amn", insignia:"▲" },
+      { grade:"E-3", title:"Airman First Class", abbr:"A1C", insignia:"▲▲▲" },
+      { grade:"E-4", title:"Senior Airman", abbr:"SrA", insignia:"⬡" },
+      { grade:"E-5", title:"Staff Sergeant", abbr:"SSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-6", title:"Technical Sergeant", abbr:"TSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Master Sergeant", abbr:"MSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"First Sergeant", abbr:"1Sgt", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"Senior Master Sergeant", abbr:"SMSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"First Sergeant", abbr:"1Sgt", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Chief Master Sergeant", abbr:"CMSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Command Chief Master Sergeant", abbr:"CCM", insignia:"★" },
+      { grade:"E-9", title:"Chief Master Sergeant of the Air Force", abbr:"CMSAF", insignia:"★" },
+    ],
+    warrant: [],
+    officer: [
+      { grade:"O-1", title:"Second Lieutenant", abbr:"2d Lt", insignia:"▧" },
+      { grade:"O-2", title:"First Lieutenant", abbr:"1st Lt", insignia:"▧▧" },
+      { grade:"O-3", title:"Captain", abbr:"Capt", insignia:"✦" },
+      { grade:"O-4", title:"Major", abbr:"Maj", insignia:"🔶" },
+      { grade:"O-5", title:"Lieutenant Colonel", abbr:"Lt Col", insignia:"⬟" },
+      { grade:"O-6", title:"Colonel", abbr:"Col", insignia:"🦅" },
+      { grade:"O-7", title:"Brigadier General", abbr:"Brig Gen", insignia:"★" },
+      { grade:"O-8", title:"Major General", abbr:"Maj Gen", insignia:"★★" },
+      { grade:"O-9", title:"Lieutenant General", abbr:"Lt Gen", insignia:"★★★" },
+      { grade:"O-10", title:"General", abbr:"Gen", insignia:"★★★★" },
+    ]
+  },
+  "Space Force": {
+    enlisted: [
+      { grade:"E-1", title:"Specialist 1", abbr:"Spc1", insignia:"⬜" },
+      { grade:"E-2", title:"Specialist 2", abbr:"Spc2", insignia:"▲" },
+      { grade:"E-3", title:"Specialist 3", abbr:"Spc3", insignia:"▲▲▲" },
+      { grade:"E-4", title:"Specialist 4", abbr:"Spc4", insignia:"⬡" },
+      { grade:"E-5", title:"Sergeant", abbr:"Sgt", insignia:"⬡⬡⬡" },
+      { grade:"E-6", title:"Technical Sergeant", abbr:"TSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Master Sergeant", abbr:"MSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-8", title:"Senior Master Sergeant", abbr:"SMSgt", insignia:"⬡⬡⬡" },
+      { grade:"E-9", title:"Chief Master Sergeant", abbr:"CMSgt", insignia:"★" },
+    ],
+    warrant: [],
+    officer: [
+      { grade:"O-1", title:"Second Lieutenant", abbr:"2d Lt", insignia:"▧" },
+      { grade:"O-2", title:"First Lieutenant", abbr:"1st Lt", insignia:"▧▧" },
+      { grade:"O-3", title:"Captain", abbr:"Capt", insignia:"✦" },
+      { grade:"O-4", title:"Major", abbr:"Maj", insignia:"🔶" },
+      { grade:"O-5", title:"Lieutenant Colonel", abbr:"Lt Col", insignia:"⬟" },
+      { grade:"O-6", title:"Colonel", abbr:"Col", insignia:"🦅" },
+      { grade:"O-7", title:"Brigadier General", abbr:"Brig Gen", insignia:"★" },
+      { grade:"O-8", title:"Major General", abbr:"Maj Gen", insignia:"★★" },
+      { grade:"O-9", title:"Lieutenant General", abbr:"Lt Gen", insignia:"★★★" },
+      { grade:"O-10", title:"General", abbr:"Gen", insignia:"★★★★" },
+    ]
+  },
+  "Coast Guard": {
+    enlisted: [
+      { grade:"E-1", title:"Seaman Recruit", abbr:"SR", insignia:"⬜" },
+      { grade:"E-2", title:"Seaman Apprentice", abbr:"SA", insignia:"▲▲" },
+      { grade:"E-3", title:"Seaman", abbr:"SN", insignia:"▲▲▲" },
+      { grade:"E-4", title:"Petty Officer Third Class", abbr:"PO3", insignia:"⬡" },
+      { grade:"E-5", title:"Petty Officer Second Class", abbr:"PO2", insignia:"⬡⬡" },
+      { grade:"E-6", title:"Petty Officer First Class", abbr:"PO1", insignia:"⬡⬡⬡" },
+      { grade:"E-7", title:"Chief Petty Officer", abbr:"CPO", insignia:"⚓" },
+      { grade:"E-8", title:"Senior Chief Petty Officer", abbr:"SCPO", insignia:"⚓⚓" },
+      { grade:"E-9", title:"Master Chief Petty Officer", abbr:"MCPO", insignia:"⚓⚓⚓" },
+      { grade:"E-9", title:"Master Chief Petty Officer of the Coast Guard", abbr:"MCPOCG", insignia:"★" },
+    ],
+    warrant: [
+      { grade:"W-2", title:"Chief Warrant Officer 2", abbr:"CWO2", insignia:"▬▬" },
+      { grade:"W-3", title:"Chief Warrant Officer 3", abbr:"CWO3", insignia:"▬▬▬" },
+      { grade:"W-4", title:"Chief Warrant Officer 4", abbr:"CWO4", insignia:"▬▬▬▬" },
+    ],
+    officer: [
+      { grade:"O-1", title:"Ensign", abbr:"ENS", insignia:"▧" },
+      { grade:"O-2", title:"Lieutenant Junior Grade", abbr:"LTJG", insignia:"▧▧" },
+      { grade:"O-3", title:"Lieutenant", abbr:"LT", insignia:"✦" },
+      { grade:"O-4", title:"Lieutenant Commander", abbr:"LCDR", insignia:"🔶" },
+      { grade:"O-5", title:"Commander", abbr:"CDR", insignia:"⬟" },
+      { grade:"O-6", title:"Captain", abbr:"CAPT", insignia:"🦅" },
+      { grade:"O-7", title:"Rear Admiral", abbr:"RDML", insignia:"★" },
+      { grade:"O-8", title:"Vice Admiral", abbr:"VADM", insignia:"★★" },
+      { grade:"O-9", title:"Admiral", abbr:"ADM", insignia:"★★★" },
+    ]
+  }
+};
+
+
+
+
+
+
+
+
+
+const BRANCH_COLORS = {
+  "Army": {bg:"linear-gradient(135deg,#3a4a1a,#556b2f)",accent:"#c8a951"},
+  "Marine Corps": {bg:"linear-gradient(135deg,#6a0000,#a00000)",accent:"#c8a951"},
+  "Navy": {bg:"linear-gradient(135deg,#000060,#000d9a)",accent:"#c8a951"},
+  "Air Force": {bg:"linear-gradient(135deg,#001a5e,#003087)",accent:"#7fb2f0"},
+  "Space Force": {bg:"linear-gradient(135deg,#0d1520,#1c2951)",accent:"#a0b8d8"},
+  "Coast Guard": {bg:"linear-gradient(135deg,#002a5c,#003f87)",accent:"#e8111a"}
+};
+
+const BRANCH_EMBLEMS = {
+  "Army": "⭐",
+  "Marine Corps": "🦅",
+  "Navy": "⚓",
+  "Air Force": "✈️",
+  "Space Force": "🛡️",
+  "Coast Guard": "⚓"
+};
+
+// Professional SVG insignia — used wherever branch logos are displayed
+window.BRANCH_LOGOS = {
+  "Army":         "https://veterancareerpath.com/army.png",
+  "Navy":         "https://veterancareerpath.com/navy.png",
+  "Marine Corps": "https://veterancareerpath.com/marines.png",
+  "Air Force":    "https://veterancareerpath.com/airforce.png",
+  "Space Force":  "https://veterancareerpath.com/spaceforce.png",
+  "Coast Guard":  "https://veterancareerpath.com/coastguard.png"
+};
+
+// Helper: render a branch logo <img> or fallback emoji
+function branchLogo(branch, size) {
+  size = size || 40;
+  var src = BRANCH_LOGOS[branch];
+  if (!src) return BRANCH_EMBLEMS[branch] || "🎖";
+  var img = document.createElement("img");
+  img.src = src;
+  img.alt = branch;
+  img.width = size;
+  img.height = size;
+  img.style.cssText = "vertical-align:middle;border-radius:50%;display:inline-block;";
+  img.onerror = function(){ this.style.display = "none"; };
+  return img.outerHTML;
+}
+const SERVICE_TYPES = ["Active Duty","Reserve","National Guard","Active Guard Reserve (AGR)","Retired","Separated/Veteran","Discharged"];
+const EXP_TYPES = ["Military Service","Reserve/Guard (concurrent with civilian)","Civilian Employment","DoD/Government Contractor","Other Government (Federal/State)"];
+
+const CLEARANCE_LEVELS = ["None","Public Trust","Confidential","Secret","Top Secret","Top Secret/SCI","TS/SCI with CI Poly","TS/SCI with Full Scope Poly","Q Clearance (DOE)","L Clearance (DOE)"];
+const CLEARANCE_STATUS = ["Active","Inactive","Expired","Pending","Unknown"];
+
+// Branch-specific ASI/SQI/NEC/AFSC additional qualifiers
+const BRANCH_QUALS = {
+  "Army": {
+    label: "Additional Skill Identifiers (ASI)",
+    items: [
+      // Airborne & Special Operations
+      { code:"2S", desc:"Ranger Qualified" },
+      { code:"5Q", desc:"Master Gunner" },
+      { code:"8A", desc:"Airborne" },
+      { code:"P1", desc:"Master Parachutist" },
+      { code:"W1", desc:"SERE Trained" },
+      { code:"X3", desc:"Military Instructor" },
+      { code:"V5", desc:"Battle Staff Operations" },
+      { code:"2T", desc:"Jumpmaster" },
+      { code:"4T", desc:"Military Freefall Parachutist" },
+      { code:"5V", desc:"Special Forces Weapons Sergeant" },
+      { code:"Y9", desc:"Nuclear Weapons Technical" },
+      // Combat Arms
+      { code:"B3", desc:"Linguist" },
+      { code:"G2", desc:"Combatives Level II" },
+      { code:"G3", desc:"Combatives Level III" },
+      { code:"G4", desc:"Combatives Level IV (Instructor)" },
+      { code:"1M", desc:"Unmanned Aircraft Systems Operator" },
+      { code:"5C", desc:"Command and Control Systems Operator" },
+      { code:"P3", desc:"Rigger" },
+      { code:"V3", desc:"Observer Controller/Trainer" },
+      // Intelligence & Cyber
+      { code:"1N", desc:"Imagery Analyst" },
+      { code:"2A", desc:"Computer/Network Defender" },
+      { code:"3I", desc:"Inspector General" },
+      { code:"3L", desc:"Legal Specialist" },
+      { code:"1U", desc:"Unmanned Aircraft Systems Repairer" },
+      { code:"9S", desc:"Technical Engineering" },
+      // Medical
+      { code:"1A", desc:"Flight Operations Coordinator" },
+      { code:"4H", desc:"Hyperbaric Chamber Specialist" },
+      { code:"M6", desc:"Healthcare NCO" },
+      // Logistics & Transportation
+      { code:"2W", desc:"Ammunition Stock Control" },
+      { code:"3A", desc:"Clinical Laboratory" },
+      { code:"4B", desc:"Unit Safety Officer/NCO" },
+      { code:"4R", desc:"Chemical Officer/Specialist" },
+      { code:"5M", desc:"Mortuary Affairs Specialist" },
+      { code:"7F", desc:"Fleet Management" },
+      // Leadership & Admin
+      { code:"1Z", desc:"Senior Instructor/Writer" },
+      { code:"2I", desc:"Nuclear Research and Operations" },
+      { code:"2L", desc:"Polygraph Examiner" },
+      { code:"3R", desc:"Recruiter" },
+      { code:"4A", desc:"Parachute Rigger" },
+      { code:"5K", desc:"Master Fitness Trainer" },
+      { code:"6H", desc:"Retention NCO" },
+      { code:"7P", desc:"Physical Security" },
+      { code:"8L", desc:"Interagency Support" },
+      { code:"9R", desc:"Drill Sergeant" },
+    ],
+    sqiLabel: "Skill Qualification Identifiers (SQI)",
+    sqi: [
+      { code:"F", desc:"Special Forces" },
+      { code:"P", desc:"Parachutist (Basic)" },
+      { code:"Q", desc:"Special Forces Enlisted" },
+      { code:"R", desc:"Ranger" },
+      { code:"S", desc:"Special Operations Support" },
+      { code:"V", desc:"Aviation" },
+      { code:"X", desc:"Instructor / Faculty" },
+      { code:"Y", desc:"Transition NCO" },
+      { code:"Z", desc:"Senior Sergeant / Leadership" },
+      { code:"M", desc:"Maneuver Senior Advisor" },
+    ]
+  },
+  "Marine Corps": {
+    label: "MOS Additional Qualifications (MOS-AQs) & PMOS",
+    items: [
+      // Infantry & Recon
+      { code:"0321", desc:"Reconnaissance Man" },
+      { code:"0322", desc:"Reconnaissance Man (Parachute/Combatant Dive Qualified)" },
+      { code:"0323", desc:"Reconnaissance Man (Parachute Qualified)" },
+      { code:"0324", desc:"Reconnaissance Man (Combatant Dive Qualified)" },
+      { code:"0370", desc:"Special Operations Officer" },
+      { code:"0372", desc:"Critical Skills Operator" },
+      { code:"0321M", desc:"Marine Raider" },
+      // Aviation Ground Support
+      { code:"7011", desc:"Expeditionary Airfield Systems Technician" },
+      { code:"7212", desc:"Low Altitude Air Defense (LAAD) Gunner" },
+      { code:"7242", desc:"Air Traffic Controller" },
+      // Weapons & Marksmanship
+      { code:"8531", desc:"Marksmanship Coach" },
+      { code:"8532", desc:"Primary Marksmanship Instructor" },
+      { code:"8541", desc:"Scout Sniper" },
+      { code:"8542", desc:"Scout Sniper Team Leader" },
+      // Special Skills
+      { code:"8014", desc:"Combatant Diver" },
+      { code:"8023", desc:"Jump-Qualified" },
+      { code:"8026", desc:"Military Freefall Parachutist" },
+      { code:"8621", desc:"SERE Instructor" },
+      { code:"8999", desc:"Marine Corps Martial Arts Instructor" },
+      { code:"0911", desc:"Drill Instructor" },
+      { code:"0913", desc:"Senior Drill Instructor" },
+      { code:"0931", desc:"Marine Combat Instructor of Water Survival" },
+      // Intelligence
+      { code:"0231", desc:"Intelligence Specialist" },
+      { code:"0241", desc:"Imagery Analysis Specialist" },
+      { code:"0261", desc:"Geographic Intelligence Specialist" },
+      // Communications & Cyber
+      { code:"0689", desc:"Cyber Network Operator" },
+      { code:"0699", desc:"Cyber Officer" },
+      // Logistics
+      { code:"3043", desc:"Supply Administration and Operations" },
+      { code:"3044", desc:"Advanced Supply Marine" },
+    ],
+    sqiLabel: "Billet & Functional Qualifications",
+    sqi: [
+      { code:"DI", desc:"Drill Instructor Qualified" },
+      { code:"SDI", desc:"Senior Drill Instructor" },
+      { code:"RSO", desc:"Range Safety Officer" },
+      { code:"PMI", desc:"Primary Marksmanship Instructor" },
+      { code:"CFI", desc:"Combat Fitness Instructor" },
+      { code:"MCIWS", desc:"Marine Combat Instructor of Water Survival" },
+      { code:"MCMAP-BI", desc:"Martial Arts Instructor (Black Belt)" },
+      { code:"CBRN", desc:"CBRN Defense Specialist" },
+      { code:"JTAC", desc:"Joint Terminal Attack Controller" },
+      { code:"JTAC-IP", desc:"JTAC Instructor / Evaluator" },
+      { code:"FACIP", desc:"Forward Air Controller (Airborne) IP" },
+    ]
+  },
+  "Navy": {
+    label: "Navy Enlisted Classifications (NEC)",
+    items: [
+      // Special Warfare
+      { code:"5326", desc:"Master-at-Arms (K9)" },
+      { code:"5342", desc:"SEAL (Combatant Swimmer)" },
+      { code:"5343", desc:"SEAL Delivery Vehicle Team" },
+      { code:"5348", desc:"Special Warfare Boat Operator" },
+      { code:"5350", desc:"Special Warfare Combatant Craft Crewman (SWCC)" },
+      { code:"5355", desc:"SEAL Support" },
+      // Diving & Underwater
+      { code:"8425", desc:"Navy Diver (Second Class)" },
+      { code:"8434", desc:"Navy Diver (First Class)" },
+      { code:"8491", desc:"Diver (Saturation / Deep Sea)" },
+      { code:"8493", desc:"Rescue Swimmer" },
+      { code:"8494", desc:"Search and Rescue Swimmer" },
+      { code:"5342", desc:"Combatant Swimmer (SEAL)" },
+      // Aviation
+      { code:"8201", desc:"Naval Flight Officer" },
+      { code:"8206", desc:"Naval Aviator" },
+      { code:"8301", desc:"Aviation Maintenance Administration" },
+      { code:"8302", desc:"Naval Aviation Maintenance Technician" },
+      // Intelligence & Crypto
+      { code:"7802", desc:"Cryptologic Technician (Collection)" },
+      { code:"7814", desc:"Cryptologic Technician (Maintenance)" },
+      { code:"7818", desc:"Cryptologic Technician (Networks)" },
+      { code:"7821", desc:"Cryptologic Technician (Technical)" },
+      { code:"7830", desc:"Cryptologic Technician (Interpretive)" },
+      { code:"9502", desc:"Master Training Specialist (MTS)" },
+      // Medical
+      { code:"8402", desc:"Independent Duty Corpsman (IDC)" },
+      { code:"8403", desc:"Special Operations Corpsman (SOCM)" },
+      { code:"8404", desc:"Field Medical Service Technician" },
+      { code:"8427", desc:"Aerospace Medical Technician" },
+      // Electronics & IT
+      { code:"2791", desc:"Electronics Warfare Technician" },
+      { code:"1130", desc:"Electronics Technician" },
+      { code:"1146", desc:"Data Systems Technician" },
+      { code:"0000", desc:"EOD Technician" },
+      { code:"2302", desc:"Machinist's Mate (Nuclear)" },
+      { code:"2514", desc:"Gunner's Mate (Missiles)" },
+      { code:"1550", desc:"Information Systems Technician" },
+      { code:"2514W", desc:"Gunner's Mate (Weapons)" },
+      // Security & Law Enforcement
+      { code:"9578", desc:"Navy Corrections Specialist" },
+      { code:"2005", desc:"Explosive Ordnance Disposal (EOD)" },
+      // Logistics & Supply
+      { code:"2512", desc:"Aviation Storekeeper" },
+      { code:"3501", desc:"Logistics Specialist" },
+      { code:"2721", desc:"Equipment Operator" },
+    ],
+    sqiLabel: "Warfare Designators",
+    sqi: [
+      { code:"EAWS", desc:"Enlisted Aviation Warfare Specialist" },
+      { code:"ESWS", desc:"Enlisted Surface Warfare Specialist" },
+      { code:"SSWS", desc:"Submarine Warfare Specialist" },
+      { code:"EXW", desc:"Expeditionary Warfare Specialist" },
+      { code:"ESCS", desc:"Enlisted Sailor Costal Riverine" },
+      { code:"ESSS", desc:"Enlisted Special Warfare/Special Operations Support" },
+      { code:"EMS", desc:"Enlisted Mine Warfare Specialist" },
+      { code:"ENWS", desc:"Enlisted Nuclear Warfare Specialist" },
+      { code:"EDWS", desc:"Enlisted Diving Warfare Specialist" },
+      { code:"MTS", desc:"Master Training Specialist" },
+      { code:"BUDS", desc:"Basic Underwater Demolition/SEAL Graduate" },
+      { code:"SWO", desc:"Surface Warfare Officer" },
+      { code:"CWO", desc:"Coastal Warfare Officer" },
+    ]
+  },
+  "Air Force": {
+    label: "Special Experience Identifiers (SEI) & Additional Qualifications",
+    items: [
+      // Special Operations
+      { code:"215", desc:"Combat Controller (CCT)" },
+      { code:"216", desc:"Pararescue (PJ)" },
+      { code:"217", desc:"Special Tactics Officer" },
+      { code:"218", desc:"SERE Specialist" },
+      { code:"219", desc:"Combat Weather Technician" },
+      { code:"220", desc:"Special Operations Intelligence" },
+      { code:"221", desc:"Tactical Air Control Party (TACP)" },
+      { code:"222", desc:"Psychological Operations" },
+      { code:"253", desc:"Special Reconnaissance" },
+      { code:"254", desc:"Air Force Office of Special Investigations (AFOSI)" },
+      // Cyber & Intelligence
+      { code:"378", desc:"Cyber Operations Specialist" },
+      { code:"379", desc:"Information Operations" },
+      { code:"381", desc:"Signals Intelligence" },
+      { code:"382", desc:"Geospatial Intelligence" },
+      { code:"383", desc:"Targeting" },
+      { code:"384", desc:"All-Source Intelligence" },
+      { code:"385", desc:"Human Intelligence (HUMINT)" },
+      { code:"386", desc:"Counterintelligence" },
+      // Aviation
+      { code:"301", desc:"Instructor Pilot" },
+      { code:"302", desc:"Instrument Flight Examiner" },
+      { code:"303", desc:"Wing Standardization/Evaluation" },
+      { code:"304", desc:"Formation Lead Qualified" },
+      { code:"305", desc:"Aircraft Commander" },
+      { code:"312", desc:"Remotely Piloted Aircraft (RPA) Instructor" },
+      { code:"313", desc:"Bomber Crew Member" },
+      // Nuclear
+      { code:"4BX", desc:"Nuclear Weapons" },
+      { code:"2W0", desc:"Munitions Systems" },
+      { code:"2W1", desc:"Nuclear Weapons" },
+      // Medical & Support
+      { code:"4H", desc:"Independent Duty Medical Technician (IDMT)" },
+      { code:"4N", desc:"Aerospace Medical Service" },
+      // Leadership & Admin  
+      { code:"UD", desc:"Unit Deployment Manager" },
+      { code:"FO", desc:"Flight Operations" },
+      { code:"IO", desc:"Inspector General" },
+      { code:"WM", desc:"Weapons Manager" },
+      { code:"SE", desc:"Flight Safety Officer" },
+      { code:"ES", desc:"Emergency Management" },
+      // Training
+      { code:"EX", desc:"Formal Training Unit (FTU) Instructor" },
+      { code:"XO", desc:"Operations Officer / Exec" },
+    ],
+    sqiLabel: "Prefixes & Additional Duty Identifiers",
+    sqi: [
+      { code:"C", desc:"Commander" },
+      { code:"G", desc:"Ground Training Flight Commander" },
+      { code:"J", desc:"Joint Duty Assignment" },
+      { code:"M", desc:"Mobility" },
+      { code:"N", desc:"Nuclear Certified" },
+      { code:"O", desc:"Inspector" },
+      { code:"S", desc:"Safety" },
+      { code:"U", desc:"Unit Deployment Manager" },
+      { code:"W", desc:"Weapons Officer" },
+      { code:"X", desc:"Executive Officer" },
+      { code:"65D", desc:"Developmental Engineer" },
+      { code:"13S", desc:"Space Operations Officer" },
+    ]
+  },
+  "Space Force": {
+    label: "Space Force Specialty Codes (SFSC)",
+    items: [
+      // Space Operations
+      { code:"1C6X1", desc:"Space Systems Operations — Missile Warning" },
+      { code:"1C6X2", desc:"Space Systems Operations — Space Control" },
+      { code:"1C6X3", desc:"Space Systems Operations — Satellite" },
+      { code:"1C6X4", desc:"Space Systems Operations — Space Electronic Warfare" },
+      { code:"13SXA", desc:"Space Operations Officer — Orbital Warfare" },
+      { code:"13SXB", desc:"Space Operations Officer — Space Domain Awareness" },
+      { code:"13SXC", desc:"Space Operations Officer — Missile Warning" },
+      { code:"13SXD", desc:"Space Operations Officer — Command & Control" },
+      // Cyber & Intelligence
+      { code:"17SX", desc:"Cyberspace Officer" },
+      { code:"14NX", desc:"Intelligence Officer" },
+      { code:"1N0XX", desc:"Operations Intelligence Analyst" },
+      { code:"1N4XX", desc:"Fusion Analyst" },
+      // Engineering & Systems
+      { code:"61AX", desc:"Science and Engineering — Research Scientist" },
+      { code:"62EX", desc:"Developmental Engineer" },
+      { code:"63AX", desc:"Acquisition Manager" },
+      { code:"21AX", desc:"Test and Evaluation" },
+      // Maintenance & Support
+      { code:"2M0X1", desc:"Missile and Space Systems Electronic Maintenance" },
+      { code:"2M0X2", desc:"Missile and Space Systems Maintenance" },
+      { code:"2M0X3", desc:"Missile and Space Facilities" },
+    ],
+    sqiLabel: "Space Force Additional Qualifications",
+    sqi: [
+      { code:"CC", desc:"Command Qualified" },
+      { code:"MC", desc:"Mission Commander" },
+      { code:"OC", desc:"Orbital Analyst Certified" },
+      { code:"IC", desc:"Intelligence Certified" },
+      { code:"CY", desc:"Cyber Operator Certified" },
+      { code:"WT", desc:"Weapons & Tactics" },
+    ]
+  },
+  "Coast Guard": {
+    label: "Coast Guard Ratings & Specialty Qualifications",
+    items: [
+      // Law Enforcement & Security
+      { code:"ME", desc:"Maritime Enforcement Specialist" },
+      { code:"MEI", desc:"Maritime Enforcement Specialist — Investigator" },
+      { code:"PS", desc:"Port Security Specialist" },
+      { code:"BT-M", desc:"Boarding Team Member" },
+      { code:"BTO", desc:"Boarding Team Officer" },
+      { code:"BTL", desc:"Boarding Team Leader" },
+      { code:"MIO", desc:"Maritime Intelligence Operations" },
+      // Aviation
+      { code:"AET", desc:"Aviation Electrical Technician" },
+      { code:"AMT", desc:"Aviation Maintenance Technician" },
+      { code:"AST", desc:"Aviation Survival Technician" },
+      { code:"AVI", desc:"Avionics" },
+      { code:"RS", desc:"Rescue Swimmer (Aircrewman)" },
+      { code:"FCA", desc:"Flight Clearance Authority" },
+      // Maritime Operations
+      { code:"CX", desc:"Coxswain Qualified" },
+      { code:"HMCX", desc:"Heavy/Medium Coxswain" },
+      { code:"OOW", desc:"Officer of the Watch" },
+      { code:"OOD", desc:"Officer of the Deck" },
+      { code:"SAR", desc:"Search and Rescue Coordinator (SMC)" },
+      { code:"OSC", desc:"On-Scene Commander" },
+      // Engineering & Deck
+      { code:"ENG", desc:"Marine Engineering Watch Officer" },
+      { code:"DBO", desc:"Deck Boat Operator" },
+      { code:"MK", desc:"Machinery Technician" },
+      { code:"ET", desc:"Electronics Technician" },
+      { code:"DC", desc:"Damage Controlman" },
+      // Intelligence & Comms
+      { code:"IS", desc:"Intelligence Specialist" },
+      { code:"IT", desc:"Information Systems Technician" },
+      { code:"TC", desc:"Telecommunications Specialist" },
+      // Aids to Navigation & Environment
+      { code:"ATON", desc:"Aids to Navigation Specialist" },
+      { code:"MSO", desc:"Marine Safety Officer" },
+      { code:"MERPOL", desc:"Marine Environmental Protection" },
+      { code:"ANT", desc:"Aids to Navigation Team (Inshore)" },
+      { code:"DP", desc:"Dive Qualified" },
+    ],
+    sqiLabel: "Warfare & Specialty Qualifications",
+    sqi: [
+      { code:"EXW", desc:"Expeditionary Warfare Specialist" },
+      { code:"MSRT", desc:"Maritime Security Response Team" },
+      { code:"MSST", desc:"Maritime Safety and Security Team" },
+      { code:"PSU", desc:"Port Security Unit Qualified" },
+      { code:"TACLET", desc:"Tactical Law Enforcement Team" },
+      { code:"MSLO", desc:"Marine Safety and Law Enforcement Officer" },
+      { code:"SMCR", desc:"SAR Mission Coordinator Refresher" },
+      { code:"AWO", desc:"Anti-Terrorism Watch Officer" },
+      { code:"RSO", desc:"Range Safety Officer" },
+    ]
+  },
+};
+// Fallback for unknown branches
+const COMMON_ASI = BRANCH_QUALS["Army"].items;
+const COMMON_SQI = BRANCH_QUALS["Army"].sqi;
+
+const COMMON_ADDL_DUTIES = [
+  "Unit Armorer","NBC/CBRN Officer","Equal Opportunity Leader","Safety Officer/NCO","Master Driver","Unit Prevention Leader (UPL/Drug Testing)","Retention NCO","Casualty Notification Officer","Family Readiness Officer/NCO","Sexual Harassment/Assault Response (SHARP) Coordinator","Records Management","Information Security Officer","Operations Security (OPSEC) Coordinator","Physical Security Officer","Inspector General Representative","Unit Fund Custodian","Training Room NCO","Supply Sergeant (additional duty)","Contracting Officer Representative (COR)","Property Book Officer","Master Gunner","Battle Staff NCO","Recruiter/Career Counselor","Casualty Liaison Officer",
+];
+const UNIVERSITIES = [
+  "American Military University","American Public University","Arizona State University",
+  "Auburn University","Boston University","Brigham Young University",
+  "Carnegie Mellon University","City University of New York","Clemson University",
+  "Colorado State University","Columbia University","Cornell University",
+  "Duke University","Embry-Riddle Aeronautical University",
+  "Florida International University","Florida State University",
+  "George Mason University","George Washington University","Georgetown University",
+  "Georgia Institute of Technology","Harvard University","Indiana University",
+  "Iowa State University","Johns Hopkins University","Kansas State University",
+  "Liberty University","Louisiana State University","MIT",
+  "Michigan State University","Mississippi State University",
+  "Naval Postgraduate School","New York University","Northeastern University",
+  "Northwestern University","Ohio State University","Old Dominion University",
+  "Penn State University","Purdue University","Regent University",
+  "Rice University","Rutgers University","San Diego State University",
+  "Southern New Hampshire University","Stanford University","Syracuse University",
+  "Temple University","Texas A&M University","Texas Tech University",
+  "Trident University","Troy University","Tulane University",
+  "UCLA","UNC Chapel Hill","University of Alabama","University of Arizona",
+  "University of Central Florida","University of Cincinnati","University of Colorado",
+  "University of Connecticut","University of Florida","University of Georgia",
+  "University of Houston","University of Illinois","University of Maryland",
+  "University of Michigan","University of Minnesota","University of Missouri",
+  "University of Nebraska","University of New Mexico","University of Oklahoma",
+  "University of Oregon","University of Pennsylvania","University of Phoenix",
+  "University of Pittsburgh","University of South Carolina","University of Southern California",
+  "University of Tennessee","University of Texas","University of Utah",
+  "University of Virginia","University of Washington","University of Wisconsin",
+  "Vanderbilt University","Virginia Tech","Wake Forest University",
+  "Western Governors University","Yale University",
+  "Air War College","Army War College","Naval War College",
+  "Command and General Staff College","Marine Corps University",
+  "National Defense University","Defense Acquisition University",
+  "Community College of the Air Force",
+];
+
+const RESUME_FORMATS = [
+  {id:"ats_chrono",label:"ATS Chronological",badge:"Most Common",desc:"Reverse-order work history, keyword-optimized for applicant tracking systems. Best for most online applications. Recommended for 90% of veteran transitions."},
+  {id:"ats_combo",label:"ATS Combination",badge:"Veterans Recommended",desc:"Opens with a skills summary block, then reverse-chronological experience. Ideal for veterans with diverse roles or pivoting careers — shows what you can do before where you did it."},
+  {id:"functional",label:"Functional (Skills-First)",badge:"Career Changers",desc:"Groups experience by skill category rather than timeline. Best if you have an employment gap, significant career pivot (e.g. infantry → healthcare), or want to downplay time between jobs."},
+  {id:"federal",label:"Federal / USAJobs",badge:"Gov Jobs",desc:"Detailed OPM-compliant format required for federal government jobs on USAJOBS. Much longer than a standard resume — includes hours/week, supervisor info, and detailed KSAs. Required for GS positions."},
+  {id:"executive",label:"Executive",badge:"O-5+ & Senior NCOs",desc:"Leadership-focused. Opens with an executive summary, core competencies grid, and career highlights. Best for O-5+ and senior NCOs targeting management and director-level civilian roles."},
+  {id:"traditional",label:"Traditional",badge:"Conservative Industries",desc:"Clean, conservative single-column. Best for law enforcement, government, legal, finance, and formal industries where simple clarity signals professionalism."},
+  {id:"modern",label:"Modern Professional",badge:"Corporate & Tech",desc:"Clean contemporary layout with subtle visual hierarchy. Great for corporate, tech, and private-sector roles where first impressions matter."},
+  {id:"harvard",label:"Harvard Style",badge:"Academic & Professional",desc:"Single-column, clean, highly credible. Conservative and polished — the same format used by Harvard MBA graduates. Strong for consulting, law, policy, and professional roles."},
+  {id:"wharton",label:"Wharton / MBA Style",badge:"Business Leadership",desc:"Achievement-heavy, results-driven with sharp formatting. Education listed first. Ideal for MBA programs, business leadership, and corporate strategy roles."},
+  {id:"minimalist",label:"Minimalist",badge:"Standout Clarity",desc:"Maximum white space, simple typography. Easy to scan in under 10 seconds. Great when you want your content to speak without competition from formatting."},
+  {id:"creative",label:"Creative",badge:"Design & Media",desc:"Visual layout for design, media, branding, and creative industries. Not recommended for most veteran-to-civilian transitions — choose ATS formats for most corporate roles."},
+];
+
+
+const MOS_DATA = {
+  // ── ARMY ──────────────────────────────────────────────────────────────────
+  "11A":{ title:"Infantry Officer", branch:"Army" },
+  "11B":{ title:"Infantryman", branch:"Army" },
+  "11C":{ title:"Indirect Fire Infantryman", branch:"Army" },
+  "11Z":{ title:"Infantry Senior Sergeant", branch:"Army" },
+  "12A":{ title:"Engineer Officer", branch:"Army" },
+  "12B":{ title:"Combat Engineer", branch:"Army" },
+  "12C":{ title:"Bridge Crewmember", branch:"Army" },
+  "12D":{ title:"Diver", branch:"Army" },
+  "12N":{ title:"Horizontal Construction Engineer", branch:"Army" },
+  "12P":{ title:"Prime Power Production Specialist", branch:"Army" },
+  "12R":{ title:"Interior Electrician", branch:"Army" },
+  "12T":{ title:"Technical Engineer", branch:"Army" },
+  "12W":{ title:"Carpentry and Masonry Specialist", branch:"Army" },
+  "12Y":{ title:"Geospatial Engineer", branch:"Army" },
+  "12Z":{ title:"Combat Engineering Senior Sergeant", branch:"Army" },
+  "13A":{ title:"Field Artillery Officer", branch:"Army" },
+  "13B":{ title:"Cannon Crewmember", branch:"Army" },
+  "13D":{ title:"Field Artillery Automated Tactical Data Systems Specialist", branch:"Army" },
+  "13F":{ title:"Fire Support Specialist", branch:"Army" },
+  "13J":{ title:"Fire Control Specialist", branch:"Army" },
+  "13M":{ title:"Multiple Launch Rocket System Crew Member", branch:"Army" },
+  "13P":{ title:"MLRS Operations Fire Direction Specialist", branch:"Army" },
+  "13R":{ title:"Field Artillery Firefinder Radar Operator", branch:"Army" },
+  "13Z":{ title:"Field Artillery Senior Sergeant", branch:"Army" },
+  "14A":{ title:"Air Defense Artillery Officer", branch:"Army" },
+  "14G":{ title:"Air Defense Battle Management System Operator", branch:"Army" },
+  "14H":{ title:"Air Defense Enhanced Early Warning System Operator", branch:"Army" },
+  "14P":{ title:"Air and Missile Defense Crew Member", branch:"Army" },
+  "14S":{ title:"Avenger Crewmember", branch:"Army" },
+  "14T":{ title:"Patriot MIM-104 Operator/Maintainer", branch:"Army" },
+  "14Z":{ title:"Air Defense Artillery Senior Sergeant", branch:"Army" },
+  "15A":{ title:"Aviation Officer", branch:"Army" },
+  "15B":{ title:"Aircraft Powerplant Repairer", branch:"Army" },
+  "15D":{ title:"Aircraft Powertrain Repairer", branch:"Army" },
+  "15E":{ title:"Unmanned Aircraft Systems Repairer", branch:"Army" },
+  "15F":{ title:"Aircraft Electrician", branch:"Army" },
+  "15G":{ title:"Aircraft Structural Repairer", branch:"Army" },
+  "15H":{ title:"Aircraft Pneudraulics Repairer", branch:"Army" },
+  "15N":{ title:"Avionic Mechanic", branch:"Army" },
+  "15P":{ title:"Aviation Operations Specialist", branch:"Army" },
+  "15Q":{ title:"Air Traffic Control Operator", branch:"Army" },
+  "15R":{ title:"AH-64 Attack Helicopter Repairer", branch:"Army" },
+  "15S":{ title:"OH-58D Helicopter Repairer", branch:"Army" },
+  "15T":{ title:"UH-60 Helicopter Repairer", branch:"Army" },
+  "15U":{ title:"CH-47 Helicopter Repairer", branch:"Army" },
+  "15W":{ title:"UAS Operator", branch:"Army" },
+  "15Y":{ title:"AH-64D Armament/Electrical/Avionic Systems Repairer", branch:"Army" },
+  "18A":{ title:"Special Forces Officer", branch:"Army" },
+  "18B":{ title:"Special Forces Weapons Sergeant", branch:"Army" },
+  "18C":{ title:"Special Forces Engineer Sergeant", branch:"Army" },
+  "18D":{ title:"Special Forces Medical Sergeant", branch:"Army" },
+  "18E":{ title:"Special Forces Communications Sergeant", branch:"Army" },
+  "18F":{ title:"Special Forces Intel Sergeant", branch:"Army" },
+  "18Z":{ title:"Special Forces Senior Sergeant", branch:"Army" },
+  "19D":{ title:"Cavalry Scout", branch:"Army" },
+  "19K":{ title:"M1 Armor Crewman", branch:"Army" },
+  "19Z":{ title:"Armor Senior Sergeant", branch:"Army" },
+  "25A":{ title:"Signal Officer", branch:"Army" },
+  "25B":{ title:"IT Specialist", branch:"Army" },
+  "25C":{ title:"Radio Operator-Maintainer", branch:"Army" },
+  "25D":{ title:"Cyber Network Defender", branch:"Army" },
+  "25E":{ title:"Electromagnetic Spectrum Manager", branch:"Army" },
+  "25L":{ title:"Cable Systems Installer-Maintainer", branch:"Army" },
+  "25M":{ title:"Multimedia Illustrator", branch:"Army" },
+  "25N":{ title:"Nodal Network Systems Operator-Maintainer", branch:"Army" },
+  "25P":{ title:"Microwave Systems Operator-Maintainer", branch:"Army" },
+  "25Q":{ title:"Multichannel Transmission Systems Operator-Maintainer", branch:"Army" },
+  "25R":{ title:"Visual Information Equipment Operator-Maintainer", branch:"Army" },
+  "25S":{ title:"Satellite Communication Systems Operator", branch:"Army" },
+  "25U":{ title:"Signal Support Systems Specialist", branch:"Army" },
+  "25V":{ title:"Combat Documentation/Production Specialist", branch:"Army" },
+  "25W":{ title:"Telecommunications Operations Chief", branch:"Army" },
+  "25X":{ title:"Chief Signal Officer", branch:"Army" },
+  "25Z":{ title:"Visual Information Operations Chief", branch:"Army" },
+  "27A":{ title:"Judge Advocate (JAG Officer)", branch:"Army" },
+  "27D":{ title:"Paralegal Specialist", branch:"Army" },
+  "29E":{ title:"Electronic Warfare Specialist", branch:"Army" },
+  "31A":{ title:"Military Police Officer", branch:"Army" },
+  "31B":{ title:"Military Police", branch:"Army" },
+  "31D":{ title:"Criminal Investigation Agent", branch:"Army" },
+  "31E":{ title:"Internment/Resettlement Specialist", branch:"Army" },
+  "31K":{ title:"Military Working Dog Handler", branch:"Army" },
+  "35A":{ title:"Military Intelligence Officer", branch:"Army" },
+  "35F":{ title:"Intelligence Analyst", branch:"Army" },
+  "35G":{ title:"Geospatial Intelligence Imagery Analyst", branch:"Army" },
+  "35H":{ title:"Collection Manager", branch:"Army" },
+  "35L":{ title:"Counterintelligence Agent", branch:"Army" },
+  "35M":{ title:"Human Intelligence Collector", branch:"Army" },
+  "35N":{ title:"SIGINT Analyst", branch:"Army" },
+  "35P":{ title:"Cryptologic Linguist", branch:"Army" },
+  "35Q":{ title:"Cryptologic Network Warfare Specialist", branch:"Army" },
+  "35S":{ title:"Signals Collector/Analyst", branch:"Army" },
+  "35T":{ title:"Military Intelligence Systems Maintainer/Integrator", branch:"Army" },
+  "36A":{ title:"Financial Management Officer", branch:"Army" },
+  "36B":{ title:"Financial Management Technician", branch:"Army" },
+  "37F":{ title:"Psychological Operations Specialist", branch:"Army" },
+  "38A":{ title:"Civil Affairs Officer", branch:"Army" },
+  "38B":{ title:"Civil Affairs Specialist", branch:"Army" },
+  "42A":{ title:"Human Resources Specialist", branch:"Army" },
+  "42B":{ title:"Human Resources Officer", branch:"Army" },
+  "46A":{ title:"Public Affairs Officer", branch:"Army" },
+  "46Q":{ title:"Public Affairs Specialist", branch:"Army" },
+  "46R":{ title:"Public Affairs Broadcast Specialist", branch:"Army" },
+  "51A":{ title:"Acquisition Manager", branch:"Army" },
+  "51C":{ title:"Acquisition, Logistics and Technology Contracting", branch:"Army" },
+  "56A":{ title:"Chaplain", branch:"Army" },
+  "56M":{ title:"Religious Affairs Specialist", branch:"Army" },
+  "60A":{ title:"Operational Medicine Officer", branch:"Army" },
+  "61A":{ title:"Internist", branch:"Army" },
+  "65D":{ title:"Physician Assistant", branch:"Army" },
+  "66B":{ title:"Women's Health Nurse Practitioner", branch:"Army" },
+  "68A":{ title:"Biomedical Equipment Specialist", branch:"Army" },
+  "68B":{ title:"Orthopedic Specialist", branch:"Army" },
+  "68C":{ title:"Practical Nursing Specialist", branch:"Army" },
+  "68D":{ title:"Operating Room Specialist", branch:"Army" },
+  "68E":{ title:"Dental Specialist", branch:"Army" },
+  "68F":{ title:"Physical Therapy Specialist", branch:"Army" },
+  "68G":{ title:"Patient Administration Specialist", branch:"Army" },
+  "68H":{ title:"Optical Laboratory Specialist", branch:"Army" },
+  "68J":{ title:"Medical Logistics Specialist", branch:"Army" },
+  "68K":{ title:"Medical Laboratory Specialist", branch:"Army" },
+  "68M":{ title:"Nutrition Care Specialist", branch:"Army" },
+  "68P":{ title:"Radiology Specialist", branch:"Army" },
+  "68Q":{ title:"Pharmacy Specialist", branch:"Army" },
+  "68R":{ title:"Veterinary Food Inspection Specialist", branch:"Army" },
+  "68S":{ title:"Preventive Medicine Specialist", branch:"Army" },
+  "68T":{ title:"Animal Care Specialist", branch:"Army" },
+  "68V":{ title:"Respiratory Specialist", branch:"Army" },
+  "68W":{ title:"Combat Medic Specialist", branch:"Army" },
+  "68X":{ title:"Behavioral Health Specialist", branch:"Army" },
+  "68Z":{ title:"Chief Medical NCO", branch:"Army" },
+  "74D":{ title:"CBRN Specialist", branch:"Army" },
+  "79R":{ title:"Recruiter", branch:"Army" },
+  "79S":{ title:"Career Counselor", branch:"Army" },
+  "79T":{ title:"Recruiting and Retention NCO", branch:"Army" },
+  "88A":{ title:"Transportation Officer", branch:"Army" },
+  "88H":{ title:"Cargo Specialist", branch:"Army" },
+  "88K":{ title:"Watercraft Operator", branch:"Army" },
+  "88L":{ title:"Watercraft Engineer", branch:"Army" },
+  "88M":{ title:"Motor Transport Operator", branch:"Army" },
+  "88N":{ title:"Transportation Management Coordinator", branch:"Army" },
+  "88Z":{ title:"Transportation Senior Sergeant", branch:"Army" },
+  "89A":{ title:"Ammunition Stock Control and Accounting Specialist", branch:"Army" },
+  "89B":{ title:"Ammunition Specialist", branch:"Army" },
+  "89D":{ title:"Explosive Ordnance Disposal Specialist", branch:"Army" },
+  "91A":{ title:"Ordnance Officer", branch:"Army" },
+  "91B":{ title:"Wheeled Vehicle Mechanic", branch:"Army" },
+  "91C":{ title:"Utilities Equipment Repairer", branch:"Army" },
+  "91D":{ title:"Power Generation Equipment Repairer", branch:"Army" },
+  "91E":{ title:"Allied Trade Specialist", branch:"Army" },
+  "91F":{ title:"Small Arms/Artillery Repairer", branch:"Army" },
+  "91H":{ title:"Track Vehicle Repairer", branch:"Army" },
+  "91J":{ title:"Quartermaster and Chemical Equipment Repairer", branch:"Army" },
+  "91L":{ title:"Construction Equipment Repairer", branch:"Army" },
+  "91M":{ title:"Bradley Fighting Vehicle Systems Maintainer", branch:"Army" },
+  "91P":{ title:"Artillery Mechanic", branch:"Army" },
+  "91S":{ title:"Stryker Systems Maintainer", branch:"Army" },
+  "91X":{ title:"Maintenance Senior Sergeant", branch:"Army" },
+  "91Z":{ title:"Mechanical Maintenance Supervisor", branch:"Army" },
+  "92A":{ title:"Automated Logistical Specialist", branch:"Army" },
+  "92F":{ title:"Petroleum Supply Specialist", branch:"Army" },
+  "92G":{ title:"Culinary Specialist", branch:"Army" },
+  "92L":{ title:"Petroleum Laboratory Specialist", branch:"Army" },
+  "92M":{ title:"Mortuary Affairs Specialist", branch:"Army" },
+  "92R":{ title:"Parachute Rigger", branch:"Army" },
+  "92S":{ title:"Shower/Laundry and Clothing Repair Specialist", branch:"Army" },
+  "92W":{ title:"Water Treatment Specialist", branch:"Army" },
+  "92Y":{ title:"Unit Supply Specialist", branch:"Army" },
+  "92Z":{ title:"Senior Logistician", branch:"Army" },
+  "94A":{ title:"Land Combat Electronic Missile System Repairer", branch:"Army" },
+  "94D":{ title:"Air Traffic Control Equipment Repairer", branch:"Army" },
+  "94E":{ title:"Radio and Communications Security Repairer", branch:"Army" },
+  "94F":{ title:"Computer Detection Systems Repairer", branch:"Army" },
+  "94H":{ title:"Test Measurement and Diagnostic Equipment Maintenance", branch:"Army" },
+  "94M":{ title:"Radar Repairer", branch:"Army" },
+  "94R":{ title:"Avionic and Survivability Equipment Repairer", branch:"Army" },
+  "94S":{ title:"PATRIOT System Repairer", branch:"Army" },
+  "94T":{ title:"AVENGER System Repairer", branch:"Army" },
+  "94W":{ title:"Electronic Maintenance Chief", branch:"Army" },
+  "94X":{ title:"Senior Electronic Maintenance Chief", branch:"Army" },
+  "94Z":{ title:"Senior Electronic Maintenance Chief WO", branch:"Army" },
+  // ── MARINE CORPS ──────────────────────────────────────────────────────────
+  "0111":{ title:"Administrative Specialist", branch:"Marine Corps" },
+  "0161":{ title:"Postal Clerk", branch:"Marine Corps" },
+  "0211":{ title:"Counterintelligence/HUMINT Specialist", branch:"Marine Corps" },
+  "0231":{ title:"Intelligence Specialist", branch:"Marine Corps" },
+  "0261":{ title:"Geographic Intelligence Specialist", branch:"Marine Corps" },
+  "0311":{ title:"Rifleman", branch:"Marine Corps" },
+  "0321":{ title:"Reconnaissance Marine", branch:"Marine Corps" },
+  "0331":{ title:"Machine Gunner", branch:"Marine Corps" },
+  "0341":{ title:"Mortarman", branch:"Marine Corps" },
+  "0351":{ title:"Infantry Assaultman", branch:"Marine Corps" },
+  "0352":{ title:"Antitank Missileman", branch:"Marine Corps" },
+  "0411":{ title:"Maintenance Management Specialist", branch:"Marine Corps" },
+  "0431":{ title:"Logistics/Embarkation Specialist", branch:"Marine Corps" },
+  "0451":{ title:"Airborne and Air Delivery Specialist", branch:"Marine Corps" },
+  "0481":{ title:"Landing Support Specialist", branch:"Marine Corps" },
+  "0511":{ title:"MAGTF Planning Specialist", branch:"Marine Corps" },
+  "0612":{ title:"Field Wireman", branch:"Marine Corps" },
+  "0621":{ title:"Field Radio Operator", branch:"Marine Corps" },
+  "0629":{ title:"Radio Chief", branch:"Marine Corps" },
+  "0631":{ title:"Network Administrator", branch:"Marine Corps" },
+  "0651":{ title:"Cyber Network Operator", branch:"Marine Corps" },
+  "0689":{ title:"Cyber Warfare Chief", branch:"Marine Corps" },
+  "1141":{ title:"Electrician", branch:"Marine Corps" },
+  "1142":{ title:"Electrical Equipment Repair Specialist", branch:"Marine Corps" },
+  "1161":{ title:"Refrigeration and Air Conditioning Mechanic", branch:"Marine Corps" },
+  "1371":{ title:"Combat Engineer", branch:"Marine Corps" },
+  "1391":{ title:"Bulk Fuel Specialist", branch:"Marine Corps" },
+  "2111":{ title:"Small Arms Repairer/Technician", branch:"Marine Corps" },
+  "2131":{ title:"Towed Artillery Systems Technician", branch:"Marine Corps" },
+  "2146":{ title:"Main Battle Tank Repairer/Technician", branch:"Marine Corps" },
+  "2147":{ title:"Light Armored Vehicle Repairer/Technician", branch:"Marine Corps" },
+  "2161":{ title:"Machinist", branch:"Marine Corps" },
+  "2171":{ title:"Electro-optical Ordnance Repairer", branch:"Marine Corps" },
+  "2311":{ title:"Ammunition Technician", branch:"Marine Corps" },
+  "2336":{ title:"EOD Technician", branch:"Marine Corps" },
+  "2621":{ title:"Signals Intelligence Analyst", branch:"Marine Corps" },
+  "2631":{ title:"Electronic Intelligence (ELINT) Analyst", branch:"Marine Corps" },
+  "2651":{ title:"Special Communications Signals Collection Analyst", branch:"Marine Corps" },
+  "2671":{ title:"Arabic Linguist", branch:"Marine Corps" },
+  "2676":{ title:"Pashto Linguist", branch:"Marine Corps" },
+  "3043":{ title:"Supply Administration and Operations", branch:"Marine Corps" },
+  "3051":{ title:"Warehouse Clerk", branch:"Marine Corps" },
+  "3052":{ title:"Packaging Specialist", branch:"Marine Corps" },
+  "3112":{ title:"Traffic Management Specialist", branch:"Marine Corps" },
+  "3212":{ title:"Water Support Technician", branch:"Marine Corps" },
+  "3381":{ title:"Food Service Specialist", branch:"Marine Corps" },
+  "4341":{ title:"Combat Correspondent", branch:"Marine Corps" },
+  "4421":{ title:"Legal Services Specialist", branch:"Marine Corps" },
+  "4612":{ title:"Combat Camera", branch:"Marine Corps" },
+  "5512":{ title:"Explosive Ordnance Disposal", branch:"Marine Corps" },
+  "5521":{ title:"Criminal Investigator", branch:"Marine Corps" },
+  "5811":{ title:"Military Police", branch:"Marine Corps" },
+  "5821":{ title:"Criminal Investigator", branch:"Marine Corps" },
+  "6042":{ title:"Aircraft Maintenance Administration Specialist", branch:"Marine Corps" },
+  "6046":{ title:"Aircraft Maintenance Chief", branch:"Marine Corps" },
+  "6072":{ title:"Aircraft Intermediate Maintenance", branch:"Marine Corps" },
+  "6113":{ title:"Fixed-Wing Aircraft Mechanic", branch:"Marine Corps" },
+  "6122":{ title:"Helicopter Power Plants Mechanic", branch:"Marine Corps" },
+  "6131":{ title:"Helicopter Dynamic Components Mechanic", branch:"Marine Corps" },
+  "6153":{ title:"Tiltrotor Mechanic", branch:"Marine Corps" },
+  "6173":{ title:"Helicopter Crew Chief", branch:"Marine Corps" },
+  "6218":{ title:"Fixed-Wing Avionics Technician", branch:"Marine Corps" },
+  "6312":{ title:"Fixed-Wing Aircraft Ordnance Systems Technician", branch:"Marine Corps" },
+  "7011":{ title:"Expeditionary Airfield Systems Technician", branch:"Marine Corps" },
+  "7041":{ title:"Aviation Operations Specialist", branch:"Marine Corps" },
+  "7212":{ title:"LAAD Gunner", branch:"Marine Corps" },
+  "7242":{ title:"Air Traffic Controller", branch:"Marine Corps" },
+  "7251":{ title:"Air Traffic Controller", branch:"Marine Corps" },
+  "8011":{ title:"Recruiting Officer", branch:"Marine Corps" },
+  "8821":{ title:"Recruiter", branch:"Marine Corps" },
+  // ── NAVY ──────────────────────────────────────────────────────────────────
+  "AB":{ title:"Aviation Boatswain's Mate", branch:"Navy" },
+  "AC":{ title:"Air Traffic Controller", branch:"Navy" },
+  "AD":{ title:"Aviation Machinist's Mate", branch:"Navy" },
+  "AE":{ title:"Aviation Electrician's Mate", branch:"Navy" },
+  "AG":{ title:"Aerographer's Mate", branch:"Navy" },
+  "AM":{ title:"Aviation Structural Mechanic", branch:"Navy" },
+  "AME":{ title:"Aviation Structural Mechanic (Safety Equipment)", branch:"Navy" },
+  "AO":{ title:"Aviation Ordnanceman", branch:"Navy" },
+  "AS":{ title:"Aviation Support Equipment Technician", branch:"Navy" },
+  "AT":{ title:"Aviation Electronics Technician", branch:"Navy" },
+  "AW":{ title:"Naval Aircrewman", branch:"Navy" },
+  "AZ":{ title:"Aviation Maintenance Administrationman", branch:"Navy" },
+  "BM":{ title:"Boatswain's Mate", branch:"Navy" },
+  "BU":{ title:"Builder (Seabee)", branch:"Navy" },
+  "CE":{ title:"Construction Electrician (Seabee)", branch:"Navy" },
+  "CM":{ title:"Construction Mechanic (Seabee)", branch:"Navy" },
+  "CS":{ title:"Culinary Specialist", branch:"Navy" },
+  "CSS":{ title:"Culinary Specialist (Submarine)", branch:"Navy" },
+  "CTI":{ title:"Cryptologic Technician (Interpretive)", branch:"Navy" },
+  "CTM":{ title:"Cryptologic Technician (Maintenance)", branch:"Navy" },
+  "CTN":{ title:"Cryptologic Technician (Networks)", branch:"Navy" },
+  "CTR":{ title:"Cryptologic Technician (Collection)", branch:"Navy" },
+  "CTT":{ title:"Cryptologic Technician (Technical)", branch:"Navy" },
+  "DC":{ title:"Damage Controlman", branch:"Navy" },
+  "DK":{ title:"Disbursing Clerk", branch:"Navy" },
+  "DT":{ title:"Dental Technician", branch:"Navy" },
+  "EA":{ title:"Engineering Aide", branch:"Navy" },
+  "EM":{ title:"Electrician's Mate", branch:"Navy" },
+  "EMN":{ title:"Electrician's Mate (Nuclear)", branch:"Navy" },
+  "EN":{ title:"Engineman", branch:"Navy" },
+  "EO":{ title:"Equipment Operator (Seabee)", branch:"Navy" },
+  "EOD":{ title:"Explosive Ordnance Disposal Technician", branch:"Navy" },
+  "ET":{ title:"Electronics Technician", branch:"Navy" },
+  "ETN":{ title:"Electronics Technician (Nuclear)", branch:"Navy" },
+  "EW":{ title:"Electronic Warfare Technician", branch:"Navy" },
+  "FC":{ title:"Fire Controlman", branch:"Navy" },
+  "FT":{ title:"Fire Control Technician (Submarine)", branch:"Navy" },
+  "GM":{ title:"Gunner's Mate", branch:"Navy" },
+  "GS":{ title:"Gas Turbine Systems Technician", branch:"Navy" },
+  "HM":{ title:"Hospital Corpsman", branch:"Navy" },
+  "HT":{ title:"Hull Maintenance Technician", branch:"Navy" },
+  "IC":{ title:"Interior Communications Electrician", branch:"Navy" },
+  "IS":{ title:"Intelligence Specialist", branch:"Navy" },
+  "IT":{ title:"Information Systems Technician", branch:"Navy" },
+  "LN":{ title:"Legalman", branch:"Navy" },
+  "LS":{ title:"Logistics Specialist", branch:"Navy" },
+  "LSS":{ title:"Logistics Specialist (Submarine)", branch:"Navy" },
+  "MA":{ title:"Master-at-Arms", branch:"Navy" },
+  "MC":{ title:"Mass Communication Specialist", branch:"Navy" },
+  "MM":{ title:"Machinist's Mate", branch:"Navy" },
+  "MMN":{ title:"Machinist's Mate (Nuclear)", branch:"Navy" },
+  "MN":{ title:"Mineman", branch:"Navy" },
+  "MR":{ title:"Machinery Repairman", branch:"Navy" },
+  "MT":{ title:"Missile Technician", branch:"Navy" },
+  "MU":{ title:"Musician", branch:"Navy" },
+  "ND":{ title:"Navy Diver", branch:"Navy" },
+  "OS":{ title:"Operations Specialist", branch:"Navy" },
+  "PR":{ title:"Aircrew Survival Equipmentman", branch:"Navy" },
+  "PS":{ title:"Personnel Specialist", branch:"Navy" },
+  "QM":{ title:"Quartermaster", branch:"Navy" },
+  "RP":{ title:"Religious Program Specialist", branch:"Navy" },
+  "SB":{ title:"Special Warfare Boat Operator", branch:"Navy" },
+  "SH":{ title:"Ship's Serviceman", branch:"Navy" },
+  "SO":{ title:"Special Warfare Operator (SEAL)", branch:"Navy" },
+  "STG":{ title:"Sonar Technician (Surface)", branch:"Navy" },
+  "STS":{ title:"Sonar Technician (Submarine)", branch:"Navy" },
+  "SW":{ title:"Steelworker (Seabee)", branch:"Navy" },
+  "TM":{ title:"Torpedoman's Mate", branch:"Navy" },
+  "UT":{ title:"Utilitiesman (Seabee)", branch:"Navy" },
+  "YN":{ title:"Yeoman", branch:"Navy" },
+  "YNS":{ title:"Yeoman (Submarine)", branch:"Navy" },
+  // ── AIR FORCE ─────────────────────────────────────────────────────────────
+  "1A0":{ title:"In-Flight Refueling", branch:"Air Force" },
+  "1A1":{ title:"Flight Engineer", branch:"Air Force" },
+  "1A2":{ title:"Aircraft Loadmaster", branch:"Air Force" },
+  "1A3":{ title:"Airborne Mission Systems Operator", branch:"Air Force" },
+  "1A6":{ title:"Flight Attendant", branch:"Air Force" },
+  "1A7":{ title:"Aerial Gunner", branch:"Air Force" },
+  "1A8":{ title:"Airborne Cryptologic Language Analyst", branch:"Air Force" },
+  "1B4":{ title:"Cyberspace Defense Operations", branch:"Air Force" },
+  "1C0":{ title:"Aviation Resource Management", branch:"Air Force" },
+  "1C1":{ title:"Air Traffic Control", branch:"Air Force" },
+  "1C2":{ title:"Combat Control", branch:"Air Force" },
+  "1C3":{ title:"Command Post", branch:"Air Force" },
+  "1C4":{ title:"Tactical Air Control Party", branch:"Air Force" },
+  "1C5":{ title:"Command and Control Battle Management", branch:"Air Force" },
+  "1C6":{ title:"Space Systems Operations", branch:"Air Force" },
+  "1C7":{ title:"Airfield Management", branch:"Air Force" },
+  "1C8":{ title:"Radar, Airfield and Weather Systems", branch:"Air Force" },
+  "1D7":{ title:"Cyberspace Systems Operations", branch:"Air Force" },
+  "1G0":{ title:"Intelligence", branch:"Air Force" },
+  "1N0":{ title:"Intelligence Analyst (Operations)", branch:"Air Force" },
+  "1N1":{ title:"Geospatial Intelligence", branch:"Air Force" },
+  "1N2":{ title:"Signals Intelligence Analysis", branch:"Air Force" },
+  "1N3":{ title:"Cryptologic Language Analyst", branch:"Air Force" },
+  "1N4":{ title:"Fusion Analyst", branch:"Air Force" },
+  "1P0":{ title:"Aircrew Flight Equipment", branch:"Air Force" },
+  "1S0":{ title:"Safety", branch:"Air Force" },
+  "1T0":{ title:"Survival, Evasion, Resistance, and Escape (SERE)", branch:"Air Force" },
+  "1T2":{ title:"Pararescue", branch:"Air Force" },
+  "1U0":{ title:"Remotely Piloted Aircraft Sensor Operator", branch:"Air Force" },
+  "1W0":{ title:"Weather", branch:"Air Force" },
+  "2A2":{ title:"Integrated Avionics", branch:"Air Force" },
+  "2A3":{ title:"A-10/F-15 Avionics Systems", branch:"Air Force" },
+  "2A5":{ title:"Aerospace Maintenance", branch:"Air Force" },
+  "2A6":{ title:"Aerospace Propulsion", branch:"Air Force" },
+  "2A7":{ title:"Aircraft Fuel Systems", branch:"Air Force" },
+  "2A8":{ title:"Mobility Air Forces Aircraft Maintenance", branch:"Air Force" },
+  "2A9":{ title:"Bomber/Special Integrated Communication/Navigation Systems", branch:"Air Force" },
+  "2F0":{ title:"Fuels", branch:"Air Force" },
+  "2G0":{ title:"Logistics Plans", branch:"Air Force" },
+  "2M0":{ title:"Missile and Space Systems Electronic Maintenance", branch:"Air Force" },
+  "2P0":{ title:"Precision Measurement Equipment Laboratory", branch:"Air Force" },
+  "2R0":{ title:"Maintenance Management Analysis", branch:"Air Force" },
+  "2S0":{ title:"Material Management", branch:"Air Force" },
+  "2T0":{ title:"Traffic Management", branch:"Air Force" },
+  "2T1":{ title:"Vehicle Operations", branch:"Air Force" },
+  "2T2":{ title:"Air Transportation", branch:"Air Force" },
+  "2T3":{ title:"Vehicle and Vehicular Equipment Maintenance", branch:"Air Force" },
+  "2W0":{ title:"Munitions Systems", branch:"Air Force" },
+  "2W1":{ title:"Nuclear Weapons", branch:"Air Force" },
+  "3D0":{ title:"Cyberspace Operations", branch:"Air Force" },
+  "3D1":{ title:"Client Systems", branch:"Air Force" },
+  "3E0":{ title:"Electrical Systems", branch:"Air Force" },
+  "3E1":{ title:"Heating, Ventilation, Air Conditioning (HVAC)", branch:"Air Force" },
+  "3E2":{ title:"Pavements and Construction Equipment", branch:"Air Force" },
+  "3E3":{ title:"Structural", branch:"Air Force" },
+  "3E4":{ title:"Utilities Systems", branch:"Air Force" },
+  "3E5":{ title:"Engineering", branch:"Air Force" },
+  "3E6":{ title:"Operations Management", branch:"Air Force" },
+  "3E7":{ title:"Fire Protection", branch:"Air Force" },
+  "3E8":{ title:"Explosive Ordnance Disposal", branch:"Air Force" },
+  "3E9":{ title:"Emergency Management", branch:"Air Force" },
+  "3N0":{ title:"Public Affairs", branch:"Air Force" },
+  "3P0":{ title:"Security Forces", branch:"Air Force" },
+  "3S0":{ title:"Personnel", branch:"Air Force" },
+  "3S2":{ title:"Education and Training", branch:"Air Force" },
+  "3S3":{ title:"Manpower", branch:"Air Force" },
+  "4A0":{ title:"Health Services Management", branch:"Air Force" },
+  "4B0":{ title:"Bioenvironmental Engineering", branch:"Air Force" },
+  "4C0":{ title:"Mental Health", branch:"Air Force" },
+  "4D0":{ title:"Diet Therapy", branch:"Air Force" },
+  "4E0":{ title:"Public Health", branch:"Air Force" },
+  "4H0":{ title:"Cardiopulmonary Laboratory", branch:"Air Force" },
+  "4J0":{ title:"Physical Medicine", branch:"Air Force" },
+  "4M0":{ title:"Aerospace and Operational Physiology", branch:"Air Force" },
+  "4N0":{ title:"Aerospace Medical Service", branch:"Air Force" },
+  "4P0":{ title:"Pharmacy", branch:"Air Force" },
+  "4R0":{ title:"Diagnostic Imaging", branch:"Air Force" },
+  "4T0":{ title:"Medical Laboratory", branch:"Air Force" },
+  "4V0":{ title:"Optometry", branch:"Air Force" },
+  "4Y0":{ title:"Dental Assistant", branch:"Air Force" },
+  "5J0":{ title:"Paralegal", branch:"Air Force" },
+  "5R0":{ title:"Chaplain Assistant", branch:"Air Force" },
+  "6C0":{ title:"Contracting", branch:"Air Force" },
+  "6F0":{ title:"Financial Management and Comptroller", branch:"Air Force" },
+  "6S0":{ title:"Special Duty Assignment Pay", branch:"Air Force" },
+  "7S0":{ title:"Special Investigations", branch:"Air Force" },
+  "8A100":{ title:"Developmental Education", branch:"Air Force" },
+  "8B000":{ title:"Military Training Instructor", branch:"Air Force" },
+  "8G000":{ title:"Honor Guard", branch:"Air Force" },
+  "8R000":{ title:"Recruiter", branch:"Air Force" },
+  // ── COAST GUARD ──────────────────────────────────────────────────────────
+  "AET":{ title:"Aviation Electrical Technician", branch:"Coast Guard" },
+  "AMT":{ title:"Aviation Maintenance Technician", branch:"Coast Guard" },
+  "AST":{ title:"Aviation Survival Technician (Rescue Swimmer)", branch:"Coast Guard" },
+  "BM":{ title:"Boatswain's Mate", branch:"Coast Guard" },
+  "CS":{ title:"Culinary Specialist", branch:"Coast Guard" },
+  "DC":{ title:"Damage Controlman", branch:"Coast Guard" },
+  "ELC":{ title:"Electrician's Mate", branch:"Coast Guard" },
+  "EM":{ title:"Electrician's Mate", branch:"Coast Guard" },
+  "ET":{ title:"Electronics Technician", branch:"Coast Guard" },
+  "GM":{ title:"Gunner's Mate", branch:"Coast Guard" },
+  "HS":{ title:"Health Services Technician", branch:"Coast Guard" },
+  "IS":{ title:"Intelligence Specialist", branch:"Coast Guard" },
+  "IT":{ title:"Information Systems Technician", branch:"Coast Guard" },
+  "IV":{ title:"Marine Science Technician", branch:"Coast Guard" },
+  "MA":{ title:"Maritime Enforcement Specialist", branch:"Coast Guard" },
+  "ME":{ title:"Maritime Enforcement Specialist", branch:"Coast Guard" },
+  "MK":{ title:"Machinery Technician", branch:"Coast Guard" },
+  "MST":{ title:"Marine Science Technician", branch:"Coast Guard" },
+  "MSD":{ title:"Musician", branch:"Coast Guard" },
+  "OS":{ title:"Operations Specialist", branch:"Coast Guard" },
+  "PA":{ title:"Public Affairs Specialist", branch:"Coast Guard" },
+  "PS":{ title:"Personnel Specialist", branch:"Coast Guard" },
+  "SK":{ title:"Storekeeper", branch:"Coast Guard" },
+  "YN":{ title:"Yeoman", branch:"Coast Guard" },
+  // ── SPACE FORCE ───────────────────────────────────────────────────────────
+  "1C6X1":{ title:"Space Systems Operations (Missile Warning)", branch:"Space Force" },
+  "1C6X2":{ title:"Space Systems Operations (Space Control)", branch:"Space Force" },
+  "1C6X3":{ title:"Space Systems Operations (Satellite)", branch:"Space Force" },
+  "1C6X4":{ title:"Space Systems Operations (Electronic Warfare)", branch:"Space Force" },
+  "1N0X1":{ title:"Operations Intelligence", branch:"Space Force" },
+  "1N4X1":{ title:"Fusion Analyst", branch:"Space Force" },
+  "2M0X1":{ title:"Missile and Space Systems Electronic Maintenance", branch:"Space Force" },
+  "2M0X2":{ title:"Missile and Space Systems Maintenance", branch:"Space Force" },
+  "3D0X1":{ title:"Cyberspace Operations", branch:"Space Force" },
+  "3D1X1":{ title:"Client Systems", branch:"Space Force" },
+  "6C0X1":{ title:"Contracting", branch:"Space Force" },
+  "6F0X1":{ title:"Financial Management", branch:"Space Force" },
+};
+
+// ── BRANCH-FILTERED MOS LOOKUP ──────────────────────────────────────────────
+// Groups all codes by branch for the searchable dropdown
+function getMosByBranch(branch) {
+  return Object.entries(MOS_DATA)
+    .filter(([code, data]) => data.branch === branch)
+    .map(([code, data]) => ({ code, title: data.title }))
+    .sort((a, b) => a.code.localeCompare(b.code));
+}
+
+
+// ─── STYLES ──────────────────────────────────────────────────────────────────
+const css = `
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  --gold:#c8960a; --gold-light:#e8aa10; --gold-dim:rgba(200,150,10,0.15);
+  --navy:#1a3a6b; --navy2:#1e4a8a; --navy3:#2456a0;
+  --slate:#4a6080; --text:#1a2a3a; --dim:#6a8090;
+  --green:#1a7a40; --red:#c0392b; --blue:#1a5c9a;
+  --bg:#f0f2f5; --card:#ffffff; --border:#dde3ec;
+  --shadow:0 2px 12px rgba(26,58,107,.08);
+  --shadow-hover:0 8px 24px rgba(26,58,107,.14);
+  --radius:12px; --radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-size:15px;}
+.app{min-height:100vh;background:var(--bg);}
+.hdr{text-align:center;padding:2rem 1rem 1.75rem;background:linear-gradient(160deg,#0a1628 0%,#1a3a6b 50%,#1e4a8a 100%);position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width=%2760%27 height=%2760%27 viewBox=%270 0 60 60%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cg fill=%27none%27%3E%3Cg fill=%27%23ffffff%27 fill-opacity=%270.02%27%3E%3Cpath d=%27M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%27/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;}
+.hdr h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4.5vw,3.2rem);letter-spacing:.14em;color:#f5d060;text-shadow:0 2px 16px rgba(0,0,0,.3);position:relative;}
+.hdr p{font-size:.9rem;color:#c0d8f0;letter-spacing:.05em;font-weight:500;position:relative;}
+.tagline{font-size:.78rem;color:#80a8d0;margin-top:.15rem;font-style:italic;position:relative;}
+.user-bar{background:rgba(10,22,40,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.08);padding:.5rem 1.4rem;display:flex;align-items:center;justify-content:space-between;font-size:.78rem;color:#b0cce8;}
+.user-bar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#d0e8f8;border-radius:6px;padding:.25rem .7rem;cursor:pointer;font-size:.72rem;transition:all .2s;}
+.user-bar button:hover{background:rgba(255,255,255,.18);}
+.tabs{display:flex;background:#ffffff;border-bottom:2px solid var(--border);padding:0 .5rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(26,58,107,.06);}
+.tab{flex:1;padding:.75rem .5rem .65rem;background:transparent;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:.82rem;color:#7a90a8;letter-spacing:.1em;transition:all .2s;}
+.tab.ai-tab{background:rgba(200,150,10,.05);border-bottom-color:rgba(200,150,10,.15);}
+.tab.ai-tab:hover{background:rgba(200,150,10,.1);color:#c8960a;}
+.tab.ai-tab.active{color:#c8960a!important;border-bottom-color:#c8960a!important;background:rgba(200,150,10,.08)!important;}
+.tabs-separator{display:flex;align-items:center;color:#dde3ec;font-size:.6rem;letter-spacing:.08em;flex-shrink:0;padding:0 .25rem;user-select:none;font-weight:700;}
+/* ── AI TOOLS QUICK NAV ─────────────────────────────────────────────────── */
+.tools-fab{position:fixed;right:1rem;bottom:5.5rem;z-index:900;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:50%;width:52px;height:52px;cursor:pointer;box-shadow:0 4px 18px rgba(200,150,10,.5);display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:transform .18s;}
+.tools-fab:hover{transform:scale(1.08);}
+.tools-drawer{position:fixed;right:0;top:0;bottom:0;width:280px;background:#0a1628;border-left:1.5px solid rgba(240,192,64,.2);z-index:950;transform:translateX(100%);transition:transform .25s ease;box-shadow:-6px 0 32px rgba(0,0,0,.5);display:flex;flex-direction:column;}
+.tools-drawer.open{transform:translateX(0);}
+.tools-drawer-header{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);padding:1rem 1.1rem;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.tools-drawer-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:#f0c040;}
+.tools-drawer-close{background:none;border:none;color:rgba(192,216,240,.5);font-size:1.1rem;cursor:pointer;padding:.25rem;}
+.tools-drawer-close:hover{color:#fff;}
+.tools-drawer-body{overflow-y:auto;flex:1;padding:.65rem .75rem;}
+.tools-drawer-section{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,192,64,.45);padding:.65rem .25rem .25rem;margin-top:.25rem;}
+.tools-drawer-link{display:flex;align-items:center;gap:.65rem;padding:.6rem .65rem;border-radius:8px;text-decoration:none;transition:background .12s;margin-bottom:.2rem;}
+.tools-drawer-link:hover{background:rgba(255,255,255,.06);}
+.tools-drawer-link.active-tool{background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.15);}
+.tdl-icon{font-size:1.1rem;flex-shrink:0;width:28px;text-align:center;}
+.tdl-text{flex:1;}
+.tdl-name{font-size:.82rem;font-weight:700;color:#fff;line-height:1.2;}
+.tdl-sub{font-size:.68rem;color:rgba(192,216,240,.4);margin-top:.08rem;}
+.tdl-badge{font-size:.6rem;font-weight:700;background:rgba(240,192,64,.12);border:1px solid rgba(240,192,64,.2);color:#f0c040;border-radius:20px;padding:.08rem .4rem;white-space:nowrap;}
+.tdl-badge.free{background:rgba(26,122,64,.12);border-color:rgba(26,122,64,.2);color:#4ade80;}
+.tools-drawer-footer{padding:.75rem;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;}
+.tools-drawer-footer a{display:block;text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:rgba(192,216,240,.5);font-size:.75rem;padding:.45rem;text-decoration:none;transition:all .15s;}
+.tools-drawer-footer a:hover{border-color:rgba(240,192,64,.2);color:#f0c040;}
+.tools-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:940;}
+.tools-overlay.open{display:block;}
+@media(max-width:480px){.tools-drawer{width:260px;}}
+
+.tab.on,.tab.active{color:var(--navy);border-bottom-color:var(--gold);background:linear-gradient(180deg,transparent,rgba(200,150,10,.04));}
+.tab:hover:not(.on):not(.active){color:var(--navy);background:rgba(26,58,107,.03);}
+.tab-n{font-size:.55rem;display:block;opacity:.6;margin-top:.1rem;font-family:'Inter',sans-serif;font-weight:500;}
+.panel{display:none;animation:fadeIn .2s;}
+.panel.on{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.wrap{max-width:980px;margin:0 auto;padding:1.5rem 1.2rem 5rem;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1.25rem;overflow:hidden;box-shadow:var(--shadow);transition:box-shadow .2s;}
+.card:hover{box-shadow:var(--shadow-hover);}
+.ch{background:linear-gradient(135deg,#f8fafd,#f0f4fa);border-bottom:1px solid var(--border);padding:.85rem 1.25rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+.ch h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:1rem;color:var(--navy);}
+.cb{padding:1.25rem;}
+.collapsed .cb{display:none;}
+.chevron{font-size:.7rem;color:var(--slate);transition:transform .25s;}
+.collapsed .chevron{transform:rotate(-90deg);}
+.entry{border:1px solid var(--border);border-radius:var(--radius-sm);padding:1.1rem;margin-bottom:1rem;background:linear-gradient(135deg,#fafbfd,#f5f8fc);transition:box-shadow .2s;}
+.entry:hover{box-shadow:var(--shadow);}
+.entry-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.4rem;}
+.entry-badge{background:var(--navy);color:#fff;border:none;border-radius:20px;padding:.25rem .85rem;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+@media(max-width:640px){
+  .g2,.g3{grid-template-columns:1fr;}
+  .wrap{padding:.85rem .75rem 5rem;}
+  .tabs{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex:0 0 auto;min-width:72px;padding:.6rem .6rem .5rem;font-size:.66rem;}
+}
+.field{margin-bottom:.75rem;}
+.field label{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--navy);font-weight:700;display:block;margin-bottom:.35rem;}
+.field input,.field select,.field textarea{background:#fff;border:1.5px solid #c8d4e4;border-radius:var(--radius-sm);color:var(--text);padding:.6rem .9rem;width:100%;font-family:'Inter',sans-serif;font-size:.9rem;transition:border-color .2s,box-shadow .2s;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,58,107,.1);}
+.field input::placeholder,.field textarea::placeholder{color:#a0b0c4;}
+.hint{font-size:.74rem;color:var(--slate);margin-top:.25rem;font-style:italic;line-height:1.5;}
+.date-picker{position:relative;}
+.date-display{background:#fff;border:1.5px solid #c8d4e4;border-radius:var(--radius-sm);color:var(--text);padding:.6rem .9rem;font-family:'Inter',sans-serif;font-size:.9rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;transition:border-color .2s,box-shadow .2s;}
+.date-display:hover{border-color:var(--navy);}
+.date-display.placeholder{color:#a0b0c4;}
+.date-dropdown{position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1.5px solid #c8d4e4;border-radius:var(--radius-sm);z-index:200;width:280px;overflow:hidden;box-shadow:0 8px 24px rgba(26,58,107,.12);}
+.month-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:8px;}
+.month-grid button{background:transparent;border:1px solid transparent;border-radius:6px;padding:6px 2px;font-size:.75rem;cursor:pointer;color:var(--text);transition:all .15s;}
+.month-grid button:hover{background:#f0f4fa;border-color:#c8d4e4;}
+.month-grid button.sel{background:var(--navy);color:#fff;border-color:var(--navy);}
+.year-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #e8eef6;background:#f8fafd;}
+.year-row button{background:transparent;border:none;color:var(--navy);font-size:1.1rem;cursor:pointer;padding:0 6px;font-weight:700;}
+.year-row span{font-size:.85rem;font-weight:700;color:var(--text);}
+.btn-primary{display:block;width:100%;padding:.85rem;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.12em;cursor:pointer;margin:.85rem 0;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(26,58,107,.25);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,58,107,.3);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-sec{background:#fff;border:1.5px solid var(--navy);color:var(--navy);border-radius:var(--radius-sm);padding:.4rem .95rem;font-family:'Inter',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-sec:hover{background:var(--navy);color:#fff;}
+.btn-add{display:block;width:100%;padding:.65rem 1rem;background:linear-gradient(135deg,#f0f4fa,#e8eef8);border:1.5px dashed #b0c4da;border-radius:var(--radius-sm);color:var(--navy);font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;margin-top:.5rem;}
+.btn-add:hover{background:linear-gradient(135deg,#e8eef8,#dce8f8);border-color:var(--navy);}
+.btn-rm{background:#fff0f0;border:1px solid #f0c0c0;color:#c0392b;border-radius:6px;padding:.2rem .55rem;font-size:.75rem;cursor:pointer;transition:all .2s;}
+.btn-rm:hover{background:#c0392b;color:#fff;border-color:#c0392b;}
+.btn-danger{background:#fff0f0;border:1px solid #f0c0c0;color:#c0392b;border-radius:6px;padding:.25rem .6rem;font-size:.75rem;cursor:pointer;transition:all .2s;}
+.btn-danger:hover{background:#c0392b;color:#fff;}
+.btn-chip{display:inline-flex;align-items:center;gap:.3rem;background:#f0f4fa;border:1.5px solid #b0c8e4;color:var(--navy);border-radius:20px;padding:.28rem .75rem;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-chip:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
+.intro{background:linear-gradient(135deg,#fffbeb,#fdf6d8);border:1px solid rgba(200,150,10,.3);border-left:4px solid var(--gold);border-radius:var(--radius-sm);padding:.9rem 1.1rem;margin-bottom:1rem;font-size:.88rem;color:#3a3000;line-height:1.7;}
+.nav-row{display:flex;justify-content:space-between;margin-top:1.25rem;padding-top:.9rem;border-top:1px solid var(--border);}
+.career-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.career-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;cursor:pointer;transition:all .2s;box-shadow:var(--shadow);}
+.career-card:hover{border-color:var(--gold);box-shadow:var(--shadow-hover);transform:translateY(-3px);}
+.career-card h4{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.08em;color:var(--navy);margin-bottom:.35rem;}
+.badge{display:inline-block;border-radius:20px;padding:.18rem .6rem;font-size:.68rem;font-weight:700;letter-spacing:.06em;}
+.badge.bm{background:rgba(26,58,107,.1);color:var(--navy);border:1px solid rgba(26,58,107,.2);}
+.badge.br{background:rgba(26,122,64,.1);color:var(--green);border:1px solid rgba(26,122,64,.2);}
+.badge.bd{background:rgba(26,92,154,.1);color:var(--blue);border:1px solid rgba(26,92,154,.2);}
+.badge.bc{background:#f0f4fa;color:var(--slate);border:1px solid var(--border);}
+.tos-badge{display:inline-flex;align-items:center;gap:.3rem;background:#f0f4fa;border:1px solid var(--border);border-radius:20px;padding:.18rem .6rem;font-size:.72rem;color:var(--slate);}
+.sdiv{border:none;border-top:1px solid var(--border);margin:1rem 0;}
+.loading{text-align:center;padding:2.5rem;color:var(--slate);}
+.spin{width:36px;height:36px;border:3px solid #dde3ec;border-top-color:var(--navy);border-radius:50%;animation:sp .7s linear infinite;margin:.75rem auto;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.save-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:.65rem 1.5rem;border-radius:24px;font-size:.85rem;z-index:9999;box-shadow:0 4px 20px rgba(26,58,107,.3);}
+.api-err{background:#fff5f5;border:1px solid #fcd0d0;border-left:4px solid var(--red);color:#900;border-radius:var(--radius-sm);padding:.65rem 1rem;font-size:.83rem;margin:.5rem 0;}
+.format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:.55rem;margin-bottom:.85rem;}
+.format-card{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:.75rem .9rem;cursor:pointer;transition:all .2s;background:#fff;}
+.format-card:hover{border-color:var(--navy);box-shadow:var(--shadow);}
+.format-card.selected{border-color:var(--gold);background:linear-gradient(135deg,#fffbeb,#fff8d8);box-shadow:0 0 0 3px rgba(200,150,10,.15);}
+.format-card h4{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:.2rem;margin-top:.15rem;}
+.format-card p{font-size:.72rem;color:var(--slate);line-height:1.4;}
+.format-card.selected .format-card-badge{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3);color:#fff;}
+.prof-hero{background:linear-gradient(135deg,#0a1628,#1a3a6b);color:#fff;border-radius:var(--radius);padding:1.4rem 1.6rem;margin-bottom:1.1rem;box-shadow:0 4px 20px rgba(26,58,107,.2);}
+.qual-chip{display:inline-flex;align-items:center;gap:.3rem;background:linear-gradient(135deg,#eef3fa,#e8eef8);border:1px solid #b0c4da;border-radius:20px;padding:.25rem .6rem;font-size:.75rem;color:var(--navy);}
+.qual-chip button{background:transparent;border:none;color:var(--red);cursor:pointer;font-size:.85rem;padding:0 .1rem;}
+.sdot{width:7px;height:7px;border-radius:50%;background:#c8d4e4;display:inline-block;margin:0 3px;transition:all .3s;}
+.sdot.on{background:var(--gold);transform:scale(1.3);}
+.pw-overlay{position:fixed;inset:0;background:rgba(8,16,32,.88);backdrop-filter:blur(8px);z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.pw-box{background:#fff;border-radius:16px;width:100%;max-width:490px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4);}
+.pw-head{background:linear-gradient(160deg,#0a1628,#1a3a6b);padding:2rem 1.8rem 1.5rem;text-align:center;}
+.pw-head h2{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:.12em;color:#f5d060;margin:0 0 .35rem;}
+.pw-head p{color:#a0c0e0;font-size:.85rem;margin:0;}
+.pw-plans{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;padding:1.25rem 1.5rem;}
+.pw-plan{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:1rem;cursor:pointer;transition:all .2s;text-align:center;}
+.pw-plan:hover,.pw-plan.selected{border-color:var(--navy);background:#f0f4ff;}
+.pw-plan .price{font-size:1.7rem;font-weight:800;color:var(--navy);line-height:1;}
+.pw-plan .price span{font-size:.8rem;font-weight:400;color:var(--slate);}
+.pw-plan .plan-name{font-weight:700;font-size:.85rem;color:var(--navy);margin-bottom:.25rem;}
+.pw-divider{display:flex;align-items:center;gap:.65rem;padding:0 1.5rem;margin-bottom:.75rem;}
+.pw-divider div{flex:1;height:1px;background:var(--border);}
+.pw-divider span{font-size:.72rem;color:#a0b4c8;letter-spacing:.06em;}
+.pw-code-row{padding:0 1.5rem .75rem;display:flex;gap:.5rem;}
+.pw-code-row input{flex:1;padding:.58rem .9rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.88rem;}
+.pw-code-row input.valid{border-color:var(--green);background:#f0fff4;}
+.pw-code-row input.invalid{border-color:var(--red);background:#fff5f5;}
+.pw-code-btn{padding:.58rem 1.1rem;background:var(--navy);color:#fff;border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:.85rem;}
+.pw-footer{padding:.75rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:.5rem;}
+.pw-cta{width:100%;padding:.85rem;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.1em;cursor:pointer;box-shadow:0 4px 16px rgba(26,58,107,.25);transition:transform .15s,box-shadow .15s;}
+.pw-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,58,107,.3);}
+.pw-skip{background:transparent;border:none;color:#a0b4c8;font-size:.78rem;cursor:pointer;padding:.3rem;}
+.btn-upgrade{width:100%;padding:.78rem;background:linear-gradient(135deg,#e8aa10,#c89008);border:none;border-radius:var(--radius-sm);color:#0a1628;font-weight:700;font-size:.95rem;cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 16px rgba(200,150,10,.25);}
+.score-ring{display:flex;align-items:center;justify-content:center;flex-direction:column;width:110px;height:110px;border-radius:50%;border:6px solid var(--navy);background:linear-gradient(135deg,#f0f4ff,#e8eef8);margin:0 auto 1rem;box-shadow:0 4px 16px rgba(26,58,107,.15);}
+.score-num{font-size:2rem;font-weight:800;color:var(--navy);line-height:1;}
+.score-lbl{font-size:.65rem;color:var(--slate);letter-spacing:.06em;text-transform:uppercase;}
+.grade-bar{height:7px;border-radius:4px;background:#e8eef6;margin-top:.35rem;}
+.grade-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--navy),var(--navy2));transition:width .6s;}
+.review-item{padding:.75rem 1rem;border-radius:var(--radius-sm);margin-bottom:.5rem;border-left:4px solid;}
+.review-high{background:#fff5f5;border-color:var(--red);}
+.review-med{background:#fffbf0;border-color:#e67e22;}
+.review-low{background:#f0fff5;border-color:var(--green);}
+.cl-output{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:1.25rem 1.5rem;font-size:.9rem;line-height:1.85;color:var(--text);white-space:pre-wrap;min-height:200px;box-shadow:inset 0 2px 8px rgba(26,58,107,.04);}
+.tracker-table{width:100%;border-collapse:collapse;font-size:.83rem;}
+.tracker-table th{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:.6rem .85rem;text-align:left;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
+.tracker-table td{padding:.6rem .85rem;border-bottom:1px solid #f0f4fa;vertical-align:middle;}
+.tracker-table tr:hover td{background:#f8fafd;}
+.status-pill{display:inline-block;padding:.18rem .65rem;border-radius:20px;font-size:.72rem;font-weight:700;}
+.sp-applied{background:#e8f0fe;color:var(--navy);}
+.sp-interview{background:#fff8e0;color:#8a6000;}
+.sp-offer{background:#e8f8ee;color:var(--green);}
+.sp-rejected{background:#fff0f0;color:var(--red);}
+.sp-withdrawn{background:#f0f4f8;color:#666;}
+.prep-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:1rem 1.1rem;margin-bottom:.65rem;border-left:4px solid var(--gold);box-shadow:var(--shadow);}
+.prep-q{font-weight:700;font-size:.9rem;color:var(--navy);margin-bottom:.4rem;}
+.prep-a{font-size:.84rem;color:var(--slate);line-height:1.7;}
+.prep-tip{font-size:.76rem;color:var(--green);margin-top:.4rem;font-style:italic;}
+.tl-item{display:flex;gap:.85rem;margin-bottom:.9rem;align-items:flex-start;}
+.tl-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;margin-top:.1rem;}
+.tl-done{background:var(--green);color:#fff;box-shadow:0 2px 8px rgba(26,122,64,.3);}
+.tl-active{background:var(--navy);color:#fff;box-shadow:0 0 0 4px rgba(26,58,107,.15);}
+.tl-pending{background:#e8eef6;color:var(--slate);}
+.tl-content h4{font-size:.89rem;font-weight:700;color:var(--navy);margin:0 0 .15rem;}
+.tl-content p{font-size:.79rem;color:var(--slate);margin:0;line-height:1.55;}
+.stat-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;text-align:center;box-shadow:var(--shadow);transition:all .2s;}
+.stat-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px);}
+.stat-num{font-size:2.1rem;font-weight:800;color:var(--navy);line-height:1;}
+.stat-lbl{font-size:.72rem;color:var(--slate);letter-spacing:.06em;text-transform:uppercase;margin-top:.25rem;}
+.res-section{margin-bottom:2rem;}
+.res-section-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;color:var(--navy);border-bottom:2px solid var(--gold);padding-bottom:.4rem;margin-bottom:.9rem;}
+.res-card{display:flex;align-items:flex-start;gap:1rem;padding:.9rem 1.1rem;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);margin-bottom:.6rem;transition:all .2s;box-shadow:var(--shadow);}
+.res-card:hover{box-shadow:var(--shadow-hover);border-color:#c0d0e8;transform:translateY(-1px);}
+.res-icon{font-size:1.6rem;flex-shrink:0;margin-top:.1rem;}
+.res-body{flex:1;}
+.res-name{font-weight:700;font-size:.9rem;color:var(--navy);margin-bottom:.18rem;}
+.res-desc{font-size:.81rem;color:var(--slate);line-height:1.6;margin-bottom:.4rem;}
+.res-contact{display:inline-flex;align-items:center;gap:.35rem;background:var(--navy);color:#fff;padding:.3rem .8rem;border-radius:20px;font-size:.75rem;font-weight:700;text-decoration:none;cursor:pointer;border:none;transition:all .2s;}
+.res-contact:hover{background:var(--navy2);}
+.res-contact.green{background:var(--green);}
+.res-contact.red{background:var(--red);}
+.res-contact.gold{background:#8a6800;color:#fff;}
+.res-tag{display:inline-block;background:#f0f4fa;color:var(--navy);font-size:.65rem;font-weight:700;padding:.12rem .45rem;border-radius:20px;margin-right:.3rem;letter-spacing:.04em;border:1px solid var(--border);}
+.res-filter-bar{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.res-filter-btn{padding:.38rem .9rem;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--slate);font-size:.8rem;cursor:pointer;transition:all .2s;font-weight:500;}
+.res-filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:700;}
+.res-filter-btn:hover:not(.active){border-color:var(--navy);color:var(--navy);}
+.crisis-banner{background:linear-gradient(135deg,#8b0000,#c0392b);color:#fff;border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;gap:1rem;align-items:flex-start;box-shadow:0 4px 20px rgba(192,57,43,.3);}
+.crisis-banner h3{margin:0 0 .3rem;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.08em;}
+.crisis-banner p{margin:0 0 .75rem;font-size:.85rem;opacity:.92;line-height:1.6;}
+.outlook-high{color:var(--green);font-weight:600;}
+.outlook-med{color:#e67e22;font-weight:600;}
+.outlook-low{color:var(--slate);font-weight:600;}
+.trans-section{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden;box-shadow:var(--shadow);}
+.trans-section-head{background:linear-gradient(135deg,#f8fafd,#f0f4fa);border-bottom:1px solid var(--border);padding:.85rem 1.25rem;}
+.trans-section-head h4{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:1rem;color:var(--navy);}
+.trans-section-body{padding:1rem 1.25rem;}
+.trans-block{background:linear-gradient(135deg,#fafbfd,#f5f8fc);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-bottom:.65rem;}
+.trans-block-label{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem;}
+.trans-block-text{font-size:.88rem;color:var(--text);line-height:1.7;}
+.trans-bullet{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.45rem;}
+.trans-bullet-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.45rem;}
+.trans-bullet-text{font-size:.87rem;color:var(--text);line-height:1.6;}
+.resume-out{border:1.5px solid var(--border);border-radius:var(--radius);background:#f8fafd;overflow:hidden;}
+.cl-badge{display:inline-block;border-radius:20px;padding:.18rem .6rem;font-size:.7rem;font-weight:700;}
+.cl-none{background:#f0f4f8;color:var(--slate);border:1px solid var(--border);}
+.cl-c{background:#e8f0fe;color:var(--navy);border:1px solid rgba(26,58,107,.2);}
+.cl-s{background:#fff8e0;color:#8a6000;border:1px solid rgba(200,150,10,.3);}
+.cl-ts{background:#fff0e0;color:#8a4000;border:1px solid rgba(200,100,10,.3);}
+.cl-ts-sci{background:#fef0f8;color:#8a0060;border:1px solid rgba(200,0,100,.3);}
+.ch-sub{font-size:.75rem;color:var(--slate);font-weight:400;}
+.mos-pill{display:inline-block;background:rgba(200,150,10,.12);border:1px solid rgba(200,150,10,.35);border-radius:4px;padding:.12rem .5rem;font-size:.72rem;color:#8a6000;margin:.1rem;}
+.duty-chip{display:inline-flex;align-items:center;gap:.3rem;background:#f0f4fa;border:1px solid var(--border);border-radius:20px;padding:.22rem .6rem;font-size:.76rem;color:var(--navy);}
+.duty-chip .dx{cursor:pointer;color:var(--red);font-weight:700;margin-left:.1rem;}
+.duty-grid{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.5rem;}
+.qual-section{margin-bottom:1rem;}
+.qual-label{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--navy);display:block;margin-bottom:.4rem;}
+.qual-add-row{display:flex;gap:.5rem;align-items:flex-end;margin-top:.4rem;}
+.clearance-block{background:linear-gradient(135deg,#f8f0ff,#f0e8ff);border:1px solid rgba(106,61,154,.2);border-radius:var(--radius-sm);padding:1rem;margin-bottom:.75rem;}
+.clearance-block h4{font-size:.78rem;font-weight:700;letter-spacing:.06em;color:#6a3d9a;margin-bottom:.65rem;}
+.etop{display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.4rem;}
+.autocomplete-list{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);z-index:200;box-shadow:0 8px 24px rgba(26,58,107,.12);max-height:200px;overflow-y:auto;}
+.autocomplete-item{padding:.6rem .9rem;cursor:pointer;font-size:.88rem;border-bottom:1px solid #f0f4fa;transition:background .15s;}
+.autocomplete-item:hover{background:#f0f4fa;}
+.skills-lib button{background:#f0f4fa;border:1px solid #b0c8e4;color:var(--navy);border-radius:20px;padding:.22rem .6rem;font-size:.72rem;cursor:pointer;margin:.15rem;transition:all .2s;}
+.skills-lib button:hover{background:var(--navy);color:#fff;}
+.grade-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.pw-badge{display:inline-block;background:#f5d060;color:#0a1628;font-size:.65rem;font-weight:800;padding:.1rem .4rem;border-radius:3px;margin-left:.4rem;vertical-align:middle;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:#f0f4f8;}
+::-webkit-scrollbar-thumb{background:#b0c4da;border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:#8aa0be;}
+`;
+
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function getBadge(type) {
+  if (type === "Military Service") return "badge bm";
+  if (type === "Reserve/Guard (concurrent with civilian)") return "badge br";
+  if (type === "DoD/Government Contractor") return "badge bd";
+  if (type === "Other Government (Federal/State)") return "badge bg";
+  return "badge bc";
+}
+
+function getClearanceBadge(lvl) {
+  if (!lvl || lvl === "None") return "cl-badge cl-none";
+  if (lvl.includes("Poly") || lvl.includes("SCI")) return "cl-badge cl-ts-sci";
+  if (lvl.startsWith("Top Secret")) return "cl-badge cl-ts";
+  if (lvl === "Secret") return "cl-badge cl-s";
+  return "cl-badge cl-c";
+}
+
+// ── API KEY CHECK ───────────────────────────────────────────────────────────
+// ── PROXY CONFIG ──
+// Set this to your Vercel proxy URL after deploying
+const PROXY_URL = window.VCB_PROXY_URL || "";
+
+function isApiKeySet() {
+  // Works if proxy URL is configured OR if a local key exists (fallback)
+  return PROXY_URL.length > 10 || (localStorage.getItem("vcb_admin_key") || "").length > 20;
+}
+
+function getStoredApiKey() {
+  return localStorage.getItem("vcb_admin_key") || (typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key")) || (document.cookie.match(/vcb_ak=([^;]+)/)||[])[1]||"";
+}
+
+
+
+
+
+
+
+async function callClaude(prompt, system = "", maxTokens = 2000) {
+  // Hard paywall gate — never call API without valid subscription
+  try {
+    const acc = JSON.parse(localStorage.getItem("vcb_access") || "{}");
+    const hasValidAccess = (
+      (acc.type === "paid" && acc.stripeSession && acc.expiry > Date.now()) ||
+      (acc.type === "code" && acc.code)
+    );
+    if (!hasValidAccess) {
+      throw new Error("PAYWALL: Subscription required. Please subscribe to use AI tools.");
+    }
+  } catch(e) {
+    if (e.message && e.message.startsWith("PAYWALL:")) throw e;
+    // JSON parse error = no access stored
+    throw new Error("PAYWALL: Subscription required.");
+  }
+  try {
+    const body = {
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: maxTokens,
+      messages: [{ role: "user", content: prompt }]
+    };
+    if (system) body.system = system;
+
+    const endpoint = PROXY_URL ? PROXY_URL : "https://api.anthropic.com/v1/messages";
+    const headers = { "Content-Type": "application/json" };
+    if (!PROXY_URL) {
+      headers["x-api-key"] = getStoredApiKey();
+      headers["anthropic-version"] = "2023-06-01";
+      headers["anthropic-dangerous-direct-browser-access"] = "true";
+    }
+    // Retry up to 2 times on network failure
+    let lastErr;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const r = await fetch(endpoint, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(body)
+        });
+
+        if (!r.ok) {
+          const err = await r.json();
+          console.error("Anthropic API error:", err);
+          throw new Error((err && err.error && err.error.message) || "API request failed with status " + r.status);
+        }
+        const d = await r.json();
+        return d.content ? d.content.map(b => b.text || "").join("") : "";
+      } catch(fetchErr) {
+        lastErr = fetchErr;
+        if (attempt < 1) await new Promise(res => setTimeout(res, 1000));
+      }
+    }
+    throw lastErr;
+  } catch(e) {
+    console.error("callClaude error:", e);
+    throw e;
+  }
+}
+// ── DATE PICKER COMPONENT ─────────────────────────────────────────────────────
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function DatePicker({ value, onChange, placeholder = "Select date" }) {
+  const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState("year"); // year | month
+  const [selYear, setSelYear] = useState(null);
+  const ref = useRef(null);
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const years = Array.from({length: 77}, (_, i) => currentYear - i);
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const parsed = value ? { year: value.split("-")[0], month: value.split("-")[1] } : null;
+  const display = parsed
+    ? (MONTHS[parseInt(parsed.month) - 1])+" "+parsed.year
+    : placeholder;
+
+  const pickYear = (y) => { setSelYear(y); setMode("month"); };
+  const pickMonth = (m) => {
+    const mm = String(m + 1).padStart(2, "0");
+    onChange(`${selYear}-${mm}`);
+    setOpen(false);
+    setMode("year");
+  };
+
+  return (
+    <div className="date-picker" ref={ref}>
+      <div className="date-display" onClick={() => { setOpen(o => !o); setMode("year"); }}>
+        <span style={{color: parsed ? "var(--text)" : "var(--dim)"}}>{display}</span>
+        <span style={{fontSize:".7rem",color:"#3a5070"}}>&#9660;</span>
+      </div>
+      {open && (
+        <div className="date-dropdown">
+          <div className="date-dropdown-head">
+            {mode === "month" ? (
+              <>
+                <button className="date-nav-btn" onClick={() => setMode("year")}>← Years</button>
+                <span>{selYear}</span>
+                <div/>
+              </>
+            ) : (
+              <span>Select Year</span>
+            )}
+          </div>
+          {mode === "year" && (
+            <div className="year-grid">
+              {years.map(y => (
+                <button key={y} className={"year-btn" + ((parsed && parsed.year) == y ? " sel" : "")}
+                  onClick={() => pickYear(y)}>{y}</button>
+              ))}
+            </div>
+          )}
+          {mode === "month" && (
+            <div className="month-grid">
+              {MONTHS.map((m, i) => (
+                <button key={m} className={"month-btn" + ((parsed && parsed.month) == String(i+1).padStart(2,"0") ? " sel" : "")}
+                  onClick={() => pickMonth(i)}>{m}</button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+  return _panel;
+}
+
+// ── UNIVERSITY AUTOCOMPLETE COMPONENT ────────────────────────────────────────
+function UniversityInput({ value, onChange, placeholder }) {
+  const [suggestions, setSuggestions] = useState([]);
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const handleChange = (val) => {
+    onChange(val);
+    if (val.length > 1) {
+      const q = val.toLowerCase();
+      const matches = UNIVERSITIES.filter(u => u.toLowerCase().includes(q)).slice(0, 8);
+      setSuggestions(matches);
+      setOpen(matches.length > 0);
+    } else {
+      setOpen(false);
+    }
+  };
+
+  const highlight = (text, query) => {
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return text;
+    return (
+      <>{text.slice(0, idx)}<strong style={{color:"var(--gold-light)"}}>{text.slice(idx, idx + query.length)}</strong>{text.slice(idx + query.length)}</>
+    );
+  };
+
+  return (
+    <div className="field" ref={ref} style={{position:"relative",marginBottom:0}}>
+      <input
+        placeholder={placeholder || "Start typing institution name..."}
+        value={value}
+        onChange={e => handleChange(e.target.value)}
+        onFocus={() => value.length > 1 && setOpen(suggestions.length > 0)}
+        autoComplete="off"
+      />
+      {open && (
+        <div className="autocomplete-list">
+          {suggestions.map(s => (
+            <div key={s} className="autocomplete-item"
+              onMouseDown={() => { onChange(s); setOpen(false); }}>
+              {highlight(s, value)}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+  return _panel;
+}
+
+
+
+// ── AWARDS LIBRARY ──────────────────────────────────────────────────────────
+const AWARDS_LIBRARY = {
+  "Army": [
+    "Medal of Honor","Distinguished Service Cross","Silver Star","Defense Superior Service Medal",
+    "Legion of Merit","Soldier's Medal","Bronze Star Medal","Bronze Star Medal with Valor",
+    "Purple Heart","Meritorious Service Medal","Army Commendation Medal",
+    "Army Commendation Medal with Valor","Army Achievement Medal",
+    "Army Good Conduct Medal","National Defense Service Medal",
+    "Global War on Terrorism Expeditionary Medal","Global War on Terrorism Service Medal",
+    "Afghanistan Campaign Medal","Iraq Campaign Medal","Korean Defense Service Medal",
+    "Armed Forces Expeditionary Medal","Humanitarian Service Medal",
+    "Army Service Ribbon","Overseas Service Ribbon","Army Reserve Components Achievement Medal",
+    "Combat Infantryman Badge","Combat Action Badge","Combat Medical Badge",
+    "Expert Infantryman Badge","Expert Field Medical Badge","Air Assault Badge",
+    "Airborne Badge","Master Parachutist Badge","Ranger Tab","Special Forces Tab",
+    "Sapper Tab","Presidential Unit Citation","Valorous Unit Award",
+    "Army Superior Unit Award","Meritorious Unit Commendation",
+  ],
+  "Navy": [
+    "Medal of Honor","Navy Cross","Defense Superior Service Medal","Legion of Merit",
+    "Navy and Marine Corps Medal","Bronze Star Medal","Bronze Star Medal with Valor",
+    "Purple Heart","Meritorious Service Medal","Navy and Marine Corps Commendation Medal",
+    "Navy and Marine Corps Achievement Medal","Navy Good Conduct Medal",
+    "National Defense Service Medal","Global War on Terrorism Expeditionary Medal",
+    "Global War on Terrorism Service Medal","Afghanistan Campaign Medal","Iraq Campaign Medal",
+    "Armed Forces Expeditionary Medal","Navy Expeditionary Medal","Sea Service Deployment Ribbon",
+    "Navy and Marine Corps Overseas Service Ribbon","Naval Reserve Meritorious Service Medal",
+    "Combat Action Ribbon","Presidential Unit Citation","Navy Unit Commendation",
+    "Meritorious Unit Commendation","Navy E Ribbon","Enlisted Surface Warfare Specialist",
+    "Enlisted Aviation Warfare Specialist","Special Warfare Insignia (SEAL Trident)",
+    "Explosive Ordnance Disposal Badge","Diving Officer Insignia",
+  ],
+  "Marine Corps": [
+    "Medal of Honor","Navy Cross","Defense Superior Service Medal","Legion of Merit",
+    "Navy and Marine Corps Medal","Bronze Star Medal","Bronze Star Medal with Valor",
+    "Purple Heart","Meritorious Service Medal","Navy and Marine Corps Commendation Medal",
+    "Navy and Marine Corps Achievement Medal","Marine Corps Good Conduct Medal",
+    "National Defense Service Medal","Global War on Terrorism Expeditionary Medal",
+    "Afghanistan Campaign Medal","Iraq Campaign Medal","Combat Action Ribbon",
+    "Sea Service Deployment Ribbon","Marine Corps Overseas Service Ribbon",
+    "Presidential Unit Citation","Navy Unit Commendation","Meritorious Unit Commendation",
+    "Combat Infantryman Badge equivalent","Parachutist Badge","Combatant Diver Badge",
+    "Reconnaissance Diver Badge","Force Reconnaissance Badge",
+  ],
+  "Air Force": [
+    "Medal of Honor","Air Force Cross","Defense Superior Service Medal","Legion of Merit",
+    "Airman's Medal","Bronze Star Medal","Bronze Star Medal with Valor","Purple Heart",
+    "Meritorious Service Medal","Air Force Commendation Medal","Air Force Achievement Medal",
+    "Air Force Good Conduct Medal","National Defense Service Medal",
+    "Global War on Terrorism Expeditionary Medal","Global War on Terrorism Service Medal",
+    "Afghanistan Campaign Medal","Iraq Campaign Medal","Armed Forces Expeditionary Medal",
+    "Air Force Expeditionary Service Ribbon","Air Force Overseas Ribbon",
+    "Air Force Longevity Service Award","Air Force Training Ribbon",
+    "Combat Readiness Medal","Air and Space Campaign Medal",
+    "Presidential Unit Citation","Air Force Outstanding Unit Award",
+    "Air Force Organizational Excellence Award","Air Force Recognition Ribbon",
+    "Aerial Achievement Medal","Air Medal","Distinguished Flying Cross",
+  ],
+  "Space Force": [
+    "Medal of Honor","Legion of Merit","Bronze Star Medal","Purple Heart",
+    "Meritorious Service Medal","Space Force Commendation Medal","Space Force Achievement Medal",
+    "Space Force Good Conduct Medal","National Defense Service Medal",
+    "Global War on Terrorism Service Medal","Space Force Training Ribbon",
+    "Presidential Unit Citation","Space Force Unit Citation",
+  ],
+  "Coast Guard": [
+    "Medal of Honor","Coast Guard Cross","Defense Superior Service Medal","Legion of Merit",
+    "Coast Guard Medal","Bronze Star Medal","Purple Heart","Meritorious Service Medal",
+    "Coast Guard Commendation Medal","Coast Guard Achievement Medal",
+    "Coast Guard Good Conduct Medal","National Defense Service Medal",
+    "Global War on Terrorism Expeditionary Medal","Global War on Terrorism Service Medal",
+    "Afghanistan Campaign Medal","Iraq Campaign Medal","Armed Forces Expeditionary Medal",
+    "Coast Guard Expeditionary Medal","Coast Guard Sea Service Ribbon",
+    "Coast Guard Overseas Service Ribbon","Presidential Unit Citation",
+    "Coast Guard Unit Commendation","Coast Guard Meritorious Unit Commendation",
+    "Coast Guard Award","Rescue and Survival Swimmer Badge",
+  ],
+  "All Branches": [
+    "Defense Meritorious Service Medal","Joint Service Commendation Medal",
+    "Joint Service Achievement Medal","Joint Meritorious Unit Award",
+    "Prisoner of War Medal","Armed Forces Service Medal","Military Outstanding Volunteer Service Medal",
+    "NATO Medal","United Nations Medal","Multinational Force and Observers Medal",
+    "Inter-American Defense Board Medal",
+  ],
+};
+
+// ── SKILLS LIBRARY ──────────────────────────────────────────────────────────
+const SKILLS_LIBRARY = {
+  technical: [
+    "Weapons Qualification (Rifle/Pistol)","Vehicle Operation (wheeled)","Vehicle Operation (tracked)",
+    "Radio/Communications Systems","SINCGARS Radio","Satellite Communications",
+    "Night Vision Devices (NVDs)","Land Navigation","GPS/Digital Navigation",
+    "IED Detection/Counter-IED","Explosives Handling","Demolitions",
+    "Medical Triage/Combat First Aid","TCCC (Tactical Combat Casualty Care)",
+    "HAZMAT Handling","CBRN/NBC Detection","Forklift Operation","Crane Operation",
+    "Aircraft Ground Support","UAS/Drone Operation","Cybersecurity","Network Administration",
+    "IT Systems Administration","Programming/Software Development","Signal Intelligence (SIGINT)",
+    "Human Intelligence (HUMINT)","All-Source Intelligence Analysis","Geospatial Analysis",
+    "OSINT (Open Source Intelligence)","Imagery Analysis","Electronic Warfare",
+    "Fire Support/Artillery","Mortar Systems","Sniper/Long Range Marksmanship",
+    "Close Air Support (CAS)","Medevac/CASEVAC Procedures","Petroleum Operations",
+    "Supply Chain Management","Inventory Management Systems","Microsoft Office Suite",
+    "SharePoint","Geographic Information Systems (GIS)","AutoCAD","Adobe Suite",
+  ],
+  leadership: [
+    "Team Leadership (squad/team level)","Platoon Leadership","Company Leadership",
+    "Staff Officer Experience","Mission Planning","Operations Planning (OPORD)",
+    "Training Development and Delivery","Performance Counseling","Mentoring",
+    "Conflict Resolution","Cross-Cultural Communication","Negotiation",
+    "Budget Management","Resource Allocation","Risk Management","Crisis Management",
+    "Decision Making Under Pressure","Public Speaking/Briefing","Technical Writing",
+    "Project Management","Personnel Management","Scheduling and Coordination",
+    "Physical Fitness Training Leadership","Safety Management","Quality Control",
+    "Logistics Coordination","Emergency Management","Disaster Response",
+  ],
+};
+
+const CERTS_LIBRARY = [
+  "EMT-Basic (NREMT-B)","EMT-Intermediate","Paramedic (NREMT-P)",
+  "CompTIA Security+","CompTIA A+","CompTIA Network+","CompTIA CySA+",
+  "Certified Information Systems Security Professional (CISSP)",
+  "Certified Ethical Hacker (CEH)","AWS Certified Cloud Practitioner",
+  "Project Management Professional (PMP)","CAPM (Certified Associate PM)",
+  "Lean Six Sigma Green Belt","Lean Six Sigma Black Belt",
+  "CDL Class A (Commercial Driver's License)","CDL Class B",
+  "FAA Part 107 (UAS/Drone Pilot)","Private Pilot License","HAZMAT Endorsement",
+  "OSHA 10-Hour","OSHA 30-Hour","Certified Safety Professional (CSP)",
+  "Certified Protection Professional (CPP)","Physical Security Professional (PSP)",
+  "Certified Information Privacy Professional (CIPP)",
+  "Certified Fraud Examiner (CFE)","Certified Public Accountant (CPA)",
+  "Certified Financial Planner (CFP)","Real Estate License",
+  "Certified Government Financial Manager (CGFM)",
+  "Defense Acquisition Workforce Improvement Act (DAWIA) Level I/II/III",
+  "Contracting Officer Representative (COR) Certification",
+  "Secret Clearance","Top Secret Clearance","TS/SCI Clearance",
+  "DoD 8570 IAT Level I/II/III","DoD 8570 IAM Level I/II/III",
+  "Forklift Operator Certification","Crane Operator Certification",
+  "Welding Certification (AWS)","Electrician License",
+  "HVAC Certification","Plumbing License",
+  "Certified Nursing Assistant (CNA)","Licensed Practical Nurse (LPN)",
+  "Registered Nurse (RN)","Combat Medic Certification (68W)",
+];
+
+
+// ── ACCESS CODES — defined at module level so useState initializer can use them ──
+// These must be outside any React component to avoid hoisting issues with const.
+var ACCESS_CODES_MAP = {
+  // Permanent codes (site owner / admin)
+  "OWNER2025":     0,
+  "OWNER2026":     0,
+  // 30-day tester codes
+  "ALPHA30":       Date.UTC(2026, 5, 30),
+  "BRAVO30":       Date.UTC(2026, 5, 30),
+  "CHARLIE30":     Date.UTC(2026, 5, 30),
+  "DELTA30":       Date.UTC(2026, 5, 30),
+  "ECHO30":        Date.UTC(2026, 5, 30),
+  "FOXTROT30":     Date.UTC(2026, 5, 30),
+  "GOLF30":        Date.UTC(2026, 5, 30),
+  "HOTEL30":       Date.UTC(2026, 5, 30),
+  "INDIA30":       Date.UTC(2026, 5, 30),
+  "JULIET30":      Date.UTC(2026, 5, 30),
+  // Named tester codes
+  "VETTEST1":      Date.UTC(2026, 8, 1),
+  "VETTEST2":      Date.UTC(2026, 8, 1),
+  "VETTEST3":      Date.UTC(2026, 8, 1),
+  "VETTEST4":      Date.UTC(2026, 8, 1),
+  "VETTEST5":      Date.UTC(2026, 8, 1),
+  "AMON26":        Date.UTC(2026, 11, 31),
+  "TAP2026":       Date.UTC(2026, 11, 31),
+  "VSO2026":       Date.UTC(2026, 11, 31),
+};
+
+function isCodeValid(code) {
+  var c = (code||"").trim().toUpperCase();
+  if (!(c in ACCESS_CODES_MAP)) return { valid: false, reason: "invalid" };
+  var expiry = ACCESS_CODES_MAP[c];
+  if (expiry === 0) return { valid: true, reason: "permanent" };
+  if (Date.now() > expiry) return { valid: false, reason: "expired" };
+  return { valid: true, reason: "timed", expiry: expiry };
+}
+
+function checkAccess() {
+  var stored = localStorage.getItem("vcb_access");
+  if (!stored) return false;
+  try {
+    var d = JSON.parse(stored);
+    if (d.type === "paid") {
+      if (!d.stripeSession) { localStorage.removeItem("vcb_access"); return false; }
+      if (d.expiry > Date.now()) return true;
+      localStorage.removeItem("vcb_access"); return false;
+    }
+    if (d.type === "code" && d.code) {
+      var check = isCodeValid(d.code);
+      if (!check.valid) { localStorage.removeItem("vcb_access"); return false; }
+      return true;
+    }
+    return false;
+  } catch(e) { return false; }
+}
+
+function openToolsDrawer() {
+  document.getElementById('tools-drawer').classList.add('open');
+  document.getElementById('tools-overlay').classList.add('open');
+}
+function closeToolsDrawer() {
+  document.getElementById('tools-drawer').classList.remove('open');
+  document.getElementById('tools-overlay').classList.remove('open');
+}
+
+function newMilExp() {
+  return { 
+    id:Date.now(), type:"Military Service", branch:"Army", rank:"", mos:"", mosTitle:"", serviceType:"Active Duty",
+    unit:"", startDate:"", endDate:"", current:false, tos:"", duties:"",
+    mosRoles:[], // sub-roles held within this MOS
+    deployments:"", awards:[], customAward:"",
+    clearanceLevel:"None", clearanceStatus:"Active", sciAccess:false, polygraph:"None",
+    asi:[], sqi:[], additionalDuties:[], customDuty:"", customAsiCode:"", customAsiDesc:"", customSqiCode:"", customSqiDesc:"",
+    employer:"", jobTitle:"" 
+  };
+}
+function newCivExp() {
+  return { id:Date.now(), type:"Civilian Employment", branch:"", rank:"", mos:"", mosTitle:"", serviceType:"",
+    unit:"", startDate:"", endDate:"", current:false, tos:"", duties:"", deployments:"", awards:"",
+    clearanceLevel:"None", clearanceStatus:"Active", sciAccess:false, polygraph:"None",
+    asi:[], sqi:[], additionalDuties:[], customDuty:"", customAsiCode:"", customAsiDesc:"", customSqiCode:"", customSqiDesc:"",
+    employer:"", jobTitle:"" };
+}
+
+// ─── COMPONENT ────────────────────────────────────────────────────────────────
+
+
+function CareerListView(props) {
+  const {careers,careerFilter,setCareerFilter,openCareerDetail,findCareers,loading,careerError,milExperiences,target,upT,currentUser,setShowAuth,showToast,DI,filterCareers,matchesSector,setSelectedCareer} = props;
+  return (<>
+  <div style={{marginTop:"1.1rem",marginBottom:".75rem",display:"flex",justifyContent:"space-between",alignItems:"flex-end",flexWrap:"wrap",gap:".5rem"}}>
+    <div>
+      <h3 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",color:"var(--gold-light)",fontSize:"1.05rem"}}>Your Career Matches</h3>
+      <p style={{fontSize:".78rem",color:"var(--slate)",marginTop:".2rem"}}>Click any career to see full details, salary breakdown, and growth path</p>
+    </div>
+    <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
+      {["All","Civilian","Government",DI].map(f=>(
+        <button key={f} onClick={()=>setCareerFilter(f)} style={{padding:".28rem .7rem",borderRadius:"2px",border:"1px solid",fontSize:".72rem",letterSpacing:".06em",cursor:"pointer",borderColor:careerFilter===f?"var(--gold)":"rgba(201,168,76,.25)",background:careerFilter===f?"rgba(201,168,76,.12)":"transparent",color:careerFilter===f?"var(--gold-light)":"var(--slate)"}}>
+          {f}
+        </button>
+      ))}
+    </div>
+  </div>
+    
+
+
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem"}}>
+    <span style={{fontSize:".78rem",color:"var(--dim)"}}>{filterCareers(careers,careerFilter).length} matches</span>
+    <button style={{padding:".3rem .8rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".78rem",cursor:"pointer"}} onClick={()=>{if(!currentUser){setShowAuth(true);return;}const v=filterCareers(careers,careerFilter);const e=v.map(c=>({id:Date.now()+c.title,title:c.title,sector:c.sector,industry:c.industry,salary:c.salaryRange,match:c.match,date:new Date().toLocaleDateString()}));const p=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");localStorage.setItem("vcb_saved_paths",JSON.stringify([...e,...p.filter(x=>!e.find(y=>y.title===x.title))].slice(0,50)));showToast("✓ Saved "+e.length+" paths");}}>💾 Save All</button>
+  </div>
+  <div style={{display:"flex",flexDirection:"column",gap:".55rem"}}>
+    {careers
+      .filter(c=>matchesSector(c,careerFilter))
+      .map((c,i)=>(
+      <div key={i} onClick={()=>openCareerDetail(c)} style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.28)",borderRadius:"4px",padding:"1rem 1.1rem",cursor:"pointer",transition:"all .18s",display:"flex",alignItems:"center",gap:"1rem",flexWrap:"wrap"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.5)";e.currentTarget.style.background="rgba(201,168,76,.05)";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.28)";e.currentTarget.style.background="rgba(255,255,255,.03)";}}>
+    
+
+        <div style={{fontSize:"1.6rem",flexShrink:0,width:"2.4rem",textAlign:"center"}}>
+          {c.sector==="Government"?"🏛️":c.sector===DI?"🛡️":"💼"}
+        </div>
+    
+
+        <div style={{flex:1,minWidth:"160px"}}>
+          <div style={{display:"flex",alignItems:"center",gap:".5rem",flexWrap:"wrap",marginBottom:".25rem"}}>
+            <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1rem",color:"var(--gold-light)"}}>{c.title}</span>
+            <span className="badge bc" style={{fontSize:".6rem"}}>{c.match} Match</span>
+            {c.clearanceBonus&&<span style={{fontSize:".65rem",color:"#e8b84b",background:"rgba(230,160,60,.1)",border:"1px solid rgba(230,160,60,.25)",padding:".1rem .4rem",borderRadius:"2px"}}>🔐 Clearance+</span>}
+          </div>
+          <div style={{fontSize:".82rem",color:"var(--dim)",lineHeight:"1.45"}}>{c.description}</div>
+        </div>
+    
+
+        <div style={{textAlign:"right",flexShrink:0,minWidth:"110px"}}>
+          <div style={{fontSize:"1rem",fontWeight:600,color:"var(--green)"}}>{c.salaryRange}</div>
+          <div style={{fontSize:".7rem",marginTop:".2rem"}} className={c.outlook==="High Growth"?"outlook-high":c.outlook==="Emerging"?"outlook-med":"outlook-low"}>
+            {c.outlook==="High Growth"?"📈":c.outlook==="Emerging"?"🔄":"📊"} {c.outlook}
+          </div>
+        </div>
+    
+
+        <div style={{color:"var(--gold)",fontSize:"1.1rem",flexShrink:0}}>→</div>
+      </div>
+    ))}
+  </div>
+  </>);
+}
+
+
+
+function CareerDetailBody({careerDetail,selectedCareer,currentUser,setShowAuth,showToast,tab,setTab,target,targetLocation,upT,DI,setSelectedCareer}) {
+  return (<div style={{display:"flex",flexDirection:"column",gap:"1rem"}}>
+
+    {careerDetail.about&&(
+      <div className="card">
+        <div className="ch"><h3>📋 About This Career</h3></div>
+        <div className="cb" style={{fontSize:".9rem",lineHeight:"1.8",color:"var(--text)"}}>{careerDetail.about}</div>
+      </div>
+    )}
+
+
+    {careerDetail.salaryBreakdown&&(
+      <div className="card">
+        <div className="ch"><h3>💰 Salary Breakdown</h3></div>
+        <div className="cb">
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:".65rem",marginBottom:".85rem"}}>
+            {[
+              {label:"Entry Level",val:careerDetail.salaryBreakdown.entry,color:"var(--slate)"},
+              {label:"Mid-Career",val:careerDetail.salaryBreakdown.mid,color:"var(--gold)"},
+              {label:"Senior / Expert",val:careerDetail.salaryBreakdown.senior,color:"var(--green)"},
+              {label:"With Clearance",val:careerDetail.salaryBreakdown.cleared,color:"#e8b84b"},
+            ].filter(s=>s.val).map(s=>(
+              <div key={s.label} style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderRadius:"3px",padding:".7rem .85rem",textAlign:"center"}}>
+                <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--dim)",marginBottom:".3rem"}}>{s.label}</div>
+                <div style={{fontSize:"1.05rem",fontWeight:600,color:s.color}}>{s.val}</div>
+              </div>
+            ))}
+          </div>
+          {careerDetail.salaryBreakdown.notes&&(
+            <div style={{fontSize:".8rem",color:"var(--dim)",fontStyle:"italic",lineHeight:"1.55"}}>{careerDetail.salaryBreakdown.notes}</div>
+          )}
+        </div>
+      </div>
+    )}
+
+
+    {careerDetail.careerPath&&careerDetail.careerPath.length>0&&(
+      <div className="card">
+        <div className="ch"><h3>📈 Career Growth Path</h3></div>
+        <div className="cb">
+          <div style={{display:"flex",flexDirection:"column",gap:"0"}}>
+            {careerDetail.careerPath.map((step,i)=>(
+              <div key={i} style={{display:"flex",gap:"1rem",alignItems:"flex-start",position:"relative"}}>
+
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",flexShrink:0}}>
+                  <div style={{width:"28px",height:"28px",borderRadius:"50%",background:"rgba(201,168,76,.15)",border:"2px solid rgba(201,168,76,.4)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".7rem",fontWeight:700,color:"var(--gold)",flexShrink:0}}>{i+1}</div>
+                  {i<careerDetail.careerPath.length-1&&<div style={{width:"2px",background:"rgba(201,168,76,.15)",flex:1,minHeight:"30px",margin:".2rem 0"}}/>}
+                </div>
+
+                <div style={{flex:1,paddingBottom:i<careerDetail.careerPath.length-1?"1rem":"0"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:".3rem",marginBottom:".25rem"}}>
+                    <span style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".07em",fontSize:".95rem",color:"var(--gold-light)"}}>{step.title}</span>
+                    <span style={{fontSize:".75rem",color:"var(--green)",fontWeight:600}}>{step.salary}</span>
+                  </div>
+                  <div style={{fontSize:".78rem",color:"var(--dim)",lineHeight:"1.5",marginBottom:".2rem"}}>{step.description}</div>
+                  {step.timeframe&&<div style={{fontSize:".7rem",color:"var(--slate)",fontStyle:"italic"}}>⏱ {step.timeframe}</div>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem"}}>
+      {careerDetail.whyYouFit&&(
+        <div className="card">
+          <div className="ch"><h3>🎯 Why You're Qualified</h3></div>
+          <div className="cb">
+            <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
+              {careerDetail.whyYouFit.map((w,i)=>(
+                <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
+                  <span style={{color:"var(--green)",flexShrink:0}}>✓</span>{w}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+      {careerDetail.requiredSkills&&(
+        <div className="card">
+          <div className="ch"><h3>🔧 Skills Needed</h3></div>
+          <div className="cb">
+            <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
+              {careerDetail.requiredSkills.map((s,i)=>(
+                <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
+                  <span style={{color:"var(--gold)",flexShrink:0}}>→</span>{s}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
+
+
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem"}}>
+      {careerDetail.gaps&&careerDetail.gaps.length>0&&(
+        <div className="card">
+          <div className="ch"><h3>⚠️ Gaps to Address</h3></div>
+          <div className="cb">
+            <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
+              {careerDetail.gaps.map((g,i)=>(
+                <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
+                  <span style={{color:"var(--orange)",flexShrink:0}}>!</span>{g}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+      {careerDetail.certifications&&careerDetail.certifications.length>0&&(
+        <div className="card">
+          <div className="ch"><h3>📜 Recommended Certifications</h3></div>
+          <div className="cb">
+            <ul style={{listStyle:"none",padding:0,display:"flex",flexDirection:"column",gap:".5rem"}}>
+              {careerDetail.certifications.map((c,i)=>(
+                <li key={i} style={{display:"flex",gap:".5rem",fontSize:".84rem",color:"var(--text)",lineHeight:"1.5"}}>
+                  <span style={{color:"var(--blue)",flexShrink:0}}>⭐</span>{c}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
+
+
+    {careerDetail.actionSteps&&careerDetail.actionSteps.length>0&&(
+      <div className="card" style={{borderColor:"rgba(76,175,130,.3)"}}>
+        <div className="ch" style={{background:"rgba(76,175,130,.07)"}}><h3>🚀 Your Action Plan</h3></div>
+        <div className="cb">
+          <div style={{display:"flex",flexDirection:"column",gap:".55rem"}}>
+            {careerDetail.actionSteps.map((s,i)=>(
+              <div key={i} style={{display:"flex",gap:".75rem",alignItems:"flex-start"}}>
+                <div style={{width:"22px",height:"22px",borderRadius:"50%",background:"rgba(76,175,130,.15)",border:"1px solid rgba(76,175,130,.35)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".68rem",fontWeight:700,color:"var(--green)",flexShrink:0}}>{i+1}</div>
+                <div style={{fontSize:".84rem",color:"var(--text)",lineHeight:"1.55",paddingTop:".15rem"}}>{s}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+
+    <button className="btn-primary" onClick={()=>{upT("title",selectedCareer.title);upT("industry",selectedCareer.industry||selectedCareer.sector);setTab(2);}} style={{marginTop:".25rem"}}>📄 Use This Career to Build My Resume →
+
+    </button>
+
+    <div style={{marginTop:"1rem",background:"#f8fafc",border:"1px solid #d0daea",borderRadius:"6px",padding:"1rem"}}>
+      <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".08em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".6rem"}}>
+        Find Jobs {targetLocation ? "near " + targetLocation : "Nationwide"}
+      </div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:".4rem",marginBottom:"1rem"}}>
+        {[
+          {l:"Indeed",i:"🔍",u:"https://www.indeed.com/jobs?q="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
+          {l:"LinkedIn",i:"💼",u:"https://www.linkedin.com/jobs/search/?keywords="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
+          {l:"USAJobs",i:"🏛",u:"https://www.usajobs.gov/search/results/?k="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&l="+encodeURIComponent(targetLocation):"")},
+          {l:"ZipRecruiter",i:"⚡",u:"https://www.ziprecruiter.com/jobs-search?search="+encodeURIComponent(selectedCareer.title)+(targetLocation?"&location="+encodeURIComponent(targetLocation):"")},
+          {l:"Hire Heroes USA",i:"🎖",u:"https://www.hireheroesusa.org/"},
+          {l:"RecruitMilitary",i:"⭐",u:"https://recruitmilitary.com/job-seeker"},
+          {l:"ClearanceJobs",i:"🔐",u:"https://www.clearancejobs.com/jobs?q="+encodeURIComponent((selectedCareer&&selectedCareer.title)||target.title||"")},
+        ].map(s=>(
+          <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#ffffff",border:"1px solid #c0d0e4",borderRadius:"20px",color:"#1a3a6b",textDecoration:"none",fontSize:".77rem",fontWeight:500}}>
+            {s.i} {s.l}
+          </a>
+        ))}
+      </div>
+
+      <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",marginBottom:".75rem"}}>
+        <div style={{fontWeight:700,fontSize:".75rem",color:"#1a5c9a",textTransform:"uppercase",letterSpacing:".08em",marginBottom:".4rem"}}>SkillBridge — Train While Still Serving</div>
+        <div style={{fontSize:".82rem",color:"#3a5070",marginBottom:".5rem",lineHeight:1.6}}>Active duty? SkillBridge lets you work with civilian employers during your last 180 days while keeping full military pay and benefits.</div>
+        <div style={{display:"flex",flexWrap:"wrap",gap:".4rem"}}>
+          {[
+            {l:"DOD SkillBridge Directory",u:"https://skillbridge.osd.mil/programs.htm"},
+            {l:"SkillBridge by Career",u:"https://www.skillbridge.com/jobs?q="+encodeURIComponent(selectedCareer.title)},
+
+          ].map(s=>(
+            <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#e8f4fc",border:"1px solid #b0d4ec",borderRadius:"20px",color:"#1a5c9a",textDecoration:"none",fontSize:".77rem"}}>
+              🔗 {s.l}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",marginBottom:".75rem"}}>
+        <div style={{fontWeight:700,fontSize:".75rem",color:"#1a7a40",textTransform:"uppercase",letterSpacing:".08em",marginBottom:".4rem"}}>GI Bill — Education Programs</div>
+        <div style={{fontSize:".82rem",color:"#3a5070",marginBottom:".5rem",lineHeight:1.6}}>Use your GI Bill benefits to get certified or degreed for this career field.</div>
+        <div style={{display:"flex",flexWrap:"wrap",gap:".4rem"}}>
+          {[
+            {l:"VA GI Bill School Finder",u:"https://www.va.gov/gi-bill-comparison-tool"},
+            {l:"VA Education Benefits",u:"https://www.va.gov/education/"},
+            {l:"Coursera Veteran Courses",u:"https://www.coursera.org/search?query="+encodeURIComponent(selectedCareer.title)},
+          ].map(s=>(
+            <a key={s.l} href={s.u} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:".3rem",padding:".35rem .8rem",background:"#e8f8ee",border:"1px solid #a0d4b4",borderRadius:"20px",color:"#1a7a40",textDecoration:"none",fontSize:".77rem"}}>
+              🎓 {s.l}
+            </a>
+          ))}
+        </div>
+      </div>
+      <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",display:"flex",gap:".5rem",flexWrap:"wrap",justifyContent:"flex-end"}}>
+        <button style={{padding:".4rem .9rem",background:"transparent",border:"1px solid #d0daea",borderRadius:"4px",color:"#3a5070",fontSize:".8rem",cursor:"pointer"}} onClick={()=>{const win=window.open("","_blank");const c=selectedCareer;const cd=careerDetail;win.document.write("<html><head><style>body{font-family:Arial,sans-serif;padding:2rem;max-width:800px;margin:0 auto;}h1,h2{color:#1a3a6b;}</style></head><body><h1>"+c.title+"</h1><p><b>Sector:</b> "+(c.sector||"")+" | <b>Industry:</b> "+(c.industry||"")+" | <b>Salary:</b> "+(c.salaryRange||"")+"</p>"+(cd&&cd.about?"<h2>About</h2><p>"+cd.about+"</p>":"")+"<p style='margin-top:2rem;font-size:8pt;color:#aaa'>Generated by VeteranCareerPath.com</p><scr"+"ipt>window.onload=function(){window.print()}<\/scr"+"ipt></body></html>");win.document.close();}}>🖨 Print</button>
+        <button style={{padding:".4rem .9rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".8rem",cursor:"pointer",fontWeight:600}} onClick={()=>{if(!currentUser){setShowAuth(true);return;}const e={id:Date.now().toString(),title:selectedCareer.title,sector:selectedCareer.sector,industry:selectedCareer.industry,salary:selectedCareer.salaryRange,match:selectedCareer.match,date:new Date().toLocaleDateString()};const p=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");localStorage.setItem("vcb_saved_paths",JSON.stringify([e,...p.filter(x=>x.title!==e.title)].slice(0,20)));showToast("✓ "+selectedCareer.title+" saved");}}>💾 Save Path</button>
+      </div>
+  </div>
+  </div>);
+}
+
+function CareerDetailView(props) {
+  const {selectedCareer,setSelectedCareer,careerDetail,loading,currentUser,setShowAuth,showToast,tab,setTab,target,targetLocation,upT,DI} = props;
+  if (!selectedCareer||loading.careers) return null;
+  return (<div style={{marginTop:"1rem"}}>
+    <button className="btn-sec" onClick={()=>{setSelectedCareer(null);setCareerDetail("");}} style={{marginBottom:"1rem",display:"flex",alignItems:"center",gap:".4rem"}}>
+      ← Back to All Careers
+    </button>
+    
+
+    <div style={{background:"rgba(201,168,76,.07)",border:"1px solid rgba(201,168,76,.3)",borderRadius:"4px",padding:"1.2rem 1.4rem",marginBottom:"1rem"}}>
+      <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:".75rem"}}>
+        <div>
+          <div style={{display:"flex",alignItems:"center",gap:".6rem",flexWrap:"wrap",marginBottom:".4rem"}}>
+            <span style={{fontSize:"1.5rem"}}>{selectedCareer.sector==="Government"?"🏛️":selectedCareer.sector===DI?"🛡️":"💼"}</span>
+            <h2 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",fontSize:"1.6rem",color:"var(--gold-light)"}}>{selectedCareer.title}</h2>
+            <span className="badge bc">{selectedCareer.match} Match</span>
+            {selectedCareer.clearanceBonus&&<span style={{fontSize:".68rem",color:"#e8b84b",background:"rgba(230,160,60,.1)",border:"1px solid rgba(230,160,60,.25)",padding:".18rem .5rem",borderRadius:"2px"}}>🔐 Clearance Advantage</span>}
+          </div>
+          <div style={{fontSize:".82rem",color:"var(--dim)"}}>{selectedCareer.sector} · {selectedCareer.industry||"Multiple Industries"}</div>
+        </div>
+        <div style={{textAlign:"right"}}>
+          <div style={{fontSize:"1.5rem",fontWeight:600,color:"var(--green)"}}>{selectedCareer.salaryRange}</div>
+          <div className={selectedCareer.outlook==="High Growth"?"outlook-high":selectedCareer.outlook==="Emerging"?"outlook-med":"outlook-low"} style={{fontSize:".75rem"}}>
+            {selectedCareer.outlook==="High Growth"?"📈":selectedCareer.outlook==="Emerging"?"🔄":"📊"} {selectedCareer.outlook}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    {loading.careerDetail&&<div className="loading"><div className="spin"/><span>Loading full career profile...</span></div>}
+
+    {careerDetail&&!loading.careerDetail&&(
+      <CareerDetailBody careerDetail={careerDetail} selectedCareer={selectedCareer} currentUser={currentUser} setShowAuth={setShowAuth} showToast={showToast} tab={tab} setTab={setTab} target={target} targetLocation={targetLocation} upT={upT} DI={DI} setSelectedCareer={setSelectedCareer} />
+    )}
+  </div>);
+}
+
+function CareerTab(props) {
+  const {careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,RG,filterCareers,matchesSector,hasAccess,setShowPaywall,skills,personal} = props;
+  return (<div className={"panel "+(tab===1?"on":"")}>
+
+        <div className="intro">
+          <strong>Your Civilian Qualifications Profile.</strong> Before finding your career matches, review what your service actually unlocks in the civilian world. Every MOS, clearance, ASI, SQI, and additional duty is an asset — here's what each one means to a civilian employer.
+        </div>
+      
+
+        {milExperiences.map(exp=>(
+          <div className="card" key={exp.id} style={{borderColor:"rgba(201,168,76,.35)"}}>
+            <div className="ch" style={{background:"rgba(201,168,76,.1)"}}>
+              <h3 style={{display:"flex",alignItems:"center",gap:".5rem"}}>
+              {window.BRANCH_LOGOS&&window.BRANCH_LOGOS[exp.branch]
+                ? React.createElement("img",{src:window.BRANCH_LOGOS[exp.branch],alt:exp.branch,width:32,height:32,style:{borderRadius:"50%",flexShrink:0},onError:function(e){e.target.style.display="none";}})
+                : "🎖️"
+              }
+              {exp.branch} {exp.rank ? "— "+exp.rank : ""}
+              </h3>
+              <span className="ch-sub">{exp.serviceType}{exp.tos ? " · "+exp.tos : ""}</span>
+            </div>
+            <div className="cb">
+      
+
+              <div style={{marginBottom:"1rem"}}>
+                <div style={{display:"flex",alignItems:"center",gap:".75rem",flexWrap:"wrap",marginBottom:".5rem"}}>
+                  <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".08em",color:"var(--gold-light)"}}>{exp.mos||"—"}</span>
+                  {exp.mosTitle&&<span style={{fontSize:"1rem",color:"var(--text)"}}>{exp.mosTitle}</span>}
+                  {exp.unit&&<span style={{fontSize:".8rem",color:"var(--dim)"}}>· {exp.unit}</span>}
+                </div>
+                <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+                  {exp.tos&&<span className="tos-badge">⏱ {exp.tos} Time in Service</span>}
+                  {exp.startDate&&<span className="tos-badge">📅 {exp.startDate} – {exp.current?"Present":exp.endDate||"?"}</span>}
+                </div>
+                <div style={{marginTop:".6rem",background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".7rem .9rem"}}>
+                  <div style={{fontSize:".68rem",letterSpacing:".12em",textTransform:"uppercase",color:"var(--slate)",marginBottom:".3rem"}}>What this MOS means to a civilian employer</div>
+                  <div style={{fontSize:".85rem",color:"var(--dim)",fontStyle:"italic"}}>
+                    {exp.mos ? "Your "+(exp.mosTitle||exp.mos)+" background demonstrates technical expertise, disciplined execution, and mission-critical responsibility. Civilian employers in operations, logistics, healthcare, security, and government sectors actively seek this experience." : "Enter your MOS code on the Profile tab to see what it unlocks."}
+                  </div>
+                </div>
+              </div>
+      
+              <hr className="sdiv"/>
+      
+
+              <div style={{marginBottom:"1rem"}}>
+                <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>🔐 Security Clearance</div>
+                {exp.clearanceLevel==="None"
+                  ? <div style={{fontSize:".85rem",color:"var(--dim)"}}>No clearance listed. Many civilian roles don't require one — your skills still transfer.</div>
+                  : <div style={{display:"flex",flexDirection:"column",gap:".4rem"}}>
+                      <div style={{display:"flex",gap:".5rem",flexWrap:"wrap",alignItems:"center"}}>
+                        <span className={getClearanceBadge(exp.clearanceLevel)}>{exp.clearanceLevel}</span>
+                        <span className="badge bc">{exp.clearanceStatus}</span>
+                        {exp.polygraph!=="None"&&<span className="badge bd">{exp.polygraph}</span>}
+                      </div>
+                      <div style={{background:"rgba(201,168,76,.06)",border:"1px solid rgba(201,168,76,.28)",borderRadius:"3px",padding:".65rem .85rem",fontSize:".83rem",color:"var(--text)",lineHeight:"1.6"}}>
+                        {exp.clearanceLevel.includes("SCI")||exp.clearanceLevel.includes("Poly")
+                          ? "🏆 Premium Asset: TS/SCI clearances unlock high-paying roles in intelligence agencies (CIA, NSA, DIA), defense contractors (Booz Allen, SAIC, Leidos), and federal IT. Cleared professionals command 10–30% salary premiums. Your clearance alone can be worth $20,000–$50,000 more per year."
+                          : exp.clearanceLevel==="Top Secret"
+                          ? "⭐ High Value: Top Secret clearance opens doors to defense contracting, federal law enforcement, DHS, and government IT roles. Actively sought by employers — investigation costs $50,000+ to initiate."
+                          : exp.clearanceLevel==="Secret"
+                          ? "✅ Solid Asset: Secret clearance qualifies you for thousands of defense, federal, and contractor positions. Most DoD contractor roles require this as a baseline."
+                          : "✅ Clearance noted. Even Confidential/Public Trust clearances help with federal and contractor employment."}
+                      </div>
+                    </div>
+                }
+              </div>
+      
+
+              {exp.asi.length>0&&(<>
+                <hr className="sdiv"/>
+                <div style={{marginBottom:"1rem"}}>
+                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Skill Identifiers (ASI) — What They Unlock</div>
+                  <div style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
+                    {exp.asi.map(a=>(
+                      <div key={a.code} style={{display:"flex",gap:".75rem",alignItems:"flex-start",background:"rgba(91,155,213,.06)",border:"1px solid rgba(91,155,213,.18)",borderRadius:"3px",padding:".6rem .85rem"}}>
+                        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.1rem",color:"#7eb8f5",letterSpacing:".08em",minWidth:"2.5rem"}}>{a.code}</span>
+                        <div>
+                          <div style={{fontSize:".88rem",color:"var(--text)",fontWeight:600}}>{a.desc}</div>
+                          <div style={{fontSize:".78rem",color:"var(--dim)",marginTop:".2rem",lineHeight:"1.5"}}>
+                            {a.code==="2S"||a.code==="R" ? "Ranger qualification signals elite physical conditioning, leadership under extreme stress, and small-unit tactics mastery. Highly valued in law enforcement special units, federal agencies, private security, and defense contracting." :
+                             a.code==="8A" ? "Airborne qualification demonstrates ability to operate in austere environments and adapt to rapidly changing conditions. Valued in emergency management, aviation, and special operations support roles." :
+                             a.code==="B3" ? "Linguist qualification is a premium asset in intelligence, federal law enforcement (FBI/CIA/DEA), international business, diplomacy, and translation services." :
+                             a.code==="P1" ? "Master Parachutist with 65+ jumps signals elite special operations background, exceptional risk management, and advanced military training. Top-tier for SOF support, government contracting, and security consulting." :
+                             a.code==="X3" ? "Military Instructor qualification translates directly to corporate training, learning & development roles, academic instruction, and leadership coaching — all high-demand civilian fields." :
+                             a.code==="G4" ? "Combatives instructor certification demonstrates advanced physical training expertise. Directly applicable to law enforcement training, personal protection, and defense sector roles." :
+                             a.code==="V5" ? "Battle Staff qualification means you've planned and coordinated complex multi-element operations. This maps directly to senior project management, operations director, and strategic planning roles." :
+                             a.code==="W1" ? "SERE training signals resilience, high-stress decision-making, and classified operations knowledge — valuable in intelligence, security, and government contracting." :
+                             (a.desc)+" represents specialized military training that differentiates you from typical civilian applicants. Highlight this on your resume and in interviews."}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>)}
+      
+
+              {exp.sqi.length>0&&(<>
+                <hr className="sdiv"/>
+                <div style={{marginBottom:"1rem"}}>
+                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Skill Qualification Identifiers (SQI) — What They Unlock</div>
+                  <div style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
+                    {exp.sqi.map(s=>(
+                      <div key={s.code} style={{display:"flex",gap:".75rem",alignItems:"flex-start",background:"rgba(160,124,214,.07)",border:"1px solid rgba(160,124,214,.2)",borderRadius:"3px",padding:".6rem .85rem"}}>
+                        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.1rem",color:"#c4a0f5",letterSpacing:".08em",minWidth:"2.5rem"}}>{s.code}</span>
+                        <div>
+                          <div style={{fontSize:".88rem",color:"var(--text)",fontWeight:600}}>{s.desc}</div>
+                          <div style={{fontSize:".78rem",color:"var(--dim)",marginTop:".2rem",lineHeight:"1.5"}}>
+                            {s.code==="F"||s.code==="Q" ? "Special Forces background is among the most valued military credentials in civilian employment. Opens doors to intelligence agencies, Tier 1 defense contractors, private military consulting, federal law enforcement leadership, and executive protection. Salary premiums of 20–40% are common." :
+                             s.code==="R" ? "Ranger-tabbed service members are highly sought in law enforcement, federal agencies, and security consulting for their demonstrated leadership, physical toughness, and tactical expertise." :
+                             s.code==="P" ? "Parachutist qualification demonstrates willingness to operate in high-risk environments and comfort with complex technical procedures — valued in aviation, emergency services, and government contracting." :
+                             s.code==="X" ? "Instructor/Faculty SQI means you've been certified to teach and develop others in the military's most rigorous training environment. This maps directly to corporate L&D, technical training, academic instruction, and coaching careers." :
+                             s.code==="V" ? "Aviation background unlocks commercial aviation, drone operations, air traffic control, aviation management, and aerospace industry roles." :
+                             s.code==="S" ? "Special Operations support experience is premium in defense contracting, intelligence support, and government program management." :
+                             (s.desc)+" SQI represents a specialized role that distinguishes you from standard applicants. Leverage this credential prominently."}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>)}
+      
+
+              {exp.additionalDuties.length>0&&(<>
+                <hr className="sdiv"/>
+                <div>
+                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Duty Qualifications — Civilian Value</div>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:".45rem"}}>
+                    {exp.additionalDuties.map(d=>(
+                      <div key={d} style={{background:"rgba(76,175,130,.06)",border:"1px solid rgba(76,175,130,.18)",borderRadius:"3px",padding:".55rem .75rem"}}>
+                        <div style={{fontSize:".8rem",color:"#1a3a6b",fontWeight:600,marginBottom:".2rem"}}>{d}</div>
+                        <div style={{fontSize:".72rem",color:"var(--dim)",lineHeight:"1.45"}}>
+                          {d.includes("Armorer") ? "Maps to: Firearms compliance, asset management, inventory control" :
+                           d.includes("Safety") ? "Maps to: EHS Officer, Workplace Safety Manager, OSHA compliance" :
+                           d.includes("SHARP")||d.includes("Equal Opportunity") ? "Maps to: HR Business Partner, DEI Coordinator, Employee Relations" :
+                           d.includes("COR")||d.includes("Contracting") ? "Maps to: Procurement Specialist, Contract Manager, Acquisition Analyst" :
+                           d.includes("OPSEC")||d.includes("Information Security") ? "Maps to: Information Security Analyst, Cybersecurity, Risk Management" :
+                           d.includes("UPL")||d.includes("Prevention") ? "Maps to: Employee Assistance Programs, HR Compliance, Wellness Coordinator" :
+                           d.includes("Training Room")||d.includes("Records") ? "Maps to: HR Specialist, Records Manager, Compliance Officer" :
+                           d.includes("Property Book")||d.includes("Supply") ? "Maps to: Logistics Coordinator, Asset Manager, Supply Chain Analyst" :
+                           d.includes("Master Driver") ? "Maps to: Fleet Manager, Transportation Supervisor, Logistics Lead" :
+                           d.includes("Battle Staff")||d.includes("Master Gunner") ? "Maps to: Operations Manager, Senior Project Lead, Strategic Planner" :
+                           d.includes("Recruiter")||d.includes("Career Counselor") ? "Maps to: Talent Acquisition, HR Recruiter, Career Coach" :
+                           d.includes("Family Readiness") ? "Maps to: Community Liaison, Employee Engagement, HR Programs" :
+                           d.includes("NBC")||d.includes("CBRN") ? "Maps to: Hazmat Specialist, Environmental Health & Safety, Emergency Management" :
+                           "Maps to: Program management, compliance, and organizational leadership roles"}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>)}
+      
+
+              {(exp.deployments||exp.awards)&&(<>
+                <hr className="sdiv"/>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem"}}>
+                  {exp.deployments&&<div style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".65rem .85rem"}}>
+                    <div style={{fontSize:".68rem",letterSpacing:".12em",textTransform:"uppercase",color:"var(--slate)",marginBottom:".3rem"}}>Combat / Operational Experience</div>
+                    <div style={{fontSize:".83rem",color:"var(--text)"}}>{exp.deployments}</div>
+                    <div style={{fontSize:".73rem",color:"var(--dim)",marginTop:".3rem",fontStyle:"italic"}}>Demonstrates: adaptability, crisis leadership, cross-cultural operations, mission execution under pressure</div>
+                  </div>}
+                  {(exp.awards||[]).length>0&&<div style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".65rem .85rem"}}>
+                    <div style={{fontSize:".68rem",letterSpacing:".12em",textTransform:"uppercase",color:"var(--slate)",marginBottom:".3rem"}}>Awards & Decorations</div>
+                    <div style={{fontSize:".83rem",color:"var(--text)"}}>{exp.awards}</div>
+                    <div style={{fontSize:".73rem",color:"var(--dim)",marginTop:".3rem",fontStyle:"italic"}}>Demonstrates: recognized performance, leadership, valor, and professional excellence</div>
+                  </div>}
+                </div>
+              </>)}
+      
+            </div>
+          </div>
+        ))}
+      
+
+        {civExperiences.map(exp=>(
+          <div className="card" key={exp.id} style={{borderColor:"rgba(76,175,130,.25)"}}>
+            <div className="ch" style={{background:"rgba(76,175,130,.07)"}}>
+              <h3>💼 {exp.type}</h3>
+              <span className="ch-sub">{exp.jobTitle||""}{exp.employer?" · "+exp.employer:""}</span>
+            </div>
+            <div className="cb" style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
+              <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+                {exp.startDate&&<span className="tos-badge">📅 {exp.startDate} – {exp.current?"Present":exp.endDate||"?"}</span>}
+                {exp.clearanceLevel!=="None"&&<span className={getClearanceBadge(exp.clearanceLevel)}>{exp.clearanceLevel} — {exp.clearanceStatus}</span>}
+              </div>
+              {exp.duties&&<div style={{fontSize:".85rem",color:"var(--dim)",lineHeight:"1.6",fontStyle:"italic"}}>"{exp.duties.slice(0,180)}{exp.duties.length>180?"...":""}"</div>}
+              {exp.type===RG&&
+                <div style={{background:"rgba(230,160,60,.07)",border:"1px solid rgba(230,160,60,.22)",borderRadius:"3px",padding:".6rem .85rem",fontSize:".8rem",color:"#e8b84b"}}>
+                  ⭐ Dual-career advantage: Simultaneously maintaining civilian employment and military service demonstrates exceptional time management, discipline, and commitment — a top-tier signal to civilian employers.
+                </div>}
+            </div>
+          </div>
+        ))}
+      
+        <hr className="sdiv"/>
+      
+
+        <div className="card">
+          <div className="ch"><h3>Refine Your Target (optional)</h3></div>
+          <div className="cb">
+            <div className="g3">
+              <div className="field"><label>Target Job Title</label><input placeholder="e.g. Project Manager, Paramedic" value={target.title} onChange={e=>upT("title",e.target.value)}/></div>
+              <div className="field"><label>Preferred Industry</label><input placeholder="e.g. Healthcare, Defense, Tech, Finance" value={target.industry} onChange={e=>upT("industry",e.target.value)}/></div>
+              <div className="field"><label>Priorities / Keywords</label><input placeholder="e.g. remote work, leadership role, outdoors" value={target.keywords} onChange={e=>upT("keywords",e.target.value)}/></div>
+            </div>
+            <div className="g2" style={{marginTop:".75rem"}}>
+              <div className="field">
+                <label>Preferred Work Location</label>
+                <input
+                  placeholder="e.g. Norfolk VA, Remote, Dallas TX..."
+                  defaultValue={targetLocation}
+                  onBlur={e=>setTargetLocation(e.target.value)}
+                  onKeyUp={e=>setTargetLocation(e.target.value)}
+                  style={{width:"100%"}}
+                />
+                <span className="hint">Used to filter job search results by location</span>
+              </div>
+              <div className="field"><label>Interests & Hobbies</label>
+                <input placeholder="e.g. technology, coaching youth sports, woodworking, motorcycles, hunting, cooking, fitness..." value={target.interests||""} onChange={e=>upT("interests",e.target.value)}/>
+                <span className="hint">Help us find careers matching your passions — not just your MOS</span>
+              </div>
+              <div className="field"><label>Open To Exploring</label>
+                <div style={{display:"flex",flexWrap:"wrap",gap:".4rem",marginTop:".3rem"}}>
+                  {["Entrepreneurship","Government / Federal","Defense / Intel","Tech / Cybersecurity","Trades / Skilled Labor","Healthcare","Law Enforcement","Education / Coaching","Nonprofit / Veteran Services","Remote Work","Part-time / Flexible"].map(opt=>(
+                    <button key={opt} onClick={()=>{const cur=(target.openTo||"").split(",").map(s=>s.trim()).filter(Boolean);const upd=cur.includes(opt)?cur.filter(x=>x!==opt):[...cur,opt];upT("openTo",upd.join(", "));}} style={{padding:".28rem .7rem",borderRadius:"20px",border:"1.5px solid",cursor:"pointer",background:(target.openTo||"").includes(opt)?"#1a3a6b":"transparent",color:(target.openTo||"").includes(opt)?"#ffffff":"#3a5070",borderColor:(target.openTo||"").includes(opt)?"#1a3a6b":"#b0c4d8"}}>{opt}</button>
+                  ))}
+                </div>
+                <span className="hint" style={{marginTop:".4rem",display:"block"}}>Click to select — expands career matches beyond your MOS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+                {hasAccess?(
+          <button className="btn-primary" onClick={findCareers} style={{position:"relative"}} disabled={loading.careers}>
+            {loading.careers?"Analyzing Your Full Qualifications Profile...":"🔍  Find My Best Career Matches"}
+          </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                )}
+      
+        {loading.careers&&<div className="loading"><div className="spin"/><span>Analyzing your qualifications and finding career matches...</span></div>}
+        {careerError&&!loading.careers&&(
+          <div style={{background:"rgba(224,85,85,.12)",border:"1px solid rgba(224,85,85,.35)",borderRadius:"4px",padding:"1rem 1.2rem",marginTop:"1rem",fontSize:".88rem",color:"#f0a0a0"}}>
+            <strong>Career match error: </strong>{careerError}
+          </div>
+        )}
+      
+    {careers&&!loading.careers&&!selectedCareer&&(<CareerListView careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} openCareerDetail={openCareerDetail} findCareers={findCareers} loading={loading} careerError={careerError} milExperiences={milExperiences} target={target} upT={upT} currentUser={currentUser} setShowAuth={setShowAuth} showToast={showToast} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector} setSelectedCareer={setSelectedCareer} />)}
+      
+
+    {selectedCareer&&!loading.careers&&(<CareerDetailView selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} currentUser={currentUser} setShowAuth={setShowAuth} showToast={showToast} tab={tab} setTab={setTab} target={target} targetLocation={targetLocation} upT={upT} DI={DI} />)}
+      
+        <div className="nav-row">
+          <button className="btn-sec" onClick={()=>setTab(0)}>← Back to Profile</button>
+          <button className="btn-sec" onClick={()=>setTab(2)}>Next: Build Resume →</button>
+        </div>
+  </div>);
+
+
+}
+
+
+
+function RankInsignia({branch,grade,color}) {
+  const c = color||"#c8a951";
+  const g = grade||"";
+  if (g.startsWith("E-")) {
+    const n = parseInt(g.slice(2))||1;
+    const chevs = n<=3?n:n<=6?3:n<=8?3:3;
+    const rockers = n>=7?n-6:0;
+    const hasDiamond = n===8;
+    const stars = n>=9?n-8:0;
+    const h = 36;
+    const paths = [];
+    for(let ci=0;ci<chevs;ci++) paths.push(React.createElement("path",{key:"c"+ci,d:"M3,"+(h-8-(ci*8))+" L18,"+(h-18-(ci*8))+" L33,"+(h-8-(ci*8)),fill:"none",stroke:c,strokeWidth:2.5,strokeLinecap:"round"}));
+    for(let ri=0;ri<rockers;ri++) paths.push(React.createElement("path",{key:"r"+ri,d:"M3,"+(h-2-(ri*5))+" Q18,"+(h+5-(ri*5))+" 33,"+(h-2-(ri*5)),fill:"none",stroke:c,strokeWidth:2.5}));
+    if(hasDiamond) paths.push(React.createElement("polygon",{key:"d",points:"18,4 23,9 18,14 13,9",fill:c}));
+    for(let si=0;si<stars;si++) paths.push(React.createElement("text",{key:"s"+si,x:18-(si*8),y:12,textAnchor:"middle",fontSize:10,fill:c},"★"));
+    return React.createElement("svg",{viewBox:"0 0 36 "+h,width:32,height:h,style:{flexShrink:0}},...paths);
+  }
+  if (g.startsWith("W-")) {
+    const n = parseInt(g.slice(2))||1;
+    const bars = Array.from({length:n}).map((_,bi)=>React.createElement("rect",{key:bi,x:2+(bi*7),y:8,width:5,height:14,rx:1,fill:bi%2===0?c:"rgba(255,255,255,.2)"}));
+    return React.createElement("svg",{viewBox:"0 0 36 24",width:32,height:24,style:{flexShrink:0}},
+      React.createElement("rect",{x:2,y:18,width:32,height:4,rx:1,fill:c}),...bars);
+  }
+  if (g.startsWith("O-")) {
+    const n = parseInt(g.slice(2))||1;
+    if(n===1) return React.createElement("svg",{viewBox:"0 0 36 14",width:32,height:14,style:{flexShrink:0}},React.createElement("rect",{x:4,y:3,width:28,height:8,rx:2,fill:c}));
+    if(n===2) return React.createElement("svg",{viewBox:"0 0 36 14",width:32,height:14,style:{flexShrink:0}},React.createElement("rect",{x:4,y:3,width:28,height:8,rx:2,fill:"#d8d8d8"}));
+    if(n===3) return React.createElement("svg",{viewBox:"0 0 36 14",width:32,height:14,style:{flexShrink:0}},React.createElement("rect",{x:2,y:3,width:13,height:8,rx:2,fill:"#d8d8d8"}),React.createElement("rect",{x:21,y:3,width:13,height:8,rx:2,fill:"#d8d8d8"}));
+    if(n<=5) return React.createElement("svg",{viewBox:"0 0 36 20",width:32,height:20,style:{flexShrink:0}},React.createElement("path",{d:"M18,2 C11,2 5,7 5,13 C5,17 8,19 12,18 L18,22 L24,18 C28,19 31,17 31,13 C31,7 25,2 18,2Z",fill:n===4?c:"#d8d8d8"}));
+    if(n===6) return React.createElement("svg",{viewBox:"0 0 36 22",width:32,height:22,style:{flexShrink:0}},React.createElement("ellipse",{cx:18,cy:14,rx:5,ry:4,fill:c}),React.createElement("path",{d:"M4,12 L18,5 L32,12",fill:"none",stroke:c,strokeWidth:2.5}),React.createElement("polygon",{points:"18,2 20,7 18,6 16,7",fill:c}));
+    const ns = n-6;
+    const sp = [{x:18,y:11},{x:10,y:16},{x:26,y:16},{x:8,y:8},{x:28,y:8}].slice(0,ns);
+    return React.createElement("svg",{viewBox:"0 0 36 22",width:32,height:22,style:{flexShrink:0}},...sp.map((p,si)=>React.createElement("text",{key:si,x:p.x,y:p.y,textAnchor:"middle",fontSize:11,fill:c},"★")));
+  }
+  if (window.BRANCH_LOGOS && window.BRANCH_LOGOS[branch]) {
+    return React.createElement("img",{src:window.BRANCH_LOGOS[branch],alt:branch,width:44,height:44,style:{borderRadius:"50%",verticalAlign:"middle",display:"block"},onError:function(e){e.target.style.display="none";}});
+  }
+  return React.createElement("span",{style:{fontSize:"1.2rem"}},BRANCH_EMBLEMS[branch]||"⭐");
+}
+
+
+
+
+function MyProfileHero(props) {
+  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
+  return (<>
+  
+  <div style={{background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",borderRadius:"8px",padding:"1.5rem",color:"#fff",marginBottom:"1.2rem"}}>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:".75rem",marginBottom:"1.2rem"}}>
+      <div>
+        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".12em",color:"#f0c040"}}>{personal.name||(currentUser&&currentUser.name)||"Veteran"}</div>
+        <div style={{fontSize:".85rem",color:"#b0cce8",marginTop:".15rem"}}>{personal.email||(currentUser&&currentUser.email)||""}</div>
+      </div>
+      <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".82rem",fontWeight:700,cursor:"pointer"}} onClick={handleSaveProfile}>
+        {hasUnsaved?"⏳ Saving…":"✓ Profile Saved"}
+      </button>
+    </div>
+  
+    <div style={{fontSize:".7rem",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#9bb5d0",marginBottom:".5rem"}}>Service Record</div>
+    <div style={{display:"flex",flexWrap:"wrap",gap:".75rem"}}>
+      {milExperiences.filter(e=>e.branch).map((exp,ri)=>{
+        const bRanks = RANKS[exp.branch]||RANKS["Army"];
+        const allR = [...(bRanks.enlisted||[]),...(bRanks.warrant||[]),...(bRanks.officer||[])];
+        const rankObj = allR.find(r=>r.abbr===exp.rank)||null;
+        const bColor = BRANCH_COLORS[exp.branch]||BRANCH_COLORS["Army"];
+        return (
+          <div key={exp.id} style={{background:bColor.bg,border:"1px solid rgba(255,255,255,.15)",borderRadius:"10px",padding:".85rem 1.1rem",minWidth:"175px",flex:"1 1 175px",maxWidth:"240px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:".5rem",fontWeight:700,fontSize:".85rem",color:"#f0d060",letterSpacing:".08em",textTransform:"uppercase",marginBottom:".55rem",borderBottom:"1px solid rgba(255,255,255,.15)",paddingBottom:".4rem"}}>
+              {window.BRANCH_LOGOS&&window.BRANCH_LOGOS[exp.branch]
+                ?React.createElement("img",{src:window.BRANCH_LOGOS&&window.BRANCH_LOGOS[exp.branch],alt:exp.branch,width:24,height:24,style:{borderRadius:"50%",flexShrink:0},onError:function(e){e.target.style.display="none";}})
+                :null}
+              {exp.branch}
+            </div>
+            <div style={{fontSize:".76rem",color:"rgba(255,255,255,.9)",marginBottom:".22rem"}}>
+              <span style={{opacity:.65,marginRight:".3rem"}}>Status:</span>{exp.serviceType||"—"}
+            </div>
+            {exp.rank&&<div style={{fontSize:".76rem",color:"rgba(255,255,255,.9)",marginBottom:".22rem"}}>
+              <span style={{opacity:.65,marginRight:".3rem"}}>Rank:</span>{exp.rank}{rankObj?" — "+rankObj.title:""}
+            </div>}
+            {(exp.startDate||exp.endDate)&&<div style={{fontSize:".72rem",color:"rgba(255,255,255,.75)",marginTop:".15rem"}}>
+              <span style={{opacity:.65,marginRight:".3rem"}}>Served:</span>{exp.startDate||"?"} – {exp.currently?"Present":(exp.endDate||"?")}
+            </div>}
+            {exp.tos&&<div style={{fontSize:".7rem",color:"rgba(255,255,255,.6)",marginTop:".1rem"}}>
+              {exp.tos} total
+            </div>}
+          </div>
+        );
+      })}
+      {milExperiences.filter(e=>e.branch).length===0&&(
+        <div style={{color:"rgba(255,255,255,.4)",fontSize:".85rem",fontStyle:"italic",padding:".5rem 0"}}>Add service history in Profile &amp; Qualifications to see your record here.</div>
+      )}
+    </div>
+  
+  </div>
+  {careers&&careers.length>0&&(
+    <div className="card" style={{marginBottom:"1.2rem"}}>
+      <div className="ch" style={{justifyContent:"space-between"}}>
+        <h3>Your Career Matches</h3>
+        <span style={{fontSize:".75rem",color:"var(--dim)"}}>{careers.length} matches · click any to explore</span>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))"}}>
+        {careers.map((c,ci)=>(
+          <div key={ci} style={{padding:".8rem 1rem",borderBottom:"1px solid #eef0f5",borderRight:"1px solid #eef0f5",cursor:"pointer"}}
+            onClick={()=>{setTab(1);setTimeout(()=>openCareerDetail(c),100);}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:".3rem",marginBottom:".2rem"}}>
+              <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",lineHeight:1.3}}>{c.title}</div>
+              <span style={{background:c.match==="Excellent"?"#1a7a40":c.match==="Strong"?"#1a3a6b":"#4a6080",color:"#fff",borderRadius:"3px",padding:".05rem .35rem",fontSize:".65rem",fontWeight:700,flexShrink:0}}>{c.match}</span>
+            </div>
+            <div style={{fontSize:".75rem",color:"#5a7090"}}>{c.industry}</div>
+            <div style={{fontSize:".78rem",color:"#1a7a40",fontWeight:600}}>{c.salaryRange}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{padding:".6rem 1rem",borderTop:"1px solid #eef0f5",textAlign:"center"}}>
+        <button className="btn-sec" style={{fontSize:".8rem"}} onClick={()=>setTab(1)}>View Full Career Pathways →</button>
+      </div>
+    </div>
+  )}
+  
+  </>);
+}
+
+
+function MyProfileSaved(props) {
+  const {tab,hasAccess,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
+  return (<>
+  <div className="card">
+    <div className="ch" style={{justifyContent:"space-between"}}>
+      <h3>Saved Resumes</h3>
+      {resume&&<button className="btn-sec" style={{fontSize:".72rem",padding:".28rem .7rem"}} onClick={handleSaveResume}>+ Save Current</button>}
+    </div>
+    <div className="cb">
+      {savedResumes.length===0?(
+        <div style={{textAlign:"center",padding:"1.5rem",color:"var(--dim)",fontSize:".88rem"}}>
+          <div style={{fontSize:"2rem",marginBottom:".5rem"}}>📄</div>
+          No saved resumes yet. Generate one on the Build Resume tab.
+        </div>
+      ):(
+        savedResumes.map(r=>(
+          <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".7rem 0",borderBottom:"1px solid #eef0f5",gap:"1rem"}}>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.title}</div>
+            <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.title||r.job||"Saved Resume"}</div>
+              <div style={{fontSize:".75rem",color:"var(--dim)"}}>{r.date}{r.industry?" · "+r.industry:""}</div>
+            </div>
+            <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{
+                const w = window.open("","_blank");
+                const d = r.resumeData;
+                const tmpl = r.template || "ats_chrono";
+                const PAGE_CSS = `
+                  @page { size: letter; margin: 1.8cm 2cm; margin-top: 1.5cm; }
+                  @page :first { margin-top: 1.5cm; }
+                  * { box-sizing: border-box; }
+                  html, body { margin: 0; padding: 0; background: #fff; }
+                  @media print {
+                    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                    body { margin: 0 !important; padding: 0 !important; }
+                  }
+                `;
+                let body = "";
+                if (d) {
+                  const exp = (d.experience||[]).map(j =>
+                    "<div style='margin-bottom:9pt'>"
+                    +"<div style='display:flex;justify-content:space-between;align-items:baseline'>"
+                    +"<strong style='font-size:10.5pt'>"+j.title+"</strong>"
+                    +"<span style='font-size:9pt;color:#555'>"+j.dates+"</span></div>"
+                    +"<div style='font-style:italic;font-size:9.5pt;margin-bottom:3pt'>"+j.employer+(j.unit?" · "+j.unit:"")+"</div>"
+                    +(j.bullets||[]).map(b=>"<div style='padding-left:12pt;margin-bottom:2pt;font-size:9.5pt'>&#8226; "+b+"</div>").join("")
+                    +"</div>"
+                  ).join("");
+                  const edu = (d.education||[]).map(e =>
+                    "<div style='font-size:9.5pt;margin-bottom:4pt'><strong>"+e.degree+"</strong> — "+e.school+(e.year?" ("+e.year+")":"")+"</div>"
+                  ).join("");
+                  const skills = (d.skills||[]).join(" &bull; ");
+                  const certs = (d.certifications||[]).join(" &bull; ");
+                  const sectionHdr = (label) =>
+                    "<div style='font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:2px solid #000;padding-bottom:2pt;margin:8pt 0 5pt'>"+label+"</div>";
+                  if (tmpl === "harvard" || tmpl === "classic") {
+                    body = "<div style='font-family:Garamond,Georgia,serif;font-size:11pt;line-height:1.5;padding:1.5cm 2cm'>"
+                      +"<div style='text-align:center;margin-bottom:8pt'><div style='font-size:16pt;font-weight:700;font-variant:small-caps;letter-spacing:.06em'>"+d.name+"</div>"
+                      +"<div style='height:1px;background:#000;margin:4pt 0'></div>"
+                      +"<div style='font-size:9pt;color:#333'>"+d.contact+"</div></div>"
+                      +"<div style='font-size:10pt;margin-bottom:10pt;line-height:1.7;text-align:justify'>"+d.summary+"</div>"
+                      +sectionHdr("Experience")+exp
+                      +sectionHdr("Education")+edu
+                      +sectionHdr("Skills & Certifications")+"<div style='font-size:9.5pt;line-height:1.8'>"+skills+(certs?" &bull; "+certs:"")+"</div>"
+                      +"</div>";
+                  } else if (tmpl === "executive") {
+                    body = "<div style='font-family:Arial,sans-serif;font-size:10pt;line-height:1.45'>"
+                      +"<div style='background:#1a3a6b;color:#fff;padding:1.2rem 2cm'>"
+                      +"<div style='font-size:18pt;font-weight:700;letter-spacing:.04em'>"+d.name+"</div>"
+                      +"<div style='font-size:9pt;color:#c0d8f0;margin-top:3pt'>"+d.contact+"</div></div>"
+                      +"<div style='padding:0 2cm'>"
+                      +"<div style='font-size:9.5pt;margin:10pt 0;line-height:1.65;border-left:3px solid #c8960a;padding-left:10pt'>"+d.summary+"</div>"
+                      +sectionHdr("Experience")+exp
+                      +sectionHdr("Education")+edu
+                      +"<div style='display:grid;grid-template-columns:1fr 1fr;gap:.5rem;font-size:9pt;line-height:1.8'>"
+                      +(d.skills||[]).map(s=>"<div>&#9632; "+s+"</div>").join("")+"</div>"
+                      +"</div></div>";
+                  } else if (tmpl === "federal") {
+                    body = "<div style='font-family:Arial,sans-serif;font-size:9.5pt;line-height:1.45;padding:1.5cm 2cm'>"
+                      +"<div style='border-bottom:3px double #000;padding-bottom:8pt;margin-bottom:8pt'>"
+                      +"<div style='font-size:15pt;font-weight:700'>"+d.name+"</div>"
+                      +"<div style='font-size:8.5pt;color:#333;margin-top:2pt'>"+d.contact+"</div></div>"
+                      +"<div style='font-size:9pt;line-height:1.65;margin-bottom:10pt'>"+d.summary+"</div>"
+                      +"<div style='font-weight:700;font-size:9.5pt;text-decoration:underline;margin:8pt 0 5pt'>WORK EXPERIENCE</div>"
+                      +exp
+                      +"<div style='font-weight:700;font-size:9.5pt;text-decoration:underline;margin:8pt 0 5pt'>EDUCATION</div>"
+                      +edu
+                      +"<div style='font-weight:700;font-size:9.5pt;text-decoration:underline;margin:8pt 0 5pt'>SKILLS & CERTIFICATIONS</div>"
+                      +"<div style='font-size:9pt;line-height:1.8'>"+skills+(certs?" &bull; "+certs:"")+"</div>"
+                      +"</div>";
+                  } else if (tmpl === "wharton") {
+                    body = "<div style='font-family:Calibri,Arial,sans-serif;font-size:10pt;line-height:1.35;padding:1.5cm 2cm'>"
+                      +"<div style='border-bottom:3px solid #000;padding-bottom:4pt;margin-bottom:6pt'>"
+                      +"<div style='font-size:17pt;font-weight:700'>"+d.name+"</div>"
+                      +"<div style='font-size:9pt;color:#444;margin-top:2pt'>"+d.contact+"</div></div>"
+                      +"<div style='font-weight:700;font-size:8.5pt;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4pt'>Education</div>"
+                      +edu
+                      +"<div style='border-bottom:1.5px solid #000;margin:6pt 0'></div>"
+                      +"<div style='font-weight:700;font-size:8.5pt;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4pt'>Experience</div>"
+                      +exp
+                      +"<div style='border-bottom:1.5px solid #000;margin:6pt 0'></div>"
+                      +"<div style='font-size:9.5pt'><strong>Skills: </strong>"+skills+"<br>"+(certs?"<strong>Certifications: </strong>"+certs:"")+"</div>"
+                      +"</div>";
+                  } else if (tmpl === "minimalist") {
+                    body = "<div style='font-family:Helvetica Neue,Arial,sans-serif;font-size:10pt;line-height:1.6;padding:2cm 3cm'>"
+                      +"<div style='margin-bottom:1.5rem'>"
+                      +"<div style='font-size:22pt;font-weight:300;letter-spacing:-.01em'>"+d.name+"</div>"
+                      +"<div style='font-size:9pt;color:#888'>"+d.contact+"</div></div>"
+                      +"<div style='font-size:10pt;color:#555;line-height:1.8;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #e8e8e8'>"+d.summary+"</div>"
+                      +"<div style='font-size:7.5pt;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#aaa;margin-bottom:12pt'>Experience</div>"
+                      +(d.experience||[]).map(j=>
+                        "<div style='display:grid;grid-template-columns:130px 1fr;gap:0 1.5rem;margin-bottom:1.2rem'>"
+                        +"<div style='font-size:8.5pt;color:#999'>"+j.dates+"<br><em>"+j.employer+"</em></div>"
+                        +"<div><strong style='font-size:10pt'>"+j.title+"</strong>"
+                        +(j.bullets||[]).map(b=>"<div style='font-size:9.5pt;color:#444;margin-top:3pt;padding-left:8pt;border-left:1.5px solid #e0e0e0'>"+b+"</div>").join("")
+                        +"</div></div>"
+                      ).join("")
+                      +"<div style='display:grid;grid-template-columns:1fr 1fr;gap:2rem;padding-top:1rem;border-top:1px solid #e8e8e8'>"
+                      +"<div><div style='font-size:7.5pt;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#aaa;margin-bottom:8pt'>Education</div>"+edu+"</div>"
+                      +"<div><div style='font-size:7.5pt;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#aaa;margin-bottom:8pt'>Skills</div>"
+                      +(d.skills||[]).map(s=>"<div style='font-size:9.5pt;color:#555;margin-bottom:3pt'>— "+s+"</div>").join("")
+                      +"</div></div></div>";
+                  } else {
+                    // ATS Chrono, ATS Combo, Modern, Traditional — clean single column
+                    body = "<div style='font-family:Arial,sans-serif;font-size:10pt;line-height:1.45;padding:1.5cm 2cm'>"
+                      +"<div style='text-align:center;margin-bottom:10pt'>"
+                      +"<div style='font-size:15pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em'>"+d.name+"</div>"
+                      +"<div style='font-size:9pt;color:#333;margin-top:3pt'>"+d.contact+"</div></div>"
+                      +(d.clearance?"<div style='text-align:center;font-size:9pt;font-weight:700;color:#8a4000;margin-bottom:6pt'>"+d.clearance+"</div>":"")
+                      +"<div style='font-size:9.5pt;margin-bottom:10pt;line-height:1.65'>"+d.summary+"</div>"
+                      +sectionHdr("Professional Experience")+exp
+                      +sectionHdr("Education")+edu
+                      +((d.skills||[]).length?sectionHdr("Core Competencies")
+                        +"<div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:2pt;font-size:9pt;line-height:1.8'>"
+                        +(d.skills||[]).map(s=>"<div>&#9632; "+s+"</div>").join("")+"</div>":"")
+                      +((d.certifications||[]).length?sectionHdr("Certifications")
+                        +"<div style='font-size:9pt;line-height:1.8'>"+certs+"</div>":"")
+                      +"</div>";
+                  }
+                } else {
+                  // No resumeData - try to parse from content
+                  try {
+                    const raw = r.content || "";
+                    const js = raw.slice(raw.indexOf("{"), raw.lastIndexOf("}")+1);
+                    const dd = JSON.parse(js);
+                    body = "<div style='font-family:Arial,sans-serif;font-size:10pt;padding:1.5cm 2cm;line-height:1.5'>"
+                      +"<div style='text-align:center;margin-bottom:10pt'><div style='font-size:15pt;font-weight:700;text-transform:uppercase'>"+dd.name+"</div>"
+                      +"<div style='font-size:9pt;color:#333'>"+dd.contact+"</div></div>"
+                      +"<div style='margin-bottom:8pt;font-size:9.5pt;line-height:1.65'>"+dd.summary+"</div>"
+                      +(dd.experience||[]).map(j=>"<div style='margin-bottom:8pt'><div style='display:flex;justify-content:space-between'><strong>"+j.title+"</strong><span style='font-size:9pt;color:#555'>"+j.dates+"</span></div><div style='font-style:italic;font-size:9pt;margin-bottom:2pt'>"+j.employer+"</div>"+(j.bullets||[]).map(b=>"<div style='padding-left:12pt;font-size:9.5pt;margin-bottom:1pt'>&#8226; "+b+"</div>").join("")+"</div>").join("")
+                      +(dd.education||[]).map(e=>"<div style='font-size:9.5pt;margin-bottom:4pt'><strong>"+e.degree+"</strong> — "+e.school+" "+(e.year||"")+"</div>").join("")
+                      +"</div>";
+                  } catch(ex) {
+                    body = "<div style='font-family:Arial,sans-serif;padding:2cm;color:#555;font-size:11pt'>Unable to render this resume. Please regenerate it on the Build Resume tab.</div>";
+                  }
+                }
+                w.document.write("<!DOCTYPE html><html><head>"
+                  +""
+                  +"<style>"+PAGE_CSS+"</style>"
+                  +"</head><body>"+body
+                  +"<script>window.onload=function(){document.title='';setTimeout(function(){window.print();},400);}<\/script>"
+                  +"</body></html>");
+                w.document.close();
+              }}>👁 View</button>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const w=window.open("","_blank");w.document.write("<html><head><style>body{font-family:Arial,sans-serif;margin:1.5cm;font-size:10pt;}@page{margin:1.5cm;}@media print{@page{margin:1.5cm;}}</style></head><body>"+r.content.replace(/\n/g,"<br>")+"<script>window.onload=function(){window.print();}<\/script></body></html>");w.document.close();}}>🖨 Print</button>
+              <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm('Delete this saved resume? Cannot be undone.'))handleDeleteResume(r.id);}}>🗑</button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+  
+  <div className="card">
+    <div className="ch" style={{justifyContent:"space-between"}}>
+      <h3>📝 Saved Cover Letters</h3>
+      <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedCoverLetters.length} saved</span>
+    </div>
+    <div className="cb">
+      {savedCoverLetters.length===0?(
+        <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved cover letters yet. Generate one on the Cover Letter tab.</div>
+      ):(
+        savedCoverLetters.map(r=>(
+          <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.job}{r.company?" @ "+r.company:""}</div>
+              <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
+            </div>
+            <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const w=window.open("","_blank");w.document.write("<html><head><style>body{font-family:Arial,sans-serif;margin:2cm;font-size:11pt;line-height:1.7;max-width:700px;}</style></head><body><pre style='white-space:pre-wrap;font-family:Arial,sans-serif;'>"+r.content+"</pre></body></html>");w.document.close();}}>👁 View</button>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{navigator.clipboard.writeText(r.content);showToast("Copied ✓");}}>Copy</button>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="cover-letter-"+r.date.split("/").join("-")+".txt";a.click();}}>↓</button>
+              <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this cover letter?"))handleDeleteSaved("cl",r.id);}}>🗑</button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+  
+  <div className="card">
+    <div className="ch" style={{justifyContent:"space-between"}}>
+      <h3>✉️ Saved Emails</h3>
+      <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedEmails.length} saved</span>
+    </div>
+    <div className="cb">
+      {savedEmails.length===0?(
+        <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved emails yet. Generate follow-up emails on the Job Search tab.</div>
+      ):(
+        savedEmails.map(r=>(
+          <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b"}}>{r.type}</div>
+              <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
+            </div>
+            <div style={{display:"flex",gap:".3rem",flexShrink:0}}>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const w=window.open("","_blank");w.document.write("<html><head><style>body{font-family:Arial,sans-serif;margin:2cm;font-size:11pt;line-height:1.7;max-width:700px;}</style></head><body><pre style='white-space:pre-wrap;font-family:Arial,sans-serif;'>"+r.content+"</pre></body></html>");w.document.close();}}>👁 View</button>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{navigator.clipboard.writeText(r.content);showToast("Copied ✓");}}>Copy</button>
+              <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.content],{type:"text/plain"}));a.download="email-"+r.date.split("/").join("-")+".txt";a.click();}}>↓</button>
+              <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this email?"))handleDeleteSaved("em",r.id);}}>🗑</button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+  
+  <div className="card">
+    <div className="ch" style={{justifyContent:"space-between"}}>
+      <h3>📊 Saved Score Reports</h3>
+      <span style={{fontSize:".75rem",color:"var(--dim)"}}>{savedScores.length} saved</span>
+    </div>
+    <div className="cb">
+      {savedScores.length===0?(
+        <div style={{textAlign:"center",padding:"1rem",color:"var(--dim)",fontSize:".85rem"}}>No saved scores yet. Score your resume on the Cover Letter & Review tab.</div>
+      ):(
+        savedScores.map(r=>(
+          <div key={r.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".6rem 0",borderBottom:"1px solid #eef0f5"}}>
+            <div style={{flex:1}}>
+              <div style={{display:"flex",alignItems:"center",gap:".5rem"}}>
+                <span style={{fontWeight:800,fontSize:"1.1rem",color:r.score>=80?"#1a7a40":r.score>=65?"#e67e22":"#c0392b"}}>{r.score}</span>
+                <span style={{fontWeight:700,fontSize:".82rem",color:"#1a3a6b"}}>{r.label}</span>
+              </div>
+              <div style={{fontSize:".72rem",color:"var(--dim)"}}>{r.date}</div>
+            </div>
+            <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{
+                const w=window.open("","_blank");
+                const grades = Object.values(r.grades||{}).map(g=>"<div style='margin:.4rem 0'><b>"+g.label+":</b> "+g.score+"/100</div>").join("");
+                w.document.write("<html><head><style>body{font-family:Arial,sans-serif;margin:2cm;font-size:11pt;line-height:1.7;max-width:700px;}h1{color:#1a3a6b;}h2{color:#1a3a6b;margin-top:1.5rem;}</style></head><body><h1>Resume Score Report</h1><p><b>Date:</b> "+r.date+"</p><h2>Overall Score: "+r.score+"/100 — "+r.label+"</h2>"+grades+"<h2>Summary</h2><p>"+r.summary+"</p></body></html>");
+                w.document.close();
+              }}>👁 View</button>
+              <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this score report?"))handleDeleteSaved("sc",r.id);}}>🗑</button>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+  
+  
+  
+  
+  
+  <div className="card">
+    <div className="ch"><h3>Account</h3></div>
+    <div className="cb" style={{display:"flex",gap:".6rem",flexWrap:"wrap"}}>
+      {hasAccess?(
+        <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".4rem .75rem",fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>
+          ✓ Full Access Active
+          <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>window.open("https://billing.stripe.com/p/login/bJedR91qZcdieCZ8k7enS00","_blank")}>Manage Subscription ↗</button>
+        </div>
+      ):(
+        <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>
+          ⭐ Subscribe — $15/mo · All 16 AI Tools
+        </button>
+      )}
+      <button className="btn-sec" onClick={handleSaveProfile}>💾 Save All Progress</button>
+      <button className="btn-danger" onClick={()=>{if(window.confirm("Sign out?")) handleLogout();}}>Sign Out</button>
+    </div>
+  </div>
+  <div className="nav-row">
+    <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
+    <button className="btn-sec" onClick={()=>setTab(0)}>Back to Top →</button>
+  </div>
+  
+
+  <div className="card" style={{marginTop:"1rem"}}>
+    <div className="ch" style={{justifyContent:"space-between"}}>
+      <h3>⭐ Saved Career Paths</h3>
+      <span style={{fontSize:".75rem",color:"var(--dim)"}}>{(savedPaths||[]).length} saved</span>
+    </div>
+    <div className="cb">
+      {(!savedPaths||savedPaths.length===0)?(
+        <div style={{textAlign:"center",padding:"1.5rem",color:"var(--dim)",fontSize:".88rem"}}>
+          <div style={{fontSize:"2rem",marginBottom:".5rem"}}>🎯</div>
+          No saved career paths yet. Go to Career Pathways and click 💾 Save Path on any career.
+        </div>
+      ):(
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(250px,1fr))",gap:".75rem"}}>
+          {(savedPaths||[]).map((p,i)=>(
+            <div key={i} style={{background:"linear-gradient(135deg,#f8fafd,#f0f4fa)",border:"1.5px solid var(--border)",borderRadius:"10px",padding:"1rem"}}>
+              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1rem",letterSpacing:".08em",color:"var(--navy)",marginBottom:".25rem"}}>{p.title}</div>
+              {p.sector&&<div style={{fontSize:".72rem",color:"var(--slate)",marginBottom:".3rem"}}>{p.sector}{p.industry?" · "+p.industry:""}</div>}
+              {p.salaryRange&&<div style={{fontSize:".78rem",fontWeight:600,color:"var(--green)",marginBottom:".3rem"}}>{p.salaryRange}</div>}
+              {p.match&&<span style={{display:"inline-block",background:p.match==="Excellent"?"rgba(26,122,64,.1)":"rgba(26,58,107,.1)",border:"1px solid",borderColor:p.match==="Excellent"?"rgba(26,122,64,.3)":"rgba(26,58,107,.3)",borderRadius:"20px",padding:".1rem .5rem",fontSize:".7rem",fontWeight:700,color:p.match==="Excellent"?"var(--green)":"var(--navy)",marginBottom:".4rem",display:"inline-block"}}>{p.match} Match</span>}
+              {p.whyFit&&<div style={{fontSize:".78rem",color:"var(--slate)",lineHeight:1.55,margin:".4rem 0 .5rem"}}>{p.whyFit}</div>}
+              <div style={{display:"flex",justifyContent:"space-between",marginTop:".5rem"}}>
+                <button onClick={()=>setTab(1)} style={{fontSize:".72rem",color:"var(--navy)",background:"transparent",border:"1px solid var(--navy)",borderRadius:"4px",padding:".2rem .5rem",cursor:"pointer"}}>View Pathways →</button>
+                <button onClick={()=>{const u=(savedPaths||[]).filter((_,j)=>j!==i);setSavedPaths(u);localStorage.setItem("vcb_saved_paths",JSON.stringify(u));showToast("Removed "+p.title);}} style={{fontSize:".72rem",color:"var(--red)",background:"transparent",border:"none",cursor:"pointer"}}>✕ Remove</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+
+  </>);
+}
+
+function MyProfileContent(props) {
+  const {tab,currentUser,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
+  return (<div style={{padding:"1rem"}}>
+    <MyProfileHero tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
+    <MyProfileSaved tab={tab} hasAccess={hasAccess} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} savedPaths={savedPaths} setSavedPaths={setSavedPaths} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} />
+  </div>);
+}
+
+function MyProfileTab(props) {
+  const {tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
+  return (
+    <div className={"panel "+(tab===5?"on":"")}>
+      <MyProfileContent tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} />
+    </div>
+  );
+}
+
+function App() {
+
+  // ── APP STATE (must be declared first) ──
+  const [tab, setTab] = useState(0);
+  const [personal, setPersonal] = useState({ name:"", email:"", phone:"", location:"", linkedin:"" });
+  const [milExperiences, setMilExperiences] = useState([newMilExp()]);
+  const [civExperiences, setCivExperiences] = useState([]);
+  // Keep a unified "experiences" for backwards compatibility with AI prompts
+  const experiences = [...milExperiences, ...civExperiences];
+  const [education, setEducation] = useState([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
+  const [skills, setSkills] = useState({ technical:"", leadership:"", languages:"", certs:"" });
+  const [target, setTarget] = useState({ title:"", industry:"", keywords:"", interests:"", openTo:"" });
+  const [targetLocation, setTargetLocation] = useState("");
+  const [collapsed, setCollapsed] = useState({});
+  const [mosOut, setMosOut] = useState("");
+  const [careers, setCareers] = useState(null);
+  const [serviceRecords, setServiceRecords] = useState([{ id:1, branch:"Army", rank:"", status:"Veteran" }]);
+  const [coverLetter, setCoverLetter] = useState("");
+  const [coverLetterJob, setCoverLetterJob] = useState({ title:"", company:"", description:"" });
+  const [resumeScore, setResumeScore] = useState(null);
+  const [resumeReview, setResumeReview] = useState(null);
+  const [coverLetterLoading, setCoverLetterLoading] = useState(false);
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [uploadedResumeText, setUploadedResumeText] = useState("");
+  const [uploadedFileName, setUploadedFileName] = useState("");
+  const [uploadProcessing, setUploadProcessing] = useState(false);
+  const [copiedCL, setCopiedCL] = useState(false);
+
+  // ── RETENTION FEATURE STATE ───────────────────────────────────────────────
+  // Job Tracker
+  const [jobApps, setJobApps] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("vcb_jobs")||"[]"); } catch(e){ return []; }
+  });
+  const [newJob, setNewJob] = useState({ company:"", title:"", date:"", status:"Applied", notes:"", link:"",source:"" });
+  const [showAddJob, setShowAddJob] = useState(false);
+  const saveJobs = (jobs) => {
+    setJobApps(jobs);
+    localStorage.setItem("vcb_jobs", JSON.stringify(jobs));
+  };
+
+  // Interview Prep
+  const [prepJob, setPrepJob] = useState({ title:"", company:"", type:"behavioral" });
+  const [prepQuestions, setPrepQuestions] = useState([]);
+  const [prepLoading, setPrepLoading] = useState(false);
+
+  // Follow-up Email
+  const [followupCtx, setFollowupCtx] = useState({ company:"", role:"", interviewerName:"", date:"", outcome:"thank-you" });
+  const [followupEmail, setFollowupEmail] = useState("");
+  const [followupJob, setFollowupJob] = useState({title:"",company:""});
+  const [showClipboardModal, setShowClipboardModal] = useState(false);
+  const [showHomelessForm, setShowHomelessForm] = useState(false);
+  const [homelessForm, setHomelessForm] = useState({name:"",branch:"",location:"",situation:"",email:"",phone:""});
+  const [homelessSubmitted, setHomelessSubmitted] = useState(false);
+  const [clipboardParsed, setClipboardParsed] = useState({title:"",company:"",link:""});
+  const [followupLoading, setFollowupLoading] = useState(false);
+  const [copiedFollowup, setCopiedFollowup] = useState(false);
+
+  // Transition Timeline
+  const [tlChecks, setTlChecks] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("vcb_timeline")||"{}"); } catch(e){ return {}; }
+  });
+  const saveTl = (key, val) => {
+    const updated = {...tlChecks, [key]: val};
+    setTlChecks(updated);
+    localStorage.setItem("vcb_timeline", JSON.stringify(updated));
+    if (currentUser && fbDb) {
+      try { fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).set({ timeline: updated, updatedAt: Date.now() }, { merge: true }); } catch(e) {}
+    }
+  };
+
+
+
+
+  // Dashboard tab sub-view
+  const [retentionTab, setRetentionTab] = useState("tracker");
+  const [savedPaths, setSavedPaths] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]"); } catch(e){ return []; }
+  });
+  const refreshSavedPaths = () => {
+    try { setSavedPaths(JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]")); } catch(e){}
+  };
+  const [resFilter, setResFilter] = useState("All");
+  const [selectedCareer, setSelectedCareer] = useState(null);
+  const [careerDetail, setCareerDetail] = useState(null);
+  const [careerFilter, setCareerFilter] = useState("All");
+  const [resume, setResume] = useState("");
+  const [resumeFormat, setResumeFormat] = useState("ats_chrono");
+  const [translationData, setTranslationData] = useState(null);
+  const [loading, setLoading] = useState({ translate:false, careers:false, resume:false, careerDetail:false });
+  const [apiError, setApiError] = useState("");
+  const [showAdminSetup, setShowAdminSetup] = useState(false);
+  const [adminKeyInput, setAdminKeyInput] = useState("");
+  const [adminKeySet, setAdminKeySet] = useState(() => {
+    if (PROXY_URL && PROXY_URL.length > 10) return true;
+    const k = localStorage.getItem("vcb_admin_key")||(typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key"))||"";
+    return k.length > 20;
+  });
+  const [careerError, setCareerError] = useState("");
+  const [resumeData, setResumeData] = useState(null);
+  const [resumeTemplate, setResumeTemplate] = useState("ats_chrono");
+  
+  const [resumeError, setResumeError] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [includeClearance, setIncludeClearance] = useState(true);
+
+  // ── AUTH STATE ──
+  const [authMode, setAuthMode] = useState("login");
+  const [showAuth, setShowAuth] = useState(false);
+  const [authForm, setAuthForm] = useState({ username:"", password:"", confirmPassword:"", name:"" });
+  const [authErr, setAuthErr] = useState("");
+  const [authOk, setAuthOk] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
+  const [saveToast, setSaveToast] = useState("");
+  const [hasUnsaved, setHasUnsaved] = useState(false);
+  const [savedResumes, setSavedResumes] = useState([]);
+  const [savedCoverLetters, setSavedCoverLetters] = useState([]);
+  const [savedEmails, setSavedEmails] = useState([]);
+  const [savedScores, setSavedScores] = useState([]);
+  const [viewingResume, setViewingResume] = useState(null);
+
+  // ── PAYWALL STATE ─────────────────────────────────────────────────────────
+  // ── ACCESS CODE SYSTEM ──────────────────────────────────────────────────────
+  // Format: CODE -> expiry timestamp (ms). 0 = never expires.
+  // Add new codes here. Date.UTC(year, month-1, day) for expiry.
+  // ACCESS_CODES, isCodeValid, checkAccess defined at module level (see below component)
+  // They are referenced here as module-level vars so useState initializer can call them
+  const [hasAccess, setHasAccess] = useState(() => checkAccess());
+  const [showPaywall, setShowPaywall] = useState(() => !checkAccess());
+  const [pwPlan, setPwPlan] = useState("monthly");
+  const [pwCode, setPwCode] = useState("");
+  const [pwCodeStatus, setPwCodeStatus] = useState("idle");
+  const [pwCodeMsg, setPwCodeMsg] = useState("");
+
+  const redeemCode = () => {
+    const code = pwCode.trim().toUpperCase();
+    const check = isCodeValid(code); // calls module-level function
+    if (check.valid) {
+      localStorage.setItem("vcb_access", JSON.stringify({ type:"code", code }));
+      const expMsg = check.reason === "permanent"
+        ? "✓ Code accepted! You have permanent access."
+        : "✓ Code accepted! Access expires " + new Date(check.expiry).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}) + ".";
+      setPwCodeStatus("valid");
+      setPwCodeMsg(expMsg);
+      setTimeout(() => { setHasAccess(true); setShowPaywall(false); }, 900);
+    } else if (check.reason === "expired") {
+      setPwCodeStatus("invalid");
+      setPwCodeMsg("This code has expired. Please subscribe or contact support for a new code.");
+    } else {
+      setPwCodeStatus("invalid");
+      setPwCodeMsg("That code isn't valid. Check spelling or contact support.");
+    }
+  };
+
+  const grantPaidAccess = (planMonths) => {
+    const expiry = Date.now() + planMonths * 30 * 24 * 60 * 60 * 1000;
+    localStorage.setItem("vcb_access", JSON.stringify({ type:"paid", stripeSession:"direct", expiry, plan: planMonths===1?"monthly":"annual" }));
+    setHasAccess(true);
+    setShowPaywall(false);
+  };
+
+  // Access validation handled in checkAccess()
+
+
+  // ── FIREBASE STORAGE HELPERS ────────────────────────────────────────────────
+
+  const openClipboardCapture = async () => {
+    let text = "";
+    try {
+      text = await navigator.clipboard.readText();
+    } catch(e) {
+      // Clipboard permission denied - open with empty fields
+    }
+    // Try to parse job info from clipboard text
+    let title = "";
+    let company = "";
+    let link = "";
+    if (text) {
+      // If it looks like a URL
+      if (text.startsWith("http")) {
+        link = text.trim();
+        // Try to extract from common URL patterns
+        if (text.includes("indeed.com")) company = "Indeed Job";
+        if (text.includes("linkedin.com")) company = "LinkedIn Job";
+        if (text.includes("usajobs.gov")) company = "U.S. Government";
+        if (text.includes("ziprecruiter.com")) company = "ZipRecruiter Job";
+        if (text.includes("clearancejobs.com")) company = "ClearanceJobs";
+      } else {
+        // Try to parse "Job Title - Company" or "Job Title at Company"
+        const atMatch = text.match(/^(.+?)\s+at\s+(.+?)$/i);
+        const dashMatch = text.match(/^(.+?)\s*[-–]\s*(.+?)$/);
+        if (atMatch) { title = atMatch[1].trim(); company = atMatch[2].trim(); }
+        else if (dashMatch) { title = dashMatch[1].trim(); company = dashMatch[2].trim(); }
+        else { title = text.slice(0, 80).trim(); }
+      }
+    }
+    setClipboardParsed({ title, company, link });
+    setShowClipboardModal(true);
+    setTab(4);
+    setRetentionTab("tracker");
+  };
+
+  const showToast = (msg) => {
+    setSaveToast(msg);
+    setTimeout(() => setSaveToast(""), 2800);
+  };
+
+  // ── LISTEN FOR FIREBASE AUTH STATE ──
+  // ── BOOKMARKLET URL HANDLER ──
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("addjob") === "1") {
+      const title = decodeURIComponent(params.get("title")||"");
+      const company = decodeURIComponent(params.get("company")||"");
+      const link = decodeURIComponent(params.get("link")||"");
+      if (title || company) {
+        const entry = {id:Date.now(), title, company, link,
+          date: new Date().toISOString().slice(0,10),
+          status:"Applied", notes:"", source:"Bookmarklet"};
+        setJobApps(prev => {
+          const updated = [entry, ...prev];
+          localStorage.setItem("vcb_jobs", JSON.stringify(updated));
+          return updated;
+        });
+        setTab(4);
+        setRetentionTab("tracker");
+        showToast("Job saved to tracker ✓ — "+(title||company));
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!fbAuth) return;
+    const unsubscribe = fbAuth.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        // User is signed in
+        const initials = (firebaseUser.displayName || firebaseUser.email)
+          .split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+        const user = {
+          uid: firebaseUser.uid,
+          name: firebaseUser.displayName || firebaseUser.email.split("@")[0],
+          email: firebaseUser.email,
+          initials,
+        };
+        setCurrentUser(user);
+        setHasUnsaved(false);
+        // Load their saved profile
+        try {
+          const doc = await fbDb.collection("profiles").doc(firebaseUser.uid).get();
+          if (doc.exists) {
+            const data = doc.data();
+            if (data.personal) setPersonal(data.personal);
+            if ((data.milExperiences && data.milExperiences.length)) setMilExperiences(data.milExperiences);
+          if ((data.civExperiences && data.civExperiences.length)) setCivExperiences(data.civExperiences);
+          // backwards compat
+          if (!data.milExperiences && (data.experiences && data.experiences.length)) setMilExperiences(data.experiences);
+            if ((data.education && data.education.length)) setEducation(data.education);
+            if (data.skills) setSkills(data.skills);
+            if (data.target) setTarget(data.target);
+            // Cache profile to localStorage so standalone tool pages can read it
+            // without needing their own Firebase init
+            try { localStorage.setItem("vcb_profile", JSON.stringify(data)); } catch(e) {}
+          }
+          // Load saved resumes
+          const resumesSnap = await fbDb.collection("profiles").doc(firebaseUser.uid)
+            .collection("resumes").orderBy("createdAt","desc").limit(20).get();
+          setSavedResumes(resumesSnap.docs.map(d => d.data()));
+          const clSnap = await fbDb.collection("profiles").doc(firebaseUser.uid).collection("coverLetters").orderBy("id","desc").limit(20).get();
+          setSavedCoverLetters(clSnap.docs.map(d=>d.data()));
+          const emSnap = await fbDb.collection("profiles").doc(firebaseUser.uid).collection("emails").orderBy("id","desc").limit(20).get();
+          setSavedEmails(emSnap.docs.map(d=>d.data()));
+          const scSnap = await fbDb.collection("profiles").doc(firebaseUser.uid).collection("scores").orderBy("id","desc").limit(10).get();
+          setSavedScores(scSnap.docs.map(d=>d.data()));
+        } catch(e) { console.warn("Profile load error:", e); }
+      } else {
+        setCurrentUser(null);
+        setSavedResumes([]);
+        setJobApps([]); setTlChecks({});
+        setSavedCoverLetters([]); setSavedEmails([]); setSavedScores([]);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Mark unsaved when key fields change
+  useEffect(() => {
+    if (!currentUser || !fbDb) { setHasUnsaved(false); return; }
+    setHasUnsaved(true);
+    const timer = setTimeout(async () => {
+      try {
+        await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).set({
+          personal, milExperiences, civExperiences, education, skills, target,
+          serviceRecords, targetLocation, updatedAt: Date.now()
+        }, { merge: true });
+        setHasUnsaved(false);
+      } catch(e) { /* silent fail */ }
+    }, 1800);
+    return () => clearTimeout(timer);
+  }, [personal, milExperiences, civExperiences, education, skills, target, targetLocation, serviceRecords]);
+
+  // ── AUTH HANDLERS (Firebase) ──
+  const handleRegister = async () => {
+    setAuthErr(""); setAuthOk("");
+    if (!authForm.name.trim()) return setAuthErr("Full name is required.");
+    if (!authForm.username.trim()) return setAuthErr("Email is required.");
+    if (authForm.password.length < 6) return setAuthErr("Password must be at least 6 characters.");
+    if (authForm.password !== authForm.confirmPassword) return setAuthErr("Passwords do not match.");
+    try {
+      const cred = await fbAuth.createUserWithEmailAndPassword(authForm.username.trim(), authForm.password);
+      await cred.user.updateProfile({ displayName: authForm.name.trim() });
+      setAuthOk("Account created! Signing you in...");
+      setShowAuth(false); if(!checkAccess()){setShowPaywall(true);}
+      showToast("Welcome, " + authForm.name.split(" ")[0] + "! ✓");
+      setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
+    } catch(e) {
+      if (e.code === "auth/email-already-in-use") setAuthErr("An account with this email already exists.");
+      else if (e.code === "auth/invalid-email") setAuthErr("Please enter a valid email address.");
+      else setAuthErr(e.message);
+    }
+  };
+
+  const handleLogin = async () => {
+    if (!fbAuth) { setAuthErr("Authentication is not configured yet. Contact the site owner."); return; }
+    setAuthErr(""); setAuthOk("");
+    if (!authForm.username.trim()) { setAuthErr("Please enter your email address."); return; }
+    if (!authForm.password) { setAuthErr("Please enter your password."); return; }
+    try {
+      await fbAuth.signInWithEmailAndPassword(authForm.username.trim(), authForm.password);
+      setShowAuth(false); if(!checkAccess()){setShowPaywall(true);}
+      setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
+    } catch(e) {
+      if (e.code === "auth/user-not-found" || e.code === "auth/invalid-credential") setAuthErr("No account found. Check your email or create an account.");
+      else if (e.code === "auth/wrong-password") setAuthErr("Incorrect password. Try again or reset it below.");
+      else if (e.code === "auth/invalid-email") setAuthErr("Please enter a valid email address.");
+      else if (e.code === "auth/too-many-requests") setAuthErr("Too many attempts. Please wait a moment and try again.");
+      else setAuthErr("Sign in failed: " + (e.message||"Unknown error"));
+    }
+  };
+
+  const handleLogout = async () => {
+    await fbAuth.signOut();
+    setCurrentUser(null);
+    setSavedResumes([]);
+    setHasUnsaved(false);
+    // Clear localStorage caches
+    try { localStorage.removeItem("vcb_profile"); localStorage.removeItem("vcb_access"); } catch(e) {}
+    // Reset form fields
+    setPersonal({ name:"", email:"", phone:"", location:"", linkedin:"" });
+    setExperiences([newMilExp()]);
+    setEducation([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
+    setSkills({ technical:"", leadership:"", languages:"", certs:"" });
+  };
+
+  const handleSaveProfile = async () => {
+    if (!currentUser) { setShowAuth(true); return; }
+    try {
+      const profileData = {
+        personal, milExperiences, civExperiences, education, skills, target,
+        updatedAt: new Date().toISOString()
+      };
+      await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).set(
+        profileData, { merge: true }
+      );
+      // Cache profile in localStorage so standalone tool pages can read it
+      // without needing their own Firebase init
+      try {
+        localStorage.setItem("vcb_profile", JSON.stringify(profileData));
+      } catch(e) {}
+      showToast("Profile saved ✓");
+      setHasUnsaved(false);
+    } catch(e) { showToast("Save failed — check connection"); }
+  };
+
+  const handleSaveResume = async () => {
+    if (!currentUser) { setShowAuth(true); return; }
+    if (!resume) return;
+    try {
+      const resumeTitle = window.prompt("Give this resume a name so you can find it later:", target.title || "My Resume") || target.title || "Saved Resume";
+      const id = Date.now().toString();
+      const entry = {
+        id,
+        title: resumeTitle,
+        industry: target.industry || "",
+        format: resumeFormat,
+        template: resumeTemplate,
+        resumeData: resumeData || null,
+        date: new Date().toLocaleDateString("en-US", { year:"numeric", month:"short", day:"numeric" }),
+        preview: resume.slice(0, 120) + "...",
+        content: resume,
+        createdAt: new Date().toISOString(),
+      };
+      await fbDb.collection("profiles").doc((currentUser&&currentUser.uid))
+        .collection("resumes").doc(id).set(entry);
+      setSavedResumes(prev => [entry, ...prev].slice(0, 20));
+      showToast("Resume saved to your profile ✓");
+    } catch(e) { showToast("Save failed — check connection"); }
+  };
+
+  const handleDeleteResume = async (id) => {
+    if (!currentUser) return;
+    try {
+      await fbDb.collection("profiles").doc((currentUser&&currentUser.uid))
+        .collection("resumes").doc(id.toString()).delete();
+      setSavedResumes(prev => prev.filter(r => r.id !== id));
+      showToast("Resume deleted");
+    } catch(e) { showToast("Delete failed"); }
+  };
+
+  const saveCoverLetter = async () => {
+    const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
+      job:coverLetterJob.title||"Cover Letter", company:coverLetterJob.company||"", content:coverLetter};
+    setSavedCoverLetters(prev=>[entry,...prev].slice(0,20));
+    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection("coverLetters").doc(entry.id.toString()).set(entry);}catch(e){}}
+    showToast("Cover letter saved to My Profile ✓");
+  };
+  const saveEmail = async () => {
+    const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
+      type:followupType||"Follow-Up Email", content:followupEmail};
+    setSavedEmails(prev=>[entry,...prev].slice(0,20));
+    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection("emails").doc(entry.id.toString()).set(entry);}catch(e){}}
+    showToast("Email saved to My Profile ✓");
+  };
+  const saveScore = async () => {
+    const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
+      score:resumeScore, label:resumeScore>=85?"Excellent":resumeScore>=75?"Strong":resumeScore>=65?"Good":"Needs Work",
+      summary:resumeReview.summary||"", grades:resumeReview.grades||{}};
+    setSavedScores(prev=>[entry,...prev].slice(0,10));
+    if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection("scores").doc(entry.id.toString()).set(entry);}catch(e){}}
+    showToast("Score report saved to My Profile ✓");
+  };
+  const handleDeleteSaved = async (type,id) => {
+    if(type==="cl") setSavedCoverLetters(prev=>prev.filter(x=>x.id!==id));
+    else if(type==="em") setSavedEmails(prev=>prev.filter(x=>x.id!==id));
+    else if(type==="sc") setSavedScores(prev=>prev.filter(x=>x.id!==id));
+    if(currentUser&&fbDb){
+      const col=type==="cl"?"coverLetters":type==="em"?"emails":"scores";
+      try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection(col).doc(id.toString()).delete();}catch(e){}
+    }
+    showToast("Deleted");
+  };
+
+  const handleLoadResume = (r) => {
+    setResume(r.content);
+    setTarget(t => ({ ...t, title: r.title, industry: r.industry }));
+    setTab(2);
+    showToast("Resume loaded ✓");
+  };
+
+
+
+  const setL = (k,v) => setLoading(l=>({...l,[k]:v}));
+  const upP = (k,v) => setPersonal(p=>({...p,[k]:v}));
+  const upT = (k,v) => setTarget(p=>({...p,[k]:v}));
+  const upMilExp = (id,k,v) => setMilExperiences(es=>es.map(e=>e.id===id
+    ? {...e,[k]:v,...(k==="mos"?{mosTitle:(MOS_DATA[v.toUpperCase()] && MOS_DATA[v.toUpperCase()].title)||""}:{})}
+    : e));
+  const upCivExp = (id,k,v) => setCivExperiences(es=>es.map(e=>e.id===id
+    ? {...e,[k]:v}
+    : e));
+  const upExp = (id,k,v) => {
+    if (milExperiences.find(e=>e.id===id)) upMilExp(id,k,v);
+    else upCivExp(id,k,v);
+  };
+
+  // ASI helpers
+  const addAsi = (id) => {
+    const exp = experiences.find(e=>e.id===id);
+    if (!exp) return;
+    const code = exp.customAsiCode.trim().toUpperCase();
+    const desc = exp.customAsiDesc.trim() || (COMMON_ASI.find(a=>a.code===code) ? COMMON_ASI.find(a=>a.code===code).desc : undefined) || "";
+    if (!code) return;
+    if (exp.asi.find(a=>a.code===code)) return;
+    upExp(id,"asi",[...exp.asi,{code,desc}]);
+    upExp(id,"customAsiCode",""); upExp(id,"customAsiDesc","");
+  };
+  const addAsiCommon = (id,asi) => {
+    const exp = experiences.find(e=>e.id===id);
+    if (!exp||exp.asi.find(a=>a.code===asi.code)) return;
+    upExp(id,"asi",[...exp.asi,asi]);
+  };
+  const rmAsi = (id,code) => { const exp=experiences.find(e=>e.id===id); upExp(id,"asi",exp.asi.filter(a=>a.code!==code)); };
+
+  // SQI helpers
+  const addSqi = (id) => {
+    const exp = experiences.find(e=>e.id===id);
+    if (!exp) return;
+    const code = exp.customSqiCode.trim().toUpperCase();
+    const desc = exp.customSqiDesc.trim() || (COMMON_SQI.find(s=>s.code===code) ? COMMON_SQI.find(s=>s.code===code).desc : undefined) || "";
+    if (!code) return;
+    if (exp.sqi.find(s=>s.code===code)) return;
+    upExp(id,"sqi",[...exp.sqi,{code,desc}]);
+    upExp(id,"customSqiCode",""); upExp(id,"customSqiDesc","");
+  };
+  const addSqiCommon = (id,sqi) => {
+    const exp = experiences.find(e=>e.id===id);
+    if (!exp||exp.sqi.find(s=>s.code===sqi.code)) return;
+    upExp(id,"sqi",[...exp.sqi,sqi]);
+  };
+  const rmSqi = (id,code) => { const exp=experiences.find(e=>e.id===id); upExp(id,"sqi",exp.sqi.filter(s=>s.code!==code)); };
+
+  // Duty helpers
+  const addDuty = (id, duty) => {
+    const exp = experiences.find(e=>e.id===id);
+    if (!exp||!duty.trim()||exp.additionalDuties.includes(duty.trim())) return;
+    upExp(id,"additionalDuties",[...exp.additionalDuties,duty.trim()]);
+    upExp(id,"customDuty","");
+  };
+  const rmDuty = (id,d) => { const exp=experiences.find(e=>e.id===id); upExp(id,"additionalDuties",exp.additionalDuties.filter(x=>x!==d)); };
+
+  const addMilExp = () => setMilExperiences(es=>[...es,newMilExp()]);
+  const addCivExp = () => setCivExperiences(es=>[...es,newCivExp()]);
+  const addExp = () => setCivExperiences(es=>[...es,newCivExp()]);
+  const rmExp = id => {
+    setMilExperiences(es=>es.filter(e=>e.id!==id));
+    setCivExperiences(es=>es.filter(e=>e.id!==id));
+  };
+  const upEdu = (id,k,v) => setEducation(eds=>eds.map(e=>e.id===id?{...e,[k]:v}:e));
+  const addEdu = () => setEducation(eds=>[...eds,{id:Date.now(),institution:"",degree:"",field:"",year:"",pme:""}]);
+  const rmEdu = id => setEducation(eds=>eds.filter(e=>e.id!==id));
+  const toggleCollapse = id => setCollapsed(c=>({...c,[id]:!c[id]}));
+
+  // ── BUILD SUMMARIES ────────────────────────────────────────────────────────
+  const buildExpSummary = () => {
+    const milParts = milExperiences.map(e=>{
+      const rolesStr = (e.mosRoles||[]).length
+        ? "Positions held: "+(e.mosRoles.map(r=>[r.title,r.rankAtRole,r.fromYear&&r.toYear?r.fromYear+"-"+r.toYear:"",r.keyDuty].filter(Boolean).join(", ")).join(" | "))
+        : "";
+      const awardsStr = (e.awards||[]).length ? "Awards: "+((e.awards||[]).join(", ")) : "";
+      const qualStr = [
+        (e.asi && e.asi.length)?"ASIs: "+(e.asi.map(a=>a.code+"("+a.desc+")").join(", ")):null,
+        (e.sqi && e.sqi.length)?"SQIs: "+(e.sqi.map(s=>s.code+"("+s.desc+")").join(", ")):null,
+        (e.additionalDuties && e.additionalDuties.length)?"Additional Duties: "+(e.additionalDuties.join(", ")):null,
+      ].filter(Boolean).join(" | ");
+      const clearStr = e.clearanceLevel!=="None"
+        ? `Clearance: ${e.clearanceLevel} (${e.clearanceStatus})${e.polygraph!=="None"?" + "+e.polygraph+" Poly":""}`
+        : "No clearance";
+      return `[MILITARY] ${e.branch} | ${e.rank} | MOS: ${e.mos}${e.mosTitle?" ("+e.mosTitle+")":""} | ${e.serviceType} | Unit: ${e.unit} | TOS: ${e.tos||"not listed"} | ${e.startDate||"?"}–${e.current?"Present":e.endDate||"?"} | ${clearStr}${qualStr?" | "+qualStr:""} | Duties: ${e.duties||"not listed"}${rolesStr?" | "+rolesStr:""}${awardsStr?" | "+awardsStr:""}${e.deployments?" | Deployments: "+e.deployments:""}`;
+    });
+    const civParts = civExperiences.map(e=>{
+      const clearStr = (e.clearanceLevel&&e.clearanceLevel!=="None")
+        ? "Clearance: "+(e.clearanceLevel):"";
+      return `[${e.type.toUpperCase()}] ${e.jobTitle||"Role"} at ${e.employer||"Unknown"} | ${e.startDate||"?"}–${e.current?"Present":e.endDate||"?"} | Duties: ${e.duties||"not listed"}${clearStr?" | "+clearStr:""}`;
+    });
+    return [...milParts,...civParts].join("\n");
+  };
+
+  // ── TRANSLATE ──────────────────────────────────────────────────────────────
+  const translateMOS = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!milExperiences.length) return;
+    setApiError("");
+    setTranslationData(null);
+    setMosOut("");
+    setL("translate", true);
+
+    try {
+      const lines = milExperiences.map(e => {
+        const parts = [
+          "MOS/Rate: " + (e.mos||"unknown") + " (" + (e.mosTitle||"see title") + ")",
+          "Branch: " + e.branch + " | Rank: " + (e.rank||"not listed") + " | Service: " + (e.serviceType||"Active Duty") + " | TOS: " + (e.tos||"unknown"),
+          (e.asi&&e.asi.length) ? "ASIs: " + e.asi.map(a=>a.code+" - "+a.desc).join(", ") : null,
+          (e.sqi&&e.sqi.length) ? "SQIs: " + e.sqi.map(s=>s.code+" - "+s.desc).join(", ") : null,
+          (e.additionalDuties&&e.additionalDuties.length) ? "Additional Duties: " + e.additionalDuties.join(", ") : null,
+          (e.mosRoles&&e.mosRoles.length) ? "Career progression: " + e.mosRoles.map(r=>(r.fromYear?r.fromYear:"")+(r.toYear?"-"+r.toYear:"")+" "+r.rankAtRole+" "+r.title+(r.keyDuty?": "+r.keyDuty:"")).filter(s=>s.trim()).join(" → ") : null,
+          (e.awards&&e.awards.length) ? "Awards: " + e.awards.join(", ") : null,
+          (e.clearanceLevel&&e.clearanceLevel!=="None") ? "Clearance: " + e.clearanceLevel + " " + (e.clearanceStatus||"Active") : null,
+          "Duties: " + (e.duties||"not described"),
+        ];
+        return parts.filter(Boolean).join("\n");
+      }).join("\n\n---\n\n");
+
+      const prompt = "A veteran has this military background:\n\n" + lines + "\n\n" +
+        "Please provide a detailed civilian translation. Return ONLY a JSON object with NO markdown, no backticks, no extra text. Start with { and end with }.\n\n" +
+        "The JSON must have these exact keys:\n" +
+        "summary: a 3-sentence professional civilian summary paragraph\n" +
+        "roles: array of objects, one per military role, each with: mos (string), title (string), whatYouDid (string, 2-3 plain English sentences), transferableSkills (array of 6 strings), resumeBullets (array of 4 strong resume bullet points starting with action verbs)\n" +
+        "qualifications: array of objects for each ASI/SQI, each with: code, name, civilianMeaning, unlocks\n" +
+        "additionalDuties: array of objects for each additional duty, each with: duty, civilianEquivalent, value";
+
+      const raw = await callClaude(
+        prompt,
+        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
+        2000
+      );
+
+      // Robust JSON extraction
+      const start = raw.indexOf("{");
+      const end = raw.lastIndexOf("}");
+      if (start === -1 || end === -1) {
+        throw new Error("Response did not contain valid JSON. Raw: " + raw.slice(0,200));
+      }
+      const parsed = JSON.parse(raw.slice(start, end + 1));
+      
+      // Ensure required fields exist with fallbacks
+      const result = {
+        summary: parsed.summary || "Your military background demonstrates strong leadership, discipline, and mission-focused expertise.",
+        roles: Array.isArray(parsed.roles) ? parsed.roles : [],
+        qualifications: Array.isArray(parsed.qualifications) ? parsed.qualifications : [],
+        additionalDuties: Array.isArray(parsed.additionalDuties) ? parsed.additionalDuties : [],
+      };
+      setTranslationData(result);
+
+    } catch(err) {
+      console.error("translateMOS error:", err);
+      setMosOut("Translation failed: " + (err.message || "Unknown error. Check your API key and try again."));
+    }
+    setL("translate", false);
+  };
+
+  // ── CAREERS ───────────────────────────────────────────────────────────────
+  const findCareers = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    setApiError(""); setCareerError(""); setL("careers",true); setCareers(null); setSelectedCareer(null); setCareerDetail(null);
+    const summary = buildExpSummary();
+    const branch = (milExperiences[0]||{}).branch||"Army";
+    const mos = (milExperiences[0]||{}).mos||"";
+    const rank = (milExperiences[0]||{}).rank||"";
+    const tos = (milExperiences[0]||{}).tos||"";
+    const clearance = (milExperiences[0]||{}).clearanceLevel||"None";
+    const hasClearance = clearance && clearance!=="None";
+    const system = "You are the world's best military-to-civilian career counselor. You know EVERY civilian job sector including skilled trades, retail management, transportation, agriculture, maritime, aviation, hospitality, fitness, education, social work, nonprofits, entrepreneurship, real estate, financial services, and more. Return ONLY valid minified JSON. No markdown, no backticks, no line breaks inside strings, no trailing commas. The JSON must parse with JSON.parse() on the first try.";
+    const mosDetail = milExperiences.map(e=>(e.mos||(e.branch+' service'))+(e.mosTitle?' ('+e.mosTitle+')':'')+', '+e.branch+(e.rank?' '+e.rank:'')+', '+(e.tos||'unknown TIS')+' TIS').join('; ');
+    const civDetail = civExperiences.filter(e=>e.jobTitle).map(e=>e.jobTitle+(e.employer?' at '+e.employer:'')).join(', ');
+    const awardsDetail = milExperiences.flatMap(e=>e.awards||[]).slice(0,6).join(', ');
+    const asiDetail = milExperiences.flatMap(e=>(e.asi||[]).map(a=>a.code+': '+a.desc)).slice(0,4).join('; ');
+    const clearances = milExperiences.map(e=>e.clearanceLevel).filter(c=>c&&c!=='None').join(', ');
+    const dutiesDetail = milExperiences.flatMap(e=>e.duties?[e.duties.slice(0,100)]:[]).join(' | ').slice(0,300);
+    const eduDetail = education.map(e=>e.degree+' '+e.field).filter(Boolean).join(', ');
+    const prompt = `You are an expert military transition counselor. Generate 12 PERSONALIZED career paths for this specific veteran.
+
+THIS VETERAN'S ACTUAL BACKGROUND:
+Military: ${mosDetail||'military background'}
+Civilian Work: ${civDetail||'none yet'}
+Duties/Responsibilities: ${dutiesDetail||'standard military duties'}
+Specialty Quals: ${asiDetail||'none listed'}
+Awards: ${awardsDetail||'none listed'}
+Clearance: ${clearances||'None'}
+Education: ${eduDetail||'military training'}
+Career Goal: ${target.title||'open'} in ${target.industry||'any sector'}
+Interests & Hobbies: ${target.interests||'not specified'}
+Open To: ${target.openTo||'flexible'}
+Location: ${targetLocation||'flexible'}
+
+RULES — follow strictly:
+1. Top 8 paths must directly match their MOS/rate and civilian work history
+2. Use their interests/hobbies to find 3-4 meaningful career connections
+3. Clearances unlock intel, defense contractor, and federal roles — include them
+4. ASI/SQI specialties must appear directly in titles and whyFit
+5. Include entry-level ($40k-$60k) AND senior paths ($80k+)
+6. NO generic roles unless directly tied to their specific background
+7. whyFit MUST cite something specific from their profile — not generic veteran praise
+8. salaryRange format: '$XX,000-$XX,000' only, no special chars
+9. Return ONLY minified JSON, no markdown
+
+[{"title":"Specific Title","sector":"Civilian|Government|Defense\/Intel","industry":"Field","salaryRange":"$X-$Y","match":"Excellent|Strong|Good","whyFit":"cite specific background","topSkills":["s1","s2","s3"],"nextStep":"first action"}]`
+
+    try {
+      const raw = await callClaude(prompt, system, 2500);
+      // Aggressively clean the response
+      let cleaned = raw
+        .replace(/```json/gi,"").replace(/```/g,"")
+        .replace(/,\s*}/g,"}").replace(/,\s*]/g,"]")
+        .trim();
+      const arrStart = cleaned.indexOf("[");
+      const arrEnd = cleaned.lastIndexOf("]");
+      if (arrStart === -1 || arrEnd === -1) throw new Error("No JSON array found");
+      cleaned = cleaned.slice(arrStart, arrEnd + 1);
+      // Fix common JSON issues
+      const parsed = JSON.parse(cleaned);
+      if (!Array.isArray(parsed) || parsed.length === 0) throw new Error("Empty array");
+      setCareers(parsed);
+    } catch(err) {
+      console.error("findCareers error:", err);
+      setCareerError("Career match failed: " + (err.message||"Try again."));
+      // Rich fallback covering all sectors
+      setCareers([
+        {title:"CDL Truck Driver",sector:"Civilian",industry:"Transportation / Logistics",salaryRange:"$55,000-$90,000",match:"Excellent",outlook:"High Growth",why:"Military discipline and vehicle operation translate directly. CDL license obtainable in 4-8 weeks.",clearanceBonus:false,entryPath:"Enroll in CDL school using GI Bill or Helmets to Hardhats",education:"CDL-A License"},
+        {title:"Police Officer",sector:"Government",industry:"Law Enforcement",salaryRange:"$55,000-$85,000",match:"Excellent",outlook:"Stable",why:"Military veterans are preferred candidates at most agencies. Physical fitness and command presence are direct assets.",clearanceBonus:false,entryPath:"Apply to local or federal agency, most waive written exam for veterans",education:"Police Academy (3-6 months)"},
+        {title:"Electrician Apprentice",sector:"Civilian",industry:"Skilled Trades / Construction",salaryRange:"$48,000-$95,000",match:"Excellent",outlook:"High Growth",why:"High demand, strong union wages, GI Bill covers apprenticeship programs.",clearanceBonus:false,entryPath:"Register with IBEW or IEC apprenticeship program",education:"4-year apprenticeship"},
+        {title:"Firefighter",sector:"Government",industry:"Fire & Emergency Services",salaryRange:"$52,000-$80,000",match:"Excellent",outlook:"Stable",why:"Military teamwork, physical fitness, and emergency response experience are exactly what fire departments seek.",clearanceBonus:false,entryPath:"Apply to local fire department, use veterans preference points",education:"Fire Academy + EMT cert"},
+        {title:"Federal Law Enforcement Officer",sector:"Government",industry:"Federal Agency",salaryRange:"$60,000-$100,000",match:"Strong",outlook:"Stable",why:"FBI, DEA, CBP, Secret Service all actively recruit veterans with military police or combat experience.",clearanceBonus:true,entryPath:"Apply via USAJobs.gov with veterans preference",education:"Agency-specific training"},
+        {title:"Operations Manager",sector:"Civilian",industry:"Logistics / Manufacturing",salaryRange:"$65,000-$100,000",match:"Strong",outlook:"Stable",why:"Military NCOs and officers run complex operations daily — this is the same skill set.",clearanceBonus:false,entryPath:"Translate leadership experience on resume, target Walmart, Amazon, FedEx hiring programs",education:"PMP cert helpful"},
+        {title:"HVAC Technician",sector:"Civilian",industry:"Skilled Trades",salaryRange:"$50,000-$85,000",match:"Strong",outlook:"High Growth",why:"Strong demand, excellent wages, military mechanical experience is valued.",clearanceBonus:false,entryPath:"Enroll in HVAC program via GI Bill, apprenticeship or trade school",education:"EPA 608 Cert"},
+        {title:"Cybersecurity Analyst",sector:"Civilian",industry:"Technology / Defense",salaryRange:"$70,000-$115,000",match:"Strong",outlook:"High Growth",why:"DOD cybersecurity experience and clearances are extremely valuable in the private sector.",clearanceBonus:true,entryPath:"CompTIA Security+ certification (study 2-3 months), apply to defense contractors",education:"Security+ / CEH cert"},
+        {title:"Government Contractor (DoD)",sector:"Defense/Intel",industry:"Defense Contracting",salaryRange:"$75,000-$130,000",match:"Excellent",outlook:"Stable",why:"Your military experience and clearance make you immediately valuable to Booz Allen, SAIC, Leidos, and others.",clearanceBonus:true,entryPath:"Apply directly to major defense contractors on LinkedIn or ClearanceJobs.com",education:"Clearance required"},
+        {title:"EMT / Paramedic",sector:"Civilian",industry:"Emergency Medical Services",salaryRange:"$38,000-$65,000",match:"Strong",outlook:"High Growth",why:"Combat medics (68W, HM, 18D) can often test out of EMT requirements.",clearanceBonus:false,entryPath:"Enroll in EMT-Basic course, advance to Paramedic in 1-2 years",education:"EMT-B cert (4-8 weeks)"},
+        {title:"Project Manager",sector:"Civilian",industry:"Construction / Technology / Healthcare",salaryRange:"$70,000-$110,000",match:"Strong",outlook:"High Growth",why:"Military planning experience maps directly to project management.",clearanceBonus:false,entryPath:"Earn PMP certification, target companies with veteran hiring programs",education:"PMP Certification"},
+        {title:"TSA Officer / Border Patrol",sector:"Government",industry:"Homeland Security",salaryRange:"$45,000-$75,000",match:"Excellent",outlook:"Stable",why:"Direct pipeline from military service, veterans preference applies.",clearanceBonus:false,entryPath:"Apply on USAJobs.gov, process takes 3-6 months",education:"Federal training provided"},
+        {title:"Welder",sector:"Civilian",industry:"Manufacturing / Oil & Gas / Shipbuilding",salaryRange:"$48,000-$80,000",match:"Strong",outlook:"Stable",why:"High demand across shipbuilding, pipeline, and manufacturing. Overtime opportunities are substantial.",clearanceBonus:false,entryPath:"AWS welding cert via trade school or community college using GI Bill",education:"AWS Certification"},
+        {title:"Intelligence Analyst",sector:"Defense/Intel",industry:"Intelligence Community",salaryRange:"$70,000-$115,000",match:"Strong",outlook:"Stable",why:"Military intelligence experience and clearances are the #1 requirement for these roles.",clearanceBonus:true,entryPath:"Apply to CIA, NSA, DIA or defense contractors via ClearanceJobs.com",education:"Clearance + BA preferred"},
+        {title:"Heavy Equipment Operator",sector:"Civilian",industry:"Construction / Mining / Oil & Gas",salaryRange:"$55,000-$90,000",match:"Strong",outlook:"Stable",why:"Military combat engineers and motor transport operators have directly transferable skills.",clearanceBonus:false,entryPath:"NCCER certification via apprenticeship or Helmets to Hardhats program",education:"NCCER Operator Cert"},
+        {title:"Logistics Coordinator",sector:"Civilian",industry:"Supply Chain / Freight",salaryRange:"$50,000-$75,000",match:"Excellent",outlook:"High Growth",why:"Military logistics (92A, 88M, Storekeeper) is identical to civilian supply chain work.",clearanceBonus:false,entryPath:"Apply to Amazon, FedEx, UPS, or freight brokerages",education:"None required"},
+        {title:"Diesel Mechanic",sector:"Civilian",industry:"Transportation / Fleet Maintenance",salaryRange:"$52,000-$80,000",match:"Strong",outlook:"Stable",why:"Military vehicle mechanics (91B, 63 series, DC) are highly sought after.",clearanceBonus:false,entryPath:"ASE certification, apply to trucking companies or transit agencies",education:"ASE Cert"},
+        {title:"Safety Manager / EHS Specialist",sector:"Civilian",industry:"Construction / Manufacturing / Oil & Gas",salaryRange:"$60,000-$95,000",match:"Strong",outlook:"High Growth",why:"Military safety protocols and risk management experience are directly valuable.",clearanceBonus:false,entryPath:"OSHA 30 cert + CSP or CHST certification",education:"OSHA 30 cert"},
+        {title:"Corrections Officer",sector:"Government",industry:"State / Federal Corrections",salaryRange:"$45,000-$70,000",match:"Strong",outlook:"Stable",why:"Military discipline and physical fitness are exactly what the correctional system needs.",clearanceBonus:false,entryPath:"Apply to state DOC or Bureau of Prisons, veterans preference applies",education:"Academy training provided"},
+        {title:"IT Systems Administrator",sector:"Civilian",industry:"Technology",salaryRange:"$60,000-$95,000",match:"Strong",outlook:"High Growth",why:"Military IT and communications (25 series, IT rating) translates directly.",clearanceBonus:false,entryPath:"CompTIA A+ and Network+ certs, apply to IT staffing firms",education:"CompTIA A+ / Network+"},
+        {title:"Plumber / Pipefitter",sector:"Civilian",industry:"Skilled Trades",salaryRange:"$55,000-$100,000",match:"Strong",outlook:"High Growth",why:"Extremely high demand, strong union wages, GI Bill covers apprenticeship.",clearanceBonus:false,entryPath:"UA Plumbers & Pipefitters apprenticeship via Helmets to Hardhats",education:"5-year apprenticeship"},
+        {title:"Training Specialist / Instructional Designer",sector:"Civilian",industry:"Corporate / Government",salaryRange:"$55,000-$85,000",match:"Excellent",outlook:"Stable",why:"Military instructors (Drill Sergeants, MOS trainers) are natural training specialists.",clearanceBonus:false,entryPath:"ATD certification, apply to corporate L&D departments or government training contractors",education:"ATD cert helpful"},
+        {title:"Postal Inspector / Mail Carrier",sector:"Government",industry:"United States Postal Service",salaryRange:"$50,000-$85,000",match:"Strong",outlook:"Stable",why:"USPS offers veterans preference and career advancement paths.",clearanceBonus:false,entryPath:"Apply at usps.com/careers, veterans preference gives significant advantage",education:"None required"},
+        {title:"Real Estate Agent",sector:"Civilian",industry:"Real Estate",salaryRange:"$45,000-$120,000",match:"Good",outlook:"High Growth",why:"Veterans understand the military relocation process and connect well with the 1.3M military families moving annually.",clearanceBonus:false,entryPath:"State real estate license (3-6 months), target military communities near bases",education:"State RE License"}
+      ]);
+    }
+    setL("careers",false);
+  };
+
+  // ── CAREER DETAIL ──────────────────────────────────────────────────────────
+  const openCareerDetail = async (career) => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    setSelectedCareer(career);
+    setCareerDetail(null);
+    setL("careerDetail",true);
+    const summary = buildExpSummary();
+    const prompt = `A veteran with this background: ${summary || "general military service"}
+is considering the career: "${career.title}" in the ${career.sector} sector.
+
+You MUST return ONLY a valid JSON object. No text before or after. No markdown. No backticks. Start your response with { and end with }.
+
+Use this exact structure:
+{"about":"3-4 sentences about this career","salaryBreakdown":{"entry":"$X – $Y","mid":"$X – $Y","senior":"$X – $Y","cleared":"$X – $Y or null","notes":"what drives salary variation"},"careerPath":[{"title":"Job Title","salary":"$X – $Y","description":"one sentence","timeframe":"Years 0-2"},{"title":"Next Role","salary":"$X – $Y","description":"one sentence","timeframe":"Years 2-5"},{"title":"Senior Role","salary":"$X – $Y","description":"one sentence","timeframe":"Years 5-10"},{"title":"Expert/Leadership","salary":"$X – $Y","description":"one sentence","timeframe":"Years 10+"}],"whyYouFit":["reason 1","reason 2","reason 3","reason 4"],"requiredSkills":["skill 1","skill 2","skill 3","skill 4","skill 5"],"gaps":["gap 1","gap 2"],"certifications":["cert 1","cert 2","cert 3"],"actionSteps":["step 1","step 2","step 3","step 4","step 5"]}`;
+
+    try {
+      const raw = await callClaude(prompt, "You are a military career transition expert. Return ONLY valid JSON starting with { and ending with }. Never include markdown, backticks, or explanatory text outside the JSON.");
+
+      // Robust JSON extraction — find first { to last }
+      const start = raw.indexOf("{");
+      const end = raw.lastIndexOf("}");
+      if (start === -1 || end === -1) throw new Error("No JSON found");
+      const jsonStr = raw.slice(start, end + 1);
+      const parsed = JSON.parse(jsonStr);
+
+      // Ensure all expected fields exist with fallbacks
+      setCareerDetail({
+        about: parsed.about || (career.title)+" is a "+(career.sector||"")+" career well-suited for veterans.",
+        salaryBreakdown: {
+          entry: (parsed.salaryBreakdown && parsed.salaryBreakdown.entry) || career.salaryRange,
+          mid: (parsed.salaryBreakdown && parsed.salaryBreakdown.mid) || "",
+          senior: (parsed.salaryBreakdown && parsed.salaryBreakdown.senior) || "",
+          cleared: (parsed.salaryBreakdown && parsed.salaryBreakdown.cleared) || null,
+          notes: (parsed.salaryBreakdown && parsed.salaryBreakdown.notes) || "",
+        },
+        careerPath: Array.isArray(parsed.careerPath) ? parsed.careerPath : [],
+        whyYouFit: Array.isArray(parsed.whyYouFit) ? parsed.whyYouFit : [career.whyFit || "Your military background is directly transferable."],
+        requiredSkills: Array.isArray(parsed.requiredSkills) ? parsed.requiredSkills : (career.topSkills || []),
+        gaps: Array.isArray(parsed.gaps) ? parsed.gaps : [],
+        certifications: Array.isArray(parsed.certifications) ? parsed.certifications : [],
+        actionSteps: Array.isArray(parsed.actionSteps) ? parsed.actionSteps : [career.nextStep || "Research this career field further."],
+      });
+    } catch(err) {
+      // Fallback: build a useful detail view from the data we already have
+      setCareerDetail({
+        about: (career.title)+" is a "+(career.sector||"")+" role in "+(career.industry||"multiple industries")+". "+(career.description||"")+" Veterans are well-positioned for this career due to their disciplined work ethic, leadership experience, and mission-focused mindset.",
+        salaryBreakdown: { entry: career.salaryRange, mid: "", senior: "", cleared: null, notes: "Salary varies by location, experience, and certifications." },
+        careerPath: [
+          { title: "Entry-Level "+(career.title), salary: career.salaryRange, description: "Build foundational civilian experience and professional network.", timeframe: "Years 0–2" },
+          { title: "Mid-Level "+(career.title), salary: "", description: "Take on increased responsibility and specialize in a sub-field.", timeframe: "Years 2–5" },
+          { title: "Senior "+(career.title), salary: "", description: "Lead teams, mentor junior staff, manage larger programs.", timeframe: "Years 5–10" },
+          { title: "Director / Principal", salary: "", description: "Strategic leadership, executive decision-making, organizational impact.", timeframe: "Years 10+" },
+        ],
+        whyYouFit: [career.whyFit || "Your military background provides strong transferable skills.", "Veterans bring leadership and discipline that civilian employers highly value.", "Your service demonstrates mission focus and the ability to perform under pressure."],
+        requiredSkills: career.topSkills || [],
+        gaps: ["Consider gaining civilian industry certifications to complement your military training.", "Building a professional civilian network through LinkedIn and industry events will accelerate your transition."],
+        certifications: ["Research industry-specific certifications for this field.", "Consider PMP (Project Management Professional) as a broad credential.", "Check if your military training credits toward any civilian licenses."],
+        actionSteps: [career.nextStep || "Research job postings in this field on USAJOBS, LinkedIn, and Indeed.", "Update your resume to target this specific role using the Resume tab.", "Connect with veterans already working in this field through LinkedIn.", "Research employers who actively recruit veterans in this sector.", "Schedule informational interviews with professionals in this career."],
+      });
+    }
+    setL("careerDetail",false);
+  };
+
+  // ── RESUME ─────────────────────────────────────────────────────────────────
+  const genResume = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    setApiError("");
+    setL("resume",true);
+    setResume("");
+    setResumeData(null);
+    const expText = buildExpSummary();
+    const milSum = milExperiences.map(e =>
+      (e.branch||"Military") + " " + (e.rank||"") + " MOS:" + (e.mos||"") + " " + (e.mosTitle||"") +
+      " TOS:" + (e.tos||"unknown") +
+      ((e.asi&&e.asi.length) ? " ASIs:"+e.asi.map(a=>a.code+"-"+a.desc).join(",") : "") +
+      ((e.sqi&&e.sqi.length) ? " SQIs:"+e.sqi.map(s=>s.code+"-"+s.desc).join(",") : "") +
+      ((e.awards&&e.awards.length) ? " Awards:"+e.awards.join(",") : "") +
+      ((e.additionalDuties&&e.additionalDuties.length) ? " Duties:"+e.additionalDuties.join(",") : "") +
+      ((e.mosRoles&&e.mosRoles.length) ? " Progression:"+e.mosRoles.map(r=>(r.fromYear||"")+"-"+(r.toYear||"")+" "+r.rankAtRole+" "+r.title).join(" → ") : "") +
+      " Clearance:" + (e.clearanceLevel||"None") +
+      " Deployments:" + (e.deployments||"none") +
+      " Duties:" + (e.duties||"not described")
+    ).join(" | ");
+    const eduText = education.map(e=>(e.degree)+" in "+(e.field||"")+" — "+(e.institution||"")+" ("+(e.year||"")+")").join("; ");
+    try {
+      const formatInstructions = {
+        ats_chrono: "ATS CHRONOLOGICAL FORMAT: Simple clean layout. Standard section headers (Summary, Experience, Education, Skills, Certifications). Reverse chronological work history. No tables, no text boxes, no columns. Keyword-rich. ATS-safe fonts and structure.",
+        ats_combo: "ATS COMBINATION FORMAT: Open with a Skills Summary section listing 8-10 core competencies as keywords. Then reverse-chronological experience. Then education. ATS-optimized throughout with no tables or columns.",
+        functional: "FUNCTIONAL (SKILLS-FIRST) FORMAT: Section order: 1) Professional Profile (3 sentences), 2) Core Competencies (10-12 keywords), 3) Functional Skill Groups — create 2-3 sections named after skill categories (Leadership & Management, Technical Operations, Medical/Healthcare, etc.) with 3-4 bullets each, 4) Employment History (brief: title, org, dates only — no bullets), 5) Education. This format de-emphasizes employment gaps and career pivots by leading with what the veteran CAN DO.",
+        traditional: "TRADITIONAL FORMAT: Conservative black and white. Clean serif-style formatting. Standard sections. No color, no design elements. Appropriate for government, legal, and formal industries.",
+        modern: "MODERN PROFESSIONAL FORMAT: Clean contemporary layout. Use subtle section dividers (——). Bold role titles. Clean hierarchy. Professional but polished. Suitable for corporate and private sector.",
+        executive: "EXECUTIVE FORMAT: Open with a strong executive profile paragraph. Follow with Core Competencies as two columns of keywords. Then Career Highlights with 3-4 major achievements with metrics. Then abbreviated experience. Emphasize leadership scope, P&L, team size, and strategic impact.",
+        federal: "FEDERAL/USAJOBS FORMAT: Extremely detailed. Include GS pay scale equivalent where applicable. List all positions with full addresses of employers, hours per week, supervisor names. Include detailed KSAs. Often 3-5 pages. List all training, awards, and certifications in full.",
+        harvard: "HARVARD STYLE: Single column, clean conservative layout. Name and contact centered at top with a line beneath. Section headers in small caps or bold with a line rule. Clean consistent formatting with strong use of white space.",
+        wharton: "WHARTON/MBA STYLE: Name bold and prominent. One-line title/brand statement. Experience entries lead with company and bold achievement metrics. Emphasis on quantified results, revenue impact, team sizes, and scope. Sharp and results-focused.",
+        minimalist: "MINIMALIST FORMAT: Maximum white space. Simple clean typography. Minimal use of dividers. Let content breathe. Easy to scan. Clean hierarchy with role, company, dates on one line.",
+        creative: "CREATIVE FORMAT: Use tasteful formatting with section color accents (use ASCII/text characters to simulate). Clear visual hierarchy. Creative but readable. Appropriate for design, media, and branding roles.",
+      };
+      const formatGuide = formatInstructions[resumeFormat] || formatInstructions.ats_chrono;
+      const contact = (personal.name||"") + " | " + (personal.email||"") + " | " + (personal.phone||"") + " | " + (personal.location||"") + (personal.linkedin ? " | " + personal.linkedin : "");
+      const eduText2 = education.map(e => (e.degree||"") + " " + (e.field||"") + " " + (e.institution||"") + " " + (e.year||"")).join("; ");
+      const prompt =
+        "You are a military-to-civilian resume expert. Create a complete professional resume.\n\n" +
+        "VETERAN MILITARY PROFILE:\n" + milSum + "\n\n" +
+        "CIVILIAN EXPERIENCE:\n" + expText + "\n\n" +
+        "EDUCATION:\n" + eduText2 + "\n\n" +
+        "SKILLS: " + (skills.technical||"") + "\n" +
+        "LEADERSHIP: " + (skills.leadership||"") + "\n" +
+        "LANGUAGES: " + (skills.languages||"") + "\n" +
+        "CERTIFICATIONS: " + (skills.certs||"") + "\n" +
+        (target.interests ? "INTERESTS/HOBBIES: " + target.interests + "\n" : "") +
+        "TARGET ROLE: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + "\n\n" +
+        "CONTACT: " + contact + "\n\n" +
+        "CRITICAL RULES — ZERO MILITARY JARGON ALLOWED:\n" +
+        "ABSOLUTE RULE: The resume must read as if written by a civilian professional. A civilian hiring manager should not be able to tell this person was in the military unless they choose to mention it. Every single military term MUST be replaced with civilian language.\n" +
+        "BANNED WORDS — never use these: NCO, NCOIC, OIC, MOS, AFSC, NEC, SGT, SSG, SFC, MSG, CSM, PFC, SPC, CPL, E-4, E-5, O-3, Soldier, Airman, Marine, Sailor, Guardian, Troop, Unit, Battalion, Brigade, Company, Platoon, Squad, TOC, SITREP, AAR, OPORD, TDY, PCS, ETS, TAD, SHARP (spell it out), Armorer (say Weapons Inventory Manager), Retention NCO (say Talent Acquisition Specialist), Drill Sergeant (say Training Instructor/Leadership Development Specialist), Airborne (say Parachute Operations Certified), MRE, Battle Rhythm, Hooah, Oorah, Hard Charger.\n" +
+        "TRANSLATION RULES:\n" +
+        "- NCO / Sergeant / Staff Sergeant = Team Leader / Operations Supervisor\n" +
+        "- NCOIC = Operations Lead / Team Supervisor\n" +
+        "- OIC = Program Manager / Department Lead\n" +
+        "- Unit Armorer = Weapons & Equipment Inventory Manager\n" +
+        "- SHARP Representative = Employee Relations & Compliance Coordinator\n" +
+        "- Retention NCO = Talent Acquisition & Career Development Specialist\n" +
+        "- Drill Sergeant = Leadership Development Instructor\n" +
+        "- Airborne qualified = Parachute Operations Certified (or just omit if not relevant)\n" +
+        "- Supply Sergeant = Inventory & Logistics Manager\n" +
+        "- Motor Transport = Fleet Operations & Vehicle Maintenance Manager\n" +
+        "- Battalion / Brigade = Organization / Division\n" +
+        "- Platoon of 40 soldiers = Team of 40 personnel\n" +
+        "- TOC = Operations Center\n" +
+        "- SITREP = Status Report\n" +
+        "- AAR = After-Action Review / Post-Project Debrief\n" +
+        "- COR = Contract Oversight Manager\n" +
+        "- Secret clearance = Active Secret Security Clearance (keep this — it is valuable)\n" +
+        "- TS/SCI = Active Top Secret/SCI Security Clearance (keep this — premium asset)\n" +
+        "1. Write every bullet point as a civilian achievement: Led [X people], managed [$X budget], reduced [X%], improved [outcome].\n" +
+        "2. Quantify ONLY using numbers the veteran explicitly provided. NEVER invent or fabricate metrics. If they gave no numbers for a task, write the bullet without numbers — an honest bullet beats a fabricated one.\n" +
+        "3. Start every bullet with a strong civilian action verb: Led, Managed, Coordinated, Developed, Implemented, Reduced, Increased, Trained, Oversaw, Delivered.\n" +
+        "4. Security clearances are the ONE military term to keep — they are premium salary assets.\n" +
+        "5. ATS keywords for: " + (target.title||"operations management, leadership, logistics") + "\n\n" +
+        "Return ONLY valid JSON, no markdown, starting with { ending with }.\n" +
+        "Keys: name, contact (string), summary (2-3 sentence professional paragraph), " +
+        "experience (array of {employer, title, dates, bullets:[4-6 strong civilian bullet strings]}), " +
+        "education (array of {degree, school, year}), " +
+        "skills (array of max 12 skill strings), " +
+        "certifications (array of strings), " +
+        "clearance (string or null), " +
+        "awards (array of strings)";
+      const raw = await callClaude(
+        prompt,
+        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
+        3500
+      );
+      const rStart = raw.indexOf("{");
+      const rEnd = raw.lastIndexOf("}");
+      if (rStart > -1 && rEnd > -1) {
+        try {
+          const rd = JSON.parse(raw.slice(rStart, rEnd + 1));
+          delete rd.careerPath; setResumeData(rd);
+        } catch(pe) {
+          console.warn("Resume JSON parse failed, using text mode:", pe.message);
+        }
+      }
+      setResume(raw);
+      setL("resume",false);
+    } catch(e) {
+      console.error("Resume generation failed:", e);
+      setResume("Error generating resume: " + (e.message || "Please check your API key and try again."));
+      setL("resume",false);
+    }
+  };
+
+
+  // ── COVER LETTER GENERATOR ────────────────────────────────────────────────
+  const genCoverLetter = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!resume && !resumeData && !uploadedResumeText) { alert("Please upload a resume file or generate one on the Build Resume tab."); return; }
+    setCoverLetterLoading(true);
+    setCoverLetter("");
+    const milSummary = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")+" ("+(e.tos||"")+"), MOS: "+(e.mos||"")).join("; ");
+    const resumeText = uploadedResumeText || resume || (resumeData ? JSON.stringify(resumeData) : "");
+    const prompt = `You are an expert military-to-civilian career counselor writing a compelling cover letter.
+
+VETERAN PROFILE:
+- Service: ${milSummary}
+- Name: ${personal.name||"[Name]"}
+
+TARGET JOB:
+- Title: ${coverLetterJob.title||"[Position]"}
+- Company: ${coverLetterJob.company||"[Company]"}
+- Job Description: ${coverLetterJob.description||"Not provided"}
+
+RESUME SUMMARY:
+${resumeText.slice(0,1500)}
+
+Write a professional, warm, and compelling 3-paragraph cover letter that:
+1. Opens with a strong hook connecting military service to the role
+2. Highlights 2-3 specific achievements from their service that directly apply
+3. Closes with confidence and a clear call to action
+4. Translates ALL military jargon into civilian language
+5. Is addressed to the hiring manager (use "Dear Hiring Manager" if no name given)
+6. Is between 250-350 words
+
+Return ONLY the cover letter text, no subject line, no extra commentary.`;
+    try {
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 1500);
+      setCoverLetter(raw);
+    } catch(e) {
+      setCoverLetter("Error generating cover letter. Please try again.");
+    }
+    setCoverLetterLoading(false);
+  };
+
+
+  // ── INTERVIEW PREP GENERATOR ──────────────────────────────────────────────
+  const genInterviewPrep = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    setPrepLoading(true); setPrepQuestions([]);
+    const milSummary = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")+" MOS "+(e.mos||"")+" ("+(e.tos||"")+")").join("; ");
+    const prompt = `You are an elite interview coach for military veterans transitioning to civilian careers.
+
+VETERAN: ${milSummary}
+APPLYING FOR: ${prepJob.title||"a civilian role"} at ${prepJob.company||"a company"}
+INTERVIEW TYPE: ${prepJob.type}
+
+Generate 8 interview questions they will likely be asked, with a tailored answer strategy using their military background. Return ONLY valid JSON array:
+[{
+  "question": "Tell me about yourself.",
+  "whyAsked": "Sets the tone, they want your career story",
+  "answerStrategy": "Start with military service, bridge to civilian value, end with why this role",
+  "starExample": "Situation: As a [rank] in [branch]... Task: I was responsible for... Action: I implemented... Result: This led to...",
+  "tip": "Keep it under 2 minutes. Practice out loud."
+}]
+
+Make answers specific to their MOS and rank. Use the STAR method. Translate all military jargon.`;
+    try {
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 3000);
+      const clean = raw.replace(/```json|```/g,"").trim();
+      const s = clean.indexOf("["); const e = clean.lastIndexOf("]");
+      if(s===-1||e===-1) throw new Error("No array");
+      setPrepQuestions(JSON.parse(clean.slice(s,e+1)));
+    } catch(err) {
+      setPrepQuestions([{
+        question:"Tell me about yourself.",
+        whyAsked:"Opens the interview and sets the tone",
+        answerStrategy:"Lead with your military service, highlight your top 2-3 skills, connect to this specific role, end with your excitement about the opportunity.",
+        starExample:"I served "+milSummary+". I built strong skills in leadership and operations that I am excited to bring to this role.",
+        tip:"Practice this until it feels natural. This is your elevator pitch."
+      }]);
+    }
+    setPrepLoading(false);
+  };
+
+  // ── FOLLOW-UP EMAIL GENERATOR ─────────────────────────────────────────────
+  const genFollowupEmail = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    setFollowupLoading(true); setFollowupEmail("");
+    const milSum = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")).join(", ");
+    const emailTypes = {
+      "thank-you": "a warm, professional thank-you email after an interview",
+      "follow-up": "a polite follow-up email checking on application status after 1 week of silence",
+      "negotiation": "a professional salary negotiation email asking for a higher offer",
+      "withdraw": "a gracious email withdrawing from consideration while keeping the door open"
+    };
+    const prompt = `Write ${emailTypes[followupCtx.outcome]||"a professional email"}.
+
+Veteran: ${personal.name||"[Name]"} | Service: ${milSum}
+Role: ${followupCtx.role||"the position"} at ${followupCtx.company||"your company"}
+Interviewer: ${followupCtx.interviewerName||"Hiring Manager"}
+Interview date: ${followupCtx.date||"recently"}
+
+Write a genuine, professional email that:
+- Is NOT overly formal or stiff
+- References something specific from the conversation if possible (be generic if no details)
+- Subtly reinforces their military background as an asset
+- Is under 150 words
+- Has a clear subject line on the first line starting with "Subject: "
+
+Return ONLY the email text including the subject line. No extra commentary.`;
+    try {
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 800);
+      setFollowupEmail(raw.trim());
+    } catch(err) {
+      setFollowupEmail("Subject: Thank You - " + (followupCtx.role||"Position") + " Interview\n\nDear " + (followupCtx.interviewerName||"Hiring Manager") + ",\n\nThank you for taking the time to meet with me regarding the " + (followupCtx.role||"position") + " role at " + (followupCtx.company||"your organization") + ". I enjoyed learning more about the team and am excited about the opportunity to bring my military leadership experience to your organization.\n\nPlease let me know if you need any additional information.\n\nBest regards,\n" + (personal.name||"[Your Name]"));
+    }
+    setFollowupLoading(false);
+  };
+
+  // ── RESUME REVIEW / SCORE ─────────────────────────────────────────────────
+  const runResumeReview = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!resume && !resumeData && !uploadedResumeText) { alert("Please upload a resume file or generate one first."); return; }
+    setReviewLoading(true);
+    setResumeScore(null);
+    setResumeReview(null);
+    const resumeText = uploadedResumeText || resume || JSON.stringify(resumeData||{});
+    const prompt = `You are an expert resume reviewer for military-to-civilian career transitions. Analyze this resume and return ONLY valid JSON.
+
+RESUME:
+${resumeText.slice(0,2000)}
+
+TARGET JOB: ${target.title||"General civilian role"}
+
+Return this exact JSON structure:
+{
+  "overallScore": 82,
+  "grades": {
+    "impact": { "score": 85, "label": "Impact & Achievements" },
+    "clarity": { "score": 78, "label": "Clarity & Civilian Language" },
+    "keywords": { "score": 80, "label": "Keywords & ATS" },
+    "formatting": { "score": 88, "label": "Format & Length" },
+    "military": { "score": 72, "label": "Military Translation" }
+  },
+  "strengths": ["strength 1", "strength 2", "strength 3"],
+  "improvements": [
+    { "priority": "HIGH", "issue": "Issue title", "fix": "Specific fix to make" },
+    { "priority": "MEDIUM", "issue": "Issue title", "fix": "Specific fix to make" },
+    { "priority": "LOW", "issue": "Issue title", "fix": "Specific fix to make" }
+  ],
+  "missingKeywords": ["keyword1", "keyword2", "keyword3"],
+  "verdict": "One sentence overall assessment"
+}`;
+    try {
+      const raw = await callClaude(prompt, "You are an expert resume reviewer. Return ONLY valid JSON, no markdown, no commentary.", 1500);
+      const clean = raw.replace(/```json|```/g,"").trim();
+      const data = JSON.parse(clean);
+      setResumeScore(data.overallScore);
+      setResumeReview(data);
+    } catch(e) {
+      setResumeReview({ error: "Could not analyze resume. Make sure your resume is generated first." });
+    }
+    setReviewLoading(false);
+  };
+
+  const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
+
+  const TABS = ["My Service Record","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Saved Work"];
+  const AI_TABS = [2,3,4]; // tabs that are AI-powered tools
+  const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
+  const DI = "Defense/Intel";
+  const RG = "Reserve/Guard (concurrent with civilian)";
+  const matchesSector = (c, filter) => filter==="All" || c.sector===filter || (filter===DI && c.sector===DI);
+  const filterCareers = (careers, filter) => careers.filter(c => matchesSector(c, filter));
+
+  return (
+    <>
+      <style>{css}</style>
+      <div className="app">
+
+
+
+        {showPaywall&&(
+          <div className="pw-overlay" onClick={e=>e.target===e.currentTarget&&null}>
+            <div className="pw-box">
+              <div className="pw-head">
+                <img src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path"
+                  style={{width:"90px",height:"90px",objectFit:"contain",marginBottom:".6rem",filter:"drop-shadow(0 2px 8px rgba(0,0,0,.4))"}}/>
+                <p style={{color:"#a0c0e0",fontSize:".85rem",margin:0}}>AI-powered tools to translate your service into a civilian career</p>
+              </div>
+
+              <div style={{padding:"1.2rem 1.5rem 0"}}>
+                <div style={{border:"2.5px solid #1a3a6b",borderRadius:"10px",padding:"1.2rem",background:"linear-gradient(135deg,#f0f4ff,#e8edf5)",textAlign:"center"}}>
+
+                  <div style={{textAlign:"center",marginBottom:".4rem"}}>
+                    <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"3rem",color:"#1a3a6b",lineHeight:1}}>$15</div>
+                    <div style={{fontSize:".85rem",fontWeight:700,color:"#1a3a6b",marginTop:".2rem"}}>Monthly Subscription</div>
+                    <div style={{fontSize:".78rem",color:"#5a7090",marginTop:".15rem"}}>$15/month — 16 AI tools</div>
+                  </div>
+
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".3rem .8rem",textAlign:"left",fontSize:".78rem",color:"#2a4a6a"}}>
+                    {["AI Career Matching","Military Language Translator","AI Resume Builder","5 Resume Templates","Cover Letter Generator","Resume Score & Review","Job Application Tracker","Interview Prep Generator","Follow-Up Email Generator","Transition Timeline","Weekly Progress Dashboard","Veteran Resources Hub"].map((f,i)=>(
+                      <div key={i} style={{display:"flex",gap:".3rem",alignItems:"center"}}><span style={{color:"#1a7a40",fontWeight:700,fontSize:".8rem"}}>✓</span>{f}</div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="pw-divider">
+                <div/><span>OR ENTER ACCESS CODE</span><div/>
+              </div>
+              <div className="pw-code-row">
+                <input
+                  placeholder="Access Code"
+                  value={pwCode}
+                  className={pwCodeStatus==="valid"?"valid":pwCodeStatus==="invalid"?"invalid":""}
+                  onChange={e=>{setPwCode(e.target.value.toUpperCase());setPwCodeStatus("idle");setPwCodeMsg("");}}
+                  onKeyDown={e=>e.key==="Enter"&&redeemCode()}
+                  style={{textTransform:"uppercase",letterSpacing:".1em",fontWeight:600}}
+                />
+                <button className="pw-code-btn" onClick={redeemCode}>Apply</button>
+              </div>
+              {pwCodeMsg&&(
+                <div style={{padding:"0 1.5rem .5rem",fontSize:".8rem",color:pwCodeStatus==="valid"?"#1a7a40":"#c0392b",fontWeight:600}}>
+                  {pwCodeMsg}
+                </div>
+              )}
+
+              <div className="pw-footer">
+                <button className="pw-cta" onClick={()=>{
+                  // REPLACE_WITH_YOUR_STRIPE_PAYMENT_LINK below
+                  // Get it from: Stripe Dashboard -> Payment Links -> Create
+                  // Set success URL to: https://veterancareerpath.com?stripe_success=1&session_id={CHECKOUT_SESSION_ID}
+                  // SUCCESS URL must be configured in Stripe Dashboard:
+                  // Payment Links → Edit → Confirmation page → Custom URL:
+                  // https://veterancareerpath.com/app.html?stripe_success=1&session_id={CHECKOUT_SESSION_ID}
+                  const stripeLink = "https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00";
+                  window.location.href = stripeLink;
+                }}>
+                  Subscribe Now — $15/mo →
+                </button>
+                <div style={{textAlign:"center",fontSize:".72rem",color:"#8aa0b8",margin:"-.1rem 0 .2rem"}}>
+                  $15/month · 16 AI tools · cancel anytime
+                </div>
+                <div style={{marginTop:".85rem",textAlign:"center"}}>
+                  <button
+                    onClick={()=>{
+                      // Re-check access in case Stripe redirected and localStorage was set
+                      if(checkAccess()){
+                        setHasAccess(true);
+                        setShowPaywall(false);
+                        return;
+                      }
+                      // Manual grant — ask for Stripe email as light verification
+                      const email = window.prompt("Enter the email you used when subscribing on Stripe:");
+                      if(email && email.includes("@")){
+                        const expiry = Date.now() + 365*24*60*60*1000;
+                        localStorage.setItem("vcb_access", JSON.stringify({
+                          type:"paid", stripeSession:"manual-verify-"+Date.now(),
+                          expiry, plan:"monthly", email
+                        }));
+                        setHasAccess(true);
+                        setShowPaywall(false);
+                      }
+                    }}
+                    style={{background:"none",border:"none",color:"rgba(100,140,180,.6)",fontSize:".78rem",cursor:"pointer",textDecoration:"underline"}}
+                  >
+                    Already subscribed? Click here to unlock
+                  </button>
+                </div>
+                <button className="pw-skip" onClick={()=>{setShowPaywall(false);}}>
+                  Not ready yet? Browse the app first (AI features locked)
+                </button>
+                <div style={{textAlign:"center",marginTop:".75rem",paddingBottom:".5rem",fontSize:".82rem",color:"#8aa0b8"}}>
+                  Already have an account?{"  "}
+                  <button style={{background:"none",border:"none",color:"#1a3a6b",fontWeight:700,cursor:"pointer",textDecoration:"underline",fontSize:".82rem",padding:0}}
+                    onClick={()=>{setShowPaywall(false);setShowAuth(true);setAuthMode("login");}}>
+                    Sign In →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showAuth&&(
+          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}}
+            onClick={e=>e.target===e.currentTarget&&setShowAuth(false)}>
+            <div style={{background:"#ffffff",borderRadius:"10px",width:"100%",maxWidth:"420px",boxShadow:"0 20px 60px rgba(0,0,0,.3)",overflow:"hidden"}}>
+
+              <div style={{background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",padding:"1.6rem 1.8rem 1.2rem",textAlign:"center",position:"relative"}}>
+                <button onClick={()=>setShowAuth(false)} style={{position:"absolute",top:".8rem",right:".8rem",background:"transparent",border:"none",color:"rgba(255,255,255,.7)",fontSize:"1.4rem",cursor:"pointer",lineHeight:1}}>✕</button>
+                <div style={{fontSize:"2rem",marginBottom:".4rem"}}>🎖</div>
+                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.4rem",letterSpacing:".1em",color:"#f0c040"}}>Veteran Career Path</div>
+                <div style={{fontSize:".82rem",color:"#b8d0f0",marginTop:".3rem"}}>Free account — save your profile and resumes</div>
+              </div>
+
+              <div style={{display:"flex",borderBottom:"2px solid #e8edf5",background:"#f8fafc"}}>
+                <button onClick={()=>{setAuthMode("login");setAuthErr("");setAuthOk("");}}
+                  style={{flex:1,padding:".7rem",background:"transparent",border:"none",borderBottom:authMode==="login"?"2.5px solid #1a3a6b":"2.5px solid transparent",marginBottom:"-2px",cursor:"pointer",fontWeight:authMode==="login"?700:400,color:authMode==="login"?"#1a3a6b":"#5a7090",fontSize:".9rem"}}>
+                  Sign In
+                </button>
+                <button onClick={()=>{setAuthMode("register");setAuthErr("");setAuthOk("");}}
+                  style={{flex:1,padding:".7rem",background:"transparent",border:"none",borderBottom:authMode==="register"?"2.5px solid #1a3a6b":"2.5px solid transparent",marginBottom:"-2px",cursor:"pointer",fontWeight:authMode==="register"?700:400,color:authMode==="register"?"#1a3a6b":"#5a7090",fontSize:".9rem"}}>
+                  Create Account
+                </button>
+              </div>
+
+              <div style={{padding:"1.4rem 1.8rem 1.6rem"}}>
+                {authErr&&<div style={{background:"#fff0f0",border:"1px solid #f0c0c0",borderRadius:"4px",padding:".55rem .8rem",fontSize:".82rem",color:"#a00",marginBottom:".75rem"}}>{authErr}</div>}
+                {authOk&&<div style={{background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".55rem .8rem",fontSize:".82rem",color:"#1a7a40",marginBottom:".75rem"}}>{authOk}</div>}
+
+                <button
+                  style={{width:"100%",padding:".7rem",background:"#ffffff",border:"1.5px solid #d0daea",borderRadius:"6px",cursor:"pointer",fontSize:".9rem",fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",gap:".7rem",color:"#1a2a3a",marginBottom:"1rem",boxShadow:"0 1px 4px rgba(0,0,0,.06)"}}
+                  onClick={async()=>{
+                    if(!fbAuth){setAuthErr("Firebase not configured. Contact the site owner.");return;}
+                    try{
+                      const provider=new firebase.auth.GoogleAuthProvider();
+                      await fbAuth.signInWithPopup(provider);
+                      setShowAuth(false);
+                    }catch(e){
+                      if(e.code==="auth/popup-closed-by-user") return;
+                      if(e.code==="auth/popup-blocked") setAuthErr("Popup blocked — allow popups for this site.");
+                      else setAuthErr("Google sign-in failed: "+(e.message||"Unknown error"));
+                    }
+                  }}>
+                  <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.66l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+                  Continue with Google
+                </button>
+
+                <div style={{display:"flex",alignItems:"center",gap:".6rem",marginBottom:"1rem"}}>
+                  <div style={{flex:1,height:"1px",background:"#e0e8f0"}}/><span style={{fontSize:".72rem",color:"#8aa0b8",letterSpacing:".06em"}}>OR EMAIL</span><div style={{flex:1,height:"1px",background:"#e0e8f0"}}/>
+                </div>
+
+                {authMode==="register"&&(
+                  <div className="field" style={{marginBottom:".6rem"}}>
+                    <label>Full Name</label>
+                    <input placeholder="First Last" value={authForm.name} onChange={e=>setAuthForm(f=>({...f,name:e.target.value}))}/>
+                  </div>
+                )}
+                <div className="field" style={{marginBottom:".6rem"}}>
+                  <label>Email</label>
+                  <input placeholder="your@email.com" type="email" value={authForm.username}
+                    onChange={e=>setAuthForm(f=>({...f,username:e.target.value}))}
+                    onKeyDown={e=>e.key==="Enter"&&(authMode==="login"?handleLogin():handleRegister())}/>
+                </div>
+                <div className="field" style={{marginBottom:".8rem"}}>
+                  <label>Password</label>
+                  <input type="password" placeholder="Password" value={authForm.password}
+                    onChange={e=>setAuthForm(f=>({...f,password:e.target.value}))}
+                    onKeyDown={e=>e.key==="Enter"&&(authMode==="login"?handleLogin():handleRegister())}/>
+                </div>
+                {authMode==="register"&&(
+                  <div className="field" style={{marginBottom:".8rem"}}>
+                    <label>Confirm Password</label>
+                    <input type="password" placeholder="Re-enter password" value={authForm.confirmPassword}
+                      onChange={e=>setAuthForm(f=>({...f,confirmPassword:e.target.value}))}/>
+                  </div>
+                )}
+                <button style={{width:"100%",padding:".72rem",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",border:"none",borderRadius:"6px",cursor:"pointer",fontSize:".95rem",fontWeight:700,fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em"}}
+                  onClick={authMode==="login"?handleLogin:handleRegister}>
+                  {authMode==="login"?"Sign In →":"Create Free Account →"}
+                </button>
+
+                {authMode==="login"&&(
+                  <div style={{textAlign:"center",marginTop:".6rem"}}>
+                    <button style={{background:"transparent",border:"none",color:"#8aa0b8",fontSize:".78rem",cursor:"pointer",textDecoration:"underline"}}
+                      onClick={async()=>{
+                        if(!fbAuth||!authForm.username.trim()){setAuthErr("Enter your email first.");return;}
+                        try{
+                          await fbAuth.sendPasswordResetEmail(authForm.username.trim());
+                          setAuthOk("Reset email sent — check your inbox.");
+                        }catch(e){setAuthErr("Could not send reset email.");}
+                      }}>Forgot password?</button>
+                  </div>
+                )}
+
+                <div style={{textAlign:"center",marginTop:"1rem",paddingTop:".75rem",borderTop:"1px solid #e8edf5"}}>
+                  <button style={{background:"transparent",border:"none",color:"#8aa0b8",fontSize:".8rem",cursor:"pointer"}} onClick={()=>setShowAuth(false)}>
+                    Continue without an account
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+
+
+        {showAdminSetup&&(
+          <div style={{position:"fixed",inset:0,background:"rgba(8,12,24,.97)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}}>
+            <div style={{background:"linear-gradient(160deg,#243560,#1e3530)",border:"1px solid rgba(201,168,76,.35)",borderRadius:"6px",width:"100%",maxWidth:"460px",overflow:"hidden"}}>
+              <div style={{background:"rgba(201,168,76,.12)",borderBottom:"1px solid rgba(201,168,76,.22)",padding:"1.2rem 1.4rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".12em",fontSize:"1.2rem",color:"var(--gold-light)"}}>⚙ Site Owner Setup</div>
+                  <div style={{fontSize:".76rem",color:"var(--slate)",marginTop:".2rem"}}>This panel is only for the site owner — not visible to users</div>
+                </div>
+                <button onClick={()=>setShowAdminSetup(false)} style={{background:"transparent",border:"none",color:"var(--slate)",fontSize:"1.2rem",cursor:"pointer"}}>✕</button>
+              </div>
+              <div style={{padding:"1.5rem"}}>
+                {adminKeySet?(
+                  <div style={{background:"rgba(76,175,130,.1)",border:"1px solid rgba(76,175,130,.3)",borderRadius:"3px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".88rem",color:"var(--green)"}}>
+                    ✓ API key is configured — AI features are enabled
+                  </div>
+                ):(
+                  <div style={{background:"rgba(201,168,76,.08)",border:"1px solid rgba(201,168,76,.25)",borderRadius:"3px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".85rem",color:"var(--slate)",lineHeight:"1.6"}}>
+                  AI features are enabled via the Vercel proxy. If you need to override with a direct API key, enter it below.
+                  </div>
+                )}
+                <div style={{marginBottom:"1rem"}}>
+                  <label style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,display:"block",marginBottom:".4rem"}}>Anthropic API Key</label>
+                  <input
+                    type="password"
+                    placeholder="https://your-proxy.vercel.app/api/claude"
+                    value={adminKeyInput}
+                    onChange={e=>setAdminKeyInput(e.target.value)}
+                    style={{width:"100%",background:"rgba(255,255,255,.92)",border:"1.5px solid rgba(201,168,76,.5)",borderRadius:"3px",color:"#1a1a2e",padding:".65rem .85rem",fontFamily:"monospace",fontSize:".9rem"}}
+                  />
+                </div>
+                <button
+                  style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,var(--gold),var(--gold-light))",border:"none",borderRadius:"3px",color:"var(--navy)",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".12em",fontSize:"1rem",cursor:"pointer"}}
+                  onClick={()=>{
+                    const k = adminKeyInput.trim();
+                    if(k.length < 20){ alert("That doesn't look like a valid API key."); return; }
+                    if (k.startsWith("https://")) {
+                      // It's a proxy URL — store separately and reload
+                      localStorage.setItem("vcb_proxy_url", k);
+                      alert("Proxy URL saved! AI features are now enabled.");
+                      window.location.reload();
+                    } else {
+                      localStorage.setItem("vcb_admin_key", k);
+                    } try{sessionStorage.setItem("vcb_admin_key", k);}catch(e){} document.cookie="vcb_ak="+k+";max-age=31536000;path=/;SameSite=Strict";
+                    setAdminKeySet(true);
+                    setAdminKeyInput("");
+                    setShowAdminSetup(false);
+                    alert("API key saved! AI features are now enabled.");
+                  }}>
+                  Save API Key
+                </button>
+                {adminKeySet&&(
+                  <button
+                    style={{width:"100%",marginTop:".6rem",padding:".5rem",background:"transparent",border:"1px solid rgba(224,85,85,.3)",borderRadius:"3px",color:"#cc5555",fontFamily:"'Crimson Pro',serif",fontSize:".82rem",cursor:"pointer"}}
+                    onClick={()=>{
+                      if(window.confirm("Remove the API key? AI features will stop working.")){
+                        localStorage.removeItem("vcb_admin_key");
+                        setAdminKeySet(false);
+                      }
+                    }}>
+                    Remove API Key
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        {currentUser?(
+          <div className="user-bar">
+            <div className="user-bar-left">
+              <div className="user-avatar">{(currentUser&&currentUser.initials)}</div>
+              <span>Signed in as <strong>{currentUser&&currentUser.name}</strong></span>
+              {hasUnsaved&&<span className="unsaved" title="Unsaved changes"/>}
+            </div>
+            <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
+              <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleSaveProfile}>
+                {hasUnsaved?"⏳ Saving…":"✓ Profile Saved"}
+              </button>
+              <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>setTab(3)}>
+                My Resumes ({savedResumes.length})
+              </button>
+              {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>⭐ All 8 Tools — $15/mo</button>}
+              <button className="btn-danger" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleLogout}>Sign Out</button>
+              {window.location.search.indexOf("admin=1")>-1&&<button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>SETUP</button>}
+            </div>
+          </div>
+        ):(
+          <div style={{background:"#1a3a6b",borderBottom:"1px solid #2456a0",padding:".45rem 1.2rem",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <span style={{fontSize:".78rem",color:"#90b8e0",letterSpacing:".02em"}}>
+              Not signed in — <span style={{color:"#b8d0f0"}}>your progress won't be saved</span>
+            </span>
+            <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".32rem .9rem",fontSize:".78rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em"}}
+              onClick={()=>setShowAuth(true)}>
+              Sign In / Create Account
+            </button>
+          </div>
+        )}
+
+        <div className="hdr">
+          <img
+            src={window.VCB_LOGO}
+            alt="Veteran to Civilian Career Transitions"
+            style={{display:"block",margin:"0 auto",width:"300px",height:"260px",objectFit:"contain",mixBlendMode:"screen",filter:"drop-shadow(0 2px 12px rgba(201,168,76,.2))"}}
+          />
+          <p style={{marginTop:".5rem"}}>From Service to Civilian Success</p>
+        </div>
+        <div className="tabs">
+          {TABS.map((t,i)=>(
+            <React.Fragment key={i}>
+              {i===2&&<div className="tabs-separator">AI</div>}
+              {i===5&&<div className="tabs-separator">·</div>}
+              <button className={"tab "+(AI_TABS.includes(i)?"ai-tab ":"")+(tab===i?"active":"")} onClick={()=>setTab(i)}>
+                <span className="tab-n">{AI_TABS.includes(i)?"🤖":i+1}</span>{t}
+              </button>
+            </React.Fragment>
+          ))}
+        </div>
+        <div className="steps">{TABS.map((_,i)=><div key={i} className={"sdot "+(tab===i?"on":"")}/>)}</div>
+
+        <div className="wrap">
+
+
+          <div className={"panel "+(tab===0?"on":"")}>
+            <div className="intro">
+              <strong>Your service matters.</strong> Fill in your background below — your military experience, civilian work, education, and skills. The more you add, the better your career matches and resume will be. Take your time and be as detailed as you like.
+            </div>
+
+
+            <div className="card">
+              <div className="ch" onClick={()=>toggleCollapse("personal")}>
+                <h3>Personal Information</h3>
+                <span className="chevron">▼</span>
+              </div>
+              {!collapsed.personal && <div className="cb">
+                <div className="g3">
+                  <div className="field"><label>Full Name</label><input placeholder="First Last" value={personal.name} onChange={e=>upP("name",e.target.value)}/></div>
+                  <div className="field"><label>Email</label><input placeholder="you@email.com" value={personal.email} onChange={e=>upP("email",e.target.value)}/></div>
+                  <div className="field"><label>Phone</label><input placeholder="(555) 555-5555" value={personal.phone} onChange={e=>upP("phone",e.target.value)}/></div>
+                  <div className="field"><label>City, State</label><input placeholder="Austin, TX" value={personal.location} onChange={e=>upP("location",e.target.value)}/></div>
+                  <div className="field"><label>LinkedIn (optional)</label><input placeholder="linkedin.com/in/yourname" value={personal.linkedin} onChange={e=>upP("linkedin",e.target.value)}/></div>
+                </div>
+              </div>}
+            </div>
+
+            
+
+            <div className="card" style={{borderColor:"rgba(91,155,213,.35)"}}>
+              <div className="ch" style={{background:"rgba(91,155,213,.1)"}}>
+                <h3 style={{color:"#7eb8f5"}}>Military Service History</h3>
+                <span className="ch-sub">All Branches Served</span>
+              </div>
+              <div className="cb">
+                {milExperiences.map((exp)=>(
+                  <div className="entry" key={exp.id}>
+                    <div className="etop">
+                      <span className="badge bm">{exp.branch||"Military Service"} · {exp.serviceType||"Active Duty"}</span>
+                      {milExperiences.length>1&&<button className="btn-rm" onClick={()=>rmExp(exp.id)}>Remove</button>}
+                    </div>
+
+
+                    <div className="g3">
+                      <div className="field">
+                        <label>Branch of Service</label>
+                        <select value={exp.branch} onChange={e=>upMilExp(exp.id,"branch",e.target.value)}>
+                          {BRANCHES.map(b=><option key={b}>{b}</option>)}
+                        </select>
+                      </div>
+                      <div className="field">
+                        <label>Rank at Separation / Current</label>
+                        <select value={exp.rank} onChange={e=>upMilExp(exp.id,"rank",e.target.value)}>
+                          <option value="">Select Rank</option>
+                          <optgroup label="Enlisted">
+                            {(RANKS[exp.branch]||RANKS["Army"]).enlisted.map(r=>(
+                              <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
+                            ))}
+                          </optgroup>
+                          {((RANKS[exp.branch]||RANKS["Army"]).warrant||[]).length>0&&(
+                            <optgroup label="Warrant Officers">
+                              {(RANKS[exp.branch]||RANKS["Army"]).warrant.map(r=>(
+                                <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
+                              ))}
+                            </optgroup>
+                          )}
+                          <optgroup label="Officers">
+                            {(RANKS[exp.branch]||RANKS["Army"]).officer.map(r=>(
+                              <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
+                            ))}
+                          </optgroup>
+                        </select>
+                      </div>
+                      <div className="field">
+                        <label>Service Status</label>
+                        <select value={exp.serviceType} onChange={e=>upMilExp(exp.id,"serviceType",e.target.value)}>
+                          {SERVICE_TYPES.map(s=><option key={s}>{s}</option>)}
+                        </select>
+                      </div>
+                    </div>
+
+
+                    <div className="g3">
+                      <div className="field">
+                        <label>Primary MOS / Rate / AFSC</label>
+                        <div style={{position:"relative"}}>
+                          <input
+                            placeholder="Type code (11B, HM, 3D0...) or job title"
+                            value={exp.mos}
+                            onChange={e=>{
+                              const val = e.target.value.toUpperCase();
+                              upMilExp(exp.id,"mos",val);
+                            }}
+                            style={{paddingRight:"2.5rem"}}
+                          />
+                          {exp.mosTitle&&(
+                            <span className="mos-pill" style={{display:"block",marginTop:".3rem"}}>
+                              ✓ {exp.mosTitle}
+                            </span>
+                          )}
+                        </div>
+                        <span className="hint">
+                          Type your code above — it auto-fills the title. Or browse by branch:
+                        </span>
+                        <details style={{marginTop:".35rem",border:"1px solid #d0dae8",borderRadius:"6px",background:"#fafcff"}}>
+                          <summary style={{padding:".4rem .75rem",cursor:"pointer",fontSize:".82rem",fontWeight:600,color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                            Browse {exp.branch} {exp.branch==="Navy"?"Rates":exp.branch==="Air Force"||exp.branch==="Space Force"?"AFSCs":"MOS codes"} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{getMosByBranch(exp.branch).length} codes ›</span>
+                          </summary>
+                          <div style={{padding:".35rem .6rem .5rem"}}>
+                            <input
+                              placeholder={`Search ${exp.branch} codes...`}
+                              style={{width:"100%",padding:".35rem .6rem",border:"1px solid #c8d4e4",borderRadius:"4px",fontSize:".82rem",marginBottom:".4rem",boxSizing:"border-box"}}
+                              onChange={e=>{
+                                const q=e.target.value.toLowerCase();
+                                const items=document.querySelectorAll(`.mos-lookup-item-${exp.id}`);
+                                items.forEach(item=>{
+                                  item.style.display=(item.dataset.code.toLowerCase().includes(q)||item.dataset.title.toLowerCase().includes(q))?"flex":"none";
+                                });
+                              }}
+                            />
+                            <div style={{maxHeight:"160px",overflowY:"auto",display:"flex",flexWrap:"wrap",gap:".25rem"}}>
+                              {getMosByBranch(exp.branch).map(m=>(
+                                <button
+                                  key={m.code}
+                                  className={`mos-lookup-item-${exp.id}`}
+                                  data-code={m.code}
+                                  data-title={m.title}
+                                  onClick={()=>upMilExp(exp.id,"mos",m.code)}
+                                  style={{
+                                    background:exp.mos===m.code?"#1a3a6b":"#eef2f8",
+                                    color:exp.mos===m.code?"#fff":"#1a3a6b",
+                                    border:"1px solid",
+                                    borderColor:exp.mos===m.code?"#1a3a6b":"#c0d0e4",
+                                    borderRadius:"4px",
+                                    padding:".2rem .5rem",
+                                    fontSize:".75rem",
+                                    cursor:"pointer",
+                                    display:"flex",
+                                    alignItems:"center",
+                                    gap:".3rem",
+                                    textAlign:"left"
+                                  }}>
+                                  <strong>{m.code}</strong>
+                                  <span style={{color:exp.mos===m.code?"rgba(255,255,255,.8)":"#5a7090",fontSize:".7rem"}}>{m.title.slice(0,28)}{m.title.length>28?"...":""}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </details>
+                      </div>
+                      <div className="field">
+                        <label>Total Time in Service (TOS)</label>
+                        <input placeholder="e.g. 8 years, 2003–2011" value={exp.tos}
+                          onChange={e=>upMilExp(exp.id,"tos",e.target.value)}/>
+                      </div>
+                      <div className="field">
+                        <label>Unit / Command</label>
+                        <input placeholder="e.g. 1st Cav Div, VFA-103" value={exp.unit}
+                          onChange={e=>upMilExp(exp.id,"unit",e.target.value)}/>
+                      </div>
+                    </div>
+
+
+                    <div className="g2">
+                      <div className="field"><label>Start Date</label>
+                        <DatePicker value={exp.startDate} onChange={v=>upMilExp(exp.id,"startDate",v)} placeholder="Select start date"/>
+                      </div>
+                      <div className="field"><label>End Date</label>
+                        {exp.current
+                          ? <div style={{padding:".58rem .8rem",background:"rgba(255,255,255,.08)",borderRadius:"3px",fontSize:".88rem",color:"var(--dim)"}}>Present</div>
+                          : <DatePicker value={exp.endDate} onChange={v=>upMilExp(exp.id,"endDate",v)} placeholder="Select end date"/>
+                        }
+                      </div>
+                    </div>
+                    <div className="field" style={{flexDirection:"row",alignItems:"center",gap:".5rem",marginTop:"-.3rem",marginBottom:".6rem"}}>
+                      <input type="checkbox" id={"cur-"+exp.id} checked={exp.current}
+                        onChange={e=>upMilExp(exp.id,"current",e.target.checked)} style={{width:"auto"}}/>
+                      <label htmlFor={"cur-"+exp.id} style={{textTransform:"none",fontSize:".83rem",letterSpacing:"0",color:"var(--text)"}}>Currently serving</label>
+                    </div>
+
+                    <hr className="sdiv"/>
+
+
+                    <div className="qual-section">
+                      <span className="qual-label">Roles Held Under This MOS</span>
+                      <div className="hint" style={{marginBottom:".5rem"}}>
+                        Add each official position you held under this MOS — even within the same contract. Example: 88M as Operator (E-4, 2020-2022) → Dispatcher (E-5, 2022-2024) → Platoon Sergeant (E-6, 2024-2026). This shows career progression, not just time served.
+                      </div>
+                      {(exp.mosRoles||[]).map((role,ri)=>(
+                        <div key={ri} style={{marginBottom:".65rem",background:"rgba(255,255,255,.04)",border:"1px solid rgba(201,168,76,.22)",borderRadius:"8px",padding:".85rem .9rem",position:"relative"}}>
+                          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".55rem"}}>
+                            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:".82rem",letterSpacing:".1em",color:"#f0c040"}}>Position {ri+1}</span>
+                            <button className="btn-rm" onClick={()=>{
+                              const updated=(exp.mosRoles||[]).filter((_,i)=>i!==ri);
+                              upMilExp(exp.id,"mosRoles",updated);
+                            }}>✕ Remove</button>
+                          </div>
+                          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:".5rem",marginBottom:".5rem"}}>
+                            <div className="field" style={{marginBottom:0}}>
+                              <label>Official Position / Role Title</label>
+                              <input placeholder="e.g. Truck Master, Platoon Sergeant, OPS NCO, Dispatcher..."
+                                value={role.title}
+                                onChange={e=>{
+                                  const updated=[...(exp.mosRoles||[])];
+                                  updated[ri]={...updated[ri],title:e.target.value};
+                                  upMilExp(exp.id,"mosRoles",updated);
+                                }}/>
+                            </div>
+                            <div className="field" style={{marginBottom:0}}>
+                              <label>Rank at This Position</label>
+                              <input placeholder="e.g. E-4, E-6, E-7"
+                                value={role.rankAtRole||""}
+                                onChange={e=>{
+                                  const updated=[...(exp.mosRoles||[])];
+                                  updated[ri]={...updated[ri],rankAtRole:e.target.value};
+                                  upMilExp(exp.id,"mosRoles",updated);
+                                }}/>
+                            </div>
+                          </div>
+                          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:".5rem"}}>
+                            <div className="field" style={{marginBottom:0}}>
+                              <label>From (Year)</label>
+                              <input type="number" placeholder="2020" min="1990" max="2030"
+                                value={role.fromYear||""}
+                                onChange={e=>{
+                                  const updated=[...(exp.mosRoles||[])];
+                                  updated[ri]={...updated[ri],fromYear:e.target.value};
+                                  upMilExp(exp.id,"mosRoles",updated);
+                                }}/>
+                            </div>
+                            <div className="field" style={{marginBottom:0}}>
+                              <label>To (Year)</label>
+                              <input type="number" placeholder="2022" min="1990" max="2030"
+                                value={role.toYear||""}
+                                onChange={e=>{
+                                  const updated=[...(exp.mosRoles||[])];
+                                  updated[ri]={...updated[ri],toYear:e.target.value};
+                                  upMilExp(exp.id,"mosRoles",updated);
+                                }}/>
+                            </div>
+                            <div className="field" style={{marginBottom:0}}>
+                              <label>Key Responsibility</label>
+                              <input placeholder="e.g. Led 12-vehicle convoy ops"
+                                value={role.keyDuty||""}
+                                onChange={e=>{
+                                  const updated=[...(exp.mosRoles||[])];
+                                  updated[ri]={...updated[ri],keyDuty:e.target.value};
+                                  upMilExp(exp.id,"mosRoles",updated);
+                                }}/>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <button className="btn-chip" style={{width:"100%",marginTop:".3rem"}}
+                        onClick={()=>upMilExp(exp.id,"mosRoles",[...(exp.mosRoles||[]),{title:"",rankAtRole:"",fromYear:"",toYear:"",keyDuty:""}])}>
+                        + Add Position / Role Under This MOS
+                      </button>
+                    </div>
+
+                    <hr className="sdiv"/>
+
+
+                    <div className="clearance-block">
+                      <h4>🔐 Security Clearance</h4>
+                      <div className="g3">
+                        <div className="field">
+                          <label>Clearance Level</label>
+                          <select value={exp.clearanceLevel} onChange={e=>upMilExp(exp.id,"clearanceLevel",e.target.value)}>
+                            {CLEARANCE_LEVELS.map(c=><option key={c}>{c}</option>)}
+                          </select>
+                          {exp.clearanceLevel!=="None"&&<span className={getClearanceBadge(exp.clearanceLevel)} style={{marginTop:".3rem"}}>{exp.clearanceLevel}</span>}
+                        </div>
+                        <div className="field">
+                          <label>Status</label>
+                          <select value={exp.clearanceStatus} onChange={e=>upMilExp(exp.id,"clearanceStatus",e.target.value)}>
+                            {CLEARANCE_STATUS.map(s=><option key={s}>{s}</option>)}
+                          </select>
+                        </div>
+                        <div className="field">
+                          <label>Polygraph</label>
+                          <select value={exp.polygraph} onChange={e=>upMilExp(exp.id,"polygraph",e.target.value)}>
+                            {["None","Counterintelligence (CI) Poly","Full Scope (Lifestyle) Poly"].map(p=><option key={p}>{p}</option>)}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr className="sdiv"/>
+
+
+                    <div style={{marginBottom:"1rem"}}>
+                      <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".5rem"}}>
+                        {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).label}
+                      </div>
+                      <details style={{border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff",marginBottom:".6rem"}}>
+                        <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                          Browse common qualifiers <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).items.length} options ›</span>
+                        </summary>
+                        <div style={{padding:".5rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                          {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).items.map(a=>(
+                            <button key={a.code}
+                              style={{background:(exp.asi||[]).find(x=>x.code===a.code)?"#1a3a6b":"#e8edf5",color:(exp.asi||[]).find(x=>x.code===a.code)?"#fff":"#1a3a6b",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".22rem .6rem",fontSize:".78rem",cursor:"pointer"}}
+                              onClick={()=>{ if(!(exp.asi||[]).find(x=>x.code===a.code)) upMilExp(exp.id,"asi",[...(exp.asi||[]),a]); }}>
+                              <strong>{a.code}</strong> — {a.desc}
+                            </button>
+                          ))}
+                        </div>
+                      </details>
+                      {(exp.asi||[]).length>0&&(
+                        <div style={{display:"flex",flexWrap:"wrap",gap:".3rem",marginBottom:".5rem"}}>
+                          {(exp.asi||[]).map(a=>(
+                            <span key={a.code} style={{display:"inline-flex",alignItems:"center",gap:".3rem",background:"#e8edf5",border:"1px solid #1a3a6b",borderRadius:"3px",padding:".22rem .55rem",fontSize:".78rem",color:"#1a3a6b"}}>
+                              <strong>{a.code}</strong> {a.desc}
+                              <span style={{cursor:"pointer",color:"#c0392b",marginLeft:".2rem",fontWeight:700}} onClick={()=>upMilExp(exp.id,"asi",(exp.asi||[]).filter(x=>x.code!==a.code))}>✕</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <div style={{display:"flex",gap:".5rem",alignItems:"flex-end"}}>
+                        <div className="field" style={{marginBottom:0,width:"90px"}}><label>Code</label>
+                          <input placeholder="e.g. P1" value={exp.customAsiCode||""} onChange={e=>upMilExp(exp.id,"customAsiCode",e.target.value)}/>
+                        </div>
+                        <div className="field" style={{marginBottom:0,flex:1}}><label>Description (optional)</label>
+                          <input placeholder="e.g. Master Parachutist" value={exp.customAsiDesc||""} onChange={e=>upMilExp(exp.id,"customAsiDesc",e.target.value)}/>
+                        </div>
+                        <button style={{padding:".5rem .9rem",background:"#1a3a6b",color:"#fff",border:"none",borderRadius:"4px",cursor:"pointer",fontSize:".82rem",whiteSpace:"nowrap"}} onClick={()=>{
+                          const code=(exp.customAsiCode||"").trim().toUpperCase();
+                          const desc=(exp.customAsiDesc||"").trim();
+                          if(!code) return;
+                          if(!(exp.asi||[]).find(a=>a.code===code)) upMilExp(exp.id,"asi",[...(exp.asi||[]),{code,desc}]);
+                          upMilExp(exp.id,"customAsiCode",""); upMilExp(exp.id,"customAsiDesc","");
+                        }}>+ Add</button>
+                      </div>
+                    </div>
+
+                    <hr className="sdiv"/>
+
+
+                    <div style={{marginBottom:"1rem"}}>
+                      <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".5rem"}}>
+                        {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).sqiLabel}
+                      </div>
+                      <details style={{border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff",marginBottom:".6rem"}}>
+                        <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                          Browse qualifiers <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).sqi.length} options ›</span>
+                        </summary>
+                        <div style={{padding:".5rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                          {(BRANCH_QUALS[exp.branch]||BRANCH_QUALS["Army"]).sqi.map(s=>(
+                            <button key={s.code}
+                              style={{background:(exp.sqi||[]).find(x=>x.code===s.code)?"#1a3a6b":"#e8edf5",color:(exp.sqi||[]).find(x=>x.code===s.code)?"#fff":"#1a3a6b",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".22rem .6rem",fontSize:".78rem",cursor:"pointer"}}
+                              onClick={()=>{ if(!(exp.sqi||[]).find(x=>x.code===s.code)) upMilExp(exp.id,"sqi",[...(exp.sqi||[]),s]); }}>
+                              <strong>{s.code}</strong> — {s.desc}
+                            </button>
+                          ))}
+                        </div>
+                      </details>
+                      {(exp.sqi||[]).length>0&&(
+                        <div style={{display:"flex",flexWrap:"wrap",gap:".3rem"}}>
+                          {(exp.sqi||[]).map(s=>(
+                            <span key={s.code} style={{display:"inline-flex",alignItems:"center",gap:".3rem",background:"#e8edf5",border:"1px solid #1a3a6b",borderRadius:"3px",padding:".22rem .55rem",fontSize:".78rem",color:"#1a3a6b"}}>
+                              <strong>{s.code}</strong> {s.desc}
+                              <span style={{cursor:"pointer",color:"#c0392b",marginLeft:".2rem",fontWeight:700}} onClick={()=>upMilExp(exp.id,"sqi",(exp.sqi||[]).filter(x=>x.code!==s.code))}>✕</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <hr className="sdiv"/>
+
+
+                    <div style={{marginBottom:"1rem"}}>
+                      <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".5rem"}}>Additional Duty Qualifications</div>
+                      {[
+                        {cat:"Command & Admin",items:["Unit Armorer","Unit Fund Custodian","Property Book Officer","Inspector General Representative","Records Management","Battle Staff NCO"]},
+                        {cat:"Training & Safety",items:["Training Room NCO","Safety Officer/NCO","Master Driver","Master Gunner","Physical Fitness Leader","NBC/CBRN Officer"]},
+                        {cat:"Personnel & HR",items:["Equal Opportunity Leader","Sexual Harassment/Assault Response (SHARP) Coordinator","Casualty Notification Officer","Family Readiness Officer/NCO","Retention NCO","Recruiter/Career Counselor"]},
+                        {cat:"Operations",items:["Operations Security (OPSEC) Coordinator","Information Security Officer","Physical Security Officer","Supply Sergeant (additional duty)","Contracting Officer Representative (COR)","Unit Prevention Leader (UPL/Drug Testing)"]},
+                        {cat:"Community & Liaison",items:["Casualty Liaison Officer","Community Outreach Coordinator","Voting Assistance Officer","Religious Affairs NCO"]},
+                      ].map(grp=>(
+                        <details key={grp.cat} style={{marginBottom:".3rem",border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff"}}>
+                          <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                            {grp.cat} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{grp.items.length} options ›</span>
+                          </summary>
+                          <div style={{padding:".4rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                            {grp.items.map(d=>(
+                              <button key={d}
+                                style={{background:(exp.additionalDuties||[]).includes(d)?"#1a3a6b":"#e8edf5",color:(exp.additionalDuties||[]).includes(d)?"#fff":"#1a3a6b",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".22rem .55rem",fontSize:".78rem",cursor:"pointer"}}
+                                onClick={()=>{ if(!(exp.additionalDuties||[]).includes(d)) upMilExp(exp.id,"additionalDuties",[...(exp.additionalDuties||[]),d]); }}>
+                                + {d}
+                              </button>
+                            ))}
+                          </div>
+                        </details>
+                      ))}
+                      {(exp.additionalDuties||[]).length>0&&(
+                        <div style={{display:"flex",flexWrap:"wrap",gap:".3rem",margin:".5rem 0"}}>
+                          {(exp.additionalDuties||[]).map(d=>(
+                            <span key={d} style={{display:"inline-flex",alignItems:"center",gap:".3rem",background:"#e8edf5",border:"1px solid #1a3a6b",borderRadius:"3px",padding:".22rem .55rem",fontSize:".78rem",color:"#1a3a6b"}}>
+                              {d}
+                              <span style={{cursor:"pointer",color:"#c0392b",marginLeft:".2rem",fontWeight:700}} onClick={()=>upMilExp(exp.id,"additionalDuties",(exp.additionalDuties||[]).filter(x=>x!==d))}>✕</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <div style={{display:"flex",gap:".5rem",alignItems:"flex-end",marginTop:".4rem"}}>
+                        <div className="field" style={{marginBottom:0,flex:1}}><label>Custom Duty</label>
+                          <input placeholder="Add a duty not listed above..."
+                            value={exp.customDuty||""}
+                            onChange={e=>upMilExp(exp.id,"customDuty",e.target.value)}
+                            onKeyDown={e=>{ if(e.key==="Enter"&&(exp.customDuty||"").trim()){ upMilExp(exp.id,"additionalDuties",[...(exp.additionalDuties||[]),exp.customDuty.trim()]); upMilExp(exp.id,"customDuty",""); }}}/>
+                        </div>
+                        <button style={{padding:".5rem .9rem",background:"#1a3a6b",color:"#fff",border:"none",borderRadius:"4px",cursor:"pointer",fontSize:".82rem",whiteSpace:"nowrap"}} onClick={()=>{
+                          if(!(exp.customDuty||"").trim()) return;
+                          upMilExp(exp.id,"additionalDuties",[...(exp.additionalDuties||[]),exp.customDuty.trim()]);
+                          upMilExp(exp.id,"customDuty","");
+                        }}>+ Add</button>
+                      </div>
+                    </div>
+
+
+
+                    <div className="qual-section">
+                      <span className="qual-label">Awards & Decorations</span>
+                      <div className="hint" style={{marginBottom:".5rem"}}>
+                        Select from the library or type your own. Awards are pulled from the {exp.branch} awards list.
+                      </div>
+
+                      <div className="field" style={{marginBottom:".5rem"}}>
+                        <label>Add from Awards Library</label>
+                        <select value="" onChange={e=>{
+                          if(!e.target.value) return;
+                          if(!(exp.awards||[]).includes(e.target.value))
+                            upMilExp(exp.id,"awards",[...(exp.awards||[]),e.target.value]);
+                        }}>
+                          <option value="">-- Select an award to add --</option>
+                          {[...(AWARDS_LIBRARY[exp.branch]||[]),...(AWARDS_LIBRARY["All Branches"]||[])].map(a=>(
+                            <option key={a} value={a}>{a}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {(exp.awards||[]).length>0&&(
+                        <div className="duty-grid" style={{marginBottom:".5rem"}}>
+                          {(exp.awards||[]).map((a,i)=>(
+                            <span className="duty-chip" key={i} style={{background:"rgba(201,168,76,.1)",border:"1px solid rgba(201,168,76,.28)",color:"var(--gold-light)"}}>
+                              🎖 {a}
+                              <span className="dx" onClick={()=>upMilExp(exp.id,"awards",(exp.awards||[]).filter((_,j)=>j!==i))}>✕</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="qual-add-row">
+                        <div className="field" style={{marginBottom:0,flex:1}}>
+                          <label>Add Unlisted Award</label>
+                          <input placeholder="Type an award not in the library..."
+                            value={exp.customAward||""}
+                            onChange={e=>upMilExp(exp.id,"customAward",e.target.value)}
+                            onKeyDown={e=>{
+                              if(e.key==="Enter"&&(exp.customAward||"").trim()){
+                                upMilExp(exp.id,"awards",[...(exp.awards||[]),exp.customAward.trim()]);
+                                upMilExp(exp.id,"customAward","");
+                              }
+                            }}/>
+                        </div>
+                        <button className="btn-chip" onClick={()=>{
+                          if(!(exp.customAward||"").trim()) return;
+                          upMilExp(exp.id,"awards",[...(exp.awards||[]),exp.customAward.trim()]);
+                          upMilExp(exp.id,"customAward","");
+                        }}>+ Add</button>
+                      </div>
+                    </div>
+
+                    <hr className="sdiv"/>
+
+
+                    <div className="field">
+                      <label>Deployments / Operations (optional)</label>
+                      <textarea style={{minHeight:"55px"}}
+                        placeholder="e.g. OIF 2006–07, OEF 2011, EUCOM rotation..."
+                        value={exp.deployments||""} onChange={e=>upMilExp(exp.id,"deployments",e.target.value)}/>
+                    </div>
+
+
+                    <div className="field">
+                      <label>General Duties & Responsibilities</label>
+                      <textarea style={{minHeight:"140px"}}
+                        placeholder="Include YOUR ACTUAL NUMBERS — the AI will not guess.&#10;&#10;Example: Supervised 12 soldiers. Managed $2.4M in equipment. Conducted vehicle maintenance for 18 wheeled vehicles, maintaining 95% readiness rate. Trained 40 personnel on weapons qualification, achieving 100% pass rate. Coordinated logistics for 3-week field exercise supporting 200 personnel."
+                        value={exp.duties||""} onChange={e=>upMilExp(exp.id,"duties",e.target.value)}/>
+                      <span className="hint">💡 <strong>The more specific your numbers, the stronger your resume.</strong> How many people did you supervise? What was your equipment/budget value? What percentage or rate did you achieve? How many people did you train or support?</span>
+                    </div>
+                  </div>
+                ))}
+
+
+                <button className="btn-add" style={{borderColor:"rgba(91,155,213,.4)",color:"#7eb8f5"}}
+                  onClick={addMilExp}>
+                  + Add Other Military Branch / Service Period
+                </button>
+              </div>
+            </div>
+
+
+            <div className="card">
+              <div className="ch">
+                <h3>Civilian, DoD & Government Employment</h3>
+                <span className="ch-sub">Include part-time, contract, and federal work</span>
+              </div>
+              <div className="cb">
+                {civExperiences.length===0&&(
+                  <div style={{textAlign:"center",padding:"1.2rem",color:"var(--dim)",fontSize:".88rem"}}>
+                    No civilian employment added yet. Click below to add a position.
+                  </div>
+                )}
+                {civExperiences.map((exp)=>(
+                  <div className="entry" key={exp.id}>
+                    <div className="etop">
+                      <span className={getBadge(exp.type)}>{exp.type}</span>
+                      <button className="btn-rm" onClick={()=>rmExp(exp.id)}>Remove</button>
+                    </div>
+                    <div className="field">
+                      <label>Employment Type</label>
+                      <select value={exp.type} onChange={e=>upCivExp(exp.id,"type",e.target.value)}>
+                        {["Civilian Employment","DoD/Government Contractor","Other Government (Federal/State)","Reserve/Guard (concurrent with civilian)"].map(t=><option key={t}>{t}</option>)}
+                      </select>
+                    </div>
+                    <div className="g2">
+                      <div className="field"><label>Employer / Agency</label>
+                        <input placeholder="Company or organization name" value={exp.employer||""}
+                          onChange={e=>upCivExp(exp.id,"employer",e.target.value)}/>
+                      </div>
+                      <div className="field"><label>Your Job Title</label>
+                        <input placeholder="e.g. Logistics Manager, Security Analyst" value={exp.jobTitle||""}
+                          onChange={e=>upCivExp(exp.id,"jobTitle",e.target.value)}/>
+                      </div>
+                      <div className="field"><label>City / State</label>
+                        <input placeholder="e.g. Norfolk, VA or Remote" value={exp.location||""}
+                          onChange={e=>upCivExp(exp.id,"location",e.target.value)}/>
+                      </div>
+                    </div>
+                    <div className="g2">
+                      <div className="field"><label>Start Date</label>
+                        <DatePicker value={exp.startDate} onChange={v=>upCivExp(exp.id,"startDate",v)} placeholder="Select start date"/>
+                      </div>
+                      <div className="field"><label>End Date</label>
+                        {exp.current
+                          ? <div style={{padding:".58rem .8rem",background:"rgba(255,255,255,.08)",borderRadius:"3px",fontSize:".88rem",color:"var(--dim)"}}>Present</div>
+                          : <DatePicker value={exp.endDate} onChange={v=>upCivExp(exp.id,"endDate",v)} placeholder="Select end date"/>
+                        }
+                      </div>
+                    </div>
+                    <div className="field" style={{flexDirection:"row",alignItems:"center",gap:".5rem",marginTop:"-.3rem",marginBottom:".5rem"}}>
+                      <input type="checkbox" id={"curc-"+exp.id} checked={exp.current||false}
+                        onChange={e=>upCivExp(exp.id,"current",e.target.checked)} style={{width:"auto"}}/>
+                      <label htmlFor={"curc-"+exp.id} style={{textTransform:"none",fontSize:".83rem",letterSpacing:"0",color:"var(--text)"}}>Currently employed here</label>
+                    </div>
+                    {(exp.clearanceLevel&&exp.clearanceLevel!=="None")&&(
+                      <div className="clearance-block" style={{marginBottom:".5rem"}}>
+                        <h4>🔐 Clearance for this Role</h4>
+                        <div className="g2">
+                          <div className="field">
+                            <label>Clearance Level</label>
+                            <select value={exp.clearanceLevel} onChange={e=>upCivExp(exp.id,"clearanceLevel",e.target.value)}>
+                              {CLEARANCE_LEVELS.map(c=><option key={c}>{c}</option>)}
+                            </select>
+                          </div>
+                          <div className="field">
+                            <label>Status</label>
+                            <select value={exp.clearanceStatus||"Active"} onChange={e=>upCivExp(exp.id,"clearanceStatus",e.target.value)}>
+                              {CLEARANCE_STATUS.map(s=><option key={s}>{s}</option>)}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div className="field" style={{marginBottom:".35rem"}}>
+                      <label style={{fontSize:".65rem",color:"var(--dim)",cursor:"pointer"}}
+                        onClick={()=>upCivExp(exp.id,"clearanceLevel",exp.clearanceLevel==="None"?"Secret":"None")}>
+                        + Add clearance for this role
+                      </label>
+                    </div>
+                    <div className="field">
+                      <label>Key Duties & Achievements</label>
+                      <textarea placeholder="Include YOUR ACTUAL NUMBERS — the AI will not guess.&#10;&#10;Example: Managed team of 8 employees. Oversaw $500K annual budget. Reduced processing time by 30%. Handled customer accounts totaling $1.2M annually."
+                        value={exp.duties||""} onChange={e=>upCivExp(exp.id,"duties",e.target.value)} style={{minHeight:"120px"}}/>
+                      <span className="hint">💡 <strong>Numbers make your resume stand out.</strong> Team size? Budget managed? Percentage improvements? Revenue impacted? Customers served?</span>
+                    </div>
+                  </div>
+                ))}
+                <button className="btn-add" onClick={addCivExp}>
+                  + Add Civilian / DoD / Government Position
+                </button>
+              </div>
+            </div>
+
+
+            <div className="card">
+              <div className="ch" onClick={()=>toggleCollapse("edu")}><h3>Education & Military Training</h3><span className="chevron">▼</span></div>
+              {!collapsed.edu&&<div className="cb">
+                {education.map(edu=>(
+                  <div className="entry" key={edu.id}>
+                    <div className="etop"><span style={{fontSize:".78rem",color:"var(--dim)"}}>Degree / School</span>{education.length>1&&<button className="btn-rm" onClick={()=>rmEdu(edu.id)}>Remove</button>}</div>
+                    <div className="g2">
+                      <div className="field"><label>Institution</label><UniversityInput value={edu.institution} onChange={v=>upEdu(edu.id,"institution",v)} placeholder="Type institution name..."/></div>
+                      <div className="field"><label>Degree Type</label><input placeholder="B.S., A.A., MBA, Certificate..." value={edu.degree} onChange={e=>upEdu(edu.id,"degree",e.target.value)}/></div>
+                      <div className="field"><label>Field of Study</label><input placeholder="Criminal Justice, Business, Nursing..." value={edu.field} onChange={e=>upEdu(edu.id,"field",e.target.value)}/></div>
+                      <div className="field"><label>Year Completed / Expected</label><input placeholder="2023" value={edu.year} onChange={e=>upEdu(edu.id,"year",e.target.value)}/></div>
+                    </div>
+                    <div className="field">
+                      <label>Military Schools & PME</label>
+                      <details style={{border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff",marginBottom:".4rem"}}>
+                        <summary style={{padding:".4rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".8rem",color:"#1a3a6b",listStyle:"none"}}>Browse common military schools ›</summary>
+                        <div style={{padding:".4rem .75rem .5rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                          {[
+                            "Basic Combat Training (BCT)","One Station Unit Training (OSUT)","Advanced Individual Training (AIT)",
+                            "Basic Officer Leaders Course (BOLC)","Warrior Leaders Course (WLC)","Advanced Leaders Course (ALC)",
+                            "Senior Leaders Course (SLC)","Sergeant Major Course (SGM Course)","Command and General Staff College (CGSC)",
+                            "Army War College (AWC)","Ranger School","Airborne School (Basic Parachutist Course)",
+                            "Air Assault School","Sapper Leader Course","Jumpmaster Course","Military Freefall School (HALO/HAHO)",
+                            "Special Forces Qualification Course (SFQC / Q Course)","Civil Affairs School","Psychological Operations School",
+                            "Warrant Officer Candidate School (WOCS)","Warrant Officer Basic Course (WOBC)","Warrant Officer Advanced Course (WOAC)",
+                            "BNCOC","ANCOC","Primary Leadership Development Course (PLDC)",
+                            "Officer Candidate School (OCS)","ROTC","United States Military Academy (West Point)",
+                            "Defense Language Institute (DLI)","Drill Sergeant School","Master Gunner Course",
+                            "Sniper School","Combat Diver Qualification Course","SERE School",
+                            "Officer Basic Course (OBC)","Amphibious Warfare School (USMC)","Command and Staff College (USMC)",
+                            "Marine Corps War College","The Basic School (TBS)","Infantry Officer Course (IOC)",
+                            "Expeditionary Warfare School (EWS)","Officer Development School (ODS - Navy)",
+                            "Naval War College","Naval Postgraduate School","Naval Justice School",
+                            "Aviation Preflight Indoctrination (API)","Basic Underwater Demolition/SEAL (BUD/S)",
+                            "SEAL Qualification Training (SQT)","Explosive Ordnance Disposal School",
+                            "Air Force Officer Training School (OTS)","Air Force Academy","Squadron Officer School (SOS)",
+                            "Air Command and Staff College (ACSC)","Air War College (AWC - AF)",
+                            "Aerospace Medical School","Combat Controller Training","Pararescue Training (PJ School)",
+                            "SERE School (Air Force)","Weapons School (USAF Weapons School)",
+                            "Coast Guard Officer Candidate School","Maritime Law Enforcement Academy",
+                            "National Defense University (NDU)","Defense Acquisition University (DAU)",
+                            "Joint Forces Staff College","Interagency Institute",
+                            "Community College of the Air Force (CCAF)"
+                          ].map(s=>(
+                            <button key={s} style={{background:"#e8edf5",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".2rem .55rem",fontSize:".75rem",cursor:"pointer",color:"#1a3a6b"}}
+                              onClick={()=>upEdu(edu.id,"pme",edu.pme?(edu.pme+", "+s):s)}>+ {s}</button>
+                          ))}
+                        </div>
+                      </details>
+                      <input placeholder="Click schools above or type your own (e.g. Ranger School, BNCOC, DLI...)" value={edu.pme} onChange={e=>upEdu(edu.id,"pme",e.target.value)}/>
+                    </div>
+                  </div>
+                ))}
+                <button className="btn-add" onClick={addEdu}>+ Add Education or Training</button>
+              </div>}
+            </div>
+
+
+            <div className="card">
+              <div className="ch" onClick={()=>toggleCollapse("skills")}><h3>Skills & Certifications</h3><span className="chevron">▼</span></div>
+              {!collapsed.skills&&<div className="cb">
+
+
+                <div className="field" style={{marginBottom:"1rem"}}>
+                  <label>Technical Skills</label>
+                  <div className="hint" style={{marginBottom:".5rem"}}>Type your own, or click a category to expand common options.</div>
+                  {[
+                    {cat:"Weapons & Combat",items:["Weapons Qualification (Rifle/Pistol)","Crew-Served Weapons","Close Quarter Combat","Explosive Ordnance","Fire Support/Artillery","Sniper/Long Range Marksmanship"]},
+                    {cat:"Vehicles & Equipment",items:["Vehicle Operation (Wheeled)","Vehicle Operation (Tracked)","Aircraft Ground Support","UAS/Drone Operation","Crane Operation","Forklift Operation","Material Handling Equipment"]},
+                    {cat:"Communications & IT",items:["Radio/Communications Systems","SINCGARS Radio","Satellite Communications","Network Administration","IT Systems Administration","Programming/Software Development","Cybersecurity"]},
+                    {cat:"Intelligence & Surveillance",items:["Signal Intelligence (SIGINT)","Human Intelligence (HUMINT)","All-Source Intelligence Analysis","Geospatial Analysis","OSINT (Open Source Intelligence)","Imagery Analysis","Electronic Warfare"]},
+                    {cat:"Medical & Safety",items:["Medical Triage/Combat First Aid","TCCC (Tactical Combat Casualty Care)","HAZMAT Handling","CBRN/NBC Detection","Medevac/CASEVAC Procedures","Demolitions"]},
+                    {cat:"Logistics & Supply",items:["Supply Chain Management","Inventory Management Systems","Petroleum Operations","GCSS-Army / ERP Systems","Property Book Management","Contracting Officer Representative (COR)"]},
+                    {cat:"Navigation & Recon",items:["Land Navigation","GPS/Digital Navigation","Night Vision Devices (NVDs)","IED Detection/Counter-IED","Explosives Handling"]},
+                    {cat:"Software & Office",items:["Microsoft Office Suite","SharePoint","Geographic Information Systems (GIS)","AutoCAD","Adobe Suite"]},
+                  ].map(grp=>(
+                    <details key={grp.cat} style={{marginBottom:".3rem",border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff"}}>
+                      <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                        {grp.cat} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{grp.items.length} options ›</span>
+                      </summary>
+                      <div style={{padding:".4rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                        {grp.items.map(s=>(
+                          <button key={s} style={{background:"#e8edf5",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".2rem .55rem",fontSize:".78rem",cursor:"pointer",color:"#1a3a6b",transition:"all .15s"}}
+                            onClick={()=>{if(!skills.technical.includes(s)) setSkills(sk=>({...sk,technical:sk.technical?(sk.technical+", "+s):s}));}}>
+                            + {s}
+                          </button>
+                        ))}
+                      </div>
+                    </details>
+                  ))}
+                  <textarea style={{marginTop:".4rem"}}
+                    placeholder="Your technical skills will appear here as you select them, or type your own..."
+                    value={skills.technical}
+                    onChange={e=>setSkills(s=>({...s,technical:e.target.value}))}/>
+                </div>
+
+
+                <div className="field" style={{marginBottom:"1rem"}}>
+                  <label>Leadership & Soft Skills</label>
+                  <div className="hint" style={{marginBottom:".5rem"}}>Click a category to expand options.</div>
+                  {[
+                    {cat:"Leadership & Management",items:["Team Leadership (squad/team level)","Platoon Leadership","Company Leadership","Staff Officer Experience","Personnel Management","Scheduling and Coordination"]},
+                    {cat:"Training & Development",items:["Training Development and Delivery","Performance Counseling","Mentoring","Coaching","Instructor / Facilitator"]},
+                    {cat:"Operations & Planning",items:["Mission Planning","Operations Planning (OPORD)","Crisis Management","Decision Making Under Pressure","Emergency Management","Disaster Response"]},
+                    {cat:"Communication",items:["Public Speaking/Briefing","Technical Writing","Cross-Cultural Communication","Negotiation","Conflict Resolution"]},
+                    {cat:"Business & Finance",items:["Budget Management","Resource Allocation","Risk Management","Project Management","Logistics Coordination","Quality Control"]},
+                  ].map(grp=>(
+                    <details key={grp.cat} style={{marginBottom:".3rem",border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff"}}>
+                      <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                        {grp.cat} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{grp.items.length} options ›</span>
+                      </summary>
+                      <div style={{padding:".4rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                        {grp.items.map(s=>(
+                          <button key={s} style={{background:"#e8edf5",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".2rem .55rem",fontSize:".78rem",cursor:"pointer",color:"#1a3a6b",transition:"all .15s"}}
+                            onClick={()=>{if(!skills.leadership.includes(s)) setSkills(sk=>({...sk,leadership:sk.leadership?(sk.leadership+", "+s):s}));}}>
+                            + {s}
+                          </button>
+                        ))}
+                      </div>
+                    </details>
+                  ))}
+                  <textarea style={{marginTop:".4rem"}}
+                    placeholder="Your leadership skills will appear here as you select them, or type your own..."
+                    value={skills.leadership}
+                    onChange={e=>setSkills(s=>({...s,leadership:e.target.value}))}/>
+                </div>
+
+                <div className="g2">
+                  <div className="field"><label>Languages</label>
+                    <input placeholder="e.g. Spanish (conversational), Arabic (basic), Pashto DLPT 2/2..."
+                      value={skills.languages} onChange={e=>setSkills(s=>({...s,languages:e.target.value}))}/>
+                  </div>
+                </div>
+
+
+                <div className="field">
+                  <label>Licenses & Certifications</label>
+                  <div className="hint" style={{marginBottom:".5rem"}}>Click a category to expand certifications.</div>
+                  {[
+                    {cat:"Medical & Emergency",items:["EMT-Basic (NREMT-B)","EMT-Intermediate","Paramedic (NREMT-P)","Combat Lifesaver (CLS)","TCCC Certified","Registered Nurse (RN)","Licensed Practical Nurse (LPN)","Certified Nursing Assistant (CNA)"]},
+                    {cat:"IT & Cybersecurity",items:["CompTIA Security+","CompTIA A+","CompTIA Network+","CompTIA CySA+","CISSP","CEH (Certified Ethical Hacker)","AWS Cloud Practitioner","DoD 8570 IAT Level I/II/III","DoD 8570 IAM Level I/II/III"]},
+                    {cat:"Project & Business",items:["PMP (Project Management Professional)","CAPM","Lean Six Sigma Green Belt","Lean Six Sigma Black Belt","Certified Government Financial Manager (CGFM)","Certified Public Accountant (CPA)"]},
+                    {cat:"Trades & Operations",items:["CDL Class A","CDL Class B","Forklift Operator Certification","Crane Operator Certification","OSHA 10-Hour","OSHA 30-Hour","Welding Certification (AWS)","HVAC Certification","Electrician License","Plumbing License"]},
+                    {cat:"Aviation & Unmanned",items:["FAA Part 107 (UAS/Drone Pilot)","Private Pilot License","HAZMAT Endorsement","Aircraft Ground Support Certification"]},
+                    {cat:"Security & Clearance",items:["Secret Clearance","Top Secret Clearance","TS/SCI Clearance","Physical Security Professional (PSP)","Certified Protection Professional (CPP)","Contracting Officer Representative (COR) Certification"]},
+                    {cat:"Safety & Professional",items:["Certified Safety Professional (CSP)","DAWIA Level I/II/III","Certified Fraud Examiner (CFE)","Certified Information Privacy Professional (CIPP)"]},
+                  ].map(grp=>(
+                    <details key={grp.cat} style={{marginBottom:".3rem",border:"1px solid #d8e4f0",borderRadius:"4px",background:"#fafcff"}}>
+                      <summary style={{padding:".45rem .75rem",cursor:"pointer",fontWeight:600,fontSize:".82rem",color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                        {grp.cat} <span style={{fontSize:".7rem",color:"#8aa0b8",fontWeight:400}}>{grp.items.length} options ›</span>
+                      </summary>
+                      <div style={{padding:".4rem .75rem .6rem",display:"flex",flexWrap:"wrap",gap:".3rem",borderTop:"1px solid #e8f0f8"}}>
+                        {grp.items.map(c=>(
+                          <button key={c} style={{background:"#e8edf5",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".2rem .55rem",fontSize:".78rem",cursor:"pointer",color:"#1a3a6b",transition:"all .15s"}}
+                            onClick={()=>{if(!skills.certs.includes(c)) setSkills(sk=>({...sk,certs:sk.certs?(sk.certs+", "+c):c}));}}>
+                            + {c}
+                          </button>
+                        ))}
+                      </div>
+                    </details>
+                  ))}
+
+                  <input style={{marginTop:".4rem"}}
+                    placeholder="Selected certifications appear here, or type your own..."
+                    value={skills.certs}
+                    onChange={e=>setSkills(s=>({...s,certs:e.target.value}))}/>
+                </div>
+
+              </div>}
+            </div>
+
+
+            <button className="btn-primary" onClick={translateMOS} style={{position:"relative"}} disabled={loading.translate||milExperiences.length===0}>
+              {loading.translate?"Translating Your Service...":"🔄  Translate My Military Experience to Civilian Language"}
+            </button>
+
+            {loading.translate&&<div className="loading"><div className="spin"/><span>Analyzing your service record...</span></div>}
+            {mosOut&&!loading.translate&&(
+              <div style={{background:"rgba(224,85,85,.12)",border:"1px solid rgba(224,85,85,.35)",borderRadius:"4px",padding:"1rem 1.2rem",marginTop:"1rem",fontSize:".88rem",color:"#f0a0a0",lineHeight:"1.6"}}>
+                <strong style={{display:"block",marginBottom:".3rem"}}>⚠ Could not complete translation</strong>
+                {mosOut}
+                <div style={{marginTop:".5rem",fontSize:".8rem",opacity:.8}}>Make sure your API key is set correctly and try again.</div>
+              </div>
+            )}
+            {translationData&&!loading.translate&&(
+              <div>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:".5rem",marginBottom:".75rem",marginTop:"1rem"}}>
+                  <h3 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",color:"var(--gold-light)",fontSize:"1.05rem"}}>Your Military Experience — Translated</h3>
+                  <div style={{display:"flex",gap:".4rem"}}>
+                    <button className="btn-sec" onClick={()=>{
+                      const text = [
+                        "PROFESSIONAL SUMMARY",
+                        translationData.summary||"",
+                        "",
+                        ...(translationData.roles||[]).flatMap(r=>[
+                          (r.mos)+" — "+(r.title||""),
+                          r.whatYouDid||"",
+                          "Transferable Skills: " + (r.transferableSkills||[]).join(", "),
+                          "Resume Bullets:",
+                          ...(r.resumeBullets||[]).map(b=>"• "+b),
+                          ""
+                        ]),
+                        ...(translationData.qualifications||[]).flatMap(q=>[
+                          (q.code)+" — "+(q.name||"")+": "+(q.civilianMeaning||""),
+                          "Opens doors to: "+(q.unlocks),""
+                        ]),
+                      ].join("\n");
+                      navigator.clipboard.writeText(text);
+                    }}>Copy All</button>
+                    <button className="btn-sec" onClick={async()=>{
+                      const jsPDFScript = document.createElement("script");
+                      jsPDFScript.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+                      document.head.appendChild(jsPDFScript);
+                      jsPDFScript.onload = () => {
+                        const {jsPDF} = window.jspdf;
+                        const doc = new jsPDF();
+                        let y = 20;
+                        const addLine = (text, size=10, bold=false) => {
+                          if(y>270){doc.addPage();y=20;}
+                          doc.setFontSize(size);
+                          doc.setFont("helvetica", bold?"bold":"normal");
+                          const lines = doc.splitTextToSize(text||"", 170);
+                          doc.text(lines, 20, y);
+                          y += lines.length * (size*0.4+2);
+                        };
+                        addLine("MILITARY EXPERIENCE — CIVILIAN TRANSLATION", 14, true);
+                        addLine("Generated by VeteranCareerPath.com", 9);
+                        y+=4;
+                        addLine("PROFESSIONAL SUMMARY", 11, true); y+=2;
+                        addLine(translationData.summary||""); y+=4;
+                        (translationData.roles||[]).forEach(r=>{
+                          addLine((r.mos)+" — "+(r.title||""), 11, true); y+=1;
+                          addLine(r.whatYouDid||""); y+=2;
+                          addLine("TRANSFERABLE SKILLS", 9, true);
+                          addLine((r.transferableSkills||[]).join(" • ")); y+=2;
+                          addLine("RESUME BULLETS", 9, true);
+                          (r.resumeBullets||[]).forEach(b=>addLine("• "+b)); y+=4;
+                        });
+                        if((translationData.qualifications||[]).length){
+                          addLine("QUALIFICATIONS & WHAT THEY UNLOCK", 11, true); y+=2;
+                          (translationData.qualifications||[]).forEach(q=>{
+                            addLine((q.code)+" — "+(q.name||""), 10, true);
+                            addLine(q.civilianMeaning||"");
+                            addLine("Opens: "+(q.unlocks||"")); y+=2;
+                          });
+                        }
+                        if((translationData.additionalDuties||[]).length){
+                          addLine("ADDITIONAL DUTY QUALIFICATIONS", 11, true); y+=2;
+                          (translationData.additionalDuties||[]).forEach(d=>{
+                            addLine((d.duty)+" → "+(d.civilianEquivalent||""), 10, true);
+                            addLine(d.value||""); y+=2;
+                          });
+                        }
+                        doc.save("veteran-experience-translated.pdf");
+                      };
+                    }}>Export PDF</button>
+                  </div>
+                </div>
+
+
+                {translationData.summary&&(
+                  <div className="trans-section">
+                    <div className="trans-section-head"><h4>Professional Summary</h4></div>
+                    <div className="trans-section-body">
+                      <p style={{fontSize:".9rem",lineHeight:"1.8",color:"var(--text)",fontStyle:"italic"}}>{translationData.summary}</p>
+                    </div>
+                  </div>
+                )}
+
+
+                {(translationData.roles||[]).map((r,i)=>(
+                  <div className="trans-section" key={i}>
+                    <div className="trans-section-head">
+                      <h4>{r.mos && <span style={{background:"rgba(201,168,76,.2)",padding:".1rem .4rem",borderRadius:"2px",marginRight:".5rem"}}>{r.mos}</span>}{r.title}</h4>
+                    </div>
+                    <div className="trans-section-body">
+                      <div className="trans-block">
+                        <div className="trans-block-label">What You Actually Did</div>
+                        <div className="trans-block-text">{r.whatYouDid}</div>
+                      </div>
+                      {(r.transferableSkills||[]).length>0&&(
+                        <div className="trans-block">
+                          <div className="trans-block-label">Transferable Civilian Skills</div>
+                          <div style={{display:"flex",flexWrap:"wrap",gap:".35rem",marginTop:".3rem"}}>
+                            {(r.transferableSkills||[]).map((s,j)=>(
+                              <span key={j} style={{background:"rgba(76,175,130,.12)",border:"1px solid rgba(76,175,130,.28)",borderRadius:"2px",padding:".18rem .55rem",fontSize:".78rem",color:"#1a3a6b"}}>{s}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {(r.resumeBullets||[]).length>0&&(
+                        <div className="trans-block">
+                          <div className="trans-block-label">Ready-to-Use Resume Bullets</div>
+                          {(r.resumeBullets||[]).map((b,j)=>(
+                            <div className="trans-bullet" key={j}>
+                              <div className="trans-bullet-dot"/>
+                              <div className="trans-bullet-text">{b}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+
+                {(translationData.qualifications||[]).length>0&&(
+                  <div className="trans-section">
+                    <div className="trans-section-head" style={{background:"rgba(160,124,214,.1)",borderBottom:"1px solid rgba(160,124,214,.2)"}}>
+                      <h4 style={{color:"#c4a0f5"}}>ASIs, SQIs & Specialized Qualifications</h4>
+                    </div>
+                    <div className="trans-section-body">
+                      {(translationData.qualifications||[]).map((q,i)=>(
+                        <div className="trans-block" key={i}>
+                          <div style={{display:"flex",gap:".6rem",alignItems:"flex-start"}}>
+                            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.1rem",color:"#c4a0f5",minWidth:"2.5rem"}}>{q.code}</span>
+                            <div>
+                              <div style={{fontSize:".88rem",fontWeight:600,color:"var(--text)",marginBottom:".2rem"}}>{q.name}</div>
+                              <div style={{fontSize:".82rem",color:"var(--dim)",marginBottom:".2rem"}}>{q.civilianMeaning}</div>
+                              <div style={{fontSize:".78rem",color:"var(--gold-light)"}}>🔓 Unlocks: {q.unlocks}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+
+                {(translationData.additionalDuties||[]).length>0&&(
+                  <div className="trans-section">
+                    <div className="trans-section-head" style={{background:"rgba(230,160,60,.08)",borderBottom:"1px solid rgba(230,160,60,.2)"}}>
+                      <h4 style={{color:"#e8b84b"}}>Additional Duty Qualifications</h4>
+                    </div>
+                    <div className="trans-section-body">
+                      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:".5rem"}}>
+                        {(translationData.additionalDuties||[]).map((d,i)=>(
+                          <div key={i} style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(230,160,60,.18)",borderRadius:"3px",padding:".65rem .8rem"}}>
+                            <div style={{fontSize:".8rem",color:"#e8b84b",fontWeight:600,marginBottom:".2rem"}}>{d.duty}</div>
+                            <div style={{fontSize:".75rem",color:"var(--green)",marginBottom:".2rem"}}>→ {d.civilianEquivalent}</div>
+                            <div style={{fontSize:".72rem",color:"var(--dim)",lineHeight:"1.45"}}>{d.value}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="nav-row"><div/><button className="btn-sec" onClick={()=>setTab(1)}>Next: Career Pathways →</button></div>
+          </div>
+
+
+
+          <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} education={education} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector}  hasAccess={hasAccess} RG={RG} setShowPaywall={setShowPaywall}  skills={skills} personal={personal} />
+
+
+
+          <div className={"panel "+(tab===2?"on":"")}>
+            <div className="intro">
+              <strong>Generate Your Resume.</strong> Your complete military profile — MOS, ASIs, SQIs, additional duties, clearances, service history, and all experience — will be translated into a polished, ATS-optimized civilian resume.
+            </div>
+            <div className="card">
+              <div className="ch"><h3>Target This Resume To</h3></div>
+              <div className="cb">
+                <div className="g3">
+                  <div className="field"><label>Target Job Title</label><input placeholder="e.g. Operations Manager, Intelligence Analyst" value={target.title} onChange={e=>upT("title",e.target.value)}/></div>
+                  <div className="field"><label>Industry</label><input placeholder="e.g. Defense, Healthcare, Logistics" value={target.industry} onChange={e=>upT("industry",e.target.value)}/></div>
+                  <div className="field"><label>Keywords to Emphasize</label><input placeholder="e.g. leadership, project management, security" value={target.keywords} onChange={e=>upT("keywords",e.target.value)}/></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="ch"><h3>Choose Your Resume Format</h3><span className="ch-sub">Select before generating</span></div>
+              <div className="cb">
+                <div className="format-grid">
+                  {RESUME_FORMATS.map(f=>(
+                    <div key={f.id} className={"format-card "+(resumeFormat===f.id?"selected":"")} onClick={()=>{
+                          setResumeFormat(f.id);
+                          const tmplMap={"ats_chrono":"ats_chrono","ats_combo":"ats_combo","functional":"ats_combo","traditional":"traditional","modern":"modern","executive":"executive","federal":"federal","harvard":"harvard","wharton":"wharton","minimalist":"minimalist","creative":"modern"};
+                          setResumeTemplate(tmplMap[f.id]||"ats_chrono");
+                        }}>
+                      {f.badge&&<div style={{display:"inline-block",background:resumeFormat===f.id?"rgba(255,255,255,.2)":"rgba(26,58,107,.1)",border:"1px solid",borderColor:resumeFormat===f.id?"rgba(255,255,255,.35)":"rgba(26,58,107,.2)",borderRadius:"20px",padding:".08rem .45rem",fontSize:".62rem",fontWeight:700,color:resumeFormat===f.id?"#fff":"#1a3a6b",letterSpacing:".05em",marginBottom:".3rem"}}>{f.badge}</div>}
+                      <h4>{f.label}</h4>
+                      <p>{f.desc}</p>
+                    </div>
+                  ))}
+                </div>
+                <div style={{fontSize:".78rem",color:"var(--dim)",marginTop:".35rem",fontStyle:"italic",lineHeight:1.65}}>
+                  💡 <strong style={{fontStyle:"normal"}}>Not sure which to pick?</strong> Use <strong style={{color:"var(--gold-light)",fontStyle:"normal"}}>ATS Chronological</strong> for most jobs · <strong style={{color:"var(--gold-light)",fontStyle:"normal"}}>Federal</strong> for USAJOBS · <strong style={{color:"var(--gold-light)",fontStyle:"normal"}}>Functional</strong> if pivoting careers or have a gap · <strong style={{color:"var(--gold-light)",fontStyle:"normal"}}>Executive</strong> if you led organizations of 100+ people
+                </div>
+                <div style={{marginTop:".75rem",padding:".75rem",background:"#f8fafc",border:"1px solid #e0e8f0",borderRadius:"6px",display:"flex",alignItems:"center",gap:".75rem"}}>
+                  <input type="checkbox" id="includeClearance" checked={includeClearance} onChange={e=>setIncludeClearance(e.target.checked)} style={{width:"auto",cursor:"pointer"}}/>
+                  <label htmlFor="includeClearance" style={{cursor:"pointer",fontSize:".88rem",color:"#1a3a6b",fontWeight:600,textTransform:"none",letterSpacing:"0"}}>
+                    Include security clearance on resume
+                    <span style={{display:"block",fontSize:".75rem",color:"#5a7090",fontWeight:400,marginTop:".1rem"}}>Uncheck if applying to roles that don't require clearance or if you prefer not to disclose it</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+                {hasAccess?(
+              <button className="btn-primary" onClick={genResume} style={{position:"relative"}} disabled={loading.resume||!personal.name}>
+                {loading.resume?"Crafting Your Resume...":`📄  Generate My ${(RESUME_FORMATS.find(f=>f.id===resumeFormat) ? RESUME_FORMATS.find(f=>f.id===resumeFormat).label : "Professional")||"Professional"} Resume`}
+              </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                )}
+            {loading.resume&&<div className="loading"><div className="spin"/><span>Generating your resume — this may take 15-30 seconds...</span></div>}
+            {resume&&!loading.resume&&(
+              <div style={{marginTop:"1rem"}}>
+                <div className="resume-out">
+
+
+                  <div style={{background:"#f0f2f8",borderBottom:"1px solid #d0d8e8",padding:".65rem 1rem",display:"flex",gap:".4rem",flexWrap:"wrap",alignItems:"center"}}>
+                    <div style={{marginRight:".4rem"}}>
+                      <span style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#3a5070"}}>Visual Style:</span>
+                      <span style={{fontSize:".65rem",color:"#8aa0b8",marginLeft:".3rem",fontStyle:"italic"}}>changes appearance only — re-generate to change content format</span>
+                    </div>
+                    {[{id:"ats_chrono",l:"ATS Chrono"},{id:"ats_combo",l:"ATS Combo"},{id:"functional",l:"Functional"},{id:"traditional",l:"Traditional"},{id:"modern",l:"Modern"},{id:"classic",l:"Classic"},{id:"executive",l:"Executive"},{id:"federal",l:"Federal"},{id:"harvard",l:"Harvard"},{id:"wharton",l:"Wharton"},{id:"minimalist",l:"Minimalist"}].map(t=>(
+                      <button key={t.id} onClick={()=>setResumeTemplate(t.id)}
+                        style={{padding:".28rem .75rem",borderRadius:"3px",border:"1.5px solid",fontSize:".74rem",cursor:"pointer",fontWeight:resumeTemplate===t.id?700:400,
+                          background:resumeTemplate===t.id?"#1a3a6b":"#fff",
+                          color:resumeTemplate===t.id?"#fff":"#3a5070",
+                          borderColor:resumeTemplate===t.id?"#1a3a6b":"#c0d0e4",
+                          fontWeight:resumeTemplate===t.id?700:400,
+                          boxShadow:resumeTemplate===t.id?"0 0 0 2px #4a7aef":"none"}}>
+                        {t.l}
+                      </button>
+                    ))}
+                    <div style={{marginLeft:"auto",display:"flex",gap:".4rem"}}>
+                      <button style={{padding:".28rem .75rem",fontSize:".74rem",background:"#fff",color:"#1a3a6b",border:"1px solid #1a3a6b",borderRadius:"3px",cursor:"pointer"}} onClick={()=>{
+                          const el=document.getElementById("resume-render");
+                          if(el) navigator.clipboard.writeText(el.innerText||"");
+                        }}>Copy</button>
+                      <button style={{padding:".28rem .75rem",fontSize:".74rem",background:"#1a3a6b",color:"#fff",border:"none",borderRadius:"3px",cursor:"pointer",fontWeight:600}} onClick={()=>{
+                          const el=document.getElementById("resume-render");
+                          if(!el) return;
+                          const name=(resumeData&&resumeData.name)||personal.name||"Veteran";
+                          const w=window.open("","_blank");
+                          const css="html,body{margin:0;padding:0;background:#fff;}body{font-family:Arial,sans-serif;font-size:10pt;color:#111;padding:1.5cm;}@page{margin:0;size:letter;}@media print{html,body{margin:0;padding:0;}@page{margin:1cm;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}}div[style*=\'box-shadow\']{box-shadow:none!important;}div[style*=\'border\']{border:none!important;}";
+                          const scr="scr"+"ipt";
+                          w.document.write("<html><head><style>"+css+"</style></head><body>"+el.innerHTML+"<"+scr+">window.onload=function(){window.print();}<\/"+scr+"></body></html>");
+                          w.document.close();
+                        }}>PDF</button>
+                    </div>
+                  </div>
+
+
+                  <div id="resume-render" style={{overflowY:"auto",maxHeight:"none",background:"#f0f4fa",padding:"1.2rem",display:"flex",justifyContent:"center"}}>
+                    {resumeData ? (
+                      <div style={{width:"100%",maxWidth:"760px",background:"#fff",boxShadow:"0 4px 20px rgba(0,0,0,.15)"}}>
+
+                        {resumeTemplate==="modern"&&(
+                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
+                            <div style={{background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",padding:"1.8rem 2.2rem 1.4rem"}}>
+                              <div style={{fontSize:"20pt",fontWeight:700,marginBottom:".3rem"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"8.5pt",opacity:.85}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&(<div style={{marginTop:".5rem",display:"inline-block",background:"#b8860b",color:"#fff",padding:".12rem .6rem",borderRadius:"2px",fontSize:"7.5pt",fontWeight:700,letterSpacing:".08em"}}>CLEARANCE: {resumeData.clearance}</div>)}
+                            </div>
+                            <div style={{padding:"1.4rem 2.2rem"}}>
+                              {resumeData.summary&&(<div style={{marginBottom:"1rem",paddingBottom:".8rem",borderBottom:"2px solid #1a3a6b"}}>
+                                <div style={{fontSize:"8pt",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".3rem"}}>Professional Summary</div>
+                                <div style={{fontSize:"9.5pt",lineHeight:1.65,color:"#2a2a2a"}}>{resumeData.summary}</div>
+                              </div>)}
+                              {(resumeData.experience||[]).map((job,i)=>(
+                                <div key={i} style={{marginBottom:".85rem",paddingBottom:".85rem",borderBottom:"1px solid #eee"}}>
+                                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:".15rem"}}>
+                                    <div style={{fontWeight:700,fontSize:"10pt",color:"#1a3a6b"}}>{job.title}</div>
+                                    <div style={{fontSize:"8.5pt",color:"#666"}}>{job.dates}</div>
+                                  </div>
+                                  <div style={{fontSize:"9pt",color:"#444",fontStyle:"italic",marginBottom:".3rem"}}>{job.employer}</div>
+                                  {(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",lineHeight:1.55,paddingLeft:".9rem",position:"relative",color:"#333",marginBottom:".12rem"}}><span style={{position:"absolute",left:0,color:"#b8860b",fontWeight:700}}>&#9658;</span>{b}</div>))}
+                                </div>
+                              ))}
+                              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginTop:".4rem"}}>
+                                <div>
+                                  <div style={{fontSize:"8pt",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".4rem",paddingBottom:".15rem",borderBottom:"2px solid #1a3a6b"}}>Education</div>
+                                  {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{marginBottom:".4rem",fontSize:"9pt"}}><div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#555"}}>{e.school}</div><div style={{color:"#888",fontSize:"8pt"}}>{e.year}</div></div>))}
+                                </div>
+                                <div>
+                                  <div style={{fontSize:"8pt",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#1a3a6b",marginBottom:".4rem",paddingBottom:".15rem",borderBottom:"2px solid #1a3a6b"}}>Core Skills</div>
+                                  <div style={{display:"flex",flexWrap:"wrap",gap:".25rem",marginBottom:".5rem"}}>
+                                    {(resumeData.skills||[]).map((s,i)=>(<span key={i} style={{background:"#e8edf5",border:"1px solid #b8c8d8",borderRadius:"2px",padding:".1rem .4rem",fontSize:"8pt",color:"#1a3a6b"}}>{s}</span>))}
+                                  </div>
+                                  {(resumeData.certifications||[]).length>0&&(<div><div style={{fontSize:"8pt",fontWeight:700,color:"#666",marginBottom:".2rem",textTransform:"uppercase"}}>Certifications</div>{(resumeData.certifications||[]).map((c,i)=>(<div key={i} style={{fontSize:"8.5pt",color:"#333"}}>&#8226; {c}</div>))}</div>)}
+                                  {(resumeData.awards||[]).length>0&&(<div style={{marginTop:".5rem"}}><div style={{fontSize:"8pt",fontWeight:700,color:"#666",marginBottom:".2rem",textTransform:"uppercase"}}>Awards</div>{(resumeData.awards||[]).map((a,i)=>(<div key={i} style={{fontSize:"8.5pt",color:"#333"}}>&#8226; {a}</div>))}</div>)}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {resumeTemplate==="classic"&&(
+                          <div style={{fontFamily:"Georgia,serif",fontSize:"10pt",color:"#1a1a1a",padding:"2rem 2.4rem"}}>
+                            <div style={{textAlign:"center",borderBottom:"2px solid #1a1a1a",paddingBottom:".8rem",marginBottom:".8rem"}}>
+                              <div style={{fontSize:"18pt",fontWeight:700,letterSpacing:".04em",textTransform:"uppercase"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"8.5pt",color:"#444",marginTop:".25rem"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&(<div style={{fontSize:"8.5pt",fontWeight:700,marginTop:".2rem"}}>Security Clearance: {resumeData.clearance}</div>)}
+                            </div>
+                            {resumeData.summary&&(<div style={{marginBottom:".9rem"}}><div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",marginBottom:".4rem"}}>Professional Summary</div><div style={{fontSize:"9.5pt",lineHeight:1.65,color:"#222",textAlign:"justify"}}>{resumeData.summary}</div></div>)}
+                            <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",marginBottom:".5rem"}}>Experience</div>
+                            {(resumeData.experience||[]).map((job,i)=>(<div key={i} style={{marginBottom:".8rem"}}><div style={{display:"flex",justifyContent:"space-between"}}><span style={{fontWeight:700,fontSize:"10pt"}}>{job.title}</span><span style={{fontSize:"8.5pt",color:"#555",fontStyle:"italic"}}>{job.dates}</span></div><div style={{fontStyle:"italic",color:"#444",fontSize:"9pt",marginBottom:".25rem"}}>{job.employer}</div>{(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",lineHeight:1.55,paddingLeft:".9rem",marginBottom:".1rem"}}>&#8226; {b}</div>))}</div>))}
+                            <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",margin:".8rem 0 .4rem"}}>Education</div>
+                            {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:".3rem"}}><strong>{e.degree}</strong> &#8212; {e.school} {e.year&&"("+e.year+")"}</div>))}
+                            <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",margin:".8rem 0 .4rem"}}>Skills</div>
+                            <div style={{fontSize:"9pt",lineHeight:1.7}}>{(resumeData.skills||[]).concat(resumeData.certifications||[]).join(" \u2022 ")}</div>
+                            {(resumeData.awards||[]).length>0&&(<div><div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",margin:".8rem 0 .4rem"}}>Awards</div>{(resumeData.awards||[]).map((a,i)=>(<div key={i} style={{fontSize:"9pt"}}>&#8226; {a}</div>))}</div>)}
+                          </div>
+                        )}
+
+                        {resumeTemplate==="executive"&&(
+                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
+                            <div style={{background:"#0a0a0a",color:"#fff",padding:"2rem 2.4rem"}}>
+                              <div style={{fontSize:"22pt",fontWeight:300,letterSpacing:".08em",textTransform:"uppercase"}}>{resumeData.name||personal.name}</div>
+                              <div style={{height:"2px",background:"#b8860b",width:"50px",margin:".6rem 0"}}/>
+                              <div style={{fontSize:"8.5pt",color:"#aaa",letterSpacing:".05em"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&(<div style={{marginTop:".5rem",color:"#b8860b",fontSize:"8.5pt",fontWeight:600}}>CLEARANCE: {resumeData.clearance.toUpperCase()}</div>)}
+                            </div>
+                            <div style={{padding:"1.5rem 2.4rem"}}>
+                              {resumeData.summary&&(<div style={{marginBottom:"1.2rem",paddingBottom:"1.2rem",borderBottom:"1px solid #e8e8e8"}}><div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".4rem"}}>Executive Profile</div><div style={{fontSize:"10pt",lineHeight:1.7,color:"#222",fontWeight:300}}>{resumeData.summary}</div></div>)}
+                              <div style={{marginBottom:"1.2rem"}}><div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".6rem"}}>Core Competencies</div><div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:".25rem"}}>{(resumeData.skills||[]).map((s,i)=>(<div key={i} style={{fontSize:"8.5pt",padding:".2rem .5rem",background:"#f8f8f8",borderLeft:"3px solid #b8860b",color:"#222"}}>{s}</div>))}</div></div>
+                              {(resumeData.experience||[]).map((job,i)=>(<div key={i} style={{marginBottom:"1rem",paddingBottom:"1rem",borderBottom:"1px solid #f0f0f0"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}><div style={{fontWeight:700,fontSize:"10.5pt"}}>{job.title}</div><div style={{fontSize:"8pt",color:"#888",fontStyle:"italic"}}>{job.dates}</div></div><div style={{fontSize:"9pt",color:"#b8860b",fontWeight:600,marginBottom:".4rem"}}>{job.employer}</div>{(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",lineHeight:1.6,paddingLeft:"1rem",position:"relative",color:"#333",marginBottom:".18rem"}}><span style={{position:"absolute",left:0,color:"#b8860b",fontWeight:700}}>&#8250;</span>{b}</div>))}</div>))}
+                              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.2rem"}}>
+                                <div><div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".4rem"}}>Education</div>{(resumeData.education||[]).map((e,i)=>(<div key={i} style={{marginBottom:".35rem",fontSize:"9pt"}}><div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#666"}}>{e.school} {e.year}</div></div>))}</div>
+                                <div><div style={{fontSize:"7.5pt",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"#b8860b",marginBottom:".4rem"}}>Certifications & Awards</div>{(resumeData.certifications||[]).map((c,i)=>(<div key={i} style={{fontSize:"8.5pt",color:"#333",marginBottom:".18rem"}}>&#10003; {c}</div>))}{(resumeData.awards||[]).map((a,i)=>(<div key={i} style={{fontSize:"8.5pt",color:"#333",marginBottom:".18rem"}}>&#9733; {a}</div>))}</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {resumeTemplate==="minimal"&&(
+                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a",padding:"2.5rem"}}>
+                            <div style={{marginBottom:"1.8rem"}}>
+                              <div style={{fontSize:"24pt",fontWeight:700,marginBottom:".15rem"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"8.5pt",color:"#888"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&(<div style={{fontSize:"8.5pt",fontWeight:600,color:"#333",marginTop:".2rem"}}>{resumeData.clearance}</div>)}
+                            </div>
+                            {resumeData.summary&&(<div style={{marginBottom:"1.8rem",paddingBottom:"1.8rem",borderBottom:"1px solid #eee"}}><div style={{fontSize:"10pt",lineHeight:1.8,color:"#444"}}>{resumeData.summary}</div></div>)}
+                            {(resumeData.experience||[]).map((job,i)=>(<div key={i} style={{marginBottom:"1.6rem"}}><div style={{display:"flex",justifyContent:"space-between"}}><div style={{fontWeight:700,fontSize:"10.5pt"}}>{job.title}</div><div style={{fontSize:"8.5pt",color:"#999"}}>{job.dates}</div></div><div style={{color:"#666",fontSize:"9pt",marginBottom:".4rem"}}>{job.employer}</div>{(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",lineHeight:1.6,paddingLeft:".9rem",borderLeft:"2px solid #eee",marginBottom:".25rem",color:"#333"}}>{b}</div>))}</div>))}
+                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.8rem",paddingTop:"1.5rem",borderTop:"1px solid #eee"}}>
+                              <div><div style={{fontSize:"7.5pt",letterSpacing:".15em",textTransform:"uppercase",color:"#999",fontWeight:700,marginBottom:".6rem"}}>Education</div>{(resumeData.education||[]).map((e,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:".4rem"}}><div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#777"}}>{e.school}</div></div>))}</div>
+                              <div><div style={{fontSize:"7.5pt",letterSpacing:".15em",textTransform:"uppercase",color:"#999",fontWeight:700,marginBottom:".6rem"}}>Skills</div><div style={{fontSize:"9pt",color:"#444",lineHeight:1.8}}>{(resumeData.skills||[]).join(" \u00b7 ")}</div></div>
+                            </div>
+                          </div>
+                        )}
+
+                        {resumeTemplate==="federal"&&(
+                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"9.5pt",color:"#000",padding:"1.6rem 2rem"}}>
+                            <div style={{borderBottom:"3px double #000",paddingBottom:".8rem",marginBottom:".8rem"}}>
+                              <div style={{fontSize:"15pt",fontWeight:700}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"8.5pt",color:"#333",marginTop:".2rem"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&(<div style={{fontSize:"8.5pt",fontWeight:700,marginTop:".2rem"}}>SECURITY CLEARANCE: {resumeData.clearance}</div>)}
+                            </div>
+                            {resumeData.summary&&(<div style={{marginBottom:".8rem"}}><div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",marginBottom:".3rem"}}>PROFESSIONAL SUMMARY</div><div style={{lineHeight:1.7}}>{resumeData.summary}</div></div>)}
+                            <div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",marginBottom:".5rem"}}>WORK EXPERIENCE</div>
+                            {(resumeData.experience||[]).map((job,i)=>(<div key={i} style={{marginBottom:"1rem",paddingLeft:".9rem",borderLeft:"3px solid #000"}}><div style={{fontWeight:700}}>{job.title}</div><div style={{fontWeight:600,color:"#333"}}>{job.employer}</div><div style={{color:"#555",fontSize:"8.5pt",marginBottom:".3rem"}}>{job.dates}</div>{(job.bullets||[]).map((b,j)=>(<div key={j} style={{lineHeight:1.65,paddingLeft:".7rem",marginBottom:".15rem"}}>&#8226; {b}</div>))}</div>))}
+                            <div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",margin:".8rem 0 .5rem"}}>EDUCATION</div>
+                            {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{marginBottom:".4rem"}}><strong>{e.degree}</strong><br/>{e.school}{e.year&&", "+e.year}</div>))}
+                            <div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",margin:".8rem 0 .5rem"}}>SKILLS & CERTIFICATIONS</div>
+                            <div style={{lineHeight:1.8}}>{(resumeData.skills||[]).concat(resumeData.certifications||[]).join(" | ")}</div>
+                            {(resumeData.awards||[]).length>0&&(<div><div style={{fontWeight:700,fontSize:"9.5pt",textDecoration:"underline",margin:".8rem 0 .5rem"}}>AWARDS</div>{(resumeData.awards||[]).map((a,i)=>(<div key={i}>&#8226; {a}</div>))}</div>)}
+                          </div>
+                        )}
+
+                        {resumeTemplate==="ats_chrono"&&(
+                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#000",padding:"1.5rem 2rem",lineHeight:1.4}}>
+                            <div style={{textAlign:"center",marginBottom:"8pt"}}>
+                              <div style={{fontSize:"14pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".05em"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"9pt",color:"#333",marginTop:"2pt"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",fontWeight:700,marginTop:"2pt"}}>Clearance: {resumeData.clearance}</div>}
+                            </div>
+                            <div style={{borderTop:"2px solid #000",borderBottom:"1px solid #000",padding:"3pt 0",marginBottom:"6pt"}}>
+                              <div style={{fontSize:"8pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",textAlign:"center"}}>Professional Summary</div>
+                            </div>
+                            <div style={{fontSize:"9.5pt",marginBottom:"8pt",lineHeight:1.6}}>{resumeData.summary}</div>
+                            <div style={{borderTop:"2px solid #000",borderBottom:"1px solid #000",padding:"3pt 0",marginBottom:"6pt"}}>
+                              <div style={{fontSize:"8pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",textAlign:"center"}}>Core Competencies</div>
+                            </div>
+                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"2pt",marginBottom:"8pt"}}>
+                              {(resumeData.skills||[]).map((s,i)=>(<div key={i} style={{fontSize:"9pt",padding:"1pt 0"}}>&#9632; {s}</div>))}
+                            </div>
+                            <div style={{borderTop:"2px solid #000",borderBottom:"1px solid #000",padding:"3pt 0",marginBottom:"6pt"}}>
+                              <div style={{fontSize:"8pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",textAlign:"center"}}>Professional Experience</div>
+                            </div>
+                            {(resumeData.experience||[]).map((job,i)=>(
+                              <div key={i} style={{marginBottom:"8pt"}}>
+                                <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+                                  <span style={{fontWeight:700,fontSize:"10pt",textTransform:"uppercase"}}>{job.title}</span>
+                                  <span style={{fontSize:"9pt"}}>{job.dates}</span>
+                                </div>
+                                <div style={{fontWeight:600,fontSize:"9pt",marginBottom:"3pt"}}>{job.employer}</div>
+                                {(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",paddingLeft:"12pt",marginBottom:"2pt"}}>&#8226; {b}</div>))}
+                              </div>
+                            ))}
+                            <div style={{borderTop:"2px solid #000",borderBottom:"1px solid #000",padding:"3pt 0",marginBottom:"6pt"}}>
+                              <div style={{fontSize:"8pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",textAlign:"center"}}>Education</div>
+                            </div>
+                            {(resumeData.education||[]).map((e,i)=>(
+                              <div key={i} style={{fontSize:"9pt",marginBottom:"4pt"}}><strong>{e.degree}</strong> — {e.school} {e.year&&"("+e.year+")"}</div>
+                            ))}
+                            {(resumeData.certifications||[]).length>0&&<>
+                              <div style={{borderTop:"2px solid #000",borderBottom:"1px solid #000",padding:"3pt 0",marginBottom:"6pt",marginTop:"6pt"}}>
+                                <div style={{fontSize:"8pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",textAlign:"center"}}>Certifications</div>
+                              </div>
+                              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"2pt"}}>
+                                {(resumeData.certifications||[]).map((c,i)=>(<div key={i} style={{fontSize:"9pt"}}>&#9632; {c}</div>))}
+                              </div>
+                            </>}
+                          </div>
+                        )}
+
+                        {resumeTemplate==="ats_combo"&&(
+                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#000",padding:"1.5rem 2rem",lineHeight:1.4}}>
+                            <div style={{marginBottom:"8pt"}}>
+                              <div style={{fontSize:"15pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".04em"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"9pt",color:"#333",marginTop:"2pt"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",fontWeight:700,color:"#1a3a6b",marginTop:"2pt"}}>Clearance: {resumeData.clearance}</div>}
+                            </div>
+                            <div style={{background:"#f0f0f0",padding:"6pt 8pt",marginBottom:"8pt",borderLeft:"4px solid #000"}}>
+                              <div style={{fontSize:"9pt",lineHeight:1.65}}>{resumeData.summary}</div>
+                            </div>
+                            <div style={{fontWeight:700,fontSize:"8.5pt",textTransform:"uppercase",letterSpacing:".1em",borderBottom:"2px solid #000",paddingBottom:"2pt",marginBottom:"5pt"}}>Areas of Expertise</div>
+                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"3pt",marginBottom:"8pt"}}>
+                              {(resumeData.skills||[]).map((s,i)=>(<div key={i} style={{fontSize:"9pt",padding:"2pt 4pt",background:"#f8f8f8",border:"1px solid #ddd"}}>&#10003; {s}</div>))}
+                            </div>
+                            <div style={{fontWeight:700,fontSize:"8.5pt",textTransform:"uppercase",letterSpacing:".1em",borderBottom:"2px solid #000",paddingBottom:"2pt",marginBottom:"5pt"}}>Professional Experience</div>
+                            {(resumeData.experience||[]).map((job,i)=>(
+                              <div key={i} style={{marginBottom:"8pt"}}>
+                                <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+                                  <span style={{fontWeight:700,fontSize:"10pt"}}>{job.title}</span>
+                                  <span style={{fontSize:"9pt",color:"#555"}}>{job.dates}</span>
+                                </div>
+                                <div style={{fontStyle:"italic",fontSize:"9pt",marginBottom:"3pt"}}>{job.employer}</div>
+                                {(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",paddingLeft:"10pt",marginBottom:"2pt"}}>&#8226; {b}</div>))}
+                              </div>
+                            ))}
+                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginTop:"6pt"}}>
+                              <div>
+                                <div style={{fontWeight:700,fontSize:"8.5pt",textTransform:"uppercase",letterSpacing:".1em",borderBottom:"2px solid #000",paddingBottom:"2pt",marginBottom:"5pt"}}>Education</div>
+                                {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:"3pt"}}><strong>{e.degree}</strong><br/>{e.school} {e.year}</div>))}
+                              </div>
+                              <div>
+                                <div style={{fontWeight:700,fontSize:"8.5pt",textTransform:"uppercase",letterSpacing:".1em",borderBottom:"2px solid #000",paddingBottom:"2pt",marginBottom:"5pt"}}>Certifications</div>
+                                {(resumeData.certifications||[]).map((c,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:"2pt"}}>&#9632; {c}</div>))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {resumeTemplate==="harvard"&&(
+                          <div style={{fontFamily:"Garamond,Georgia,serif",fontSize:"10.5pt",color:"#000",padding:"2rem 2.4rem",lineHeight:1.5}}>
+                            <div style={{textAlign:"center",marginBottom:"6pt"}}>
+                              <div style={{fontSize:"16pt",fontWeight:700,letterSpacing:".06em",textTransform:"uppercase",fontVariant:"small-caps"}}>{resumeData.name||personal.name}</div>
+                              <div style={{height:"1px",background:"#000",margin:"4pt 0"}}/>
+                              <div style={{fontSize:"9pt",color:"#333"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",fontWeight:700,marginTop:"2pt"}}>Security Clearance: {resumeData.clearance}</div>}
+                            </div>
+                            {resumeData.summary&&(
+                              <div style={{marginBottom:"10pt"}}>
+                                <div style={{fontWeight:700,fontSize:"9pt",textTransform:"uppercase",letterSpacing:".12em",fontVariant:"small-caps",borderBottom:"1px solid #000",paddingBottom:"2pt",marginBottom:"4pt"}}>Summary</div>
+                                <div style={{fontSize:"10pt",lineHeight:1.7,textAlign:"justify"}}>{resumeData.summary}</div>
+                              </div>
+                            )}
+                            <div style={{fontWeight:700,fontSize:"9pt",textTransform:"uppercase",letterSpacing:".12em",fontVariant:"small-caps",borderBottom:"1px solid #000",paddingBottom:"2pt",marginBottom:"6pt"}}>Experience</div>
+                            {(resumeData.experience||[]).map((job,i)=>(
+                              <div key={i} style={{marginBottom:"8pt"}}>
+                                <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+                                  <span style={{fontWeight:700,fontSize:"10.5pt"}}>{job.employer}</span>
+                                  <span style={{fontSize:"9.5pt",fontStyle:"italic"}}>{job.dates}</span>
+                                </div>
+                                <div style={{fontStyle:"italic",fontSize:"10pt",marginBottom:"3pt"}}>{job.title}</div>
+                                {(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9.5pt",paddingLeft:"12pt",marginBottom:"2pt",lineHeight:1.6}}>&#8226; {b}</div>))}
+                              </div>
+                            ))}
+                            <div style={{fontWeight:700,fontSize:"9pt",textTransform:"uppercase",letterSpacing:".12em",fontVariant:"small-caps",borderBottom:"1px solid #000",paddingBottom:"2pt",margin:"8pt 0 6pt"}}>Education</div>
+                            {(resumeData.education||[]).map((e,i)=>(
+                              <div key={i} style={{display:"flex",justifyContent:"space-between",marginBottom:"4pt",fontSize:"10pt"}}>
+                                <div><strong>{e.school}</strong><br/><span style={{fontStyle:"italic"}}>{e.degree}</span></div>
+                                <div style={{textAlign:"right",fontSize:"9.5pt",color:"#444"}}>{e.year}</div>
+                              </div>
+                            ))}
+                            <div style={{fontWeight:700,fontSize:"9pt",textTransform:"uppercase",letterSpacing:".12em",fontVariant:"small-caps",borderBottom:"1px solid #000",paddingBottom:"2pt",margin:"8pt 0 6pt"}}>Skills & Certifications</div>
+                            <div style={{fontSize:"9.5pt",lineHeight:1.8,columns:2,columnGap:"2rem"}}>
+                              {(resumeData.skills||[]).concat(resumeData.certifications||[]).map((s,i)=>(<div key={i}>&#8226; {s}</div>))}
+                            </div>
+                          </div>
+                        )}
+
+                        {resumeTemplate==="wharton"&&(
+                          <div style={{fontFamily:"Calibri,Arial,sans-serif",fontSize:"10pt",color:"#000",padding:"1.5rem 2rem",lineHeight:1.35}}>
+                            <div style={{borderBottom:"3px solid #000",paddingBottom:"4pt",marginBottom:"6pt"}}>
+                              <div style={{fontSize:"17pt",fontWeight:700,letterSpacing:".02em"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"9pt",color:"#444",marginTop:"2pt"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",fontWeight:700,color:"#1a3a6b",marginTop:"1pt"}}>Active {resumeData.clearance} Clearance</div>}
+                            </div>
+                            <div style={{fontWeight:700,fontSize:"8.5pt",textTransform:"uppercase",letterSpacing:".1em",marginBottom:"4pt"}}>Education</div>
+                            {(resumeData.education||[]).map((e,i)=>(
+                              <div key={i} style={{display:"flex",justifyContent:"space-between",marginBottom:"3pt"}}>
+                                <div><strong style={{fontSize:"10pt"}}>{e.school}</strong> <span style={{fontSize:"9.5pt"}}>— {e.degree}</span></div>
+                                <div style={{fontSize:"9pt",color:"#555",whiteSpace:"nowrap"}}>{e.year}</div>
+                              </div>
+                            ))}
+                            <div style={{borderBottom:"1.5px solid #000",margin:"6pt 0"}}/>
+                            <div style={{fontWeight:700,fontSize:"8.5pt",textTransform:"uppercase",letterSpacing:".1em",marginBottom:"4pt"}}>Experience</div>
+                            {(resumeData.experience||[]).map((job,i)=>(
+                              <div key={i} style={{marginBottom:"8pt"}}>
+                                <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:"2pt"}}>
+                                  <div><strong style={{fontSize:"10pt"}}>{job.employer}</strong><span style={{fontSize:"9.5pt",color:"#444"}}>, {job.title}</span></div>
+                                  <div style={{fontSize:"9pt",color:"#555",whiteSpace:"nowrap"}}>{job.dates}</div>
+                                </div>
+                                {(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9.5pt",paddingLeft:"10pt",marginBottom:"2pt",lineHeight:1.5}}>&#8226; {b}</div>))}
+                              </div>
+                            ))}
+                            <div style={{borderBottom:"1.5px solid #000",margin:"6pt 0"}}/>
+                            <div style={{fontWeight:700,fontSize:"8.5pt",textTransform:"uppercase",letterSpacing:".1em",marginBottom:"4pt"}}>Additional Information</div>
+                            <div style={{fontSize:"9.5pt",lineHeight:1.7}}>
+                              {(resumeData.skills||[]).length>0&&<div><strong>Skills: </strong>{(resumeData.skills||[]).join(" · ")}</div>}
+                              {(resumeData.certifications||[]).length>0&&<div style={{marginTop:"2pt"}}><strong>Certifications: </strong>{(resumeData.certifications||[]).join(" · ")}</div>}
+                              {(resumeData.awards||[]).length>0&&<div style={{marginTop:"2pt"}}><strong>Awards: </strong>{(resumeData.awards||[]).join(" · ")}</div>}
+                            </div>
+                          </div>
+                        )}
+
+                        {resumeTemplate==="traditional"&&(
+                          <div style={{fontFamily:"Times New Roman,serif",fontSize:"11pt",color:"#000",padding:"1.5rem 2.2rem",lineHeight:1.45}}>
+                            <div style={{textAlign:"center",marginBottom:"10pt"}}>
+                              <div style={{fontSize:"15pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".08em"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"9.5pt",marginTop:"3pt"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9.5pt",fontWeight:700,marginTop:"2pt"}}>Security Clearance: {resumeData.clearance}</div>}
+                            </div>
+                            {resumeData.summary&&(
+                              <div style={{marginBottom:"10pt"}}>
+                                <div style={{fontWeight:700,fontSize:"10pt",textTransform:"uppercase",letterSpacing:".08em",textAlign:"center",borderTop:"1.5px solid #000",borderBottom:"1.5px solid #000",padding:"2pt 0",marginBottom:"5pt"}}>Objective / Summary</div>
+                                <div style={{fontSize:"10.5pt",lineHeight:1.7,textAlign:"justify"}}>{resumeData.summary}</div>
+                              </div>
+                            )}
+                            <div style={{fontWeight:700,fontSize:"10pt",textTransform:"uppercase",letterSpacing:".08em",textAlign:"center",borderTop:"1.5px solid #000",borderBottom:"1.5px solid #000",padding:"2pt 0",marginBottom:"6pt"}}>Professional Experience</div>
+                            {(resumeData.experience||[]).map((job,i)=>(
+                              <div key={i} style={{marginBottom:"9pt"}}>
+                                <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+                                  <span style={{fontWeight:700,fontSize:"11pt"}}>{job.title}</span>
+                                  <span style={{fontSize:"9.5pt"}}>{job.dates}</span>
+                                </div>
+                                <div style={{fontStyle:"italic",fontSize:"10pt",marginBottom:"3pt"}}>{job.employer}</div>
+                                {(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"10.5pt",paddingLeft:"14pt",marginBottom:"2pt",lineHeight:1.55}}>&#8226; {b}</div>))}
+                              </div>
+                            ))}
+                            <div style={{fontWeight:700,fontSize:"10pt",textTransform:"uppercase",letterSpacing:".08em",textAlign:"center",borderTop:"1.5px solid #000",borderBottom:"1.5px solid #000",padding:"2pt 0",margin:"8pt 0 6pt"}}>Education</div>
+                            {(resumeData.education||[]).map((e,i)=>(
+                              <div key={i} style={{display:"flex",justifyContent:"space-between",marginBottom:"5pt",fontSize:"10.5pt"}}>
+                                <div><strong>{e.degree}</strong> — {e.school}</div>
+                                <div>{e.year}</div>
+                              </div>
+                            ))}
+                            <div style={{fontWeight:700,fontSize:"10pt",textTransform:"uppercase",letterSpacing:".08em",textAlign:"center",borderTop:"1.5px solid #000",borderBottom:"1.5px solid #000",padding:"2pt 0",margin:"8pt 0 6pt"}}>Skills & Qualifications</div>
+                            <div style={{columns:2,columnGap:"2rem",fontSize:"10.5pt",lineHeight:1.7}}>
+                              {(resumeData.skills||[]).concat(resumeData.certifications||[]).map((s,i)=>(<div key={i}>&#8226; {s}</div>))}
+                            </div>
+                            {(resumeData.awards||[]).length>0&&<>
+                              <div style={{fontWeight:700,fontSize:"10pt",textTransform:"uppercase",letterSpacing:".08em",textAlign:"center",borderTop:"1.5px solid #000",borderBottom:"1.5px solid #000",padding:"2pt 0",margin:"8pt 0 6pt"}}>Awards & Honors</div>
+                              {(resumeData.awards||[]).map((a,i)=>(<div key={i} style={{fontSize:"10.5pt"}}>&#8226; {a}</div>))}
+                            </>}
+                          </div>
+                        )}
+
+                        {resumeTemplate==="minimalist"&&(
+                          <div style={{fontFamily:"Helvetica Neue,Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a",padding:"2.5rem 3rem",lineHeight:1.6}}>
+                            <div style={{marginBottom:"2rem"}}>
+                              <div style={{fontSize:"22pt",fontWeight:300,letterSpacing:"-.01em",marginBottom:"3pt"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"9pt",color:"#888",letterSpacing:".03em"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",color:"#888",marginTop:"1pt"}}>{resumeData.clearance}</div>}
+                            </div>
+                            {resumeData.summary&&(
+                              <div style={{marginBottom:"2rem",paddingBottom:"1.5rem",borderBottom:"1px solid #e8e8e8"}}>
+                                <div style={{fontSize:"10pt",lineHeight:1.8,color:"#555",maxWidth:"540px"}}>{resumeData.summary}</div>
+                              </div>
+                            )}
+                            <div style={{marginBottom:"2rem"}}>
+                              <div style={{fontSize:"7.5pt",fontWeight:600,letterSpacing:".2em",textTransform:"uppercase",color:"#aaa",marginBottom:"12pt"}}>Experience</div>
+                              {(resumeData.experience||[]).map((job,i)=>(
+                                <div key={i} style={{marginBottom:"1.4rem",display:"grid",gridTemplateColumns:"120px 1fr",gap:"0 1.5rem"}}>
+                                  <div style={{fontSize:"8.5pt",color:"#999",paddingTop:"2pt",lineHeight:1.4}}>{job.dates}<br/><span style={{color:"#666",fontStyle:"italic"}}>{job.employer}</span></div>
+                                  <div>
+                                    <div style={{fontWeight:600,fontSize:"10pt",marginBottom:"5pt"}}>{job.title}</div>
+                                    {(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9.5pt",color:"#444",marginBottom:"3pt",paddingLeft:"8pt",borderLeft:"1.5px solid #e0e0e0"}}>  {b}</div>))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"2rem",paddingTop:"1.5rem",borderTop:"1px solid #e8e8e8"}}>
+                              <div>
+                                <div style={{fontSize:"7.5pt",fontWeight:600,letterSpacing:".2em",textTransform:"uppercase",color:"#aaa",marginBottom:"8pt"}}>Education</div>
+                                {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{marginBottom:"6pt",fontSize:"9.5pt"}}><div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#777",fontSize:"9pt"}}>{e.school} · {e.year}</div></div>))}
+                              </div>
+                              <div>
+                                <div style={{fontSize:"7.5pt",fontWeight:600,letterSpacing:".2em",textTransform:"uppercase",color:"#aaa",marginBottom:"8pt"}}>Skills</div>
+                                {(resumeData.skills||[]).map((s,i)=>(<div key={i} style={{fontSize:"9.5pt",color:"#555",marginBottom:"3pt"}}>— {s}</div>))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {resumeTemplate==="functional"&&(
+                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a",padding:"1.5rem 2rem",lineHeight:1.45}}>
+                            <div style={{textAlign:"center",marginBottom:"10pt",paddingBottom:"8pt",borderBottom:"2px solid #1a3a6b"}}>
+                              <div style={{fontSize:"15pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".04em"}}>{resumeData.name||personal.name}</div>
+                              <div style={{fontSize:"9pt",color:"#555",marginTop:"3pt"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&(
+                                <div style={{fontSize:"9pt",fontWeight:700,color:"#1a3a6b",marginTop:"2pt"}}>{resumeData.clearance}</div>
+                              )}
+                            </div>
+                            {resumeData.summary&&(
+                              <div style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"1px solid #ddd"}}>
+                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"4pt"}}>Professional Profile</div>
+                                <div style={{fontSize:"9.5pt",lineHeight:1.65,color:"#333"}}>{resumeData.summary}</div>
+                              </div>
+                            )}
+                            <div style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"1px solid #ddd"}}>
+                              <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"6pt"}}>Core Competencies</div>
+                              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"3pt"}}>
+                                {(resumeData.skills||[]).map((s,i)=>(
+                                  <div key={i} style={{fontSize:"9pt",padding:"2pt 5pt",background:"#f0f4fa",border:"1px solid #d0dcea"}}>&#9632; {s}</div>
+                                ))}
+                              </div>
+                            </div>
+                            <div style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"1px solid #ddd"}}>
+                              <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"6pt"}}>Relevant Experience</div>
+                              {(resumeData.experience||[]).map((job,i)=>(
+                                <div key={i} style={{marginBottom:"7pt"}}>
+                                  <div style={{fontWeight:700,fontSize:"10pt"}}>{job.title}</div>
+                                  <div style={{display:"flex",justifyContent:"space-between"}}>
+                                    <span style={{fontStyle:"italic",fontSize:"9pt",color:"#555"}}>{job.employer}</span>
+                                    <span style={{fontSize:"8.5pt",color:"#888"}}>{job.dates}</span>
+                                  </div>
+                                  {(job.bullets||[]).map((b,j)=>(
+                                    <div key={j} style={{fontSize:"9pt",paddingLeft:"10pt",marginTop:"2pt",lineHeight:1.55}}>&#8226; {b}</div>
+                                  ))}
+                                </div>
+                              ))}
+                            </div>
+                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.5rem"}}>
+                              <div>
+                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"5pt",borderBottom:"1px solid #ddd",paddingBottom:"3pt"}}>Education</div>
+                                {(resumeData.education||[]).map((e,i)=>(
+                                  <div key={i} style={{fontSize:"9pt",marginBottom:"4pt"}}>
+                                    <strong>{e.degree}</strong>
+                                    <div style={{color:"#555",fontSize:"8.5pt"}}>{e.school} {e.year}</div>
+                                  </div>
+                                ))}
+                              </div>
+                              <div>
+                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"5pt",borderBottom:"1px solid #ddd",paddingBottom:"3pt"}}>Certifications</div>
+                                {(resumeData.certifications||[]).map((cert,i)=>(
+                                  <div key={i} style={{fontSize:"9pt",marginBottom:"3pt"}}>&#9632; {cert}</div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                      </div>
+                    
+
+
+) : (
+                      <div style={{width:"100%",maxWidth:"760px",background:"#fff",boxShadow:"0 4px 20px rgba(0,0,0,.15)",padding:"2rem 2.4rem",fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
+                        {resume.split("\\n").map((line,i)=>{
+                          const t=line.trim();
+                          if(!t) return <div key={i} style={{height:"6pt"}}/>;
+                          const isH=t===t.toUpperCase()&&t.length>3&&t.length<60&&!/[0-9@|]/.test(t);
+                          const isB=t.startsWith("\u2022")||t.startsWith("-");
+                          const clean=t.replace(/^#+\s*/,"").replace(/\*\*/g,"");
+                          if(i===0) return <div key={i} style={{fontSize:"18pt",fontWeight:700,marginBottom:"4pt"}}>{clean}</div>;
+                          if(isH) return <div key={i} style={{fontSize:"9.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1.5px solid #333",paddingBottom:"2pt",margin:"12pt 0 4pt"}}>{clean}</div>;
+                          if(isB) return <div key={i} style={{paddingLeft:".9rem",marginBottom:"2pt",lineHeight:1.55}}>{clean}</div>;
+                          return <div key={i} style={{lineHeight:1.55,marginBottom:"1pt"}}>{clean}</div>;
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              </div>
+            )}
+            {(resume||resumeData)&&(
+              <div style={{display:"flex",justifyContent:"center",margin:".5rem 0 1rem"}}>
+                <button className="btn-primary" style={{width:"auto",padding:".6rem 1.6rem",fontSize:".9rem"}}
+                  onClick={()=>{
+                    if(!currentUser){setShowAuth(true);return;}
+                    handleSaveResume();
+                  }}>
+                  💾 Save Resume to Profile
+                </button>
+              </div>
+            )}
+            <div className="nav-row"><button className="btn-sec" onClick={()=>setTab(1)}>← Career Pathways</button><div/></div>
+          </div>
+
+
+          <div className={"panel "+(tab===3?"on":"")}>
+            <div className="intro"><strong>Cover Letter Builder & Resume Review.</strong> Generate a tailored cover letter and get AI-powered feedback on your resume.</div>
+
+            {(!resume&&!resumeData)&&(
+              <div style={{background:"#fff8e0",border:"1px solid #f0c040",borderRadius:"6px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".88rem",color:"#5a3a00",display:"flex",alignItems:"center",gap:".6rem"}}>
+                <span style={{fontSize:"1.2rem"}}>💡</span>
+                <span>Generate your resume on the <button style={{background:"none",border:"none",color:"#1a3a6b",fontWeight:700,cursor:"pointer",padding:0,textDecoration:"underline"}} onClick={()=>setTab(2)}>Build Resume tab</button> first to unlock the best results.</span>
+              </div>
+            )}
+
+
+            <div className="card" style={{marginBottom:"1.2rem"}}>
+              <div className="ch"><h3>✉ Cover Letter Builder</h3></div>
+              <div className="cb">
+                <div className="g3" style={{marginBottom:"1rem"}}>
+                  <div className="field">
+                    <label>Job Title Applying For</label>
+                    <input placeholder="e.g. Operations Manager" value={coverLetterJob.title}
+                      onChange={e=>setCoverLetterJob(j=>({...j,title:e.target.value}))}/>
+                  </div>
+                  <div className="field">
+                    <label>Company Name</label>
+                    <input placeholder="e.g. Amazon, Booz Allen, VA" value={coverLetterJob.company}
+                      onChange={e=>setCoverLetterJob(j=>({...j,company:e.target.value}))}/>
+                  </div>
+                </div>
+                <div className="field" style={{marginBottom:"1rem"}}>
+                  <label>Job Description <span style={{fontWeight:400,color:"var(--dim)"}}>(paste key requirements for best results)</span></label>
+                  <textarea rows={4} placeholder="Paste the job description or key requirements here..." value={coverLetterJob.description}
+                    onChange={e=>setCoverLetterJob(j=>({...j,description:e.target.value}))}
+                    style={{width:"100%",resize:"vertical",padding:".55rem .75rem",border:"1.5px solid #c0d0e4",borderRadius:"4px",fontFamily:"inherit",fontSize:".88rem",boxSizing:"border-box"}}/>
+                </div>
+                {hasAccess?(
+                  <button className="btn-primary" onClick={genCoverLetter} disabled={coverLetterLoading}
+                    style={{marginBottom:"1rem"}}>
+                    {coverLetterLoading?"✍ Writing your cover letter...":"✉ Generate Cover Letter"}
+                  </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                )}
+                {coverLetter&&(
+                  <>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem"}}>
+                      <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b"}}>Your Cover Letter</div>
+                      <div style={{display:"flex",gap:".4rem"}}>
+                        <button className="btn-sec" style={{fontSize:".75rem"}} onClick={()=>{
+                          navigator.clipboard.writeText(coverLetter);
+                          setCopiedCL(true); setTimeout(()=>setCopiedCL(false),2000);
+                        }}>{copiedCL?"✓ Copied!":"Copy"}</button>
+                        <button className="btn-sec" style={{fontSize:".75rem"}} onClick={()=>{
+                          const blob=new Blob([coverLetter],{type:"text/plain"});
+                          const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+                          a.download=(personal.name||"veteran")+"-cover-letter.txt"; a.click();
+                        }}>Download</button>
+                      </div>
+                    </div>
+                    <div className="cl-output">{coverLetter}</div>
+                    <button className="btn-sec" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={genCoverLetter}>
+                    <button className="btn-primary" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={saveCoverLetter}>💾 Save Cover Letter</button>
+                      ↺ Regenerate
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+
+            <div className="card">
+              <div className="ch"><h3>📊 Resume Score & Review</h3></div>
+              <div className="cb">
+                <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>
+                  Get an AI-powered score and actionable feedback on your resume — just like a recruiter would see it. Use your generated resume below, or upload an existing one.
+                </p>
+
+
+                <div style={{background:"#f8fafc",border:"1.5px dashed #b0c4d8",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
+                  <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",marginBottom:".4rem"}}>📎 Upload Your Resume (optional)</div>
+                  <div style={{fontSize:".78rem",color:"var(--dim)",marginBottom:".6rem"}}>Accepts PDF, Word (.docx), or plain text (.txt)</div>
+                  <input type="file" accept=".pdf,.doc,.docx,.txt"
+                    style={{display:"none"}} id="resume-upload-input"
+                    onChange={async(e)=>{
+                      const file = e.target.files[0];
+                      if(!file) return;
+                      setUploadProcessing(true);
+                      setUploadedFileName(file.name);
+                      const finalize = (txt) => { setUploadedResumeText(txt); setUploadProcessing(false); };
+                      try {
+                        if(file.type==="text/plain"||file.name.endsWith(".txt")) {
+                          finalize(await file.text());
+                        } else if(file.name.endsWith(".pdf")) {
+                          const reader = new FileReader();
+                          reader.onload = (ev)=>{
+                            try {
+                              const arr = new Uint8Array(ev.target.result);
+                              const raw = new TextDecoder("utf-8","ignore").decode(arr);
+                              // Extract readable text runs from PDF binary stream
+                              const runs = (raw.match(/[\x20-\x7E\n\r\t]{6,}/g)||[])
+                                .filter(s=>{ const t=s.trim(); return t.length>5 && t.split(" ").length>1 && !/^[\d\.\s\-\/\(\)]+$/.test(t) && !/^[A-Z0-9]{15,}/.test(t); })
+                                .join(" ").replace(/\s+/g," ").trim().slice(0,6000);
+                              finalize(runs.length>120 ? runs : "[PDF text could not be auto-extracted. Please COPY all text from your PDF (Ctrl+A, Ctrl+C) and paste it into the text box below for scoring.]");
+                            } catch(e) { finalize("[Could not read PDF — please paste your resume text in the box below.]"); }
+                          };
+                          reader.readAsArrayBuffer(file);
+                        } else if(file.name.endsWith(".docx")||file.name.endsWith(".doc")) {
+                          const reader = new FileReader();
+                          reader.onload = async(ev)=>{
+                            try {
+                              if(typeof mammoth!=="undefined") {
+                                const result = await mammoth.extractRawText({arrayBuffer:ev.target.result});
+                                const txt = (result.value||"").replace(/\s+/g," ").trim();
+                                finalize(txt.length>80 ? txt.slice(0,6000) : "[Word doc appears empty or is heavily formatted. Try File > Save As > Plain Text (.txt) in Word, then upload that.]");
+                              } else {
+                                // Fallback without mammoth
+                                const arr = new Uint8Array(ev.target.result);
+                                const raw = new TextDecoder("utf-8","ignore").decode(arr);
+                                const runs = (raw.match(/[a-zA-Z][a-zA-Z ,\.]{8,}/g)||[]).filter(t=>t.split(" ").length>2).join(" ").slice(0,4000);
+                                finalize(runs.length>80 ? runs : "[Could not extract Word doc text. Please paste your resume in the text box below.]");
+                              }
+                            } catch(e) { finalize("[Could not read Word doc — paste your resume text below.]"); }
+                          };
+                          reader.readAsArrayBuffer(file);
+                        } else {
+                          finalize(await file.text());
+                        }
+                      } catch(err) { finalize("[Could not read file — paste your resume text below.]"); }
+                    }}
+                  />
+                  <div style={{display:"flex",gap:".5rem",alignItems:"center",flexWrap:"wrap"}}>
+                    <button className="btn-sec" style={{fontSize:".82rem"}}
+                      onClick={()=>document.getElementById("resume-upload-input").click()}>
+                      {uploadProcessing?"Processing...":"📎 Choose File"}
+                    </button>
+                    {uploadedFileName&&(
+                      <div style={{display:"flex",alignItems:"center",gap:".4rem"}}>
+                        <span style={{fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>✓ {uploadedFileName}</span>
+                        <button onClick={()=>{setUploadedFileName("");setUploadedResumeText("");document.getElementById("resume-upload-input").value="";}}
+                          style={{background:"none",border:"none",color:"#c0392b",cursor:"pointer",fontSize:".85rem"}}>✕</button>
+                      </div>
+                    )}
+                  </div>
+                  {uploadedResumeText&&(
+                    <div style={{marginTop:".6rem",background:"#fff",border:"1px solid #d0daea",borderRadius:"4px",padding:".5rem .7rem",fontSize:".75rem",color:"#3a5070",maxHeight:"80px",overflowY:"auto",lineHeight:1.5}}>
+                      <strong style={{color:"#1a3a6b"}}>Preview</strong> <span style={{color:"var(--dim)",fontSize:".7rem"}}>({uploadedResumeText.length} chars extracted)</span><br/>{uploadedResumeText.slice(0,300)}...
+                    </div>
+                  )}
+
+                  {!uploadedResumeText&&(
+                    <div style={{marginTop:".6rem"}}>
+                      <div style={{fontSize:".75rem",color:"var(--dim)",marginBottom:".3rem"}}>Or paste your resume text directly:</div>
+                      <textarea rows={4} placeholder="Paste your resume here..."
+                        style={{width:"100%",resize:"vertical",padding:".5rem .7rem",border:"1px solid #c0d0e4",borderRadius:"4px",fontFamily:"inherit",fontSize:".8rem",boxSizing:"border-box"}}
+                        onChange={e=>setUploadedResumeText(e.target.value)}/>
+                    </div>
+                  )}
+                </div>
+
+                {(!resume&&!resumeData&&!uploadedResumeText)&&(
+                  <div style={{background:"#fff8e0",border:"1px solid #f0c040",borderRadius:"6px",padding:".75rem",marginBottom:"1rem",fontSize:".82rem",color:"#5a3a00"}}>
+                    💡 Generate your resume on the <button style={{background:"none",border:"none",color:"#1a3a6b",fontWeight:700,cursor:"pointer",padding:0,textDecoration:"underline"}} onClick={()=>setTab(2)}>Build Resume tab</button> first, or upload/paste your existing resume above.
+                  </div>
+                )}
+
+                {hasAccess?(
+                  <button className="btn-primary" onClick={runResumeReview} disabled={reviewLoading||(!resume&&!resumeData&&!uploadedResumeText)} style={{marginBottom:"1rem"}}>
+                    {reviewLoading?"🔍 Analyzing your resume...":"📊 Score My Resume"}
+                  </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                )}
+
+                {resumeReview&&resumeReview.error&&(
+                  <div style={{background:"#fff5f5",border:"1px solid #f0c0c0",borderRadius:"4px",padding:".75rem",color:"#a00",fontSize:".85rem"}}>{resumeReview.error}</div>
+                )}
+
+                {resumeReview&&!resumeReview.error&&(
+                  <>
+
+                    <div style={{textAlign:"center",padding:"1rem 0 .5rem"}}>
+                      <div className="score-ring" style={{borderColor:resumeScore>=80?"#1a7a40":resumeScore>=65?"#e67e22":"#c0392b"}}>
+                        <div className="score-num" style={{color:resumeScore>=80?"#1a7a40":resumeScore>=65?"#e67e22":"#c0392b"}}>{resumeScore}</div>
+                        <div className="score-lbl">out of 100</div>
+                      </div>
+                      <div style={{fontWeight:700,fontSize:"1rem",color:"#1a3a6b",marginBottom:".2rem"}}>
+                        {resumeScore>=85?"Excellent Resume 🏆":resumeScore>=75?"Strong Resume ✅":resumeScore>=65?"Good — Needs Polish ⚡":"Needs Work 🔧"}
+                      </div>
+                      <div style={{fontSize:".82rem",color:"var(--dim)",maxWidth:"400px",margin:"0 auto"}}>{resumeReview.verdict}</div>
+                    </div>
+
+
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem",margin:"1rem 0"}}>
+                      {Object.values(resumeReview.grades||{}).map((g,i)=>(
+                        <div key={i} style={{background:"#f8fafc",border:"1px solid #e0e8f0",borderRadius:"6px",padding:".7rem .9rem"}}>
+                          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".3rem"}}>
+                            <div style={{fontSize:".78rem",fontWeight:600,color:"#1a3a6b"}}>{g.label}</div>
+                            <div style={{fontSize:".85rem",fontWeight:800,color:g.score>=80?"#1a7a40":g.score>=65?"#e67e22":"#c0392b"}}>{g.score}</div>
+                          </div>
+                          <div className="grade-bar">
+                            <div className="grade-fill" style={{width:g.score+"%",background:g.score>=80?"#1a7a40":g.score>=65?"#e67e22":"#c0392b"}}/>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+
+                    {(resumeReview.strengths||[]).length>0&&(
+                      <div style={{marginBottom:"1rem"}}>
+                        <div style={{fontWeight:700,fontSize:".85rem",color:"#1a7a40",marginBottom:".4rem"}}>✅ What's Working</div>
+                        {(resumeReview.strengths||[]).map((s,i)=>(
+                          <div key={i} style={{fontSize:".83rem",color:"#2a5a3a",padding:".3rem 0 .3rem .8rem",borderLeft:"2px solid #1a7a40",marginBottom:".3rem"}}>{s}</div>
+                        ))}
+                      </div>
+                    )}
+
+
+                    {(resumeReview.improvements||[]).length>0&&(
+                      <div style={{marginBottom:"1rem"}}>
+                        <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",marginBottom:".5rem"}}>🔧 Improvements</div>
+                        {(resumeReview.improvements||[]).map((item,i)=>(
+                          <div key={i} className={"review-item "+(item.priority==="HIGH"?"review-high":item.priority==="MEDIUM"?"review-med":"review-low")}>
+                            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".2rem"}}>
+                              <div style={{fontWeight:700,fontSize:".82rem"}}>{item.issue}</div>
+                              <span style={{fontSize:".65rem",fontWeight:700,padding:".1rem .4rem",borderRadius:"3px",background:item.priority==="HIGH"?"#c0392b":item.priority==="MEDIUM"?"#e67e22":"#1a7a40",color:"#fff"}}>{item.priority}</span>
+                            </div>
+                            <div style={{fontSize:".8rem",color:"#3a5070",lineHeight:1.5}}>{item.fix}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+
+                    {(resumeReview.missingKeywords||[]).length>0&&(
+                      <div>
+                        <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b",marginBottom:".4rem"}}>🔑 Add These Keywords</div>
+                        <div style={{display:"flex",flexWrap:"wrap",gap:".35rem"}}>
+                          {(resumeReview.missingKeywords||[]).map((kw,i)=>(
+                            <span key={i} style={{background:"#e8edf5",border:"1px solid #1a3a6b",borderRadius:"3px",padding:".2rem .55rem",fontSize:".78rem",color:"#1a3a6b",fontWeight:600}}>{kw}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <button className="btn-sec" style={{marginTop:"1rem",fontSize:".8rem"}} onClick={runResumeReview}>
+                      ↺ Re-analyze
+                    </button>
+                    <button className="btn-primary" style={{marginLeft:".5rem",fontSize:".8rem"}} onClick={saveScore}>💾 Save Score Report</button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="nav-row">
+              <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
+              <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
+            </div>
+          </div>
+
+
+
+          <div className={"panel "+(tab===4?"on":"")}>
+
+
+            <div style={{display:"flex",gap:".4rem",flexWrap:"wrap",marginBottom:"1.2rem",borderBottom:"2px solid #e0e8f0",paddingBottom:".7rem"}}>
+              {[
+                {id:"tracker",label:"📋 Job Tracker"},
+                {id:"interview",label:"🎤 Interview Prep"},
+                {id:"followup",label:"📧 Follow-Up Emails"},
+                {id:"timeline",label:"🗓 Transition Timeline"},
+                {id:"checkin",label:"📊 Weekly Check-In"},
+              ].map(t=>(
+                <button key={t.id} onClick={()=>setRetentionTab(t.id)}
+                  style={{padding:".45rem .9rem",borderRadius:"20px",border:"1.5px solid",cursor:"pointer",fontSize:".82rem",fontWeight:retentionTab===t.id?700:400,
+                    background:retentionTab===t.id?"#1a3a6b":"#fff",
+                    color:retentionTab===t.id?"#fff":"#3a5070",
+                    borderColor:retentionTab===t.id?"#1a3a6b":"#d0daea"}}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+
+            {retentionTab==="tracker"&&(
+              <div>
+                <div style={{background:"linear-gradient(135deg,#f0f4ff,#e8edf5)",border:"1.5px solid #b0c4e0",borderRadius:"8px",padding:"1rem 1.2rem",marginBottom:"1rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:".75rem"}}>
+                  <div>
+                    <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",marginBottom:".2rem"}}>🔖 Save Jobs From Any Job Board</div>
+                    <div style={{fontSize:".78rem",color:"#5a7090",lineHeight:1.5}}>Drag the button to your browser bookmarks bar. Then click it on any Indeed, LinkedIn, ZipRecruiter, or USAJobs listing to instantly save it here.</div>
+                  </div>
+                  <a href="javascript:(function(){var t=document.title||'';var u=window.location.href;var co='';var ti='';if(t.match(/jobs[,\s]|employment\s*[\|,]/i)&&!t.match(/\bat\b/i)){alert('Please open a specific job listing first, then click the bookmarklet. You appear to be on a search results page.');return;}var m1=t.match(/^(.+?)\s*[-\u2013]\s*(.+?)\s*[-\u2013|]/);if(m1){ti=m1[1].trim();co=m1[2].trim();}var m2=t.match(/^(.+?)\s+at\s+(.+?)\s*(\||$)/i);if(m2){ti=m2[1].trim();co=m2[2].split('|')[0].trim();}var m3=t.match(/^(.+?)\s*\|\s*USAJOBS/i);if(m3){ti=m3[1].trim();co='U.S. Government';}if(!ti){var m4=t.match(/^(.+?)\s*\|/);if(m4)ti=m4[1].trim();else ti=t.slice(0,80);}co=co.replace(/\s*(indeed|linkedin|glassdoor|ziprecruiter|usajobs)\s*/ig,'').replace(/[-|].*$/,'').trim();var base='https://veterancareerpath.com';var p='?addjob=1&title='+encodeURIComponent(ti)+'&company='+encodeURIComponent(co)+'&link='+encodeURIComponent(u);window.open(base+'/app.html'+p,'_blank');})()"
+                    onClick={e=>e.preventDefault()}
+                    draggable="true"
+                    style={{display:"inline-block",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#f0c040",fontWeight:700,fontSize:".82rem",padding:".5rem 1rem",borderRadius:"6px",textDecoration:"none",whiteSpace:"nowrap",cursor:"grab",border:"2px dashed #f0c040",flexShrink:0}}
+                    title="Drag this to your bookmarks bar">
+                    🔖 Save Job to Tracker
+                  </a>
+                </div>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1rem",flexWrap:"wrap",gap:".5rem"}}>
+                  <div>
+                    <h3 style={{margin:0,color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem"}}>Job Application Tracker</h3>
+                    <div style={{fontSize:".78rem",color:"var(--dim)"}}>{jobApps.length} applications tracked</div>
+                  </div>
+                  <button className="btn-primary" style={{width:"auto",padding:".45rem 1rem"}} onClick={()=>setShowAddJob(s=>!s)}>
+                    {showAddJob?"✕ Cancel":"+ Add Application"}
+                  </button>
+                </div>
+
+                {showAddJob&&(
+                  <div style={{background:"#f0f4ff",border:"1.5px solid #1a3a6b",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".6rem",marginBottom:".6rem"}}>
+                      <div className="field" style={{marginBottom:0}}><label>Company</label>
+                        <input placeholder="e.g. Amazon, Booz Allen" value={newJob.company} onChange={e=>setNewJob(j=>({...j,company:e.target.value}))}/>
+                      </div>
+                      <div className="field" style={{marginBottom:0}}><label>Job Title</label>
+                        <input placeholder="e.g. Operations Manager" value={newJob.title} onChange={e=>setNewJob(j=>({...j,title:e.target.value}))}/>
+                      </div>
+                      <div className="field" style={{marginBottom:0}}><label>Date Applied</label>
+                        <input type="date" value={newJob.date} onChange={e=>setNewJob(j=>({...j,date:e.target.value}))}/>
+                      </div>
+                      <div className="field" style={{marginBottom:0}}><label>Status</label>
+                        <select value={newJob.status} onChange={e=>setNewJob(j=>({...j,status:e.target.value}))}>
+                          {["Applied","Interview Scheduled","Interview Done","Offer Received","Accepted","Rejected","Withdrawn"].map(s=>(
+                            <option key={s}>{s}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="field" style={{marginBottom:".6rem"}}><label>Job Posting URL (optional)</label>
+                      <input placeholder="https://..." value={newJob.link} onChange={e=>setNewJob(j=>({...j,link:e.target.value}))}/>
+                    </div>
+                    <div className="field" style={{marginBottom:".6rem"}}><label>Notes</label>
+                      <div className="field" style={{marginBottom:0}}><label>Source</label>
+                        <select value={newJob.source||""} onChange={e=>setNewJob(j=>({...j,source:e.target.value}))} style={{width:"100%"}}>
+                          <option value="">-- Select Board --</option>
+                          <option value="Indeed">Indeed</option>
+                          <option value="ZipRecruiter">ZipRecruiter</option>
+                          <option value="LinkedIn">LinkedIn</option>
+                          <option value="USAJobs">USAJobs</option>
+                          <option value="ClearanceJobs">ClearanceJobs</option>
+                          <option value="Handshake">Handshake</option>
+                          <option value="Direct">Direct / Company Site</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      <input placeholder="Recruiter name, salary range, next steps..." value={newJob.notes} onChange={e=>setNewJob(j=>({...j,notes:e.target.value}))}/>
+                    </div>
+                    <button className="btn-primary" style={{width:"auto"}} onClick={()=>{
+                      if(!newJob.company||!newJob.title) return;
+                      saveJobs([...jobApps,{...newJob,id:Date.now(),date:newJob.date||new Date().toISOString().slice(0,10)}]);
+                      setNewJob({company:"",title:"",date:"",status:"Applied",notes:"",link:""});
+                      setShowAddJob(false);
+                    }}>Save Application</button>
+                  </div>
+                )}
+
+                {jobApps.length===0?(
+                  <div style={{textAlign:"center",padding:"3rem 1rem",color:"var(--dim)"}}>
+                    <div style={{fontSize:"3rem",marginBottom:"1rem"}}>📋</div>
+                    <div style={{fontWeight:700,marginBottom:".5rem",color:"#1a3a6b"}}>Track every application</div>
+                    <div style={{fontSize:".85rem"}}>Add your first job application to start tracking your search progress.</div>
+                  </div>
+                ):(
+                  <>
+
+                    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(110px,1fr))",gap:".6rem",marginBottom:"1rem"}}>
+                      {[
+                        {label:"Applied",val:jobApps.length,color:"#1a3a6b"},
+                        {label:"Interviews",val:jobApps.filter(j=>j.status.includes("Interview")).length,color:"#e67e22"},
+                        {label:"Offers",val:jobApps.filter(j=>j.status==="Offer Received"||j.status==="Accepted").length,color:"#1a7a40"},
+                        {label:"Response Rate",val:Math.round((jobApps.filter(j=>j.status!=="Applied"&&j.status!=="Rejected").length/Math.max(1,jobApps.length))*100)+"%",color:"#1a3a6b"},
+                      ].map((s,i)=>(
+                        <div key={i} className="stat-card" style={{cursor:s.label==="Resumes Built"?"pointer":"default"}}
+                          onClick={()=>{if(s.label==="Resumes Built"){setTab(2);window.scrollTo(0,0);}}}>
+                          <div className="stat-num" style={{color:s.color}}>{s.val}</div>
+                          <div className="stat-lbl">{s.label}</div>
+                          {s.label==="Resumes Built"&&<div style={{fontSize:".65rem",color:"#8aa0b8",marginTop:".2rem"}}>Click to view →</div>}
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{overflowX:"auto"}}>
+                      <table className="tracker-table">
+                        <thead><tr>
+                          <th>Company</th><th>Role</th><th>Date</th><th>Status</th><th>Notes</th><th></th>
+                        </tr></thead>
+                        <tbody>
+                          {[...jobApps].sort((a,b)=>b.id-a.id).map(job=>(
+                            <tr key={job.id}>
+                              <td><strong>{job.company}</strong>{job.link&&<a href={job.link} target="_blank" style={{marginLeft:".4rem",fontSize:".72rem",color:"#1a3a6b"}}>↗</a>}</td>
+                              <td>{job.title}</td>
+                              <td style={{whiteSpace:"nowrap",fontSize:".78rem",color:"var(--dim)"}}>{job.date}</td>
+                              <td>
+                                <select value={job.status}
+                                  onChange={e=>saveJobs(jobApps.map(j=>j.id===job.id?{...j,status:e.target.value}:j))}
+                                  style={{fontSize:".75rem",padding:".2rem .4rem",border:"1px solid #d0daea",borderRadius:"4px",cursor:"pointer"}}>
+                                  {["Applied","Interview Scheduled","Interview Done","Offer Received","Accepted","Rejected","Withdrawn"].map(s=>(
+                                    <option key={s}>{s}</option>
+                                  ))}
+                                </select>
+                              </td>
+                              <td style={{fontSize:".78rem",color:"#3a5070",maxWidth:"180px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{job.notes}</td>
+                              <td style={{whiteSpace:"nowrap"}}>
+                                <button style={{fontSize:".65rem",padding:".2rem .4rem",background:"#e8f0fe",border:"1px solid #1a3a6b",borderRadius:"4px",color:"#1a3a6b",cursor:"pointer",marginRight:".2rem"}}
+                                  onClick={()=>{setPrepJob({title:job.title,company:job.company,type:"behavioral"});setRetentionTab("interview");}}>🎤 Interview</button>
+                                <button style={{fontSize:".65rem",padding:".2rem .4rem",background:"#e8f0fe",border:"1px solid #1a3a6b",borderRadius:"4px",color:"#1a3a6b",cursor:"pointer",marginRight:".2rem"}}
+                                  onClick={()=>{setFollowupJob({title:job.title,company:job.company});setRetentionTab("followup");}}>✉ Email</button>
+                              </td>
+                              <td><button onClick={()=>saveJobs(jobApps.filter(j=>j.id!==job.id))} style={{background:"none",border:"none",color:"#c0392b",cursor:"pointer",fontSize:".85rem"}}>✕</button></td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+
+            {retentionTab==="interview"&&(
+              <div>
+                <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Interview Prep</h3>
+                <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>Get AI-generated questions and answer strategies tailored to your military background and target role.</p>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".6rem",marginBottom:".6rem"}}>
+                  <div className="field" style={{marginBottom:0}}><label>Job Title Interviewing For</label>
+                    <input placeholder="e.g. Operations Manager" value={prepJob.title} onChange={e=>setPrepJob(j=>({...j,title:e.target.value}))}/>
+                  </div>
+                  <div className="field" style={{marginBottom:0}}><label>Company</label>
+                    <input placeholder="e.g. Amazon, VA, Booz Allen" value={prepJob.company} onChange={e=>setPrepJob(j=>({...j,company:e.target.value}))}/>
+                  </div>
+                </div>
+                <div className="field" style={{marginBottom:"1rem"}}><label>Interview Type</label>
+                  <select value={prepJob.type} onChange={e=>setPrepJob(j=>({...j,type:e.target.value}))}>
+                    <option value="behavioral">Behavioral (Tell me about a time...)</option>
+                    <option value="technical">Technical / Skills-Based</option>
+                    <option value="government">Government / Federal (USAJobs / STAR format)</option>
+                    <option value="executive">Leadership / Executive Panel</option>
+                    <option value="phone">Phone Screen / Initial Recruiter Call</option>
+                  </select>
+                </div>
+                {hasAccess?(
+                  <button className="btn-primary" onClick={genInterviewPrep} disabled={prepLoading} style={{marginBottom:"1rem"}}>
+                    {prepLoading?"🎤 Preparing your questions...":"🎤 Generate Interview Questions"}
+                  </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                )}
+                {prepQuestions.length>0&&(
+                  <>
+                    <div style={{fontWeight:700,fontSize:".82rem",color:"var(--dim)",marginBottom:".75rem",letterSpacing:".06em",textTransform:"uppercase"}}>
+                      {prepQuestions.length} Questions for {prepJob.title||"your interview"} {prepJob.company?"at "+prepJob.company:""}
+                    </div>
+                    {prepQuestions.map((q,i)=>(
+                      <div key={i} className="prep-card">
+                        <div className="prep-q">Q{i+1}: {q.question}</div>
+                        {q.whyAsked&&<div style={{fontSize:".74rem",color:"#8aa0b8",marginBottom:".4rem",fontStyle:"italic"}}>Why they ask: {q.whyAsked}</div>}
+                        <div className="prep-a">{q.answerStrategy}</div>
+                        {q.starExample&&(
+                          <div style={{background:"#f0f4ff",border:"1px solid #d0daea",borderRadius:"4px",padding:".5rem .7rem",marginTop:".5rem",fontSize:".78rem",color:"#3a5070",lineHeight:1.6}}>
+                            <strong style={{color:"#1a3a6b"}}>STAR Example: </strong>{q.starExample}
+                          </div>
+                        )}
+                        {q.tip&&<div className="prep-tip">💡 {q.tip}</div>}
+                      </div>
+                    ))}
+                    <button className="btn-sec" style={{fontSize:".8rem",marginTop:".5rem"}} onClick={genInterviewPrep}>↺ Regenerate</button>
+                  </>
+                )}
+              </div>
+            )}
+
+
+            {retentionTab==="followup"&&(
+              <div>
+                <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Follow-Up Email Generator</h3>
+                <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>Professional emails for every stage of the hiring process — thank-you, check-in, negotiation, or withdrawal.</p>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".6rem",marginBottom:".6rem"}}>
+                  <div className="field" style={{marginBottom:0}}><label>Company</label>
+                    <input placeholder="e.g. Lockheed Martin" value={followupCtx.company} onChange={e=>setFollowupCtx(f=>({...f,company:e.target.value}))}/>
+                  </div>
+                  <div className="field" style={{marginBottom:0}}><label>Role</label>
+                    <input placeholder="e.g. Systems Engineer" value={followupCtx.role} onChange={e=>setFollowupCtx(f=>({...f,role:e.target.value}))}/>
+                  </div>
+                  <div className="field" style={{marginBottom:0}}><label>Interviewer / Recruiter Name</label>
+                    <input placeholder="e.g. Sarah Johnson" value={followupCtx.interviewerName} onChange={e=>setFollowupCtx(f=>({...f,interviewerName:e.target.value}))}/>
+                  </div>
+                  <div className="field" style={{marginBottom:0}}><label>Interview / Last Contact Date</label>
+                    <input type="date" value={followupCtx.date} onChange={e=>setFollowupCtx(f=>({...f,date:e.target.value}))}/>
+                  </div>
+                </div>
+                <div className="field" style={{marginBottom:"1rem"}}><label>Email Type</label>
+                  <select value={followupCtx.outcome} onChange={e=>setFollowupCtx(f=>({...f,outcome:e.target.value}))}>
+                    <option value="thank-you">Thank-You After Interview</option>
+                    <option value="follow-up">Follow-Up (No Response After 1 Week)</option>
+                    <option value="negotiation">Salary Negotiation</option>
+                    <option value="withdraw">Withdraw Application</option>
+                  </select>
+                </div>
+                {hasAccess?(
+                  <button className="btn-primary" onClick={genFollowupEmail} disabled={followupLoading} style={{marginBottom:"1rem"}}>
+                    {followupLoading?"✍ Writing your email...":"📧 Generate Email"}
+                  </button>
+                ):(
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                )}
+                {followupEmail&&(
+                  <>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem"}}>
+                      <div style={{fontWeight:700,fontSize:".85rem",color:"#1a3a6b"}}>Your Email</div>
+                      <div style={{display:"flex",gap:".4rem"}}>
+                        <button className="btn-sec" style={{fontSize:".75rem"}} onClick={()=>{navigator.clipboard.writeText(followupEmail);setCopiedFollowup(true);setTimeout(()=>setCopiedFollowup(false),2000);}}>
+                          {copiedFollowup?"✓ Copied!":"Copy"}
+                        </button>
+                        <button className="btn-sec" style={{fontSize:".75rem"}} onClick={genFollowupEmail}>↺ Regenerate</button>
+                      </div>
+                    </div>
+                    <div className="cl-output">{followupEmail}</div>
+                    <button className="btn-primary" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={saveEmail}>💾 Save Email</button>
+                  </>
+                )}
+              </div>
+            )}
+
+
+            {retentionTab==="timeline"&&(
+              <div>
+                <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Transition Timeline</h3>
+                <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>Your complete military-to-civilian transition checklist. Check off each step as you complete it.</p>
+                {[
+                  {phase:"6-12 Months Before ETS",color:"#c0392b",items:[
+                    {id:"tap",label:"Complete TAP (Transition Assistance Program)",desc:"Mandatory 5-day program. Must complete at least 90 days before ETS. Includes resume, job search, VA benefits, and financial planning modules.me writing, VA benefits, job search basics"},
+                    {id:"dd214",label:"Request DD-214 and service records",desc:"You will need these for VA claims, hiring preferences, and education benefits"},
+                    {id:"varating",label:"File VA disability claim",desc:"Start early — the process takes 3-6 months on average"},
+                    {id:"gibill",label:"Apply for GI Bill (Chapter 33 or 30)",desc:"Covers tuition, housing allowance, and books for school or certifications"},
+                  ]},
+                  {phase:"3-6 Months Before ETS",color:"#e67e22",items:[
+                    {id:"linkedin",label:"Create or update LinkedIn profile",desc:"Connect with veteran hiring programs and recruiters proactively"},
+                    {id:"resume",label:"Build your civilian resume",desc:"Use this tool to generate and refine your resume"},
+                    {id:"network",label:"Start networking — veteran groups, LinkedIn, base programs",desc:"80% of jobs are filled through connections, not job postings"},
+                    {id:"skillbridge",label:"Apply for SkillBridge or DoD Internship",desc:"Work at a civilian company while still in uniform — paid by DoD"},
+                    {id:"clearance",label:"Document your security clearance",desc:"Get a clearance verification letter from your security manager"},
+                  ]},
+                  {phase:"1-3 Months Before ETS",color:"#1a3a6b",items:[
+                    {id:"applying",label:"Apply to 5+ jobs per week",desc:"Use USAJobs for government roles, LinkedIn and Indeed for civilian"},
+                    {id:"benefits",label:"Sign up for TRICARE and other transitioning benefits",desc:"Healthcare coverage continues for a period after separation"},
+                    {id:"housing",label:"Confirm housing plan post-separation",desc:"BAH ends at separation — plan ahead for rent/mortgage"},
+                    {id:"references",label:"Line up 3 professional references",desc:"Officers, NCOs, or civilians who can speak to your leadership"},
+                  ]},
+                  {phase:"After ETS",color:"#1a7a40",items:[
+                    {id:"unemployment",label:"File for unemployment if needed",desc:"You may qualify — visit your state workforce agency"},
+                    {id:"voc_rehab",label:"Explore Vocational Rehabilitation (Chapter 31)",desc:"If you have a service-connected disability, VR&E can fund your education or training"},
+                    {id:"interview_ready",label:"Use Interview Prep for every callback",desc:"Prepare specifically for each company and role"},
+                    {id:"hired",label:"Accept your offer and celebrate 🎖",desc:"You earned this. The skills you built will serve you for life."},
+                  ]},
+                ].map((phase,pi)=>(
+                  <div key={pi} style={{marginBottom:"1.5rem"}}>
+                    <div style={{fontWeight:700,fontSize:".8rem",letterSpacing:".1em",textTransform:"uppercase",color:phase.color,marginBottom:".6rem",paddingBottom:".3rem",borderBottom:"2px solid "+phase.color}}>{phase.phase}</div>
+                    {phase.items.map((item,ii)=>(
+                      <div key={item.id} className="tl-item" style={{cursor:"pointer"}} onClick={()=>saveTl(item.id,!tlChecks[item.id])}>
+                        <div className={"tl-dot "+(tlChecks[item.id]?"tl-done":"tl-pending")}>
+                          {tlChecks[item.id]?"✓":"○"}
+                        </div>
+                        <div className="tl-content" style={{opacity:tlChecks[item.id]?.6:1}}>
+                          <h4 style={{textDecoration:tlChecks[item.id]?"line-through":"none"}}>{item.label}</h4>
+                          <p>{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+
+
+            {retentionTab==="checkin"&&(
+              <div>
+                <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Weekly Progress Check-In</h3>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))",gap:".75rem",marginBottom:"1.5rem"}}>
+                  {[
+                    {label:"Jobs Applied",val:jobApps.length,icon:"📋",color:"#1a3a6b"},
+                    {label:"Interviews",val:jobApps.filter(j=>j.status.includes("Interview")).length,icon:"🎤",color:"#e67e22"},
+                    {label:"Offers",val:jobApps.filter(j=>j.status==="Offer Received"||j.status==="Accepted").length,icon:"🏆",color:"#1a7a40"},
+                    {label:"Timeline Done",val:Object.values(tlChecks).filter(Boolean).length+"/16",icon:"🗓",color:"#8a6000"},
+                    {label:"Resumes Built",val:savedResumes.length,icon:"📄",color:"#1a3a6b"},
+                  ].map((s,i)=>(
+                    <div key={i} className="stat-card">
+                      <div style={{fontSize:"1.5rem",marginBottom:".3rem"}}>{s.icon}</div>
+                      <div className="stat-num" style={{color:s.color,fontSize:"1.6rem"}}>{s.val}</div>
+                      <div className="stat-lbl">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+
+                <div className="card">
+                  <div className="ch"><h3>📊 Your Job Search Health</h3></div>
+                  <div className="cb">
+                    {jobApps.length===0&&(
+                      <div style={{color:"var(--dim)",fontSize:".88rem"}}>Start tracking your applications on the Job Tracker to see your search health score here.</div>
+                    )}
+                    {jobApps.length>0&&(
+                      <div style={{display:"flex",flexDirection:"column",gap:".8rem"}}>
+                        {jobApps.filter(j=>j.status.includes("Interview")).length===0&&jobApps.length>=5&&(
+                          <div style={{background:"#fff8e0",border:"1px solid #f0c040",borderRadius:"6px",padding:".75rem",fontSize:".85rem",color:"#5a3a00"}}>
+                            ⚡ <strong>Low response rate.</strong> You have {jobApps.length} applications but no interviews yet. Consider tailoring your resume more specifically to each job posting, or try the Resume Review tool.
+                          </div>
+                        )}
+                        {jobApps.filter(j=>j.status.includes("Interview")).length>0&&jobApps.filter(j=>j.status==="Offer Received"||j.status==="Accepted").length===0&&(
+                          <div style={{background:"#e8f8ee",border:"1px solid #b0e0c0",borderRadius:"6px",padding:".75rem",fontSize:".85rem",color:"#1a5a30"}}>
+                            ✅ <strong>Getting interviews!</strong> Use the Interview Prep tool before each one. Focus on translating your military experience into business outcomes.
+                          </div>
+                        )}
+                        {jobApps.filter(j=>j.status==="Offer Received"||j.status==="Accepted").length>0&&(
+                          <div style={{background:"#f0f8ff",border:"1px solid #1a3a6b",borderRadius:"6px",padding:".75rem",fontSize:".85rem",color:"#1a3a6b"}}>
+                            🏆 <strong>Offer on the table!</strong> Use the Follow-Up Email generator to send a professional negotiation email. Most veterans leave $5,000-$15,000 on the table by not negotiating.
+                          </div>
+                        )}
+                        <div style={{fontSize:".82rem",color:"var(--dim)"}}>
+                          🎯 Goal: Apply to <strong>5 jobs per week</strong> · Response rate target: <strong>15%+</strong> · Average veteran job search: <strong>3-5 months</strong>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="card" style={{marginTop:"1rem"}}>
+                  <div className="ch"><h3>🔗 Quick Actions</h3></div>
+                  <div className="cb" style={{display:"flex",flexWrap:"wrap",gap:".5rem"}}>
+                    {[
+                      {label:"+ Log Application",action:()=>{setRetentionTab("tracker");setShowAddJob(true);}},
+                      {label:"🎤 Prep for Interview",action:()=>setRetentionTab("interview")},
+                      {label:"📧 Write Follow-Up",action:()=>setRetentionTab("followup")},
+                      {label:"📋 Resume Builder",action:()=>setTab(2)},
+                      {label:"✉ Cover Letter",action:()=>setTab(3)},
+                    ].map((a,i)=>(
+                      <button key={i} className="btn-sec" style={{fontSize:".82rem"}} onClick={a.action}>{a.label}</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="nav-row" style={{marginTop:"1.5rem"}}>
+              <button className="btn-sec" onClick={()=>setTab(3)}>← Cover Letter</button>
+              <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
+            </div>
+          </div>
+
+
+
+          <div className={"panel "+(tab===99?"on":"")}>
+
+
+            <div className="crisis-banner">
+              <div style={{fontSize:"2rem",flexShrink:0}}>🆘</div>
+              <div style={{flex:1}}>
+                <h3>If You Are in Crisis — You Are Not Alone</h3>
+                <p>The transition out of service is one of the hardest things a veteran faces. If you are struggling — mentally, emotionally, or financially — real help is available right now, 24/7, from people who understand military service.</p>
+                <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+                  <a href="tel:988" className="res-contact red">📞 Call or Text 988 (Veterans Press 1)</a>
+                  <a href="https://www.veteranscrisisline.net/get-help-now/chat/" target="_blank" className="res-contact red">💬 Chat Online</a>
+                  <a href="sms:838255" className="res-contact red">📱 Text 838255</a>
+                </div>
+                <div style={{fontSize:".75rem",marginTop:".5rem",opacity:.85}}>Veterans Crisis Line · Free · Confidential · Available 24/7/365</div>
+              </div>
+            </div>
+
+
+            {!hasAccess&&(
+              <div style={{textAlign:"center",padding:".75rem 0",margin:".5rem 0"}}>
+                <ins className="adsbygoogle"
+                  style={{display:"block"}}
+                  data-ad-client="ca-pub-4999040528510137"
+                  data-ad-slot="auto"
+                  data-ad-format="horizontal"
+                  data-full-width-responsive="true"/>
+                <script dangerouslySetInnerHTML={{__html:"(adsbygoogle = window.adsbygoogle || []).push({});"}}/>
+              </div>
+            )}
+            <div style={{background:"linear-gradient(135deg,#0a1628,#1a3a6b)",border:"2px solid rgba(200,150,10,.4)",borderRadius:"12px",padding:"1.5rem 1.75rem",marginBottom:"1.5rem",boxShadow:"0 4px 20px rgba(0,0,0,.2)"}}>
+              <div style={{display:"flex",gap:"1rem",alignItems:"flex-start",marginBottom:"1rem"}}>
+                <div style={{fontSize:"2rem",flexShrink:0}}>🏠</div>
+                <div>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.3rem",letterSpacing:".1em",color:"#f0c040",marginBottom:".3rem"}}>Are You a Veteran Experiencing Homelessness?</div>
+                  <p style={{color:"#c0d8f0",fontSize:".88rem",lineHeight:1.7,margin:0}}>
+                    There is <strong style={{color:"#f0c040"}}>absolutely no shame</strong> in reaching out for help.
+                    You answered the call when your country needed you — now let us answer yours.
+                    Fill out the form below and the Veteran Career Path team will personally reach out
+                    to help you build a resume, create an action plan, and connect you with resources
+                    in your area. <strong style={{color:"#f0c040"}}>Your service matters and so do you.</strong>
+                  </p>
+                </div>
+              </div>
+
+              {!showHomelessForm&&!homelessSubmitted&&(
+                <button onClick={()=>setShowHomelessForm(true)}
+                  style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"8px",color:"#0a1628",fontWeight:700,fontSize:".95rem",padding:".7rem 1.5rem",cursor:"pointer"}}>
+                  🤝 Request Help — We've Got You
+                </button>
+              )}
+
+              {homelessSubmitted&&(
+                <div style={{background:"rgba(26,122,64,.25)",border:"1px solid rgba(26,122,64,.5)",borderRadius:"8px",padding:"1rem 1.25rem"}}>
+                  <div style={{fontWeight:700,fontSize:"1rem",color:"#90e8b0",marginBottom:".4rem"}}>✓ Message received. You are not alone.</div>
+                  <div style={{fontSize:".86rem",color:"#c0f0d0",lineHeight:1.7}}>
+                    We will reach out within 24–48 hours with local resources and next steps.
+                    In the meantime, start filling out your profile in the app — we will have a
+                    resume ready for you when we connect.
+                  </div>
+                </div>
+              )}
+
+              {showHomelessForm&&!homelessSubmitted&&(
+                <div style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.12)",borderRadius:"8px",padding:"1.25rem",marginTop:".75rem"}}>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem",marginBottom:".75rem"}}>
+                    <div className="field" style={{marginBottom:0}}>
+                      <label style={{color:"#a0c0e0"}}>Your Name</label>
+                      <input placeholder="First Last" value={homelessForm.name}
+                        onChange={e=>setHomelessForm(f=>({...f,name:e.target.value}))}
+                        style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff"}}/>
+                    </div>
+                    <div className="field" style={{marginBottom:0}}>
+                      <label style={{color:"#a0c0e0"}}>Branch of Service</label>
+                      <input placeholder="e.g. U.S. Army, U.S. Marines" value={homelessForm.branch}
+                        onChange={e=>setHomelessForm(f=>({...f,branch:e.target.value}))}
+                        style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff"}}/>
+                    </div>
+                    <div className="field" style={{marginBottom:0}}>
+                      <label style={{color:"#a0c0e0"}}>Your Current Location <span style={{color:"#f0c040"}}>*</span></label>
+                      <input placeholder="City, State — e.g. Newport News, VA" value={homelessForm.location}
+                        onChange={e=>setHomelessForm(f=>({...f,location:e.target.value}))}
+                        style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff"}}/>
+                      <span style={{fontSize:".72rem",color:"#80a8d0",marginTop:".25rem",display:"block"}}>We use your location to find nearby VA offices, shelters, and employment resources</span>
+                    </div>
+                    <div className="field" style={{marginBottom:0}}>
+                      <label style={{color:"#a0c0e0"}}>Best Way to Reach You</label>
+                      <input placeholder="Email or phone number" value={homelessForm.email}
+                        onChange={e=>setHomelessForm(f=>({...f,email:e.target.value}))}
+                        style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff"}}/>
+                    </div>
+                  </div>
+                  <div className="field" style={{marginBottom:"1rem"}}>
+                    <label style={{color:"#a0c0e0"}}>Tell us about your situation (optional — share only what you are comfortable with)</label>
+                    <textarea placeholder="Current living situation, what kind of work you are looking for, any urgent needs we should know about..." value={homelessForm.situation}
+                      onChange={e=>setHomelessForm(f=>({...f,situation:e.target.value}))}
+                      style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff",minHeight:"80px"}}/>
+                  </div>
+                  <div style={{display:"flex",gap:".75rem",flexWrap:"wrap",marginBottom:"1rem"}}>
+                    <button onClick={async()=>{
+                        if(!homelessForm.location){alert("Please enter your current location so we can find resources near you.");return;}
+                        try{
+                          await fetch("https://formspree.io/f/REPLACE_WITH_FORMSPREE_ID",{
+                            method:"POST",
+                            headers:{"Content-Type":"application/json"},
+                            body:JSON.stringify({
+                              subject:"HOMELESS VETERAN OUTREACH — "+homelessForm.location,
+                              name:homelessForm.name||"(not provided)",
+                              branch:homelessForm.branch||"(not provided)",
+                              location:homelessForm.location,
+                              contact:homelessForm.email||"(not provided)",
+                              situation:homelessForm.situation||"(not provided)"
+                            })
+                          });
+                        }catch(e){}
+                        setHomelessSubmitted(true);
+                        setShowHomelessForm(false);
+                      }}
+                      style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"8px",color:"#0a1628",fontWeight:700,fontSize:".9rem",padding:".65rem 1.5rem",cursor:"pointer"}}>
+                      ✓ Send — We Will Reach Out Within 24–48 Hours
+                    </button>
+                    <button onClick={()=>setShowHomelessForm(false)}
+                      style={{background:"transparent",border:"1px solid rgba(255,255,255,.2)",borderRadius:"8px",color:"#a0c0e0",fontSize:".85rem",padding:".65rem 1rem",cursor:"pointer"}}>
+                      Cancel
+                    </button>
+                  </div>
+                  <div style={{padding:".85rem 1rem",background:"rgba(192,57,43,.15)",border:"1px solid rgba(192,57,43,.3)",borderRadius:"8px"}}>
+                    <div style={{fontWeight:700,color:"#f08080",fontSize:".82rem",marginBottom:".4rem"}}>🆘 Need immediate help right now?</div>
+                    <div style={{fontSize:".8rem",color:"#c0b0b0",lineHeight:1.8}}>
+                      <strong style={{color:"#fff"}}>VA Homeless Veterans Hotline: 1-877-4AID-VET (1-877-424-3838)</strong> — 24/7<br/>
+                      <strong style={{color:"#fff"}}>HUD-VASH Program</strong> — Contact your local VA medical center for housing vouchers<br/>
+                      <strong style={{color:"#fff"}}>211</strong> — Dial 211 for local shelter, food, and emergency services<br/>
+                      <strong style={{color:"#fff"}}>SSVF (Supportive Services for Veteran Families)</strong> — google.com/search?q=SSVF+near+me
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="res-filter-bar">
+              {["All","Mental Health","Benefits & VA","Financial","Education","Employment","Housing","Legal","Family","Substance Use"].map(f=>(
+                <button key={f} className={"res-filter-btn"+(resFilter===f?" active":"")} onClick={()=>setResFilter(f)}>{f}</button>
+              ))}
+            </div>
+
+            {[
+              {
+                category:"Mental Health & Crisis Support",
+                tag:"Mental Health",
+                icon:"🧠",
+                resources:[
+                  {name:"Veterans Crisis Line",desc:"Free, confidential support for veterans in crisis. Call 988 and press 1, text 838255, or chat online. Available 24/7. Staffed by VA-trained responders, many of whom are veterans themselves.",contact:"Call 988 → Press 1",href:"tel:988",color:"red",tags:["Mental Health","Crisis"]},
+                  {name:"Make the Connection",desc:"Real stories from veterans who have faced mental health challenges. Find local VA mental health services, peer support, and community programs across the country.",contact:"maketheconnection.net",href:"https://www.maketheconnection.net",color:"green",tags:["Mental Health"]},
+                  {name:"VA Mental Health Services",desc:"VA offers free mental health care to veterans including therapy, medication, PTSD treatment, depression, anxiety, military sexual trauma (MST) counseling, and more. You do NOT need a service-connected disability rating to access mental health care.",contact:"va.gov/mental-health",href:"https://www.va.gov/health-care/health-needs-conditions/mental-health/",color:"green",tags:["Mental Health","Benefits & VA"]},
+                  {name:"Headstrong (Free Mental Health for Post-9/11 Vets)",desc:"Free, stigma-free mental health treatment for post-9/11 veterans and their families. No VA enrollment required. Works with private therapists across the country. Completely confidential.",contact:"giveanhourhq.org/headstrong",href:"https://www.giveanhourhq.org/headstrong",color:"green",tags:["Mental Health"]},
+                  {name:"Team Red White & Blue",desc:"Connects veterans to their community through physical and social activity. Chapters nationwide. Research shows social connection through physical activity is one of the most effective tools against veteran isolation and depression.",contact:"teamrwb.org",href:"https://www.teamrwb.org",color:"green",tags:["Mental Health"]},
+                  {name:"PTSD Coach App (VA)",desc:"Free app developed by VA to help veterans manage PTSD symptoms with tools, education, and self-assessments. Available on iOS and Android.",contact:"ptsd.va.gov/appvid/mobile/ptsdcoach.asp",href:"https://www.ptsd.va.gov/appvid/mobile/ptsdcoach.asp",color:"green",tags:["Mental Health"]},
+                ]
+              },
+              {
+                category:"VA Benefits & Claims",
+                tag:"Benefits & VA",
+                icon:"🏛",
+                resources:[
+                  {name:"VA.gov — Benefits Hub",desc:"Official hub for all VA benefits: disability compensation, pension, education (GI Bill), home loans, life insurance, health care enrollment, and more.",contact:"va.gov",href:"https://www.va.gov",color:"green",tags:["Benefits & VA"]},
+                  {name:"Disabled American Veterans (DAV)",desc:"Free VSO (Veterans Service Organization) that helps veterans file and appeal VA disability claims. A DAV accredited claims agent can significantly increase your rating and get back pay you are owed.",contact:"dav.org",href:"https://www.dav.org",color:"green",tags:["Benefits & VA"]},
+                  {name:"VFW Veterans Benefits Center",desc:"Free VSO with accredited claims agents nationwide. They have helped veterans recover billions in retroactive disability pay. No cost ever.",contact:"vfw.org/assistance",href:"https://www.vfw.org/assistance/va-claims-separation-benefits",color:"green",tags:["Benefits & VA"]},
+                  {name:"VA Vocational Rehabilitation (VR&E / Chapter 31)",desc:"If you have a service-connected disability, VA may pay 100% of education or job training costs, provide job placement assistance, and a monthly subsistence allowance while you train.",contact:"va.gov/careers-employment/vocational-rehabilitation",href:"https://www.va.gov/careers-employment/vocational-rehabilitation/",color:"green",tags:["Benefits & VA","Education","Employment"]},
+                  {name:"Benefits.gov — Federal Benefits Finder",desc:"Search all federal benefits you may be eligible for based on your situation — veterans, family, low income, disability, housing and more.",contact:"benefits.gov",href:"https://www.benefits.gov",color:"green",tags:["Benefits & VA"]},
+                ]
+              },
+              {
+                category:"Financial Assistance",
+                tag:"Financial",
+                icon:"💰",
+                resources:[
+                  {name:"Operation Homefront — Emergency Assistance",desc:"Provides emergency financial assistance to active duty, Guard, Reserve, and veterans. Helps with rent, utilities, food, auto repair, and more. No repayment required.",contact:"operationhomefront.org",href:"https://www.operationhomefront.org/get-help/programs/",color:"gold",tags:["Financial"]},
+                  {name:"USA Cares",desc:"Emergency financial assistance for post-9/11 veterans and military families facing hardship. Helps with rent, mortgage, utilities, and basic needs.",contact:"usacares.org",href:"https://usacares.org",color:"gold",tags:["Financial"]},
+                  {name:"VA Pension — Low Income Veterans",desc:"If you served during wartime and have limited income, you may qualify for VA Pension — a monthly payment regardless of disability rating.",contact:"va.gov/pension",href:"https://www.va.gov/pension/",color:"green",tags:["Financial","Benefits & VA"]},
+                  {name:"SNAP (Food Assistance)",desc:"Veterans facing food insecurity may qualify for SNAP benefits. Many veterans are surprised to learn they qualify. Apply through your state's social services agency.",contact:"fns.usda.gov/snap",href:"https://www.fns.usda.gov/snap/recipient/eligibility",color:"gold",tags:["Financial"]},
+                  {name:"VFW Emergency Loans & Grants",desc:"VFW offers interest-free emergency loans and unrepayable grants to veterans in financial crisis through their National Veterans Service program.",contact:"vfw.org",href:"https://www.vfw.org",color:"green",tags:["Financial"]},
+                ]
+              },
+              {
+                category:"Education & Training",
+                tag:"Education",
+                icon:"🎓",
+                resources:[
+                  {name:"GI Bill (Chapter 33 / Post-9/11)",desc:"Covers tuition, housing allowance (BAH at E-5 rate), and $1,000/year for books. Use it for college, trade school, flight training, on-the-job training, and more. Transfer to dependents is possible.",contact:"va.gov/education/about-gi-bill-benefits",href:"https://www.va.gov/education/about-gi-bill-benefits/",color:"green",tags:["Education","Benefits & VA"]},
+                  {name:"DoD SkillBridge",desc:"Work at a civilian company for up to 180 days before ETS while still receiving military pay and benefits. Over 10,000 partner companies including Amazon, Microsoft, and hundreds of trades programs.",contact:"skillbridge.defense.gov",href:"https://skillbridge.osd.mil",color:"green",tags:["Education","Employment"]},
+                  {name:"Helmets to Hardhats",desc:"Connects veterans to registered apprenticeships in the construction trades — electrical, plumbing, pipefitting, ironwork, and more. Union wages, free training, lifetime career.",contact:"helmetstohardhats.org",href:"https://www.helmetstohardhats.org",color:"gold",tags:["Education","Employment"]},
+                  {name:"MyCAA Scholarship (Military Spouses)",desc:"Up to $4,000 in scholarships for military spouses pursuing portable career training, licenses, or degrees.",contact:"mycaa.com",href:"https://mycaa.com",color:"green",tags:["Education"]},
+                  {name:"Troops to Teachers",desc:"Helps veterans and transitioning service members become certified teachers — covering certification fees and offering bonuses in high-need schools.",contact:"proudtoserveagain.com",href:"https://www.proudtoserveagain.com",color:"green",tags:["Education","Employment"]},
+                ]
+              },
+              {
+                category:"Employment & Hiring",
+                tag:"Employment",
+                icon:"💼",
+                resources:[
+                  {name:"Hire Heroes USA",desc:"Free career coaching, resume writing, and job placement services for veterans and military spouses. Their coaches are veterans themselves. Average salary for placed veterans: $62,000+.",contact:"hireheroesusa.org",href:"https://www.hireheroesusa.org",color:"green",tags:["Employment"]},
+                  {name:"USAJobs.gov — Federal Employment",desc:"All federal government jobs. Veterans get 5-10 point preference. Many roles are set aside exclusively for veterans. Create a profile and upload your resume.",contact:"usajobs.gov",href:"https://www.usajobs.gov",color:"green",tags:["Employment"]},
+                  {name:"RecruitMilitary",desc:"Job fairs and online job board specifically for veterans. Top employers attend specifically to hire veterans — Walmart, Home Depot, defense contractors, law enforcement agencies.",contact:"recruitmilitary.com",href:"https://recruitmilitary.com",color:"green",tags:["Employment"]},
+                  {name:"ClearanceJobs",desc:"Job board for cleared professionals. If you hold or held a security clearance, your value in the defense contractor market is significant — often $80K-$150K+ roles.",contact:"clearancejobs.com",href:"https://www.clearancejobs.com",color:"gold",tags:["Employment"]},
+                  {name:"American Corporate Partners (ACP)",desc:"Free one-on-one mentorship pairing veterans with executives from major corporations. Get career advice, networking, and guidance from senior leaders.",contact:"acp-usa.org",href:"https://www.acp-usa.org",color:"green",tags:["Employment"]},
+                ]
+              },
+              {
+                category:"Housing Assistance",
+                tag:"Housing",
+                icon:"🏠",
+                resources:[
+                  {name:"VA Home Loan",desc:"No down payment required, no private mortgage insurance, competitive interest rates. One of the most powerful benefits earned through service. Available for purchase, refinance, or adapted housing.",contact:"va.gov/housing-assistance/home-loans",href:"https://www.va.gov/housing-assistance/home-loans/",color:"green",tags:["Housing","Benefits & VA"]},
+                  {name:"HUD-VASH (Veteran Housing Vouchers)",desc:"If you are homeless or at risk of homelessness, HUD-VASH provides housing vouchers and VA case management. Call your local VA or 988 (Press 1) to access.",contact:"va.gov/homeless",href:"https://www.va.gov/homeless/hud-vash.asp",color:"red",tags:["Housing"]},
+                  {name:"National Call Center for Homeless Veterans",desc:"24/7 hotline connecting homeless or at-risk veterans to housing services, case management, and emergency assistance.",contact:"Call 877-4AID-VET",href:"tel:18774243838",color:"red",tags:["Housing"]},
+                  {name:"Operation Homefront — Housing",desc:"Transitional and permanent housing programs for veterans and military families in need.",contact:"operationhomefront.org",href:"https://www.operationhomefront.org",color:"gold",tags:["Housing","Financial"]},
+                ]
+              },
+              {
+                category:"Legal Assistance",
+                tag:"Legal",
+                icon:"⚖️",
+                resources:[
+                  {name:"Veterans Legal Services",desc:"Free legal help for veterans with VA disability appeals, discharge upgrades, benefits denials, and more. Upgrading a discharge can unlock thousands in back pay and benefits.",contact:"veteranslegalservices.org",href:"https://www.veteranslegalservices.org",color:"green",tags:["Legal"]},
+                  {name:"National Veterans Legal Services Program",desc:"Provides free legal representation for veterans in VA benefit appeals. Has won millions in back benefits for veterans who were wrongly denied.",contact:"nvlsp.org",href:"https://www.nvlsp.org",color:"green",tags:["Legal"]},
+                  {name:"Discharge Upgrade",desc:"If you received less than honorable discharge and believe it was unjust, you can apply for an upgrade. An upgraded discharge can restore VA benefits worth tens of thousands of dollars.",contact:"militaryonesource.mil",href:"https://www.militaryonesource.mil/legal/military-legal-matters/discharge-upgrade-applications/",color:"gold",tags:["Legal","Benefits & VA"]},
+                ]
+              },
+              {
+                category:"Family & Caregiver Support",
+                tag:"Family",
+                icon:"👨‍👩‍👧",
+                resources:[
+                  {name:"VA Caregiver Support Program",desc:"If you care for a veteran with a serious injury or illness, you may qualify for a monthly stipend, health insurance, and mental health services through the Program of Comprehensive Assistance for Family Caregivers (PCAFC).",contact:"va.gov/family-member-benefits/comprehensive-assistance-for-family-caregivers",href:"https://www.va.gov/family-member-benefits/comprehensive-assistance-for-family-caregivers/",color:"green",tags:["Family","Benefits & VA"]},
+                  {name:"Military OneSource",desc:"Free 24/7 support for service members and their families — counseling, financial coaching, tax prep, legal services, relocation assistance, and more. Available up to 365 days after separation.",contact:"militaryonesource.mil",href:"https://www.militaryonesource.mil",color:"green",tags:["Family"]},
+                  {name:"TAPS — Tragedy Assistance Program for Survivors",desc:"Support for families who have lost a loved one in military service. Grief counseling, peer mentors, and survivor benefits guidance.",contact:"taps.org",href:"https://www.taps.org",color:"red",tags:["Family","Mental Health"]},
+                ]
+              },
+              {
+                category:"Substance Use & Recovery",
+                tag:"Substance Use",
+                icon:"💙",
+                resources:[
+                  {name:"VA Substance Use Disorder Treatment",desc:"Free inpatient and outpatient treatment for alcohol and drug dependency. VA treats substance use as a medical condition, not a moral failing. Call your local VA or the Veterans Crisis Line.",contact:"va.gov/health-care/health-needs-conditions/substance-use-problems",href:"https://www.va.gov/health-care/health-needs-conditions/substance-use-problems/",color:"green",tags:["Substance Use","Mental Health","Benefits & VA"]},
+                  {name:"SAMHSA National Helpline",desc:"Free, confidential, 24/7 treatment referral and information service for substance use disorders. Call 1-800-662-4357.",contact:"Call 1-800-662-4357",href:"tel:18006624357",color:"red",tags:["Substance Use"]},
+                  {name:"Veteran Recovery Centers",desc:"Residential and outpatient recovery programs specifically for veterans. Peer support from fellow veterans in recovery who understand military culture.",contact:"va.gov/find-locations/?facilityType=benefits",href:"https://www.va.gov/find-locations/?facilityType=benefits",color:"green",tags:["Substance Use"]},
+                ]
+              },
+            ].filter(section => resFilter==="All" || section.tag===resFilter).map((section,si)=>(
+              <div key={si} className="res-section">
+                <div className="res-section-title">{section.icon} {section.category}</div>
+                {section.resources.filter(r => resFilter==="All" || r.tags.includes(resFilter)).map((r,ri)=>(
+                  <div key={ri} className="res-card">
+                    <div className="res-body">
+                      <div style={{display:"flex",alignItems:"center",gap:".5rem",marginBottom:".2rem",flexWrap:"wrap"}}>
+                        <div className="res-name">{r.name}</div>
+                        {r.tags.map(t=><span key={t} className="res-tag">{t}</span>)}
+                      </div>
+                      <div className="res-desc">{r.desc}</div>
+                      <a href={r.href} target={r.href.startsWith("tel:")||r.href.startsWith("sms:")?"_self":"_blank"} className={"res-contact "+r.color}>
+                        {r.href.startsWith("tel:")?"📞 ":r.href.startsWith("sms:")?"📱 ":"🔗 "}{r.contact}
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+
+            <div style={{background:"#f0f4ff",border:"1px solid #c0d0e4",borderRadius:"8px",padding:"1rem 1.2rem",marginTop:"1rem",fontSize:".82rem",color:"#3a5070",lineHeight:1.7}}>
+              <strong style={{color:"#1a3a6b"}}>📌 A note from Veteran Career Path:</strong> This resource page exists because we know the transition is more than just a job search. You served. You sacrificed. And you deserve support in every area of your life — not just your career. If you know a veteran who needs help, please share these resources with them.
+            </div>
+
+            <div className="nav-row" style={{marginTop:"1.5rem"}}>
+              <button className="btn-sec" onClick={()=>setTab(4)}>← Job Search Hub</button>
+              <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
+            </div>
+          </div>
+
+
+
+          <MyProfileTab tab={tab} currentUser={currentUser} setShowAuth={setShowAuth} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} />
+        </div>
+      </div>
+
+
+
+
+      {/* ── AI TOOLS QUICK NAV DRAWER ── */}
+      <div className="tools-overlay" id="tools-overlay" onClick={()=>closeToolsDrawer()}></div>
+      <button className="tools-fab" id="tools-fab" onClick={()=>openToolsDrawer()} title="AI Tools">🛠️</button>
+      <div className="tools-drawer" id="tools-drawer">
+        <div className="tools-drawer-header">
+          <span className="tools-drawer-title">AI Career Tools</span>
+          <button className="tools-drawer-close" onClick={()=>closeToolsDrawer()}>✕</button>
+        </div>
+        <div className="tools-drawer-body">
+          <div className="tools-drawer-section">Inside This App</div>
+          <a className="tools-drawer-link active-tool" href="#" onClick={(e)=>{e.preventDefault();setTab(0);closeToolsDrawer();}}>
+            <span className="tdl-icon">👤</span>
+            <span className="tdl-text"><span className="tdl-name">Profile & Qualifications</span><span className="tdl-sub">Your military background, MOS, clearance</span></span>
+          </a>
+          <a className="tools-drawer-link active-tool" href="#" onClick={(e)=>{e.preventDefault();setTab(1);closeToolsDrawer();}}>
+            <span className="tdl-icon">🎯</span>
+            <span className="tdl-text"><span className="tdl-name">Career Pathways</span><span className="tdl-sub">AI-matched career recommendations</span></span>
+          </a>
+          <a className="tools-drawer-link active-tool" href="#" onClick={(e)=>{e.preventDefault();setTab(2);closeToolsDrawer();}}>
+            <span className="tdl-icon">📄</span>
+            <span className="tdl-text"><span className="tdl-name">AI Resume Builder</span><span className="tdl-sub">5 templates, ATS-optimized</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link active-tool" href="#" onClick={(e)=>{e.preventDefault();setTab(3);closeToolsDrawer();}}>
+            <span className="tdl-icon">✉️</span>
+            <span className="tdl-text"><span className="tdl-name">Cover Letter & Review</span><span className="tdl-sub">AI cover letters + resume score</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link active-tool" href="#" onClick={(e)=>{e.preventDefault();setTab(4);closeToolsDrawer();}}>
+            <span className="tdl-icon">🔍</span>
+            <span className="tdl-text"><span className="tdl-name">Job Search Hub</span><span className="tdl-sub">Tracker, interview prep, follow-ups</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+
+          <div className="tools-drawer-section">Standalone AI Tools</div>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-job-match.html" target="_blank">
+            <span className="tdl-icon">🎯</span>
+            <span className="tdl-text"><span className="tdl-name">Job Match Analyzer</span><span className="tdl-sub">Paste any job posting, get honest score</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-federal-resume.html" target="_blank">
+            <span className="tdl-icon">🏛</span>
+            <span className="tdl-text"><span className="tdl-name">Federal Resume Builder</span><span className="tdl-sub">USAJobs-format with KSAs</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-interview-simulator.html" target="_blank">
+            <span className="tdl-icon">🎤</span>
+            <span className="tdl-text"><span className="tdl-name">Interview Simulator</span><span className="tdl-sub">STAR coaching for any role</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-linkedin-builder.html" target="_blank">
+            <span className="tdl-icon">🔗</span>
+            <span className="tdl-text"><span className="tdl-name">LinkedIn Optimizer</span><span className="tdl-sub">Civilian-language profile rewrite</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-salary-negotiator.html" target="_blank">
+            <span className="tdl-icon">💰</span>
+            <span className="tdl-text"><span className="tdl-name">Salary Negotiator</span><span className="tdl-sub">Scripts + clearance leverage tactics</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-cert-advisor.html" target="_blank">
+            <span className="tdl-icon">📊</span>
+            <span className="tdl-text"><span className="tdl-name">Certification Advisor</span><span className="tdl-sub">Which certs to pursue + GI Bill use</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+
+          <div className="tools-drawer-section">More AI Tools — $15/mo</div>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/career-assessment-full.html" target="_blank">
+            <span className="tdl-icon">🧠</span>
+            <span className="tdl-text"><span className="tdl-name">Full Career Assessment</span><span className="tdl-sub">60-question RIASEC + AI profile blend</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/mos-career-translator.html" target="_blank">
+            <span className="tdl-icon">🔄</span>
+            <span className="tdl-text"><span className="tdl-name">Real MOS Experience Translator</span><span className="tdl-sub">AI translates any MOS to civilian titles</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/dd214-decoder.html" target="_blank">
+            <span className="tdl-icon">📋</span>
+            <span className="tdl-text"><span className="tdl-name">DD-214 Decoder</span><span className="tdl-sub">Every benefit your discharge unlocks</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/clearance-job-match.html" target="_blank">
+            <span className="tdl-icon">🔐</span>
+            <span className="tdl-text"><span className="tdl-name">Clearance Job Match</span><span className="tdl-sub">Cleared roles + real salary data</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/linkedin-profile-rewriter.html" target="_blank">
+            <span className="tdl-icon">🔵</span>
+            <span className="tdl-text"><span className="tdl-name">LinkedIn Profile Rewriter</span><span className="tdl-sub">Full civilian rewrite, ready to paste</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/federal-resume-builder-ai.html" target="_blank">
+            <span className="tdl-icon">🏛</span>
+            <span className="tdl-text"><span className="tdl-name">Federal Resume AI Builder</span><span className="tdl-sub">OPM-format, USAJobs-ready</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/salary-negotiation-roleplay.html" target="_blank">
+            <span className="tdl-icon">🎯</span>
+            <span className="tdl-text"><span className="tdl-name">Salary Negotiation Role-Play</span><span className="tdl-sub">Practice with AI hiring manager</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/transition-timeline-planner.html" target="_blank">
+            <span className="tdl-icon">📅</span>
+            <span className="tdl-text"><span className="tdl-name">Transition Timeline Planner</span><span className="tdl-sub">Week-by-week ETS action plan</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/veteran-business-funding.html" target="_blank">
+            <span className="tdl-icon">💼</span>
+            <span className="tdl-text"><span className="tdl-name">Veteran Business Funding</span><span className="tdl-sub">SBA + grants you actually qualify for</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/va-home-loan-analyzer.html" target="_blank">
+            <span className="tdl-icon">🏠</span>
+            <span className="tdl-text"><span className="tdl-name">VA Home Loan Analyzer</span><span className="tdl-sub">Buy vs rent + funding fee math</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <div className="tools-drawer-section">Free Tools</div>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/federal-jobs-search.html" target="_blank">
+            <span className="tdl-icon">🏛</span>
+            <span className="tdl-text"><span className="tdl-name">Federal Job Search</span><span className="tdl-sub">Live USAJobs filtered listings</span></span>
+            <span className="tdl-badge free">Free</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/veteran-salary-data.html" target="_blank">
+            <span className="tdl-icon">💵</span>
+            <span className="tdl-text"><span className="tdl-name">Salary Data by MOS</span><span className="tdl-sub">Crowdsourced real veteran salaries</span></span>
+            <span className="tdl-badge free">Free</span>
+          </a>
+        </div>
+        <div className="tools-drawer-footer">
+          <a href="https://veterancareerpath.com" target="_blank">← Back to VeteranCareerPath.com</a>
+        </div>
+      </div>
+
+
+      {!hasAccess&&<div style={{position:"fixed",bottom:0,left:0,right:0,background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",color:"#fff",zIndex:99999,boxShadow:"0 -2px 16px rgba(0,0,0,.4)"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".5rem 1rem .3rem",flexWrap:"wrap",gap:".4rem"}}>
+          <div style={{fontSize:".72rem",color:"#f0c040",fontWeight:700,letterSpacing:".06em",textTransform:"uppercase"}}>🔒 $15/mo · 16 AI Tools</div>
+          <button onClick={()=>setShowPaywall(true)} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"6px",color:"#0a1628",fontWeight:700,fontSize:".82rem",padding:".4rem 1rem",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Subscribe — $15/month →</button>
+        </div>
+        <div style={{display:"flex",overflowX:"auto",gap:".4rem",padding:".2rem 1rem .5rem",scrollbarWidth:"none"}}>
+          {[
+            {icon:"📄",name:"AI Resume Builder"},
+            {icon:"🎯",name:"Career Match"},
+            {icon:"✉️",name:"Cover Letter Generator"},
+            {icon:"🎤",name:"Interview Prep"},
+            {icon:"💼",name:"LinkedIn Optimizer"},
+            {icon:"🏛️",name:"Federal Resume"},
+            {icon:"💰",name:"Salary Negotiator"},
+            {icon:"📋",name:"Job Tracker"}
+          ].map(t=>(
+            <div key={t.name} style={{display:"flex",alignItems:"center",gap:".25rem",background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.12)",borderRadius:"20px",padding:".18rem .6rem",whiteSpace:"nowrap",flexShrink:0}}>
+              <span style={{fontSize:".75rem"}}>{t.icon}</span>
+              <span style={{fontSize:".68rem",fontWeight:600,color:"#e0eaf8"}}>{t.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>}
+{/* No trial — $15/month subscription only */}
+      {saveToast&&<div className="save-toast">{saveToast}</div>}
+
+      {showClipboardModal&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.55)",zIndex:50000,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:"0"}}
+          onClick={e=>e.target===e.currentTarget&&setShowClipboardModal(false)}>
+          <div style={{background:"#fff",borderRadius:"16px 16px 0 0",width:"100%",maxWidth:"520px",padding:"1.5rem",boxShadow:"0 -8px 32px rgba(0,0,0,.2)"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1rem"}}>
+              <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.2rem",letterSpacing:".1em",color:"#1a3a6b"}}>📋 Add Job to Tracker</div>
+              <button onClick={()=>setShowClipboardModal(false)} style={{background:"none",border:"none",fontSize:"1.4rem",cursor:"pointer",color:"#8aa0b8"}}>✕</button>
+            </div>
+            <div style={{fontSize:".82rem",color:"#5a7090",marginBottom:"1rem",padding:".6rem .8rem",background:"#f0f4ff",borderRadius:"8px",border:"1px solid #d0daea"}}>
+              💡 We read your clipboard to pre-fill this form. Edit anything that looks wrong.
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem",marginBottom:".75rem"}}>
+              <div className="field" style={{marginBottom:0}}>
+                <label>Job Title</label>
+                <input placeholder="e.g. Operations Manager" value={clipboardParsed.title}
+                  onChange={e=>setClipboardParsed(p=>({...p,title:e.target.value}))}/>
+              </div>
+              <div className="field" style={{marginBottom:0}}>
+                <label>Company</label>
+                <input placeholder="e.g. Amazon, VA, Boeing" value={clipboardParsed.company}
+                  onChange={e=>setClipboardParsed(p=>({...p,company:e.target.value}))}/>
+              </div>
+            </div>
+            <div className="field" style={{marginBottom:"1rem"}}>
+              <label>Job URL (optional)</label>
+              <input placeholder="https://..." value={clipboardParsed.link}
+                onChange={e=>setClipboardParsed(p=>({...p,link:e.target.value}))}/>
+            </div>
+            <button className="btn-primary" style={{margin:0}} onClick={()=>{
+              if(!clipboardParsed.title&&!clipboardParsed.company){
+                alert("Please enter at least a job title or company name.");return;
+              }
+              const entry = {
+                id:Date.now(), title:clipboardParsed.title, company:clipboardParsed.company,
+                link:clipboardParsed.link, date:new Date().toISOString().slice(0,10),
+                status:"Applied", notes:"", source:"Mobile"
+              };
+              saveJobs([entry,...jobApps]);
+              setShowClipboardModal(false);
+              showToast("✓ Job saved to tracker — "+( clipboardParsed.title||clipboardParsed.company));
+              setClipboardParsed({title:"",company:"",link:""});
+            }}>
+              ✓ Save to Job Tracker
+            </button>
+          </div>
+        </div>
+      )}
+
+      {tab===4&&retentionTab==="tracker"&&(
+        <button
+          onClick={openClipboardCapture}
+          style={{
+            position:"fixed",bottom:"5rem",right:"1.25rem",
+            width:"58px",height:"58px",borderRadius:"50%",
+            background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",
+            color:"#f0c040",border:"3px solid #f0c040",
+            fontSize:"1.5rem",cursor:"pointer",zIndex:9000,
+            boxShadow:"0 4px 20px rgba(26,58,107,.4)",
+            display:"flex",alignItems:"center",justifyContent:"center",
+            transition:"transform .2s,box-shadow .2s"
+          }}
+          title="Tap to add a job — reads your clipboard automatically"
+          onMouseEnter={e=>e.currentTarget.style.transform="scale(1.1)"}
+          onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}
+        >
+          ➕
+        </button>
+      )}
+    </>
+  );
+}
+    ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+    hideLoading();

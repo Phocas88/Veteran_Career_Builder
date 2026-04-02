@@ -686,18 +686,39 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
       <option value="100">100% P&T — $3,737+/mo</option>
     </select>
     <div class="hint">⚠️ VA disability compensation is <strong>NOT collected while on active duty</strong>. It counts only on your civilian side — paid after separation. Rate based on your dependent count above.</div>
+  <div class="sec-label">Household Income While Serving</div>
+  <div class="field-row">
+    <div class="field"><label>Spouse / Partner Annual Income ($)</label>
+      <input type="number" id="m-spouse-income" value="0" min="0">
+      <div class="hint">Spouse employment income while you are active duty</div>
+    </div>
+    <div class="field"><label>Other Monthly Income ($)</label>
+      <input type="number" id="m-other-income" value="0" min="0">
+      <div class="hint">Rental income, side business, spouse GI Bill, etc.</div>
+    </div>
+  </div>
   </div>
 </div>
 
 <div class="card civ">
   <div class="card-title">💼 Civilian Side</div>
-  <div class="sec-label">Income</div>
+  <div class="sec-label">Your Household Income</div>
   <div class="field-row">
-    <div class="field"><label>Annual Salary ($)</label>
+    <div class="field"><label>Your Annual Salary ($)</label>
       <input type="number" id="c-salary" value="65000" min="0">
     </div>
-    <div class="field"><label>Annual Bonus ($)</label>
+    <div class="field"><label>Spouse / Partner Annual Income ($)</label>
+      <input type="number" id="c-spouse-income" value="0" min="0">
+      <div class="hint">Include spouse employment income, business income, etc.</div>
+    </div>
+  </div>
+  <div class="field-row">
+    <div class="field"><label>Your Annual Bonus ($)</label>
       <input type="number" id="c-bonus" value="0" min="0">
+    </div>
+    <div class="field"><label>Other Monthly Income ($)</label>
+      <input type="number" id="c-other-income" value="0" min="0">
+      <div class="hint">Rental income, side business, GI Bill BAH, disability not already counted, etc.</div>
     </div>
   </div>
   <div class="field-row">
@@ -733,15 +754,29 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
     </div>
   </div>
 
-  <div class="sec-label">Health Insurance</div>
+  <div class="sec-label">Health Insurance After Separation</div>
   <div class="field-row">
-    <div class="field"><label>Your Monthly Premium (employee share)</label>
-      <input type="number" id="c-health" value="550" min="0">
-      <div class="hint">Avg family plan employee share: $500–700/mo</div>
+    <div class="field fld-full">
+      <label>Coverage Type</label>
+      <select id="c-health-type" onchange="updateHealthFields()">
+        <option value="employer">Employer Plan (you pay premium)</option>
+        <option value="tricare_retired">TRICARE Retired (20-yr retirement)</option>
+        <option value="tricare_med_retired">TRICARE for Life (Medical Retirement)</option>
+        <option value="va_health">VA Health Care (50%+ SC or low income)</option>
+        <option value="marketplace">Marketplace / ACA Plan</option>
+        <option value="cobra">COBRA (temporary, 18 months)</option>
+        <option value="none">No Coverage / Uninsured</option>
+      </select>
+      <div class="hint" id="c-health-hint">Avg family plan employee share: $500–700/mo</div>
     </div>
-    <div class="field"><label>Employer Contribution (monthly)</label>
+  </div>
+  <div class="field-row" id="c-health-premium-row">
+    <div class="field"><label>Your Monthly Premium (out of pocket)</label>
+      <input type="number" id="c-health" value="550" min="0" oninput="syncHealthHint()">
+    </div>
+    <div class="field"><label>Employer / VA Contribution (monthly)</label>
       <input type="number" id="c-health-emp" value="600" min="0">
-      <div class="hint">What your employer pays toward your plan</div>
+      <div class="hint">Amount employer or VA contributes toward your plan</div>
     </div>
   </div>
 
@@ -929,6 +964,33 @@ function fmtM(n){return fmtD(n)+'/mo';}
 function iv(id){return parseFloat(document.getElementById(id).value)||0;}
 function sv(id){return document.getElementById(id).value;}
 
+
+function updateHealthFields() {
+  var type = document.getElementById('c-health-type') ? document.getElementById('c-health-type').value : 'employer';
+  var premRow = document.getElementById('c-health-premium-row');
+  var hint = document.getElementById('c-health-hint');
+  var healthInput = document.getElementById('c-health');
+  var empInput = document.getElementById('c-health-emp');
+
+  var presets = {
+    'employer':           {show:true,  premium:550,  emp:600,  hint:'Avg family plan employee share: $500–700/mo'},
+    'tricare_retired':    {show:true,  premium:168,  emp:1200, hint:'TRICARE Retired: ~$58/mo individual, ~$168/mo family'},
+    'tricare_med_retired':{show:false, premium:0,    emp:1400, hint:'TRICARE for Life / Medical Retirement: No premium. Full coverage.'},
+    'va_health':          {show:false, premium:0,    emp:800,  hint:'VA Health: Free if 50%+ SC disability or meet income threshold'},
+    'marketplace':        {show:true,  premium:480,  emp:0,    hint:'ACA Marketplace: Varies by plan & income. Subsidies may apply.'},
+    'cobra':              {show:true,  premium:1200, emp:0,    hint:'COBRA: Full group rate + 2% admin. Avg family ~$1,200–1,800/mo'},
+    'none':               {show:false, premium:0,    emp:0,    hint:'Uninsured: No premium but high out-of-pocket risk'}
+  };
+
+  var p = presets[type] || presets['employer'];
+  if (premRow) premRow.style.display = p.show ? '' : 'none';
+  if (hint) hint.textContent = p.hint;
+  if (healthInput) healthInput.value = p.premium;
+  if (empInput) empInput.value = p.emp;
+}
+
+function syncHealthHint() { /* no-op — hint is static */ }
+
 function runCalc(){
   // ── INPUTS ──────────────────────────────────────────────────────────────
   var grade=sv('m-grade'), yos=iv('m-yos'), bahTier=sv('m-bah'), retSys=sv('m-ret');
@@ -944,7 +1006,12 @@ function runCalc(){
   var c401kPct=iv('c-401k'), cColaRate=iv('c-cola')/100;
   var cHousing=iv('c-housing'), cUtilities=iv('c-utilities');
   var cFoodStyle=sv('c-food-style'), cFamilyN=Math.min(6, depsN + 1); // +1 for veteran
+  var cHealthType=sv('c-health-type')||'employer';
   var cHealth=iv('c-health'), cHealthEmp=iv('c-health-emp');
+  var cSpouseIncome=iv('c-spouse-income')||0;
+  var cOtherIncome=iv('c-other-income')||0;
+  var mSpouseIncome=iv('m-spouse-income')||0;
+  var mOtherIncome=iv('m-other-income')||0;
   var cCarPay=iv('c-car-pay'), cCarIns=iv('c-car-ins'), cGas=iv('c-gas');
   var cChildcare=iv('c-childcare'), cOther=iv('c-other');
 
@@ -973,7 +1040,10 @@ function runCalc(){
   // Military net monthly cash in pocket
   // ⚠️ VA disability is NOT collected on active duty (exception: retirees with CRDP/CRSC)
   // VA comp only counted on civilian side post-separation
-  var mNetMo=(bp+bah+bas+mBonusMo)-mTax-mFoodOOP-mCarPay-mCarIns-mGas-mChildcare-mUtilities-sgli-mOther;
+  // Household income on military side
+  var mSpouseMo = mSpouseIncome / 12;
+  var mOtherMo = mOtherIncome;
+  var mNetMo=(bp+bah+bas+mBonusMo+mSpouseMo+mOtherMo)-mTax-mFoodOOP-mCarPay-mCarIns-mGas-mChildcare-mUtilities-sgli-mOther;
 
   // ── CIVILIAN MONTHLY ────────────────────────────────────────────────────
   var cGrossMo=cSalary/12, cBonusMo=cBonus/12;
@@ -982,8 +1052,23 @@ function runCalc(){
   var cFoodMo=FOOD[cFoodStyle][cFamilyN];
 
   // Civilian net monthly
-  var cNetMo=cGrossMo+cBonusMo+vaMo
-    -cTax-cHousing-cFoodMo-cHealth-cCarPay-cCarIns-cGas
+  // Health insurance net cost (varies by type)
+  var cHealthCost = cHealth; // out of pocket premium
+  // TRICARE Retired: ~$58/mo per person, minimal out of pocket
+  if (cHealthType === 'tricare_retired') { cHealthCost = depsN > 0 ? 168 : 58; cHealthEmp = 1200; }
+  // TRICARE Medical Retirement: free for member, ~$0 premium
+  else if (cHealthType === 'tricare_med_retired') { cHealthCost = 0; cHealthEmp = 1400; }
+  // VA Health Care: free if 50%+ SC or low income
+  else if (cHealthType === 'va_health') { cHealthCost = 0; cHealthEmp = 800; }
+  // Marketplace/ACA: varies, default to input
+  else if (cHealthType === 'cobra') { cHealthCost = cHealth || 1200; cHealthEmp = 0; }
+  else if (cHealthType === 'none') { cHealthCost = 0; cHealthEmp = 0; }
+
+  // Full civilian household income
+  var cSpouseMo = cSpouseIncome / 12;
+  var cOtherMo = cOtherIncome;
+  var cNetMo=cGrossMo+cBonusMo+vaMo+cSpouseMo+cOtherMo
+    -cTax-cHousing-cFoodMo-cHealthCost-cCarPay-cCarIns-cGas
     -cChildcare-cUtilities-cOther-c401kEmployee;
 
   // ── ANNUAL / COMP ───────────────────────────────────────────────────────
@@ -993,7 +1078,8 @@ function runCalc(){
   var healthValAnn=14400; // TRICARE annual market value
   var taxSaveAnn=(bah+bas)*12*0.22;
   var mTotalComp=(bp+bah+bas)*12+tspMatchAnn+healthValAnn+taxSaveAnn+mBonus-sgli*12;
-  var cTotalComp=cSalary+c401kMatchAnn+(cHealthEmp*12)+cBonus;
+  var cTotalComp=cSalary+cSpouseIncome+(cOtherIncome*12)+c401kMatchAnn+(cHealthEmp*12)+cBonus;
+  var mTotalHousehold=(bp+bah+bas)*12+tspMatchAnn+healthValAnn+taxSaveAnn+mBonus+(mSpouseIncome)+(mOtherIncome*12)-sgli*12;
 
   // ── RETIREMENT ──────────────────────────────────────────────────────────
   var yosN=Math.min(yos,20), yearsToRetire=Math.max(0,20-yosN);
@@ -1079,7 +1165,7 @@ function runCalc(){
     ['Base Pay / Salary (gross annual)',bp*12,cSalary,''],
     ['Housing — BAH (mil) / Rent (civ)',bah*12,-cHousing*12,'BAH is tax-free & covers housing. Civilian pays rent from net.'],
     ['Food — BAS (mil) / Groceries (civ)',bas*12,-cFoodMo*12,'BAS is tax-free. Civilian pays full food costs from net.'],
-    ['Health Insurance',14400,-(cHealth*12),'TRICARE = ~$1,200/yr cost. Civilian employee premium avg ~$6,600/yr.'],
+    ['Health Insurance',14400,-(cHealthCost*12),'TRICARE = ~$1,200/yr cost. Civilian: '+healthTypeLabel+'.'],
     ['Health — Employer Contribution',0,cHealthEmp*12,'Employer pays this toward your plan (part of total comp).'],
     ['Retirement (TSP/401k match)',tspMatchAnn,c401kMatchAnn,retSys==='brs'?'BRS: ~4% match after 2 yrs':'Legacy: no match (pension instead)'],
     ['Bonus / Incentive',mBonus,cBonus,'Annual or reenlistment bonus'],
@@ -1129,7 +1215,12 @@ function runCalc(){
   var bahMo=BAH[bahTier][dep];
   if(bahMo>=cHousing) ins.push('🏠 <strong>Your BAH ($'+bahMo.toLocaleString()+'/mo) covers your civilian housing estimate ($'+cHousing.toLocaleString()+'/mo)</strong> — you may actually pocket the difference if you live on-base or in a cheaper area. This is one of the biggest hidden military advantages.');
   else ins.push('🏠 <strong>Your civilian rent estimate ($'+cHousing.toLocaleString()+'/mo) exceeds your BAH ($'+bahMo.toLocaleString()+'/mo) by $'+(cHousing-bahMo).toLocaleString()+'/mo.</strong> Your BAH is still tax-free - a civilian making the same total would pay taxes on that equivalent.');
-  ins.push("🏥 <strong>TRICARE saves you $"+Math.round(cHealth).toLocaleString()+"/month in health insurance premiums</strong> ($"+Math.round(cHealth*12).toLocaleString()+"/year). That's real money to budget for after separation. Family plans average $550-700/month employee cost.");
+  var healthTypeLabel = {'employer':'Employer plan','tricare_retired':'TRICARE Retired','tricare_med_retired':'TRICARE Medical Retirement','va_health':'VA Health Care (free)','marketplace':'Marketplace plan','cobra':'COBRA','none':'Uninsured'}[cHealthType]||'Employer plan';
+  if(cSpouseIncome>0) compRows.push(['Spouse Income (Civilian)',0,cSpouseIncome,'Household income post-separation']);
+  if(cOtherIncome>0) compRows.push(['Other Income (Civilian)',0,cOtherIncome*12,'Rental, side business, etc.']);
+  if(mSpouseIncome>0) compRows.push(['Spouse Income (Military)',mSpouseIncome,0,'Spouse employed while serving']);
+  if(mOtherIncome>0) compRows.push(['Other Income (Military)',mOtherIncome*12,0,'Other income while serving']);
+    ins.push("🏥 <strong>TRICARE saves you $"+Math.round(cHealthCost).toLocaleString()+"/month in health insurance premiums</strong> ($"+Math.round(cHealth*12).toLocaleString()+"/year). That's real money to budget for after separation. Family plans average $550-700/month employee cost.");
   if(vaMo>0) ins.push('🎖 <strong>At '+vaRating+'% disability, you receive $'+vaMo.toLocaleString()+'/month tax-free</strong> regardless of whether you reenlist or separate. On the civilian side this significantly boosts your net take-home. Always file your VA claim before separating.');
   if(cChildcare>0) ins.push('👶 <strong>Childcare: $'+cChildcare.toLocaleString()+'/month civilian vs ~$'+Math.round(mChildcare).toLocaleString()+'/month military</strong>. Child Development Centers (CDCs) on base are income-based subsidized — often $400-600/month vs $1,200+ civilian market rate. For families with young children this can be a $600-800/month military advantage.');
   if(yearsToRetire>0&&yearsToRetire<=6) ins.push('⚠️ <strong>'+yearsToRetire+' years from 20-year retirement.</strong> Your monthly pension would be '+fmtM(bp*retPct)+' for life starting around age '+(Math.round(18+(yos)+yearsToRetire))+'. Over 20 years that is approximately $'+Math.round(bp*retPct*12*20/1000).toLocaleString()+'k in payments  (not counting lifetime TRICARE Prime access or COLA increases).');

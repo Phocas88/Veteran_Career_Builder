@@ -847,6 +847,12 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
 <div id="results">
   <div id="verdict-box" style="margin-top:1.5rem;"></div>
 
+  <!-- TAX SUMMARY CARD -->
+  <div class="card result" style="margin-bottom:1.25rem;" id="tax-summary-card">
+    <div class="card-title">💰 Gross vs Net — Income Tax Breakdown</div>
+    <div id="tax-summary-body" style="overflow-x:auto;"></div>
+  </div>
+
   <div class="card result" style="margin-bottom:1.25rem;">
     <div class="card-title">💵 Monthly Cash Flow — What Actually Hits Your Pocket</div>
     <div class="budget-grid" id="monthly-budget"></div>
@@ -1049,6 +1055,20 @@ function runCalc(){
   var cGrossMo=cSalary/12, cBonusMo=cBonus/12;
   var cTax=cGrossMo*(0.22+0.0765+0.05); // full salary taxable + slightly higher state
   var c401kEmployee=cGrossMo*(c401kPct/100); // employee contribution (cost)
+
+  // ── GROSS / NET TAX BREAKDOWN ────────────────────────────────────────────
+  // Military gross (taxable base pay only; BAH+BAS tax-free)
+  var mGrossAnn = bp*12 + mBonus + mSpouseIncome + mOtherIncome*12;
+  var mTaxAnn   = mTax*12; // estimated federal+FICA+state on base pay
+  var mTaxableAnn = bp*12; // only base pay is taxable
+  var mAfterTaxAnn = mGrossAnn - mTaxAnn; // gross minus tax (BAH+BAS still included)
+  var mTakeHomeAnn = mNetMo*12; // net after ALL costs
+
+  // Civilian gross
+  var cGrossAnn = cSalary + cBonus + cSpouseIncome + cOtherIncome*12;
+  var cTaxAnn   = cTax*12; // estimated federal+FICA+state on full salary
+  var cAfterTaxAnn = cGrossAnn - cTaxAnn; // gross minus tax
+  var cTakeHomeAnn = cNetMo*12; // net after ALL costs
   var cFoodMo=FOOD[cFoodStyle][cFamilyN];
 
   // Civilian net monthly
@@ -1157,6 +1177,33 @@ function runCalc(){
         '<span style="color:'+cColor+';font-weight:600;">💼 '+fmtM(bi[2])+'</span>'+
       '</span></div>';
   }).join('');
+  // ── TAX SUMMARY CARD ────────────────────────────────────────────────────
+  var taxRows = [
+    ['Gross Household Income / Year', fmtD(mGrossAnn), fmtD(cGrossAnn)],
+    ['Estimated Income Tax / Year',   '−'+fmtD(mTaxAnn), '−'+fmtD(cTaxAnn)],
+    ['After-Tax Income / Year',       fmtD(mAfterTaxAnn), fmtD(cAfterTaxAnn)],
+    ['After-Tax Income / Month',      fmtD(mAfterTaxAnn/12), fmtD(cAfterTaxAnn/12)],
+    ['Net Take-Home / Year (after all costs)', fmtD(mTakeHomeAnn), fmtD(cTakeHomeAnn)],
+    ['Net Take-Home / Month',         fmtD(mTakeHomeAnn/12), fmtD(cTakeHomeAnn/12)],
+  ];
+  var taxHtml = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;font-size:.83rem;">';
+  taxHtml += '<div style="padding:.45rem .75rem;font-weight:800;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#5a7090;border-bottom:2px solid #dde3ec;"></div>';
+  taxHtml += '<div style="padding:.45rem .75rem;font-weight:800;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#1a3a6b;border-bottom:2px solid #dde3ec;text-align:right;">🪖 Military</div>';
+  taxHtml += '<div style="padding:.45rem .75rem;font-weight:800;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#2a5a3a;border-bottom:2px solid #dde3ec;text-align:right;">💼 Civilian</div>';
+  taxRows.forEach(function(row, i) {
+    var isNet = row[0].includes('Net Take-Home');
+    var isTax = row[0].includes('Tax');
+    var isSep = row[0].includes('After-Tax Income / Year');
+    var bg = isNet ? 'background:#f0f8e8;font-weight:700;' : isTax ? 'background:#fff8f0;' : isSep ? 'border-top:2px solid #dde3ec;' : '';
+    var taxColor = isTax ? 'color:#c0392b;' : '';
+    taxHtml += '<div style="padding:.45rem .75rem;border-bottom:1px solid #f0f4fa;'+bg+'">'+row[0]+'</div>';
+    taxHtml += '<div style="padding:.45rem .75rem;border-bottom:1px solid #f0f4fa;text-align:right;'+bg+taxColor+'">'+row[1]+'</div>';
+    taxHtml += '<div style="padding:.45rem .75rem;border-bottom:1px solid #f0f4fa;text-align:right;'+bg+taxColor+'">'+row[2]+'</div>';
+  });
+  taxHtml += '</div>';
+  taxHtml += '<p style="font-size:.72rem;color:#8a9aaa;padding:.6rem .75rem 0;">Estimates use 22% federal + 7.65% FICA + ~5% state. Military tax is only on taxable base pay — BAH and BAS are tax-free. Actual tax varies by filing status, deductions, and state.</p>';
+  document.getElementById('tax-summary-body').innerHTML = taxHtml;
+
   document.getElementById('monthly-budget').innerHTML=bHtml;
 
   // ── COMP TABLE ──────────────────────────────────────────────────────────
@@ -1176,6 +1223,10 @@ function runCalc(){
     ['Transportation',-((mCarPay+mCarIns+mGas)*12),-((cCarPay+cCarIns+cGas)*12),'Military slightly lower (closer to base, lower insurance)'],
     ['Childcare',-mChildcare*12,-cChildcare*12,'CDCs subsidized ~55% below market. Huge family benefit.'],
     ['SGLI',-sgli*12,0,'Life insurance premium (military only)'],
+    ['──────────────','──────','──────',''],
+    ['Gross Household Income',mGrossAnn,cGrossAnn,'Total income before tax — base pay + allowances (mil) / salary (civ)'],
+    ['Est. Income Tax (Federal+FICA+State)',-mTaxAnn,-cTaxAnn,'Military: only base pay taxed (BAH+BAS tax-free). Civilian: full salary taxed.'],
+    ['After-Tax Income',mAfterTaxAnn,cAfterTaxAnn,'Take-home before living expenses'],
   ];
   // Add spouse/other income rows if provided
   if(mSpouseIncome>0) rows.push(['Spouse Income (Military Side)',mSpouseIncome,0,'Spouse employed while serving adds to household income.']);

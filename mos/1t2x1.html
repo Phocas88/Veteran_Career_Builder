@@ -26,6 +26,34 @@
 .cc-link:hover{background:#0a1628;}
 .employer-cta{background:#fff8e8;border:1.5px solid rgba(200,150,10,.3);border-left:4px solid #c8960a;border-radius:10px;padding:1rem 1.25rem;margin:1.25rem 0;}
 .employer-cta p{font-size:.86rem;color:#3a2a00;line-height:1.65;margin-bottom:.6rem;}
+
+/* ── EXPANDABLE CAREER CARDS ─────────────────────────────────────────── */
+.career-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem;margin:1rem 0 1.5rem;}
+.career-item{background:#f0f4fa;border:1px solid #d0dce8;border-radius:8px;padding:0;font-size:.88rem;font-weight:600;color:#1a3a6b;cursor:pointer;overflow:hidden;transition:box-shadow .15s;}
+.career-item:hover{box-shadow:0 2px 10px rgba(26,58,107,.15);}
+.career-item-head{display:flex;align-items:center;gap:.5rem;padding:.6rem .9rem;}
+.career-pin{flex-shrink:0;}
+.career-item-label{flex:1;}
+.career-chevron{flex-shrink:0;font-size:.65rem;color:#8aa0c0;transition:transform .2s;}
+.career-item.open .career-chevron{transform:rotate(180deg);}
+.career-item.open{background:#fff;border-color:#1a3a6b;box-shadow:0 2px 12px rgba(26,58,107,.15);}
+.career-drawer{display:none;padding:0 .9rem .9rem;border-top:1px solid #dde3ec;background:#fff;}
+.career-item.open .career-drawer{display:block;}
+.cd-salary{font-family:"Bebas Neue",sans-serif;font-size:1.05rem;letter-spacing:.05em;color:#1a7a40;margin:.6rem 0 .3rem;}
+.cd-section{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#5a7090;margin:.65rem 0 .25rem;}
+.cd-req{list-style:none;padding:0;margin:0;}
+.cd-req li{font-size:.8rem;color:#2a3a4a;padding:.2rem 0 .2rem .9rem;position:relative;line-height:1.5;}
+.cd-req li::before{content:"✓";position:absolute;left:0;color:#1a7a40;font-weight:800;}
+.cd-programs{display:flex;flex-direction:column;gap:.35rem;margin-top:.25rem;}
+.cd-program{background:#f0f8e8;border:1px solid #b0d8b0;border-radius:7px;padding:.45rem .7rem;}
+.cd-prog-name{font-size:.78rem;font-weight:700;color:#1a4a2a;}
+.cd-prog-desc{font-size:.75rem;color:#3a5a3a;line-height:1.5;margin-top:.1rem;}
+.cd-prog-link{display:inline-block;font-size:.72rem;font-weight:700;color:#1a7a40;text-decoration:none;margin-top:.2rem;}
+.cd-prog-link:hover{text-decoration:underline;}
+.cd-certs{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.25rem;}
+.cd-cert{background:rgba(200,150,10,.1);border:1px solid rgba(200,150,10,.3);color:#7a5500;padding:.15rem .55rem;border-radius:20px;font-size:.72rem;font-weight:600;}
+.cd-timeline{font-size:.8rem;color:#5a7090;font-style:italic;margin:.25rem 0;}
+.cd-vet-adv{background:#eef6ff;border-left:3px solid #1a3a6b;border-radius:0 6px 6px 0;padding:.4rem .65rem;font-size:.8rem;color:#1a3a6b;line-height:1.55;margin:.25rem 0;}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <style id="mobile-nav-css">
@@ -84,7 +112,22 @@
   </div>
   <h2 id="careers">Top Civilian Careers for 1T2X1 Veterans</h2>
   <p>Your 1T2X1 Pararescue training directly translates to the following civilian careers. These are roles where Air Force veterans with your background consistently land and succeed.</p>
-  <div class="career-list"><div class="career-item">📌 Paramedic/Flight Paramedic</div><div class="career-item">📌 Search and Rescue Specialist</div><div class="career-item">📌 Emergency Management Director</div><div class="career-item">📌 SWAT Medic</div><div class="career-item">📌 Wilderness EMT</div></div>
+  <div class="career-list"><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Paramedic/Flight Paramedic</span></div></div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Search and Rescue Specialist</span></div></div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Emergency Management Director <span style="font-size:.65rem;color:#8aa0b8;font-weight:400;">(see: Emergency Management Specialist)</span></span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$55,000–$95,000 (FEMA GS-11 to GS-14)</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> Any military operations or logistics background translates directly. Military planning and crisis management are exactly what emergency management needs.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Bachelor's preferred; FEMA Professional Development Series recognized.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Incident Command System (ICS) training (100, 200, 300, 400, 700, 800)</li><li>Emergency Operations Center experience</li><li>NIMS familiarity</li><li>Planning and coordination skills</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">ICS courses: free online, 1–2 weeks total. FEMA application: 2–6 months.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program"><div class="cd-prog-name">FEMA Emergency Management Institute</div><div class="cd-prog-desc">Free online ICS courses required for FEMA roles.</div><a href="https://training.fema.gov/emi.aspx" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">FEMA Reservist Program</div><div class="cd-prog-desc">Part-time/disaster response roles — great way to build resume while working full-time.</div><a href="https://www.fema.gov/careers/disaster-response" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">USAJOBS Emergency Management</div><div class="cd-prog-desc">Federal, state, and local EM positions with veteran preference.</div><a href="https://www.usajobs.gov" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">ICS 100/200/300/400</span><span class="cd-cert">NIMS 700/800</span><span class="cd-cert">FEMA PDS Certificate</span><span class="cd-cert">CEM (Certified Emergency Manager — IAEM)</span></div>
+  </div>
+</div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">SWAT Medic</span></div></div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Wilderness EMT</span></div></div></div>
   <p>The key is translation. A civilian hiring manager does not know what a 1T2X1 does. Your resume needs to take everything you did in uniform and reframe it in plain language. Veteran Career Path does this automatically with AI trained on military-to-civilian transitions.</p>
   <h2>Core Skills You Already Have</h2>
   <p>Every skill you built as a Pararescue has a civilian market value. Here are the competencies employers pay for:</p>
@@ -178,6 +221,12 @@
     }
   });
 })();
+</script>
+
+<script>
+function toggleCareer(el) {
+  el.classList.toggle('open');
+}
 </script>
 </body>
 </html>

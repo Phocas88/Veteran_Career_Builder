@@ -26,6 +26,34 @@
 .cc-link:hover{background:#0a1628;}
 .employer-cta{background:#fff8e8;border:1.5px solid rgba(200,150,10,.3);border-left:4px solid #c8960a;border-radius:10px;padding:1rem 1.25rem;margin:1.25rem 0;}
 .employer-cta p{font-size:.86rem;color:#3a2a00;line-height:1.65;margin-bottom:.6rem;}
+
+/* ── EXPANDABLE CAREER CARDS ─────────────────────────────────────────── */
+.career-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem;margin:1rem 0 1.5rem;}
+.career-item{background:#f0f4fa;border:1px solid #d0dce8;border-radius:8px;padding:0;font-size:.88rem;font-weight:600;color:#1a3a6b;cursor:pointer;overflow:hidden;transition:box-shadow .15s;}
+.career-item:hover{box-shadow:0 2px 10px rgba(26,58,107,.15);}
+.career-item-head{display:flex;align-items:center;gap:.5rem;padding:.6rem .9rem;}
+.career-pin{flex-shrink:0;}
+.career-item-label{flex:1;}
+.career-chevron{flex-shrink:0;font-size:.65rem;color:#8aa0c0;transition:transform .2s;}
+.career-item.open .career-chevron{transform:rotate(180deg);}
+.career-item.open{background:#fff;border-color:#1a3a6b;box-shadow:0 2px 12px rgba(26,58,107,.15);}
+.career-drawer{display:none;padding:0 .9rem .9rem;border-top:1px solid #dde3ec;background:#fff;}
+.career-item.open .career-drawer{display:block;}
+.cd-salary{font-family:"Bebas Neue",sans-serif;font-size:1.05rem;letter-spacing:.05em;color:#1a7a40;margin:.6rem 0 .3rem;}
+.cd-section{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#5a7090;margin:.65rem 0 .25rem;}
+.cd-req{list-style:none;padding:0;margin:0;}
+.cd-req li{font-size:.8rem;color:#2a3a4a;padding:.2rem 0 .2rem .9rem;position:relative;line-height:1.5;}
+.cd-req li::before{content:"✓";position:absolute;left:0;color:#1a7a40;font-weight:800;}
+.cd-programs{display:flex;flex-direction:column;gap:.35rem;margin-top:.25rem;}
+.cd-program{background:#f0f8e8;border:1px solid #b0d8b0;border-radius:7px;padding:.45rem .7rem;}
+.cd-prog-name{font-size:.78rem;font-weight:700;color:#1a4a2a;}
+.cd-prog-desc{font-size:.75rem;color:#3a5a3a;line-height:1.5;margin-top:.1rem;}
+.cd-prog-link{display:inline-block;font-size:.72rem;font-weight:700;color:#1a7a40;text-decoration:none;margin-top:.2rem;}
+.cd-prog-link:hover{text-decoration:underline;}
+.cd-certs{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.25rem;}
+.cd-cert{background:rgba(200,150,10,.1);border:1px solid rgba(200,150,10,.3);color:#7a5500;padding:.15rem .55rem;border-radius:20px;font-size:.72rem;font-weight:600;}
+.cd-timeline{font-size:.8rem;color:#5a7090;font-style:italic;margin:.25rem 0;}
+.cd-vet-adv{background:#eef6ff;border-left:3px solid #1a3a6b;border-radius:0 6px 6px 0;padding:.4rem .65rem;font-size:.8rem;color:#1a3a6b;line-height:1.55;margin:.25rem 0;}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <style id="mobile-nav-css">
@@ -84,7 +112,115 @@
   </div>
   <h2 id="careers">Top Civilian Careers for 4A2X1 Veterans</h2>
   <p>Your 4A2X1 Biomedical Equipment training and experience directly translates to these civilian career paths. These are the roles where Air Force veterans with your background consistently land and succeed - roles that recognize your operational experience as a genuine advantage.</p>
-  <div class="career-list"><div class="career-item">📌 Emergency Medical Technician</div><div class="career-item">📌 Paramedic</div><div class="career-item">📌 Registered Nurse (with ADN/BSN)</div><div class="career-item">📌 Healthcare Administrator</div><div class="career-item">📌 Clinical Coordinator</div><div class="career-item">📌 Medical Laboratory Technician</div></div>
+  <div class="career-list"><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Emergency Medical Technician</span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$38,000–$58,000 (EMT-Basic); $50,000–$75,000 (Paramedic)</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> 68W, HM, and medic training often grants partial or full credit toward EMT/Paramedic programs. Many states have bridge programs specifically for military medics.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">EMT-Basic: ~120-150 hour course. Paramedic: 1,200–1,800 hours (typically 1–2 years).</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>State EMT certification (NREMT exam)</li><li>High school diploma or GED</li><li>CPR certification</li><li>Clean background check</li><li>Physical fitness requirements</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">EMT-Basic: 3–6 months. Paramedic: 1–2 years.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program">
+          <div class="cd-prog-name">USSOCOM/DoD COOL EMT Funding</div>
+          <div class="cd-prog-desc">Active duty can get EMT funded through DoD COOL while still serving.</div>
+          <a href="https://www.cool.osd.mil" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">68W/HM to Paramedic Bridge</div>
+          <div class="cd-prog-desc">Many community colleges offer accelerated paramedic programs for military medics — check your state's EMS office.</div>
+          
+        </div><div class="cd-program">
+          <div class="cd-prog-name">NREMT Veteran Transition</div>
+          <div class="cd-prog-desc">National Registry recognizes military medical training toward certification.</div>
+          <a href="https://www.nremt.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">NREMT-Basic</span><span class="cd-cert">NREMT-Paramedic</span><span class="cd-cert">ACLS</span><span class="cd-cert">PALS</span><span class="cd-cert">CPR/AED</span></div>
+  </div>
+</div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Paramedic</span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$48,000–$75,000; flight paramedic: $65,000–$95,000</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> 68W and HM training is often equivalent to or exceeds EMT-Basic level. Many states offer accelerated pathways.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Associate's degree or Paramedic Certificate (1,200–1,800 hours).</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Current EMT-Basic certification</li><li>Paramedic program completion</li><li>Pass NREMT-Paramedic exam</li><li>State paramedic license</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">1–2 years from EMT to Paramedic.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program">
+          <div class="cd-prog-name">NREMT Military Recognition</div>
+          <div class="cd-prog-desc">NREMT recognizes military medical training for civilian certification.</div>
+          <a href="https://www.nremt.org/rwd/public/document/military" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">DoD COOL Paramedic Funding</div>
+          <div class="cd-prog-desc">Active duty medics can get paramedic training funded before separation.</div>
+          <a href="https://www.cool.osd.mil" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">68W to Paramedic Bridge Programs</div>
+          <div class="cd-prog-desc">Accelerated programs at community colleges nationwide — contact your state EMS office.</div>
+          
+        </div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">NREMT-Paramedic</span><span class="cd-cert">ACLS</span><span class="cd-cert">PALS</span><span class="cd-cert">PHTLS</span><span class="cd-cert">FP-C (flight paramedic)</span></div>
+  </div>
+</div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Registered Nurse (with ADN/BSN)</span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$65,000–$115,000+ (BSN preferred by most hospitals)</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> Military medical training (68W, HM, etc.) often counts toward clinical hours. GI Bill fully covers nursing programs at most schools.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">ADN (Associate's Degree in Nursing) = 2 years; BSN (Bachelor's) = 4 years. Both require NCLEX-RN exam.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Accredited nursing program (ADN or BSN)</li><li>Pass NCLEX-RN licensing exam</li><li>State nursing license</li><li>Background check</li><li>Clinical rotations (included in program)</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">ADN: 2 years + NCLEX. BSN: 4 years + NCLEX. Accelerated BSN for degree-holders: 12–18 months.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program">
+          <div class="cd-prog-name">Veterans to BSN (Vanderbilt, Excelsior, etc.)</div>
+          <div class="cd-prog-desc">Several universities offer accelerated BSN for veterans with medical backgrounds.</div>
+          
+        </div><div class="cd-program">
+          <div class="cd-prog-name">Excelsior University Military Programs</div>
+          <div class="cd-prog-desc">Credit for military medical training toward nursing degree.</div>
+          <a href="https://www.excelsior.edu/military" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">HRSA Nursing Workforce Programs</div>
+          <div class="cd-prog-desc">Federal scholarships and loan repayment for nurses who serve in shortage areas.</div>
+          <a href="https://www.hrsa.gov/nursing" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">Post-9/11 GI Bill</div>
+          <div class="cd-prog-desc">Covers full tuition + BAH at most nursing schools.</div>
+          <a href="https://www.va.gov/education/about-gi-bill-benefits/post-9-11/" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">NCLEX-RN</span><span class="cd-cert">BLS</span><span class="cd-cert">ACLS</span><span class="cd-cert">PALS</span><span class="cd-cert">Specialty certifications (ICU, ER, OR)</span></div>
+  </div>
+</div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Healthcare Administrator</span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$65,000–$110,000</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> Medical unit administration experience (68A, HM, etc.) is direct experience. TRICARE/military healthcare operations knowledge is valued.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Bachelor's in Healthcare Administration, Business, or related. MHA or MBA preferred for senior roles.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Understanding of healthcare regulations (HIPAA, Joint Commission)</li><li>Budget and staffing management</li><li>Electronic Health Records (EHR) familiarity</li><li>Leadership and communication skills</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">Immediately hireable at coordinator level; director roles need degree + 3–5 years.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program">
+          <div class="cd-prog-name">Post-9/11 GI Bill + ACHE</div>
+          <div class="cd-prog-desc">American College of Healthcare Executives offers veteran membership programs.</div>
+          <a href="https://www.ache.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">Western Governors University Healthcare</div>
+          <div class="cd-prog-desc">Online, affordable, AACSB programs — good for working veterans.</div>
+          <a href="https://www.wgu.edu/online-health-professions-degrees.html" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">CMPE (Certified Medical Practice Executive)</span><span class="cd-cert">CPHIMS (health IT)</span><span class="cd-cert">FACHE (Fellow ACHE — senior credential)</span></div>
+  </div>
+</div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Clinical Coordinator</span></div></div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Medical Laboratory Technician</span></div></div></div>
   <div class="civilian-connect">
   <div class="cc-title">💡 Your Military Experience = Civilian Competitive Advantage</div>
   <p>Civilian employers pay a premium for people who have led teams, managed resources under pressure, and delivered results in high-stakes environments. That is your entire career. The gap is not experience — it is translation.</p>
@@ -183,6 +319,12 @@
     }
   });
 })();
+</script>
+
+<script>
+function toggleCareer(el) {
+  el.classList.toggle('open');
+}
 </script>
 </body>
 </html>

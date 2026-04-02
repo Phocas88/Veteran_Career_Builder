@@ -26,6 +26,34 @@
 .cc-link:hover{background:#0a1628;}
 .employer-cta{background:#fff8e8;border:1.5px solid rgba(200,150,10,.3);border-left:4px solid #c8960a;border-radius:10px;padding:1rem 1.25rem;margin:1.25rem 0;}
 .employer-cta p{font-size:.86rem;color:#3a2a00;line-height:1.65;margin-bottom:.6rem;}
+
+/* ── EXPANDABLE CAREER CARDS ─────────────────────────────────────────── */
+.career-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem;margin:1rem 0 1.5rem;}
+.career-item{background:#f0f4fa;border:1px solid #d0dce8;border-radius:8px;padding:0;font-size:.88rem;font-weight:600;color:#1a3a6b;cursor:pointer;overflow:hidden;transition:box-shadow .15s;}
+.career-item:hover{box-shadow:0 2px 10px rgba(26,58,107,.15);}
+.career-item-head{display:flex;align-items:center;gap:.5rem;padding:.6rem .9rem;}
+.career-pin{flex-shrink:0;}
+.career-item-label{flex:1;}
+.career-chevron{flex-shrink:0;font-size:.65rem;color:#8aa0c0;transition:transform .2s;}
+.career-item.open .career-chevron{transform:rotate(180deg);}
+.career-item.open{background:#fff;border-color:#1a3a6b;box-shadow:0 2px 12px rgba(26,58,107,.15);}
+.career-drawer{display:none;padding:0 .9rem .9rem;border-top:1px solid #dde3ec;background:#fff;}
+.career-item.open .career-drawer{display:block;}
+.cd-salary{font-family:"Bebas Neue",sans-serif;font-size:1.05rem;letter-spacing:.05em;color:#1a7a40;margin:.6rem 0 .3rem;}
+.cd-section{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#5a7090;margin:.65rem 0 .25rem;}
+.cd-req{list-style:none;padding:0;margin:0;}
+.cd-req li{font-size:.8rem;color:#2a3a4a;padding:.2rem 0 .2rem .9rem;position:relative;line-height:1.5;}
+.cd-req li::before{content:"✓";position:absolute;left:0;color:#1a7a40;font-weight:800;}
+.cd-programs{display:flex;flex-direction:column;gap:.35rem;margin-top:.25rem;}
+.cd-program{background:#f0f8e8;border:1px solid #b0d8b0;border-radius:7px;padding:.45rem .7rem;}
+.cd-prog-name{font-size:.78rem;font-weight:700;color:#1a4a2a;}
+.cd-prog-desc{font-size:.75rem;color:#3a5a3a;line-height:1.5;margin-top:.1rem;}
+.cd-prog-link{display:inline-block;font-size:.72rem;font-weight:700;color:#1a7a40;text-decoration:none;margin-top:.2rem;}
+.cd-prog-link:hover{text-decoration:underline;}
+.cd-certs{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.25rem;}
+.cd-cert{background:rgba(200,150,10,.1);border:1px solid rgba(200,150,10,.3);color:#7a5500;padding:.15rem .55rem;border-radius:20px;font-size:.72rem;font-weight:600;}
+.cd-timeline{font-size:.8rem;color:#5a7090;font-style:italic;margin:.25rem 0;}
+.cd-vet-adv{background:#eef6ff;border-left:3px solid #1a3a6b;border-radius:0 6px 6px 0;padding:.4rem .65rem;font-size:.8rem;color:#1a3a6b;line-height:1.55;margin:.25rem 0;}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <style id="mobile-nav-css">
@@ -84,7 +112,82 @@
   </div>
   <h2 id="careers">Top Civilian Careers for 12W Veterans</h2>
   <p>Your 12W Carpentry and Masonry Specialist training and experience directly translates to these civilian career paths. These are the roles where Army veterans with your background consistently land and succeed - roles that recognize your operational experience as a genuine advantage.</p>
-  <div class="career-list"><div class="career-item">📌 Construction Project Manager</div><div class="career-item">📌 Civil Engineer Technician</div><div class="career-item">📌 Construction Inspector</div><div class="career-item">📌 Facilities Manager</div><div class="career-item">📌 Project Engineer</div><div class="career-item">📌 Safety and Compliance Manager</div></div>
+  <div class="career-list"><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Construction Project Manager</span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$75,000–$120,000</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> 12A, 12B, 12N, CE and similar MOS holders with construction and project management experience are directly applicable. Military construction projects are often larger and more complex than civilian equivalents.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Bachelor's in Construction Management, Civil Engineering, or related; PMP and PE add value.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Project scheduling (MS Project, Primavera)</li><li>Subcontractor and contract management</li><li>OSHA 30 certification</li><li>Budget management and cost control</li><li>Blueprints and site plans reading</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">Immediately applicable with military engineer/construction background.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program"><div class="cd-prog-name">PMP Certification</div><div class="cd-prog-desc">Project Management Professional — the gold standard for PM roles.</div><a href="https://www.pmi.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">AGC Constructor Education</div><div class="cd-prog-desc">Associated General Contractors training programs.</div><a href="https://www.agc.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">Helmets to Hardhats</div><div class="cd-prog-desc">Program connecting veterans to construction industry apprenticeships and careers.</div><a href="https://www.helmetstohardhats.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">PMP</span><span class="cd-cert">OSHA 30</span><span class="cd-cert">PE (Professional Engineer)</span><span class="cd-cert">LEED AP</span><span class="cd-cert">CCM (Certified Construction Manager)</span></div>
+  </div>
+</div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Civil Engineer Technician</span></div></div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Construction Inspector <span style="font-size:.65rem;color:#8aa0b8;font-weight:400;">(see: Construction Project Manager)</span></span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$75,000–$120,000</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> 12A, 12B, 12N, CE and similar MOS holders with construction and project management experience are directly applicable. Military construction projects are often larger and more complex than civilian equivalents.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Bachelor's in Construction Management, Civil Engineering, or related; PMP and PE add value.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Project scheduling (MS Project, Primavera)</li><li>Subcontractor and contract management</li><li>OSHA 30 certification</li><li>Budget management and cost control</li><li>Blueprints and site plans reading</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">Immediately applicable with military engineer/construction background.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program"><div class="cd-prog-name">PMP Certification</div><div class="cd-prog-desc">Project Management Professional — the gold standard for PM roles.</div><a href="https://www.pmi.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">AGC Constructor Education</div><div class="cd-prog-desc">Associated General Contractors training programs.</div><a href="https://www.agc.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">Helmets to Hardhats</div><div class="cd-prog-desc">Program connecting veterans to construction industry apprenticeships and careers.</div><a href="https://www.helmetstohardhats.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">PMP</span><span class="cd-cert">OSHA 30</span><span class="cd-cert">PE (Professional Engineer)</span><span class="cd-cert">LEED AP</span><span class="cd-cert">CCM (Certified Construction Manager)</span></div>
+  </div>
+</div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Facilities Manager</span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$60,000–$95,000</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> Military facility managers, engineers, and base operations personnel have direct experience. Military installations are large, complex facilities.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Bachelor's in Facilities Management, Business, or Engineering; CFM certification preferred.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Building systems knowledge (HVAC, electrical, plumbing)</li><li>OSHA and building code compliance</li><li>Vendor and contract management</li><li>Budget management</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">Immediately hireable with military facilities/engineer background.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program"><div class="cd-prog-name">IFMA CFM Certification</div><div class="cd-prog-desc">Certified Facility Manager — the leading credential in facilities management.</div><a href="https://www.ifma.org/credentials/certified-facility-manager-cfm/" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">BOMI Institute</div><div class="cd-prog-desc">Real property and facilities management credentials.</div><a href="https://www.bomi.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">CFM (Certified Facility Manager)</span><span class="cd-cert">FMP (Facilities Management Professional)</span><span class="cd-cert">OSHA 30</span><span class="cd-cert">Project+ or PMP</span></div>
+  </div>
+</div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Project Engineer <span style="font-size:.65rem;color:#8aa0b8;font-weight:400;">(see: Construction Project Manager)</span></span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$75,000–$120,000</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> 12A, 12B, 12N, CE and similar MOS holders with construction and project management experience are directly applicable. Military construction projects are often larger and more complex than civilian equivalents.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Bachelor's in Construction Management, Civil Engineering, or related; PMP and PE add value.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Project scheduling (MS Project, Primavera)</li><li>Subcontractor and contract management</li><li>OSHA 30 certification</li><li>Budget management and cost control</li><li>Blueprints and site plans reading</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">Immediately applicable with military engineer/construction background.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program"><div class="cd-prog-name">PMP Certification</div><div class="cd-prog-desc">Project Management Professional — the gold standard for PM roles.</div><a href="https://www.pmi.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">AGC Constructor Education</div><div class="cd-prog-desc">Associated General Contractors training programs.</div><a href="https://www.agc.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">Helmets to Hardhats</div><div class="cd-prog-desc">Program connecting veterans to construction industry apprenticeships and careers.</div><a href="https://www.helmetstohardhats.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">PMP</span><span class="cd-cert">OSHA 30</span><span class="cd-cert">PE (Professional Engineer)</span><span class="cd-cert">LEED AP</span><span class="cd-cert">CCM (Certified Construction Manager)</span></div>
+  </div>
+</div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Safety and Compliance Manager <span style="font-size:.65rem;color:#8aa0b8;font-weight:400;">(see: Emergency Management Specialist)</span></span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$55,000–$95,000 (FEMA GS-11 to GS-14)</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> Any military operations or logistics background translates directly. Military planning and crisis management are exactly what emergency management needs.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Bachelor's preferred; FEMA Professional Development Series recognized.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Incident Command System (ICS) training (100, 200, 300, 400, 700, 800)</li><li>Emergency Operations Center experience</li><li>NIMS familiarity</li><li>Planning and coordination skills</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">ICS courses: free online, 1–2 weeks total. FEMA application: 2–6 months.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program"><div class="cd-prog-name">FEMA Emergency Management Institute</div><div class="cd-prog-desc">Free online ICS courses required for FEMA roles.</div><a href="https://training.fema.gov/emi.aspx" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">FEMA Reservist Program</div><div class="cd-prog-desc">Part-time/disaster response roles — great way to build resume while working full-time.</div><a href="https://www.fema.gov/careers/disaster-response" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">USAJOBS Emergency Management</div><div class="cd-prog-desc">Federal, state, and local EM positions with veteran preference.</div><a href="https://www.usajobs.gov" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">ICS 100/200/300/400</span><span class="cd-cert">NIMS 700/800</span><span class="cd-cert">FEMA PDS Certificate</span><span class="cd-cert">CEM (Certified Emergency Manager — IAEM)</span></div>
+  </div>
+</div></div>
   <div class="civilian-connect">
   <div class="cc-title">💡 Your Military Experience = Civilian Competitive Advantage</div>
   <p>Civilian employers pay a premium for people who have led teams, managed resources under pressure, and delivered results in high-stakes environments. That is your entire career. The gap is not experience — it is translation.</p>
@@ -183,6 +286,12 @@
     }
   });
 })();
+</script>
+
+<script>
+function toggleCareer(el) {
+  el.classList.toggle('open');
+}
 </script>
 </body>
 </html>

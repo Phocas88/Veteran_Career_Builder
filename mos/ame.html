@@ -26,6 +26,34 @@
 .cc-link:hover{background:#0a1628;}
 .employer-cta{background:#fff8e8;border:1.5px solid rgba(200,150,10,.3);border-left:4px solid #c8960a;border-radius:10px;padding:1rem 1.25rem;margin:1.25rem 0;}
 .employer-cta p{font-size:.86rem;color:#3a2a00;line-height:1.65;margin-bottom:.6rem;}
+
+/* ── EXPANDABLE CAREER CARDS ─────────────────────────────────────────── */
+.career-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem;margin:1rem 0 1.5rem;}
+.career-item{background:#f0f4fa;border:1px solid #d0dce8;border-radius:8px;padding:0;font-size:.88rem;font-weight:600;color:#1a3a6b;cursor:pointer;overflow:hidden;transition:box-shadow .15s;}
+.career-item:hover{box-shadow:0 2px 10px rgba(26,58,107,.15);}
+.career-item-head{display:flex;align-items:center;gap:.5rem;padding:.6rem .9rem;}
+.career-pin{flex-shrink:0;}
+.career-item-label{flex:1;}
+.career-chevron{flex-shrink:0;font-size:.65rem;color:#8aa0c0;transition:transform .2s;}
+.career-item.open .career-chevron{transform:rotate(180deg);}
+.career-item.open{background:#fff;border-color:#1a3a6b;box-shadow:0 2px 12px rgba(26,58,107,.15);}
+.career-drawer{display:none;padding:0 .9rem .9rem;border-top:1px solid #dde3ec;background:#fff;}
+.career-item.open .career-drawer{display:block;}
+.cd-salary{font-family:"Bebas Neue",sans-serif;font-size:1.05rem;letter-spacing:.05em;color:#1a7a40;margin:.6rem 0 .3rem;}
+.cd-section{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#5a7090;margin:.65rem 0 .25rem;}
+.cd-req{list-style:none;padding:0;margin:0;}
+.cd-req li{font-size:.8rem;color:#2a3a4a;padding:.2rem 0 .2rem .9rem;position:relative;line-height:1.5;}
+.cd-req li::before{content:"✓";position:absolute;left:0;color:#1a7a40;font-weight:800;}
+.cd-programs{display:flex;flex-direction:column;gap:.35rem;margin-top:.25rem;}
+.cd-program{background:#f0f8e8;border:1px solid #b0d8b0;border-radius:7px;padding:.45rem .7rem;}
+.cd-prog-name{font-size:.78rem;font-weight:700;color:#1a4a2a;}
+.cd-prog-desc{font-size:.75rem;color:#3a5a3a;line-height:1.5;margin-top:.1rem;}
+.cd-prog-link{display:inline-block;font-size:.72rem;font-weight:700;color:#1a7a40;text-decoration:none;margin-top:.2rem;}
+.cd-prog-link:hover{text-decoration:underline;}
+.cd-certs{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.25rem;}
+.cd-cert{background:rgba(200,150,10,.1);border:1px solid rgba(200,150,10,.3);color:#7a5500;padding:.15rem .55rem;border-radius:20px;font-size:.72rem;font-weight:600;}
+.cd-timeline{font-size:.8rem;color:#5a7090;font-style:italic;margin:.25rem 0;}
+.cd-vet-adv{background:#eef6ff;border-left:3px solid #1a3a6b;border-radius:0 6px 6px 0;padding:.4rem .65rem;font-size:.8rem;color:#1a3a6b;line-height:1.55;margin:.25rem 0;}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <style id="mobile-nav-css">
@@ -84,7 +112,7 @@
   </div>
   <h2 id="careers">Top Civilian Careers for AME Veterans</h2>
   <p>Your AME Aviation Structural Mechanic (Safety Equipment) training and experience directly translates to these civilian career paths. These are the roles where Navy veterans with your background consistently land and succeed - roles that recognize your operational experience as a genuine advantage.</p>
-  <div class="career-list"><div class="career-item">📌 Aircraft Mechanic</div><div class="career-item">📌 Aviation Maintenance Manager</div><div class="career-item">📌 Quality Assurance Inspector</div><div class="career-item">📌 Field Service Representative</div><div class="career-item">📌 Avionics Technician</div><div class="career-item">📌 Maintenance Supervisor</div></div>
+  <div class="career-list"><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Aircraft Mechanic</span></div></div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Aviation Maintenance Manager</span></div></div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Quality Assurance Inspector</span></div></div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Field Service Representative</span></div></div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Avionics Technician</span></div></div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Maintenance Supervisor</span></div></div></div>
   <div class="civilian-connect">
   <div class="cc-title">💡 Your Military Experience = Civilian Competitive Advantage</div>
   <p>Civilian employers pay a premium for people who have led teams, managed resources under pressure, and delivered results in high-stakes environments. That is your entire career. The gap is not experience — it is translation.</p>
@@ -183,6 +211,12 @@
     }
   });
 })();
+</script>
+
+<script>
+function toggleCareer(el) {
+  el.classList.toggle('open');
+}
 </script>
 </body>
 </html>

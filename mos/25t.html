@@ -26,6 +26,34 @@
 .cc-link:hover{background:#0a1628;}
 .employer-cta{background:#fff8e8;border:1.5px solid rgba(200,150,10,.3);border-left:4px solid #c8960a;border-radius:10px;padding:1rem 1.25rem;margin:1.25rem 0;}
 .employer-cta p{font-size:.86rem;color:#3a2a00;line-height:1.65;margin-bottom:.6rem;}
+
+/* ── EXPANDABLE CAREER CARDS ─────────────────────────────────────────── */
+.career-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem;margin:1rem 0 1.5rem;}
+.career-item{background:#f0f4fa;border:1px solid #d0dce8;border-radius:8px;padding:0;font-size:.88rem;font-weight:600;color:#1a3a6b;cursor:pointer;overflow:hidden;transition:box-shadow .15s;}
+.career-item:hover{box-shadow:0 2px 10px rgba(26,58,107,.15);}
+.career-item-head{display:flex;align-items:center;gap:.5rem;padding:.6rem .9rem;}
+.career-pin{flex-shrink:0;}
+.career-item-label{flex:1;}
+.career-chevron{flex-shrink:0;font-size:.65rem;color:#8aa0c0;transition:transform .2s;}
+.career-item.open .career-chevron{transform:rotate(180deg);}
+.career-item.open{background:#fff;border-color:#1a3a6b;box-shadow:0 2px 12px rgba(26,58,107,.15);}
+.career-drawer{display:none;padding:0 .9rem .9rem;border-top:1px solid #dde3ec;background:#fff;}
+.career-item.open .career-drawer{display:block;}
+.cd-salary{font-family:"Bebas Neue",sans-serif;font-size:1.05rem;letter-spacing:.05em;color:#1a7a40;margin:.6rem 0 .3rem;}
+.cd-section{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#5a7090;margin:.65rem 0 .25rem;}
+.cd-req{list-style:none;padding:0;margin:0;}
+.cd-req li{font-size:.8rem;color:#2a3a4a;padding:.2rem 0 .2rem .9rem;position:relative;line-height:1.5;}
+.cd-req li::before{content:"✓";position:absolute;left:0;color:#1a7a40;font-weight:800;}
+.cd-programs{display:flex;flex-direction:column;gap:.35rem;margin-top:.25rem;}
+.cd-program{background:#f0f8e8;border:1px solid #b0d8b0;border-radius:7px;padding:.45rem .7rem;}
+.cd-prog-name{font-size:.78rem;font-weight:700;color:#1a4a2a;}
+.cd-prog-desc{font-size:.75rem;color:#3a5a3a;line-height:1.5;margin-top:.1rem;}
+.cd-prog-link{display:inline-block;font-size:.72rem;font-weight:700;color:#1a7a40;text-decoration:none;margin-top:.2rem;}
+.cd-prog-link:hover{text-decoration:underline;}
+.cd-certs{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.25rem;}
+.cd-cert{background:rgba(200,150,10,.1);border:1px solid rgba(200,150,10,.3);color:#7a5500;padding:.15rem .55rem;border-radius:20px;font-size:.72rem;font-weight:600;}
+.cd-timeline{font-size:.8rem;color:#5a7090;font-style:italic;margin:.25rem 0;}
+.cd-vet-adv{background:#eef6ff;border-left:3px solid #1a3a6b;border-radius:0 6px 6px 0;padding:.4rem .65rem;font-size:.8rem;color:#1a3a6b;line-height:1.55;margin:.25rem 0;}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <style id="mobile-nav-css">
@@ -84,7 +112,122 @@
   </div>
   <h2 id="careers">Top Civilian Careers for 25T Veterans</h2>
   <p>Your 25T Satellite/Microwave Systems Repairer training and experience directly translates to these civilian career paths. These are the roles where Army veterans with your background consistently land and succeed - roles that recognize your operational experience as a genuine advantage.</p>
-  <div class="career-list"><div class="career-item">📌 Network Administrator</div><div class="career-item">📌 IT Systems Specialist</div><div class="career-item">📌 Cybersecurity Analyst</div><div class="career-item">📌 Telecommunications Technician</div><div class="career-item">📌 IT Project Manager</div><div class="career-item">📌 Communications Manager</div></div>
+  <div class="career-list"><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Network Administrator</span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$60,000–$95,000</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> 25B, 25U, IT rate, and similar MOS holders often have direct hands-on equivalency.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Associate's or Bachelor's in IT; certifications often substitute.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Cisco CCNA or CompTIA Network+ strongly preferred</li><li>Experience with routers, switches, firewalls</li><li>Windows Server / Active Directory knowledge</li><li>Troubleshooting and documentation skills</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">3–9 months to certify; entry-level available immediately.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program">
+          <div class="cd-prog-name">DoD COOL</div>
+          <div class="cd-prog-desc">CCNA, Network+, and other certs funded for active duty.</div>
+          <a href="https://www.cool.osd.mil" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">CompTIA Veterans Program</div>
+          <div class="cd-prog-desc">Discounted certifications for veterans.</div>
+          <a href="https://www.comptia.org/content/lp/workforce-development/veterans" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">VET TEC</div>
+          <div class="cd-prog-desc">Full training program funding including networking tracks.</div>
+          <a href="https://www.va.gov/education/about-gi-bill-benefits/how-to-use-benefits/vettec-high-tech-program/" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">CompTIA Network+</span><span class="cd-cert">CompTIA Security+</span><span class="cd-cert">Cisco CCNA</span><span class="cd-cert">Microsoft Azure Fundamentals</span></div>
+  </div>
+</div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">IT Systems Specialist <span style="font-size:.65rem;color:#8aa0b8;font-weight:400;">(see: Network Administrator)</span></span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$60,000–$95,000</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> 25B, 25U, IT rate, and similar MOS holders often have direct hands-on equivalency.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Associate's or Bachelor's in IT; certifications often substitute.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Cisco CCNA or CompTIA Network+ strongly preferred</li><li>Experience with routers, switches, firewalls</li><li>Windows Server / Active Directory knowledge</li><li>Troubleshooting and documentation skills</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">3–9 months to certify; entry-level available immediately.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program"><div class="cd-prog-name">DoD COOL</div><div class="cd-prog-desc">CCNA, Network+, and other certs funded for active duty.</div><a href="https://www.cool.osd.mil" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">CompTIA Veterans Program</div><div class="cd-prog-desc">Discounted certifications for veterans.</div><a href="https://www.comptia.org/content/lp/workforce-development/veterans" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">VET TEC</div><div class="cd-prog-desc">Full training program funding including networking tracks.</div><a href="https://www.va.gov/education/about-gi-bill-benefits/how-to-use-benefits/vettec-high-tech-program/" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">CompTIA Network+</span><span class="cd-cert">CompTIA Security+</span><span class="cd-cert">Cisco CCNA</span><span class="cd-cert">Microsoft Azure Fundamentals</span></div>
+  </div>
+</div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Cybersecurity Analyst</span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$75,000–$130,000+; Cleared roles: $100,000–$160,000+</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> Active security clearance is worth $10,000–$30,000 in additional compensation. Military cyber experience (CTN, 17C, 25D, 35Q) is directly translatable.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Bachelor's in CS, IT, or Cybersecurity preferred; many roles hire based on certifications + experience.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Security clearance (existing military clearance is gold)</li><li>CompTIA Security+ (DoD 8570 baseline)</li><li>Hands-on experience (labs, CTF, or military equivalent)</li><li>Knowledge of NIST, SIEM tools, network fundamentals</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">Entry-level with Security+: 3–6 months. Mid-level: 2–3 years experience.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program">
+          <div class="cd-prog-name">DoD COOL Certification Funding</div>
+          <div class="cd-prog-desc">Active duty can get Security+, CEH, CISSP funded before separation.</div>
+          <a href="https://www.cool.osd.mil" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">VET TEC Program</div>
+          <div class="cd-prog-desc">VA-funded tech training including cybersecurity bootcamps — full tuition + housing.</div>
+          <a href="https://www.va.gov/education/about-gi-bill-benefits/how-to-use-benefits/vettec-high-tech-program/" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">CyberWarrior Foundation</div>
+          <div class="cd-prog-desc">Cybersecurity training specifically for veterans and first responders.</div>
+          <a href="https://www.cyberwarriorfoundation.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">Onward to Opportunity (O2O)</div>
+          <div class="cd-prog-desc">Free tech certification training for transitioning service members.</div>
+          <a href="https://ivmf.syracuse.edu/programs/career-training/" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">CompTIA Security+</span><span class="cd-cert">CompTIA CySA+</span><span class="cd-cert">CEH</span><span class="cd-cert">CISSP</span><span class="cd-cert">CISM</span><span class="cd-cert">OSCP</span></div>
+  </div>
+</div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">Telecommunications Technician <span style="font-size:.65rem;color:#8aa0b8;font-weight:400;">(see: Network Administrator)</span></span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$60,000–$95,000</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> 25B, 25U, IT rate, and similar MOS holders often have direct hands-on equivalency.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Associate's or Bachelor's in IT; certifications often substitute.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>Cisco CCNA or CompTIA Network+ strongly preferred</li><li>Experience with routers, switches, firewalls</li><li>Windows Server / Active Directory knowledge</li><li>Troubleshooting and documentation skills</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">3–9 months to certify; entry-level available immediately.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program"><div class="cd-prog-name">DoD COOL</div><div class="cd-prog-desc">CCNA, Network+, and other certs funded for active duty.</div><a href="https://www.cool.osd.mil" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">CompTIA Veterans Program</div><div class="cd-prog-desc">Discounted certifications for veterans.</div><a href="https://www.comptia.org/content/lp/workforce-development/veterans" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div><div class="cd-program"><div class="cd-prog-name">VET TEC</div><div class="cd-prog-desc">Full training program funding including networking tracks.</div><a href="https://www.va.gov/education/about-gi-bill-benefits/how-to-use-benefits/vettec-high-tech-program/" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a></div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">CompTIA Network+</span><span class="cd-cert">CompTIA Security+</span><span class="cd-cert">Cisco CCNA</span><span class="cd-cert">Microsoft Azure Fundamentals</span></div>
+  </div>
+</div><div class="career-item" onclick="toggleCareer(this)">
+  <div class="career-item-head">
+    <span class="career-pin">📌</span>
+    <span class="career-item-label">IT Project Manager</span>
+    <span class="career-chevron">▼</span>
+  </div>
+  <div class="career-drawer">
+    <div class="cd-salary">$85,000–$130,000</div>
+    <div class="cd-vet-adv">🎖 <strong>Veteran Advantage:</strong> Any military officer or senior NCO who ran projects, programs, or operations qualifies. Military PM experience often exceeds civilian PM experience in scale and complexity.</div>
+    <div class="cd-section">Education</div><div style="font-size:.8rem;color:#2a3a4a;line-height:1.5;">Bachelor's + PMP certification is the standard.</div>
+    <div class="cd-section">Requirements</div><ul class="cd-req"><li>PMP or CAPM certification</li><li>Agile/Scrum experience</li><li>Stakeholder communication skills</li><li>Budget and timeline management</li><li>Technical background in IT</li></ul>
+    <div class="cd-section">Timeline</div><div class="cd-timeline">PMP prep: 3–6 months. Immediately applicable with military PM experience.</div>
+    <div class="cd-section">Veteran Programs & Resources</div><div class="cd-programs"><div class="cd-program">
+          <div class="cd-prog-name">PMI Military Membership</div>
+          <div class="cd-prog-desc">Discounted PMP exam and training for veterans.</div>
+          <a href="https://www.pmi.org/certifications/project-management-pmp" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">Scrum.org / Scrum Alliance</div>
+          <div class="cd-prog-desc">Agile/Scrum Master certifications — in high demand for IT PM roles.</div>
+          <a href="https://www.scrum.org" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div><div class="cd-program">
+          <div class="cd-prog-name">Post-9/11 GI Bill bootcamps</div>
+          <div class="cd-prog-desc">Many PMP prep bootcamps are GI Bill approved.</div>
+          <a href="https://www.va.gov/education/" target="_blank" rel="noopener" class="cd-prog-link">Visit →</a>
+        </div></div>
+    <div class="cd-section">Key Certifications</div><div class="cd-certs"><span class="cd-cert">PMP</span><span class="cd-cert">CAPM</span><span class="cd-cert">CSM (Certified Scrum Master)</span><span class="cd-cert">SAFe Agilist</span><span class="cd-cert">CompTIA Project+</span></div>
+  </div>
+</div><div class="career-item"><div class="career-item-head"><span class="career-pin">📌</span><span class="career-item-label">Communications Manager</span></div></div></div>
   <div class="civilian-connect">
   <div class="cc-title">💡 Your Military Experience = Civilian Competitive Advantage</div>
   <p>Civilian employers pay a premium for people who have led teams, managed resources under pressure, and delivered results in high-stakes environments. That is your entire career. The gap is not experience — it is translation.</p>
@@ -183,6 +326,12 @@
     }
   });
 })();
+</script>
+
+<script>
+function toggleCareer(el) {
+  el.classList.toggle('open');
+}
 </script>
 </body>
 </html>

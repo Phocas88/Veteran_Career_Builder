@@ -6404,57 +6404,67 @@ Return this exact JSON structure:
                             </div>
                           </div>
                         )}
-
-                      </div>
-                    
-
-
                         {resumeTemplate==="functional"&&(
-                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#000",padding:"1.5rem 2rem",lineHeight:1.45}}>
-                            <div style={{textAlign:"center",marginBottom:"10pt"}}>
+                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a",padding:"1.5rem 2rem",lineHeight:1.45}}>
+                            <div style={{textAlign:"center",marginBottom:"10pt",paddingBottom:"8pt",borderBottom:"2px solid #1a3a6b"}}>
                               <div style={{fontSize:"15pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".04em"}}>{resumeData.name||personal.name}</div>
-                              <div style={{fontSize:"9pt",color:"#333",marginTop:"3pt"}}>{resumeData.contact||personal.email}</div>
-                              {(includeClearance&&resumeData.clearance)&&<div style={{fontSize:"9pt",fontWeight:700,color:"#1a3a6b",marginTop:"2pt"}}>{resumeData.clearance}</div>}
+                              <div style={{fontSize:"9pt",color:"#555",marginTop:"3pt"}}>{resumeData.contact||personal.email}</div>
+                              {(includeClearance&&resumeData.clearance)&&(
+                                <div style={{fontSize:"9pt",fontWeight:700,color:"#1a3a6b",marginTop:"2pt"}}>{resumeData.clearance}</div>
+                              )}
                             </div>
                             {resumeData.summary&&(
-                              <div style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"2px solid #1a3a6b"}}>
-                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"3pt"}}>Professional Profile</div>
-                                <div style={{fontSize:"9.5pt",lineHeight:1.65}}>{resumeData.summary}</div>
+                              <div style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"1px solid #ddd"}}>
+                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"4pt"}}>Professional Profile</div>
+                                <div style={{fontSize:"9.5pt",lineHeight:1.65,color:"#333"}}>{resumeData.summary}</div>
                               </div>
                             )}
                             <div style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"1px solid #ddd"}}>
                               <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"6pt"}}>Core Competencies</div>
                               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"3pt"}}>
-                                {(resumeData.skills||[]).map((s,i)=>(<div key={i} style={{fontSize:"9pt",padding:"2pt 4pt",background:"#f0f4fa",border:"1px solid #d0dcea"}}>&#9632; {s}</div>))}
+                                {(resumeData.skills||[]).map((s,i)=>(
+                                  <div key={i} style={{fontSize:"9pt",padding:"2pt 5pt",background:"#f0f4fa",border:"1px solid #d0dcea"}}>&#9632; {s}</div>
+                                ))}
                               </div>
                             </div>
-                            {["Leadership & Management","Technical Skills","Operations & Logistics","Intelligence & Analysis","Medical & Healthcare","Training & Education"].filter(cat=>(resumeData.experience||[]).some(()=>true)).slice(0,1).map(()=>(
-                              <div key="exp" style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"1px solid #ddd"}}>
-                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"6pt"}}>Relevant Experience</div>
-                                {(resumeData.experience||[]).map((job,i)=>(
-                                  <div key={i} style={{marginBottom:"7pt"}}>
-                                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
-                                      <span style={{fontWeight:700,fontSize:"10pt"}}>{job.title}</span>
-                                      <span style={{fontSize:"8.5pt",color:"#555"}}>{job.dates}</span>
-                                    </div>
-                                    <div style={{fontStyle:"italic",fontSize:"9pt",color:"#444",marginBottom:"3pt"}}>{job.employer}</div>
-                                    {(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",paddingLeft:"10pt",marginBottom:"2pt",lineHeight:1.55}}>&#8226; {b}</div>))}
+                            <div style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"1px solid #ddd"}}>
+                              <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"6pt"}}>Relevant Experience</div>
+                              {(resumeData.experience||[]).map((job,i)=>(
+                                <div key={i} style={{marginBottom:"7pt"}}>
+                                  <div style={{fontWeight:700,fontSize:"10pt"}}>{job.title}</div>
+                                  <div style={{display:"flex",justifyContent:"space-between"}}>
+                                    <span style={{fontStyle:"italic",fontSize:"9pt",color:"#555"}}>{job.employer}</span>
+                                    <span style={{fontSize:"8.5pt",color:"#888"}}>{job.dates}</span>
+                                  </div>
+                                  {(job.bullets||[]).map((b,j)=>(
+                                    <div key={j} style={{fontSize:"9pt",paddingLeft:"10pt",marginTop:"2pt",lineHeight:1.55}}>&#8226; {b}</div>
+                                  ))}
+                                </div>
+                              ))}
+                            </div>
+                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.5rem"}}>
+                              <div>
+                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"5pt",borderBottom:"1px solid #ddd",paddingBottom:"3pt"}}>Education</div>
+                                {(resumeData.education||[]).map((e,i)=>(
+                                  <div key={i} style={{fontSize:"9pt",marginBottom:"4pt"}}>
+                                    <strong>{e.degree}</strong>
+                                    <div style={{color:"#555",fontSize:"8.5pt"}}>{e.school} {e.year}</div>
                                   </div>
                                 ))}
                               </div>
-                            ))}
-                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem"}}>
                               <div>
-                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"4pt",borderBottom:"1px solid #ddd",paddingBottom:"2pt"}}>Education & Training</div>
-                                {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:"4pt"}}><strong>{e.degree}</strong><br/><span style={{color:"#555"}}>{e.school} {e.year}</span></div>))}
-                              </div>
-                              <div>
-                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"4pt",borderBottom:"1px solid #ddd",paddingBottom:"2pt"}}>Certifications</div>
-                                {(resumeData.certifications||[]).map((cert,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:"2pt"}}>&#9632; {cert}</div>))}
+                                <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"5pt",borderBottom:"1px solid #ddd",paddingBottom:"3pt"}}>Certifications</div>
+                                {(resumeData.certifications||[]).map((cert,i)=>(
+                                  <div key={i} style={{fontSize:"9pt",marginBottom:"3pt"}}>&#9632; {cert}</div>
+                                ))}
                               </div>
                             </div>
                           </div>
                         )}
+
+                      </div>
+                    
+
 
 ) : (
                       <div style={{width:"100%",maxWidth:"760px",background:"#fff",boxShadow:"0 4px 20px rgba(0,0,0,.15)",padding:"2rem 2.4rem",fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>

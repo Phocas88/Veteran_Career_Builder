@@ -83,6 +83,7 @@ html,body{overflow-x:hidden;max-width:100%;}
 .vcp-mob-sr-snip{font-size:.75rem;color:rgba(192,216,240,.5);margin-top:.1rem;line-height:1.4;}
 .vcp-mob-sr-snip em{color:rgba(240,192,64,.8);font-style:normal;}
 @media(max-width:960px){.vcp-desk{display:none!important;}.vcp-search-wrap{display:none!important;}.vcp-ham{display:flex;}}
+.adsbygoogle{min-height:0!important;}
 </style>
 <nav class="vcp-nav">
   <a href="https://veterancareerpath.com" class="vcp-logo">
@@ -107,19 +108,33 @@ html,body{overflow-x:hidden;max-width:100%;}
 </nav>
 <div class="vcp-drop" id="vcp-drop">
   <div class="vcp-drop-col">
-<div class="vcp-drop-grp"><div class="vcp-drop-grp-title">AI Career Tools</div>
-<a href="https://veterancareerpath.com/app.html">AI Career Builder</a>
-<a href="https://veterancareerpath.com/free-assessment.html">Free Career Assessment</a>
-<a href="https://veterancareerpath.com/career-assessment-full.html">Full Assessment (Subscribers)</a>
-<a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
-<a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
-<a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume Builder</a>
-<a href="https://veterancareerpath.com/tools-interview-simulator.html">Interview Simulator</a>
-<a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Builder</a>
-<a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Negotiator</a>
-<a href="https://veterancareerpath.com/tools-cert-advisor.html">Certification Advisor</a>
-<a href="https://veterancareerpath.com/tools-job-tracker.html">Job Application Tracker</a>
-<a href="https://veterancareerpath.com/training.html">Training Library</a>
+<div class="vcp-drop-grp"><div class="vcp-drop-grp-title">AI Tools — $15/mo</div>
+<a href="https://veterancareerpath.com/app.html">🤖 AI Career Builder App</a>
+<a href="https://veterancareerpath.com/tools-job-match.html">🎯 Job Match Analyzer</a>
+<a href="https://veterancareerpath.com/tools-federal-resume.html">🏛 Federal Resume Builder</a>
+<a href="https://veterancareerpath.com/tools-interview-simulator.html">🎤 Interview Simulator</a>
+<a href="https://veterancareerpath.com/tools-linkedin-builder.html">🔗 LinkedIn Optimizer</a>
+<a href="https://veterancareerpath.com/tools-salary-negotiator.html">💰 Salary Negotiator</a>
+<a href="https://veterancareerpath.com/tools-cert-advisor.html">📋 Certification Advisor</a>
+<a href="https://veterancareerpath.com/tools-job-tracker.html">📁 Job Application Tracker</a>
+<a href="https://veterancareerpath.com/career-assessment-full.html">🧠 Full Career Assessment (AI)</a>
+<a href="https://veterancareerpath.com/mos-career-translator.html">🔄 Real MOS Experience Translator (AI)</a>
+<a href="https://veterancareerpath.com/dd214-decoder.html">📋 DD-214 Decoder</a>
+<a href="https://veterancareerpath.com/clearance-job-match.html">🔐 Clearance Job Match</a>
+<a href="https://veterancareerpath.com/linkedin-profile-rewriter.html">🔵 LinkedIn Profile Rewriter</a>
+<a href="https://veterancareerpath.com/federal-resume-builder-ai.html">🏛 Federal Resume AI Builder</a>
+<a href="https://veterancareerpath.com/salary-negotiation-roleplay.html">🎯 Salary Negotiation Role-Play</a>
+<a href="https://veterancareerpath.com/transition-timeline-planner.html">📅 Transition Timeline Planner</a>
+<a href="https://veterancareerpath.com/veteran-business-funding.html">💼 Veteran Business Funding</a>
+<a href="https://veterancareerpath.com/va-home-loan-analyzer.html">🏠 VA Home Loan Analyzer</a>
+</div>
+<div class="vcp-drop-grp"><div class="vcp-drop-grp-title">Free Tools</div>
+<a href="https://veterancareerpath.com/free-assessment.html">Free 10-Question Career Assessment</a>
+<a href="https://veterancareerpath.com/federal-jobs-search.html">Federal Job Search</a>
+<a href="https://veterancareerpath.com/should-i-reenlist-calculator.html">Reenlist vs Separate Calculator</a>
+<a href="https://veterancareerpath.com/pcs-ets-move-calculator.html">PCS/DITY Move Calculator</a>
+<a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Disability Calculator</a>
+<a href="https://veterancareerpath.com/vet-resources.html">Veteran Resources Directory</a>
 </div>
 <div class="vcp-drop-grp"><div class="vcp-drop-grp-title">Transition Guides</div>
 <a href="https://veterancareerpath.com/military-transition-guide.html">Military Transition Guide</a>
@@ -644,13 +659,37 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
             <option>3-5 years</option><option>5+ years</option>
           </select>
         </div>
-        <button class="submit-btn" onclick="submitSalary()">SUBMIT ANONYMOUSLY →</button>
-        <p class="note">No name, email, or identifying info collected. Salary data is displayed as-submitted after a quick review for accuracy.</p>
+        <div class="auto-approve-row" id="admin-approve-row" style="display:none;">
+  <input type="checkbox" id="sf-auto-approve" checked>
+  <label for="sf-auto-approve">Publish immediately (admin mode active)</label>
+</div>
+<button class="submit-btn" onclick="submitSalary()">SUBMIT ANONYMOUSLY →</button>
+        <p class="note">No name, email, or identifying info collected. Your entry appears in the table immediately after submission.</p>
       </div>
       <div class="success-box" id="salary-success">
         <div style="font-size:2rem;margin-bottom:.5rem;">✅</div>
-        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#1a7a40;margin-bottom:.35rem;">Salary Submitted!</h3>
-        <p style="font-size:.82rem;color:#3a5a3a;">Thank you. Your data helps every veteran who follows you negotiate from a position of knowledge.</p>
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#1a7a40;margin-bottom:.35rem;">Salary Added — Live Now!</h3>
+        <p style="font-size:.82rem;color:#3a5a3a;margin-bottom:.65rem;">Your entry is now visible in the table on the left. Thank you — you just helped every veteran with your MOS negotiate smarter.</p>
+        <button onclick="document.getElementById('salary-form').style.display='block';document.getElementById('salary-success').classList.remove('show');" style="background:#1a3a6b;color:#fff;border:none;border-radius:7px;padding:.45rem 1rem;font-size:.8rem;font-weight:600;cursor:pointer;">+ Submit Another</button>
+      </div>
+
+      <!-- ADMIN TOGGLE -->
+      <button class="admin-toggle" onclick="toggleAdminPanel()">⚙ Admin</button>
+      <div class="admin-panel" id="admin-panel">
+        <h3>🔐 Admin Panel</h3>
+        <div id="admin-locked">
+          <div class="admin-pin-row">
+            <input type="password" id="admin-pin-input" placeholder="Enter admin PIN" onkeydown="if(event.key==='Enter')unlockAdmin()">
+            <button onclick="unlockAdmin()">Unlock</button>
+          </div>
+        </div>
+        <div id="admin-unlocked" style="display:none;">
+          <p style="font-size:.75rem;color:rgba(192,216,240,.5);margin-bottom:.75rem;">Admin mode active — submissions will publish immediately.</p>
+          <h4 style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.5rem;">Pending Submissions</h4>
+          <div class="pending-list" id="pending-list">
+            <div class="no-pending">Loading pending submissions...</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -745,7 +784,124 @@ function submitSalary() {
     clearance: document.getElementById('sf-clear').value,
     state: document.getElementById('sf-state').value.trim(),
     since: document.getElementById('sf-since').value,
-    approved: false,
+    approved: true, // Salary data auto-approved — low spam risk, just numbers
+    submittedAt: new Date().toISOString()
+  };
+
+  if(window.db){
+    window.db.collection('salaryData').add(data)
+      .then(function(){
+        // Add to live list immediately so submitter sees their entry
+        allData.unshift(data);
+        renderData(allData);
+        document.getElementById('salary-form').style.display='none';
+        document.getElementById('salary-success').classList.add('show');
+      }).catch(function(e){alert('Submission failed. Try again.'); console.error(e);});
+  } else {
+    // No Firebase — still show locally in this session
+    allData.unshift(data);
+    renderData(allData);
+    document.getElementById('salary-form').style.display='none';
+    document.getElementById('salary-success').classList.add('show');
+  }
+}
+
+loadData();
+
+var adminUnlocked = false;
+var ADMIN_PIN_HASH = '1988'; // Simple PIN — change in production
+
+function toggleAdminPanel() {
+  var panel = document.getElementById('admin-panel');
+  panel.classList.toggle('open');
+}
+
+function unlockAdmin() {
+  var pin = document.getElementById('admin-pin-input').value;
+  if(pin === ADMIN_PIN_HASH) {
+    adminUnlocked = true;
+    document.getElementById('admin-locked').style.display = 'none';
+    document.getElementById('admin-unlocked').style.display = 'block';
+    document.getElementById('admin-approve-row').style.display = 'flex';
+    loadPending();
+  } else {
+    alert('Incorrect PIN');
+    document.getElementById('admin-pin-input').value = '';
+  }
+}
+
+function loadPending() {
+  var list = document.getElementById('pending-list');
+  if(!window.db){ list.innerHTML = '<div class="no-pending">Firebase not connected</div>'; return; }
+  window.db.collection('salaryData')
+    .where('approved','==',false)
+    .orderBy('submittedAt','desc')
+    .limit(50)
+    .get()
+    .then(function(snap){
+      if(snap.empty){ list.innerHTML = '<div class="no-pending">No pending submissions ✓</div>'; return; }
+      list.innerHTML = '';
+      snap.forEach(function(doc){
+        var d = doc.data();
+        var div = document.createElement('div');
+        div.className = 'pending-item';
+        div.innerHTML = '<div class="pending-item-title">'+d.mos+' — '+d.title+'</div>'+
+          '<div class="pending-item-meta">'+d.branch+' · '+d.rank+' · '+d.yos+' · '+d.sector+'<br>'+
+          '$'+(d.salary||0).toLocaleString()+'/yr · '+(d.clearance||'no clearance')+' · '+(d.state||'')+
+          '<br><span style="color:rgba(192,216,240,.3)">Submitted: '+d.submittedAt.slice(0,10)+'</span></div>'+
+          '<div class="pending-actions">'+
+          '<button class="btn-approve" data-id="'+doc.id+'" onclick="approveEntry(this.dataset.id,this)">✓ Approve</button>'+
+          '<button class="btn-reject" data-id="'+doc.id+'" onclick="rejectEntry(this.dataset.id,this)">✕ Delete</button>'+
+          '</div>';
+        list.appendChild(div);
+      });
+    })
+    .catch(function(e){ list.innerHTML = '<div class="no-pending">Error loading: '+e.message+'</div>'; });
+}
+
+function approveEntry(id, btn) {
+  btn.disabled = true;
+  btn.textContent = 'Approving...';
+  window.db.collection('salaryData').doc(id).update({approved: true})
+    .then(function(){
+      btn.closest('.pending-item').style.opacity = '.4';
+      btn.textContent = '✓ Approved';
+      // Add to live data immediately
+      window.db.collection('salaryData').doc(id).get().then(function(doc){
+        if(doc.exists){ allData.push(doc.data()); renderData(allData); }
+      });
+    }).catch(function(e){ btn.textContent = 'Error'; console.error(e); });
+}
+
+function rejectEntry(id, btn) {
+  if(!confirm('Delete this submission permanently?')) return;
+  btn.disabled = true;
+  window.db.collection('salaryData').doc(id).delete()
+    .then(function(){ btn.closest('.pending-item').remove(); })
+    .catch(function(e){ console.error(e); });
+}
+
+// Override submitSalary to check admin mode
+var _origSubmitSalary = submitSalary;
+submitSalary = function() {
+  var autoApprove = adminUnlocked && document.getElementById('sf-auto-approve') && document.getElementById('sf-auto-approve').checked;
+  var sal = parseInt(document.getElementById('sf-salary').value);
+  if(!sal || sal < 20000 || sal > 1000000){ alert('Please enter a valid annual salary.'); return; }
+  var mos = document.getElementById('sf-mos').value.trim();
+  if(!mos){ alert('Please enter your MOS.'); return; }
+
+  var data = {
+    branch: document.getElementById('sf-branch').value,
+    mos: mos.toUpperCase(),
+    rank: document.getElementById('sf-rank').value,
+    yos: document.getElementById('sf-yos').value,
+    title: document.getElementById('sf-title').value.trim(),
+    sector: document.getElementById('sf-sector').value,
+    salary: sal,
+    clearance: document.getElementById('sf-clear').value,
+    state: document.getElementById('sf-state').value.trim(),
+    since: document.getElementById('sf-since').value,
+    approved: autoApprove, // true if admin, false if regular user
     submittedAt: new Date().toISOString()
   };
 
@@ -753,15 +909,21 @@ function submitSalary() {
     window.db.collection('salaryData').add(data)
       .then(function(){
         document.getElementById('salary-form').style.display='none';
-        document.getElementById('salary-success').classList.add('show');
-      }).catch(function(e){alert('Submission failed. Try again.'); console.error(e);});
+        var successEl = document.getElementById('salary-success');
+        successEl.classList.add('show');
+        if(autoApprove) {
+          successEl.querySelector('h3').textContent = 'Published!';
+          successEl.querySelector('p').textContent = 'Your salary data is now live on the page.';
+          allData.push(data);
+          renderData(allData);
+        }
+      }).catch(function(e){ alert('Submission failed. Try again.'); console.error(e); });
   } else {
     document.getElementById('salary-form').style.display='none';
     document.getElementById('salary-success').classList.add('show');
   }
-}
+};
 
-loadData();
 </script>
 </body>
 </html>

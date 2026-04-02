@@ -69,6 +69,29 @@ select option{background:#1a2a4a;color:#fff}
 @media print{nav,.mmenu,.hamburger,footer,.tool-hero,#tool-actions{display:none !important}body{background:#fff;color:#000}.result-text{color:#000;background:#fff}.result-box{border:none;background:#fff}}
 @media(max-width:600px){.tool-wrap{padding:1.25rem 1rem}}
 .adsbygoogle{min-height:0!important;}
+
+/* ── LINKEDIN RESULT SECTIONS ────────────────────────────────────────────── */
+.li-section{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1.1rem 1.35rem;margin-bottom:.85rem;overflow:hidden;}
+.li-section-head{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#0077b5;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid rgba(0,119,181,.2);display:flex;align-items:center;gap:.4rem;}
+.li-section.headline{border-left:3px solid #0077b5;}
+.li-section.about{border-left:3px solid #4ade80;}
+.li-section.experience{border-left:3px solid #f0c040;}
+.li-section.skills{border-left:3px solid #c084fc;}
+.li-section.featured{border-left:3px solid #fb923c;}
+.li-section.action{border-left:3px solid #60a5fa;}
+.li-option{background:rgba(0,119,181,.08);border:1px solid rgba(0,119,181,.2);border-radius:8px;padding:.7rem 1rem;margin-bottom:.5rem;font-size:.85rem;color:rgba(192,216,240,.9);line-height:1.6;cursor:pointer;transition:background .15s;}
+.li-option:hover{background:rgba(0,119,181,.18);}
+.li-option-label{font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#0077b5;margin-bottom:.3rem;}
+.li-body{font-size:.85rem;color:rgba(192,216,240,.88);line-height:1.75;}
+.li-body p{margin-bottom:.6rem;}
+.li-bullet{display:flex;gap:.6rem;align-items:flex-start;padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.li-bullet:last-child{border-bottom:none;}
+.li-bullet-dot{width:5px;height:5px;border-radius:50%;background:#f0c040;flex-shrink:0;margin-top:.5rem;}
+.li-bullet-text{font-size:.84rem;color:rgba(192,216,240,.88);line-height:1.65;}
+.li-skill-grid{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.25rem;}
+.li-skill-tag{background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.25);color:#c084fc;padding:.2rem .6rem;border-radius:20px;font-size:.73rem;font-weight:600;}
+.li-copy-btn{background:rgba(0,119,181,.15);border:1px solid rgba(0,119,181,.3);color:#60a5fa;font-size:.7rem;padding:.15rem .5rem;border-radius:5px;cursor:pointer;float:right;margin-top:-1.5rem;}
+
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <meta property="og:title" content="AI LinkedIn Profile Builder for Veterans">
@@ -617,13 +640,15 @@ html,body{overflow-x:hidden;max-width:100%;}
     <textarea id="li-wins" style="min-height:80px" placeholder="e.g. Managed $4M equipment with 99% accountability across 3 deployments..."></textarea></div>
   <button class="btn btn-blue" id="li-btn" style="background:linear-gradient(135deg,#0a66c2,#0d7fd4)">&#128101; Generate LinkedIn Profile</button>
 </div>
-<div class="result-box" id="li-result">
-  <div class="result-title">Your LinkedIn Profile</div>
-  <div class="result-text"></div>
-  <div id="tool-actions" style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap">
-    <button class="btn btn-blue" onclick="navigator.clipboard.writeText(document.querySelector('#li-result .result-text').textContent).then(()=>alert('Copied!'))" style="font-size:.78rem;padding:.45rem .9rem">Copy All Text</button>
-    <button class="btn btn-blue" onclick="window.print()" style="font-size:.78rem;padding:.45rem .9rem">Print / Save PDF</button>
+<div id="li-result" style="display:none;margin-top:1.25rem;">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#0077b5;">🔵 Your LinkedIn Profile</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+      <button onclick="copyLinkedIn()" class="btn btn-blue" style="font-size:.78rem;padding:.45rem .9rem;">📋 Copy All Text</button>
+      <button onclick="window.print()" class="btn btn-blue" style="font-size:.78rem;padding:.45rem .9rem;">🖨️ Print</button>
+    </div>
   </div>
+  <div id="li-sections"></div>
 </div>
   </div>
 </div><!-- end tool-content -->
@@ -988,10 +1013,132 @@ document.getElementById('li-btn').addEventListener('click', async function() {
   '## 3 PROFILE QUICK WINS\n' +
   '[Three things to do in the next 24 hours to increase visibility]';
 
-  await callClaude(prompt,
-    'You are a LinkedIn profile expert for military-to-civilian transitions. Write compelling profiles that civilian recruiters love. Never use military acronyms without explanation. Quantify everything. Make the opening hook impossible to ignore.',
-    { btn: 'li-btn', result: 'li-result', btnLabel: '&#128101; Generate LinkedIn Profile', maxTokens: 2500 });
+  var btn = document.getElementById('li-btn');
+  var resultDiv = document.getElementById('li-result');
+  var sectionsDiv = document.getElementById('li-sections');
+  
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Building your profile…';
+  resultDiv.style.display = 'none';
+
+  try {
+    var body = {
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2500,
+      system: 'You are an expert LinkedIn profile writer for military-to-civilian transitions. You write clear, compelling, jargon-free profiles that get veterans noticed by civilian recruiters. Quantify everything. Never use military acronyms without a civilian translation. Always follow the EXACT section structure requested.',
+      messages: [{role: 'user', content: prompt}]
+    };
+    var r = await fetch(PROXY, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    if (!r.ok) throw new Error('API error ' + r.status);
+    var data = await r.json();
+    var text = (data.content||[]).map(function(b){return b.text||'';}).join('');
+    if (!text) throw new Error('No content returned');
+    renderLinkedInSections(text);
+    resultDiv.style.display = 'block';
+    resultDiv.scrollIntoView({behavior:'smooth', block:'start'});
+  } catch(e) {
+    resultDiv.style.display = 'block';
+    sectionsDiv.innerHTML = '<div style="color:#ff8080;padding:1rem;border:1px solid rgba(255,100,100,.3);border-radius:8px;">⚠️ ' + e.message + '</div>';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '&#128101; Generate LinkedIn Profile';
+  }
 });
+
+function copyLinkedIn() {
+  var el = document.getElementById('li-sections');
+  if (!el) return;
+  navigator.clipboard.writeText(el.innerText).then(function() {
+    alert('LinkedIn profile copied! Paste sections directly into LinkedIn.');
+  });
+}
+
+function renderLinkedInSections(text) {
+  var sections = document.getElementById('li-sections');
+
+  // Parse the AI response into labeled sections
+  // Split on ## headers
+  var parts = text.split(/\n##\s+/);
+  var html = '';
+
+  var sectionConfig = {
+    'HEADLINE': {icon:'✍️', cls:'headline', label:'Headline Options', hint:'Click to copy a headline'},
+    'ABOUT': {icon:'👤', cls:'about', label:'About Section'},
+    'EXPERIENCE': {icon:'🎖️', cls:'experience', label:'Experience Bullets'},
+    'SKILLS': {icon:'⚡', cls:'skills', label:'Top Skills to Add'},
+    'FEATURED': {icon:'📌', cls:'featured', label:'Featured Section'},
+    'CONNECTION': {icon:'🤝', cls:'action', label:'Connection Message Template'},
+    'QUICK WINS': {icon:'🚀', cls:'action', label:'3 Profile Quick Wins'},
+  };
+
+  parts.forEach(function(part) {
+    if (!part.trim()) return;
+    var firstLine = part.split('\n')[0].trim().toUpperCase();
+    var body = part.split('\n').slice(1).join('\n').trim();
+    if (!body) return;
+
+    // Match to a section config
+    var cfg = null;
+    var cfgKey = '';
+    Object.keys(sectionConfig).forEach(function(k) {
+      if (firstLine.includes(k)) { cfg = sectionConfig[k]; cfgKey = k; }
+    });
+    if (!cfg) cfg = {icon:'📄', cls:'', label: part.split('\n')[0].trim()};
+
+    var innerHtml = '';
+
+    if (cfgKey === 'HEADLINE') {
+      // Render each option as a clickable card
+      var options = body.split(/\nOption \d+:\s*/i).filter(function(o){ return o.trim(); });
+      if (options.length <= 1) options = body.split('\n').filter(function(l){ return l.trim(); });
+      innerHtml = options.map(function(opt, i) {
+        opt = opt.trim().replace(/^Option \d+:\s*/i,'');
+        if (!opt) return '';
+        return '<div class="li-option" onclick="navigator.clipboard.writeText(this.querySelector(\'.li-opt-text\').textContent)">' +
+          '<div class="li-option-label">Option ' + (i+1) + ' — click to copy</div>' +
+          '<div class="li-opt-text">' + opt + '</div>' +
+          '</div>';
+      }).join('');
+    } else if (cfgKey === 'SKILLS') {
+      // Render as tag pills
+      var skills = body.split(/[,\n]/).map(function(s){ return s.replace(/^\d+\.\s*/, '').trim(); }).filter(Boolean);
+      innerHtml = '<div class="li-skill-grid">' +
+        skills.map(function(s){ return '<span class="li-skill-tag">' + s + '</span>'; }).join('') +
+        '</div>';
+    } else {
+      // Render paragraphs and bullets
+      var lines = body.split('\n');
+      var inBullets = false;
+      lines.forEach(function(line) {
+        line = line.trim();
+        if (!line) { innerHtml += '<div style="height:.4rem;"></div>'; return; }
+        // Clean markdown
+        line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>');
+        if (/^[-•]\s/.test(line)) {
+          innerHtml += '<div class="li-bullet"><div class="li-bullet-dot"></div><div class="li-bullet-text">' + line.replace(/^[-•]\s*/,'') + '</div></div>';
+        } else if (/^\d+\.\s/.test(line)) {
+          innerHtml += '<div class="li-bullet"><div class="li-bullet-dot"></div><div class="li-bullet-text">' + line.replace(/^\d+\.\s*/,'') + '</div></div>';
+        } else {
+          innerHtml += '<div class="li-body"><p>' + line + '</p></div>';
+        }
+      });
+    }
+
+    html += '<div class="li-section ' + cfg.cls + '">' +
+      '<div class="li-section-head">' + cfg.icon + ' ' + cfg.label + '</div>' +
+      innerHtml +
+      '</div>';
+  });
+
+  // If no ## sections parsed, fall back to styled plain text
+  if (!html) {
+    html = '<div class="li-section"><div class="li-body">' +
+      text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>') +
+      '</div></div>';
+  }
+
+  sections.innerHTML = html;
+}
 </script>
 </body>
 </html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VeteranCareerPath.com — Visual Site Map</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0a0f1a;color:#e8f0f8;min-height:100vh;}
+
+/* ── HEADER ── */
+.hdr{background:linear-gradient(135deg,#060d1a,#0d1f3c);border-bottom:2px solid #c8960a;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:sticky;top:0;z-index:100;}
+.hdr-title{font-size:1.25rem;font-weight:800;color:#f0c040;letter-spacing:.05em;}
+.hdr-sub{font-size:.75rem;color:rgba(192,216,240,.45);margin-top:.15rem;}
+.hdr-stats{display:flex;gap:1.5rem;}
+.hstat{text-align:center;}
+.hstat-n{font-size:1.5rem;font-weight:800;color:#f0c040;line-height:1;}
+.hstat-l{font-size:.6rem;color:rgba(192,216,240,.4);text-transform:uppercase;letter-spacing:.08em;}
+
+/* ── CONTROLS ── */
+.controls{padding:1rem 2rem;background:#08111e;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.search-box{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:8px;padding:.45rem .9rem .45rem 2rem;color:#fff;font-size:.85rem;width:260px;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:.6rem center;}
+.search-box:focus{border-color:rgba(240,192,64,.4);}
+.view-btns{display:flex;gap:.35rem;margin-left:auto;}
+.view-btn{padding:.38rem .85rem;border-radius:7px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:rgba(192,216,240,.6);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .15s;}
+.view-btn.active,.view-btn:hover{background:rgba(240,192,64,.1);border-color:rgba(240,192,64,.3);color:#f0c040;}
+.filter-label{font-size:.75rem;color:rgba(192,216,240,.4);}
+
+/* ── MAIN LAYOUT ── */
+.main{padding:1.5rem 2rem 3rem;}
+
+/* ── CATEGORY CARD ── */
+.cat-section{margin-bottom:1.75rem;}
+.cat-header{display:flex;align-items:center;gap:.75rem;padding:.65rem 1rem;border-radius:10px 10px 0 0;cursor:pointer;user-select:none;transition:opacity .15s;}
+.cat-header:hover{opacity:.85;}
+.cat-icon{font-size:1.3rem;flex-shrink:0;}
+.cat-name{font-size:.95rem;font-weight:800;letter-spacing:.03em;}
+.cat-note{font-size:.72rem;opacity:.65;margin-left:.25rem;}
+.cat-count{margin-left:auto;background:rgba(0,0,0,.2);border-radius:20px;padding:.1rem .5rem;font-size:.7rem;font-weight:700;white-space:nowrap;}
+.cat-toggle{margin-left:.35rem;font-size:.7rem;transition:transform .2s;}
+.cat-toggle.collapsed{transform:rotate(-90deg);}
+
+/* ── PAGE GRID ── */
+.page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.55rem;padding:.65rem;border:1px solid rgba(255,255,255,.06);border-top:none;border-radius:0 0 10px 10px;background:rgba(255,255,255,.015);}
+.page-grid.collapsed{display:none;}
+
+/* ── PAGE CARD ── */
+.page-card{background:#0e1a2e;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:.65rem .8rem;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
+.page-card:hover{border-color:rgba(240,192,64,.3);background:#131f35;transform:translateY(-1px);}
+.page-card.highlighted{border-color:#f0c040;background:#161e2e;}
+.page-card.dimmed{opacity:.25;}
+.page-card-icon{font-size:.8rem;margin-bottom:.2rem;opacity:.6;}
+.page-card-title{font-size:.78rem;font-weight:700;color:#e8f0f8;line-height:1.35;margin-bottom:.2rem;}
+.page-card-fname{font-size:.62rem;color:rgba(192,216,240,.3);font-family:monospace;word-break:break-all;}
+.page-card-badge{position:absolute;top:.4rem;right:.4rem;font-size:.55rem;font-weight:700;padding:.08rem .35rem;border-radius:10px;text-transform:uppercase;letter-spacing:.06em;}
+.badge-free{background:rgba(26,122,64,.2);color:#4ade80;border:1px solid rgba(26,122,64,.3);}
+.badge-ai{background:rgba(200,150,10,.2);color:#f0c040;border:1px solid rgba(200,150,10,.3);}
+.badge-new{background:rgba(100,50,200,.2);color:#b090ff;border:1px solid rgba(100,50,200,.3);}
+
+/* ── LIST VIEW ── */
+.list-view .page-grid{grid-template-columns:1fr;}
+.list-view .page-card{display:flex;align-items:center;gap:.75rem;padding:.45rem .75rem;}
+.list-view .page-card-title{margin-bottom:0;flex:1;}
+.list-view .page-card-fname{flex:0 0 280px;text-align:right;}
+.list-view .page-card-badge{position:static;margin-left:.35rem;}
+
+/* ── DETAIL PANEL ── */
+.detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;backdrop-filter:blur(3px);}
+.detail-overlay.open{display:flex;align-items:center;justify-content:center;padding:2rem;}
+.detail-panel{background:#0d1f3c;border:1.5px solid rgba(240,192,64,.2);border-radius:14px;padding:2rem;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;position:relative;}
+.detail-close{position:absolute;top:.85rem;right:.85rem;background:rgba(255,255,255,.08);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;}
+.detail-close:hover{background:rgba(255,255,255,.15);}
+.detail-cat{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;opacity:.5;margin-bottom:.4rem;}
+.detail-title{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:.35rem;line-height:1.35;}
+.detail-desc{font-size:.83rem;color:rgba(192,216,240,.65);line-height:1.7;margin-bottom:1.1rem;}
+.detail-url{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:.55rem .85rem;font-family:monospace;font-size:.78rem;color:#c0d8f0;display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:1rem;word-break:break-all;}
+.detail-copy{background:rgba(240,192,64,.15);border:1px solid rgba(240,192,64,.25);color:#f0c040;border-radius:5px;padding:.2rem .6rem;font-size:.7rem;font-weight:700;cursor:pointer;flex-shrink:0;white-space:nowrap;}
+.detail-copy:hover{background:rgba(240,192,64,.25);}
+.detail-btns{display:flex;gap:.6rem;}
+.detail-btn-visit{flex:1;text-align:center;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#060d1a;font-weight:700;font-size:.85rem;padding:.65rem;border-radius:8px;text-decoration:none;}
+.detail-btn-visit:hover{opacity:.9;}
+
+/* ── STATS SUMMARY ── */
+.summary-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.sum-chip{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:.4rem .85rem;font-size:.75rem;color:rgba(192,216,240,.6);display:flex;align-items:center;gap:.4rem;cursor:pointer;transition:all .15s;}
+.sum-chip:hover,.sum-chip.active{border-color:rgba(240,192,64,.3);color:#f0c040;background:rgba(240,192,64,.06);}
+.sum-chip-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* ── EMPTY STATE ── */
+.no-results{text-align:center;padding:3rem;color:rgba(192,216,240,.3);}
+.no-results h3{font-size:1rem;margin-bottom:.4rem;}
+
+@media(max-width:700px){
+  .hdr{padding:1rem;}
+  .main{padding:1rem;}
+  .controls{padding:.75rem 1rem;}
+  .search-box{width:100%;}
+  .hdr-stats{gap:.75rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <div class="hdr-title">🗺️ VeteranCareerPath.com — Visual Site Map</div>
+    <div class="hdr-sub">Every page, organized by category · Click any card for details</div>
+  </div>
+  <div class="hdr-stats">
+    <div class="hstat"><div class="hstat-n" id="total-pages">97</div><div class="hstat-l">Total Pages</div></div>
+    <div class="hstat"><div class="hstat-n">10</div><div class="hstat-l">Categories</div></div>
+    <div class="hstat"><div class="hstat-n">8</div><div class="hstat-l">AI Tools</div></div>
+    <div class="hstat"><div class="hstat-n">Free</div><div class="hstat-l">Most Resources</div></div>
+  </div>
+</div>
+
+<div class="controls">
+  <input class="search-box" type="text" id="search" placeholder="Search pages..." oninput="handleSearch(this.value)">
+  <span class="filter-label" id="filter-info"></span>
+  <div class="view-btns">
+    <button class="view-btn active" onclick="setView('grid',this)">⊞ Grid</button>
+    <button class="view-btn" onclick="setView('list',this)">≡ List</button>
+  </div>
+</div>
+
+<div class="main" id="main">
+
+  <!-- Summary chips -->
+  <div class="summary-row" id="summary-row"></div>
+
+  <!-- Categories rendered by JS -->
+  <div id="cat-container"></div>
+  <div class="no-results" id="no-results" style="display:none;">
+    <h3>No pages found</h3>
+    <p>Try a different search term</p>
+  </div>
+</div>
+
+<!-- Detail overlay -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detail-panel">
+    <button class="detail-close" onclick="closeDetailBtn()">✕</button>
+    <div class="detail-cat" id="d-cat"></div>
+    <div class="detail-title" id="d-title"></div>
+    <div class="detail-desc" id="d-desc"></div>
+    <div class="detail-url">
+      <span id="d-url"></span>
+      <button class="detail-copy" onclick="copyUrl()">Copy URL</button>
+    </div>
+    <div class="detail-btns">
+      <a class="detail-btn-visit" id="d-visit" href="#" target="_blank" rel="noopener">Open Page →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+var BASE = 'https://veterancareerpath.com';
+
+var NEW_PAGES = new Set([
+  'federal-jobs-search.html','ets-transition-checklist.html','veteran-success-stories.html',
+  'veteran-salary-data.html','tap-resource-pack.html','admin.html'
+]);
+var AI_PAGES = new Set([
+  'app.html','tools-job-match.html','tools-federal-resume.html','tools-interview-simulator.html',
+  'tools-linkedin-builder.html','tools-salary-negotiator.html','tools-cert-advisor.html',
+  'tools-job-tracker.html','tools-newsletter.html','career-assessment-full.html'
+]);
+
+var CATS = [
+  {
+    id:'ai', icon:'🤖', name:'AI Tools & App', color:'#c8960a', bg:'rgba(200,150,10,.08)', border:'rgba(200,150,10,.25)',
+    note:'$15/month subscriber tools + free assessment',
+    pages:[
+      {f:'index.html', t:'Homepage / Landing Page', d:'The complete veteran platform landing page. Hero, pillars, platform grid, AI tools, MOS branches, pricing.'},
+      {f:'app.html', t:'AI Career Builder App', d:'Main React SPA with 6 tabs: Profile, Career Pathways, Resume Builder, Cover Letter, Job Search Hub, My Profile.'},
+      {f:'veteran-career-test.html', t:'Career Assessment Hub', d:'Gateway to free preview and full 60-question assessment. Branch/situation selector.'},
+      {f:'career-assessment-full.html', t:'Full 60-Question Assessment', d:'Complete RIASEC personality assessment for subscribers. Results saved to Firebase.'},
+      {f:'free-assessment.html', t:'Free Assessment (10 Questions)', d:'Free 10-question preview. No account needed. Upgrade CTA to full assessment.'},
+      {f:'mos-career-translator.html', t:'MOS Translator', d:'Translate any MOS, NEC, or AFSC into civilian job titles, salary ranges, and certifications.'},
+      {f:'tools-job-match.html', t:'Job Match Analyzer (AI)', d:'Paste any job posting. AI gives honest match score, gaps, military jargon to translate, ATS keywords. Also has Resume vs Job mode.'},
+      {f:'tools-federal-resume.html', t:'Federal Resume Builder (AI)', d:'USAJobs-format federal resume from military experience with KSAs and veterans preference language.'},
+      {f:'tools-interview-simulator.html', t:'Interview Simulator (AI)', d:'Custom behavioral and technical interview questions with STAR-format coaching.'},
+      {f:'tools-linkedin-builder.html', t:'LinkedIn Optimizer (AI)', d:'Rewrites LinkedIn profile in civilian language targeting top career match.'},
+      {f:'tools-salary-negotiator.html', t:'Salary Negotiator (AI)', d:'Counter-offer scripts, clearance leverage strategies, total compensation tactics.'},
+      {f:'tools-cert-advisor.html', t:'Certification Advisor (AI)', d:'Which certifications to pursue based on MOS, goals, and GI Bill eligibility.'},
+      {f:'tools-job-tracker.html', t:'Job Application Tracker', d:'Track applications, interviews, and follow-ups across all job searches.'},
+      {f:'training.html', t:'Training Library', d:'Video courses and training resources for veteran career development.'},
+      {f:'tools-newsletter.html', t:'Career Newsletter', d:'Weekly veteran career tips and job market insights.'},
+    ]
+  },
+  {
+    id:'transition', icon:'💼', name:'Career Transition', color:'#1a5aa0', bg:'rgba(26,90,160,.07)', border:'rgba(74,138,208,.2)',
+    note:'Guides, checklists, resume & interview resources',
+    pages:[
+      {f:'military-transition-guide.html', t:'Military Transition Guide', d:'Complete ETS to civilian career guide. TAP overview, timeline, major decisions.'},
+      {f:'tap-transition-guide.html', t:'TAP Program Guide', d:'TAP curriculum explained. Tracks, requirements, curriculum breakdown, what to do at each stage.'},
+      {f:'ets-transition-checklist.html', t:'ETS Transition Checklist', d:'Personalized month-by-month checklist from 12 months before ETS through 6 months post-separation. Print-ready.'},
+      {f:'tap-resource-pack.html', t:'TAP Counselor Resource Pack', d:'Printable one-pager for TAP offices and VSOs. All VCP tools with full URLs. Letter-size print-ready.'},
+      {f:'dd214-decoder.html', t:'DD-214 Decoder', d:'Every box on the DD-214 explained. Character of service, re-entry codes, awards.'},
+      {f:'skillbridge-program-guide.html', t:'SkillBridge Program Guide', d:'How to get approved, find programs, and use SkillBridge in your last 180 days of service.'},
+      {f:'military-civilian-resume.html', t:'Military Resume Guide', d:'How to translate military experience into civilian language. Resume formats, tips, examples.'},
+      {f:'veteran-resume-examples.html', t:'Resume Examples & Templates', d:'Sample resumes for veterans in multiple industries and career levels.'},
+      {f:'veteran-cover-letter-examples.html', t:'Cover Letter Examples', d:'Cover letter templates for veteran job applications.'},
+      {f:'veteran-action-verbs.html', t:'Action Verbs & Power Nouns (600+)', d:'300 action verbs + 120 power nouns organized by skill category. Click-to-copy.'},
+      {f:'military-acronyms-civilian-guide.html', t:'Military Acronyms Guide', d:'500+ military acronyms translated to civilian language for resumes and interviews.'},
+      {f:'veteran-interview-questions.html', t:'Interview Questions Guide', d:'Common interview questions for veterans with STAR method examples.'},
+      {f:'veteran-linkedin-guide.html', t:'LinkedIn for Veterans', d:'How to optimize your LinkedIn profile for civilian job search.'},
+      {f:'veteran-networking-guide.html', t:'Networking Guide', d:'LinkedIn groups, VSO career programs, veteran employee resource groups.'},
+      {f:'veteran-job-fair-guide.html', t:'Job Fair Guide', d:'How to prepare for and succeed at veteran job fairs.'},
+      {f:'veteran-salary-negotiation-scripts.html', t:'Salary Negotiation Scripts', d:'Word-for-word scripts for salary negotiation as a veteran.'},
+      {f:'should-i-reenlist-calculator.html', t:'Reenlist vs Separate Calculator', d:'Full financial comparison: 2026 pay tables, BAH, BAS, TSP, healthcare, 5/10-year projections.'},
+    ]
+  },
+  {
+    id:'mos', icon:'⭐', name:'MOS / Rate / AFSC Guides', color:'#1a7a40', bg:'rgba(26,122,64,.07)', border:'rgba(74,174,112,.2)',
+    note:'561 individual career guides — all 6 branches',
+    pages:[
+      {f:'army-mos-careers.html', t:'Army MOS Careers (229 codes)', d:'Every Army MOS with civilian career matches, salary ranges, certifications, and career cluster.'},
+      {f:'navy-rate-careers.html', t:'Navy Rate Careers', d:'All Navy Rates and NECs with civilian career equivalents and salary data.'},
+      {f:'marine-corps-mos-careers.html', t:'Marine Corps MOS Careers', d:'All Marine Corps MOS codes translated to civilian careers.'},
+      {f:'air-force-afsc-careers.html', t:'Air Force AFSC Careers', d:'All Air Force AFSC codes with civilian career guidance.'},
+      {f:'coast-guard-rating-careers.html', t:'Coast Guard Rating Careers', d:'All Coast Guard ratings with civilian career matches.'},
+      {f:'space-force-afsc-careers.html', t:'Space Force AFSC Careers', d:'Space Force specialty codes with civilian career paths.'},
+    ]
+  },
+  {
+    id:'pathways', icon:'🎯', name:'Career Pathways', color:'#5a2a9a', bg:'rgba(90,42,154,.07)', border:'rgba(138,106,202,.2)',
+    note:'Industry guides, employers, federal jobs, salary data',
+    pages:[
+      {f:'veteran-cybersecurity-careers.html', t:'Cybersecurity Careers', d:'Cleared cyber jobs, certifications (Security+, CEH, CISSP), entry paths from IT MOS.'},
+      {f:'veteran-healthcare-careers.html', t:'Healthcare Careers', d:'Medic to civilian healthcare — RN bridges, PA programs, EMT pathways.'},
+      {f:'veteran-law-enforcement-careers.html', t:'Law Enforcement Careers', d:'Police, federal agent, corrections — hiring preferences and pathways.'},
+      {f:'veteran-government-contractor-careers.html', t:'Gov Contractor Careers', d:'DoD contractor jobs, clearance requirements, major contractors who hire veterans.'},
+      {f:'veteran-project-management-careers.html', t:'Project Management', d:'PMP certification, operations management, how military experience maps to PM roles.'},
+      {f:'veteran-teaching-careers.html', t:'Teaching Careers', d:'Troops to Teachers, alternative certification, military experience in education.'},
+      {f:'veteran-trucking-careers.html', t:'Trucking & CDL Careers', d:'CDL programs for veterans, 88M transition, trucking companies with veteran programs.'},
+      {f:'veteran-real-estate-careers.html', t:'Real Estate Careers', d:'Real estate agent licensing, VA loan use in investing, veteran real estate networks.'},
+      {f:'veteran-entrepreneurship.html', t:'Entrepreneurship Guide', d:'SBA programs, veteran business loans, SDVOSB certification.'},
+      {f:'remote-careers-disabled-veterans.html', t:'Remote Careers for Disabled Vets', d:'Remote-friendly industries, disability accommodations, home-based career paths.'},
+      {f:'clearance-jobs-guide.html', t:'Cleared Jobs Guide', d:'How to use your clearance, types of positions, contracting vs government.'},
+      {f:'security-clearance-salary.html', t:'Security Clearance Salary Guide', d:'Pay premiums by clearance level, industry, and location.'},
+      {f:'top-companies-hiring-veterans-2025.html', t:'Top 100 Companies Hiring Veterans', d:'100 veteran-friendly employers with programs, contacts, and hiring info.'},
+      {f:'veteran-hiring-companies.html', t:'Top 50 Veteran Employers', d:'50 companies with the strongest veteran hiring programs.'},
+      {f:'federal-jobs-search.html', t:'Live Federal Job Search', d:'Search USAJobs.gov filtered by keyword, location, GS grade, clearance, veterans preference.'},
+      {f:'usajobs-guide.html', t:'USAJobs Guide', d:'How to navigate federal hiring, KSAs, resume format, application process.'},
+      {f:'veterans-preference-guide.html', t:"Veterans' Preference Guide", d:'5-point, 10-point, CP, CPS preference categories and how to use them.'},
+      {f:'schedule-a-federal-hiring.html', t:'Schedule A Hiring (Disabled Vets)', d:'Non-competitive appointment authority for veterans with service-connected disabilities.'},
+      {f:'federal-gs-grade-estimator.html', t:'GS Grade Estimator', d:'What GS grade your rank and experience qualify for.'},
+      {f:'military-to-federal-pay-chart.html', t:'Military to GS Pay Chart', d:'Side-by-side rank to GS grade conversion with 2026 pay.'},
+      {f:'veteran-salary-data.html', t:'Crowdsourced Salary Data by MOS', d:'Real salaries submitted by veterans. Search by MOS, industry, clearance.'},
+      {f:'veteran-success-stories.html', t:'Veteran Career Success Stories', d:'Real transition stories from veterans across all MOS and career fields.'},
+      {f:'military-civilian-salary.html', t:'Military vs Civilian Salary', d:'Side-by-side total compensation comparison with tax advantages.'},
+    ]
+  },
+  {
+    id:'va', icon:'🏥', name:'VA Benefits & Disability', color:'#c0392b', bg:'rgba(192,57,43,.07)', border:'rgba(224,96,96,.2)',
+    note:'Disability ratings, healthcare, home loan, education benefits',
+    pages:[
+      {f:'va-disability-rating-schedule.html', t:'VA Disability Rating Schedule 2026', d:'Complete CFR 38 Part 4 — every condition, rating %, criteria, presumptive conditions, 2026 pay tables.'},
+      {f:'va-disability-rating-guide.html', t:'VA Disability Rating Guide', d:'How the VA rating system works, combined ratings math, appeals process.'},
+      {f:'va-disability-benefits-calculator.html', t:'Disability Calculator', d:'Combined rating calculator with full dependent support: spouse A&A, children, parents.'},
+      {f:'va-disability-claim-checklist.html', t:'Disability Claim Checklist', d:'Step-by-step filing guide: nexus letters, C&P exam, BDD program, what to document.'},
+      {f:'va-benefits-checklist.html', t:'Full VA Benefits Checklist', d:'Every benefit available to veterans — education, housing, healthcare, burial, life insurance.'},
+      {f:'va-home-loan-guide.html', t:'VA Home Loan Guide', d:'Zero down payment, funding fee, COE, entitlement, multi-use of benefit explained.'},
+      {f:'champva-guide.html', t:'CHAMPVA Guide', d:'Healthcare coverage for dependents of 100% P&T disabled veterans.'},
+      {f:'tricare-after-separation.html', t:'TRICARE After Separation', d:'All TRICARE options post-separation, costs, enrollment windows, COBRA comparison.'},
+      {f:'vre-chapter31-guide.html', t:'VR&E Chapter 31 Guide', d:'Vocational rehabilitation eligibility, 5 tracks, subsistence pay, Independent Living track.'},
+      {f:'character-discharge-upgrade.html', t:'Discharge Upgrade Guide', d:'PTSD, MST, and other upgrade pathways. DRB vs BCMR, forms, nexus letter requirements.'},
+      {f:'sgli-vgli-guide.html', t:'SGLI to VGLI Guide', d:'Converting life insurance at separation. 1-year 120-day window, no medical exam.'},
+    ]
+  },
+  {
+    id:'edu', icon:'🎓', name:'Education & GI Bill', color:'#1a6a7a', bg:'rgba(26,106,122,.07)', border:'rgba(74,154,170,.2)',
+    note:'GI Bill comparison, BAH, certifications, SkillBridge',
+    pages:[
+      {f:'gi-bill-school-comparison.html', t:'GI Bill School Comparison', d:'Compare schools by BAH rates, tuition coverage, and total value of GI Bill.'},
+      {f:'gi-bill-bah-maximizer.html', t:'GI Bill BAH Maximizer', d:'How to maximize your housing allowance — school selection, enrollment strategies.'},
+      {f:'gi-bill-vs-vre-calculator.html', t:'GI Bill vs VR&E Calculator', d:'Side-by-side comparison of Post-9/11 GI Bill vs Chapter 31 benefits.'},
+      {f:'veteran-certification-roadmap.html', t:'Certification Roadmap', d:'MOS to certification mapping. PMP, CompTIA, AWS, OSHA, Six Sigma, and more.'},
+      {f:'blended-retirement-system-guide.html', t:'Blended Retirement System (BRS)', d:'BRS vs legacy system, TSP matching, continuation pay, lump-sum option.'},
+    ]
+  },
+  {
+    id:'finance', icon:'💰', name:'Pay & Retirement', color:'#2a7a1a', bg:'rgba(42,122,26,.07)', border:'rgba(74,170,42,.2)',
+    note:'Retirement calculators, TSP, SBP, PCS move',
+    pages:[
+      {f:'military-retirement-pay-calculator.html', t:'Retirement Pay Calculator', d:'High-3 and BRS retirement projections with COLA and lump-sum options.'},
+      {f:'tsp-guide-for-veterans.html', t:'TSP Guide for Veterans', d:'TSP contribution limits, fund selection, withdrawal options after separation.'},
+      {f:'survivor-benefit-plan-guide.html', t:'Survivor Benefit Plan (SBP)', d:'SBP costs, coverage, spouse elections, interaction with VA DIC.'},
+      {f:'pcs-ets-move-calculator.html', t:'PCS / ETS Move Calculator', d:'DITY vs PPM move calculation, entitlements, weight allowances.'},
+      {f:'military-civilian-salary.html', t:'Military vs Civilian Salary', d:'Total compensation comparison including tax advantages, healthcare, housing.'},
+      {f:'military-to-federal-pay-chart.html', t:'Military to GS Pay Chart', d:'Rank to GS grade conversion with 2026 pay scales.'},
+    ]
+  },
+  {
+    id:'legal', icon:'⚖️', name:'Legal & Rights', color:'#7a5a00', bg:'rgba(122,90,0,.07)', border:'rgba(192,144,32,.2)',
+    note:'SCRA, USERRA, divorce, recall, discharge, ADA',
+    pages:[
+      {f:'scra-guide-for-veterans.html', t:'SCRA Guide', d:'Servicemembers Civil Relief Act protections: interest rates, eviction, lease termination.'},
+      {f:'userra-employment-rights.html', t:'USERRA Employment Rights', d:'Job protection for reserve and guard deployments. Re-employment rights, benefits continuation.'},
+      {f:'military-divorce-guide.html', t:'Military Divorce Guide', d:'SCRA during divorce, SBP elections, military pension division (USFSPA), BAH changes.'},
+      {f:'military-recall-policies.html', t:'Military Recall Policies', d:'IRR obligations, stop-loss, involuntary recall rules and your rights.'},
+      {f:'veteran-ada-accommodations.html', t:'ADA Accommodations Guide', d:'Workplace accommodations for service-connected conditions. How to request, employer obligations.'},
+      {f:'military-spouse-resources.html', t:'Military Spouse Resources', d:'Career resources, MYCAA scholarship, employment support for military spouses.'},
+    ]
+  },
+  {
+    id:'states', icon:'🗺️', name:'State Benefits', color:'#2a4a8a', bg:'rgba(42,74,138,.07)', border:'rgba(106,138,202,.2)',
+    note:'All 50 states + featured state guides + veteran-friendly cities',
+    pages:[
+      {f:'state-veteran-benefits.html', t:'All 50 States Guide', d:'Complete guide to state-specific veteran benefits: property tax, education, employment preference.'},
+      {f:'california-veteran-benefits.html', t:'California Veteran Benefits', d:'CalVet, property tax exemption, college fee waiver, veteran hiring preference.'},
+      {f:'florida-veteran-benefits.html', t:'Florida Veteran Benefits', d:'Property tax exemption, employment preference, education benefits, Florida-specific programs.'},
+      {f:'texas-veteran-benefits.html', t:'Texas Veteran Benefits', d:'VLB land loans, Hazelwood Act tuition exemption, Texas veteran employment preference.'},
+      {f:'virginia-veteran-benefits.html', t:'Virginia Veteran Benefits', d:'VEC programs, DVS resources, property tax, Virginia employment preference.'},
+      {f:'veteran-friendly-cities.html', t:'Best Cities for Veterans', d:'Top cities ranked by veteran services, VA hospital access, job market, and veteran population.'},
+    ]
+  },
+  {
+    id:'wellness', icon:'🤝', name:'Mental Health & Support', color:'#7a1a7a', bg:'rgba(122,26,122,.07)', border:'rgba(176,96,176,.2)',
+    note:'Crisis resources, SAMHSA locator, wellness guides',
+    pages:[
+      {f:'veteran-mental-health-resources.html', t:'Mental Health Resources', d:'Crisis hotlines, SAMHSA facility locator by ZIP, PTSD support, addiction recovery, financial assistance.'},
+      {f:'vet-resources.html', t:'Veteran Resources Hub', d:'Central hub linking all major veteran benefit organizations and government resources.'},
+    ]
+  },
+];
+
+var currentView = 'grid';
+var activeFilter = null;
+var searchTerm = '';
+
+function init() {
+  renderSummary();
+  renderAll();
+}
+
+function renderSummary() {
+  var row = document.getElementById('summary-row');
+  var total = CATS.reduce(function(a,c){return a+c.pages.length;},0);
+  document.getElementById('total-pages').textContent = total;
+  row.innerHTML = CATS.map(function(cat){
+    return '<div class="sum-chip" id="chip-'+cat.id+'" onclick="toggleFilter(\''+cat.id+'\')">' +
+      '<span class="sum-chip-dot" style="background:'+cat.color+'"></span>' +
+      cat.icon+' '+cat.name+' <strong>('+cat.pages.length+')</strong>' +
+    '</div>';
+  }).join('');
+}
+
+function toggleFilter(catId) {
+  activeFilter = activeFilter === catId ? null : catId;
+  document.querySelectorAll('.sum-chip').forEach(function(c){c.classList.remove('active');});
+  if(activeFilter) document.getElementById('chip-'+activeFilter).classList.add('active');
+  renderAll();
+}
+
+function setView(view, btn) {
+  currentView = view;
+  document.querySelectorAll('.view-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  var main = document.getElementById('main');
+  main.classList.toggle('list-view', view==='list');
+  renderAll();
+}
+
+function handleSearch(q) {
+  searchTerm = q.toLowerCase().trim();
+  activeFilter = null;
+  document.querySelectorAll('.sum-chip').forEach(function(c){c.classList.remove('active');});
+  renderAll();
+}
+
+function renderAll() {
+  var container = document.getElementById('cat-container');
+  var noResults = document.getElementById('no-results');
+  var info = document.getElementById('filter-info');
+  container.innerHTML = '';
+  var totalShown = 0;
+
+  CATS.forEach(function(cat) {
+    if(activeFilter && activeFilter !== cat.id) return;
+
+    var matchPages = cat.pages.filter(function(p){
+      if(!searchTerm) return true;
+      return p.t.toLowerCase().includes(searchTerm) ||
+             p.d.toLowerCase().includes(searchTerm) ||
+             p.f.toLowerCase().includes(searchTerm);
+    });
+
+    if(!matchPages.length) return;
+    totalShown += matchPages.length;
+
+    var sec = document.createElement('div');
+    sec.className = 'cat-section';
+    sec.id = 'cat-sec-'+cat.id;
+
+    // Header
+    var hdr = document.createElement('div');
+    hdr.className = 'cat-header';
+    hdr.style.background = cat.bg;
+    hdr.style.border = '1.5px solid '+cat.border;
+    hdr.onclick = function(){toggleCat(cat.id);};
+    hdr.innerHTML =
+      '<span class="cat-icon">'+cat.icon+'</span>'+
+      '<span class="cat-name" style="color:'+cat.color+'">'+cat.name+'</span>'+
+      '<span class="cat-note">— '+cat.note+'</span>'+
+      '<span class="cat-count" style="color:'+cat.color+'">'+matchPages.length+' pages</span>'+
+      '<span class="cat-toggle" id="toggle-'+cat.id+'">▼</span>';
+    sec.appendChild(hdr);
+
+    // Grid
+    var grid = document.createElement('div');
+    grid.className = 'page-grid';
+    grid.id = 'grid-'+cat.id;
+    grid.style.borderColor = cat.border;
+
+    matchPages.forEach(function(p){
+      var card = document.createElement('div');
+      card.className = 'page-card';
+      var isAI = AI_PAGES.has(p.f);
+      var isNew = NEW_PAGES.has(p.f);
+      var badge = isAI ? '<span class="page-card-badge badge-ai">AI</span>' :
+                  isNew ? '<span class="page-card-badge badge-new">New</span>' :
+                  '<span class="page-card-badge badge-free">Free</span>';
+      card.style.borderTopColor = cat.border;
+      card.innerHTML =
+        badge +
+        '<div class="page-card-icon">'+cat.icon+'</div>'+
+        '<div class="page-card-title">'+highlight(p.t)+'</div>'+
+        '<div class="page-card-fname">'+p.f+'</div>';
+      card.onclick = function(){ openDetail(p, cat); };
+
+      if(searchTerm && !p.t.toLowerCase().includes(searchTerm) && !p.f.toLowerCase().includes(searchTerm)) {
+        card.classList.add('dimmed');
+      }
+      grid.appendChild(card);
+    });
+
+    sec.appendChild(grid);
+    container.appendChild(sec);
+  });
+
+  var hasResults = totalShown > 0;
+  noResults.style.display = hasResults ? 'none' : 'block';
+  if(searchTerm) info.textContent = totalShown + ' pages match "'+searchTerm+'"';
+  else if(activeFilter) info.textContent = 'Filtering by category';
+  else info.textContent = '';
+}
+
+function highlight(text) {
+  if(!searchTerm) return text;
+  var re = new RegExp('('+searchTerm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+  return text.replace(re,'<mark style="background:rgba(240,192,64,.3);color:#fff;border-radius:2px;">$1</mark>');
+}
+
+function toggleCat(id) {
+  var grid = document.getElementById('grid-'+id);
+  var tog = document.getElementById('toggle-'+id);
+  if(!grid) return;
+  var collapsed = grid.classList.toggle('collapsed');
+  if(tog) tog.classList.toggle('collapsed', collapsed);
+}
+
+var currentUrl = '';
+function openDetail(page, cat) {
+  var url = BASE + '/' + page.f;
+  currentUrl = url;
+  document.getElementById('d-cat').textContent = cat.icon + ' ' + cat.name;
+  document.getElementById('d-title').textContent = page.t;
+  document.getElementById('d-desc').textContent = page.d;
+  document.getElementById('d-url').textContent = url;
+  document.getElementById('d-visit').href = url;
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+function closeDetail(e) {
+  if(e.target === document.getElementById('detail-overlay')) closeDetailBtn();
+}
+function closeDetailBtn() {
+  document.getElementById('detail-overlay').classList.remove('open');
+}
+
+function copyUrl() {
+  navigator.clipboard.writeText(currentUrl).then(function(){
+    var btn = document.querySelector('.detail-copy');
+    btn.textContent = 'Copied!';
+    setTimeout(function(){ btn.textContent = 'Copy URL'; }, 1500);
+  });
+}
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeDetailBtn();
+});
+
+init();
+</script>
+</body>
+</html>

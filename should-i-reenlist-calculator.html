@@ -1219,7 +1219,7 @@ function runCalc(){
 
   // ── INSIGHTS ────────────────────────────────────────────────────────────
   var ins=[];
-  var bahMo=BAH[bahTier][dep];
+  var bahMo=getBAH(bahTier, depsN, grade);
   if(bahMo>=cHousing) ins.push('🏠 <strong>Your BAH ($'+bahMo.toLocaleString()+'/mo) covers your civilian housing estimate ($'+cHousing.toLocaleString()+'/mo)</strong> — you may actually pocket the difference if you live on-base or in a cheaper area. This is one of the biggest hidden military advantages.');
   else ins.push('🏠 <strong>Your civilian rent estimate ($'+cHousing.toLocaleString()+'/mo) exceeds your BAH ($'+bahMo.toLocaleString()+'/mo) by $'+(cHousing-bahMo).toLocaleString()+'/mo.</strong> Your BAH is still tax-free - a civilian making the same total would pay taxes on that equivalent.');
     ins.push("🏥 <strong>TRICARE saves you $"+Math.round(cHealthCost).toLocaleString()+"/month in health insurance premiums</strong> ($"+Math.round(cHealth*12).toLocaleString()+"/year). That's real money to budget for after separation. Family plans average $550-700/month employee cost.");

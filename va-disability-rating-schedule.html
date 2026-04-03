@@ -269,7 +269,7 @@ html,body{overflow-x:hidden;max-width:100%;}
 /* ── Global mobile overflow safety ── */
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+/* table overflow handled by .tbl-wrap */
 .card{overflow:visible!important;}
 .card-body{overflow-x:auto;}
 input,select,textarea{max-width:100%;width:100%;}
@@ -1650,7 +1650,7 @@ function toggleSec(btn) {
         Rates increased 2.5%. Rates at 10–20% are the same regardless of dependents. Dependent rates begin at 30%.
       </div>
       <div class="tbl-wrap">
-      <table class="pay-tbl">
+      <div class="tbl-wrap"><table class="pay-tbl">
         <thead>
           <tr>
             <th>Rating</th>
@@ -1679,7 +1679,7 @@ function toggleSec(btn) {
 
       <h3 style="font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.08em;color:var(--nv);margin:1.25rem 0 .65rem;">Special Monthly Compensation (SMC) — 2026</h3>
       <div class="tbl-wrap">
-      <table class="pay-tbl">
+      <div class="tbl-wrap"><table class="pay-tbl">
         <thead><tr><th>Level</th><th>Qualifying Condition</th><th>2026 Monthly</th></tr></thead>
         <tbody>
           <tr><td>SMC-K</td><td>Loss of use of creative organ (erectile dysfunction), loss of hand/foot, blindness in one eye</td><td>+$123.04</td></tr>

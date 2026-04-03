@@ -15,22 +15,22 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,sans-serif;color:#1a2a3a;background:#fff;line-height:1.7}
-nav{background:#0a1628;padding:.85rem 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.15)}
+
 .nlogo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
 .nlogo img{width:36px;height:36px;object-fit:contain}
 .nlogo span{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;color:#f0c040}
-.nav-links{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+
 .nl{color:rgba(255,255,255,.7);text-decoration:none;font-size:.82rem;font-weight:500}
 .ncta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.82rem;padding:.45rem 1rem;border-radius:6px;text-decoration:none}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;margin-left:auto}
-.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s}
-.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
-.hamburger.open span:nth-child(2){opacity:0}
-.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+
+
+
+
 .mmenu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;max-height:85vh;overflow-y:auto}
 .mmenu.open{display:flex}
 .mmenu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;padding:.75rem 6%;border-bottom:1px solid rgba(255,255,255,.05)}
-@media(max-width:768px){.hamburger{display:flex}.nav-links{display:none !important}}
+@media(max-width:768px){}
 .hero{background:linear-gradient(160deg,#0a1628,#1a3a6b 55%,#2a1628 100%);padding:3.5rem 6%;text-align:center;position:relative;overflow:hidden}
 .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,.1),transparent 70%)}
 .hi{max-width:900px;margin:0 auto;position:relative}
@@ -71,6 +71,40 @@ footer{background:#0d1f3c;padding:2.5rem 6%;margin-top:3rem}
 .fl{display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem}
 .fb{border-top:1px solid rgba(255,255,255,.08);padding-top:1.25rem;text-align:center;font-size:.73rem;color:rgba(255,255,255,.25);max-width:1000px;margin:0 auto}
 .adsbygoogle{min-height:0!important;}
+
+/* ── Mobile overflow fix ── */
+*{box-sizing:border-box;}
+img,video,iframe,table,pre,code{max-width:100%;}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tbl-wrap table,.info-table{min-width:0;width:100%;}
+@media(max-width:768px){
+  main{padding:1rem!important;gap:1rem!important;}
+  .hero,.hero-section,.hero-inner{padding-left:1rem!important;padding-right:1rem!important;}
+  .card-body{padding:.85rem!important;}
+  .form-grid,.result-grid{grid-template-columns:1fr!important;}
+  .total-bar{flex-direction:column;text-align:center;}
+  .tab-
+  .tab-btn{flex-shrink:0;}
+  .radio-group{flex-direction:column;}
+  .radio-opt{min-width:0;width:100%;}
+}
+
+/* ── Mobile overflow fix ── */
+*{box-sizing:border-box;}
+img,video,iframe,table,pre,code{max-width:100%;}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tbl-wrap table,.info-table{min-width:0;width:100%;}
+@media(max-width:768px){
+  main{padding:1rem!important;gap:1rem!important;}
+  .hero,.hero-section,.hero-inner{padding-left:1rem!important;padding-right:1rem!important;}
+  .card-body{padding:.85rem!important;}
+  .form-grid,.result-grid{grid-template-columns:1fr!important;}
+  .total-bar{flex-direction:column;text-align:center;}
+  .tab-nav{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  .tab-btn{flex-shrink:0;}
+  .radio-group{flex-direction:column;}
+  .radio-opt{min-width:0;width:100%;}
+}
 </style>
 <meta property="og:title" content="Military Recall Policies 2026 | IRR, Stop-Loss & Rights">
 <meta property="og:description" content="Who can be recalled to active duty: IRR recall, stop-loss, retired recall. Your legal rights under SCRA and USERRA if recalled.">

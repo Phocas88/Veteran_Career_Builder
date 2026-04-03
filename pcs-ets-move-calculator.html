@@ -21,23 +21,6 @@
 }
 body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f4f6fa;line-height:1.7;font-size:15px;}
 
-/* NAV */
-nav{background:#0a1628;padding:.85rem 5%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.15);}
-.nav-logo{display:flex;align-items:center;gap:.65rem;text-decoration:none;}
-.nav-logo img{width:34px;height:34px;object-fit:contain;}
-.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.1em;color:#f0c040;}
-.nav-links{display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap;}
-.nav-links a{color:#c0d8f0;text-decoration:none;font-size:.82rem;font-weight:500;}
-.nav-cta{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628!important;font-weight:700!important;padding:.4rem .9rem;border-radius:6px;}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.4rem;}
-.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.25s;}
-.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
-.hamburger.open span:nth-child(2){opacity:0;}
-.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
-.mobile-menu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;z-index:999;flex-direction:column;padding:.5rem 0;border-top:1px solid rgba(201,168,76,.15);max-height:calc(100vh - 57px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
-.mobile-menu.open{display:flex;}
-.mobile-menu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;padding:.75rem 5%;border-bottom:1px solid rgba(255,255,255,.05);}
-@media(max-width:768px){.hamburger{display:flex;}.nav-links{display:none;}}
 
 /* HERO */
 .hero{background:linear-gradient(160deg,#060f1e,#0d1f3c 50%,#1a3a6b);padding:3rem 5% 2.5rem;color:#fff;}
@@ -132,7 +115,7 @@ footer{background:#0d1f3c;padding:2rem 5%;margin-top:2rem;}
 .footer-copy{font-size:.73rem;color:rgba(255,255,255,.25);}
 
 /* TABS */
-.tab-nav{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.25rem;overflow-x:auto;}
+.tab-
 .tab-btn{padding:.6rem 1rem;font-size:.82rem;font-weight:600;color:var(--dim);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:color .2s;}
 .tab-btn.active{color:var(--navy);border-bottom-color:var(--navy2);}
 .tab-content{display:none;}
@@ -147,6 +130,46 @@ footer{background:#0d1f3c;padding:2rem 5%;margin-top:2rem;}
 /* ── Table scroll wrapper ── */
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin-bottom:1rem;}
 .tbl-wrap table,.info-table{min-width:480px;width:100%;border-collapse:collapse;}
+
+/* ── Mobile overflow fix ── */
+*{box-sizing:border-box;}
+img,video,iframe,table,pre,code{max-width:100%;}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tbl-wrap table,.info-table{min-width:0;width:100%;}
+@media(max-width:768px){
+  main{padding:1rem!important;gap:1rem!important;}
+  .hero{padding:1.5rem 1rem!important;}
+  .card-body{padding:.85rem!important;}
+  .form-grid{grid-template-columns:1fr!important;}
+  .result-grid{grid-template-columns:1fr!important;}
+  .total-bar{flex-direction:column;text-align:center;}
+  .tab-
+  .tab-btn{flex-shrink:0;}
+  .radio-group{flex-direction:column;}
+  .radio-opt{min-width:0;width:100%;}
+  h3{font-size:.95rem;}
+}
+@media(max-width:480px){
+  .hero h1{font-size:1.8rem!important;}
+  .result-value{font-size:1.3rem;}
+}
+
+/* ── Mobile overflow fix ── */
+*{box-sizing:border-box;}
+img,video,iframe,table,pre,code{max-width:100%;}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tbl-wrap table,.info-table{min-width:0;width:100%;}
+@media(max-width:768px){
+  main{padding:1rem!important;gap:1rem!important;}
+  .hero,.hero-section,.hero-inner{padding-left:1rem!important;padding-right:1rem!important;}
+  .card-body{padding:.85rem!important;}
+  .form-grid,.result-grid{grid-template-columns:1fr!important;}
+  .total-bar{flex-direction:column;text-align:center;}
+  .tab-nav{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  .tab-btn{flex-shrink:0;}
+  .radio-group{flex-direction:column;}
+  .radio-opt{min-width:0;width:100%;}
+}
 </style>
 <meta property="og:title" content="PCS/ETS Move Calculator 2026 | Military Moving Allowances">
 <meta property="og:description" content="Calculate your PCS or ETS move entitlements: DITY/Estimate your PCS/ETS move costs — PPM pay, weight allowance, DLA, TLE, MALT. Based on 2026 JTR. PPM is an estimate; get exact authorization from your TMO.">

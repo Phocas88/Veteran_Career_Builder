@@ -18,19 +18,9 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'DM Sans', sans-serif; background: #050d18; color: var(--cream); }
 
-nav {
-  position: sticky; top: 0; z-index: 100;
-  padding: 1rem 8%;
-  display: flex; justify-content: space-between; align-items: center;
-  background: rgba(13,31,60,.95); backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255,255,255,.05);
-}
-.nav-logo {
-  font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
-  letter-spacing: .1em; color: var(--gold); text-decoration: none;
-  display: flex; align-items: center; gap: .5rem;
-}
-.nav-logo span { color: var(--white); }
+
+
+
 .nav-back { font-size: .82rem; color: var(--dim); text-decoration: none; transition: color .15s; }
 .nav-back:hover { color: var(--cream); }
 
@@ -95,6 +85,23 @@ footer {
 .footer-links a:hover { color: var(--cream); }
 .footer-copy { font-size: .72rem; color: rgba(106,130,160,.5); }
 .adsbygoogle{min-height:0!important;}
+
+/* ── Mobile overflow fix ── */
+*{box-sizing:border-box;}
+img,video,iframe,table,pre,code{max-width:100%;}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tbl-wrap table,.info-table{min-width:0;width:100%;}
+@media(max-width:768px){
+  main{padding:1rem!important;gap:1rem!important;}
+  .hero,.hero-section,.hero-inner{padding-left:1rem!important;padding-right:1rem!important;}
+  .card-body{padding:.85rem!important;}
+  .form-grid,.result-grid{grid-template-columns:1fr!important;}
+  .total-bar{flex-direction:column;text-align:center;}
+  .tab-nav{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  .tab-btn{flex-shrink:0;}
+  .radio-group{flex-direction:column;}
+  .radio-opt{min-width:0;width:100%;}
+}
 </style>
 
 <link rel="canonical" href="https://veterancareerpath.com/terms-of-service.html">

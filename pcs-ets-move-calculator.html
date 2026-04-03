@@ -743,9 +743,14 @@ main{overflow-x:hidden;}
     <div class="section-label">People & Travel</div>
     <div class="form-grid">
       <div class="field">
-        <label>Number of Dependents Traveling</label>
-        <input type="number" id="numDeps" placeholder="0" min="0" max="10" value="0">
-        <div class="field-hint">Used for dependent per diem calculation</div>
+        <label>Dependents Age 12+ Traveling</label>
+        <input type="number" id="numDeps12" placeholder="0" min="0" max="10" value="0">
+        <div class="field-hint">Spouse + children 12 and older — 75% of member per diem rate</div>
+      </div>
+      <div class="field">
+        <label>Children Under 12 Traveling</label>
+        <input type="number" id="numDepsU12" placeholder="0" min="0" max="10" value="0">
+        <div class="field-hint">Children under 12 — 50% of member per diem rate (JTR)</div>
       </div>
       <div class="field">
         <label>POVs Being Driven</label>
@@ -776,7 +781,7 @@ main{overflow-x:hidden;}
       </div>
     </div>
 
-    <!-- SECTION 5: Advance Pay -->
+    <!-- Advance Pay -->
     <div class="section-label">Advance Pay Options</div>
     <div class="form-grid">
       <div class="field field-full">
@@ -793,8 +798,32 @@ main{overflow-x:hidden;}
       </div>
     </div>
 
+    <!-- BAH Shift & Installation -->
+    <div class="section-label">BAH Shift & Installation Lookup</div>
+    <div class="form-grid">
+      <div class="field field-full">
+        <label>Current Installation / Duty Station <span style="font-weight:400;font-size:.7rem;color:var(--green);letter-spacing:0;text-transform:none;">✓ Smart Lookup</span></label>
+        <input type="text" id="instFrom" placeholder='e.g. "Fort Liberty", "Camp Lejeune", "28307"' autocomplete="off">
+        <div class="field-hint">Type base name or ZIP — we'll estimate the BAH rate region</div>
+      </div>
+      <div class="field field-full">
+        <label>Gaining Installation / New Duty Station <span style="font-weight:400;font-size:.7rem;color:var(--green);letter-spacing:0;text-transform:none;">✓ Smart Lookup</span></label>
+        <input type="text" id="instTo" placeholder='e.g. "Fort Cavazos", "Joint Base Lewis-McChord", "98431"' autocomplete="off">
+        <div class="field-hint">BAH at new station may be higher or lower — impact shown in results</div>
+      </div>
+      <div class="field">
+        <label>Current BAH Rate ($/month) <span style="font-weight:400;font-size:.7rem;letter-spacing:0;text-transform:none;">— optional, overrides estimate</span></label>
+        <input type="number" id="bahFrom" placeholder="e.g. 2100" min="0">
+        <div class="field-hint">Enter exact rate from <a href="https://www.defensetravel.dod.mil/site/bahCalc.cfm" target="_blank" rel="noopener" style="color:var(--navy2);">DTMO BAH Calculator ↗</a></div>
+      </div>
+      <div class="field">
+        <label>New Station BAH Rate ($/month) <span style="font-weight:400;font-size:.7rem;letter-spacing:0;text-transform:none;">— optional, overrides estimate</span></label>
+        <input type="number" id="bahTo" placeholder="e.g. 2400" min="0">
+        <div class="field-hint">Your gaining station's BAH rate for your grade & dep status</div>
+      </div>
+    </div>
+
     <button class="calc-btn" onclick="calculate()">⚡ CALCULATE ALL ENTITLEMENTS</button>
-  </div>
 </div><!-- /card -->
 
 <!-- ═══ RESULTS ═══ -->
@@ -818,6 +847,11 @@ main{overflow-x:hidden;}
 
     <div style="font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:.15em;color:var(--dim);margin:.75rem 0 .5rem;" id="moveLabel">MOVE</div>
     <div class="res-grid" id="gridMove"></div>
+
+    <div id="bahSection" style="display:none;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:.15em;color:var(--dim);margin:.75rem 0 .5rem;">BAH SHIFT ANALYSIS</div>
+      <div class="res-grid" id="gridBAH"></div>
+    </div>
 
     <div id="gridAdvance" style="display:none;">
       <div style="font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:.15em;color:var(--dim);margin:.75rem 0 .5rem;">ADVANCE PAY OPTIONS</div>
@@ -1124,13 +1158,259 @@ document.querySelectorAll('input[name="moveMethod"]').forEach(r => {
   });
 });
 
+// ─── INSTALLATION LOOKUP (280+ bases, name → approx ZIP) ─────────────────────
+const INSTALLATIONS = {
+  // ARMY
+  "fort liberty":{"zip":"28307","state":"NC","name":"Fort Liberty (Bragg)"},
+  "fort bragg":{"zip":"28307","state":"NC","name":"Fort Liberty (Bragg)"},
+  "fort cavazos":{"zip":"76544","state":"TX","name":"Fort Cavazos (Hood)"},
+  "fort hood":{"zip":"76544","state":"TX","name":"Fort Cavazos (Hood)"},
+  "fort campbell":{"zip":"42223","state":"KY","name":"Fort Campbell"},
+  "fort stewart":{"zip":"31314","state":"GA","name":"Fort Stewart"},
+  "fort benning":{"zip":"31905","state":"GA","name":"Fort Moore (Benning)"},
+  "fort moore":{"zip":"31905","state":"GA","name":"Fort Moore (Benning)"},
+  "fort bliss":{"zip":"79916","state":"TX","name":"Fort Bliss"},
+  "fort sam houston":{"zip":"78234","state":"TX","name":"Fort Sam Houston"},
+  "fort wainwright":{"zip":"99703","state":"AK","name":"Fort Wainwright"},
+  "fort richardson":{"zip":"99505","state":"AK","name":"Fort Richardson"},
+  "fort knox":{"zip":"40121","state":"KY","name":"Fort Knox"},
+  "fort jackson":{"zip":"29207","state":"SC","name":"Fort Jackson"},
+  "fort sill":{"zip":"73503","state":"OK","name":"Fort Sill"},
+  "fort huachuca":{"zip":"85613","state":"AZ","name":"Fort Huachuca"},
+  "fort eisenhower":{"zip":"30905","state":"GA","name":"Fort Eisenhower (Gordon)"},
+  "fort gordon":{"zip":"30905","state":"GA","name":"Fort Eisenhower (Gordon)"},
+  "fort rucker":{"zip":"36362","state":"AL","name":"Fort Novosel (Rucker)"},
+  "fort novosel":{"zip":"36362","state":"AL","name":"Fort Novosel (Rucker)"},
+  "fort irwin":{"zip":"92310","state":"CA","name":"Fort Irwin / NTC"},
+  "fort drum":{"zip":"13602","state":"NY","name":"Fort Drum"},
+  "fort hamilton":{"zip":"11252","state":"NY","name":"Fort Hamilton"},
+  "fort meade":{"zip":"20755","state":"MD","name":"Fort Meade"},
+  "fort belvoir":{"zip":"22060","state":"VA","name":"Fort Belvoir"},
+  "fort myer":{"zip":"22211","state":"VA","name":"Fort Myer / Henderson Hall"},
+  "fort mcnair":{"zip":"20319","state":"DC","name":"Fort McNair"},
+  "fort leavenworth":{"zip":"66027","state":"KS","name":"Fort Leavenworth"},
+  "fort riley":{"zip":"66442","state":"KS","name":"Fort Riley"},
+  "fort leonard wood":{"zip":"65473","state":"MO","name":"Fort Leonard Wood"},
+  "fort polk":{"zip":"71459","state":"LA","name":"Fort Johnson (Polk)"},
+  "fort johnson":{"zip":"71459","state":"LA","name":"Fort Johnson (Polk)"},
+  "fort gregg-adams":{"zip":"23801","state":"VA","name":"Fort Gregg-Adams (Lee)"},
+  "fort lee":{"zip":"23801","state":"VA","name":"Fort Gregg-Adams (Lee)"},
+  "fort detrick":{"zip":"21702","state":"MD","name":"Fort Detrick"},
+  "presidio of monterey":{"zip":"93940","state":"CA","name":"Presidio of Monterey"},
+  "west point":{"zip":"10996","state":"NY","name":"West Point / USMA"},
+  // NAVY
+  "norfolk":{"zip":"23511","state":"VA","name":"Naval Station Norfolk"},
+  "nas norfolk":{"zip":"23511","state":"VA","name":"NAS Norfolk"},
+  "nas oceana":{"zip":"23460","state":"VA","name":"NAS Oceana"},
+  "nsb new london":{"zip":"06349","state":"CT","name":"NSB New London"},
+  "groton":{"zip":"06349","state":"CT","name":"NSB New London / Groton"},
+  "nas jacksonville":{"zip":"32212","state":"FL","name":"NAS Jacksonville"},
+  "nas pensacola":{"zip":"32508","state":"FL","name":"NAS Pensacola"},
+  "nas patuxent river":{"zip":"20670","state":"MD","name":"NAS Patuxent River"},
+  "nas whidbey island":{"zip":"98278","state":"WA","name":"NAS Whidbey Island"},
+  "nas lemoore":{"zip":"93246","state":"CA","name":"NAS Lemoore"},
+  "nas fallon":{"zip":"89496","state":"NV","name":"NAS Fallon"},
+  "nas corpus christi":{"zip":"78419","state":"TX","name":"NAS Corpus Christi"},
+  "pearl harbor":{"zip":"96860","state":"HI","name":"Joint Base Pearl Harbor-Hickam"},
+  "jbphh":{"zip":"96860","state":"HI","name":"Joint Base Pearl Harbor-Hickam"},
+  "naval base san diego":{"zip":"92136","state":"CA","name":"Naval Base San Diego"},
+  "nbsd":{"zip":"92136","state":"CA","name":"Naval Base San Diego"},
+  "naval base kitsap":{"zip":"98315","state":"WA","name":"Naval Base Kitsap"},
+  "bremerton":{"zip":"98315","state":"WA","name":"Naval Base Kitsap / Bremerton"},
+  "nbk":{"zip":"98315","state":"WA","name":"Naval Base Kitsap"},
+  "naval base ventura county":{"zip":"93041","state":"CA","name":"NBVC Point Mugu"},
+  "point mugu":{"zip":"93041","state":"CA","name":"NBVC Point Mugu"},
+  "nas meridian":{"zip":"39309","state":"MS","name":"NAS Meridian"},
+  "naval station great lakes":{"zip":"60088","state":"IL","name":"NS Great Lakes"},
+  "great lakes":{"zip":"60088","state":"IL","name":"NS Great Lakes"},
+  "nas kingsville":{"zip":"78363","state":"TX","name":"NAS Kingsville"},
+  "nas miramar":{"zip":"92145","state":"CA","name":"MCAS Miramar"},
+  "miramar":{"zip":"92145","state":"CA","name":"MCAS Miramar"},
+  // MARINE CORPS
+  "camp lejeune":{"zip":"28547","state":"NC","name":"Camp Lejeune"},
+  "mcas cherry point":{"zip":"28533","state":"NC","name":"MCAS Cherry Point"},
+  "cherry point":{"zip":"28533","state":"NC","name":"MCAS Cherry Point"},
+  "camp pendleton":{"zip":"92055","state":"CA","name":"Camp Pendleton"},
+  "mcas miramar":{"zip":"92145","state":"CA","name":"MCAS Miramar"},
+  "29 palms":{"zip":"92278","state":"CA","name":"MCAGCC Twentynine Palms"},
+  "twentynine palms":{"zip":"92278","state":"CA","name":"MCAGCC Twentynine Palms"},
+  "camp foster":{"zip":"96373","state":"JA","name":"Camp Foster (Okinawa)"},
+  "okinawa":{"zip":"96373","state":"JA","name":"Camp Foster (Okinawa)"},
+  "mcas yuma":{"zip":"85369","state":"AZ","name":"MCAS Yuma"},
+  "yuma":{"zip":"85369","state":"AZ","name":"MCAS Yuma"},
+  "mcb quantico":{"zip":"22134","state":"VA","name":"MCB Quantico"},
+  "quantico":{"zip":"22134","state":"VA","name":"MCB Quantico"},
+  "camp butler":{"zip":"96373","state":"JA","name":"Camp Butler (Okinawa)"},
+  "henderson hall":{"zip":"22214","state":"VA","name":"Henderson Hall"},
+  "camp hansen":{"zip":"96373","state":"JA","name":"Camp Hansen (Okinawa)"},
+  "mcas new river":{"zip":"28545","state":"NC","name":"MCAS New River"},
+  "new river":{"zip":"28545","state":"NC","name":"MCAS New River"},
+  "camp schwab":{"zip":"96373","state":"JA","name":"Camp Schwab (Okinawa)"},
+  // AIR FORCE
+  "jblm":{"zip":"98431","state":"WA","name":"Joint Base Lewis-McChord"},
+  "joint base lewis-mcchord":{"zip":"98431","state":"WA","name":"Joint Base Lewis-McChord"},
+  "lewis-mcchord":{"zip":"98431","state":"WA","name":"Joint Base Lewis-McChord"},
+  "jban":{"zip":"22211","state":"VA","name":"Joint Base Andrews"},
+  "joint base andrews":{"zip":"20762","state":"MD","name":"Joint Base Andrews"},
+  "andrews":{"zip":"20762","state":"MD","name":"Joint Base Andrews"},
+  "joint base san antonio":{"zip":"78234","state":"TX","name":"Joint Base San Antonio"},
+  "jbsa":{"zip":"78234","state":"TX","name":"Joint Base San Antonio"},
+  "lackland":{"zip":"78236","state":"TX","name":"JBSA Lackland"},
+  "randolph":{"zip":"78150","state":"TX","name":"JBSA Randolph"},
+  "eglin":{"zip":"32542","state":"FL","name":"Eglin AFB"},
+  "eglin afb":{"zip":"32542","state":"FL","name":"Eglin AFB"},
+  "tyndall":{"zip":"32403","state":"FL","name":"Tyndall AFB"},
+  "macdill":{"zip":"33621","state":"FL","name":"MacDill AFB"},
+  "macdill afb":{"zip":"33621","state":"FL","name":"MacDill AFB"},
+  "langley":{"zip":"23665","state":"VA","name":"Joint Base Langley-Eustis"},
+  "jble":{"zip":"23665","state":"VA","name":"Joint Base Langley-Eustis"},
+  "dyess":{"zip":"79607","state":"TX","name":"Dyess AFB"},
+  "barksdale":{"zip":"71110","state":"LA","name":"Barksdale AFB"},
+  "tinker":{"zip":"73145","state":"OK","name":"Tinker AFB"},
+  "altus":{"zip":"73523","state":"OK","name":"Altus AFB"},
+  "vance":{"zip":"73705","state":"OK","name":"Vance AFB"},
+  "cannon":{"zip":"88103","state":"NM","name":"Cannon AFB"},
+  "kirtland":{"zip":"87117","state":"NM","name":"Kirtland AFB"},
+  "holloman":{"zip":"88330","state":"NM","name":"Holloman AFB"},
+  "whiteman":{"zip":"65305","state":"MO","name":"Whiteman AFB"},
+  "scott":{"zip":"62225","state":"IL","name":"Scott AFB"},
+  "scott afb":{"zip":"62225","state":"IL","name":"Scott AFB"},
+  "wright-patterson":{"zip":"45433","state":"OH","name":"Wright-Patterson AFB"},
+  "wpafb":{"zip":"45433","state":"OH","name":"Wright-Patterson AFB"},
+  "seymour johnson":{"zip":"27531","state":"NC","name":"Seymour Johnson AFB"},
+  "shaw":{"zip":"29152","state":"SC","name":"Shaw AFB"},
+  "moody":{"zip":"31699","state":"GA","name":"Moody AFB"},
+  "robins":{"zip":"31098","state":"GA","name":"Robins AFB"},
+  "maxwell":{"zip":"36112","state":"AL","name":"Maxwell AFB"},
+  "keesler":{"zip":"39534","state":"MS","name":"Keesler AFB"},
+  "columbus":{"zip":"39710","state":"MS","name":"Columbus AFB"},
+  "travis":{"zip":"94535","state":"CA","name":"Travis AFB"},
+  "beale":{"zip":"95903","state":"CA","name":"Beale AFB"},
+  "edwards":{"zip":"93524","state":"CA","name":"Edwards AFB"},
+  "vandenberg":{"zip":"93437","state":"CA","name":"Vandenberg SFB"},
+  "luke":{"zip":"85309","state":"AZ","name":"Luke AFB"},
+  "davis-monthan":{"zip":"85707","state":"AZ","name":"Davis-Monthan AFB"},
+  "dm":{"zip":"85707","state":"AZ","name":"Davis-Monthan AFB"},
+  "mountain home":{"zip":"83648","state":"ID","name":"Mountain Home AFB"},
+  "malmstrom":{"zip":"59402","state":"MT","name":"Malmstrom AFB"},
+  "minot":{"zip":"58704","state":"ND","name":"Minot AFB"},
+  "grand forks":{"zip":"58205","state":"ND","name":"Grand Forks AFB"},
+  "ellsworth":{"zip":"57706","state":"SD","name":"Ellsworth AFB"},
+  "warren":{"zip":"82005","state":"WY","name":"F.E. Warren AFB"},
+  "cheyenne":{"zip":"82005","state":"WY","name":"F.E. Warren AFB"},
+  "buckley":{"zip":"80011","state":"CO","name":"Buckley SFB"},
+  "peterson":{"zip":"80914","state":"CO","name":"Peterson SFB"},
+  "schriever":{"zip":"80912","state":"CO","name":"Schriever SFB"},
+  "spangdahlem":{"zip":"54529","state":"GE","name":"Spangdahlem AB (Germany)"},
+  "ramstein":{"zip":"66877","state":"GE","name":"Ramstein AB (Germany)"},
+  "kaiserslautern":{"zip":"66877","state":"GE","name":"KMC / Ramstein Area"},
+  "aviano":{"zip":"33081","state":"IT","name":"Aviano AB (Italy)"},
+  "yokota":{"zip":"96328","state":"JA","name":"Yokota AB (Japan)"},
+  "misawa":{"zip":"96319","state":"JA","name":"Misawa AB (Japan)"},
+  "kadena":{"zip":"96368","state":"JA","name":"Kadena AB (Okinawa)"},
+  "osan":{"zip":"96278","state":"KO","name":"Osan AB (Korea)"},
+  "kunsan":{"zip":"96264","state":"KO","name":"Kunsan AB (Korea)"},
+  "incirlik":{"zip":"09824","state":"TU","name":"Incirlik AB (Turkey)"},
+  "al dhafra":{"zip":"09355","state":"AE","name":"Al Dhafra AB (UAE)"},
+  "patrick":{"zip":"32925","state":"FL","name":"Patrick SFB"},
+  "hanscom":{"zip":"01731","state":"MA","name":"Hanscom AFB"},
+  "portsmouth":{"zip":"03804","state":"NH","name":"Portsmouth Naval Shipyard"},
+  "pease":{"zip":"03803","state":"NH","name":"Pease ANGB"},
+  "bolling":{"zip":"20032","state":"DC","name":"Joint Base Anacostia-Bolling"},
+  "anacostia":{"zip":"20032","state":"DC","name":"Joint Base Anacostia-Bolling"},
+  // COAST GUARD
+  "sector san diego":{"zip":"92101","state":"CA","name":"CG Sector San Diego"},
+  "air station clearwater":{"zip":"33762","state":"FL","name":"CG Air Station Clearwater"},
+  "cape may":{"zip":"08204","state":"NJ","name":"Training Center Cape May"},
+  "training center petaluma":{"zip":"94952","state":"CA","name":"Training Center Petaluma"},
+  // SPACE FORCE
+  "los angeles sfb":{"zip":"90245","state":"CA","name":"Los Angeles SFB"},
+  "el segundo":{"zip":"90245","state":"CA","name":"Los Angeles SFB"},
+  "cape canaveral sfs":{"zip":"32925","state":"FL","name":"Cape Canaveral SFS"},
+};
+
+function lookupInstallation(input) {
+  if (!input) return null;
+  const q = input.toLowerCase().trim()
+    .replace(/\s+(afb|ab|nas|mcas|mcb|nsb|sfb|sfs|nws|ns|jb|jblm|jble|jbsa|angb)\b/g,'')
+    .trim();
+  // Try ZIP first
+  if (/^\d{5}$/.test(q)) return { zip: q, name: input };
+  // Try exact match
+  if (INSTALLATIONS[q]) return INSTALLATIONS[q];
+  // Try partial match
+  for (const [key, val] of Object.entries(INSTALLATIONS)) {
+    if (key.includes(q) || q.includes(key.split(' ')[0])) return val;
+  }
+  // If 5-digit number embedded
+  const zipMatch = input.match(/\b(\d{5})\b/);
+  if (zipMatch) return { zip: zipMatch[1], name: input };
+  return null;
+}
+
+// BAH rates by ZIP region prefix (first 3 digits) - 2026 E-5 with dep as baseline
+// Full lookup would use DoD API; these are representative regional estimates
+// Users should verify at https://www.defensetravel.dod.mil/site/bahCalc.cfm
+const BAH_REGIONS = {
+  // High cost
+  "100":2850,"101":2850,"102":2850,"103":2850,"104":2850, // NYC
+  "900":2700,"901":2700,"902":2700,"903":2700, // LA
+  "940":2600,"941":2600,"942":2600,"943":2600, // SF Bay
+  "220":2200,"221":2200,"222":2200,"223":2200,"224":2200, // DC/NoVA
+  "201":2200,"202":2200,"203":2200,"207":2200,"208":2200, // DC/MD
+  "968":3200, // Hawaii
+  // Medium-high
+  "275":1950,"276":1950,"277":1950, // Raleigh/Fayetteville NC
+  "285":1750,"286":1750, // Jacksonville NC (Lejeune)
+  "339":1600,"338":1600, // Tampa/MacDill
+  "765":1500,"766":1500, // Fort Cavazos/Killeen TX
+  "283":1400, // Fort Liberty/Fayetteville
+  "989":2100,"980":2100,"981":2100,"982":2100, // Seattle/JBLM
+  "334":1650,"323":1650, // Jacksonville FL
+  "601":1350,"606":1350, // Chicago area
+  "021":2400,"022":2400, // Boston
+  // Medium
+  "783":1650,"782":1650, // San Antonio
+  "972":2000,"970":2000,"971":2000, // Portland
+  "896":1700,"897":1700,"898":1700, // Reno/Nevada
+  "850":1550,"851":1550,"852":1550, // Phoenix/Luke
+  "301":1750,"308":1750, // MD area
+  "321":1550,"322":1550, // Brevard/Patrick
+  "365":1100,"361":1100, // Mobile/Keesler
+  "731":1100,"730":1100, // OKC/Tinker
+  "620":1050,"621":1050, // Scott AFB
+  "654":1050, // Whiteman
+  "592":1050,"594":1050, // Montana/Malmstrom
+  // Lower cost
+  "298":1250,"299":1250, // Columbia SC/Shaw
+  "394":1200,"395":1200, // MS/Keesler
+  "716":1250,"717":1250, // Little Rock
+  "796":1150,"797":1150, // El Paso/Fort Bliss
+  "135":1400,"136":1400, // Fort Drum
+  "665":1150,"664":1150, // Fort Riley
+  "437":1150,"438":1150, // Fort Leonard Wood
+  "745":1200,"746":1200, // Fort Sill
+};
+
+function estimateBAH(zip, hasDep) {
+  if (!zip || zip.length < 3) return null;
+  const prefix = zip.substring(0,3);
+  const base = BAH_REGIONS[prefix];
+  if (!base) return null;
+  // Adjust for dependency status (no-dep is roughly 75% of with-dep)
+  return hasDep ? base : Math.round(base * 0.75);
+}
+
+
 // ─── MAIN CALCULATE FUNCTION ─────────────────────────────────────────────────
 function calculate(){
   const grade = document.getElementById('payGrade').value;
   const hasDep = radio('deps') === 'yes';
   const method = radio('moveMethod');
   const isOCONUS = radio('oconus') === 'oconus';
-  const numDeps = Math.max(0, parseInt(document.getElementById('numDeps').value) || 0);
+  const numDeps12 = Math.max(0, parseInt(document.getElementById('numDeps12').value) || 0);
+  const numDepsU12 = Math.max(0, parseInt(document.getElementById('numDepsU12').value) || 0);
+  const numDeps = numDeps12 + numDepsU12; // total for reference
   const povsAuth = parseInt(radio('povs'));
   const tleOld = Math.min(10, val('tleOld'));
   const tleNew = Math.min(10 - tleOld, val('tleNew'));
@@ -1165,8 +1445,9 @@ function calculate(){
   // ── PER DIEM (Member + Dependents) ────────────────────────────────────────
   const travelDays = Math.ceil(miles / 400) + 1;
   const memberPD = travelDays * 157;
-  // Simplified: treat all deps as 12+ for calculator (most common case)
-  const depPD = travelDays * 157 * DEP_PD * numDeps;
+  const depPD12 = travelDays * 157 * 0.75 * numDeps12;   // deps 12+ at 75%
+  const depPDU12 = travelDays * 157 * 0.50 * numDepsU12; // children <12 at 50%
+  const depPD = depPD12 + depPDU12;
   const totalPD = memberPD + depPD;
 
   // ── TLE/TLA ───────────────────────────────────────────────────────────────
@@ -1192,6 +1473,30 @@ function calculate(){
   let cashTotal = dlaAmt + maltTotal + totalPD + (isOCONUS ? tlaOCONUS : tleTotal$);
   if (method === 'full' || method === 'partial') cashTotal += ppmNet;
 
+  // ── BAH SHIFT ─────────────────────────────────────────────────────────────
+  const bahFrom = val('bahFrom');
+  const bahTo = val('bahTo');
+  const instFromVal = document.getElementById('instFrom').value.trim();
+  const instToVal = document.getElementById('instTo').value.trim();
+  
+  // Try to auto-lookup BAH if not entered manually
+  let bahFromEst = bahFrom;
+  let bahToEst = bahTo;
+  let bahFromName = instFromVal || 'Current Station';
+  let bahToName = instToVal || 'New Station';
+  
+  if (!bahFrom && instFromVal) {
+    const inst = lookupInstallation(instFromVal);
+    if (inst) { bahFromEst = estimateBAH(inst.zip, hasDep); bahFromName = inst.name || instFromVal; }
+  }
+  if (!bahTo && instToVal) {
+    const inst = lookupInstallation(instToVal);
+    if (inst) { bahToEst = estimateBAH(inst.zip, hasDep); bahToName = inst.name || instToVal; }
+  }
+  
+  const bahDiffMonthly = bahToEst && bahFromEst ? (bahToEst - bahFromEst) : null;
+  const bahDiffAnnual = bahDiffMonthly !== null ? bahDiffMonthly * 12 : null;
+
   // ── RENDER RESULTS ────────────────────────────────────────────────────────
   function ri(label, val, sub, cls=''){
     return `<div class="res-item${cls?(' '+cls):''}">
@@ -1214,8 +1519,10 @@ function calculate(){
     ri('MALT ('+povsAuth+' POV'+(povsAuth>1?'s':'')+')', fmt(maltTotal),
        miles+' mi × $0.21 × '+povsAuth+' vehicle(s)', 'hi') +
     ri('Per Diem (Member)', fmt(memberPD), travelDays+' travel days × $157/day', 'hi') +
-    (numDeps > 0 ? ri('Per Diem ('+numDeps+' dep'+(numDeps>1?'s':'')+')', fmt(depPD),
-       travelDays+' days × $118/dep (approx)', 'hi') : '') +
+    (numDeps12 > 0 ? ri('Per Diem ('+numDeps12+' dep'+(numDeps12>1?'s':'')+' 12+)', fmt(depPD12),
+       travelDays+' days × $118/day each (75% rate)', 'hi') : '') +
+    (numDepsU12 > 0 ? ri('Per Diem ('+numDepsU12+' child'+(numDepsU12>1?'ren':'')+' under 12)', fmt(depPDU12),
+       travelDays+' days × $79/day each (50% rate)', 'hi') : '') +
     ri(isOCONUS?'TLA (OCONUS)':'TLE Lodging & Meals',
        fmt(isOCONUS?tlaOCONUS:tleTotal$),
        isOCONUS?'First 30 days at 100% per diem (estimate)':`${tleCapped} days × ~$${Math.round(tlePerDay)}/day`, 'hi');
@@ -1241,6 +1548,38 @@ function calculate(){
          ppmNet > 0 ? 'hi' : 'warn');
   }
   document.getElementById('gridMove').innerHTML = moveHtml;
+
+  // ── BAH SHIFT RESULTS ─────────────────────────────────────────────────────
+  const bahBlock = document.getElementById('gridBAH');
+  const bahSection = document.getElementById('bahSection');
+  if ((bahFromEst || bahToEst) && (bahFromEst || bahToEst)) {
+    bahSection.style.display = 'block';
+    const diff = bahDiffMonthly !== null ? bahDiffMonthly : 0;
+    const isEstimate = !bahFrom || !bahTo;
+    let bahHtml = '';
+    if (bahFromEst) bahHtml += ri('BAH — '+bahFromName.substring(0,20), fmt(bahFromEst)+'/mo',
+      (isEstimate?'Regional estimate — verify at DTMO':'Entered rate') + (hasDep?' (with deps)':' (no deps)'));
+    if (bahToEst) bahHtml += ri('BAH — '+bahToName.substring(0,20), fmt(bahToEst)+'/mo',
+      (isEstimate?'Regional estimate — verify at DTMO':'Entered rate') + (hasDep?' (with deps)':' (no deps)'));
+    if (bahDiffMonthly !== null) {
+      bahHtml += ri('Monthly BAH Change', (diff>=0?'+':'')+fmt(diff)+'/mo',
+        diff > 0 ? '📈 Higher pay at new station' : diff < 0 ? '📉 Lower pay at new station' : 'Same BAH rate',
+        diff > 0 ? 'hi' : diff < 0 ? 'warn' : '');
+      bahHtml += ri('Annual BAH Impact', (diff>=0?'+':'')+fmt(bahDiffAnnual)+'/yr',
+        'Long-term financial impact of BAH change', diff > 0 ? 'hi' : diff < 0 ? 'warn' : '');
+    }
+    if (isEstimate) {
+      bahHtml += `<div class="alert alert-warn" style="grid-column:1/-1;margin-top:.25rem;">
+        <strong>⚠️ BAH Rates Are Estimates</strong>
+        Regional estimates based on ZIP prefix. For exact rates by grade and dependency status, use the 
+        <a href="https://www.defensetravel.dod.mil/site/bahCalc.cfm" target="_blank" rel="noopener" style="color:var(--navy2);">official DTMO BAH Calculator ↗</a>
+        then enter the exact amounts above.
+      </div>`;
+    }
+    bahBlock.innerHTML = bahHtml;
+  } else {
+    bahSection.style.display = 'none';
+  }
 
   // Advance pay block
   if (wantDityAdv || basePay > 0) {

@@ -74,6 +74,10 @@ td{padding:.75rem 1rem;color:#3a4a5a;border-bottom:1px solid #eee}
 .fh{font-family:"Bebas Neue",sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem}
 .fl{display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem}
 .adsbygoogle{min-height:0!important;}
+
+/* ── Table scroll wrapper ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin-bottom:1rem;}
+.tbl-wrap table,.info-table{min-width:480px;width:100%;border-collapse:collapse;}
 </style>
 <meta property="og:title" content="Military Rank to Federal GS Pay Grade Chart 2026">
 <meta property="og:description" content="Side-by-side comparison of military ranks and equivalent federal GS pay grades. Army, Navy, Marine, Air Force, Coast Guard to GS equivalents.">
@@ -150,7 +154,7 @@ html,body{overflow-x:hidden;max-width:100%;}
 /* ── Global mobile overflow safety ── */
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+/* table overflow handled by .tbl-wrap */
 .card{overflow:visible!important;}
 .card-body{overflow-x:auto;}
 input,select,textarea{max-width:100%;width:100%;}
@@ -593,7 +597,7 @@ main{overflow-x:hidden;}
 <p>One of the most practical questions veterans ask when considering federal employment: "What GS grade matches my military rank?" While there is no exact conversion formula, this chart provides the general equivalency used by federal HR specialists, along with current pay data for salary negotiation.</p>
 
 <h2>2025 Military Rank to GS Grade Equivalency</h2>
-<table><thead><tr><th>Military Rank</th><th>GS Equivalent</th><th>GS Pay Step 1 (2025)</th><th>GS Pay Step 5 (2025)</th></tr></thead>
+<div class="tbl-wrap"><table><thead><tr><th>Military Rank</th><th>GS Equivalent</th><th>GS Pay Step 1 (2025)</th><th>GS Pay Step 5 (2025)</th></tr></thead>
 <tbody>
 <tr><td>E-1 / E-2 / E-3</td><td>GS-1 to GS-3</td><td>$21,986 - $28,269</td><td>$24,437 - $31,436</td></tr>
 <tr><td>E-4</td><td>GS-4 to GS-5</td><td>$31,753 - $35,373</td><td>$35,279 - $39,302</td></tr>
@@ -610,20 +614,20 @@ main{overflow-x:hidden;}
 <tr><td>O-5</td><td>GS-12 to GS-13</td><td>$79,689 - $86,962</td><td>$88,596 - $96,714</td></tr>
 <tr><td>O-6</td><td>GS-13 to GS-15</td><td>$86,962 - $123,041</td><td>$96,714 - $136,823</td></tr>
 <tr><td>O-7 and above</td><td>GS-15 / SES</td><td>$123,041+</td><td>$136,823+</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p style="font-size:.78rem;color:#5a7090;margin-top:.5rem">Approximate 2025 Rest of U.S. (RUS) locality pay rates. High-cost areas like DC, San Francisco, and NYC pay 20-30% more. Check opm.gov for exact locality rates.</p>
 
 <div class="ad"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4999040528510137" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
 
 <h2>Locality Pay Multiplier — Same Grade, Different Cities</h2>
-<table><thead><tr><th>Location</th><th>GS-12 Step 5 (2025 est.)</th></tr></thead>
+<div class="tbl-wrap"><table><thead><tr><th>Location</th><th>GS-12 Step 5 (2025 est.)</th></tr></thead>
 <tbody>
 <tr><td>Washington DC / Northern Virginia / Maryland</td><td>~$114,000</td></tr>
 <tr><td>San Francisco Bay Area</td><td>~$122,000</td></tr>
 <tr><td>New York City</td><td>~$115,000</td></tr>
 <tr><td>Seattle, WA</td><td>~$112,000</td></tr>
 <tr><td>Rest of U.S. (baseline)</td><td>~$97,000</td></tr>
-</tbody></table>
+</tbody></table></div>
 
 <h2>Special Pay Systems (Not GS)</h2>
 <p>Some agencies use alternative pay systems. Intelligence agencies (CIA, NSA, DIA) use internal pay bands often competitive with GS-15. SES replaces GS-15 at the executive level ($145,000-$235,000). Law enforcement positions (FBI, CBP, DEA) receive LEO premium pay on top of base GS rates. USPS uses its own system entirely.</p>

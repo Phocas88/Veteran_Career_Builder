@@ -74,6 +74,10 @@ td{padding:.75rem 1rem;color:#3a4a5a;border-bottom:1px solid #eee}
 .fh{font-family:"Bebas Neue",sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem}
 .fl{display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem}
 .adsbygoogle{min-height:0!important;}
+
+/* ── Table scroll wrapper ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin-bottom:1rem;}
+.tbl-wrap table,.info-table{min-width:480px;width:100%;border-collapse:collapse;}
 </style>
 <meta property="og:title" content="Federal GS Grade Estimator 2026 | Military to GS Pay">
 <meta property="og:description" content="Estimate your federal GS grade based on military rank, MOS, and experience. Learn how veterans preference and special hiring authorities work.">
@@ -150,7 +154,7 @@ html,body{overflow-x:hidden;max-width:100%;}
 /* ── Global mobile overflow safety ── */
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+/* table overflow handled by .tbl-wrap */
 .card{overflow:visible!important;}
 .card-body{overflow-x:auto;}
 input,select,textarea{max-width:100%;width:100%;}
@@ -595,7 +599,7 @@ main{overflow-x:hidden;}
 <div class="callout"><div class="callout-label">This Is an Estimate, Not a Guarantee</div><p>GS grade determination is made by the hiring agency based on your specific qualifications and the requirements of the specific position. This guide provides the general framework — actual placement may vary. Always review the specific qualification requirements in the USAJOBS announcement.</p></div>
 
 <h2>Military Rank to GS Grade General Equivalency</h2>
-<table><thead><tr><th>Military Rank</th><th>Typical GS Equivalent</th><th>Notes</th></tr></thead>
+<div class="tbl-wrap"><table><thead><tr><th>Military Rank</th><th>Typical GS Equivalent</th><th>Notes</th></tr></thead>
 <tbody>
 <tr><td>E-1 to E-3</td><td>GS-1 to GS-4</td><td>Entry level; education and any specialized training affect placement</td></tr>
 <tr><td>E-4 to E-5</td><td>GS-4 to GS-6</td><td>Specialized skills and certifications push toward GS-6</td></tr>
@@ -607,19 +611,19 @@ main{overflow-x:hidden;}
 <tr><td>O-4 to O-5</td><td>GS-12 to GS-14</td><td>Mid-grade officers with significant management experience</td></tr>
 <tr><td>O-6</td><td>GS-14 to GS-15</td><td>Senior colonel/captain; SES track with additional experience</td></tr>
 <tr><td>O-7+</td><td>GS-15 / SES</td><td>General/Flag officer transition often targets SES or equivalent</td></tr>
-</tbody></table>
+</tbody></table></div>
 
 <div class="ad"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4999040528510137" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
 
 <h2>Education and GS Qualification</h2>
-<table><thead><tr><th>Education Level</th><th>Minimum GS Grade Qualification</th></tr></thead>
+<div class="tbl-wrap"><table><thead><tr><th>Education Level</th><th>Minimum GS Grade Qualification</th></tr></thead>
 <tbody>
 <tr><td>High school diploma / GED</td><td>GS-2 (with 3 months experience); GS-3 (with 6 months general experience)</td></tr>
 <tr><td>Associate degree or 60 credit hours</td><td>GS-4</td></tr>
 <tr><td>Bachelor's degree (any field)</td><td>GS-5 (entry); GS-7 with GPA 3.0+ or top 10% or Dean's List</td></tr>
 <tr><td>Master's degree / 2 years graduate study</td><td>GS-9</td></tr>
 <tr><td>PhD / 3 years graduate study</td><td>GS-11</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p><em>Education alone does not determine grade — it establishes minimum eligibility. "Specialized experience" equivalent to the next lower grade is required for most positions above GS-7.</em></p>
 
 <h2>Specialized Experience Requirements</h2>

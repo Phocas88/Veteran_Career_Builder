@@ -37,6 +37,10 @@ body{font-family:Inter,sans-serif;color:#1a2a3a;background:#fff;line-height:1.7}
 .adsbygoogle{min-height:0!important;}
 
 table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+
+/* ── Table scroll wrapper ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin-bottom:1rem;}
+.tbl-wrap table,.info-table{min-width:480px;width:100%;border-collapse:collapse;}
 </style>
 <meta property="og:title" content="Military vs Civilian Salary 2026 | Pay Comparison">
 <meta property="og:description" content="Compare military pay and total compensation to civilian salaries by rank, branch, and career field. Includes BAH, BAS, and benefits value.">
@@ -113,7 +117,7 @@ html,body{overflow-x:hidden;max-width:100%;}
 /* ── Global mobile overflow safety ── */
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+/* table overflow handled by .tbl-wrap */
 .card{overflow:visible!important;}
 .card-body{overflow-x:auto;}
 input,select,textarea{max-width:100%;width:100%;}
@@ -570,7 +574,7 @@ main{overflow-x:hidden;}
   <p>The table below shows approximate total military compensation and the civilian salary range needed to replace it. BAH is based on a national average - your specific BAH depends on your duty station ZIP code. All figures are approximate 2025 values.</p>
 
   <div style="overflow-x:auto;margin:1.25rem 0">
-    <table style="width:100%;border-collapse:collapse;font-size:.88rem">
+    <div class="tbl-wrap"><table style="width:100%;border-collapse:collapse;font-size:.88rem">
       <thead>
         <tr style="background:#1a3a6b;color:#fff">
           <th style="padding:.75rem 1rem;text-align:left">Rank</th>

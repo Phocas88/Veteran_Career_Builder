@@ -35,6 +35,10 @@ body{font-family:Inter,sans-serif;color:#1a2a3a;background:#fff;line-height:1.7}
 .tag.green{background:rgba(26,122,64,.08);border-color:rgba(26,122,64,.2);color:#1a7a40}
 .tag.gold{background:rgba(200,150,10,.1);border-color:rgba(200,150,10,.3);color:#8a6000}
 .adsbygoogle{min-height:0!important;}
+
+/* ── Table scroll wrapper ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin-bottom:1rem;}
+.tbl-wrap table,.info-table{min-width:480px;width:100%;border-collapse:collapse;}
 </style>
 <meta property="og:title" content="GI Bill School Comparison 2026 | Maximize Your Education">
 <meta property="og:description" content="Compare schools using GI Bill benefits. BAH rates by ZIP code, tuition coverage, Yellow Ribbon, and VR&E. Make the most of your Post-9/11 GI Bill.">
@@ -111,7 +115,7 @@ html,body{overflow-x:hidden;max-width:100%;}
 /* ── Global mobile overflow safety ── */
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+/* table overflow handled by .tbl-wrap */
 .card{overflow:visible!important;}
 .card-body{overflow-x:auto;}
 input,select,textarea{max-width:100%;width:100%;}
@@ -592,7 +596,7 @@ main{overflow-x:hidden;}
 
   <h2>State Comparison - BAH Rate and Additional Benefits</h2>
   <div style="overflow-x:auto;margin:1.25rem 0">
-    <table style="width:100%;border-collapse:collapse;font-size:.85rem">
+    <div class="tbl-wrap"><table style="width:100%;border-collapse:collapse;font-size:.85rem">
       <thead>
         <tr style="background:#1a3a6b;color:#fff">
           <th style="padding:.75rem 1rem;text-align:left">State</th>

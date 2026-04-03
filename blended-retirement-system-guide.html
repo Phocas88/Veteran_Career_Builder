@@ -74,6 +74,10 @@ td{padding:.75rem 1rem;color:#3a4a5a;border-bottom:1px solid #eee}
 .fh{font-family:"Bebas Neue",sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem}
 .fl{display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem}
 .adsbygoogle{min-height:0!important;}
+
+/* ── Table scroll wrapper ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin-bottom:1rem;}
+.tbl-wrap table,.info-table{min-width:480px;width:100%;border-collapse:collapse;}
 </style>
 <meta property="og:title" content="Blended Retirement System (BRS) Guide 2026">
 <meta property="og:description" content="Complete guide to the military Blended Retirement System: TSP contributions, continuation pay, pension calculation, and how BRS compares to legacy retirement.">
@@ -150,7 +154,7 @@ html,body{overflow-x:hidden;max-width:100%;}
 /* ── Global mobile overflow safety ── */
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+/* table overflow handled by .tbl-wrap */
 .card{overflow:visible!important;}
 .card-body{overflow-x:auto;}
 input,select,textarea{max-width:100%;width:100%;}
@@ -593,7 +597,7 @@ main{overflow-x:hidden;}
 <p>The Blended Retirement System (BRS) and the legacy High-3 system work very differently. Veterans who served under BRS and separate before 20 years still benefit significantly from the TSP matching they received — understanding this changes the calculus of how to manage your transition financially.</p>
 
 <h2>BRS vs Legacy High-3: The Key Differences</h2>
-<table><thead><tr><th>Factor</th><th>Legacy High-3</th><th>Blended Retirement System</th></tr></thead>
+<div class="tbl-wrap"><table><thead><tr><th>Factor</th><th>Legacy High-3</th><th>Blended Retirement System</th></tr></thead>
 <tbody>
 <tr><td>Retirement multiplier</td><td>2.5% per year of service</td><td>2.0% per year of service</td></tr>
 <tr><td>20-year pension</td><td>50% of High-3 base pay</td><td>40% of High-3 base pay</td></tr>
@@ -601,7 +605,7 @@ main{overflow-x:hidden;}
 <tr><td>Continuation Pay</td><td>None</td><td>2.5-13x monthly basic pay at 8-12 years for re-up commitment</td></tr>
 <tr><td>Who it applies to</td><td>Entered service before Jan 1, 2018</td><td>Entered service on/after Jan 1, 2018; or opted in during 2018 open season</td></tr>
 <tr><td>Best for</td><td>Veterans who serve 20+ years</td><td>Veterans who serve 20+ years AND veterans who separate early (TSP value)</td></tr>
-</tbody></table>
+</tbody></table></div>
 
 <h2>BRS for Veterans Who Separate Before 20 Years</h2>
 <p>This is the key insight most BRS veterans miss: even if you separate at 6, 8, or 12 years, the TSP matching contributions you received have significant long-term value. A service member who contributed 5% of base pay for 8 years and received full matching from DoD (up to 5% total from government) has a substantial TSP balance that compounds over decades. This is real wealth that legacy-system veterans who separated early simply did not have access to.</p>

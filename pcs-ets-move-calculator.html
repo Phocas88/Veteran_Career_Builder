@@ -143,6 +143,10 @@ footer{background:#0d1f3c;padding:2rem 5%;margin-top:2rem;}
   .total-bar{flex-direction:column;text-align:center;}
 }
 .adsbygoogle{min-height:0!important;}
+
+/* ── Table scroll wrapper ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin-bottom:1rem;}
+.tbl-wrap table,.info-table{min-width:480px;width:100%;border-collapse:collapse;}
 </style>
 <meta property="og:title" content="PCS/ETS Move Calculator 2026 | Military Moving Allowances">
 <meta property="og:description" content="Calculate your PCS or ETS move entitlements: DITY/Estimate your PCS/ETS move costs — PPM pay, weight allowance, DLA, TLE, MALT. Based on 2026 JTR. PPM is an estimate; get exact authorization from your TMO.">
@@ -219,7 +223,7 @@ html,body{overflow-x:hidden;max-width:100%;}
 /* ── Global mobile overflow safety ── */
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+/* table overflow handled by .tbl-wrap */
 .card{overflow:visible!important;}
 .card-body{overflow-x:auto;}
 input,select,textarea{max-width:100%;width:100%;}
@@ -760,7 +764,7 @@ main{overflow-x:hidden;}
     <!-- WEIGHT TAB -->
     <div class="tab-content active" id="tab-weight">
       <div class="alert alert-info"><strong>2026 HHG Weight Entitlements (JTR Table 5-B)</strong>These are your maximum authorized household goods weights. Exceeding entitlement = you pay excess weight shipping costs.</div>
-      <table class="info-table">
+      <div class="tbl-wrap"><table class="info-table">
         <thead><tr><th>Pay Grade</th><th>With Dependents</th><th>Without Dependents</th><th>Pro-Gear</th></tr></thead>
         <tbody>
           <tr><td>E-1 to E-3</td><td>5,000 lbs</td><td>3,500 lbs</td><td>—</td></tr>
@@ -773,7 +777,7 @@ main{overflow-x:hidden;}
           <tr><td>O-4 to O-6</td><td>14,500 lbs</td><td>13,000 lbs</td><td>1,000 lbs</td></tr>
           <tr><td>O-7+</td><td>18,000 lbs</td><td>18,000 lbs</td><td>1,000 lbs</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <h3>What Counts as Pro-Gear?</h3>
       <p style="font-size:.88rem;color:var(--slate);margin-bottom:.75rem;">Pro-gear (professional gear) is weight that doesn't count against your HHG entitlement. It must be items required for your military job or your spouse's career.</p>
       <div class="alert alert-tip"><strong>✅ Counts as Pro-Gear</strong>Books, papers, and equipment required for your duties. Musical instruments for a professional musician spouse. Tools and equipment for technical trades used professionally.</div>
@@ -785,7 +789,7 @@ main{overflow-x:hidden;}
     <!-- DLA TAB -->
     <div class="tab-content" id="tab-dla">
       <div class="alert alert-info"><strong>Dislocation Allowance (DLA)</strong>DLA is a flat payment to help cover the incidental costs of a PCS move — deposits, utility connections, moving supplies. It is paid once per PCS order set.</div>
-      <table class="info-table">
+      <div class="tbl-wrap"><table class="info-table">
         <thead><tr><th>Pay Grade</th><th>With Dependents (2026)</th><th>Without Dependents (2026)</th></tr></thead>
         <tbody>
           <tr><td>E-1 to E-3</td><td>$1,212.45</td><td>$850.88</td></tr>
@@ -800,7 +804,7 @@ main{overflow-x:hidden;}
           <tr><td>O-4 to O-6</td><td>$2,449.97</td><td>$1,718.99</td></tr>
           <tr><td>O-7+</td><td>$2,869.94</td><td>$2,012.47</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="alert alert-warn"><strong>⚠️ When DLA is NOT Payable</strong>If the government provides quarters at both locations and you don't vacate. If moving into government quarters at the new duty station and already occupied government quarters. First PCS from training if you didn't have dependents before your initial training station.</div>
       <div class="alert alert-tip"><strong>💡 DLA + DITY Tip</strong>If you do a full DITY move, you still receive DLA on top of your PPM incentive pay. They are separate entitlements.</div>
     </div>
@@ -809,7 +813,7 @@ main{overflow-x:hidden;}
     <div class="tab-content" id="tab-tle">
       <div class="alert alert-info"><strong>Temporary Lodging Expense (TLE) — CONUS</strong>TLE reimburses lodging and meal expenses when you can't occupy permanent quarters immediately before or after a PCS move within the continental U.S.</div>
       <h3>TLE Rules</h3>
-      <table class="info-table">
+      <div class="tbl-wrap"><table class="info-table">
         <thead><tr><th>Item</th><th>Rule</th></tr></thead>
         <tbody>
           <tr><td>Maximum Duration</td><td>10 days total (can be split: up to 10 days at old station, new station, or split between both)</td></tr>
@@ -818,7 +822,7 @@ main{overflow-x:hidden;}
           <tr><td>Effective Date</td><td>Starts day after you vacate old quarters or arrive at new duty station (whichever applies)</td></tr>
           <tr><td>Receipts Required</td><td>Yes — lodging receipts required. Meals reimbursed at flat per diem rate.</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <h3>TLA — Overseas (OCONUS)</h3>
       <div class="alert alert-warn"><strong>Temporary Lodging Allowance (TLA)</strong>For OCONUS moves, TLA applies instead of TLE. TLA is paid at 100% of per diem for the first 30 days, then reduces. Maximum duration: 60 days (up to 90 days with command approval in some locations). Specific rates set by SECDEF for each OCONUS location — check current DTMO tables.</div>
       <h3>Claiming TLE</h3>
@@ -834,7 +838,7 @@ main{overflow-x:hidden;}
     <div class="tab-content" id="tab-dity">
       <div class="alert alert-tip"><strong>DITY / PPM (Personally Procured Move) — How to Make Money on Your Move</strong>Instead of using the government movers, you handle your own move and get paid 95% of what the government would have paid a commercial carrier. If you move cheaper than that, you keep the difference as profit.</div>
       <h3>How PPM Incentive Pay Works</h3>
-      <table class="info-table">
+      <div class="tbl-wrap"><table class="info-table">
         <thead><tr><th>Step</th><th>What Happens</th></tr></thead>
         <tbody>
           <tr><td>1. Request PPM</td><td>Contact your Transportation Office (TO) and request PPM authorization before moving. Do NOT move before authorization.</td></tr>
@@ -843,7 +847,7 @@ main{overflow-x:hidden;}
           <tr><td>4. You Keep the Profit</td><td>If your actual moving costs were less than the 95% payment, you keep the difference — TAX-FREE up to the authorized entitlement.</td></tr>
           <tr><td>5. Submit Paperwork</td><td>Submit weight tickets, receipts, and PPM packet to Finance within 45 days of arriving at new duty station.</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <h3>PPM Rate Formula (2026)</h3>
       <div class="alert alert-info">
         <strong>Incentive Pay = Weight Shipped × Government Rate Per Pound × Distance × 95%</strong>
@@ -865,7 +869,7 @@ main{overflow-x:hidden;}
     <!-- MILEAGE TAB -->
     <div class="tab-content" id="tab-mileage">
       <div class="alert alert-info"><strong>Monetary Allowance in Lieu of Transportation (MALT)</strong>For PCS moves, you're authorized MALT — mileage reimbursement for each POV used to drive to the new duty station.</div>
-      <table class="info-table">
+      <div class="tbl-wrap"><table class="info-table">
         <thead><tr><th>Item</th><th>2026 Rate</th></tr></thead>
         <tbody>
           <tr><td>MALT Rate (per mile, per authorized POV)</td><td>$0.21/mile</td></tr>
@@ -874,9 +878,9 @@ main{overflow-x:hidden;}
           <tr><td>Per Diem (en route)</td><td>$157/day (member) + additional for dependents</td></tr>
           <tr><td>Per Diem Days Authorized</td><td>Distance ÷ 400 miles per day (rounded up), plus 1 travel day</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <h3>Travel Days & Per Diem</h3>
-      <table class="info-table">
+      <div class="tbl-wrap"><table class="info-table">
         <thead><tr><th>Distance</th><th>Authorized Travel Days</th><th>Per Diem Est.</th></tr></thead>
         <tbody>
           <tr><td>0–400 miles</td><td>1 day</td><td>$157</td></tr>
@@ -886,7 +890,7 @@ main{overflow-x:hidden;}
           <tr><td>1,601–2,000 miles</td><td>5 days</td><td>$785</td></tr>
           <tr><td>2,000+ miles</td><td>6 days</td><td>$942</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="alert alert-warn"><strong>⚠️ MALT vs. TDY Travel</strong>MALT is only for PCS travel in a POV. If you fly, you don't receive MALT but can get airfare reimbursement up to coach rate. You cannot receive both MALT and airfare for the same move.</div>
     </div>
 
@@ -898,7 +902,7 @@ main{overflow-x:hidden;}
       <div class="alert alert-info"><strong>ℹ️ 1 Year to Use Move Entitlement</strong>You have 1 year from your report date to use your PCS move entitlement. After 1 year, you lose it. Do not leave furniture at the old location and expect to move it a year later on the government's dime.</div>
       <div class="alert alert-tip"><strong>💡 Dependent Pickup Point</strong>If your dependents live somewhere other than your current duty station, you may be authorized to ship HHG from the dependent's location as well as your current station — up to your total weight entitlement. Coordinate with your TO.</div>
       <h3>POV Shipment (Car Shipping)</h3>
-      <table class="info-table">
+      <div class="tbl-wrap"><table class="info-table">
         <thead><tr><th>Item</th><th>Rule</th></tr></thead>
         <tbody>
           <tr><td>Authorized POVs</td><td>1 vehicle CONUS-to-OCONUS moves. CONUS-to-CONUS: not typically government-funded (you drive or ship at own cost, reimbursed via MALT)</td></tr>
@@ -906,7 +910,7 @@ main{overflow-x:hidden;}
           <tr><td>Timeframe</td><td>Submit POV shipment request to TO at least 30 days before desired ship date</td></tr>
           <tr><td>Vehicle Condition</td><td>Must be clean, no contraband, under 1/4 tank of fuel, battery connected, no major mechanical issues</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <h3>Special Circumstances</h3>
       <ul style="font-size:.88rem;color:var(--slate);padding-left:1.25rem;line-height:1.9;">
         <li><strong>Pregnancy/Birth:</strong> If a dependent delivers during your move, you may receive additional TLE/TLA extensions</li>
@@ -921,7 +925,7 @@ main{overflow-x:hidden;}
     <div class="tab-content" id="tab-ets">
       <div class="alert alert-info"><strong>ETS / Separation Move Entitlements</strong>When you separate (ETS) or retire, you receive one final move to your Home of Record (HOR) or Place of Enlistment/Induction (PLEAD) — whichever is more beneficial. For retirement, you also have the option of moving to any CONUS location.</div>
       <h3>ETS Move Rules</h3>
-      <table class="info-table">
+      <div class="tbl-wrap"><table class="info-table">
         <thead><tr><th>Item</th><th>Rule</th></tr></thead>
         <tbody>
           <tr><td>Move Destination</td><td>Home of Record (HOR) on your DD-214, OR Place of Enlistment</td></tr>
@@ -932,7 +936,7 @@ main{overflow-x:hidden;}
           <tr><td>Weight Entitlement</td><td>Same as PCS entitlement for your grade — with or without dependents</td></tr>
           <tr><td>DITY/PPM</td><td>Yes — authorized for ETS and retirement moves. Same rules as PCS PPM.</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <h3>Separation Pay vs. Severance Pay</h3>
       <div class="alert alert-warn"><strong>⚠️ Not a Moving Allowance — But You Need to Know</strong>Separation pay (Involuntary Separation Pay or VSP) and Severance Pay are different from moving allowances. If you receive separation pay, it may be recouped if you later receive VA disability compensation for the same period. Consult with a VA benefits advisor before separating.</div>
       <h3>ETS Transition Timeline — Move Planning</h3>

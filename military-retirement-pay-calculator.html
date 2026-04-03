@@ -74,6 +74,10 @@ td{padding:.75rem 1rem;color:#3a4a5a;border-bottom:1px solid #eee}
 .fh{font-family:"Bebas Neue",sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem}
 .fl{display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem}
 .adsbygoogle{min-height:0!important;}
+
+/* ── Table scroll wrapper ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin-bottom:1rem;}
+.tbl-wrap table,.info-table{min-width:480px;width:100%;border-collapse:collapse;}
 </style>
 <meta property="og:title" content="Military Retirement Pay Calculator 2026">
 <meta property="og:description" content="Calculate your military retirement pay under BRS and legacy High-3 systems. Includes COLA adjustments and survivor benefit plan options.">
@@ -150,7 +154,7 @@ html,body{overflow-x:hidden;max-width:100%;}
 /* ── Global mobile overflow safety ── */
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+/* table overflow handled by .tbl-wrap */
 .card{overflow:visible!important;}
 .card-body{overflow-x:auto;}
 input,select,textarea{max-width:100%;width:100%;}
@@ -600,7 +604,7 @@ main{overflow-x:hidden;}
 </div>
 
 <h2>20-Year Retirement Pay Estimates (High-3)</h2>
-<table><thead><tr><th>Rank at Retirement</th><th>Base Pay (approx)</th><th>Monthly Retirement (50%)</th><th>Annual Retirement</th></tr></thead>
+<div class="tbl-wrap"><table><thead><tr><th>Rank at Retirement</th><th>Base Pay (approx)</th><th>Monthly Retirement (50%)</th><th>Annual Retirement</th></tr></thead>
 <tbody>
 <tr><td>E-7 (MSG/GySgt/CPO)</td><td>$4,983-$6,100</td><td>$2,500-$3,050</td><td>$30,000-$36,600</td></tr>
 <tr><td>E-8 (SFC/MSgt)</td><td>$5,765-$7,100</td><td>$2,882-$3,550</td><td>$34,584-$42,600</td></tr>
@@ -608,7 +612,7 @@ main{overflow-x:hidden;}
 <tr><td>O-4 (Major/LtCdr)</td><td>$6,400-$8,600</td><td>$3,200-$4,300</td><td>$38,400-$51,600</td></tr>
 <tr><td>O-5 (LtCol/Cdr)</td><td>$7,600-$10,200</td><td>$3,800-$5,100</td><td>$45,600-$61,200</td></tr>
 <tr><td>O-6 (Col/Capt Navy)</td><td>$8,990-$11,900</td><td>$4,495-$5,950</td><td>$53,940-$71,400</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p style="font-size:.8rem;color:#5a7090;margin-top:.5rem">These are approximate figures based on 2025 pay rates and 20 years of service. Actual retirement pay varies based on specific years of service, high-3 average, and any additional service. Use the official military retirement calculator at militarypay.defense.gov.</p>
 
 <div class="ad"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4999040528510137" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>

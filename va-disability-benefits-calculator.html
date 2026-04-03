@@ -3,16 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>VA Disability Calculator 2026 | Combined Rating & Pay</title>
-<meta name="description" content="Calculate your VA disability combined rating and monthly compensation. Includes dependent additions, SMC, and TDIU eligibility for 2026.">
-<meta name="keywords" content="VA disability benefits calculator 2025, VA disability rates, VA disability compensation by percentage, veteran disability pay, TDIU benefits">
+<title>VA Disability Calculator 2026 | Combined Rating, Pay & Rating Schedule</title>
+<meta name="description" content="Calculate your VA combined disability rating and monthly compensation. Plus: the complete VA Disability Rating Schedule for all conditions — PTSD, back, knee, tinnitus and more. 2026 rates.">
+<meta name="keywords" content="VA disability calculator, VA combined rating calculator, VA disability compensation 2026, VA disability rating schedule, PTSD rating, back pain VA rating, knee VA rating">
 <link rel="canonical" href="https://veterancareerpath.com/va-disability-benefits-calculator.html">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/logo.png">
-<link rel="apple-touch-icon" href="https://veterancareerpath.com/logo.png">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
+<link rel="icon" href="https://veterancareerpath.com/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,sans-serif;color:#1a2a3a;background:#fff;line-height:1.7}
 .hero{background:linear-gradient(160deg,#0a1628 0%,#1a3a6b 60%,#1e4a8a 100%);padding:3.5rem 6%;text-align:center;position:relative;overflow:hidden}
@@ -60,21 +58,215 @@ td{padding:.75rem 1rem;color:#3a4a5a;border-bottom:1px solid #eee}
 .adsbygoogle{min-height:0!important;}
 
 table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+
+/* ── Table scroll wrapper ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin-bottom:1rem;}
+.tbl-wrap table,.info-table{min-width:480px;width:100%;border-collapse:collapse;}
+
+
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --nv:#0a1628;--nv2:#1a3a6b;--gd:#f0c040;--gd2:#c8960a;
+  --gr:#1a7a40;--rd:#c0392b;--bd:#dde3ec;--lt:#f0f4fa;--sl:#4a5a6a;
+}
+body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f2f5fa;font-size:15px;line-height:1.7;}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,#060f1e,#0d1f3c 55%,#1a3a6b);padding:2.5rem 5% 2rem;color:#fff;}
+.hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(200,150,10,.12);border:1px solid rgba(200,150,10,.3);border-radius:100px;padding:.25rem .85rem;font-size:.68rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#f0c040;margin-bottom:.75rem;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.9rem,4vw,2.8rem);letter-spacing:.06em;line-height:1.05;margin-bottom:.5rem;}
+.hero h1 em{color:#f0c040;font-style:normal;}
+.hero p{font-size:.9rem;color:rgba(192,216,240,.8);max-width:580px;line-height:1.7;}
+
+/* LAYOUT */
+.wrap{max-width:1200px;margin:0 auto;padding:1.75rem 5% 4rem;display:grid;grid-template-columns:210px 1fr;gap:1.5rem;align-items:start;}
+@media(max-width:880px){.wrap{grid-template-columns:1fr;}}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:72px;}
+.sb-box{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.sb-title{font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:var(--nv);margin-bottom:.65rem;padding-bottom:.45rem;border-bottom:2px solid var(--gd2);}
+.sb-link{display:block;padding:.35rem .55rem;border-radius:6px;font-size:.8rem;color:var(--sl);text-decoration:none;margin-bottom:.1rem;transition:all .12s;}
+.sb-link:hover,.sb-link.on{background:var(--lt);color:var(--nv);font-weight:600;}
+@media(max-width:880px){
+  .sidebar{position:static;}
+  .sb-box{display:flex;flex-wrap:wrap;gap:.35rem;padding:.75rem;}
+  .sb-title{width:100%;margin-bottom:.35rem;}
+  .sb-link{padding:.25rem .6rem;background:var(--lt);border-radius:20px;font-size:.75rem;}
+}
+
+/* SEARCH */
+.search-wrap{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:.85rem 1rem;margin-bottom:1.1rem;}
+.search-wrap input{width:100%;border:1.5px solid var(--bd);border-radius:8px;padding:.6rem .9rem;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a2a3a;}
+.search-wrap input:focus{outline:none;border-color:var(--nv2);}
+
+/* DISCLAIMER */
+.disclaimer{background:#fff8e0;border:1px solid rgba(200,150,10,.3);border-left:4px solid var(--gd2);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.1rem;font-size:.8rem;color:#5a4a00;line-height:1.65;}
+.disclaimer strong{color:#3a2a00;}
+
+/* SECTION CARDS */
+.sc{background:#fff;border:1px solid var(--bd);border-radius:12px;margin-bottom:.9rem;overflow:hidden;box-shadow:0 1px 6px rgba(26,58,107,.05);}
+.sc-hd{width:100%;background:var(--nv);padding:.8rem 1.15rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border:none;text-align:left;transition:background .15s;}
+.sc-hd:hover{background:var(--nv2);}
+.sc-hd.open{background:linear-gradient(135deg,var(--nv),var(--nv2));}
+.sc-hd>span:first-child{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:#fff;}
+.chv{color:rgba(255,255,255,.55);font-size:.75rem;flex-shrink:0;}
+.sc-bd{display:none;padding:1.15rem;}
+.sc-bd.visible{display:block;}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.ct{width:100%;border-collapse:collapse;font-size:.82rem;}
+.ct th{background:var(--nv);color:#fff;padding:.5rem .8rem;text-align:left;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;}
+.ct td{padding:.52rem .8rem;border-bottom:1px solid #f0f4fa;vertical-align:top;}
+.ct tr:nth-child(even) td{background:#f9fafd;}
+.ct tr:hover td{background:#edf2fa;transition:background .12s;}
+.ct .hidden{display:none;}
+
+/* RATING BADGES */
+.pct{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:22px;border-radius:20px;font-size:.72rem;font-weight:700;padding:0 5px;margin:.1rem;white-space:nowrap;}
+.p0{background:#f0f4fa;color:#6a7a8a;}
+.p10{background:#dbeeff;color:#1a4a8a;}
+.p20{background:#fef9d8;color:#7a5800;}
+.p30{background:#fef0d0;color:#7a3800;}
+.p40{background:#fee4d0;color:#7a2800;}
+.p50{background:#fdd8c8;color:#8a1800;}
+.p60,.p70{background:#fcc8b8;color:#8a1000;}
+.p80,.p90,.p100{background:#fbb0a0;color:#700000;}
+
+/* SEC TAG */
+.st{display:inline-block;background:rgba(26,58,107,.07);border:1px solid rgba(26,58,107,.18);border-radius:20px;padding:.1rem .5rem;font-size:.68rem;color:var(--nv2);font-weight:500;margin:.1rem;}
+
+/* ALERTS */
+.alert{border-radius:8px;padding:.8rem 1rem;margin:.75rem 0;font-size:.83rem;line-height:1.65;}
+.ai{background:#eef6ff;border-left:4px solid var(--nv2);}
+.aw{background:#fffbf0;border-left:4px solid var(--gd2);}
+.at{background:#f0fff4;border-left:4px solid var(--gr);}
+.alert strong{color:var(--nv);display:block;margin-bottom:.2rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;}
+
+/* CALCULATOR */
+.calc-card{background:#fff;border:1px solid var(--bd);border-radius:12px;margin-bottom:.9rem;box-shadow:0 1px 6px rgba(26,58,107,.05);overflow:hidden;}
+.calc-hd{background:linear-gradient(135deg,var(--nv),var(--nv2));padding:.8rem 1.15rem;}
+.calc-hd h2{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:#fff;}
+.calc-body{padding:1.25rem;}
+
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:1rem;}
+@media(max-width:560px){.calc-grid{grid-template-columns:1fr;}}
+.fld{display:flex;flex-direction:column;gap:.3rem;}
+.fld label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--nv);}
+.fld select,.fld input{border:1.5px solid var(--bd);border-radius:7px;padding:.55rem .8rem;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a2a3a;background:#fff;}
+.fld select:focus,.fld input:focus{outline:none;border-color:var(--nv2);}
+.fld-full{grid-column:1/-1;}
+
+/* Rating pills */
+.rating-pills{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem;}
+.r-pill{display:flex;align-items:center;gap:.3rem;background:var(--lt);border:1.5px solid var(--bd);border-radius:20px;padding:.2rem .6rem .2rem .75rem;font-size:.82rem;font-weight:600;color:var(--nv);}
+.r-pill button{background:none;border:none;cursor:pointer;color:var(--rd);font-size:.85rem;padding:0;line-height:1;}
+.add-rating-btn{background:var(--nv2);color:#fff;border:none;border-radius:7px;padding:.42rem .85rem;font-size:.78rem;font-weight:600;cursor:pointer;}
+.add-rating-btn:hover{background:var(--nv);}
+.calc-btn{width:100%;padding:.82rem;background:linear-gradient(135deg,var(--gd2),var(--gd));border:none;border-radius:9px;color:#0a1628;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;cursor:pointer;margin-top:.75rem;transition:transform .12s,box-shadow .12s;}
+.calc-btn:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(200,150,10,.3);}
+
+.result-box{background:var(--nv);border-radius:10px;padding:1.25rem 1.4rem;margin-top:.9rem;display:none;}
+.result-box.show{display:block;}
+.rb-combined{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.05em;color:#f0c040;line-height:1;}
+.rb-label{font-size:.7rem;opacity:.6;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem;color:#fff;}
+.rb-pay{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#f0c040;margin-top:.5rem;}
+.rb-breakdown{margin-top:.75rem;border-top:1px solid rgba(255,255,255,.1);padding-top:.75rem;}
+.rb-row{display:flex;justify-content:space-between;font-size:.78rem;color:rgba(255,255,255,.75);padding:.18rem 0;}
+.rb-row strong{color:#fff;}
+.rb-math{font-size:.72rem;color:rgba(255,255,255,.4);margin-top:.35rem;font-family:monospace;}
+
+/* PAY TABLE */
+.pay-tbl{width:100%;border-collapse:collapse;font-size:.82rem;}
+.pay-tbl th{background:var(--nv);color:#fff;padding:.5rem .75rem;text-align:left;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;}
+.pay-tbl td{padding:.48rem .75rem;border-bottom:1px solid #f0f4fa;}
+.pay-tbl tr:nth-child(even) td{background:#f9fafD;}
+.pay-tbl td:not(:first-child){font-weight:600;color:var(--gr);}
+
+@media(max-width:600px){
+  .calc-grid{grid-template-columns:1fr;}
+  .hero{padding:1.75rem 5% 1.5rem;}
+  .calc-body{padding:.9rem;}
+  .sc-bd{padding:.9rem;}
+}
+
+/* Mobile table overflow fix */
+@media(max-width:700px){
+  /* Make table horizontally scrollable but don't let it bust the page */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100vw;}
+  .ct{font-size:.72rem;min-width:480px;}
+  .ct td,.ct th{padding:.38rem .5rem;}
+  .ct th{white-space:normal;font-size:.65rem;}
+  /* Hide the secondary conditions column on small screens */
+  .ct td:last-child,.ct th:last-child{display:none;}
+  .pct{min-width:26px;height:20px;font-size:.62rem;padding:0 3px;}
+  .pay-tbl{font-size:.72rem;min-width:420px;}
+  .pay-tbl td,.pay-tbl th{padding:.38rem .45rem;}
+  .hero{padding:1.5rem 4%!important;}
+  .hero h1{font-size:clamp(1.6rem,6vw,2.2rem)!important;}
+  .wrap{padding:1rem 3% 3rem!important;}
+  /* Sidebar becomes a compact horizontal scroll on mobile */
+  .sidebar{margin-bottom:.75rem;}
+  .sb-box{max-height:120px;overflow-y:hidden;overflow-x:auto;flex-wrap:nowrap;padding:.5rem;}
+  .sb-link{flex-shrink:0;white-space:nowrap;}
+  /* Calc grid */
+  .calc-grid{grid-template-columns:1fr!important;}
+  /* Result breakdown */
+  .rb-row{font-size:.73rem;}
+}
+@media(max-width:400px){
+  .ct{min-width:360px;font-size:.65rem;}
+}
+.adsbygoogle{min-height:0!important;}
+
+/* ── CONDITION CARDS ───────────────────────────────────────────────── */
+.cond-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:.65rem;overflow:hidden;transition:box-shadow .15s;}
+.cond-card:hover{box-shadow:0 3px 12px rgba(26,58,107,.1);}
+.cond-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;padding:.75rem 1rem;background:#f8fafd;border-bottom:1px solid #e2e8f0;}
+.cond-name{font-weight:700;font-size:.88rem;color:var(--nv);flex:1;}
+.cond-badges{display:flex;flex-wrap:wrap;gap:.25rem;}
+.cond-body{padding:.75rem 1rem;}
+.crit-table{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.6rem;}
+.crit-row{display:flex;align-items:flex-start;gap:.65rem;padding:.45rem .6rem;border-radius:7px;background:#f8fafd;border-left:3px solid #e2e8f0;transition:background .12s;}
+.crit-row:hover{background:#eef3fb;}
+.crit-pct{flex-shrink:0;min-width:36px;text-align:center;}
+.crit-desc{font-size:.82rem;color:#2a3a4a;line-height:1.6;flex:1;}
+.sec-label{font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--sl);margin:.5rem 0 .3rem;}
+.sec-tags{display:flex;flex-wrap:wrap;gap:.3rem;}
+.crit-plain{font-size:.83rem;color:#2a3a4a;line-height:1.65;margin-bottom:.5rem;}
+
+/* Color code crit rows by severity */
+.crit-row:has(.p10){border-left-color:#93c5fd;}
+.crit-row:has(.p20){border-left-color:#fde68a;}
+.crit-row:has(.p30){border-left-color:#fdba74;}
+.crit-row:has(.p40){border-left-color:#f97316;}
+.crit-row:has(.p50){border-left-color:#ef4444;}
+.crit-row:has(.p60){border-left-color:#dc2626;}
+.crit-row:has(.p80),.crit-row:has(.p100){border-left-color:#991b1b;}
+
+
+/* ── Section jump anchors ── */
+.section-jump{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.5rem 0 2rem;padding:0 5%;}
+.section-jump a{background:#1a3a6b;color:#f0c040;text-decoration:none;padding:.45rem 1.1rem;border-radius:6px;font-size:.8rem;font-weight:700;letter-spacing:.06em;white-space:nowrap;}
+.section-jump a:hover{background:#0d1f3c;}
+/* ── Section divider ── */
+.page-divider{background:linear-gradient(135deg,#0a1628,#1a3a6b);color:#fff;padding:2rem 5%;margin-top:2.5rem;}
+.page-divider h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.4rem;}
+.page-divider p{font-size:.92rem;color:rgba(192,216,240,.8);max-width:700px;line-height:1.7;}
+/* ── Rating context box ── */
+.rating-context{background:#f0f4fa;border:1px solid #d0dcea;border-left:4px solid #1a3a6b;border-radius:8px;padding:1rem 1.25rem;margin:1rem 5%;font-size:.88rem;color:#1e2e40;line-height:1.7;}
+.rating-context strong{color:#1a3a6b;display:block;margin-bottom:.3rem;font-size:.92rem;}
+/* ── Tbl wrap ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin-bottom:1rem;}
+.tbl-wrap table,.info-table{min-width:480px;width:100%;}
+/* ── Mobile padding ── */
+@media(max-width:640px){
+  .page-divider,.rating-context{margin-left:0;margin-right:0;}
+  .section-jump{padding:0 1rem;}
+}
+
 </style>
-<meta property="og:title" content="VA Disability Calculator 2026 | Combined Rating & Pay">
-<meta property="og:description" content="Calculate your VA disability combined rating and monthly compensation. Includes dependent additions, SMC, and TDIU eligibility for 2026.">
-<meta property="og:url" content="https://veterancareerpath.com/va-disability-benefits-calculator.html">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://veterancareerpath.com/logo.png">
-<meta property="og:site_name" content="Veteran Career Path">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="VA Disability Calculator 2026 | Combined Rating & Pay">
-<meta name="twitter:description" content="Calculate your VA disability combined rating and monthly compensation. Includes dependent additions, SMC, and TDIU eligibility for 2026.">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","name":"VA Disability Calculator 2026 | Combined Rating & Pay","description":"Calculate your VA disability combined rating and monthly compensation. Includes dependent additions, SMC, and TDIU eligibility for 2026.","url":"https://veterancareerpath.com/va-disability-benefits-calculator.html","publisher":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://veterancareerpath.com"},{"@type":"ListItem","position":2,"name":"VA Disability Calculator 2026 | Combined Rating & Pay"}]}}
-</script>
-</head>
-<body>
 <style id="vcp-nav-css">
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
@@ -136,7 +328,7 @@ html,body{overflow-x:hidden;max-width:100%;}
 /* ── Global mobile overflow safety ── */
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+/* table overflow handled by .tbl-wrap */
 .card{overflow:visible!important;}
 .card-body{overflow-x:auto;}
 input,select,textarea{max-width:100%;width:100%;}
@@ -147,6 +339,15 @@ main{overflow-x:hidden;}
   .hero{padding-left:1rem!important;padding-right:1rem!important;}
 }
 </style>
+<!-- AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
+<!-- Schema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"VA Disability Calculator 2026","description":"Calculate VA disability combined rating and monthly pay. Includes complete VA rating schedule for all conditions.","url":"https://veterancareerpath.com/va-disability-benefits-calculator.html"}
+</script>
+</head>
+<body>
+
 <nav class="vcp-nav">
   <a href="https://veterancareerpath.com" class="vcp-logo">
     <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="30" height="30">
@@ -566,6 +767,17 @@ main{overflow-x:hidden;}
   if(ham)ham.addEventListener('mouseenter',function(){loadIdx(function(){});});
 })();
 </script>
+
+<!-- Quick section jump links -->
+<div class="section-jump">
+  <a href="#va-calculator">🧮 Calculate My Rating</a>
+  <a href="#rating-schedule">📋 Rating Schedule by Condition</a>
+  <a href="#how-it-works">❓ How VA Ratings Work</a>
+  <a href="#combined-math">📐 Combined Rating Math</a>
+</div>
+
+<!-- ══ PART 1: CALCULATOR ════════════════════════════════════════════════════ -->
+<div id="va-calculator">
 <section class="hero">
   <div class="hero-inner">
     <div class="badge">&#9889; Disability Benefits</div>
@@ -583,7 +795,7 @@ main{overflow-x:hidden;}
 <h2>2025 Monthly Disability Compensation Rates</h2>
 <p>These are the 2025 VA compensation rates for a veteran with no dependents. Rates increase with dependents (spouse, children, dependent parents) and with combined ratings.</p>
 
-<table>
+<div class="tbl-wrap"><table>
   <thead><tr><th>Rating</th><th>Monthly (No Dependents)</th><th>With Spouse</th><th>Annual (No Dependents)</th><th>Taxable Equivalent*</th></tr></thead>
   <tbody>
     <tr><td>10%</td><td>$175.51</td><td>$175.51</td><td>$2,106</td><td>~$2,800</td></tr>
@@ -597,7 +809,7 @@ main{overflow-x:hidden;}
     <tr><td>90%</td><td>$2,297.96</td><td>$2,491.00</td><td>$27,576</td><td>~$36,700</td></tr>
     <tr><td>100%</td><td>$3,737.85</td><td>$3,946.25</td><td>$44,854</td><td>~$59,800</td></tr>
   </tbody>
-</table>
+</table></div>
 <p style="font-size:.78rem;color:#8a9aaa;margin-top:.5rem">*Taxable equivalent assumes 25% effective tax rate. Actual equivalent varies by income bracket.</p>
 
 <div style="text-align:center;margin:2rem 0;padding:1rem 0;border-top:1px solid #eee;border-bottom:1px solid #eee">
@@ -676,6 +888,1164 @@ main{overflow-x:hidden;}
   <a href="https://veterancareerpath.com/vre-chapter31-guide.html" class="btn-hero" style="text-decoration:none">Read the VR&amp;E Guide</a>
 </div>
 </div>
+
+</div>
+
+<!-- ══ HOW IT WORKS ════════════════════════════════════════════════════════════ -->
+<div id="how-it-works" class="page-divider">
+  <h2>How VA Disability Ratings Work</h2>
+  <p>The VA uses a "whole person" method to combine multiple ratings. Two 50% ratings do NOT equal 100% — they combine to 75%. Each disability is applied to your remaining able-bodied percentage, which is why understanding the math matters.</p>
+</div>
+<div class="rating-context">
+  <strong>🔢 The Whole Person Method (Combined Rating Formula)</strong>
+  Start with 100% (whole person). Your first disability rating reduces that whole person by its percentage. Each additional rating is applied to the remaining percentage — never the original 100%.
+  <br><br>
+  <strong>Example:</strong> 50% + 30% + 10% does NOT = 90%. The math: 100% − 50% = 50% remaining. 30% of 50% = 15% → now at 65%. 10% of 35% remaining = 3.5% → total ≈ 68%, rounded to <strong>70% combined</strong>.
+  <br><br>
+  <strong>⭐ TDIU (Total Disability Individual Unemployability):</strong> If you're unable to work due to service-connected disabilities, you may qualify for 100% compensation even with a combined rating below 100%. Single disability at 60%+ or multiple disabilities totaling 70%+ (one at 40%+) can qualify.
+</div>
+
+<!-- ══ PART 2: RATING SCHEDULE ═══════════════════════════════════════════════ -->
+<div id="rating-schedule" class="page-divider">
+  <h2>VA Disability Rating Schedule — All Conditions</h2>
+  <p>The complete CFR 38 Part 4 rating schedule. Click any condition to see the rating criteria, percentage thresholds, and what the VA looks for when evaluating your claim. Updated for 2026.</p>
+</div>
+
+<div id="combined-math" style="background:#fff;padding:1rem 5%;">
+<div class="search-wrap">
+    <input type="text" id="cond-search" placeholder="🔍 Search condition (e.g. PTSD, knee, tinnitus)..." oninput="filterConds(this.value)">
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer">
+    <strong>⚠️ For informational purposes only.</strong> Rating criteria is based on CFR 38 Part 4. Actual VA ratings are determined case-by-case. Consult a VSO or accredited claims agent for your specific situation.
+  </div>
+
+  <!-- Condition Sections -->
+  <div id="cond-sections">
+  <div class="sc" id="musculoskeletal-back-joints-bones">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🦴 Musculoskeletal — Back, Joints & Bones</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="alert ai" style="margin-bottom:.75rem"><strong>Rating Basis:</strong> Primarily range of motion (ROM) measured with a goniometer. Painful motion = minimum 10%. The general rating formula uses forward flexion and other ROM measurements.</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Lumbar Spine (Low Back)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p50">50%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Painful motion</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Forward flexion 30–60°</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Forward flexion &lt;30°, or favorable ankylosis</span></div><div class="crit-row"><span class="crit-pct pct p50">50%</span><span class="crit-desc">Unfavorable ankylosis in thoracolumbar</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Unfavorable ankylosis of entire spine</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Cervical Spine (Neck)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p30">30%</span><span class="pct p40">40%</span><span class="pct p50">50%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Painful motion</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Forward flexion 15–30°</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Forward flexion &lt;15°</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Favorable ankylosis</span></div><div class="crit-row"><span class="crit-pct pct p50">50%</span><span class="crit-desc">Unfavorable ankylosis</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Unfavorable ankylosis entire spine</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Knee (Limitation of Flexion)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p30">30%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Flexion ≥ 60°</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Flexion 45–60°</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Flexion 30–45°</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Flexion &lt;30°. Rate whichever formula (extension or flexion) gives highest rating</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Knee (Limitation of Extension)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p30">30%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Extension limited to 5°</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Extension limited to 10°</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Extension limited to 15°</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Knee (Instability)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p30">30%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Slight (ACL/MCL laxity grade 1)</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Moderate</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Severe instability</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Shoulder (Limitation of Motion)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p30">30%</span><span class="pct p40">40%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Forward flexion 91–170°</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Forward flexion 61–90°</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Forward flexion 31–60°</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Forward flexion ≤ 30°</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Hip (Limitation of Motion)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Flexion 30–45° or extension 0°</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Flexion ≤ 30°</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Favorable ankylosis</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Ankle (Limitation of Motion)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p20">20%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Dorsiflexion 15–29°</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Dorsiflexion 0–14°</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Plantar flexion &lt;30° or favorable ankylosis</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Plantar Fasciitis / Pes Planus</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p30">30%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Mild</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Moderate (bilateral mild–moderate)</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Marked (pronounced unilateral)</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Marked bilateral</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Radiculopathy (Sciatic Nerve)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">60%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Mild (intermittent pain/numbness)</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Moderate (constant incomplete paralysis)</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Moderately severe (incomplete paralysis)</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Complete sciatic paralysis</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Carpal Tunnel Syndrome</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p30">30%</span><span class="pct p40">40%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Mild (occasional symptoms)</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Moderate (weakness of grip)</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Moderately severe</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Severe (complete paralysis of median nerve)</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Rheumatoid Arthritis</div>
+    <div class="cond-badges"><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">One or two exacerbations/year</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Weight loss, anemia, or characteristic exacerbations</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Constitutional manifestations</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Totally incapacitating</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Osteoarthritis (multiple joints)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Rated on affected joint limitation of motion. Each affected joint rated separately.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Fibromyalgia</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Symptoms controlled by continuous medication</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Symptoms not fully controlled or refractory</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Constant/near-constant incapacitating symptoms</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Intervertebral Disc Syndrome (IVDS)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">60%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">1–2 episodes/year</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">At least 2 weeks/year incapacitating</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">4–6 weeks/year</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">&gt;6 weeks/year</span></div></div>
+    
+  </div>
+</div>
+    </div>
+  </div>
+  <div class="sc" id="mental-health">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🧠 Mental Health</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="alert ai" style="margin-bottom:.75rem"><strong>General Rating Formula:</strong> All mental health conditions use the same formula (38 CFR 4.130). Rating depends on occupational and social impairment severity, not diagnosis alone.</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">PTSD</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p50">50%</span><span class="pct p60">70%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Mild/transient symptoms, no occupational impairment</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Occasional work/social impairment</span></div><div class="crit-row"><span class="crit-pct pct p50">50%</span><span class="crit-desc">Reduced reliability/productivity</span></div><div class="crit-row"><span class="crit-pct pct p60">70%</span><span class="crit-desc">Deficiencies in most areas (work, school, family, judgment)</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Total social/occupational impairment</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Major Depressive Disorder (MDD)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p50">50%</span><span class="pct p60">70%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Same General Rating Formula as PTSD. Criteria include: episodes, duration, severity, impact on work and relationships, suicidal ideation, cognitive symptoms.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Generalized Anxiety Disorder</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p50">50%</span><span class="pct p60">70%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Same General Rating Formula. GAD often secondary to PTSD or MST.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Bipolar Disorder</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p50">50%</span><span class="pct p60">70%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Rated on frequency/severity of manic and depressive episodes and their functional impact. Mania-induced behaviors that cause occupational impairment weighted heavily.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Schizophrenia</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p50">50%</span><span class="pct p60">70%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">70–100% most common given chronic nature. Rated on severity of positive symptoms (hallucinations, delusions) and negative symptoms (social withdrawal, flat affect).</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">TBI (Traumatic Brain Injury) — Mental Health</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p40">40%</span><span class="pct p60">70%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Symptoms resolve</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">1 mild symptom. 40–</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Multiple symptoms with occupational impact</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Sleep Apnea</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p30">30%</span><span class="pct p50">50%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Asymptomatic</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Persistent daytime hypersomnia (requires CPAP)</span></div><div class="crit-row"><span class="crit-pct pct p50">50%</span><span class="crit-desc">Requires use of breathing assistance device (CPAP/BPAP)</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Chronic respiratory failure or cor pulmonale</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Insomnia (Sleep Disorder)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p30">30%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Often rated as secondary to PTSD, depression, or chronic pain. Standalone rating uses sleep disorder criteria — 30% if significant functional impairment.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Adjustment Disorder</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p50">50%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Same General Rating Formula but generally lower ratings as condition is expected to resolve. If chronic, reclassified to persistent depressive disorder or anxiety.</p>
+    
+  </div>
+</div>
+    </div>
+  </div>
+  <div class="sc" id="neurological">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>⚡ Neurological</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Migraine Headaches</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p50">50%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Less frequent attacks</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Characteristic prostrating attacks ≤ once in 2 months</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Prostrating attacks occurring once monthly on average</span></div><div class="crit-row"><span class="crit-pct pct p50">50%</span><span class="crit-desc">Characteristic prostrating attacks &gt;once monthly, with all productive activity prohibited during attacks</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Seizure Disorder (Epilepsy)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">60%</span><span class="pct p80">80%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">1 major seizure in 2 years or 2 minor in 6 months</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">1 major/4 months or 5 minor/6 months</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">1 major/3 months or 9 minor/6 months</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">1 major/month or 30 minor/6 months</span></div><div class="crit-row"><span class="crit-pct pct p80">80%</span><span class="crit-desc">Average 1 major/week</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Status epilepticus or seizures affecting all daily activities</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Multiple Sclerosis (MS)</div>
+    <div class="cond-badges"><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p80">80%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Minimum rating</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Acute exacerbations &gt;3 times/year, or slow progression</span></div><div class="crit-row"><span class="crit-pct pct p80">80%</span><span class="crit-desc">Attacks &gt;3 times/year or worse progressive</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Objective neurological deficits, constant symptoms, significant functional impairment</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Peripheral Neuropathy</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">60%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Rated as mild (10%), moderate (20%), moderately severe incomplete paralysis (40%), or severe complete paralysis (60%) based on nerve root affected. Each limb rated separately.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Tinnitus</div>
+    <div class="cond-badges"><span class="pct p10">10%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Single rating for bilateral or unilateral tinnitus. Maximum 10% regardless of severity — one of the most commonly rated conditions. Recurrent tinnitus qualifies</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Stroke / Cerebrovascular Accident</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Rated during acute phase (100%), then on residuals at 6 months post-stroke. Residuals include hemiplegia, cognitive deficits, aphasia — each rated separately using appropriate body system criteria.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Chronic Pain Syndrome</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Often rated under the General Rating Formula for mental disorders (somatic symptom disorder) or under the musculoskeletal system for the underlying condition. 10% minimum if diagnosed and documented.</p>
+    
+  </div>
+</div>
+    </div>
+  </div>
+  <div class="sc" id="respiratory-pulmonary">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🫁 Respiratory / Pulmonary</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="alert ai" style="margin-bottom:.75rem"><strong>Rating Basis:</strong> Pulmonary function tests (PFTs) — FEV-1, FEV-1/FVC ratio, DLCO — and exercise tolerance (METs). Get full spirometry results for your C&P exam.</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Asthma</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">FEV-1 71–80% or daily inhaled bronchodilator use</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">FEV-1 56–70% or daily use of systemic steroids/oral bronchodilators</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">FEV-1 40–55% or daily oral steroid use &gt;12 months</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">FEV-1 &lt;40% or FEV-1/FVC &lt;40% or chronic hospitalization</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">COPD / Chronic Bronchitis / Emphysema</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">FEV-1 71–80%</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">FEV-1 56–70%</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">FEV-1 40–55%</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">FEV-1 &lt;40% or requiring supplemental oxygen</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Sinusitis (Rhinitis / Chronic)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p50">50%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Symptom-free (post-surgery)</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">1–2 incapacitating episodes/year or 3+ non-incapacitating</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">3+ incapacitating or 6+ non-incapacitating</span></div><div class="crit-row"><span class="crit-pct pct p50">50%</span><span class="crit-desc">Near-constant headaches, sinus pain, chronic purulent discharge</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Constrictive Bronchiolitis (Burn Pit)</div>
+    <div class="cond-badges"><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">PACT Act (2022) created presumptive for constrictive bronchiolitis for veterans who served in Southwest Asia 8/2/1990 or later. Rated as a respiratory condition on FEV-1/FVC. Minimum 30% if diagnosis confirmed.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Pulmonary Hypertension</div>
+    <div class="cond-badges"><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Moderate — reduced exercise tolerance, right ventricular hypertrophy</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Severe — cor pulmonale, ascites, right heart failure, or requiring supplemental oxygen</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Pleural Effusion / Pleuritis</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p50">50%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Rated on FEV-1 and exercise tolerance. Often secondary to other pulmonary or cardiac conditions.</p>
+    
+  </div>
+</div>
+    </div>
+  </div>
+  <div class="sc" id="cardiovascular">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>❤️ Cardiovascular</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="alert ai" style="margin-bottom:.75rem"><strong>Rating Basis:</strong> METs (Metabolic Equivalents), ejection fraction, diastolic/systolic dysfunction, and requirement for cardiac intervention.</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Hypertension (High Blood Pressure)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">60%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">BP controlled on medication</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Diastolic ≥ 100 or systolic ≥ 160 (or requires 2+ medications)</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Diastolic 110+ or systolic 200+</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Diastolic 120+ constantly</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Diastolic 130+ constantly</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Coronary Artery Disease (Ischemic Heart Disease)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">METs &gt; 5 or no symptoms with treatment</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">METs 4–5 or workload causing dyspnea</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">METs 1–3, or left ventricular dysfunction with EF 30–50%</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Chronic congestive heart failure or workload &lt;3 METs, or EF &lt;30%</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Atrial Fibrillation</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Paroxysmal AFib, in remission, asymptomatic</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Continuous AFib controlled by medication</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Paroxysmal AFib or other dysrhythmia requiring anticoagulation</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Chronic cardiac failure</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Heart Failure (CHF)</div>
+    <div class="cond-badges"><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">METs 5 or less</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Workload &gt;3 but ≤5 METs causing dyspnea, fatigue</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">EF &lt;30% or NYHA Class III–IV with breathlessness at minimal activity</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Peripheral Artery Disease / Arteriosclerosis</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">70%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Claudication after 25 blocks</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Claudication after 10–25 blocks</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Claudication after &lt;10 blocks</span></div><div class="crit-row"><span class="crit-pct pct p60">70%</span><span class="crit-desc">Rest pain or ulceration</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Hemorrhoids</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p20">20%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Mild — no bleeding, no prolapse</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Mild/moderate with bleeding or prolapse</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Large hemorrhoids with persistent bleeding or prolapse</span></div></div>
+    
+  </div>
+</div>
+    </div>
+  </div>
+  <div class="sc" id="digestive-gi">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🫃 Digestive / GI</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">GERD (Acid Reflux / Hiatal Hernia)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Requires continuous medication</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Frequent episodes despite medication, weight loss</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Severe symptoms, stricture, Barrett's esophagus, severe weight loss</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">IBS (Irritable Bowel Syndrome)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Moderate with frequent episodes</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Severe, near-constant, with 4+ stools/day or alternating diarrhea/constipation significantly affecting activity</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Crohn's Disease / Ulcerative Colitis</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Mild symptoms, minimal episodes</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Moderate — 4–6 stools/day, pain</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Severe — daily debilitating symptoms or requiring frequent hospitalizations</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Severe plus systemic complications (anemia, fever, weight loss)</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Peptic Ulcer Disease</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">60%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Mild symptoms with continuous medication</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Moderate with recurrent episodes</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Severe with hemorrhage or frequent incapacitating episodes</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Severe, recurrent, requiring surgery or hospitalization</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Liver Disease / Hepatitis C</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">70%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Rated on functional impairment, liver function tests, presence of cirrhosis, ascites, encephalopathy. Hepatitis C: 10% with positive serology, no symptoms. Higher ratings for cirrhosis sequelae.</p>
+    
+  </div>
+</div>
+    </div>
+  </div>
+  <div class="sc" id="genitourinary-kidney">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🫘 Genitourinary / Kidney</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Erectile Dysfunction</div>
+    <div class="cond-badges"><span class="pct p0">0%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">ED itself is rated 0% but qualifies for a Special Monthly Compensation (SMC-K) = $123.04/month (2026). File for it separately in addition to any SMC filing. Often secondary to PTSD, TBI, hypertension medications, low back injury, pelvic trauma.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Kidney Disease / CKD</div>
+    <div class="cond-badges"><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p80">80%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">eGFR 30–59, moderate CKD</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">eGFR 15–29, severe CKD</span></div><div class="crit-row"><span class="crit-pct pct p80">80%</span><span class="crit-desc">eGFR &lt;15 or on dialysis (pre-transplant)</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Requiring hemodialysis or renal transplant</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Urinary Incontinence / Neurogenic Bladder</div>
+    <div class="cond-badges"><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">60%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Moderate leakage with physical activity</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Frequent leakage requiring pads/protective devices</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Constant dribbling requiring diaper/catheter. Often secondary to lumbar spine injury, MS, prostate conditions, pelvic trauma</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Prostate Conditions (BPH / Prostatitis)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">60%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Voiding dysfunction requiring continuous medication</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Moderately severe symptoms</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Obstructive symptoms requiring catheterization or constant urge incontinence</span></div></div>
+    
+  </div>
+</div>
+    </div>
+  </div>
+  <div class="sc" id="skin-conditions">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🩹 Skin Conditions</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Eczema / Atopic Dermatitis</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Controlled on topical treatment</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Affects &lt;5% BSA, requires systemic therapy</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Affects 5–20% BSA or requires systemic immunosuppression</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Affects &gt;40% BSA or constant treatment with steroids</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Psoriasis</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Same BSA criteria as eczema. Psoriatic arthritis can be rated separately under musculoskeletal.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Scar / Burn (Residual)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p30">30%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Superficial without limited motion</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Limits function or is painful</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Unstable/painful scar over 6 sq in</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Unstable scars over 12 sq in or deep scars causing underlying tissue damage. Facial disfigurement has separate criteria</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Folliculitis / Pseudofolliculitis (Razor Bumps)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p30">30%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Requires systemic medication</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Severe, disfiguring, requiring constant systemic treatment. Document all treatments prescribed during service</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Acne (Residuals)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p30">30%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Less than 40%</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">More than 40% of the face</span></div></div>
+    
+  </div>
+</div>
+    </div>
+  </div>
+  <div class="sc" id="hearing-vision">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>👂 Hearing & Vision</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="alert ai" style="margin-bottom:.75rem"><strong>Hearing Loss:</strong> VA uses Tables VI and VII of CFR 38 Part 4 mapping pure tone average and speech discrimination to a Roman numeral category. Each ear rated separately, then combined using Table VII.</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Hearing Loss (SNHL)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p30">30%</span><span class="pct p40">40%</span><span class="pct p50">50%</span><span class="pct p60">60%</span><span class="pct p60">70%</span><span class="pct p80">80%</span><span class="pct p80">90%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Borderline thresholds</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Mild loss affecting high frequencies. Higher ratings require progressive loss in multiple frequencies and reduced speech discrimination scores. Must have audiogram performed by VA audiologist</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Tinnitus</div>
+    <div class="cond-badges"><span class="pct p10">10%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">10% maximum — rated separately from hearing loss. One of the most commonly claimed conditions. Recurrent tinnitus sufficient for rating.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Visual Impairment</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p30">30%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">5/200 vision or worse in both eyes. Each eye rated separately</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Glaucoma</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Controlled on medication, normal fields</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Progressive field loss</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Significant visual field loss, poor control. Also rate on visual impairment tables</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Cataracts (Residual)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p30">30%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Rated on visual acuity loss. Common after eye trauma, steroid use, or radiation exposure. Post-surgical residuals rated on remaining visual impairment.</p>
+    
+  </div>
+</div>
+    </div>
+  </div>
+  <div class="sc" id="endocrine-metabolic">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🩸 Endocrine / Metabolic</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Diabetes Mellitus Type 2</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Controlled by oral medications only</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Controlled by insulin or oral medication plus dietary restriction</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Insulin-dependent with 1+ hospital admissions/year or progressive symptoms</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Insulin-dependent, plus peripheral neuropathy, visual problems, or CVD complications</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Plus severe manifestations — frequent hospitalizations, episodes of ketoacidosis, hypoglycemia with cognitive deficits</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Hypothyroidism</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p0">0%</span><span class="crit-desc">Well controlled on replacement therapy</span></div><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Requires continuous medication</span></div><div class="crit-row"><span class="crit-pct pct p30">30%</span><span class="crit-desc">Cold intolerance, sluggishness, non-pitting edema</span></div><div class="crit-row"><span class="crit-pct pct p60">60%</span><span class="crit-desc">Mental sluggishness, weight gain, hair loss, significant functional impairment</span></div><div class="crit-row"><span class="crit-pct pct p100">100%</span><span class="crit-desc">Myxedema — massive edema, neurological changes, severe bradycardia</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Hyperthyroidism</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p30">30%</span><span class="pct p60">60%</span><span class="pct p80">80%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Rated on severity: palpitations, tremor, sweating, weight loss, ophthalmopathy, atrial fibrillation.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Obesity-Related Conditions</div>
+    <div class="cond-badges"></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Obesity itself is not a ratable condition. However, conditions secondary to obesity (sleep apnea, diabetes, hypertension, joint pain, back conditions) are all independently ratable if the obesity was caused or worsened by service-connected disability (e.g., inability to exercise due to service-connected knee/back injury).</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Low Testosterone (Hypogonadism)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Often secondary to TBI, PTSD-related HPA axis dysregulation, opioid use for service-connected pain, or pituitary trauma. Service connection via secondary nexus is the pathway — file as secondary to existing SC condition.</p>
+    
+  </div>
+</div>
+    </div>
+  </div>
+  <div class="sc" id="infectious-immune-toxic-exposure">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🦠 Infectious, Immune & Toxic Exposure</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="alert ai" style="margin-bottom:.75rem"><strong>PACT Act (2022):</strong> Veterans who served in covered locations after 8/2/1990 now have presumptive eligibility for 60+ conditions including all cancers. File now — your effective date goes back to the filing date.</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Agent Orange Presumptives</div>
+    <div class="cond-badges"></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Veterans who served in Vietnam, Korean DMZ 4/1/68–8/31/71, or were exposed to tactical herbicides: AL amyloidosis, bladder cancer, chronic B-cell leukemia, chloracne, diabetes type 2, Hodgkin's/Non-Hodgkin's lymphoma, ischemic heart disease, multiple myeloma, Parkinson's disease, peripheral neuropathy, porphyria cutanea tarda, prostate cancer, respiratory cancers, soft tissue sarcoma.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Burn Pit / Southwest Asia Presumptives (PACT Act)</div>
+    <div class="cond-badges"></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Veterans who served after 8/2/1990 in covered areas (Iraq, Afghanistan, Syria, Southwest Asia, Egypt, Jordan, Lebanon, Somalia, Uzbekistan, Djibouti): All cancers not on the exclusion list; constrictive bronchiolitis; constrictive pericarditis; and others. File for any cancer diagnosed after service.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Gulf War Syndrome (Undiagnosed Illness)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p60">60%</span><span class="pct p80">80%</span><span class="pct p100">100%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Veterans who served in Southwest Asia after 8/2/1990 with chronic multisymptom illness (fatigue, rashes, headache, joint pain, neurological symptoms). Must be at least 10% disabling and present for ≥6 months. Does not require a specific diagnosis.</p>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Lyme Disease (Residuals)</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Service-connected if diagnosed during or after field/outdoor service. Residuals include arthritis (musculoskeletal ratings), neurological (neuropathy ratings), and cardiac (arrhythmia ratings) — all rated separately.</p>
+    
+  </div>
+</div>
+  </div>
+  <div class="sc" id="dental-oral">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🦷 Dental & Oral</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">TMJ / Temporomandibular Joint Disorder</div>
+    <div class="cond-badges"><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p40">40%</span><span class="pct p50">50%</span></div>
+  </div>
+  <div class="cond-body">
+    <div class="crit-table"><div class="crit-row"><span class="crit-pct pct p10">10%</span><span class="crit-desc">Inter-incisal distance 31–40mm</span></div><div class="crit-row"><span class="crit-pct pct p20">20%</span><span class="crit-desc">Inter-incisal distance 21–30mm</span></div><div class="crit-row"><span class="crit-pct pct p40">40%</span><span class="crit-desc">Inter-incisal distance 11–20mm</span></div><div class="crit-row"><span class="crit-pct pct p50">50%</span><span class="crit-desc">Inter-incisal distance 0–10mm (barely able to open mouth)</span></div></div>
+    
+  </div>
+</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">Loss of Teeth (Traumatic)</div>
+    <div class="cond-badges"><span class="pct p0">0%</span><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p10">10%</span><span class="pct p20">20%</span><span class="pct p30">30%</span></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Only traumatic tooth loss (blast injury, combat injury, accident) is ratable. Dental decay is NOT ratable. Rating based on number of opposing pairs lost and chewing impairment.</p>
+    
+  </div>
+</div>
+  </div>
+  <div class="sc" id="burn-pit-pact-act">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🔥 Burn Pit & PACT Act</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="alert ai" style="margin-bottom:.75rem"><strong>File Now:</strong> The PACT Act created presumptives for veterans who served in Southwest Asia after 8/2/1990. Do not wait for symptoms to worsen — your disability pay goes back to your filing date.</div><div class="cond-card">
+  <div class="cond-head">
+    <div class="cond-name">All Cancers (except exclusions)</div>
+    <div class="cond-badges"></div>
+  </div>
+  <div class="cond-body">
+    <p class="crit-plain">Prostate, bladder, respiratory, GI, blood, lymphoma, melanoma, thyroid, breast — all presumptive if service in covered area. Exceptions: cancers caused by tobacco use that began before service, certain in-situ cancers.</p>
+    
+  </div>
+</div>
+  </div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /wrap -->
+
+
+<script>
+function filterConds(query) {
+  query = query.toLowerCase().trim();
+  document.querySelectorAll('.cond-card').forEach(function(card) {
+    var text = card.textContent.toLowerCase();
+    card.style.display = (!query || text.includes(query)) ? '' : 'none';
+  });
+  // If searching, expand all sections
+  if (query) {
+    document.querySelectorAll('.sc-bd').forEach(function(bd) {
+      bd.style.display = 'block';
+      var btn = bd.previousElementSibling;
+      if (btn) { btn.classList.add('open'); btn.querySelector('.chv').textContent = '▲'; }
+    });
+  }
+}
+function toggleSec(btn) {
+  var bd = btn.nextElementSibling;
+  var open = bd.style.display === 'block';
+  bd.style.display = open ? 'none' : 'block';
+  btn.classList.toggle('open', !open);
+  btn.querySelector('.chv').textContent = open ? '▼' : '▲';
+}
+</script>
+<!-- COMPENSATION CALCULATOR -->
+  <div class="calc-card" id="calc">
+    <div class="calc-hd"><h2>🧮 Compensation Calculator — With Dependents</h2></div>
+    <div class="calc-body">
+      <div class="alert aw" style="margin-top:0">
+        <strong>2026 VA Compensation Rates</strong>
+        Based on the actual VA pay tables effective December 1, 2025. Includes all dependent categories per 38 CFR 3.4.
+      </div>
+
+      <p style="font-size:.84rem;color:var(--sl);margin-bottom:.85rem;">Enter your individual service-connected ratings, then your dependent status for an accurate monthly compensation estimate.</p>
+
+      <!-- RATINGS INPUT -->
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--nv);margin-bottom:.5rem;">Your Service-Connected Ratings</div>
+        <div class="rating-pills" id="rPills">
+          <div class="r-pill">40%<button onclick="remRating(this)">✕</button></div>
+          <div class="r-pill">20%<button onclick="remRating(this)">✕</button></div>
+          <div class="r-pill">10%<button onclick="remRating(this)">✕</button></div>
+        </div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+          <select id="newRating" style="border:1.5px solid var(--bd);border-radius:7px;padding:.45rem .7rem;font-size:.85rem;font-family:'Inter',sans-serif;">
+            <option value="10" selected>10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option><option value="90">90%</option><option value="100">100%</option>
+          </select>
+          <button class="add-rating-btn" onclick="addRating()">+ Add Rating</button>
+        </div>
+      </div>
+
+      <!-- DEPENDENT FIELDS -->
+      <div class="calc-grid">
+        <div class="fld">
+          <label>Marital Status</label>
+          <select id="dMarital">
+            <option value="single">Single / No Spouse</option>
+            <option value="spouse">Married (Spouse)</option>
+          </select>
+        </div>
+        <div class="fld" id="dSpouseAA_wrap" style="display:none">
+          <label>Spouse Requires Aid and Attendance?</label>
+          <select id="dSpouseAA">
+            <option value="no">No</option>
+            <option value="yes">Yes — Spouse A&A</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Dependent Children Under 18</label>
+          <select id="dChildU18">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5+</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Dependent Children Age 18–23 (in school)</label>
+          <select id="dChildSchool">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Dependent Parents</label>
+          <select id="dParents">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calcComp()">CALCULATE MY COMPENSATION</button>
+
+      <div class="result-box" id="calcResult">
+        <div class="rb-label">Combined Rating (VA Method)</div>
+        <div class="rb-combined" id="rcCombined"></div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;" id="rcMath"></div>
+        <div class="rb-label" style="margin-top:.85rem;">Estimated Monthly Compensation</div>
+        <div class="rb-pay" id="rcPay"></div>
+        <div class="rb-breakdown" id="rcBreakdown"></div>
+        <div class="rb-math" id="rcNote"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONTHLY PAY TABLE -->
+  <div class="calc-card" id="pay-table">
+    <div class="calc-hd"><h2>💰 2026 Monthly Compensation Rates</h2></div>
+    <div class="calc-body">
+      <div class="alert ai" style="margin-top:0">
+        <strong>2026 COLA — Effective December 1, 2025</strong>
+        Rates increased 2.5%. Rates at 10–20% are the same regardless of dependents. Dependent rates begin at 30%.
+      </div>
+      <div class="tbl-wrap">
+      <div class="tbl-wrap"><table class="pay-tbl">
+        <thead>
+          <tr>
+            <th>Rating</th>
+            <th>Veteran Alone</th>
+            <th>+ Spouse</th>
+            <th>+ Spouse (A&A)</th>
+            <th>+ Child Only</th>
+            <th>+ Spouse + Child</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>10%</td><td>$175.51</td><td>$175.51</td><td>$175.51</td><td>$175.51</td><td>$175.51</td></tr>
+          <tr><td>20%</td><td>$346.95</td><td>$346.95</td><td>$346.95</td><td>$346.95</td><td>$346.95</td></tr>
+          <tr><td>30%</td><td>$537.42</td><td>$601.74</td><td>$663.28</td><td>$571.57</td><td>$638.46</td></tr>
+          <tr><td>40%</td><td>$774.16</td><td>$856.50</td><td>$942.10</td><td>$814.92</td><td>$905.72</td></tr>
+          <tr><td>50%</td><td>$1,102.04</td><td>$1,214.03</td><td>$1,331.37</td><td>$1,154.19</td><td>$1,277.96</td></tr>
+          <tr><td>60%</td><td>$1,395.93</td><td>$1,530.23</td><td>$1,686.00</td><td>$1,451.91</td><td>$1,607.66</td></tr>
+          <tr><td>70%</td><td>$1,759.19</td><td>$1,924.00</td><td>$2,080.68</td><td>$1,820.31</td><td>$2,015.93</td></tr>
+          <tr><td>80%</td><td>$2,044.89</td><td>$2,230.70</td><td>$2,406.98</td><td>$2,110.33</td><td>$2,336.13</td></tr>
+          <tr><td>90%</td><td>$2,297.96</td><td>$2,504.77</td><td>$2,703.71</td><td>$2,366.97</td><td>$2,623.70</td></tr>
+          <tr><td>100%</td><td>$3,831.30</td><td>$4,046.25</td><td>$4,290.80</td><td>$3,992.96</td><td>$4,186.35</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p style="font-size:.78rem;color:var(--sl);margin-top:.75rem;">Per-child additions at 30%+ (beyond first child): $32.51/mo per child under 18 · $105.33/mo per school-age child (18–23). Dependent parent additions: $35.96–$124.87/mo depending on rating. SMC (Special Monthly Compensation) not included above.</p>
+
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.08em;color:var(--nv);margin:1.25rem 0 .65rem;">Special Monthly Compensation (SMC) — 2026</h3>
+      <div class="tbl-wrap">
+      <div class="tbl-wrap"><table class="pay-tbl">
+        <thead><tr><th>Level</th><th>Qualifying Condition</th><th>2026 Monthly</th></tr></thead>
+        <tbody>
+          <tr><td>SMC-K</td><td>Loss of use of creative organ (erectile dysfunction), loss of hand/foot, blindness in one eye</td><td>+$123.04</td></tr>
+          <tr><td>SMC-L</td><td>Loss of use of both arms, both legs, or both eyes; or requires Aid and Attendance</td><td>$4,296.42</td></tr>
+          <tr><td>SMC-S</td><td>Housebound — 100% plus additional 60% SC disability, or single 100% confining to home</td><td>$4,667.17</td></tr>
+          <tr><td>SMC-T</td><td>Need for regular Aid and Attendance due to TBI residuals</td><td>$9,680.62</td></tr>
+          <tr><td>TDIU</td><td>Total Disability Individual Unemployability — paid at 100% rate. Apply via VA Form 21-8940 if 60–70%+ combined and unable to hold substantially gainful employment.</td><td>$3,831.30+</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="alert at" style="margin-top:.85rem;">
+        <strong>Always Apply for SMC-K</strong>
+        If you have erectile dysfunction secondary to any service-connected condition, you qualify for SMC-K — an additional $123.04/month. The VA will not automatically grant it. File using buddy statements and a nexus letter.
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /wrap -->
+
+<script>
+// SECTION TOGGLE
+function tog(btn){
+  btn.classList.toggle('open');
+  btn.setAttribute('aria-expanded', btn.classList.contains('open'));
+  var bd = btn.nextElementSibling;
+  bd.classList.toggle('visible');
+  bd.style.display = bd.classList.contains('visible') ? 'block' : 'none';
+}
+
+// SEARCH
+function search(q){
+  var term = q.toLowerCase().trim();
+  document.querySelectorAll('.ct tbody tr').forEach(function(row){
+    var match = !term || row.textContent.toLowerCase().includes(term);
+    row.classList.toggle('hidden', !match);
+    if(match && term){
+      var bd = row.closest('.sc-bd');
+      if(bd && !bd.classList.contains('visible')){
+        bd.classList.add('visible');
+        bd.style.display = 'block';
+        var hd = bd.previousElementSibling;
+        if(hd) hd.classList.add('open');
+      }
+    }
+  });
+}
+
+// RATING PILLS
+function addRating(){
+  var val = document.getElementById('newRating').value;
+  var pill = document.createElement('div');
+  pill.className = 'r-pill';
+  pill.innerHTML = val + '<button onclick="remRating(this)">✕</button>';
+  document.getElementById('rPills').appendChild(pill);
+}
+function remRating(btn){
+  var pills = document.getElementById('rPills').querySelectorAll('.r-pill');
+  if(pills.length > 1) btn.parentElement.remove();
+}
+
+// MARITAL STATUS TOGGLE
+document.getElementById('dMarital').addEventListener('change', function(){
+  document.getElementById('dSpouseAA_wrap').style.display = this.value === 'spouse' ? 'block' : 'none';
+});
+
+// 2026 RATE TABLES
+var RATES = {"10": {"alone": 175.51, "spouse": 175.51, "child": 175.51, "spouse_child": 175.51, "spouse_aa": 175.51, "spouse_aa_child": 175.51}, "20": {"alone": 346.95, "spouse": 346.95, "child": 346.95, "spouse_child": 346.95, "spouse_aa": 346.95, "spouse_aa_child": 346.95}, "30": {"alone": 537.42, "spouse": 601.74, "child": 571.57, "spouse_child": 638.46, "spouse_aa": 663.28, "spouse_aa_child": 700.0}, "40": {"alone": 774.16, "spouse": 856.5, "child": 814.92, "spouse_child": 905.72, "spouse_aa": 942.1, "spouse_aa_child": 991.32}, "50": {"alone": 1102.04, "spouse": 1214.03, "child": 1154.19, "spouse_child": 1277.96, "spouse_aa": 1331.37, "spouse_aa_child": 1395.3}, "60": {"alone": 1395.93, "spouse": 1530.23, "child": 1451.91, "spouse_child": 1607.66, "spouse_aa": 1686.0, "spouse_aa_child": 1763.52}, "70": {"alone": 1759.19, "spouse": 1924.0, "child": 1820.31, "spouse_child": 2015.93, "spouse_aa": 2080.68, "spouse_aa_child": 2172.62}, "80": {"alone": 2044.89, "spouse": 2230.7, "child": 2110.33, "spouse_child": 2336.13, "spouse_aa": 2406.98, "spouse_aa_child": 2512.41}, "90": {"alone": 2297.96, "spouse": 2504.77, "child": 2366.97, "spouse_child": 2623.7, "spouse_aa": 2703.71, "spouse_aa_child": 2822.44}, "100": {"alone": 3831.3, "spouse": 4046.25, "child": 3992.96, "spouse_child": 4186.35, "spouse_aa": 4290.8, "spouse_aa_child": 4430.9}};
+var CHILD_U18 = 32.51;
+var CHILD_SCH  = 105.33;
+var PARENT_ADD = {"10": 0, "20": 0, "30": 35.96, "40": 47.93, "50": 60.78, "60": 73.64, "70": 86.5, "80": 99.35, "90": 112.21, "100": 124.87};
+
+function calcComp(){
+  // Get ratings
+  var pills = document.getElementById('rPills').querySelectorAll('.r-pill');
+  var ratings = Array.from(pills).map(function(p){
+    return parseInt(p.textContent.replace('%','').trim());
+  }).filter(function(n){return !isNaN(n);});
+
+  if(ratings.length === 0){ alert('Add at least one rating.'); return; }
+
+  ratings.sort(function(a,b){return b-a;});
+
+  // Combined rating (VA whole-person method)
+  var remaining = 100;
+  var mathStr = '100%';
+  ratings.forEach(function(r){
+    var taken = remaining * (r/100);
+    remaining -= taken;
+    mathStr += ' → ' + r + '% of remaining';
+  });
+  var combined = Math.round(100 - remaining);
+  var rounded = Math.round(combined / 10) * 10;
+  var capped = Math.min(rounded, 100);
+
+  // Dependents
+  var marital = document.getElementById('dMarital').value;
+  var hasSpouse = marital === 'spouse';
+  var spouseAA = hasSpouse && document.getElementById('dSpouseAA').value === 'yes';
+  var childU18 = parseInt(document.getElementById('dChildU18').value) || 0;
+  var childSch = parseInt(document.getElementById('dChildSchool').value) || 0;
+  var parents  = parseInt(document.getElementById('dParents').value) || 0;
+
+  // Base rate
+  var rateRow = RATES[capped] || RATES[10];
+  var base;
+  var statusLabel;
+
+  if(capped < 30){
+    // Under 30% — no dependent differential
+    base = rateRow['alone'];
+    statusLabel = 'Veteran alone (dependents not counted below 30%)';
+  } else {
+    if(!hasSpouse && childU18 === 0 && childSch === 0){
+      base = rateRow['alone'];
+      statusLabel = 'Veteran alone';
+    } else if(hasSpouse && spouseAA && (childU18 > 0 || childSch > 0)){
+      base = rateRow['spouse_aa_child'];
+      statusLabel = 'Veteran + spouse (A&A) + child';
+    } else if(hasSpouse && spouseAA){
+      base = rateRow['spouse_aa'];
+      statusLabel = 'Veteran + spouse (Aid and Attendance)';
+    } else if(hasSpouse && (childU18 > 0 || childSch > 0)){
+      base = rateRow['spouse_child'];
+      statusLabel = 'Veteran + spouse + child';
+    } else if(hasSpouse){
+      base = rateRow['spouse'];
+      statusLabel = 'Veteran + spouse';
+    } else if(childU18 > 0 || childSch > 0){
+      base = rateRow['child'];
+      statusLabel = 'Veteran + child (no spouse)';
+    } else {
+      base = rateRow['alone'];
+      statusLabel = 'Veteran alone';
+    }
+
+    // Additional children beyond first
+    var firstChild = (childU18 > 0 || childSch > 0) ? 1 : 0;
+    var extraU18 = Math.max(0, childU18 - (firstChild === 1 && childU18 > 0 ? 1 : 0));
+    var extraSch = childSch - (firstChild === 1 && childU18 === 0 && childSch > 0 ? 1 : 0);
+    // Actually simpler: the table covers "one child" — additional are per-child adds
+    // For first child already in table, count extras from 2nd child onward
+    var extraU18add = Math.max(0, childU18 - 1) * CHILD_U18;
+    var extraSchAdd = Math.max(0, childSch - (childU18 === 0 ? 1 : 0)) * CHILD_SCH;
+    if(childU18 === 0 && childSch > 0){ extraSchAdd = (childSch - 1) * CHILD_SCH; }
+    if(childU18 > 0){ extraU18add = (childU18 - 1) * CHILD_U18; extraSchAdd = childSch * CHILD_SCH; }
+    base += extraU18add + extraSchAdd;
+  }
+
+  // Parent addition
+  var parentAdd = (PARENT_ADD[capped] || 0) * parents;
+  var total = base + parentAdd;
+
+  // Render
+  var breakdown = [];
+  breakdown.push(['Base rate (' + statusLabel + ')', fmt(base)]);
+  if(parentAdd > 0) breakdown.push(['Dependent parent(s) addition', fmt(parentAdd)]);
+  if(base !== total) breakdown.push(['Total', fmt(total)]);
+
+  var breakdownHtml = breakdown.map(function(r){
+    return '<div class="rb-row"><span>' + r[0] + '</span><strong>' + r[1] + '</strong></div>';
+  }).join('');
+
+  var el = document.getElementById('calcResult');
+  document.getElementById('rcCombined').textContent = capped + '%';
+  document.getElementById('rcMath').textContent = 'Exact: ' + combined + '% → rounded to ' + capped + '%  |  Ratings: ' + ratings.join('%, ') + '%';
+  document.getElementById('rcPay').textContent = fmt(total) + '/month';
+  document.getElementById('rcBreakdown').innerHTML = breakdownHtml;
+  document.getElementById('rcNote').textContent = 'Estimate based on 2026 VA pay tables. Actual payment may vary. Does not include SMC, TDIU, or ancillary benefits.';
+  el.classList.add('show');
+  el.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function fmt(n){
+  return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// SIDEBAR LINK ACTIVATION
+var sbLinks = document.querySelectorAll('.sb-link');
+window.addEventListener('scroll', function(){
+  var scrollY = window.scrollY + 100;
+  sbLinks.forEach(function(link){
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if(el && el.offsetTop <= scrollY && el.offsetTop + el.offsetHeight > scrollY){
+      sbLinks.forEach(function(l){l.classList.remove('on');});
+      link.classList.add('on');
+    }
+  });
+});
+
+// INIT — open first section body
+document.querySelectorAll('.sc-bd.visible').forEach(function(bd){
+  bd.style.display = 'block';
+});
+</script>
+</body>
+</html
+</div>
+
 <footer style="background:#0d1f3c;padding:2.5rem 6%;margin-top:2rem;">
   <div style="max-width:1100px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.5rem;margin-bottom:2rem;">
@@ -729,7 +2099,163 @@ main{overflow-x:hidden;}
 <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 </footer>
+
 <script>
+
+(function(){
+  var btn=document.getElementById('vcp-more-btn');
+  var drop=document.getElementById('vcp-drop');
+  var ham=document.getElementById('vcp-ham');
+  var mob=document.getElementById('vcp-mob');
+  var si=document.getElementById('vcp-si');
+  var sr=document.getElementById('vcp-sr');
+  var msi=document.getElementById('vcp-mob-si');
+  var msr=document.getElementById('vcp-mob-sr');
+
+  // Dropdown
+  function closeAll(){
+    if(drop)drop.classList.remove('open');
+    if(btn)btn.classList.remove('active');
+    if(ham)ham.classList.remove('open');
+    if(mob)mob.classList.remove('open');
+  }
+  if(btn&&drop){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var o=drop.classList.contains('open');
+      closeAll();
+      if(!o){drop.classList.add('open');btn.classList.add('active');}
+    });
+    drop.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeAll);});
+  }
+  if(ham&&mob){
+    ham.addEventListener('click',function(e){
+      e.stopPropagation();
+      var o=mob.classList.contains('open');
+      closeAll();
+      if(!o){mob.classList.add('open');ham.classList.add('open');}
+    });
+  }
+  document.addEventListener('click',function(e){
+    var el=e.target;
+    var inside=false;
+    [btn,drop,ham,mob,si,sr,msi,msr].forEach(function(n){if(n&&n.contains(el))inside=true;});
+    if(!inside){closeAll();closeSearch();}
+  });
+
+  // Full-text search
+  var IDX=null,IDX_LOADING=false,IDX_CBS=[];
+  var SIDX='https://veterancareerpath.com/search_index.json';
+
+  function loadIdx(cb){
+    if(IDX){cb(IDX);return;}
+    IDX_CBS.push(cb);
+    if(IDX_LOADING)return;
+    IDX_LOADING=true;
+    fetch(SIDX).then(function(r){return r.json();}).then(function(d){
+      IDX=d;IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];
+    }).catch(function(){IDX=[];IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];});
+  }
+
+  function doSearch(idx,q){
+    var terms=q.toLowerCase().replace(/[^a-z0-9 ]/g,' ').trim().split(' ').filter(function(t){return t.length>1;});
+    if(!terms.length)return[];
+    // Also try searching for the raw query (handles "88m", "11b" etc)
+    var rawTerm=q.toLowerCase().trim();
+    var out=[];
+    for(var i=0;i<idx.length;i++){
+      var p=idx[i];
+      var kw=(p.keywords||'').toLowerCase();
+      var haystack=(p.title+' '+p.desc+' '+kw+' '+p.text).toLowerCase();
+      var score=0;
+      var miss=false;
+      for(var j=0;j<terms.length;j++){
+        var t=terms[j];
+        var tc=0,pos=0;
+        while((pos=haystack.indexOf(t,pos))>=0){tc++;pos++;}
+        var ttc=0,tpos=0,tl=p.title.toLowerCase();
+        while((tpos=tl.indexOf(t,tpos))>=0){ttc++;tpos++;}
+        var dtc=0,dpos=0,dl=(p.desc||'').toLowerCase();
+        while((dpos=dl.indexOf(t,dpos))>=0){dtc++;dpos++;}
+        var ktc=0,kpos=0;
+        while((kpos=kw.indexOf(t,kpos))>=0){ktc++;kpos++;}
+        if(!tc){miss=true;break;}
+        score+=ttc*20+dtc*8+ktc*12+(tc-ttc-dtc-ktc)*1;
+      }
+      if(miss||score===0)continue;
+      // Build snippet
+      var snip='';
+      var body=p.text||'';
+      var blow=body.toLowerCase();
+      var fp=blow.indexOf(terms[0]);
+      if(fp>=0){
+        var s=Math.max(0,fp-55),e=Math.min(body.length,fp+terms[0].length+80);
+        snip=(s>0?'...':'')+body.slice(s,e).replace(/[<>]/g,'')+(e<body.length?'...':'');
+      }else{snip=(p.desc||'').slice(0,130);}
+      // Highlight
+      for(var k=0;k<terms.length;k++){
+        snip=snip.replace(new RegExp('('+terms[k]+')','gi'),'<em>$1</em>');
+      }
+      var titHL=p.title;
+      for(var k=0;k<terms.length;k++){
+        titHL=titHL.replace(new RegExp('('+terms[k]+')','gi'),'<em>$1</em>');
+      }
+      out.push({url:p.url,title:titHL,snip:snip,score:score});
+    }
+    out.sort(function(a,b){return b.score-a.score;});
+    return out.slice(0,15);
+  }
+
+  function renderSR(results,q,container,mob){
+    if(!results.length){
+      container.innerHTML='<div class="vcp-sr-none">No results for "'+q+'"</div>';
+      container.classList.add('open');return;
+    }
+    var h='<div class="vcp-sr-header">'+results.length+' results for "'+q+'"</div>';
+    h+=results.map(function(r){
+      if(mob)return '<a href="'+r.url+'"><div class="vcp-mob-sr-title">'+r.title+'</div><div class="vcp-mob-sr-snip">'+r.snip+'</div></a>';
+      return '<a class="vcp-sr-item" href="'+r.url+'"><div class="vcp-sr-title">'+r.title+'</div><div class="vcp-sr-snippet">'+r.snip+'</div></a>';
+    }).join('');
+    container.innerHTML=h;
+    container.classList.add('open');
+  }
+
+  function closeSearch(){
+    if(sr){sr.classList.remove('open');}
+    if(msr){msr.classList.remove('open');}
+  }
+
+  var dt=null;
+  function onInput(input,container,isMob){
+    clearTimeout(dt);
+    var q=input.value.trim();
+    if(q.length<2){container.classList.remove('open');container.innerHTML='';return;}
+    container.innerHTML='<div class="vcp-sr-loading">Searching...</div>';
+    container.classList.add('open');
+    dt=setTimeout(function(){
+      loadIdx(function(idx){renderSR(doSearch(idx,q),q,container,isMob);});
+    },220);
+  }
+
+  if(si&&sr){
+    si.addEventListener('input',function(){onInput(si,sr,false);});
+    si.addEventListener('keydown',function(e){
+      if(e.key==='Escape'){closeSearch();this.blur();}
+      if(e.key==='Enter'){var f=sr.querySelector('.vcp-sr-item');if(f)window.location.href=f.href;}
+      if(e.key==='ArrowDown'){var f=sr.querySelector('.vcp-sr-item');if(f){f.focus();e.preventDefault();}}
+    });
+    si.addEventListener('focus',function(){loadIdx(function(){});});
+  }
+  if(msi&&msr){
+    msi.addEventListener('input',function(){onInput(msi,msr,true);});
+    msi.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){var f=msr.querySelector('a');if(f)window.location.href=f.href;}
+    });
+  }
+  if(ham)ham.addEventListener('mouseenter',function(){loadIdx(function(){});});
+})();
+
+
 (function(){
   var b=document.getElementById("hamburger-btn"),m=document.getElementById("mobile-menu");
   if(!b||!m)return;
@@ -737,6 +2263,367 @@ main{overflow-x:hidden;}
   m.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){b.classList.remove("open");m.classList.remove("open");});});
   document.addEventListener("click",function(e){if(!b.contains(e.target)&&!m.contains(e.target)){b.classList.remove("open");m.classList.remove("open");}});
 })();
+
+</script>
+<script>
+
+(function(){
+  var btn=document.getElementById('vcp-more-btn');
+  var drop=document.getElementById('vcp-drop');
+  var ham=document.getElementById('vcp-ham');
+  var mob=document.getElementById('vcp-mob');
+  var si=document.getElementById('vcp-si');
+  var sr=document.getElementById('vcp-sr');
+  var msi=document.getElementById('vcp-mob-si');
+  var msr=document.getElementById('vcp-mob-sr');
+
+  // Dropdown
+  function closeAll(){
+    if(drop)drop.classList.remove('open');
+    if(btn)btn.classList.remove('active');
+    if(ham)ham.classList.remove('open');
+    if(mob)mob.classList.remove('open');
+  }
+  if(btn&&drop){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var o=drop.classList.contains('open');
+      closeAll();
+      if(!o){drop.classList.add('open');btn.classList.add('active');}
+    });
+    drop.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeAll);});
+  }
+  if(ham&&mob){
+    ham.addEventListener('click',function(e){
+      e.stopPropagation();
+      var o=mob.classList.contains('open');
+      closeAll();
+      if(!o){mob.classList.add('open');ham.classList.add('open');}
+    });
+  }
+  document.addEventListener('click',function(e){
+    var el=e.target;
+    var inside=false;
+    [btn,drop,ham,mob,si,sr,msi,msr].forEach(function(n){if(n&&n.contains(el))inside=true;});
+    if(!inside){closeAll();closeSearch();}
+  });
+
+  // Full-text search
+  var IDX=null,IDX_LOADING=false,IDX_CBS=[];
+  var SIDX='https://veterancareerpath.com/search_index.json';
+
+  function loadIdx(cb){
+    if(IDX){cb(IDX);return;}
+    IDX_CBS.push(cb);
+    if(IDX_LOADING)return;
+    IDX_LOADING=true;
+    fetch(SIDX).then(function(r){return r.json();}).then(function(d){
+      IDX=d;IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];
+    }).catch(function(){IDX=[];IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];});
+  }
+
+  function doSearch(idx,q){
+    var terms=q.toLowerCase().replace(/[^a-z0-9 ]/g,' ').trim().split(' ').filter(function(t){return t.length>1;});
+    if(!terms.length)return[];
+    // Also try searching for the raw query (handles "88m", "11b" etc)
+    var rawTerm=q.toLowerCase().trim();
+    var out=[];
+    for(var i=0;i<idx.length;i++){
+      var p=idx[i];
+      var kw=(p.keywords||'').toLowerCase();
+      var haystack=(p.title+' '+p.desc+' '+kw+' '+p.text).toLowerCase();
+      var score=0;
+      var miss=false;
+      for(var j=0;j<terms.length;j++){
+        var t=terms[j];
+        var tc=0,pos=0;
+        while((pos=haystack.indexOf(t,pos))>=0){tc++;pos++;}
+        var ttc=0,tpos=0,tl=p.title.toLowerCase();
+        while((tpos=tl.indexOf(t,tpos))>=0){ttc++;tpos++;}
+        var dtc=0,dpos=0,dl=(p.desc||'').toLowerCase();
+        while((dpos=dl.indexOf(t,dpos))>=0){dtc++;dpos++;}
+        var ktc=0,kpos=0;
+        while((kpos=kw.indexOf(t,kpos))>=0){ktc++;kpos++;}
+        if(!tc){miss=true;break;}
+        score+=ttc*20+dtc*8+ktc*12+(tc-ttc-dtc-ktc)*1;
+      }
+      if(miss||score===0)continue;
+      // Build snippet
+      var snip='';
+      var body=p.text||'';
+      var blow=body.toLowerCase();
+      var fp=blow.indexOf(terms[0]);
+      if(fp>=0){
+        var s=Math.max(0,fp-55),e=Math.min(body.length,fp+terms[0].length+80);
+        snip=(s>0?'...':'')+body.slice(s,e).replace(/[<>]/g,'')+(e<body.length?'...':'');
+      }else{snip=(p.desc||'').slice(0,130);}
+      // Highlight
+      for(var k=0;k<terms.length;k++){
+        snip=snip.replace(new RegExp('('+terms[k]+')','gi'),'<em>$1</em>');
+      }
+      var titHL=p.title;
+      for(var k=0;k<terms.length;k++){
+        titHL=titHL.replace(new RegExp('('+terms[k]+')','gi'),'<em>$1</em>');
+      }
+      out.push({url:p.url,title:titHL,snip:snip,score:score});
+    }
+    out.sort(function(a,b){return b.score-a.score;});
+    return out.slice(0,15);
+  }
+
+  function renderSR(results,q,container,mob){
+    if(!results.length){
+      container.innerHTML='<div class="vcp-sr-none">No results for "'+q+'"</div>';
+      container.classList.add('open');return;
+    }
+    var h='<div class="vcp-sr-header">'+results.length+' results for "'+q+'"</div>';
+    h+=results.map(function(r){
+      if(mob)return '<a href="'+r.url+'"><div class="vcp-mob-sr-title">'+r.title+'</div><div class="vcp-mob-sr-snip">'+r.snip+'</div></a>';
+      return '<a class="vcp-sr-item" href="'+r.url+'"><div class="vcp-sr-title">'+r.title+'</div><div class="vcp-sr-snippet">'+r.snip+'</div></a>';
+    }).join('');
+    container.innerHTML=h;
+    container.classList.add('open');
+  }
+
+  function closeSearch(){
+    if(sr){sr.classList.remove('open');}
+    if(msr){msr.classList.remove('open');}
+  }
+
+  var dt=null;
+  function onInput(input,container,isMob){
+    clearTimeout(dt);
+    var q=input.value.trim();
+    if(q.length<2){container.classList.remove('open');container.innerHTML='';return;}
+    container.innerHTML='<div class="vcp-sr-loading">Searching...</div>';
+    container.classList.add('open');
+    dt=setTimeout(function(){
+      loadIdx(function(idx){renderSR(doSearch(idx,q),q,container,isMob);});
+    },220);
+  }
+
+  if(si&&sr){
+    si.addEventListener('input',function(){onInput(si,sr,false);});
+    si.addEventListener('keydown',function(e){
+      if(e.key==='Escape'){closeSearch();this.blur();}
+      if(e.key==='Enter'){var f=sr.querySelector('.vcp-sr-item');if(f)window.location.href=f.href;}
+      if(e.key==='ArrowDown'){var f=sr.querySelector('.vcp-sr-item');if(f){f.focus();e.preventDefault();}}
+    });
+    si.addEventListener('focus',function(){loadIdx(function(){});});
+  }
+  if(msi&&msr){
+    msi.addEventListener('input',function(){onInput(msi,msr,true);});
+    msi.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){var f=msr.querySelector('a');if(f)window.location.href=f.href;}
+    });
+  }
+  if(ham)ham.addEventListener('mouseenter',function(){loadIdx(function(){});});
+})();
+
+
+function filterConds(query) {
+  query = query.toLowerCase().trim();
+  document.querySelectorAll('.cond-card').forEach(function(card) {
+    var text = card.textContent.toLowerCase();
+    card.style.display = (!query || text.includes(query)) ? '' : 'none';
+  });
+  // If searching, expand all sections
+  if (query) {
+    document.querySelectorAll('.sc-bd').forEach(function(bd) {
+      bd.style.display = 'block';
+      var btn = bd.previousElementSibling;
+      if (btn) { btn.classList.add('open'); btn.querySelector('.chv').textContent = '▲'; }
+    });
+  }
+}
+function toggleSec(btn) {
+  var bd = btn.nextElementSibling;
+  var open = bd.style.display === 'block';
+  bd.style.display = open ? 'none' : 'block';
+  btn.classList.toggle('open', !open);
+  btn.querySelector('.chv').textContent = open ? '▼' : '▲';
+}
+
+
+// SECTION TOGGLE
+function tog(btn){
+  btn.classList.toggle('open');
+  btn.setAttribute('aria-expanded', btn.classList.contains('open'));
+  var bd = btn.nextElementSibling;
+  bd.classList.toggle('visible');
+  bd.style.display = bd.classList.contains('visible') ? 'block' : 'none';
+}
+
+// SEARCH
+function search(q){
+  var term = q.toLowerCase().trim();
+  document.querySelectorAll('.ct tbody tr').forEach(function(row){
+    var match = !term || row.textContent.toLowerCase().includes(term);
+    row.classList.toggle('hidden', !match);
+    if(match && term){
+      var bd = row.closest('.sc-bd');
+      if(bd && !bd.classList.contains('visible')){
+        bd.classList.add('visible');
+        bd.style.display = 'block';
+        var hd = bd.previousElementSibling;
+        if(hd) hd.classList.add('open');
+      }
+    }
+  });
+}
+
+// RATING PILLS
+function addRating(){
+  var val = document.getElementById('newRating').value;
+  var pill = document.createElement('div');
+  pill.className = 'r-pill';
+  pill.innerHTML = val + '<button onclick="remRating(this)">✕</button>';
+  document.getElementById('rPills').appendChild(pill);
+}
+function remRating(btn){
+  var pills = document.getElementById('rPills').querySelectorAll('.r-pill');
+  if(pills.length > 1) btn.parentElement.remove();
+}
+
+// MARITAL STATUS TOGGLE
+document.getElementById('dMarital').addEventListener('change', function(){
+  document.getElementById('dSpouseAA_wrap').style.display = this.value === 'spouse' ? 'block' : 'none';
+});
+
+// 2026 RATE TABLES
+var RATES = {"10": {"alone": 175.51, "spouse": 175.51, "child": 175.51, "spouse_child": 175.51, "spouse_aa": 175.51, "spouse_aa_child": 175.51}, "20": {"alone": 346.95, "spouse": 346.95, "child": 346.95, "spouse_child": 346.95, "spouse_aa": 346.95, "spouse_aa_child": 346.95}, "30": {"alone": 537.42, "spouse": 601.74, "child": 571.57, "spouse_child": 638.46, "spouse_aa": 663.28, "spouse_aa_child": 700.0}, "40": {"alone": 774.16, "spouse": 856.5, "child": 814.92, "spouse_child": 905.72, "spouse_aa": 942.1, "spouse_aa_child": 991.32}, "50": {"alone": 1102.04, "spouse": 1214.03, "child": 1154.19, "spouse_child": 1277.96, "spouse_aa": 1331.37, "spouse_aa_child": 1395.3}, "60": {"alone": 1395.93, "spouse": 1530.23, "child": 1451.91, "spouse_child": 1607.66, "spouse_aa": 1686.0, "spouse_aa_child": 1763.52}, "70": {"alone": 1759.19, "spouse": 1924.0, "child": 1820.31, "spouse_child": 2015.93, "spouse_aa": 2080.68, "spouse_aa_child": 2172.62}, "80": {"alone": 2044.89, "spouse": 2230.7, "child": 2110.33, "spouse_child": 2336.13, "spouse_aa": 2406.98, "spouse_aa_child": 2512.41}, "90": {"alone": 2297.96, "spouse": 2504.77, "child": 2366.97, "spouse_child": 2623.7, "spouse_aa": 2703.71, "spouse_aa_child": 2822.44}, "100": {"alone": 3831.3, "spouse": 4046.25, "child": 3992.96, "spouse_child": 4186.35, "spouse_aa": 4290.8, "spouse_aa_child": 4430.9}};
+var CHILD_U18 = 32.51;
+var CHILD_SCH  = 105.33;
+var PARENT_ADD = {"10": 0, "20": 0, "30": 35.96, "40": 47.93, "50": 60.78, "60": 73.64, "70": 86.5, "80": 99.35, "90": 112.21, "100": 124.87};
+
+function calcComp(){
+  // Get ratings
+  var pills = document.getElementById('rPills').querySelectorAll('.r-pill');
+  var ratings = Array.from(pills).map(function(p){
+    return parseInt(p.textContent.replace('%','').trim());
+  }).filter(function(n){return !isNaN(n);});
+
+  if(ratings.length === 0){ alert('Add at least one rating.'); return; }
+
+  ratings.sort(function(a,b){return b-a;});
+
+  // Combined rating (VA whole-person method)
+  var remaining = 100;
+  var mathStr = '100%';
+  ratings.forEach(function(r){
+    var taken = remaining * (r/100);
+    remaining -= taken;
+    mathStr += ' → ' + r + '% of remaining';
+  });
+  var combined = Math.round(100 - remaining);
+  var rounded = Math.round(combined / 10) * 10;
+  var capped = Math.min(rounded, 100);
+
+  // Dependents
+  var marital = document.getElementById('dMarital').value;
+  var hasSpouse = marital === 'spouse';
+  var spouseAA = hasSpouse && document.getElementById('dSpouseAA').value === 'yes';
+  var childU18 = parseInt(document.getElementById('dChildU18').value) || 0;
+  var childSch = parseInt(document.getElementById('dChildSchool').value) || 0;
+  var parents  = parseInt(document.getElementById('dParents').value) || 0;
+
+  // Base rate
+  var rateRow = RATES[capped] || RATES[10];
+  var base;
+  var statusLabel;
+
+  if(capped < 30){
+    // Under 30% — no dependent differential
+    base = rateRow['alone'];
+    statusLabel = 'Veteran alone (dependents not counted below 30%)';
+  } else {
+    if(!hasSpouse && childU18 === 0 && childSch === 0){
+      base = rateRow['alone'];
+      statusLabel = 'Veteran alone';
+    } else if(hasSpouse && spouseAA && (childU18 > 0 || childSch > 0)){
+      base = rateRow['spouse_aa_child'];
+      statusLabel = 'Veteran + spouse (A&A) + child';
+    } else if(hasSpouse && spouseAA){
+      base = rateRow['spouse_aa'];
+      statusLabel = 'Veteran + spouse (Aid and Attendance)';
+    } else if(hasSpouse && (childU18 > 0 || childSch > 0)){
+      base = rateRow['spouse_child'];
+      statusLabel = 'Veteran + spouse + child';
+    } else if(hasSpouse){
+      base = rateRow['spouse'];
+      statusLabel = 'Veteran + spouse';
+    } else if(childU18 > 0 || childSch > 0){
+      base = rateRow['child'];
+      statusLabel = 'Veteran + child (no spouse)';
+    } else {
+      base = rateRow['alone'];
+      statusLabel = 'Veteran alone';
+    }
+
+    // Additional children beyond first
+    var firstChild = (childU18 > 0 || childSch > 0) ? 1 : 0;
+    var extraU18 = Math.max(0, childU18 - (firstChild === 1 && childU18 > 0 ? 1 : 0));
+    var extraSch = childSch - (firstChild === 1 && childU18 === 0 && childSch > 0 ? 1 : 0);
+    // Actually simpler: the table covers "one child" — additional are per-child adds
+    // For first child already in table, count extras from 2nd child onward
+    var extraU18add = Math.max(0, childU18 - 1) * CHILD_U18;
+    var extraSchAdd = Math.max(0, childSch - (childU18 === 0 ? 1 : 0)) * CHILD_SCH;
+    if(childU18 === 0 && childSch > 0){ extraSchAdd = (childSch - 1) * CHILD_SCH; }
+    if(childU18 > 0){ extraU18add = (childU18 - 1) * CHILD_U18; extraSchAdd = childSch * CHILD_SCH; }
+    base += extraU18add + extraSchAdd;
+  }
+
+  // Parent addition
+  var parentAdd = (PARENT_ADD[capped] || 0) * parents;
+  var total = base + parentAdd;
+
+  // Render
+  var breakdown = [];
+  breakdown.push(['Base rate (' + statusLabel + ')', fmt(base)]);
+  if(parentAdd > 0) breakdown.push(['Dependent parent(s) addition', fmt(parentAdd)]);
+  if(base !== total) breakdown.push(['Total', fmt(total)]);
+
+  var breakdownHtml = breakdown.map(function(r){
+    return '<div class="rb-row"><span>' + r[0] + '</span><strong>' + r[1] + '</strong></div>';
+  }).join('');
+
+  var el = document.getElementById('calcResult');
+  document.getElementById('rcCombined').textContent = capped + '%';
+  document.getElementById('rcMath').textContent = 'Exact: ' + combined + '% → rounded to ' + capped + '%  |  Ratings: ' + ratings.join('%, ') + '%';
+  document.getElementById('rcPay').textContent = fmt(total) + '/month';
+  document.getElementById('rcBreakdown').innerHTML = breakdownHtml;
+  document.getElementById('rcNote').textContent = 'Estimate based on 2026 VA pay tables. Actual payment may vary. Does not include SMC, TDIU, or ancillary benefits.';
+  el.classList.add('show');
+  el.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function fmt(n){
+  return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// SIDEBAR LINK ACTIVATION
+var sbLinks = document.querySelectorAll('.sb-link');
+window.addEventListener('scroll', function(){
+  var scrollY = window.scrollY + 100;
+  sbLinks.forEach(function(link){
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if(el && el.offsetTop <= scrollY && el.offsetTop + el.offsetHeight > scrollY){
+      sbLinks.forEach(function(l){l.classList.remove('on');});
+      link.classList.add('on');
+    }
+  });
+});
+
+// INIT — open first section body
+document.querySelectorAll('.sc-bd.visible').forEach(function(bd){
+  bd.style.display = 'block';
+});
+
+</script>
+<!-- Structured data for calculator -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"VA Disability Rating Calculator","applicationCategory":"HealthApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free VA disability combined rating calculator with 2026 compensation tables."}
 </script>
 </body>
 </html>

@@ -58,6 +58,10 @@ td{padding:.75rem 1rem;color:#3a4a5a;border-bottom:1px solid #eee}
 .checklist-item .sub{font-size:.8rem;color:#5a7090;font-weight:300;display:block;margin-top:.2rem}
 .section-label{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.12em;color:#1a3a6b;margin:1.75rem 0 .65rem;text-transform:uppercase;border-bottom:1px solid #dde3ec;padding-bottom:.3rem}
 .adsbygoogle{min-height:0!important;}
+
+/* ── Table scroll wrapper ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin-bottom:1rem;}
+.tbl-wrap table,.info-table{min-width:480px;width:100%;border-collapse:collapse;}
 </style>
 <meta property="og:title" content="Veteran Certification Roadmap 2026 | From MOS to Cert">
 <meta property="og:description" content="Every major certification for veterans across 6 industries: cybersecurity, IT, healthcare, logistics, finance, and trades. COOL and GI Bill eligible.">
@@ -134,7 +138,7 @@ html,body{overflow-x:hidden;max-width:100%;}
 /* ── Global mobile overflow safety ── */
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+/* table overflow handled by .tbl-wrap */
 .card{overflow:visible!important;}
 .card-body{overflow-x:auto;}
 input,select,textarea{max-width:100%;width:100%;}

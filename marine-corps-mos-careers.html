@@ -90,6 +90,20 @@ html,body{overflow-x:hidden;max-width:100%;}
 .mos-page-badge{display:inline-block;background:rgba(240,192,64,.15);border:1px solid rgba(240,192,64,.3);border-radius:20px;padding:.3rem .9rem;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#f0c040;margin-bottom:1rem;}
 .mos-page-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:.08em;color:#fff;line-height:1.1;margin-bottom:1rem;}
 .mos-page-h1 span{color:#f0c040;}
+
+/* ── Global mobile overflow safety ── */
+*{box-sizing:border-box;}
+html,body{overflow-x:hidden;max-width:100%;}
+table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.card{overflow:visible!important;}
+.card-body{overflow-x:auto;}
+input,select,textarea{max-width:100%;width:100%;}
+main{overflow-x:hidden;}
+.form-grid,.result-grid,.radio-group{max-width:100%;}
+@media(max-width:640px){
+  main,section,.wrap,.content{padding-left:1rem!important;padding-right:1rem!important;}
+  .hero{padding-left:1rem!important;padding-right:1rem!important;}
+}
 </style>
 <nav class="vcp-nav">
   <a href="https://veterancareerpath.com" class="vcp-logo">

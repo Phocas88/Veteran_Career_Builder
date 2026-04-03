@@ -68,6 +68,91 @@ html,body{overflow-x:hidden;max-width:100%;}
 .vcp-mob-sr-snip em{color:rgba(240,192,64,.8);font-style:normal;}
 @media(max-width:960px){.vcp-desk{display:none!important;}.vcp-search-wrap{display:none!important;}.vcp-ham{display:flex;}}
 .adsbygoogle{min-height:0!important;}
+
+/* ── AI OUTPUT — Clean light theme, readable ─────────────────────── */
+.res-box,.output-box,.ca-out,.jm-out,.cert-out,.dec-out,.lir-out,.res-out,.sr-out,
+[id$="-out"],[id$="-result"],[id$="-output"]{
+  background:#fff;
+  border:1.5px solid #d0dcea;
+  border-radius:12px;
+  padding:1.5rem 1.75rem;
+  margin-top:1.25rem;
+  display:none;
+  box-shadow:0 2px 12px rgba(26,58,107,.06);
+}
+.res-box.show,.output-box.show,.ca-out.show,.jm-out.show,.cert-out.show,
+.dec-out.show,.lir-out.show,.res-out.show,.sr-out.show,
+[id$="-out"].show,[id$="-result"].show,[id$="-output"].show{
+  display:block;
+}
+.res-title,.out-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;
+  letter-spacing:.08em;
+  color:#1a3a6b;
+  margin-bottom:1rem;
+  padding-bottom:.5rem;
+  border-bottom:2px solid #e8f0fa;
+}
+.res-body,.out-body{
+  font-size:.92rem;
+  line-height:1.85;
+  color:#1e2e40;
+  white-space:normal;
+}
+.res-body p,.out-body p{
+  margin-bottom:.85rem;
+  color:#1e2e40;
+}
+.res-body p:last-child,.out-body p:last-child{margin-bottom:0;}
+.res-h,.out-h{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.05rem;
+  letter-spacing:.07em;
+  color:#1a3a6b;
+  margin:1.25rem 0 .4rem;
+  padding-bottom:.3rem;
+  border-bottom:1px solid #e0ecfa;
+}
+.res-li,.out-li{
+  padding:.25rem 0 .25rem 1.1rem;
+  border-left:3px solid #c8d8f0;
+  margin:.3rem 0;
+  color:#1e2e40;
+  font-size:.9rem;
+  line-height:1.6;
+}
+.res-li:hover,.out-li:hover{border-left-color:#1a3a6b;}
+.res-num,.out-num{
+  padding:.25rem 0 .25rem .5rem;
+  margin:.25rem 0;
+  color:#1e2e40;
+  font-size:.9rem;
+  line-height:1.6;
+  counter-increment:none;
+}
+.res-bold,.out-bold{color:#1a3a6b;font-weight:700;}
+.res-em,.out-em{color:#5a7090;font-style:italic;}
+@media(max-width:600px){
+  .res-box,.output-box,.ca-out,.jm-out,.cert-out,.dec-out,.lir-out,.res-out,.sr-out,
+  [id$="-out"],[id$="-result"],[id$="-output"]{padding:1rem 1.1rem;}
+  .res-body,.out-body{font-size:.88rem;}
+}
+
+
+/* ── Global mobile overflow safety ── */
+*{box-sizing:border-box;}
+html,body{overflow-x:hidden;max-width:100%;}
+table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.card{overflow:visible!important;}
+.card-body{overflow-x:auto;}
+input,select,textarea{max-width:100%;width:100%;}
+main{overflow-x:hidden;}
+.form-grid,.result-grid,.radio-group{max-width:100%;}
+@media(max-width:640px){
+  main,section,.wrap,.content{padding-left:1rem!important;padding-right:1rem!important;}
+  .hero{padding-left:1rem!important;padding-right:1rem!important;}
+}
 </style>
 <nav class="vcp-nav">
   <a href="https://veterancareerpath.com" class="vcp-logo">
@@ -720,7 +805,89 @@ function getProfileContext(){return profileContext();}
 function val(id){var e=document.getElementById(id);return e?(e.value||"").trim():"";}
 function setHtml(id,h){var e=document.getElementById(id);if(e)e.innerHTML=h;}
 
-async function callClaude(prompt, system, opts) {
+async 
+function renderMarkdown(text) {
+  var escaped = text
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+  
+  var lines = escaped.split("\n");
+  var html = "";
+  var inList = false;
+  var inNumList = false;
+  
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    var trimmed = line.trim();
+    
+    if (!trimmed) {
+      if (inList) { html += "</div>"; inList = false; }
+      if (inNumList) { html += "</div>"; inNumList = false; }
+      html += "<div style=\"height:.5rem\"></div>";
+      continue;
+    }
+    
+    // Headers: ### or ## or #
+    if (/^#{1,3}\s+/.test(trimmed)) {
+      if (inList) { html += "</div>"; inList = false; }
+      if (inNumList) { html += "</div>"; inNumList = false; }
+      var htext = trimmed.replace(/^#{1,3}\s+/, "");
+      htext = applyInline(htext);
+      html += '<div class="res-h">' + htext + "</div>";
+      continue;
+    }
+    
+    // Numbered list: 1. or 1)
+    if (/^\d+[.).]\s+/.test(trimmed)) {
+      if (inList) { html += "</div>"; inList = false; }
+      if (!inNumList) { html += '<div class="res-num-list">'; inNumList = true; }
+      var ntext = trimmed.replace(/^\d+[.).]\s+/, "");
+      ntext = applyInline(ntext);
+      html += '<div class="res-li" style="border-left-color:#1a7a40;">' + ntext + "</div>";
+      continue;
+    }
+    
+    // Bullet list: - or * or •
+    if (/^[-*•]\s+/.test(trimmed)) {
+      if (inNumList) { html += "</div>"; inNumList = false; }
+      if (!inList) { html += '<div class="res-list">'; inList = true; }
+      var btext = trimmed.replace(/^[-*•]\s+/, "");
+      btext = applyInline(btext);
+      html += '<div class="res-li">' + btext + "</div>";
+      continue;
+    }
+    
+    // Horizontal rule
+    if (/^[-_*]{3,}$/.test(trimmed)) {
+      if (inList) { html += "</div>"; inList = false; }
+      if (inNumList) { html += "</div>"; inNumList = false; }
+      html += '<hr style="border:none;border-top:1px solid #e0ecfa;margin:.75rem 0;">';
+      continue;
+    }
+    
+    // Regular paragraph line
+    if (inList) { html += "</div>"; inList = false; }
+    if (inNumList) { html += "</div>"; inNumList = false; }
+    var ptext = applyInline(trimmed);
+    html += '<p>' + ptext + '</p>';
+  }
+  
+  if (inList) html += "</div>";
+  if (inNumList) html += "</div>";
+  return html;
+}
+
+function applyInline(text) {
+  return text
+    .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
+    .replace(/\*\*(.+?)\*\*/g, '<span class="res-bold">$1</span>')
+    .replace(/\*(.+?)\*/g, '<span class="res-em">$1</span>')
+    .replace(/`([^`]+)`/g, '<code style="background:#f0f4fa;padding:.1em .35em;border-radius:3px;font-size:.88em;color:#1a3a6b;">$1</code>');
+}
+
+
+function callClaude(prompt, system, opts) {
   opts = opts||{};
   var btn = opts.btn?document.getElementById(opts.btn):null;
   var out = opts.result?document.getElementById(opts.result):null;
@@ -747,13 +914,8 @@ async function callClaude(prompt, system, opts) {
     var data = await r.json();
     var text = (data.content||[]).map(function(b){return b.text||"";}).join("")||data.text||"";
     if (!text) throw new Error("Empty response from AI");
-    var html = text
-      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-      .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
-      .replace(/^#{1,3}\s+(.+)$/gm,'<div class="res-h">$1</div>')
-      .replace(/^[-•*]\s+(.+)$/gm,'<div class="res-li">• $1</div>')
-      .replace(/\n\n+/g,"</p><p>").replace(/\n/g,"<br>");
-    if (out) out.innerHTML = '<p>'+html+'</p>';
+    var html = renderMarkdown(text);
+    out.innerHTML = html;
     if (btn){btn.disabled=false;btn.innerHTML=label;}
     return text;
   } catch(e) {

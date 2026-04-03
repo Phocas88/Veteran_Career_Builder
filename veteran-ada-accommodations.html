@@ -141,6 +141,20 @@ html,body{overflow-x:hidden;max-width:100%;}
 .vcp-mob-sr-snip{font-size:.75rem;color:rgba(192,216,240,.5);margin-top:.1rem;line-height:1.4;}
 .vcp-mob-sr-snip em{color:rgba(240,192,64,.8);font-style:normal;}
 @media(max-width:960px){.vcp-desk{display:none!important;}.vcp-search-wrap{display:none!important;}.vcp-ham{display:flex;}}
+
+/* ── Global mobile overflow safety ── */
+*{box-sizing:border-box;}
+html,body{overflow-x:hidden;max-width:100%;}
+table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.card{overflow:visible!important;}
+.card-body{overflow-x:auto;}
+input,select,textarea{max-width:100%;width:100%;}
+main{overflow-x:hidden;}
+.form-grid,.result-grid,.radio-group{max-width:100%;}
+@media(max-width:640px){
+  main,section,.wrap,.content{padding-left:1rem!important;padding-right:1rem!important;}
+  .hero{padding-left:1rem!important;padding-right:1rem!important;}
+}
 </style>
 <nav class="vcp-nav">
   <a href="https://veterancareerpath.com" class="vcp-logo">

@@ -1069,5 +1069,29 @@ function _frPlaceholder() {
 
 document.addEventListener("DOMContentLoaded",function(){ if(checkAccess()) showTool(); else showGate(); });
 </script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+(function(){
+  try{
+    if(typeof firebase==="undefined")return;
+    try{firebase.app();}catch(e){firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"veteran-career-builder.firebaseapp.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}
+    firebase.auth().onAuthStateChanged(function(user){
+      if(!user)return;
+      firebase.firestore().collection("users").doc(user.uid).get().then(function(doc){
+        if(!doc.exists)return;
+        var data=doc.data();
+        var cur=localStorage.getItem("vcb_access"),need=!cur;
+        if(cur){try{var p=JSON.parse(cur);if(p.type==="paid"&&p.expiry<=Date.now())need=true;}catch(e){need=true;}}
+        if(need&&data.stripeSession){var exp=data.accessExpiry||(Date.now()+365*864e5);localStorage.setItem("vcb_access",JSON.stringify({type:"paid",stripeSession:data.stripeSession,expiry:exp,plan:data.plan||"monthly"}));}
+        else if(need&&data.accessCode){localStorage.setItem("vcb_access",JSON.stringify({type:"code",code:data.accessCode}));}
+        try{localStorage.setItem("vcb_profile",JSON.stringify(data));}catch(e){}
+        if(typeof checkAccess==="function"&&checkAccess()){if(typeof showTool==="function")showTool();}
+      }).catch(function(e){});
+    });
+  }catch(e){}
+})();
+</script>
 </body>
 </html>

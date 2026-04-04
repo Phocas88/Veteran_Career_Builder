@@ -608,6 +608,12 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
 .tag{background:rgba(26,58,107,.1);color:#1a3a6b;padding:.18rem .55rem;border-radius:20px;font-size:.72rem;font-weight:600;}
 @media(max-width:600px){.field-row{grid-template-columns:1fr;}}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+try{firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"veteran-career-builder.firebaseapp.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}catch(e){}
+</script>
 </head>
 <body>
 <section class="tool-hero">
@@ -1055,7 +1061,26 @@ function resetNeg() {
   document.getElementById("sn-chat").style.display = "none";
 }
 
-document.addEventListener("DOMContentLoaded",function(){ if(checkAccess()) showTool(); else showGate(); });
+document.addEventListener("DOMContentLoaded",function(){
+  if(checkAccess()){ showTool(); return; }
+  try{
+    firebase.auth().onAuthStateChanged(function(user){
+      if(!user){ showGate(); return; }
+      firebase.firestore().collection("profiles").doc(user.uid).get().then(function(doc){
+        if(!doc.exists){ showGate(); return; }
+        var data=doc.data();
+        if(data.stripeSession){
+          var expiry=data.accessExpiry||(Date.now()+365*24*60*60*1000);
+          localStorage.setItem("vcb_access",JSON.stringify({type:"paid",stripeSession:data.stripeSession,expiry:expiry,plan:data.plan||"monthly"}));
+        } else if(data.accessCode){
+          localStorage.setItem("vcb_access",JSON.stringify({type:"code",code:data.accessCode}));
+        }
+        try{localStorage.setItem("vcb_profile",JSON.stringify(data));}catch(e){}
+        if(checkAccess()) showTool(); else showGate();
+      }).catch(function(){ showGate(); });
+    });
+  }catch(e){ showGate(); }
+});
 </script>
 </body>
 </html>

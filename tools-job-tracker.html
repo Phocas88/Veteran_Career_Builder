@@ -111,6 +111,12 @@ img,video,iframe,table,pre,code{max-width:100%;}
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebPage","name":"Job Application Tracker for Veterans | Military to Civ","description":"Track every job application in one place. Save jobs, set follow-up reminders, and manage your veteran job search pipeline.","url":"https://veterancareerpath.com/tools-job-tracker.html","publisher":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://veterancareerpath.com"},{"@type":"ListItem","position":2,"name":"Job Application Tracker for Veterans | Military to Civ"}]}}
 </script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+try{firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"veteran-career-builder.firebaseapp.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}catch(e){}
+</script>
 </head>
 <body>
 <style id="vcp-nav-css">
@@ -877,7 +883,24 @@ function tryManualUnlock(){
   }
 }
 document.addEventListener("DOMContentLoaded",function(){
-  if(checkAccess()) showTool(); else showGate();
+  if(checkAccess()){ showTool(); return; }
+  try{
+    firebase.auth().onAuthStateChanged(function(user){
+      if(!user){ showGate(); return; }
+      firebase.firestore().collection("profiles").doc(user.uid).get().then(function(doc){
+        if(!doc.exists){ showGate(); return; }
+        var data=doc.data();
+        if(data.stripeSession){
+          var expiry=data.accessExpiry||(Date.now()+365*24*60*60*1000);
+          localStorage.setItem("vcb_access",JSON.stringify({type:"paid",stripeSession:data.stripeSession,expiry:expiry,plan:data.plan||"monthly"}));
+        } else if(data.accessCode){
+          localStorage.setItem("vcb_access",JSON.stringify({type:"code",code:data.accessCode}));
+        }
+        try{localStorage.setItem("vcb_profile",JSON.stringify(data));}catch(e){}
+        if(checkAccess()) showTool(); else showGate();
+      }).catch(function(){ showGate(); });
+    });
+  }catch(e){ showGate(); }
 });
 </script>
 </div><!-- end tool-content -->

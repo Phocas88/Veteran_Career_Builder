@@ -692,7 +692,15 @@ main{overflow-x:hidden;}
   <p style="color:rgba(255,255,255,.6);font-size:.88rem;margin-bottom:1.25rem;font-weight:300;line-height:1.7">$15/month unlocks all 8 AI tools. Sign into the app first — your access carries over automatically.</p>
   <a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.92rem;padding:.8rem 1.75rem;border-radius:9px;text-decoration:none;margin-bottom:.55rem;">Subscribe — $15/month →</a>
   <a href="/app.html" style="display:block;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#c0d8f0;font-size:.85rem;padding:.6rem 1.5rem;border-radius:9px;text-decoration:none;margin-bottom:.5rem;">Already subscribed? Open app to sync access →</a>
-  <button onclick="tryManualUnlock()" style="background:none;border:none;color:rgba(192,216,240,.3);font-size:.7rem;cursor:pointer;text-decoration:underline;margin-top:.25rem;">Manual unlock</button>
+  <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);">
+    <p style="color:rgba(255,255,255,.4);font-size:.75rem;margin-bottom:.5rem;">Have an access code?</p>
+    <div style="display:flex;gap:.4rem;max-width:280px;margin:0 auto;">
+      <input id="vcp-code-input" type="text" placeholder="e.g. OWNER2025" style="flex:1;padding:.5rem .75rem;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:.85rem;font-family:inherit;text-transform:uppercase;" onkeydown="if(event.key==='Enter')tryCodeUnlock()">
+      <button onclick="tryCodeUnlock()" style="padding:.5rem .9rem;border-radius:7px;border:none;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.82rem;cursor:pointer;">Unlock</button>
+    </div>
+    <div id="vcp-code-err" style="color:#ff8080;font-size:.72rem;margin-top:.35rem;"></div>
+  </div>
+  <button onclick="tryManualUnlock()" style="background:none;border:none;color:rgba(192,216,240,.2);font-size:.65rem;cursor:pointer;text-decoration:underline;margin-top:.75rem;">Unlock with email instead</button>
 </div>
 <div id="tool-content" style="display:none;">
 <div id="profile-banner" class="profile-banner" style="display:none">
@@ -1013,6 +1021,20 @@ function showTool(){
     if(name) name.textContent=(p.name||"Veteran")+(ex.branch?" | "+ex.branch:"")+(ex.rank?" "+ex.rank:"")+(ex.mos?" | "+ex.mos:"");
   }
   if(typeof autofillFromProfile==="function") autofillFromProfile();
+}
+function tryCodeUnlock(){
+  var inp=document.getElementById("vcp-code-input");
+  var err=document.getElementById("vcp-code-err");
+  if(!inp)return;
+  var code=inp.value.trim().toUpperCase();
+  if(!code){if(err)err.textContent="Enter an access code.";return;}
+  var exp=VCP_CODES[code];
+  if(exp===0||(exp&&Date.now()<=exp)){
+    localStorage.setItem("vcb_access",JSON.stringify({type:"code",code:code}));
+    showTool();
+  } else {
+    if(err)err.textContent="Invalid or expired code.";
+  }
 }
 function tryManualUnlock(){
   if(checkAccess()){showTool();return;}

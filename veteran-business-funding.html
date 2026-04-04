@@ -10,6 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <style id="vcp-nav-css">
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
@@ -618,7 +621,7 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
   </div>
 </section>
 <div class="tool-wrap">
-<div id="vcp-gate" style="text-align:center;padding:3rem 1.5rem;max-width:480px;margin:0 auto">
+<div id="vcp-gate" style="display:none;text-align:center;padding:3rem 1.5rem;max-width:480px;margin:0 auto">
   <div style="font-size:2.5rem;margin-bottom:.85rem">🔒</div>
   <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.4rem">Subscriber Tool</div>
   <p style="color:rgba(255,255,255,.6);font-size:.88rem;margin-bottom:1.25rem;font-weight:300;line-height:1.7">$15/month unlocks all AI tools. Sign into the app — access carries over automatically.</p>
@@ -956,7 +959,26 @@ function tryManualUnlock(){
   }
 }
 document.addEventListener("DOMContentLoaded",function(){
-  if(checkAccess()) showTool(); else showGate();
+  if(checkAccess()){ showTool(); return; }
+  var done=false;
+  function finish(){ if(done)return; done=true; if(checkAccess()) showTool(); else showGate(); }
+  setTimeout(finish, 3500);
+  try{
+    if(typeof firebase==="undefined"){ finish(); return; }
+    try{firebase.app();}catch(e){firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"veteran-career-builder.firebaseapp.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}
+    firebase.auth().onAuthStateChanged(function(u){
+      if(!u){ finish(); return; }
+      firebase.firestore().collection("profiles").doc(u.uid).get().then(function(doc){
+        if(doc.exists){
+          var d=doc.data();
+          if(d.stripeSession){var ex=d.accessExpiry||(Date.now()+365*864e5);localStorage.setItem("vcb_access",JSON.stringify({type:"paid",stripeSession:d.stripeSession,expiry:ex,plan:d.plan||"monthly"}));}
+          else if(d.accessCode){localStorage.setItem("vcb_access",JSON.stringify({type:"code",code:d.accessCode}));}
+          try{localStorage.setItem("vcb_profile",JSON.stringify(d));}catch(e){}
+        }
+        finish();
+      }).catch(function(){ finish(); });
+    });
+  }catch(e){ finish(); }
 });
 
 async function runSBA() {
@@ -1005,31 +1027,7 @@ async function runSBA() {
   );
 }
 
-document.addEventListener("DOMContentLoaded",function(){ if(checkAccess()) showTool(); else showGate(); });
-</script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-<script>
-(function(){
-  try{
-    if(typeof firebase==="undefined")return;
-    try{firebase.app();}catch(e){firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"veteran-career-builder.firebaseapp.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}
-    firebase.auth().onAuthStateChanged(function(user){
-      if(!user)return;
-      firebase.firestore().collection("profiles").doc(user.uid).get().then(function(doc){
-        if(!doc.exists)return;
-        var data=doc.data();
-        var cur=localStorage.getItem("vcb_access"),need=!cur;
-        if(cur){try{var p=JSON.parse(cur);if(p.type==="paid"&&p.expiry<=Date.now())need=true;}catch(e){need=true;}}
-        if(need&&data.stripeSession){var exp=data.accessExpiry||(Date.now()+365*864e5);localStorage.setItem("vcb_access",JSON.stringify({type:"paid",stripeSession:data.stripeSession,expiry:exp,plan:data.plan||"monthly"}));}
-        else if(need&&data.accessCode){localStorage.setItem("vcb_access",JSON.stringify({type:"code",code:data.accessCode}));}
-        try{localStorage.setItem("vcb_profile",JSON.stringify(data));}catch(e){}
-        if(typeof checkAccess==="function"&&checkAccess()){if(typeof showTool==="function")showTool();}
-      }).catch(function(e){});
-    });
-  }catch(e){}
-})();
+// access check moved to Firebase-aware handler above
 </script>
 </body>
 </html>

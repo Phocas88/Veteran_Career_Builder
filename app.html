@@ -3995,7 +3995,9 @@ function App() {
       const cred = await fbAuth.createUserWithEmailAndPassword(authForm.username.trim(), authForm.password);
       await cred.user.updateProfile({ displayName: authForm.name.trim() });
       setAuthOk("Account created! Signing you in...");
-      setShowAuth(false); if(!checkAccess()){setShowPaywall(true);}
+      setShowAuth(false);
+      if(window._pendingStripe){var s=window._pendingStripe;delete window._pendingStripe;window.location.href=s;return;}
+      if(!checkAccess()){setShowPaywall(true);}
       showToast("Welcome, " + authForm.name.split(" ")[0] + "! ✓");
       setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
     } catch(e) {
@@ -4012,7 +4014,9 @@ function App() {
     if (!authForm.password) { setAuthErr("Please enter your password."); return; }
     try {
       await fbAuth.signInWithEmailAndPassword(authForm.username.trim(), authForm.password);
-      setShowAuth(false); if(!checkAccess()){setShowPaywall(true);}
+      setShowAuth(false);
+      if(window._pendingStripe){var s=window._pendingStripe;delete window._pendingStripe;window.location.href=s;return;}
+      if(!checkAccess()){setShowPaywall(true);}
       setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
     } catch(e) {
       if (e.code === "auth/user-not-found" || e.code === "auth/invalid-credential") setAuthErr("No account found. Check your email or create an account.");
@@ -4798,13 +4802,13 @@ Return this exact JSON structure:
 
               <div className="pw-footer">
                 <button className="pw-cta" onClick={()=>{
-                  // REPLACE_WITH_YOUR_STRIPE_PAYMENT_LINK below
-                  // Get it from: Stripe Dashboard -> Payment Links -> Create
-                  // Set success URL to: https://veterancareerpath.com?stripe_success=1&session_id={CHECKOUT_SESSION_ID}
-                  // SUCCESS URL must be configured in Stripe Dashboard:
-                  // Payment Links → Edit → Confirmation page → Custom URL:
-                  // https://veterancareerpath.com/app.html?stripe_success=1&session_id={CHECKOUT_SESSION_ID}
                   const stripeLink = "https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00";
+                  // Require sign-in before Stripe so subscription saves to Firestore
+                  if(!fbAuth||!fbAuth.currentUser){
+                    setShowAuth(true);
+                    window._pendingStripe=stripeLink;
+                    return;
+                  }
                   window.location.href = stripeLink;
                 }}>
                   Subscribe Now — $15/mo →
@@ -4901,6 +4905,7 @@ Return this exact JSON structure:
                       const provider=new firebase.auth.GoogleAuthProvider();
                       await fbAuth.signInWithPopup(provider);
                       setShowAuth(false);
+                      if(window._pendingStripe){var s=window._pendingStripe;delete window._pendingStripe;window.location.href=s;return;}
                     }catch(e){
                       if(e.code==="auth/popup-closed-by-user") return;
                       if(e.code==="auth/popup-blocked") setAuthErr("Popup blocked — allow popups for this site.");

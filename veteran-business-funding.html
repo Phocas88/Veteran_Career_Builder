@@ -961,9 +961,7 @@ function tryManualUnlock(){
     showTool();
   }
 }
-document.addEventListener("DOMContentLoaded",function(){
-  if(checkAccess()) showTool(); else showGate();
-});
+
 
 async function runSBA() {
   var stage = document.getElementById("sb-stage").value;
@@ -1013,11 +1011,12 @@ async function runSBA() {
 
 document.addEventListener("DOMContentLoaded",function(){
   if(checkAccess()){ showTool(); return; }
+  showGate();
   try{
     firebase.auth().onAuthStateChanged(function(user){
-      if(!user){ showGate(); return; }
+      if(!user) return;
       firebase.firestore().collection("profiles").doc(user.uid).get().then(function(doc){
-        if(!doc.exists){ showGate(); return; }
+        if(!doc.exists) return;
         var data=doc.data();
         if(data.stripeSession){
           var expiry=data.accessExpiry||(Date.now()+365*24*60*60*1000);
@@ -1026,10 +1025,10 @@ document.addEventListener("DOMContentLoaded",function(){
           localStorage.setItem("vcb_access",JSON.stringify({type:"code",code:data.accessCode}));
         }
         try{localStorage.setItem("vcb_profile",JSON.stringify(data));}catch(e){}
-        if(checkAccess()) showTool(); else showGate();
-      }).catch(function(){ showGate(); });
+        if(checkAccess()) showTool();
+      }).catch(function(){});
     });
-  }catch(e){ showGate(); }
+  }catch(e){}
 });
 </script>
 </body>

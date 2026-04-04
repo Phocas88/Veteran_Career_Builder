@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Redirecting...</title>
+<!--
+  FIX #1 — DUPLICATE MOS PAGE REDIRECT
+  ════════════════════════════════════════════════════════════════════════════
+  Replace the CONTENT of each _seo.html and _rebuilt.html duplicate with
+  this redirect template. Do NOT delete the file (GitHub Pages can't 301
+  redirect deleted files) — instead replace its content so anyone who has
+  the old URL gets sent to the canonical page immediately.
+
+  Files to apply this to (replace CANONICAL_URL per file):
+
+  11b_seo.html      → redirect to: /mos/army-11b-infantry.html  (or army-mos-careers.html#11b)
+  11b_rebuilt.html  → same redirect
+  25b_seo.html      → redirect to: /mos/army-25b-it.html
+  25b_rebuilt.html  → same
+  68w_seo.html      → redirect to: /mos/army-68w-medic.html
+  68w_rebuilt.html  → same
+  68w_seo_fixed.html → same
+  35f_rebuilt.html  → redirect to: /mos/army-35f-intel.html
+  88m_rebuilt.html  → redirect to: /mos/army-88m-transport.html
+  0311_seo.html     → redirect to: /mos/marine-0311-rifleman.html
+  0311_rebuilt.html → same
+  ctn_seo.html      → redirect to: /mos/navy-ctn-intel.html
+  ctn_rebuilt.html  → same
+  hm_seo.html       → redirect to: /mos/navy-hm-corpsman.html
+  hm_rebuilt.html   → same
+  so_rebuilt.html   → redirect to: /mos/navy-so-seal.html
+  3d0x2_seo.html    → redirect to: /mos/af-3d0x2-cyber.html
+  3d0x2_rebuilt.html → same
+  1t2x1_rebuilt.html → redirect to: /mos/af-1t2x1-survival.html
+
+  HOW TO USE:
+  1. Copy this file
+  2. Change CANONICAL_URL to the target page
+  3. Replace the entire content of the duplicate file with this
+  4. Commit and push
+  ════════════════════════════════════════════════════════════════════════════
+-->
+<meta http-equiv="refresh" content="0; url=CANONICAL_URL">
+<link rel="canonical" href="CANONICAL_URL">
+<script>window.location.replace("CANONICAL_URL");</script>
+</head>
+<body>
+<p>Redirecting... <a href="CANONICAL_URL">Click here if not redirected.</a></p>
+</body>
+</html>

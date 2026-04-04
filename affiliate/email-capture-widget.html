@@ -1,0 +1,121 @@
+<!--
+  ══════════════════════════════════════════════════════════════════════════════
+  FIX #3 — EMAIL CAPTURE WIDGET
+  Drop into any tool page right after the AI result is displayed.
+  Uses Firebase Auth (already loaded) to save emails to Firestore.
+  Also sends to your email list via a free Formspree endpoint.
+
+  Setup:
+  1. Create a free account at https://formspree.io
+  2. Create a form and copy your endpoint URL
+  3. Replace YOUR_FORMSPREE_ID below with your actual form ID
+  4. Deploy — emails save to both Firestore and Formspree (which emails you)
+  ══════════════════════════════════════════════════════════════════════════════
+-->
+
+<style>
+.vcp-email-gate{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:1.5rem 1.75rem;margin:1.5rem 0;text-align:center;}
+.vcp-email-gate h3{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.4rem;}
+.vcp-email-gate p{font-size:.85rem;color:rgba(192,216,240,.7);margin-bottom:1rem;line-height:1.6;}
+.vcp-email-row{display:flex;gap:.5rem;max-width:420px;margin:0 auto;}
+.vcp-email-input{flex:1;padding:.65rem 1rem;border-radius:8px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:#fff;font-size:.88rem;font-family:inherit;outline:none;}
+.vcp-email-input:focus{border-color:rgba(201,168,76,.4);}
+.vcp-email-input::placeholder{color:rgba(255,255,255,.3);}
+.vcp-email-btn{padding:.65rem 1.25rem;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;}
+.vcp-email-btn:disabled{opacity:.5;cursor:not-allowed;}
+.vcp-email-success{color:#4ade80;font-size:.85rem;margin-top:.6rem;}
+.vcp-email-benefits{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:.75rem;}
+.vcp-email-benefit{font-size:.72rem;color:rgba(192,216,240,.5);}
+.vcp-email-disc{font-size:.65rem;color:rgba(192,216,240,.25);margin-top:.5rem;}
+@media(max-width:480px){.vcp-email-row{flex-direction:column;}}
+</style>
+
+<!-- EMAIL CAPTURE — paste this right after your result box shows -->
+<div class="vcp-email-gate" id="vcp-email-capture" style="display:none;">
+  <h3>📬 Get Your Full Report by Email</h3>
+  <p>Enter your email and we'll send your results plus weekly veteran career tips, job alerts, and benefit updates. Unsubscribe anytime.</p>
+  <div class="vcp-email-row">
+    <input type="email" class="vcp-email-input" id="vcp-email-input"
+           placeholder="your.email@example.com" autocomplete="email">
+    <button class="vcp-email-btn" id="vcp-email-submit" onclick="vcpCaptureEmail()">
+      Send Report →
+    </button>
+  </div>
+  <div class="vcp-email-success" id="vcp-email-success" style="display:none;">
+    ✅ Sent! Check your inbox. You're now on the list for weekly veteran career updates.
+  </div>
+  <div class="vcp-email-benefits">
+    <span class="vcp-email-benefit">✓ Weekly job alerts</span>
+    <span class="vcp-email-benefit">✓ VA benefit updates</span>
+    <span class="vcp-email-benefit">✓ MOS career tips</span>
+    <span class="vcp-email-benefit">✓ No spam, ever</span>
+  </div>
+  <div class="vcp-email-disc">We respect your privacy. Unsubscribe anytime.</div>
+</div>
+
+<script>
+// ── Show email capture after result is displayed ──────────────────────────────
+// Call showEmailCapture() after you render the AI result, e.g.:
+//   document.getElementById('result-box').classList.add('show');
+//   showEmailCapture();
+
+function showEmailCapture() {
+  // Don't show if user already subscribed this session
+  if (sessionStorage.getItem('vcp_email_captured')) return;
+  // Don't show if user is already a subscriber (has paid access)
+  try {
+    var access = JSON.parse(localStorage.getItem('vcp_sub_v2') || '{}');
+    if (access.access && access.status === 'active') return;
+  } catch(e) {}
+  var el = document.getElementById('vcp-email-capture');
+  if (el) el.style.display = 'block';
+}
+
+async function vcpCaptureEmail() {
+  var input = document.getElementById('vcp-email-input');
+  var btn   = document.getElementById('vcp-email-submit');
+  var ok    = document.getElementById('vcp-email-success');
+  var email = (input ? input.value : '').trim().toLowerCase();
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    input.style.borderColor = '#ff8080';
+    input.focus();
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  var toolName  = document.title.replace(' | VeteranCareerPath', '').trim();
+  var pageUrl   = window.location.href;
+  var timestamp = new Date().toISOString();
+
+  // 1. Save to Firestore (if Firebase is loaded)
+  try {
+    if (window.fbDb) {
+      await window.fbDb.collection('email_leads').doc(email).set({
+        email, tool: toolName, page: pageUrl,
+        capturedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        source: 'tool_result_capture'
+      }, { merge: true });
+    }
+  } catch(e) { console.warn('Firestore email save failed:', e); }
+
+  // 2. Send to Formspree (emails you, grows your list)
+  try {
+    await fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email, tool: toolName, page: pageUrl, _subject: 'New VCP Email Lead: ' + email })
+    });
+  } catch(e) { console.warn('Formspree submit failed:', e); }
+
+  // 3. Mark captured so we don't show again this session
+  sessionStorage.setItem('vcp_email_captured', '1');
+
+  // 4. Show success
+  if (ok)  { ok.style.display = 'block'; }
+  if (btn) { btn.style.display = 'none'; }
+  if (input) { input.style.display = 'none'; }
+}
+</script>

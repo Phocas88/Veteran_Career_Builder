@@ -829,7 +829,6 @@ function getProfileContext(){return profileContext();}
 function val(id){var e=document.getElementById(id);return e?(e.value||"").trim():"";}
 function setHtml(id,h){var e=document.getElementById(id);if(e)e.innerHTML=h;}
 
-async 
 function renderMarkdown(text) {
   var escaped = text
     .replace(/&/g,"&amp;")
@@ -911,7 +910,7 @@ function applyInline(text) {
 }
 
 
-function callClaude(prompt, system, opts) {
+async function callClaude(prompt, system, opts) {
   opts = opts||{};
   var btn = opts.btn?document.getElementById(opts.btn):null;
   var out = opts.result?document.getElementById(opts.result):null;

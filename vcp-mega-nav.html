@@ -1,6 +1,7 @@
 <style id="vcp-nav-css">
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
+body.menu-open{overflow:hidden!important;}
 
 /* ── NAV BAR ── */
 .vcp-nav{
@@ -737,6 +738,7 @@ html,body{overflow-x:hidden;max-width:100%;}
     menuBtn && menuBtn.setAttribute('aria-expanded','false');
     ham  && ham.classList.remove('open');
     mob  && mob.classList.remove('open');
+    document.body.classList.remove('menu-open');
   }
   function closeSearch() {
     sr  && sr.classList.remove('open');
@@ -753,6 +755,7 @@ html,body{overflow-x:hidden;max-width:100%;}
         mega.classList.add('open');
         menuBtn.classList.add('active');
         menuBtn.setAttribute('aria-expanded','true');
+        document.body.classList.add('menu-open');
       }
     });
     // Close when clicking a link inside
@@ -767,7 +770,7 @@ html,body{overflow-x:hidden;max-width:100%;}
       e.stopPropagation();
       var isOpen = mob.classList.contains('open');
       closeAll();
-      if (!isOpen) { mob.classList.add('open'); ham.classList.add('open'); }
+      if (!isOpen) { mob.classList.add('open'); ham.classList.add('open'); document.body.classList.add('menu-open'); }
     });
   }
 

@@ -642,6 +642,18 @@ main{overflow-x:hidden;}
           type:"paid", expiry, plan:"monthly", session,
           stripeSession: session
         }));
+        // Also persist to Firestore so refresh works cross-browser
+        try {
+          if (window.fbAuth && window.fbDb) {
+            window.fbAuth.onAuthStateChanged(function(u) {
+              if (u) {
+                window.fbDb.collection("profiles").doc(u.uid).set({
+                  stripeSession: session, accessExpiry: expiry, plan: "monthly", updatedAt: Date.now()
+                }, { merge: true });
+              }
+            });
+          }
+        } catch(e) {}
         // Clean URL then reload so React re-initializes with the new access token
         window.history.replaceState({}, document.title, window.location.pathname);
         // Show brief success message then reload
@@ -2429,7 +2441,6 @@ function DatePicker({ value, onChange, placeholder = "Select date" }) {
       )}
     </div>
   );
-  return _panel;
 }
 
 // ── UNIVERSITY AUTOCOMPLETE COMPONENT ────────────────────────────────────────
@@ -2485,7 +2496,6 @@ function UniversityInput({ value, onChange, placeholder }) {
       )}
     </div>
   );
-  return _panel;
 }
 
 
@@ -3759,6 +3769,17 @@ function App() {
     const check = isCodeValid(code); // calls module-level function
     if (check.valid) {
       localStorage.setItem("vcb_access", JSON.stringify({ type:"code", code }));
+      // Persist code to Firestore for cross-session access
+      try {
+        if (window.fbAuth && window.fbDb) {
+          const u = window.fbAuth.currentUser;
+          if (u) {
+            window.fbDb.collection("profiles").doc(u.uid).set(
+              { accessCode: code, updatedAt: Date.now() }, { merge: true }
+            );
+          }
+        }
+      } catch(e) {}
       const expMsg = check.reason === "permanent"
         ? "✓ Code accepted! You have permanent access."
         : "✓ Code accepted! Access expires " + new Date(check.expiry).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}) + ".";
@@ -3883,6 +3904,32 @@ function App() {
             // Cache profile to localStorage so standalone tool pages can read it
             // without needing their own Firebase init
             try { localStorage.setItem("vcb_profile", JSON.stringify(data)); } catch(e) {}
+            // Re-hydrate vcb_access from Firestore if localStorage was cleared
+            // This keeps tools unlocked across refreshes for paying users
+            try {
+              const currentAccess = localStorage.getItem("vcb_access");
+              let needsRehydrate = !currentAccess;
+              if (currentAccess) {
+                const parsed = JSON.parse(currentAccess);
+                if (parsed.type === "paid" && parsed.expiry <= Date.now()) needsRehydrate = true;
+              }
+              if (needsRehydrate && data.stripeSession) {
+                const expiry = data.accessExpiry || (Date.now() + 365*24*60*60*1000);
+                localStorage.setItem("vcb_access", JSON.stringify({
+                  type:"paid", stripeSession: data.stripeSession,
+                  expiry, plan: data.plan || "monthly"
+                }));
+                setHasAccess(true);
+                setShowPaywall(false);
+              } else if (needsRehydrate && data.accessCode) {
+                localStorage.setItem("vcb_access", JSON.stringify({ type:"code", code: data.accessCode }));
+                setHasAccess(true);
+                setShowPaywall(false);
+              } else if (!needsRehydrate) {
+                // localStorage still valid, make sure React state reflects it
+                if (checkAccess()) { setHasAccess(true); setShowPaywall(false); }
+              }
+            } catch(e) {}
           }
           // Load saved resumes
           const resumesSnap = await fbDb.collection("profiles").doc(firebaseUser.uid)
@@ -3967,9 +4014,10 @@ function App() {
     setHasUnsaved(false);
     // Clear localStorage caches
     try { localStorage.removeItem("vcb_profile"); localStorage.removeItem("vcb_access"); } catch(e) {}
+    setHasAccess(false); setShowPaywall(false);
     // Reset form fields
     setPersonal({ name:"", email:"", phone:"", location:"", linkedin:"" });
-    setExperiences([newMilExp()]);
+    setMilExperiences([newMilExp()]);
     setEducation([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
     setSkills({ technical:"", leadership:"", languages:"", certs:"" });
   };
@@ -4040,7 +4088,7 @@ function App() {
   };
   const saveEmail = async () => {
     const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
-      type:followupType||"Follow-Up Email", content:followupEmail};
+      type:followupCtx.outcome||"Follow-Up Email", content:followupEmail};
     setSavedEmails(prev=>[entry,...prev].slice(0,20));
     if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection("emails").doc(entry.id.toString()).set(entry);}catch(e){}}
     showToast("Email saved to My Profile ✓");
@@ -4761,10 +4809,23 @@ Return this exact JSON structure:
                       const email = window.prompt("Enter the email you used when subscribing on Stripe:");
                       if(email && email.includes("@")){
                         const expiry = Date.now() + 365*24*60*60*1000;
+                        const manualSession = "manual-verify-"+Date.now();
                         localStorage.setItem("vcb_access", JSON.stringify({
-                          type:"paid", stripeSession:"manual-verify-"+Date.now(),
+                          type:"paid", stripeSession: manualSession,
                           expiry, plan:"monthly", email
                         }));
+                        // Persist to Firestore if signed in
+                        try {
+                          if (window.fbAuth && window.fbDb) {
+                            const u = window.fbAuth.currentUser;
+                            if (u) {
+                              window.fbDb.collection("profiles").doc(u.uid).set(
+                                { stripeSession: manualSession, accessExpiry: expiry, plan:"monthly", updatedAt: Date.now() },
+                                { merge: true }
+                              );
+                            }
+                          }
+                        } catch(e) {}
                         setHasAccess(true);
                         setShowPaywall(false);
                       }
@@ -6567,10 +6628,10 @@ Return this exact JSON structure:
                       </div>
                     </div>
                     <div className="cl-output">{coverLetter}</div>
-                    <button className="btn-sec" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={genCoverLetter}>
-                    <button className="btn-primary" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={saveCoverLetter}>💾 Save Cover Letter</button>
-                      ↺ Regenerate
-                    </button>
+                    <div style={{display:"flex",gap:".5rem",marginTop:".6rem"}}>
+                      <button className="btn-sec" style={{fontSize:".8rem"}} onClick={genCoverLetter}>↺ Regenerate</button>
+                      <button className="btn-primary" style={{fontSize:".8rem"}} onClick={saveCoverLetter}>💾 Save Cover Letter</button>
+                    </div>
                   </>
                 )}
               </div>

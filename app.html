@@ -3927,7 +3927,23 @@ function App() {
                 setShowPaywall(false);
               } else if (!needsRehydrate) {
                 // localStorage still valid, make sure React state reflects it
-                if (checkAccess()) { setHasAccess(true); setShowPaywall(false); }
+                if (checkAccess()) {
+                  setHasAccess(true); setShowPaywall(false);
+                  // Sync localStorage access to Firestore if Firestore is missing it
+                  try {
+                    const acc = JSON.parse(localStorage.getItem("vcb_access")||"{}");
+                    if (acc.stripeSession && !data.stripeSession) {
+                      fbDb.collection("profiles").doc(firebaseUser.uid).set({
+                        stripeSession: acc.stripeSession, accessExpiry: acc.expiry,
+                        plan: acc.plan || "monthly", updatedAt: Date.now()
+                      }, { merge: true });
+                    } else if (acc.code && !data.accessCode) {
+                      fbDb.collection("profiles").doc(firebaseUser.uid).set({
+                        accessCode: acc.code, updatedAt: Date.now()
+                      }, { merge: true });
+                    }
+                  } catch(e) {}
+                }
               }
             } catch(e) {}
           }

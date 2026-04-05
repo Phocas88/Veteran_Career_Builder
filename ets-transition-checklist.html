@@ -1157,11 +1157,11 @@ function generateChecklist() {
   months.forEach(function(month) {
     var badgeText = month.type === 'urgent' ? 'Critical' : month.type === 'done' ? 'Post-Separation' : 'Action Required';
     html += '<div class="month-section">' +
-      '<div class="month-header" id="hdr-' + safeId + '" onclick="toggleMonthById(this)">' +
+      '<div class="month-header" id="hdr-' + month.id + '" onclick="toggleMonthById(this)">' +
         '<h3>' + month.label + '</h3>' +
         '<span class="month-badge ' + month.type + '">' + badgeText + '</span>' +
       '</div>' +
-      '<div class="month-items" id="items-' + safeId + '">';
+      '<div class="month-items" id="items-' + month.id + '">';
 
     month.items.forEach(function(item, ii) {
       var checkId = month.id + '-' + ii;

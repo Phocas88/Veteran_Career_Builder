@@ -2177,10 +2177,13 @@ body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-
 .user-bar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#d0e8f8;border-radius:6px;padding:.25rem .7rem;cursor:pointer;font-size:.72rem;transition:all .2s;}
 .user-bar button:hover{background:rgba(255,255,255,.18);}
 .tabs{display:flex;background:#ffffff;border-bottom:2px solid var(--border);padding:0 .5rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(26,58,107,.06);}
-.tab{flex:1;padding:.75rem .5rem .65rem;background:transparent;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:.82rem;color:#7a90a8;letter-spacing:.1em;transition:all .2s;}
+.tab{flex:1;padding:.75rem .5rem .65rem;background:transparent;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:.82rem;color:#7a90a8;letter-spacing:.1em;transition:all .25s ease;position:relative;}
+.tab::after{content:'';position:absolute;bottom:-2px;left:15%;right:15%;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:3px 3px 0 0;opacity:0;transition:opacity .25s ease,left .25s ease,right .25s ease;}
+.tab.on::after,.tab.active::after{opacity:1;left:5%;right:5%;}
 .tab.ai-tab{background:rgba(200,150,10,.05);border-bottom-color:rgba(200,150,10,.15);}
 .tab.ai-tab:hover{background:rgba(200,150,10,.1);color:#c8960a;}
-.tab.ai-tab.active{color:#c8960a!important;border-bottom-color:#c8960a!important;background:rgba(200,150,10,.08)!important;}
+.tab.ai-tab.active{color:#c8960a!important;border-bottom-color:transparent!important;background:rgba(200,150,10,.08)!important;}
+.tab.ai-tab.active::after{background:linear-gradient(90deg,#c8960a,#e8aa10)!important;opacity:1!important;left:5%!important;right:5%!important;}
 .tabs-separator{display:flex;align-items:center;color:#dde3ec;font-size:.6rem;letter-spacing:.08em;flex-shrink:0;padding:0 .25rem;user-select:none;font-weight:700;}
 /* ── AI TOOLS QUICK NAV ─────────────────────────────────────────────────── */
 .tools-fab{position:fixed;right:1rem;bottom:5.5rem;z-index:900;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:50%;width:52px;height:52px;cursor:pointer;box-shadow:0 4px 18px rgba(200,150,10,.5);display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:transform .18s;}
@@ -2209,15 +2212,16 @@ body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-
 .tools-overlay.open{display:block;}
 @media(max-width:480px){.tools-drawer{width:260px;}}
 
-.tab.on,.tab.active{color:var(--navy);border-bottom-color:var(--gold);background:linear-gradient(180deg,transparent,rgba(200,150,10,.04));}
+.tab.on,.tab.active{color:var(--navy);border-bottom-color:transparent;background:linear-gradient(180deg,transparent,rgba(200,150,10,.04));}
 .tab:hover:not(.on):not(.active){color:var(--navy);background:rgba(26,58,107,.03);}
 .tab-n{font-size:.55rem;display:block;opacity:.6;margin-top:.1rem;font-family:'Inter',sans-serif;font-weight:500;}
-.panel{display:none;animation:fadeIn .2s;}
+.panel{display:none;animation:panelFadeIn .35s ease-out;}
 .panel.on{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes panelFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+html{scroll-behavior:smooth;}
 .wrap{max-width:980px;margin:0 auto;padding:1.5rem 1.2rem 5rem;}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1.25rem;overflow:hidden;box-shadow:var(--shadow);transition:box-shadow .2s;}
-.card:hover{box-shadow:var(--shadow-hover);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:1.25rem;overflow:hidden;box-shadow:var(--shadow);transition:box-shadow .25s ease,transform .25s ease;}
+.card:hover{box-shadow:0 8px 28px rgba(26,58,107,.16);transform:translateY(-1px);}
 .ch{background:linear-gradient(135deg,#f8fafd,#f0f4fa);border-bottom:1px solid var(--border);padding:.85rem 1.25rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
 .ch h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:1rem;color:var(--navy);}
 .cb{padding:1.25rem;}
@@ -2255,11 +2259,13 @@ body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-
 .year-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #e8eef6;background:#f8fafd;}
 .year-row button{background:transparent;border:none;color:var(--navy);font-size:1.1rem;cursor:pointer;padding:0 6px;font-weight:700;}
 .year-row span{font-size:.85rem;font-weight:700;color:var(--text);}
-.btn-primary{display:block;width:100%;padding:.85rem;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.12em;cursor:pointer;margin:.85rem 0;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(26,58,107,.25);}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,58,107,.3);}
+.btn-primary{display:block;width:100%;padding:.85rem;background:linear-gradient(135deg,var(--navy),var(--navy2),var(--navy3));background-size:200% 100%;color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.12em;cursor:pointer;margin:.85rem 0;transition:transform .18s ease,box-shadow .18s ease,background-position .3s ease;box-shadow:0 4px 16px rgba(26,58,107,.25);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,58,107,.35);background-position:100% 0;}
+.btn-primary:active{transform:translateY(0);box-shadow:0 2px 8px rgba(26,58,107,.2);}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.btn-sec{background:#fff;border:1.5px solid var(--navy);color:var(--navy);border-radius:var(--radius-sm);padding:.4rem .95rem;font-family:'Inter',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;}
-.btn-sec:hover{background:var(--navy);color:#fff;}
+.btn-sec{background:#fff;border:1.5px solid var(--navy);color:var(--navy);border-radius:var(--radius-sm);padding:.4rem .95rem;font-family:'Inter',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s ease;box-shadow:0 1px 4px rgba(26,58,107,.06);}
+.btn-sec:hover{background:var(--navy);color:#fff;box-shadow:0 4px 12px rgba(26,58,107,.2);transform:translateY(-1px);}
+.btn-sec:active{transform:translateY(0);}
 .btn-add{display:block;width:100%;padding:.65rem 1rem;background:linear-gradient(135deg,#f0f4fa,#e8eef8);border:1.5px dashed #b0c4da;border-radius:var(--radius-sm);color:var(--navy);font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;margin-top:.5rem;}
 .btn-add:hover{background:linear-gradient(135deg,#e8eef8,#dce8f8);border-color:var(--navy);}
 .btn-rm{background:#fff0f0;border:1px solid #f0c0c0;color:#c0392b;border-radius:6px;padding:.2rem .55rem;font-size:.75rem;cursor:pointer;transition:all .2s;}
@@ -2282,7 +2288,8 @@ body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-
 .tos-badge{display:inline-flex;align-items:center;gap:.3rem;background:#f0f4fa;border:1px solid var(--border);border-radius:20px;padding:.18rem .6rem;font-size:.72rem;color:var(--slate);}
 .sdiv{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 .loading{text-align:center;padding:2.5rem;color:var(--slate);}
-.spin{width:36px;height:36px;border:3px solid #dde3ec;border-top-color:var(--navy);border-radius:50%;animation:sp .7s linear infinite;margin:.75rem auto;}
+.spin{width:36px;height:36px;border:3px solid #dde3ec;border-top-color:var(--navy);border-right-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;margin:.75rem auto;}
+.btn-primary .spin-inline{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:.5rem;}
 @keyframes sp{to{transform:rotate(360deg)}}
 .save-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:.65rem 1.5rem;border-radius:24px;font-size:.85rem;z-index:9999;box-shadow:0 4px 20px rgba(26,58,107,.3);}
 .api-err{background:#fff5f5;border:1px solid #fcd0d0;border-left:4px solid var(--red);color:#900;border-radius:var(--radius-sm);padding:.65rem 1rem;font-size:.83rem;margin:.5rem 0;}
@@ -2375,6 +2382,29 @@ body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-
 .res-filter-btn{padding:.38rem .9rem;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--slate);font-size:.8rem;cursor:pointer;transition:all .2s;font-weight:500;}
 .res-filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:700;}
 .res-filter-btn:hover:not(.active){border-color:var(--navy);color:var(--navy);}
+.resume-sections-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .8rem;}
+.resume-section-toggle{display:flex;align-items:center;gap:.5rem;padding:.4rem .6rem;border-radius:8px;cursor:pointer;transition:background .15s;user-select:none;}
+.resume-section-toggle:hover{background:rgba(26,58,107,.04);}
+.resume-section-toggle input[type="checkbox"]{width:auto;cursor:pointer;accent-color:var(--navy);}
+.resume-section-toggle label{cursor:pointer;font-size:.82rem;color:var(--text);font-weight:500;}
+.resume-section-toggle .section-required{font-size:.65rem;color:var(--green);font-weight:600;margin-left:.25rem;}
+.ats-score-card{background:linear-gradient(135deg,#f0f8f0,#e8f5e8);border:1.5px solid rgba(26,122,64,.2);border-radius:12px;padding:1.2rem;margin-top:1rem;}
+.ats-score-ring{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:800;margin:0 auto .5rem;}
+.keywords-grid{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem;}
+.keyword-chip{display:inline-block;padding:.15rem .5rem;border-radius:20px;font-size:.72rem;font-weight:600;}
+.keyword-found{background:rgba(26,122,64,.1);color:var(--green);border:1px solid rgba(26,122,64,.2);}
+.keyword-missing{background:rgba(192,57,43,.1);color:var(--red);border:1px solid rgba(192,57,43,.2);}
+.job-analyzer-card{background:linear-gradient(135deg,#f0f4ff,#e8edf5);border:1.5px solid #b0c4e0;border-radius:12px;padding:1.2rem;margin-bottom:1.2rem;}
+.job-match-result{background:#fff;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-top:1rem;}
+.job-match-header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:1rem 1.2rem;display:flex;justify-content:space-between;align-items:center;}
+.job-match-body{padding:1.2rem;}
+.job-match-section{margin-bottom:1rem;}
+.job-match-section h4{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.08em;color:var(--navy);margin-bottom:.5rem;}
+.match-item{display:flex;align-items:flex-start;gap:.5rem;padding:.3rem 0;font-size:.84rem;line-height:1.55;}
+.match-strength{color:var(--green);}
+.match-gap{color:var(--red);}
+.match-action{color:var(--navy);}
+@media(max-width:640px){.resume-sections-grid{grid-template-columns:1fr;}}
 .crisis-banner{background:linear-gradient(135deg,#8b0000,#c0392b);color:#fff;border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;gap:1rem;align-items:flex-start;box-shadow:0 4px 20px rgba(192,57,43,.3);}
 .crisis-banner h3{margin:0 0 .3rem;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.08em;}
 .crisis-banner p{margin:0 0 .75rem;font-size:.85rem;opacity:.92;line-height:1.6;}
@@ -3945,6 +3975,62 @@ function MyProfileSaved(props) {
 
   <div className="card" style={{marginTop:"1rem"}}>
     <div className="ch" style={{justifyContent:"space-between"}}>
+      <h3>🧭 Saved Assessment Results</h3>
+      <span style={{fontSize:".75rem",color:"var(--dim)"}}>Career Assessments</span>
+    </div>
+    <div className="cb">
+      {(()=>{
+        let assessmentResult = null;
+        try { assessmentResult = JSON.parse(localStorage.getItem("vcb_assessment_result")||"null"); } catch(e){}
+        if (!assessmentResult) {
+          return (
+            <div style={{textAlign:"center",padding:"1.5rem",color:"var(--dim)",fontSize:".88rem"}}>
+              <div style={{fontSize:"2rem",marginBottom:".5rem"}}>🧭</div>
+              No saved assessment results yet.
+              <div style={{marginTop:".5rem"}}>
+                <a href="https://veterancareerpath.com/career-assessment-full.html" style={{color:"var(--navy)",fontWeight:600,textDecoration:"underline",fontSize:".82rem"}}>Take the Full Career Assessment</a>
+              </div>
+            </div>
+          );
+        }
+        return (
+          <div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".75rem",flexWrap:"wrap",gap:".5rem"}}>
+              <div>
+                <div style={{fontWeight:700,fontSize:".92rem",color:"var(--navy)"}}>{assessmentResult.type||"Career Assessment"}</div>
+                <div style={{fontSize:".75rem",color:"var(--dim)"}}>
+                  {assessmentResult.date ? new Date(assessmentResult.date).toLocaleDateString() : "Date unknown"}
+                </div>
+              </div>
+              <a href="https://veterancareerpath.com/career-assessment-full.html" className="btn-sec" style={{fontSize:".72rem",padding:".28rem .7rem",textDecoration:"none"}}>
+                Retake Assessment
+              </a>
+            </div>
+            {(assessmentResult.topCareers||assessmentResult.results||[]).length>0&&(
+              <div>
+                <div style={{fontSize:".75rem",fontWeight:700,color:"var(--navy)",letterSpacing:".06em",textTransform:"uppercase",marginBottom:".4rem"}}>Top Career Matches</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:".5rem"}}>
+                  {(assessmentResult.topCareers||assessmentResult.results||[]).slice(0,6).map((c,i)=>(
+                    <div key={i} style={{background:"linear-gradient(135deg,#f8fafd,#f0f4fa)",border:"1.5px solid var(--border)",borderRadius:"8px",padding:".65rem .85rem"}}>
+                      <div style={{fontWeight:700,fontSize:".82rem",color:"var(--navy)"}}>{typeof c==="string"?c:(c.title||c.name||"Career "+(i+1))}</div>
+                      {c.match&&<div style={{fontSize:".72rem",color:"var(--green)",fontWeight:600}}>{c.match}% Match</div>}
+                      {c.sector&&<div style={{fontSize:".7rem",color:"var(--dim)"}}>{c.sector}</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {assessmentResult.summary&&(
+              <div style={{fontSize:".82rem",color:"var(--slate)",lineHeight:1.6,marginTop:".75rem",padding:".65rem",background:"#f8fafd",borderRadius:"6px",border:"1px solid var(--border)"}}>{assessmentResult.summary}</div>
+            )}
+          </div>
+        );
+      })()}
+    </div>
+  </div>
+
+  <div className="card" style={{marginTop:"1rem"}}>
+    <div className="ch" style={{justifyContent:"space-between"}}>
       <h3>⭐ Saved Career Paths</h3>
       <span style={{fontSize:".75rem",color:"var(--dim)"}}>{(savedPaths||[]).length} saved</span>
     </div>
@@ -4100,6 +4186,28 @@ function App() {
   const [resumeError, setResumeError] = useState("");
   const [copied, setCopied] = useState(false);
   const [includeClearance, setIncludeClearance] = useState(true);
+
+  // ── RESUME SECTIONS CHECKLIST ──
+  const [resumeSections, setResumeSections] = useState({
+    summary: true, military: true, civilian: true, education: true,
+    certifications: true, clearance: true, awards: true,
+    volunteer: false, technicalSkills: true, languages: false
+  });
+  const toggleResumeSection = (key) => setResumeSections(prev => ({...prev, [key]: !prev[key]}));
+
+  // ── RESUME TARGET ENHANCEMENTS ──
+  const [targetCompany, setTargetCompany] = useState("");
+  const [experienceLevel, setExperienceLevel] = useState("mid");
+  const [jobDescription, setJobDescription] = useState("");
+
+  // ── ATS ANALYSIS STATE ──
+  const [atsAnalysis, setAtsAnalysis] = useState(null);
+  const [atsLoading, setAtsLoading] = useState(false);
+
+  // ── JOB URL ANALYZER STATE ──
+  const [jobAnalyzerUrl, setJobAnalyzerUrl] = useState("");
+  const [jobAnalyzerResult, setJobAnalyzerResult] = useState(null);
+  const [jobAnalyzerLoading, setJobAnalyzerLoading] = useState(false);
 
   // ── AUTH STATE ──
   const [authMode, setAuthMode] = useState("login");
@@ -4865,8 +4973,15 @@ Use this exact structure:
       const formatGuide = formatInstructions[resumeFormat] || formatInstructions.ats_chrono;
       const contact = (personal.name||"") + " | " + (personal.email||"") + " | " + (personal.phone||"") + " | " + (personal.location||"") + (personal.linkedin ? " | " + personal.linkedin : "");
       const eduText2 = education.map(e => (e.degree||"") + " " + (e.field||"") + " " + (e.institution||"") + " " + (e.year||"")).join("; ");
+      const sectionsToInclude = Object.entries(resumeSections).filter(([k,v])=>v).map(([k])=>k).join(", ");
+      const expLevelGuide = {
+        entry: "ENTRY LEVEL: Focus on transferable skills, training certifications, leadership potential. Emphasize trainability and work ethic.",
+        mid: "MID-CAREER: Balance military achievements with growing expertise. Show progression and increasing responsibility.",
+        senior: "SENIOR LEVEL: Lead with strategic impact, team/org size, budget authority. Show cross-functional leadership.",
+        executive: "EXECUTIVE LEVEL: Emphasize org-wide transformations, P&L ownership, strategic vision, enterprise-level decisions."
+      };
       const prompt =
-        "You are a military-to-civilian resume expert. Create a complete professional resume.\n\n" +
+        "You are a military-to-civilian resume expert and ATS optimization specialist. Create a PREMIUM, ATS-optimized professional resume.\n\n" +
         "VETERAN MILITARY PROFILE:\n" + milSum + "\n\n" +
         "CIVILIAN EXPERIENCE:\n" + expText + "\n\n" +
         "EDUCATION:\n" + eduText2 + "\n\n" +
@@ -4875,15 +4990,42 @@ Use this exact structure:
         "LANGUAGES: " + (skills.languages||"") + "\n" +
         "CERTIFICATIONS: " + (skills.certs||"") + "\n" +
         (target.interests ? "INTERESTS/HOBBIES: " + target.interests + "\n" : "") +
-        "TARGET ROLE: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + "\n\n" +
+        "TARGET ROLE: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + "\n" +
+        (targetCompany ? "TARGET COMPANY: " + targetCompany + " — tailor language and culture fit to this company\n" : "") +
+        "EXPERIENCE LEVEL: " + (expLevelGuide[experienceLevel] || expLevelGuide.mid) + "\n" +
+        (jobDescription ? "\nJOB DESCRIPTION TO MATCH:\n" + jobDescription.slice(0,2000) + "\n\nCRITICAL: Extract exact keywords from this job description and mirror them in the resume. Match qualifications, skills, and terminology exactly as written in the posting.\n" : "") +
+        "SECTIONS TO INCLUDE: " + sectionsToInclude + "\n\n" +
         "CONTACT: " + contact + "\n\n" +
+        "ATS OPTIMIZATION RULES:\n" +
+        "1. Use EXACT keywords from the job description (if provided). ATS systems do literal string matching.\n" +
+        "2. Include industry-standard civilian keywords for " + (target.industry||"this field") + ": " + (target.title||"operations management, leadership") + "\n" +
+        "3. Use standard section headers that ATS systems recognize (Professional Summary, Experience, Education, Skills, Certifications).\n" +
+        "4. No tables, columns, text boxes, headers/footers, or images — pure text hierarchy.\n" +
+        "5. Spell out acronyms the first time, then abbreviate: 'Project Management Professional (PMP)'\n\n" +
+        "PROFESSIONAL SUMMARY RULES:\n" +
+        "Write a compelling 3-sentence Professional Summary that: (a) opens with years of experience + core expertise, (b) highlights 2-3 quantified signature achievements, (c) ends with the value proposition for the target role. Make it specific and powerful — not generic.\n\n" +
+        "ACHIEVEMENT RULES:\n" +
+        "1. Every bullet MUST follow the format: [Action Verb] + [What You Did] + [Quantified Result]\n" +
+        "2. Include numbers wherever possible: team sizes, budget amounts ($), percentages (%), time saved, efficiency gains\n" +
+        "3. Quantify ONLY using numbers the veteran explicitly provided. NEVER invent or fabricate metrics. If they gave no numbers, write a strong qualitative bullet.\n" +
+        "4. Start every bullet with a powerful civilian action verb: Spearheaded, Orchestrated, Streamlined, Optimized, Transformed, Directed, Launched, Pioneered, Delivered, Accelerated\n\n" +
         "CRITICAL RULES — ZERO MILITARY JARGON ALLOWED:\n" +
         "ABSOLUTE RULE: The resume must read as if written by a civilian professional. A civilian hiring manager should not be able to tell this person was in the military unless they choose to mention it. Every single military term MUST be replaced with civilian language.\n" +
         "BANNED WORDS — never use these: NCO, NCOIC, OIC, MOS, AFSC, NEC, SGT, SSG, SFC, MSG, CSM, PFC, SPC, CPL, E-4, E-5, O-3, Soldier, Airman, Marine, Sailor, Guardian, Troop, Unit, Battalion, Brigade, Company, Platoon, Squad, TOC, SITREP, AAR, OPORD, TDY, PCS, ETS, TAD, SHARP (spell it out), Armorer (say Weapons Inventory Manager), Retention NCO (say Talent Acquisition Specialist), Drill Sergeant (say Training Instructor/Leadership Development Specialist), Airborne (say Parachute Operations Certified), MRE, Battle Rhythm, Hooah, Oorah, Hard Charger.\n" +
-        "TRANSLATION RULES:\n" +
+        "FULL JARGON TRANSLATION TABLE — translate ALL of these:\n" +
         "- NCO / Sergeant / Staff Sergeant = Team Leader / Operations Supervisor\n" +
         "- NCOIC = Operations Lead / Team Supervisor\n" +
         "- OIC = Program Manager / Department Lead\n" +
+        "- 1SG/First Sergeant = Senior Operations Manager\n" +
+        "- CSM/Command Sergeant Major = Chief of Staff / Senior Director\n" +
+        "- Platoon Leader = Team Manager (30-50 personnel)\n" +
+        "- Company Commander = Department Director (100-200 personnel)\n" +
+        "- Battalion Commander = Division Director (500-800 personnel)\n" +
+        "- S1/G1/J1 = Human Resources / Personnel Management\n" +
+        "- S2/G2/J2 = Intelligence / Security Analysis\n" +
+        "- S3/G3/J3 = Operations Management\n" +
+        "- S4/G4/J4 = Logistics / Supply Chain Management\n" +
+        "- S6/G6/J6 = Information Technology / Communications\n" +
         "- Unit Armorer = Weapons & Equipment Inventory Manager\n" +
         "- SHARP Representative = Employee Relations & Compliance Coordinator\n" +
         "- Retention NCO = Talent Acquisition & Career Development Specialist\n" +
@@ -4894,24 +5036,28 @@ Use this exact structure:
         "- Battalion / Brigade = Organization / Division\n" +
         "- Platoon of 40 soldiers = Team of 40 personnel\n" +
         "- TOC = Operations Center\n" +
-        "- SITREP = Status Report\n" +
+        "- SITREP = Status Report / Progress Update\n" +
         "- AAR = After-Action Review / Post-Project Debrief\n" +
+        "- OPORD = Operations Plan / Project Plan\n" +
         "- COR = Contract Oversight Manager\n" +
+        "- PMCS = Preventive Maintenance Inspection Program\n" +
+        "- SOP = Standard Operating Procedure / Process Documentation\n" +
+        "- PT = Physical Fitness / Wellness Program\n" +
+        "- FOB = Forward Operating Base / Remote Facility\n" +
+        "- Deployed = Worked in austere / international / remote environment\n" +
         "- Secret clearance = Active Secret Security Clearance (keep this — it is valuable)\n" +
-        "- TS/SCI = Active Top Secret/SCI Security Clearance (keep this — premium asset)\n" +
-        "1. Write every bullet point as a civilian achievement: Led [X people], managed [$X budget], reduced [X%], improved [outcome].\n" +
-        "2. Quantify ONLY using numbers the veteran explicitly provided. NEVER invent or fabricate metrics. If they gave no numbers for a task, write the bullet without numbers — an honest bullet beats a fabricated one.\n" +
-        "3. Start every bullet with a strong civilian action verb: Led, Managed, Coordinated, Developed, Implemented, Reduced, Increased, Trained, Oversaw, Delivered.\n" +
-        "4. Security clearances are the ONE military term to keep — they are premium salary assets.\n" +
-        "5. ATS keywords for: " + (target.title||"operations management, leadership, logistics") + "\n\n" +
+        "- TS/SCI = Active Top Secret/SCI Security Clearance (keep this — premium asset)\n\n" +
         "Return ONLY valid JSON, no markdown, starting with { ending with }.\n" +
-        "Keys: name, contact (string), summary (2-3 sentence professional paragraph), " +
-        "experience (array of {employer, title, dates, bullets:[4-6 strong civilian bullet strings]}), " +
+        "Keys: name, contact (string), summary (2-3 sentence COMPELLING professional paragraph — not generic), " +
+        "experience (array of {employer, title, dates, bullets:[4-6 strong civilian achievement bullets with quantified results]}), " +
         "education (array of {degree, school, year}), " +
-        "skills (array of max 12 skill strings), " +
+        "skills (array of max 12 ATS-optimized skill strings matching the target industry), " +
         "certifications (array of strings), " +
         "clearance (string or null), " +
-        "awards (array of strings)";
+        "awards (array of strings), " +
+        (resumeSections.volunteer ? "volunteer (array of {org, role, description}), " : "") +
+        (resumeSections.languages ? "languages (array of strings), " : "") +
+        "atsKeywords (array of 10-15 relevant keywords used in the resume)";
       const raw = await callClaude(
         prompt,
         "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
@@ -4929,6 +5075,10 @@ Use this exact structure:
       }
       setResume(raw);
       setL("resume",false);
+      // Auto-run ATS analysis after successful generation
+      if (rStart > -1 && rEnd > -1) {
+        runAtsAnalysis(raw.slice(rStart, rEnd + 1));
+      }
     } catch(e) {
       console.error("Resume generation failed:", e);
       setResume("Error generating resume: " + (e.message || "Please check your API key and try again."));
@@ -4936,6 +5086,71 @@ Use this exact structure:
     }
   };
 
+  // ── ATS ANALYSIS ──────────────────────────────────────────────────────────
+  const runAtsAnalysis = async (resumeJson) => {
+    setAtsLoading(true);
+    setAtsAnalysis(null);
+    try {
+      const jdText = jobDescription ? "\nJOB DESCRIPTION:\n" + jobDescription.slice(0,1500) : "";
+      const atsPrompt = "Analyze this resume for ATS (Applicant Tracking System) optimization.\n\n" +
+        "RESUME:\n" + (resumeJson||resume).slice(0,2500) + "\n" +
+        "TARGET ROLE: " + (target.title||"general") + " | Industry: " + (target.industry||"any") +
+        (targetCompany ? " | Company: " + targetCompany : "") + jdText + "\n\n" +
+        "Return ONLY valid JSON:\n" +
+        '{"atsScore": 0-100, "scoreBreakdown": {"keywordMatch": 0-100, "formatting": 0-100, "quantifiedAchievements": 0-100, "jargonFree": 0-100, "readability": 0-100}, ' +
+        '"keywordsFound": ["keyword1","keyword2",...], "keywordsMissing": ["keyword1","keyword2",...], ' +
+        '"improvements": [{"priority":"high|medium|low","suggestion":"specific improvement"},...], ' +
+        '"verdict": "One sentence overall assessment"}';
+      const raw = await callClaude(atsPrompt, "You are an ATS optimization expert. Return ONLY valid JSON.", 1200);
+      const clean = raw.replace(/```json|```/g,"").trim();
+      const s = clean.indexOf("{"); const e = clean.lastIndexOf("}");
+      if (s > -1 && e > -1) {
+        setAtsAnalysis(JSON.parse(clean.slice(s, e + 1)));
+      }
+    } catch(err) {
+      console.warn("ATS analysis failed:", err);
+    }
+    setAtsLoading(false);
+  };
+
+  // ── JOB URL ANALYZER ─────────────────────────────────────────────────────
+  const analyzeJobUrl = async () => {
+    if (!hasAccess) { setShowPaywall(true); return; }
+    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!jobAnalyzerUrl.trim()) return;
+    setJobAnalyzerLoading(true);
+    setJobAnalyzerResult(null);
+    const milSummary = milExperiences.map(e=>(e.branch||"")+" "+(e.rank||"")+" MOS:"+(e.mos||"")+" "+(e.mosTitle||"")+" TOS:"+(e.tos||"")).join("; ");
+    const prompt = "I want you to analyze a job posting URL and compare it against a veteran's profile.\n\n" +
+      "JOB POSTING URL: " + jobAnalyzerUrl.trim() + "\n\n" +
+      "NOTE: You cannot actually visit URLs, so extract what you can from the URL structure (company name, job title hints) and provide your best analysis. If the URL contains company/title info, use that. Otherwise, ask the user to paste the job description instead.\n\n" +
+      "VETERAN PROFILE:\n" +
+      "Military: " + milSummary + "\n" +
+      "Skills: " + (skills.technical||"none listed") + "\n" +
+      "Leadership: " + (skills.leadership||"none listed") + "\n" +
+      "Certifications: " + (skills.certs||"none") + "\n" +
+      "Education: " + education.map(e=>(e.degree||"")+" "+(e.field||"")+" "+(e.institution||"")).join("; ") + "\n" +
+      "Target Role: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + "\n\n" +
+      "Return ONLY valid JSON:\n" +
+      '{"jobTitle":"extracted or inferred title","company":"extracted company","matchScore":0-100,' +
+      '"strengths":["strength1","strength2","strength3"],' +
+      '"gaps":["gap1","gap2"],' +
+      '"actionItems":["action1","action2","action3"],' +
+      '"keyQualifications":["qual1","qual2","qual3"],' +
+      '"salaryEstimate":"estimated range or unknown",' +
+      '"verdict":"honest 2-sentence assessment"}';
+    try {
+      const raw = await callClaude(prompt, "You are a veteran career counselor and job matching expert. Be honest about gaps. Return ONLY valid JSON.", 1500);
+      const clean = raw.replace(/```json|```/g,"").trim();
+      const s = clean.indexOf("{"); const e = clean.lastIndexOf("}");
+      if (s > -1 && e > -1) {
+        setJobAnalyzerResult(JSON.parse(clean.slice(s, e + 1)));
+      }
+    } catch(err) {
+      setJobAnalyzerResult({ error: "Could not analyze this job. Try pasting the job description in the Resume Builder instead." });
+    }
+    setJobAnalyzerLoading(false);
+  };
 
   // ── COVER LETTER GENERATOR ────────────────────────────────────────────────
   const genCoverLetter = async () => {
@@ -5105,6 +5320,7 @@ Return this exact JSON structure:
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
 
   const TABS = ["My Service Record","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Saved Work"];
+  const TAB_ICONS = ["\u{1F396}\uFE0F","\u{1F3AF}","\u{1F4C4}","\u{2709}\uFE0F","\u{1F50D}","\u{1F4BE}"];
   const AI_TABS = [2,3,4]; // tabs that are AI-powered tools
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
   const DI = "Defense/Intel";
@@ -5454,7 +5670,7 @@ Return this exact JSON structure:
               {i===2&&<div className="tabs-separator">AI</div>}
               {i===5&&<div className="tabs-separator">·</div>}
               <button className={"tab "+(AI_TABS.includes(i)?"ai-tab ":"")+(tab===i?"active":"")} onClick={()=>setTab(i)}>
-                <span className="tab-n">{AI_TABS.includes(i)?"🤖":i+1}</span>{t}
+                <span className="tab-n">{AI_TABS.includes(i)?"🤖":TAB_ICONS[i]||i+1}</span>{t}
               </button>
             </React.Fragment>
           ))}
@@ -6427,6 +6643,58 @@ Return this exact JSON structure:
                   <div className="field"><label>Industry</label><input placeholder="e.g. Defense, Healthcare, Logistics" value={target.industry} onChange={e=>upT("industry",e.target.value)}/></div>
                   <div className="field"><label>Keywords to Emphasize</label><input placeholder="e.g. leadership, project management, security" value={target.keywords} onChange={e=>upT("keywords",e.target.value)}/></div>
                 </div>
+                <div className="g3" style={{marginTop:".75rem"}}>
+                  <div className="field"><label>Target Company</label><input placeholder="e.g. Amazon, Booz Allen, VA" value={targetCompany} onChange={e=>setTargetCompany(e.target.value)}/></div>
+                  <div className="field"><label>Experience Level</label>
+                    <select value={experienceLevel} onChange={e=>setExperienceLevel(e.target.value)}>
+                      <option value="entry">Entry Level (0-2 yrs civilian)</option>
+                      <option value="mid">Mid-Career (3-7 yrs)</option>
+                      <option value="senior">Senior (8-15 yrs)</option>
+                      <option value="executive">Executive (15+ yrs)</option>
+                    </select>
+                  </div>
+                  <div className="field"><label>Experience Level Hint</label>
+                    <div style={{fontSize:".76rem",color:"var(--slate)",lineHeight:1.55,paddingTop:".4rem"}}>
+                      {experienceLevel==="entry"?"Focus on transferable skills, training, and potential":
+                       experienceLevel==="mid"?"Balance military achievements with growing civilian expertise":
+                       experienceLevel==="senior"?"Emphasize leadership scope, strategic impact, and results":
+                       "Highlight executive-level decisions, org transformations, and P&L ownership"}
+                    </div>
+                  </div>
+                </div>
+                <div className="field" style={{marginTop:".5rem"}}>
+                  <label>Paste the Job Description (optional)</label>
+                  <textarea rows="4" placeholder="Paste the full job posting here. The AI will match keywords, mirror the language, and optimize your resume for this specific role..." value={jobDescription} onChange={e=>setJobDescription(e.target.value)} style={{resize:"vertical"}}/>
+                  <div className="hint">Pasting the actual job description dramatically improves ATS keyword matching and relevance.</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="ch"><h3>Resume Sections</h3><span className="ch-sub" style={{fontSize:".75rem",color:"var(--dim)"}}>Toggle which sections to include</span></div>
+              <div className="cb">
+                <div className="resume-sections-grid">
+                  {[
+                    {key:"summary",label:"Professional Summary",required:true},
+                    {key:"military",label:"Military Experience",required:true},
+                    {key:"civilian",label:"Civilian Experience",required:false},
+                    {key:"education",label:"Education & Training",required:false},
+                    {key:"certifications",label:"Certifications & Licenses",required:false},
+                    {key:"clearance",label:"Security Clearance",required:false},
+                    {key:"awards",label:"Awards & Decorations",required:false},
+                    {key:"volunteer",label:"Volunteer / Community Service",required:false},
+                    {key:"technicalSkills",label:"Technical Skills",required:false},
+                    {key:"languages",label:"Languages",required:false},
+                  ].map(s=>(
+                    <div key={s.key} className="resume-section-toggle">
+                      <input type="checkbox" id={"rs-"+s.key} checked={resumeSections[s.key]} onChange={()=>s.required?null:toggleResumeSection(s.key)} disabled={s.required}/>
+                      <label htmlFor={"rs-"+s.key}>
+                        {s.label}
+                        {s.required&&<span className="section-required">(always included)</span>}
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -6942,8 +7210,92 @@ Return this exact JSON structure:
                 </div>
               </div>
             )}
+            {(resume||resumeData)&&!loading.resume&&(atsLoading||atsAnalysis)&&(
+              <div style={{marginTop:"1.5rem"}}>
+                {atsLoading&&(
+                  <div className="card">
+                    <div className="ch"><h3>Analyzing ATS Compatibility...</h3></div>
+                    <div className="cb" style={{textAlign:"center",padding:"1.5rem"}}><div className="spin"/><span style={{fontSize:".85rem",color:"var(--slate)"}}>Checking keyword match, formatting, and optimization...</span></div>
+                  </div>
+                )}
+                {atsAnalysis&&!atsAnalysis.error&&(
+                  <>
+                    <div className="card">
+                      <div className="ch"><h3>ATS Compatibility Score</h3></div>
+                      <div className="cb">
+                        <div style={{display:"flex",alignItems:"center",gap:"1.5rem",flexWrap:"wrap"}}>
+                          <div className="ats-score-ring" style={{border:"5px solid",borderColor:atsAnalysis.atsScore>=80?"var(--green)":atsAnalysis.atsScore>=60?"#e67e22":"var(--red)",color:atsAnalysis.atsScore>=80?"var(--green)":atsAnalysis.atsScore>=60?"#e67e22":"var(--red)"}}>
+                            {atsAnalysis.atsScore}
+                          </div>
+                          <div style={{flex:1}}>
+                            <div style={{fontWeight:700,fontSize:"1rem",color:"var(--navy)",marginBottom:".3rem"}}>
+                              {atsAnalysis.atsScore>=85?"Excellent — High Pass Rate":atsAnalysis.atsScore>=70?"Good — Should Pass Most ATS":atsAnalysis.atsScore>=55?"Fair — May Get Filtered":"Needs Work — High Filter Risk"}
+                            </div>
+                            <div style={{fontSize:".84rem",color:"var(--slate)",lineHeight:1.6}}>{atsAnalysis.verdict}</div>
+                          </div>
+                        </div>
+                        {atsAnalysis.scoreBreakdown&&(
+                          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:".6rem",marginTop:"1rem"}}>
+                            {Object.entries(atsAnalysis.scoreBreakdown).map(([k,v])=>(
+                              <div key={k} style={{textAlign:"center"}}>
+                                <div style={{fontSize:".68rem",textTransform:"uppercase",letterSpacing:".08em",color:"var(--dim)",marginBottom:".2rem"}}>{k.replace(/([A-Z])/g," $1").trim()}</div>
+                                <div className="grade-bar"><div className="grade-fill" style={{width:v+"%",background:v>=80?"var(--green)":v>=60?"#e67e22":"var(--red)"}}/></div>
+                                <div style={{fontSize:".75rem",fontWeight:700,color:v>=80?"var(--green)":v>=60?"#e67e22":"var(--red)",marginTop:".15rem"}}>{v}/100</div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="card">
+                      <div className="ch"><h3>Keywords Analysis</h3></div>
+                      <div className="cb">
+                        {(atsAnalysis.keywordsFound||[]).length>0&&(
+                          <div style={{marginBottom:".75rem"}}>
+                            <div style={{fontSize:".75rem",fontWeight:700,color:"var(--green)",marginBottom:".4rem",letterSpacing:".06em",textTransform:"uppercase"}}>Keywords Found ({(atsAnalysis.keywordsFound||[]).length})</div>
+                            <div className="keywords-grid">
+                              {(atsAnalysis.keywordsFound||[]).map((kw,i)=>(<span key={i} className="keyword-chip keyword-found">{kw}</span>))}
+                            </div>
+                          </div>
+                        )}
+                        {(atsAnalysis.keywordsMissing||[]).length>0&&(
+                          <div>
+                            <div style={{fontSize:".75rem",fontWeight:700,color:"var(--red)",marginBottom:".4rem",letterSpacing:".06em",textTransform:"uppercase"}}>Missing Keywords ({(atsAnalysis.keywordsMissing||[]).length})</div>
+                            <div className="keywords-grid">
+                              {(atsAnalysis.keywordsMissing||[]).map((kw,i)=>(<span key={i} className="keyword-chip keyword-missing">{kw}</span>))}
+                            </div>
+                            <div className="hint" style={{marginTop:".5rem"}}>Consider adding these keywords to your resume or re-generating with the job description pasted above.</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {(atsAnalysis.improvements||[]).length>0&&(
+                      <div className="card">
+                        <div className="ch"><h3>Suggested Improvements</h3></div>
+                        <div className="cb">
+                          {(atsAnalysis.improvements||[]).map((imp,i)=>(
+                            <div key={i} className={"review-item "+(imp.priority==="high"?"review-high":imp.priority==="medium"?"review-med":"review-low")}>
+                              <div style={{display:"flex",alignItems:"center",gap:".4rem",marginBottom:".2rem"}}>
+                                <span style={{fontSize:".68rem",fontWeight:700,textTransform:"uppercase",letterSpacing:".06em",
+                                  color:imp.priority==="high"?"var(--red)":imp.priority==="medium"?"#e67e22":"var(--green)"}}>
+                                  {imp.priority} priority
+                                </span>
+                              </div>
+                              <div style={{fontSize:".84rem",color:"var(--text)",lineHeight:1.55}}>{imp.suggestion}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
             {(resume||resumeData)&&(
-              <div style={{display:"flex",justifyContent:"center",margin:".5rem 0 1rem"}}>
+              <div style={{display:"flex",justifyContent:"center",margin:".5rem 0 1rem",gap:".75rem",flexWrap:"wrap"}}>
                 <button className="btn-primary" style={{width:"auto",padding:".6rem 1.6rem",fontSize:".9rem"}}
                   onClick={()=>{
                     if(!currentUser){setShowAuth(true);return;}
@@ -6951,6 +7303,11 @@ Return this exact JSON structure:
                   }}>
                   💾 Save Resume to Profile
                 </button>
+                {resume&&!atsLoading&&(
+                  <button className="btn-sec" style={{fontSize:".82rem"}} onClick={()=>runAtsAnalysis(resume)}>
+                    📊 Re-Analyze ATS Score
+                  </button>
+                )}
               </div>
             )}
             <div className="nav-row"><button className="btn-sec" onClick={()=>setTab(1)}>← Career Pathways</button><div/></div>
@@ -7217,6 +7574,69 @@ Return this exact JSON structure:
 
           <div className={"panel "+(tab===4?"on":"")}>
 
+            <div className="job-analyzer-card">
+              <div style={{display:"flex",alignItems:"center",gap:".5rem",marginBottom:".6rem"}}>
+                <span style={{fontSize:"1.2rem"}}>🎯</span>
+                <div>
+                  <div style={{fontWeight:700,fontSize:".95rem",color:"var(--navy)"}}>Quick Job Match Analyzer</div>
+                  <div style={{fontSize:".78rem",color:"var(--slate)"}}>Paste a job posting URL to see how well you match</div>
+                </div>
+              </div>
+              <div style={{display:"flex",gap:".5rem",alignItems:"flex-start"}}>
+                <div style={{flex:1}}>
+                  <input placeholder="Paste a job posting URL (Indeed, LinkedIn, USAJobs, etc.)" value={jobAnalyzerUrl} onChange={e=>setJobAnalyzerUrl(e.target.value)}
+                    style={{width:"100%",padding:".55rem .9rem",border:"1.5px solid #b0c4e0",borderRadius:"8px",fontSize:".88rem",fontFamily:"'Inter',sans-serif",background:"#fff"}}
+                    onKeyDown={e=>{if(e.key==="Enter")analyzeJobUrl();}}/>
+                </div>
+                <button className="btn-primary" style={{width:"auto",margin:0,padding:".55rem 1.2rem",fontSize:".85rem",whiteSpace:"nowrap"}}
+                  onClick={analyzeJobUrl} disabled={jobAnalyzerLoading||!jobAnalyzerUrl.trim()}>
+                  {jobAnalyzerLoading?"Analyzing...":"Analyze This Job"}
+                </button>
+              </div>
+              {jobAnalyzerLoading&&(<div style={{textAlign:"center",padding:"1rem"}}><div className="spin"/><span style={{fontSize:".82rem",color:"var(--slate)"}}>Analyzing job posting against your profile...</span></div>)}
+              {jobAnalyzerResult&&!jobAnalyzerResult.error&&(
+                <div className="job-match-result">
+                  <div className="job-match-header">
+                    <div>
+                      <div style={{fontSize:"1rem",fontWeight:700}}>{jobAnalyzerResult.jobTitle||"Job Analysis"}</div>
+                      <div style={{fontSize:".78rem",opacity:.8}}>{jobAnalyzerResult.company||""}{jobAnalyzerResult.salaryEstimate&&jobAnalyzerResult.salaryEstimate!=="unknown"?" · "+jobAnalyzerResult.salaryEstimate:""}</div>
+                    </div>
+                    <div style={{textAlign:"center"}}>
+                      <div style={{fontSize:"1.8rem",fontWeight:800,lineHeight:1,color:jobAnalyzerResult.matchScore>=75?"#4ade80":jobAnalyzerResult.matchScore>=50?"#f0c040":"#ff6b6b"}}>{jobAnalyzerResult.matchScore}</div>
+                      <div style={{fontSize:".65rem",letterSpacing:".08em",textTransform:"uppercase",opacity:.7}}>Match</div>
+                    </div>
+                  </div>
+                  <div className="job-match-body">
+                    <div style={{fontSize:".85rem",color:"var(--text)",lineHeight:1.65,marginBottom:".75rem",padding:".5rem",background:"#f8fafd",borderRadius:"6px"}}>{jobAnalyzerResult.verdict}</div>
+                    {(jobAnalyzerResult.strengths||[]).length>0&&(
+                      <div className="job-match-section">
+                        <h4>Your Strengths</h4>
+                        {jobAnalyzerResult.strengths.map((s,i)=>(<div key={i} className="match-item"><span className="match-strength">&#10003;</span><span>{s}</span></div>))}
+                      </div>
+                    )}
+                    {(jobAnalyzerResult.gaps||[]).length>0&&(
+                      <div className="job-match-section">
+                        <h4>Gaps to Address</h4>
+                        {jobAnalyzerResult.gaps.map((g,i)=>(<div key={i} className="match-item"><span className="match-gap">&#10007;</span><span>{g}</span></div>))}
+                      </div>
+                    )}
+                    {(jobAnalyzerResult.actionItems||[]).length>0&&(
+                      <div className="job-match-section">
+                        <h4>Action Items</h4>
+                        {jobAnalyzerResult.actionItems.map((a,i)=>(<div key={i} className="match-item"><span className="match-action">&#9654;</span><span>{a}</span></div>))}
+                      </div>
+                    )}
+                    <div style={{display:"flex",gap:".5rem",marginTop:".75rem",flexWrap:"wrap"}}>
+                      <button className="btn-sec" style={{fontSize:".78rem"}} onClick={()=>{upT("title",jobAnalyzerResult.jobTitle||"");if(jobAnalyzerResult.company)setTargetCompany(jobAnalyzerResult.company);setTab(2);}}>Build Resume for This Job</button>
+                      <button className="btn-sec" style={{fontSize:".78rem"}} onClick={()=>{setPrepJob({title:jobAnalyzerResult.jobTitle||"",company:jobAnalyzerResult.company||"",type:"behavioral"});setRetentionTab("interview");}}>Prep Interview</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {jobAnalyzerResult&&jobAnalyzerResult.error&&(
+                <div className="api-err" style={{marginTop:".75rem"}}>{jobAnalyzerResult.error}</div>
+              )}
+            </div>
 
             <div style={{display:"flex",gap:".4rem",flexWrap:"wrap",marginBottom:"1.2rem",borderBottom:"2px solid #e0e8f0",paddingBottom:".7rem"}}>
               {[

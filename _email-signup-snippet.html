@@ -1,0 +1,130 @@
+<!--
+  REUSABLE EMAIL SIGNUP SNIPPET — Firestore Edition
+  Drop this into any page. It will:
+    1. Load Firebase SDK if not already present
+    2. Initialize Firebase if not already initialized
+    3. Save subscribers to Firestore "email_subscribers" collection
+    4. Check for duplicates before saving
+    5. Show inline success/error messages
+
+  USAGE:
+    - For a full-width section (like index.html): use the FULL SECTION version below
+    - For a compact horizontal banner (like blog): use the COMPACT BANNER version
+    - For an inline gate capture (like tool pages): use the GATE INLINE version
+
+  All versions share the same vcp_subscribeEmail() function.
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     FIREBASE SDK + INIT (add before </body> if not already on the page)
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+try {
+  firebase.initializeApp({
+    apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
+    authDomain: "auth.veterancareerpath.com",
+    projectId: "veteran-career-builder",
+    storageBucket: "veteran-career-builder.firebasestorage.app",
+    messagingSenderId: "664123627374",
+    appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
+  });
+} catch(e) {}
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHARED SUBSCRIBE FUNCTION (include once per page)
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<script>
+function vcp_subscribeEmail(emailInputId, msgId) {
+  var input = document.getElementById(emailInputId);
+  var msg = document.getElementById(msgId);
+  if (!input || !msg) return;
+  var email = input.value.trim().toLowerCase();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    msg.textContent = 'Please enter a valid email address.';
+    msg.style.color = '#ff6b6b';
+    msg.style.display = 'block';
+    return;
+  }
+  msg.textContent = 'Subscribing...';
+  msg.style.color = 'rgba(192,216,240,.6)';
+  msg.style.display = 'block';
+  var db = firebase.firestore();
+  db.collection('email_subscribers').where('email','==',email).get().then(function(snap) {
+    if (!snap.empty) {
+      msg.textContent = "You're already subscribed!";
+      msg.style.color = '#f0c040';
+      input.value = '';
+      return;
+    }
+    return db.collection('email_subscribers').add({
+      email: email,
+      source: window.location.href,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      status: 'active'
+    }).then(function() {
+      msg.innerHTML = "You're in! Check your inbox.";
+      msg.style.color = '#4ade80';
+      input.value = '';
+    });
+  }).catch(function(err) {
+    console.error('Subscribe error:', err);
+    msg.textContent = 'Something went wrong. Please try again.';
+    msg.style.color = '#ff6b6b';
+  });
+}
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VERSION 1: FULL SECTION (for index.html, landing pages)
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<section style="background:linear-gradient(135deg,#060e1a 0%,#0d1f38 40%,#122a4a 100%);padding:4.5rem 5% 4rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(240,192,64,.3),transparent);"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(240,192,64,.15),transparent);"></div>
+  <div style="max-width:680px;margin:0 auto;text-align:center;">
+    <div style="display:inline-block;background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:20px;padding:.25rem .9rem;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,192,64,.7);margin-bottom:1.2rem;">Free Weekly Brief</div>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:.06em;color:#fff;margin:0 0 .6rem;line-height:1.15;">Get Weekly Veteran Career Intel</h2>
+    <p style="color:rgba(192,216,240,.6);font-size:.95rem;line-height:1.7;margin:0 0 2rem;font-weight:300;max-width:520px;margin-left:auto;margin-right:auto;">New benefits updates, career strategies, and job market insights &mdash; delivered to your inbox. Written by a veteran, for veterans.</p>
+    <div style="display:flex;gap:.6rem;max-width:480px;margin:0 auto 1.2rem;flex-wrap:wrap;justify-content:center;">
+      <input type="email" id="vcp-email-main" placeholder="your.email@example.com" style="flex:1;min-width:220px;padding:.85rem 1.2rem;border-radius:8px;border:1px solid rgba(240,192,64,.25);background:rgba(255,255,255,.06);color:#fff;font-size:.9rem;font-family:'Inter','DM Sans',sans-serif;outline:none;transition:border-color .2s,background .2s;" onfocus="this.style.borderColor='rgba(240,192,64,.5)';this.style.background='rgba(255,255,255,.1)'" onblur="this.style.borderColor='rgba(240,192,64,.25)';this.style.background='rgba(255,255,255,.06)'" onkeydown="if(event.key==='Enter'){event.preventDefault();vcp_subscribeEmail('vcp-email-main','vcp-email-main-msg')}">
+      <button onclick="vcp_subscribeEmail('vcp-email-main','vcp-email-main-msg')" style="padding:.85rem 2rem;border-radius:8px;border:none;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.9rem;font-family:'Inter','DM Sans',sans-serif;cursor:pointer;white-space:nowrap;transition:opacity .15s,transform .15s;letter-spacing:.02em;" onmouseover="this.style.opacity='.9';this.style.transform='translateY(-1px)'" onmouseout="this.style.opacity='1';this.style.transform='none'">Subscribe Free</button>
+    </div>
+    <div id="vcp-email-main-msg" style="display:none;font-size:.82rem;margin-bottom:.8rem;min-height:1.2em;"></div>
+    <p style="color:rgba(192,216,240,.35);font-size:.72rem;margin:0;line-height:1.5;">No spam. Unsubscribe anytime. We respect your service and your inbox.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VERSION 2: COMPACT BANNER (for blog index, between sections)
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div style="background:linear-gradient(135deg,#0a1929 0%,#122a4a 50%,#0d1f38 100%);border-top:1px solid rgba(240,192,64,.15);border-bottom:1px solid rgba(240,192,64,.15);padding:2.5rem 5%;text-align:center;">
+  <div style="max-width:640px;margin:0 auto;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.06em;color:#fff;margin-bottom:.4rem;">Get Weekly Veteran Career Intel</div>
+    <p style="color:rgba(192,216,240,.55);font-size:.85rem;line-height:1.6;margin:0 0 1.3rem;font-weight:300;">Job market tips, new VA benefits, and career strategies -- free in your inbox every Tuesday.</p>
+    <div style="display:flex;gap:.5rem;max-width:440px;margin:0 auto .8rem;flex-wrap:wrap;justify-content:center;">
+      <input type="email" id="vcp-email-blog" placeholder="your.email@example.com" style="flex:1;min-width:200px;padding:.7rem 1rem;border-radius:7px;border:1px solid rgba(240,192,64,.25);background:rgba(255,255,255,.06);color:#fff;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s,background .2s;" onfocus="this.style.borderColor='rgba(240,192,64,.5)';this.style.background='rgba(255,255,255,.1)'" onblur="this.style.borderColor='rgba(240,192,64,.25)';this.style.background='rgba(255,255,255,.06)'" onkeydown="if(event.key==='Enter'){event.preventDefault();vcp_subscribeEmail('vcp-email-blog','vcp-email-blog-msg')}">
+      <button onclick="vcp_subscribeEmail('vcp-email-blog','vcp-email-blog-msg')" style="padding:.7rem 1.6rem;border-radius:7px;border:none;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.85rem;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap;transition:opacity .15s;" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">Subscribe Free</button>
+    </div>
+    <div id="vcp-email-blog-msg" style="display:none;font-size:.78rem;margin-bottom:.6rem;min-height:1.2em;"></div>
+    <p style="color:rgba(192,216,240,.3);font-size:.66rem;margin:0;">No spam. Unsubscribe anytime. We respect your service and your inbox.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VERSION 3: GATE INLINE (for tool page gate sections)
+     Place AFTER the "Manual unlock" button, inside the #vcp-gate div
+     ═══════════════════════════════════════════════════════════════════════════ -->
+  <div style="margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.08);">
+    <div style="font-size:.72rem;color:rgba(192,216,240,.4);margin-bottom:.5rem;font-weight:500;">Get free career tips:</div>
+    <div style="display:flex;gap:.4rem;max-width:360px;margin:0 auto;">
+      <input type="email" id="vcp-email-gate" placeholder="your.email@example.com" style="flex:1;min-width:0;padding:.5rem .7rem;border-radius:6px;border:1px solid rgba(240,192,64,.2);background:rgba(255,255,255,.05);color:#fff;font-size:.76rem;font-family:inherit;outline:none;" onfocus="this.style.borderColor='rgba(240,192,64,.45)'" onblur="this.style.borderColor='rgba(240,192,64,.2)'" onkeydown="if(event.key==='Enter'){event.preventDefault();vcp_subscribeEmail('vcp-email-gate','vcp-email-gate-msg')}">
+      <button onclick="vcp_subscribeEmail('vcp-email-gate','vcp-email-gate-msg')" style="padding:.5rem .9rem;border-radius:6px;border:none;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.72rem;font-family:inherit;cursor:pointer;white-space:nowrap;">Subscribe</button>
+    </div>
+    <div id="vcp-email-gate-msg" style="display:none;font-size:.6rem;margin-top:.35rem;min-height:1em;"></div>
+    <div style="font-size:.6rem;color:rgba(192,216,240,.25);margin-top:.35rem;">No spam. Unsubscribe anytime.</div>
+  </div>

@@ -926,6 +926,42 @@ body.menu-open{overflow:hidden!important;}
 
 
 
+<!-- ══ EMAIL SIGNUP BANNER (Firestore) ═════════════════════════════════════ -->
+<div style="background:linear-gradient(135deg,#0a1929 0%,#122a4a 50%,#0d1f38 100%);border-top:1px solid rgba(240,192,64,.15);border-bottom:1px solid rgba(240,192,64,.15);padding:2.5rem 5%;text-align:center;">
+  <div style="max-width:640px;margin:0 auto;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.06em;color:#fff;margin-bottom:.4rem;">Get Weekly Veteran Career Intel</div>
+    <p style="color:rgba(192,216,240,.55);font-size:.85rem;line-height:1.6;margin:0 0 1.3rem;font-weight:300;">Job market tips, new VA benefits, and career strategies -- free in your inbox every Tuesday.</p>
+    <div style="display:flex;gap:.5rem;max-width:440px;margin:0 auto .8rem;flex-wrap:wrap;justify-content:center;">
+      <input type="email" id="vcp-email-blog" placeholder="your.email@example.com" style="flex:1;min-width:200px;padding:.7rem 1rem;border-radius:7px;border:1px solid rgba(240,192,64,.25);background:rgba(255,255,255,.06);color:#fff;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s,background .2s;" onfocus="this.style.borderColor='rgba(240,192,64,.5)';this.style.background='rgba(255,255,255,.1)'" onblur="this.style.borderColor='rgba(240,192,64,.25)';this.style.background='rgba(255,255,255,.06)'" onkeydown="if(event.key==='Enter'){event.preventDefault();vcp_subscribeEmail('vcp-email-blog','vcp-email-blog-msg')}">
+      <button onclick="vcp_subscribeEmail('vcp-email-blog','vcp-email-blog-msg')" style="padding:.7rem 1.6rem;border-radius:7px;border:none;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.85rem;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap;transition:opacity .15s;" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">Subscribe Free</button>
+    </div>
+    <div id="vcp-email-blog-msg" style="display:none;font-size:.78rem;margin-bottom:.6rem;min-height:1.2em;"></div>
+    <p style="color:rgba(192,216,240,.3);font-size:.66rem;margin:0;">No spam. Unsubscribe anytime. We respect your service and your inbox.</p>
+  </div>
+</div>
+<!-- Firebase SDK + Subscribe Function -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+try{firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"auth.veterancareerpath.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}catch(e){}
+function vcp_subscribeEmail(emailInputId,msgId){
+  var input=document.getElementById(emailInputId),msg=document.getElementById(msgId);
+  if(!input||!msg)return;
+  var email=input.value.trim().toLowerCase();
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    msg.textContent='Please enter a valid email address.';msg.style.color='#ff6b6b';msg.style.display='block';return;
+  }
+  msg.textContent='Subscribing...';msg.style.color='rgba(192,216,240,.6)';msg.style.display='block';
+  var db=firebase.firestore();
+  db.collection('email_subscribers').where('email','==',email).get().then(function(snap){
+    if(!snap.empty){msg.textContent="You're already subscribed!";msg.style.color='#f0c040';input.value='';return;}
+    return db.collection('email_subscribers').add({email:email,source:window.location.href,timestamp:firebase.firestore.FieldValue.serverTimestamp(),status:'active'}).then(function(){
+      msg.innerHTML="You're in! Check your inbox.";msg.style.color='#4ade80';input.value='';
+    });
+  }).catch(function(err){console.error('Subscribe error:',err);msg.textContent='Something went wrong. Please try again.';msg.style.color='#ff6b6b';});
+}
+</script>
+
 <!-- ══ CATEGORY FILTER JS ═══════════════════════════════════════════════════ -->
 <script>
 (function(){

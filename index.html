@@ -1473,6 +1473,23 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
   </div>
 </section>
 
+<!-- ═══ EMAIL SIGNUP (Firestore) ══════════════════════════════════════════════ -->
+<section style="background:linear-gradient(135deg,#060e1a 0%,#0d1f38 40%,#122a4a 100%);padding:4.5rem 5% 4rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(240,192,64,.3),transparent);"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(240,192,64,.15),transparent);"></div>
+  <div style="max-width:680px;margin:0 auto;text-align:center;">
+    <div style="display:inline-block;background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:20px;padding:.25rem .9rem;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,192,64,.7);margin-bottom:1.2rem;">Free Weekly Brief</div>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:.06em;color:#fff;margin:0 0 .6rem;line-height:1.15;">Get Weekly Veteran Career Intel</h2>
+    <p style="color:rgba(192,216,240,.6);font-size:.95rem;line-height:1.7;margin:0 0 2rem;font-weight:300;max-width:520px;margin-left:auto;margin-right:auto;">New benefits updates, career strategies, and job market insights &mdash; delivered to your inbox. Written by a veteran, for veterans.</p>
+    <div style="display:flex;gap:.6rem;max-width:480px;margin:0 auto 1.2rem;flex-wrap:wrap;justify-content:center;">
+      <input type="email" id="vcp-email-main" placeholder="your.email@example.com" style="flex:1;min-width:220px;padding:.85rem 1.2rem;border-radius:8px;border:1px solid rgba(240,192,64,.25);background:rgba(255,255,255,.06);color:#fff;font-size:.9rem;font-family:'Inter','DM Sans',sans-serif;outline:none;transition:border-color .2s,background .2s;" onfocus="this.style.borderColor='rgba(240,192,64,.5)';this.style.background='rgba(255,255,255,.1)'" onblur="this.style.borderColor='rgba(240,192,64,.25)';this.style.background='rgba(255,255,255,.06)'" onkeydown="if(event.key==='Enter'){event.preventDefault();vcp_subscribeEmail('vcp-email-main','vcp-email-main-msg')}">
+      <button onclick="vcp_subscribeEmail('vcp-email-main','vcp-email-main-msg')" style="padding:.85rem 2rem;border-radius:8px;border:none;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.9rem;font-family:'Inter','DM Sans',sans-serif;cursor:pointer;white-space:nowrap;transition:opacity .15s,transform .15s;letter-spacing:.02em;" onmouseover="this.style.opacity='.9';this.style.transform='translateY(-1px)'" onmouseout="this.style.opacity='1';this.style.transform='none'">Subscribe Free</button>
+    </div>
+    <div id="vcp-email-main-msg" style="display:none;font-size:.82rem;margin-bottom:.8rem;min-height:1.2em;"></div>
+    <p style="color:rgba(192,216,240,.35);font-size:.72rem;margin:0;line-height:1.5;">No spam. Unsubscribe anytime. We respect your service and your inbox.</p>
+  </div>
+</section>
+
 <!-- ═══ FOOTER ════════════════════════════════════════════════════════════════ -->
 <footer>
   <div class="footer-grid">
@@ -1534,6 +1551,28 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
     navigator.serviceWorker.register('/sw.js').catch(function(){});
   });
+}
+</script>
+<!-- ═══ FIREBASE SDK + EMAIL SUBSCRIBE ═════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+try{firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"auth.veterancareerpath.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}catch(e){}
+function vcp_subscribeEmail(emailInputId,msgId){
+  var input=document.getElementById(emailInputId),msg=document.getElementById(msgId);
+  if(!input||!msg)return;
+  var email=input.value.trim().toLowerCase();
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    msg.textContent='Please enter a valid email address.';msg.style.color='#ff6b6b';msg.style.display='block';return;
+  }
+  msg.textContent='Subscribing...';msg.style.color='rgba(192,216,240,.6)';msg.style.display='block';
+  var db=firebase.firestore();
+  db.collection('email_subscribers').where('email','==',email).get().then(function(snap){
+    if(!snap.empty){msg.textContent="You're already subscribed!";msg.style.color='#f0c040';input.value='';return;}
+    return db.collection('email_subscribers').add({email:email,source:window.location.href,timestamp:firebase.firestore.FieldValue.serverTimestamp(),status:'active'}).then(function(){
+      msg.innerHTML="You're in! Check your inbox.";msg.style.color='#4ade80';input.value='';
+    });
+  }).catch(function(err){console.error('Subscribe error:',err);msg.textContent='Something went wrong. Please try again.';msg.style.color='#ff6b6b';});
 }
 </script>
 </body>

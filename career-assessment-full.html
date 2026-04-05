@@ -1452,6 +1452,7 @@ function nextDim(){
   else { computeAndSave(); }
 }
 function prevDim(){ if(curDim>0){ curDim--; renderDim(); window.scrollTo({top:0,behavior:'smooth'}); } }
+function jumpToDim(i){ curDim=i; renderDim(); window.scrollTo({top:0,behavior:'smooth'}); }
 
 // ── COMPUTE AND SAVE ─────────────────────────────────────────────────────────
 function computeAndSave(){

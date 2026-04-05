@@ -924,6 +924,12 @@ body.menu-open{overflow:hidden!important;}
 
 
 
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+try{firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"auth.veterancareerpath.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}catch(e){}
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;color:#1a2a3a;}
@@ -932,72 +938,148 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
 .hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.9rem,4vw,2.8rem);letter-spacing:.06em;line-height:1.05;margin-bottom:.5rem;}
 .hero h1 em{color:#f0c040;font-style:normal;}
 .hero p{font-size:.9rem;color:rgba(192,216,240,.8);max-width:620px;line-height:1.7;}
-.wrap{max-width:1100px;margin:0 auto;padding:1.75rem 5% 4rem;}
-.search-card{background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;box-shadow:0 1px 6px rgba(26,58,107,.05);}
-.search-card h2{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:#0d1f3c;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid #f0c040;}
+.hero-stats{display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap;}
+.hero-stat{font-size:.75rem;color:rgba(192,216,240,.6);}
+.hero-stat strong{color:#f0c040;font-size:1.1rem;display:block;}
+.wrap{max-width:1100px;margin:0 auto;padding:1.75rem 5% 2rem;}
+
+/* cards & form */
+.section-card{background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;box-shadow:0 1px 6px rgba(26,58,107,.05);}
+.section-card h2{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:#0d1f3c;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid #f0c040;}
 .search-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem;margin-bottom:1rem;}
 .field{display:flex;flex-direction:column;gap:.3rem;}
 .field label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#4a5a6a;}
 .field input,.field select{border:1.5px solid #dde3ec;border-radius:8px;padding:.55rem .85rem;font-size:.88rem;font-family:'Inter',sans-serif;color:#1a2a3a;width:100%;background:#fff;}
 .field input:focus,.field select:focus{outline:none;border-color:#1a3a6b;}
+.field textarea{border:1.5px solid #dde3ec;border-radius:8px;padding:.55rem .85rem;font-size:.85rem;font-family:'Inter',sans-serif;color:#1a2a3a;width:100%;background:#fff;resize:vertical;min-height:60px;}
+.field textarea:focus{outline:none;border-color:#1a3a6b;}
 .search-btn{width:100%;padding:.82rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:9px;color:#0a1628;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.1em;cursor:pointer;transition:all .18s;}
 .search-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(200,150,10,.3);}
-.results-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.5rem;}
-.results-count{font-weight:700;color:#0d1f3c;font-size:.95rem;}
-.results-sub{font-size:.78rem;color:#6a7a8a;}
-.job-card{background:#fff;border:1px solid #dde3ec;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:.75rem;transition:border-color .15s,box-shadow .15s;}
-.job-card:hover{border-color:#1a3a6b;box-shadow:0 3px 12px rgba(26,58,107,.1);}
-.job-title{font-weight:700;font-size:.95rem;color:#0d1f3c;margin-bottom:.3rem;line-height:1.3;}
-.job-title a{color:#0d1f3c;text-decoration:none;}
-.job-title a:hover{color:#1a3a6b;text-decoration:underline;}
-.job-org{font-size:.82rem;color:#4a5a6a;margin-bottom:.35rem;}
-.job-meta{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem;}
-.meta-tag{display:inline-flex;align-items:center;gap:.25rem;background:#f0f4fa;border-radius:20px;padding:.18rem .6rem;font-size:.72rem;color:#4a5a6a;font-weight:500;}
-.meta-tag.vet{background:rgba(200,150,10,.1);color:#7a5000;font-weight:700;}
-.meta-tag.clear{background:rgba(26,58,107,.08);color:#1a3a6b;font-weight:700;}
-.meta-tag.remote{background:rgba(26,122,64,.08);color:#1a5c1a;font-weight:700;}
-.job-salary{font-size:.85rem;font-weight:700;color:#1a7a40;margin-bottom:.35rem;}
-.job-close{font-size:.75rem;color:#8a5a5a;}
-.job-desc{font-size:.78rem;color:#5a6a7a;line-height:1.6;margin-top:.5rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.apply-btn{display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.78rem;padding:.38rem .9rem;border-radius:7px;text-decoration:none;margin-top:.5rem;}
-.apply-btn:hover{opacity:.9;}
-.loading{text-align:center;padding:2.5rem;color:#6a7a8a;}
-.loading-spinner{width:32px;height:32px;border:3px solid #dde3ec;border-top-color:#c8960a;border-radius:50%;animation:spin .8s linear infinite;display:inline-block;margin-bottom:.75rem;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.no-results{text-align:center;padding:2.5rem;color:#6a7a8a;}
-.no-results h3{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#0d1f3c;margin-bottom:.5rem;}
+.search-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-outline{padding:.55rem 1.1rem;border:1.5px solid #dde3ec;border-radius:8px;background:#fff;cursor:pointer;font-size:.82rem;font-weight:600;color:#4a5a6a;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;font-family:'Inter',sans-serif;}
+.btn-outline:hover{background:#0d1f3c;border-color:#0d1f3c;color:#fff;}
 .alert-info{background:#eef6ff;border:1px solid rgba(26,58,107,.2);border-left:4px solid #1a3a6b;border-radius:8px;padding:.75rem 1rem;font-size:.82rem;margin-bottom:1rem;color:#1a2a3a;line-height:1.65;}
 .alert-info strong{color:#0d1f3c;}
-.pagination{display:flex;justify-content:center;gap:.5rem;margin-top:1.25rem;flex-wrap:wrap;}
-.pg-btn{padding:.45rem .9rem;border:1.5px solid #dde3ec;border-radius:7px;background:#fff;cursor:pointer;font-size:.82rem;font-weight:600;color:#4a5a6a;transition:all .15s;}
-.pg-btn:hover,.pg-btn.active{background:#0d1f3c;border-color:#0d1f3c;color:#fff;}
-.pg-btn:disabled{opacity:.35;cursor:not-allowed;}
+
+/* platform search buttons */
+.platform-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.75rem;margin-top:1rem;}
+.platform-btn{display:flex;align-items:center;gap:.75rem;background:#fff;border:1.5px solid #dde3ec;border-radius:10px;padding:.85rem 1rem;text-decoration:none;transition:all .15s;cursor:pointer;}
+.platform-btn:hover{border-color:#1a3a6b;box-shadow:0 3px 12px rgba(26,58,107,.1);transform:translateY(-1px);}
+.platform-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;font-weight:700;}
+.platform-info{flex:1;min-width:0;}
+.platform-name{font-weight:700;font-size:.88rem;color:#0d1f3c;margin-bottom:.1rem;}
+.platform-desc{font-size:.72rem;color:#6a7a8a;line-height:1.4;}
+.platform-arrow{color:#c0c8d4;font-size:1.1rem;flex-shrink:0;}
+
+/* category cards */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.65rem;}
+.cat-card{background:#fff;border:1.5px solid #dde3ec;border-radius:10px;padding:.85rem .75rem;text-align:center;cursor:pointer;transition:all .15s;text-decoration:none;display:block;}
+.cat-card:hover{border-color:#c8960a;box-shadow:0 3px 12px rgba(200,150,10,.15);transform:translateY(-2px);}
+.cat-icon{font-size:1.6rem;margin-bottom:.35rem;display:block;}
+.cat-name{font-weight:700;font-size:.78rem;color:#0d1f3c;margin-bottom:.15rem;}
+.cat-sub{font-size:.65rem;color:#7a8a9a;}
+
+/* analyzer */
+.analyze-result{background:#f8fafd;border:1px solid #dde3ec;border-radius:12px;padding:1.25rem;margin-top:1rem;display:none;}
+.match-score{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;font-size:1.2rem;font-weight:800;color:#fff;margin-right:1rem;flex-shrink:0;}
+.score-high{background:linear-gradient(135deg,#16a34a,#22c55e);}
+.score-mid{background:linear-gradient(135deg,#ca8a04,#eab308);}
+.score-low{background:linear-gradient(135deg,#dc2626,#ef4444);}
+.result-section{margin-top:.85rem;}
+.result-section h4{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#4a5a6a;margin-bottom:.35rem;}
+.result-section ul{padding-left:1.1rem;font-size:.82rem;color:#3a4a5a;line-height:1.8;}
+.result-section p{font-size:.82rem;color:#3a4a5a;line-height:1.7;}
+
+/* gate */
+.analyzer-gate{text-align:center;padding:1.5rem;background:rgba(13,31,60,.03);border-radius:10px;border:1px dashed #ccd3dc;margin-top:.75rem;}
+.analyzer-gate h3{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.07em;color:#0d1f3c;margin-bottom:.3rem;}
+.analyzer-gate p{font-size:.82rem;color:#5a6a7a;margin-bottom:.75rem;}
+
+/* loading spinner */
+.loading-spinner{width:32px;height:32px;border:3px solid #dde3ec;border-top-color:#c8960a;border-radius:50%;animation:spin .8s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-inline{display:none;text-align:center;padding:1.5rem;color:#6a7a8a;font-size:.85rem;}
+
+/* tips grid */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem;}
+.tip-card{background:#fff;border:1px solid #dde3ec;border-radius:12px;padding:1.1rem 1.25rem;}
+.tip-card .tip-title{font-weight:700;font-size:.82rem;color:#0d1f3c;margin-bottom:.35rem;}
+.tip-card .tip-text{font-size:.78rem;color:#5a6a7a;line-height:1.6;}
+.tip-card .tip-text a{color:#1a3a6b;font-weight:600;}
+
+/* resource link cards */
+.resource-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;}
+.resource-link{background:#fff;border:1px solid #dde3ec;border-radius:8px;padding:.85rem;text-decoration:none;display:block;transition:all .15s;}
+.resource-link:hover{border-color:#1a3a6b;box-shadow:0 2px 8px rgba(26,58,107,.08);}
+.resource-link .rl-title{font-weight:700;color:#0d1f3c;font-size:.88rem;margin-bottom:.2rem;}
+.resource-link .rl-desc{font-size:.75rem;color:#5a6a7a;}
+
 .ad-unit{text-align:center;padding:1rem 0;}
+
+/* render markdown in analyzer */
+.md-output h3{font-size:.92rem;font-weight:700;color:#0d1f3c;margin:1rem 0 .4rem;}
+.md-output h4{font-size:.82rem;font-weight:700;color:#4a5a6a;margin:.75rem 0 .3rem;}
+.md-output p{font-size:.82rem;color:#3a4a5a;line-height:1.7;margin-bottom:.5rem;}
+.md-output ul,.md-output ol{padding-left:1.2rem;font-size:.82rem;color:#3a4a5a;line-height:1.8;margin-bottom:.5rem;}
+.md-output strong{color:#0d1f3c;}
 </style>
 </head>
 <body>
 <div class="hero">
-  <div class="hero-badge">🏛 Live USAJobs Data · Veterans Preference Filter</div>
-  <h1>Federal Jobs<br><em>for Veterans</em></h1>
-  <p>Search live federal job openings matched to your military background. All listings come directly from USAJobs.gov — the official federal government job board. Veterans preference positions highlighted.</p>
+  <div class="hero-badge">Veteran Job Search Hub -- 5 Platforms, One Search</div>
+  <h1>Veteran Job<br><em>Search Hub</em></h1>
+  <p>Search federal, defense, and civilian jobs across multiple platforms at once. All filters pre-applied for veteran hiring preference. Paste any job URL for an AI-powered match analysis.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>5</strong>Job Platforms</div>
+    <div class="hero-stat"><strong>AI</strong>Job Analyzer</div>
+    <div class="hero-stat"><strong>8</strong>Career Categories</div>
+  </div>
 </div>
 
 <div class="wrap">
-  <div class="alert-info">
-    <strong>How This Works</strong>
-    Searches pull live listings from USAJobs.gov. Results show positions open to veterans, with pay grades, locations, and application deadlines. Click any listing to apply directly on USAJobs. Your veterans preference automatically applies when you apply through USAJobs with your CAC or eBenefits account.
+
+  <!-- ══ JOB URL ANALYZER ══════════════════════════════════════════════════ -->
+  <div class="section-card">
+    <h2>Paste a Job URL -- AI Match Analysis</h2>
+    <p style="font-size:.82rem;color:#5a6a7a;margin-bottom:.75rem;">Found a job posting? Paste the URL or description below and get an instant AI analysis: match score, strengths, gaps, and action items based on your military profile.</p>
+    <div id="analyzer-gate" class="analyzer-gate" style="display:none;">
+      <h3>Subscriber Feature</h3>
+      <p>The AI Job Analyzer requires a $15/mo subscription. Sign in to the app first -- your access carries over automatically.</p>
+      <a href="https://veterancareerpath.com/app.html" class="search-btn" style="width:auto;display:inline-block;padding:.55rem 1.5rem;font-size:.9rem;">Unlock AI Tools -- $15/mo</a>
+      <div style="margin-top:.5rem;">
+        <button onclick="tryManualUnlock()" style="background:none;border:none;color:#6a7a8a;font-size:.75rem;cursor:pointer;text-decoration:underline;">Already subscribed? Click to sync</button>
+      </div>
+    </div>
+    <div id="analyzer-tool" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:.75rem;align-items:end;">
+        <div class="field" style="margin:0;">
+          <label>Job Posting URL or Paste the Job Description</label>
+          <textarea id="analyze-input" placeholder="Paste a USAJobs, Indeed, or LinkedIn job URL... or paste the full job description text" rows="3"></textarea>
+        </div>
+        <button class="search-btn" id="analyze-btn" onclick="analyzeJob()" style="width:auto;padding:.55rem 1.25rem;font-size:.9rem;height:fit-content;white-space:nowrap;">Analyze This Job</button>
+      </div>
+      <div id="analyze-loading" class="loading-inline">
+        <div class="loading-spinner" style="margin-bottom:.5rem;"></div><br>
+        Analyzing job posting against your military profile...
+      </div>
+      <div id="analyze-result" class="analyze-result"></div>
+    </div>
   </div>
 
-  <div class="search-card">
-    <h2>🔍 Search Federal Openings</h2>
+  <!-- ══ MULTI-SOURCE JOB SEARCH ═══════════════════════════════════════════ -->
+  <div class="section-card">
+    <h2>Search Jobs Across 5 Platforms</h2>
+    <div class="alert-info">
+      <strong>How This Works:</strong> Enter your search criteria below, then click any platform button to open a pre-filtered search on that job board. All your filters (keyword, location, grade, clearance, remote) are automatically applied.
+    </div>
     <div class="search-grid">
       <div class="field">
         <label>Job Title / Keywords</label>
-        <input type="text" id="s-keyword" placeholder="e.g. logistics, intelligence analyst, nurse, IT" value="logistics">
+        <input type="text" id="s-keyword" placeholder="e.g. logistics, intelligence analyst, nurse, IT">
       </div>
       <div class="field">
         <label>Location / State</label>
-        <input type="text" id="s-location" placeholder="e.g. Virginia, Fort Bragg, Remote">
+        <input type="text" id="s-location" placeholder="e.g. Virginia, San Antonio TX, Remote">
       </div>
       <div class="field">
         <label>Pay Grade (GS Level)</label>
@@ -1012,160 +1094,624 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
         </select>
       </div>
       <div class="field">
-        <label>Clearance Required</label>
+        <label>Clearance Level</label>
         <select id="s-clear">
           <option value="">Any / No preference</option>
           <option value="secret">Secret or above</option>
-          <option value="ts">Top Secret or above</option>
+          <option value="ts">Top Secret / TS-SCI</option>
         </select>
       </div>
     </div>
-    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:.75rem;">
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;">
       <label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer;">
-        <input type="checkbox" id="s-vet" checked> Veterans preference positions only
+        <input type="checkbox" id="s-vet" checked> Veterans preference only
       </label>
       <label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer;">
-        <input type="checkbox" id="s-remote"> Remote / telework eligible
+        <input type="checkbox" id="s-remote"> Remote / telework
       </label>
     </div>
-    <button class="search-btn" onclick="doSearch(1)">🔍 SEARCH FEDERAL JOBS</button>
-  </div>
 
-  <div id="results-section" style="display:none;">
-    <div class="results-header">
-      <div>
-        <div class="results-count" id="results-count"></div>
-        <div class="results-sub" id="results-sub"></div>
-      </div>
-      <a href="https://www.usajobs.gov" target="_blank" rel="noopener" style="font-size:.78rem;color:#1a3a6b;font-weight:600;text-decoration:none;">View all on USAJobs.gov ↗</a>
+    <div class="platform-grid" id="platform-buttons">
+      <!-- USAJobs -->
+      <a class="platform-btn" id="btn-usajobs" href="#" target="_blank" rel="noopener" onclick="return openPlatform('usajobs')">
+        <div class="platform-icon" style="background:#003366;color:#fff;">USA</div>
+        <div class="platform-info">
+          <div class="platform-name">USAJobs.gov</div>
+          <div class="platform-desc">Official federal government job board. Veterans preference positions.</div>
+        </div>
+        <div class="platform-arrow">&#8594;</div>
+      </a>
+      <!-- Indeed -->
+      <a class="platform-btn" id="btn-indeed" href="#" target="_blank" rel="noopener" onclick="return openPlatform('indeed')">
+        <div class="platform-icon" style="background:#2164f3;color:#fff;">in</div>
+        <div class="platform-info">
+          <div class="platform-name">Indeed</div>
+          <div class="platform-desc">Largest civilian job board. "Veteran" keyword auto-added.</div>
+        </div>
+        <div class="platform-arrow">&#8594;</div>
+      </a>
+      <!-- LinkedIn -->
+      <a class="platform-btn" id="btn-linkedin" href="#" target="_blank" rel="noopener" onclick="return openPlatform('linkedin')">
+        <div class="platform-icon" style="background:#0a66c2;color:#fff;">Li</div>
+        <div class="platform-info">
+          <div class="platform-name">LinkedIn Jobs</div>
+          <div class="platform-desc">Professional network. Many veteran-friendly employers post here.</div>
+        </div>
+        <div class="platform-arrow">&#8594;</div>
+      </a>
+      <!-- ClearanceJobs -->
+      <a class="platform-btn" id="btn-clearancejobs" href="#" target="_blank" rel="noopener" onclick="return openPlatform('clearancejobs')">
+        <div class="platform-icon" style="background:#1a3a6b;color:#f0c040;">CJ</div>
+        <div class="platform-info">
+          <div class="platform-name">ClearanceJobs</div>
+          <div class="platform-desc">Positions requiring security clearance. Defense contractors and IC.</div>
+        </div>
+        <div class="platform-arrow">&#8594;</div>
+      </a>
+      <!-- Google Jobs -->
+      <a class="platform-btn" id="btn-google" href="#" target="_blank" rel="noopener" onclick="return openPlatform('google')">
+        <div class="platform-icon" style="background:#ea4335;color:#fff;">G</div>
+        <div class="platform-info">
+          <div class="platform-name">Google Jobs</div>
+          <div class="platform-desc">Aggregates listings from thousands of job boards at once.</div>
+        </div>
+        <div class="platform-arrow">&#8594;</div>
+      </a>
     </div>
-    <div id="job-list"></div>
-    <div class="pagination" id="pagination"></div>
+    <p style="font-size:.72rem;color:#8a9aaa;margin-top:.75rem;text-align:center;">Tip: Open all 5 platforms in separate tabs to maximize your search coverage.</p>
   </div>
 
-  <div id="loading" style="display:none;" class="loading">
-    <div class="loading-spinner"></div><br>
-    Searching USAJobs.gov for federal openings...
-  </div>
-
+  <!-- ══ AD UNIT ═══════════════════════════════════════════════════════════ -->
   <div class="ad-unit">
     <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4999040528510137" data-ad-slot="3221213877" data-ad-format="auto" data-full-width-responsive="true"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
   </div>
 
-  <div class="search-card" style="background:#f8fafd;">
-    <h2>📚 Federal Job Resources</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;">
-      <a href="/usajobs-guide.html" style="background:#fff;border:1px solid #dde3ec;border-radius:8px;padding:.85rem;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:#0d1f3c;font-size:.88rem;margin-bottom:.2rem;">USAJobs Complete Guide</div>
-        <div style="font-size:.75rem;color:#5a6a7a;">How to navigate federal hiring, write KSAs, and pass through the process</div>
+  <!-- ══ VETERAN-FRIENDLY JOB CATEGORIES ═══════════════════════════════════ -->
+  <div class="section-card">
+    <h2>Veteran-Friendly Job Categories</h2>
+    <p style="font-size:.82rem;color:#5a6a7a;margin-bottom:1rem;">Click any category to launch pre-built searches across multiple job boards. Each search adds "veteran" as a keyword to surface veteran-friendly employers.</p>
+    <div class="cat-grid" id="cat-grid">
+      <a class="cat-card" onclick="searchCategory('federal government','government federal GS')" href="javascript:void(0)">
+        <span class="cat-icon">🏛</span>
+        <div class="cat-name">Federal / Government</div>
+        <div class="cat-sub">GS positions, agencies</div>
       </a>
-      <a href="/veterans-preference-guide.html" style="background:#fff;border:1px solid #dde3ec;border-radius:8px;padding:.85rem;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:#0d1f3c;font-size:.88rem;margin-bottom:.2rem;">Veterans Preference Guide</div>
-        <div style="font-size:.75rem;color:#5a6a7a;">5-point, 10-point, CP, CPS — how preference actually works</div>
+      <a class="cat-card" onclick="searchCategory('defense contractor','defense contractor military')" href="javascript:void(0)">
+        <span class="cat-icon">🛡</span>
+        <div class="cat-name">Defense Contractors</div>
+        <div class="cat-sub">Lockheed, Raytheon, BAE...</div>
       </a>
-      <a href="/federal-gs-grade-estimator.html" style="background:#fff;border:1px solid #dde3ec;border-radius:8px;padding:.85rem;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:#0d1f3c;font-size:.88rem;margin-bottom:.2rem;">GS Grade Estimator</div>
-        <div style="font-size:.75rem;color:#5a6a7a;">What GS grade does your rank and experience qualify for?</div>
+      <a class="cat-card" onclick="searchCategory('law enforcement','law enforcement police federal agent')" href="javascript:void(0)">
+        <span class="cat-icon">🚔</span>
+        <div class="cat-name">Law Enforcement</div>
+        <div class="cat-sub">Federal, state, local LE</div>
       </a>
-      <a href="/tools-federal-resume.html" style="background:#fff;border:1px solid #dde3ec;border-radius:8px;padding:.85rem;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:#0d1f3c;font-size:.88rem;margin-bottom:.2rem;">AI Federal Resume Builder</div>
-        <div style="font-size:.75rem;color:#5a6a7a;">USAJobs-format resume from your military experience — subscriber tool</div>
+      <a class="cat-card" onclick="searchCategory('healthcare','healthcare medical nurse hospital')" href="javascript:void(0)">
+        <span class="cat-icon">🏥</span>
+        <div class="cat-name">Healthcare</div>
+        <div class="cat-sub">VA hospitals, medical</div>
+      </a>
+      <a class="cat-card" onclick="searchCategory('cybersecurity','cybersecurity information security CISSP')" href="javascript:void(0)">
+        <span class="cat-icon">🔐</span>
+        <div class="cat-name">IT / Cybersecurity</div>
+        <div class="cat-sub">InfoSec, SOC, network</div>
+      </a>
+      <a class="cat-card" onclick="searchCategory('logistics supply chain','logistics supply chain warehouse operations')" href="javascript:void(0)">
+        <span class="cat-icon">📦</span>
+        <div class="cat-name">Logistics / Supply Chain</div>
+        <div class="cat-sub">Distribution, ops, fleet</div>
+      </a>
+      <a class="cat-card" onclick="searchCategory('project management','project manager PMP program manager')" href="javascript:void(0)">
+        <span class="cat-icon">📋</span>
+        <div class="cat-name">Project Management</div>
+        <div class="cat-sub">PM, PMP, program mgmt</div>
+      </a>
+      <a class="cat-card" onclick="searchCategory('skilled trades','skilled trades electrician HVAC mechanic welder')" href="javascript:void(0)">
+        <span class="cat-icon">🔧</span>
+        <div class="cat-name">Skilled Trades</div>
+        <div class="cat-sub">Electric, HVAC, welding...</div>
       </a>
     </div>
   </div>
-</div>
 
-<footer><p>Veteran Career Path · Job listings sourced from USAJobs.gov (Official Federal Government Job Board) · Not affiliated with OPM or the Department of Defense</p></footer>
+  <!-- ══ SEARCH TIPS ═══════════════════════════════════════════════════════ -->
+  <div class="section-card" style="background:#f8fafd;">
+    <h2>Veteran Job Search Tips</h2>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-title">Veterans Preference</div>
+        <div class="tip-text">When you apply through USAJobs, your 5-point or 10-point preference automatically adds to your score. <a href="/veterans-preference-guide.html">Learn how preference works &#8594;</a></div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">Federal Resume Required</div>
+        <div class="tip-text">Federal resumes are 3-5 pages minimum. A standard civilian resume will be rejected. <a href="/tools-federal-resume.html">AI Federal Resume Builder &#8594;</a></div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">Know Your GS Grade</div>
+        <div class="tip-text">Your rank and experience map to a GS grade. Applying to the wrong grade wastes time. <a href="/federal-gs-grade-estimator.html">GS Grade Estimator &#8594;</a></div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">Federal Hiring Takes Time</div>
+        <div class="tip-text">Federal hiring averages 3-6 months. Apply to multiple positions simultaneously and search across all 5 platforms above.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">Clearance = Higher Pay</div>
+        <div class="tip-text">An active TS/SCI clearance adds $10K-30K to your salary. Don't let it lapse. <a href="/security-clearance-salary.html">Clearance salary data &#8594;</a></div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">Translate Your MOS</div>
+        <div class="tip-text">Use civilian keywords in your resume, not military jargon. "Platoon Sergeant" becomes "Operations Manager." <a href="/mos-career-translator.html">MOS Translator &#8594;</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AD UNIT 2 ═════════════════════════════════════════════════════════ -->
+  <div class="ad-unit">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4999040528510137" data-ad-slot="3221213877" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- ══ RESOURCES ═════════════════════════════════════════════════════════ -->
+  <div class="section-card" style="background:#f8fafd;">
+    <h2>Federal Job Resources</h2>
+    <div class="resource-grid">
+      <a href="/usajobs-guide.html" class="resource-link">
+        <div class="rl-title">USAJobs Complete Guide</div>
+        <div class="rl-desc">How to navigate federal hiring, write KSAs, and pass through the process</div>
+      </a>
+      <a href="/veterans-preference-guide.html" class="resource-link">
+        <div class="rl-title">Veterans Preference Guide</div>
+        <div class="rl-desc">5-point, 10-point, CP, CPS -- how preference actually works</div>
+      </a>
+      <a href="/federal-gs-grade-estimator.html" class="resource-link">
+        <div class="rl-title">GS Grade Estimator</div>
+        <div class="rl-desc">What GS grade does your rank and experience qualify for?</div>
+      </a>
+      <a href="/tools-federal-resume.html" class="resource-link">
+        <div class="rl-title">AI Federal Resume Builder</div>
+        <div class="rl-desc">USAJobs-format resume from your military experience</div>
+      </a>
+      <a href="/schedule-a-federal-hiring.html" class="resource-link">
+        <div class="rl-title">Schedule A Hiring</div>
+        <div class="rl-desc">Non-competitive hiring for veterans with 30%+ disability</div>
+      </a>
+      <a href="/military-to-federal-pay-chart.html" class="resource-link">
+        <div class="rl-title">Military to GS Pay Chart</div>
+        <div class="rl-desc">See how your military pay compares to federal GS grades</div>
+      </a>
+      <a href="/veteran-hiring-companies.html" class="resource-link">
+        <div class="rl-title">Top 50 Veteran Employers</div>
+        <div class="rl-desc">Companies actively recruiting and hiring veterans</div>
+      </a>
+      <a href="/clearance-jobs-guide.html" class="resource-link">
+        <div class="rl-title">Cleared Jobs Guide</div>
+        <div class="rl-desc">How to leverage your security clearance in the civilian sector</div>
+      </a>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<footer style="background:#0d1f3c;padding:2.5rem 6%;margin-top:2rem;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.5rem;margin-bottom:2rem;">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">AI Tools</div>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Career Builder App</a>
+        <a href="https://veterancareerpath.com/veteran-career-test.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Free Career Assessment</a>
+        <a href="https://veterancareerpath.com/mos-career-translator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">MOS Translator</a>
+        <a href="https://veterancareerpath.com/military-civilian-resume.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Resume Guide</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">Resources</div>
+        <a href="https://veterancareerpath.com/military-transition-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Transition Guide</a>
+        <a href="https://veterancareerpath.com/va-disability-rating-schedule.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">VA Disability Schedule</a>
+        <a href="https://veterancareerpath.com/usajobs-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">USAJobs Guide</a>
+        <a href="https://veterancareerpath.com/veteran-hiring-companies.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Top 50 Employers</a>
+        <a href="https://veterancareerpath.com/security-clearance-salary.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Clearance Salary</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">MOS Guides</div>
+        <a href="https://veterancareerpath.com/army-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Army MOS Careers</a>
+        <a href="https://veterancareerpath.com/navy-rate-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Navy Rate Careers</a>
+        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Marine Corps MOS</a>
+        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Air Force AFSC</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">Company</div>
+        <a href="https://veterancareerpath.com" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Home</a>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Launch App</a>
+        <a href="https://veterancareerpath.com/contact.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Contact</a>
+        <a href="https://veterancareerpath.com/privacy-policy.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Privacy Policy</a>
+        <a href="https://veterancareerpath.com/terms-of-service.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Terms of Service</a>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:1.25rem;text-align:center;font-size:.73rem;color:rgba(255,255,255,.25);">
+      Veteran Career Path &bull; Built by a veteran, for veterans &bull; &copy; 2026 &bull; Not affiliated with the U.S. Department of Defense, Department of Veterans Affairs, or any government agency
+    </div>
+  </div>
+  <div style="text-align:center;padding:1.25rem 0;background:transparent;">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4999040528510137" data-ad-slot="3221213877" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+</footer>
 
 <script>
-var currentPage = 1;
-var lastQuery = {};
+/* ══════════════════════════════════════════════════════════════════════════
+   ACCESS / PROFILE (same pattern as other tool pages)
+══════════════════════════════════════════════════════════════════════════ */
+var VCP_CODES = {
+  "OWNER2025":0,"OWNER2026":0,
+  "ALPHA30":Date.UTC(2026,5,30),"BRAVO30":Date.UTC(2026,5,30),
+  "CHARLIE30":Date.UTC(2026,5,30),"DELTA30":Date.UTC(2026,5,30),
+  "ECHO30":Date.UTC(2026,5,30),"FOXTROT30":Date.UTC(2026,5,30),
+  "GOLF30":Date.UTC(2026,5,30),"HOTEL30":Date.UTC(2026,5,30),
+  "INDIA30":Date.UTC(2026,5,30),"JULIET30":Date.UTC(2026,5,30),
+  "VETTEST1":Date.UTC(2026,8,1),"VETTEST2":Date.UTC(2026,8,1),
+  "VETTEST3":Date.UTC(2026,8,1),"VETTEST4":Date.UTC(2026,8,1),
+  "VETTEST5":Date.UTC(2026,8,1),"AMON26":Date.UTC(2026,11,31),
+  "TAP2026":Date.UTC(2026,11,31),"VSO2026":Date.UTC(2026,11,31)
+};
 
-function doSearch(page) {
-  var keyword = document.getElementById('s-keyword').value.trim() || 'veteran';
-  var location = document.getElementById('s-location').value.trim();
-  var grade = document.getElementById('s-grade').value;
-  var vetOnly = document.getElementById('s-vet').checked;
-  var remote = document.getElementById('s-remote').checked;
-
-  currentPage = page;
-  document.getElementById('loading').style.display = 'block';
-  document.getElementById('results-section').style.display = 'none';
-
-  // Build USAJobs search URL with all filters pre-applied
-  // USAJobs API requires a server-side key (CORS blocked from browser)
-  // We deep-link to USAJobs with all parameters pre-filled
-  var usaUrl = buildUSAJobsURL(keyword, location, grade, vetOnly, remote);
-
-  // Show the curated results panel with direct USAJobs link
-  setTimeout(function() {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('results-section').style.display = 'block';
-    renderSearchPanel(keyword, location, grade, vetOnly, remote, usaUrl);
-  }, 600);
+function checkAccess() {
+  try {
+    var d = JSON.parse(localStorage.getItem("vcb_access")||"{}");
+    if (d.type==="paid" && d.stripeSession && d.expiry>Date.now()) return true;
+    if (d.type==="code" && d.code) {
+      var c = d.code.trim().toUpperCase();
+      var exp = VCP_CODES[c];
+      if (exp===0) return true;
+      if (exp && Date.now()<=exp) return true;
+    }
+    return false;
+  } catch(e) { return false; }
 }
 
-function buildUSAJobsURL(keyword, location, grade, vetOnly, remote) {
+function getProfile() {
+  try { return JSON.parse(localStorage.getItem("vcb_profile")||"null"); } catch(e) { return null; }
+}
+
+function profileContext() {
+  var d = getProfile();
+  if (!d) return "Veteran seeking civilian career transition.";
+  var p = d.personal||{}, t = d.target||{}, sk = d.skills||{};
+  var milExps = d.milExperiences||d.experiences||[];
+  var civExps = d.civExperiences||d.civilianExperiences||[];
+  var lines = [];
+  if (p.name) lines.push("Name: "+p.name);
+  if (milExps.length > 0) {
+    lines.push("\n=== MILITARY EXPERIENCE ("+milExps.length+" position"+(milExps.length>1?"s":"")+") ===");
+    milExps.forEach(function(ex, i) {
+      lines.push("\nMilitary Position "+(i+1)+":");
+      if (ex.branch) lines.push("  Branch: "+ex.branch);
+      if (ex.rank) lines.push("  Rank: "+ex.rank);
+      if (ex.mos) lines.push("  MOS/Rate/AFSC: "+ex.mos+(ex.mosTitle?" ("+ex.mosTitle+")":""));
+      if (ex.unit) lines.push("  Unit: "+ex.unit);
+      if (ex.tos) lines.push("  Time in Service: "+ex.tos);
+      if (ex.clearanceLevel&&ex.clearanceLevel!=="None") lines.push("  Clearance: "+ex.clearanceLevel);
+      if (ex.duties) lines.push("  Key Duties: "+ex.duties.slice(0,400));
+      if (ex.awards&&ex.awards.length) lines.push("  Awards: "+(Array.isArray(ex.awards)?ex.awards.join(", "):ex.awards));
+      if (ex.startDate||ex.endDate) lines.push("  Dates: "+(ex.startDate||"")+" to "+(ex.endDate||"Present"));
+    });
+  }
+  if (civExps.length > 0) {
+    lines.push("\n=== CIVILIAN / FEDERAL EXPERIENCE ("+civExps.length+" position"+(civExps.length>1?"s":"")+") ===");
+    civExps.forEach(function(ex, i) {
+      lines.push("\nCivilian Position "+(i+1)+":");
+      if (ex.title||ex.jobTitle) lines.push("  Title: "+(ex.title||ex.jobTitle));
+      if (ex.company||ex.employer) lines.push("  Employer: "+(ex.company||ex.employer));
+      if (ex.duties||ex.description) lines.push("  Duties: "+(ex.duties||ex.description||"").slice(0,300));
+      if (ex.startDate||ex.endDate) lines.push("  Dates: "+(ex.startDate||"")+" to "+(ex.endDate||"Present"));
+    });
+  }
+  if (sk.technical) lines.push("\nTechnical Skills: "+sk.technical);
+  if (sk.leadership) lines.push("Leadership Skills: "+sk.leadership);
+  if (sk.languages) lines.push("Languages: "+sk.languages);
+  if (sk.certs) lines.push("Certifications: "+sk.certs);
+  if (t.title||t.industry) {
+    lines.push("\nTarget Role: "+(t.title||"")+(t.industry?" | "+t.industry:""));
+  }
+  return lines.join("\n")||"Veteran seeking civilian career transition.";
+}
+function buildProfileContext(){return profileContext();}
+
+function tryManualUnlock(){
+  if(checkAccess()){initAnalyzer();return;}
+  var em=prompt("Enter the email address you subscribed with:");
+  if(em&&em.includes("@")){
+    localStorage.setItem("vcb_access",JSON.stringify({type:"paid",stripeSession:"manual-"+Date.now(),expiry:Date.now()+365*864e5,plan:"monthly",email:em}));
+    initAnalyzer();
+  }
+}
+
+function initAnalyzer(){
+  var gate=document.getElementById("analyzer-gate");
+  var tool=document.getElementById("analyzer-tool");
+  if(checkAccess()){
+    if(gate) gate.style.display="none";
+    if(tool) tool.style.display="block";
+  } else {
+    if(gate) gate.style.display="block";
+    if(tool) tool.style.display="none";
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MULTI-PLATFORM SEARCH URLS
+══════════════════════════════════════════════════════════════════════════ */
+function getSearchParams(){
+  return {
+    keyword: (document.getElementById('s-keyword').value||'').trim(),
+    location: (document.getElementById('s-location').value||'').trim(),
+    grade: document.getElementById('s-grade').value,
+    clearance: document.getElementById('s-clear').value,
+    vetOnly: document.getElementById('s-vet').checked,
+    remote: document.getElementById('s-remote').checked
+  };
+}
+
+function buildUSAJobsURL(p) {
   var base = 'https://www.usajobs.gov/Search/Results';
   var params = [];
-  if(keyword) params.push('k=' + encodeURIComponent(keyword));
-  if(location) params.push('l=' + encodeURIComponent(location));
-  if(grade) {
+  if(p.keyword) params.push('k=' + encodeURIComponent(p.keyword));
+  if(p.location) params.push('l=' + encodeURIComponent(p.location));
+  if(p.grade) {
     var gradeMap = {'1':'1,2,3,4','5':'5,6,7','9':'9,10,11','12':'12,13','14':'14,15'};
-    if(gradeMap[grade]) params.push('gs=' + gradeMap[grade]);
+    if(gradeMap[p.grade]) params.push('gs=' + gradeMap[p.grade]);
   }
-  if(vetOnly) params.push('hp=veterans');
-  if(remote) params.push('remoteIndicator=True');
+  if(p.vetOnly) params.push('hp=veterans');
+  if(p.remote) params.push('remoteIndicator=True');
   return base + (params.length ? '?' + params.join('&') : '');
 }
 
-function renderSearchPanel(keyword, location, grade, vetOnly, remote, usaUrl) {
-  document.getElementById('results-count').textContent = 'Search results for "' + keyword + '"' + (location ? ' in ' + location : '');
-  document.getElementById('results-sub').textContent = 'Results open directly on USAJobs.gov — the official federal job board';
-
-  var gradeLabels = {'1':'GS-1 to GS-4','5':'GS-5 to GS-7','9':'GS-9 to GS-11','12':'GS-12 to GS-13','14':'GS-14 to GS-15'};
-
-  var filters = [];
-  if(vetOnly) filters.push('🎖 Veterans Preference');
-  if(remote) filters.push('💻 Remote Eligible');
-  if(grade && gradeLabels[grade]) filters.push('🏛 ' + gradeLabels[grade]);
-
-  var html = '<div style="background:#eef6ff;border:1px solid rgba(26,58,107,.2);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1rem;">' +
-    '<div style="font-weight:700;color:#0d1f3c;font-size:.95rem;margin-bottom:.35rem;">Your search is ready on USAJobs.gov</div>' +
-    '<div style="font-size:.82rem;color:#3a5a7a;margin-bottom:.75rem;">All your filters are pre-applied: ' + (filters.length ? filters.join(' · ') : 'All openings') + '</div>' +
-    '<a href="' + usaUrl + '" target="_blank" rel="noopener" class="apply-btn" style="font-size:.92rem;padding:.65rem 1.5rem;display:inline-block;">Open ' + keyword + ' search on USAJobs →</a>' +
-  '</div>' +
-  
-  // Quick tip cards
-  '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem;">' +
-  
-  '<div class="job-card">' +
-    '<div class="job-title" style="font-size:.82rem;">💡 Veterans Preference Tip</div>' +
-    '<div class="job-desc" style="display:block;margin-top:.35rem;">When you apply through USAJobs, your veterans preference (5-point or 10-point) automatically adds to your score. <a href="/veterans-preference-guide.html" style="color:#1a3a6b;font-weight:600;">Learn how preference works →</a></div>' +
-  '</div>' +
-  
-  '<div class="job-card">' +
-    '<div class="job-title" style="font-size:.82rem;">📄 Federal Resume Required</div>' +
-    '<div class="job-desc" style="display:block;margin-top:.35rem;">Federal resumes are 3-5 pages minimum. A standard civilian resume will be rejected. <a href="/tools-federal-resume.html" style="color:#1a3a6b;font-weight:600;">AI Federal Resume Builder →</a></div>' +
-  '</div>' +
-
-  '<div class="job-card">' +
-    '<div class="job-title" style="font-size:.82rem;">🏛 What GS Grade Are You?</div>' +
-    '<div class="job-desc" style="display:block;margin-top:.35rem;">Your rank and experience map to a GS grade. Applying to the wrong grade wastes time. <a href="/federal-gs-grade-estimator.html" style="color:#1a3a6b;font-weight:600;">GS Grade Estimator →</a></div>' +
-  '</div>' +
-
-  '<div class="job-card"><div class="job-title" style="font-size:.82rem;">⏱ Federal Hiring Takes Time</div><div class="job-desc" style="display:block;margin-top:.35rem;">Federal hiring averages 3-6 months. Apply to multiple positions simultaneously and continue your search while waiting for responses.</div></div>' +
-
-  '</div>';
-
-  document.getElementById('job-list').innerHTML = html;
-  document.getElementById('pagination').innerHTML = '';
+function buildIndeedURL(p) {
+  var q = (p.keyword ? p.keyword + ' ' : '') + 'veteran';
+  var base = 'https://www.indeed.com/jobs';
+  var params = ['q=' + encodeURIComponent(q)];
+  if(p.location) params.push('l=' + encodeURIComponent(p.location));
+  if(p.remote) params.push('remotejob=032b3046-06a3-4876-8dfd-474eb5e7ed11');
+  params.push('sort=date');
+  return base + '?' + params.join('&');
 }
 
-// Auto-search on load
-window.addEventListener('load', function(){ doSearch(1); });
-var lastQuery = {};
+function buildLinkedInURL(p) {
+  var q = (p.keyword ? p.keyword + ' ' : '') + 'veteran';
+  var base = 'https://www.linkedin.com/jobs/search/';
+  var params = ['keywords=' + encodeURIComponent(q)];
+  if(p.location) params.push('location=' + encodeURIComponent(p.location));
+  if(p.remote) params.push('f_WT=2');
+  params.push('sortBy=DD');
+  return base + '?' + params.join('&');
+}
+
+function buildClearanceJobsURL(p) {
+  var q = p.keyword || 'veteran';
+  var base = 'https://www.clearancejobs.com/jobs';
+  var params = ['keywords=' + encodeURIComponent(q)];
+  if(p.location) params.push('location=' + encodeURIComponent(p.location));
+  if(p.clearance === 'ts') params.push('clearance=top-secret');
+  else if(p.clearance === 'secret') params.push('clearance=secret');
+  return base + '?' + params.join('&');
+}
+
+function buildGoogleJobsURL(p) {
+  var q = (p.keyword ? p.keyword + ' ' : '') + 'veteran jobs';
+  if(p.location) q += ' ' + p.location;
+  if(p.remote) q += ' remote';
+  return 'https://www.google.com/search?q=' + encodeURIComponent(q) + '&ibp=htl;jobs';
+}
+
+function openPlatform(platform) {
+  var p = getSearchParams();
+  var url;
+  switch(platform) {
+    case 'usajobs': url = buildUSAJobsURL(p); break;
+    case 'indeed': url = buildIndeedURL(p); break;
+    case 'linkedin': url = buildLinkedInURL(p); break;
+    case 'clearancejobs': url = buildClearanceJobsURL(p); break;
+    case 'google': url = buildGoogleJobsURL(p); break;
+  }
+  if(url) window.open(url, '_blank');
+  return false;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CATEGORY QUICK SEARCH
+══════════════════════════════════════════════════════════════════════════ */
+function searchCategory(label, keywords) {
+  document.getElementById('s-keyword').value = keywords;
+  document.getElementById('s-keyword').scrollIntoView({behavior:'smooth',block:'center'});
+
+  // open all platforms with the category search after a brief delay
+  setTimeout(function(){
+    var p = getSearchParams();
+    p.keyword = keywords;
+    window.open(buildUSAJobsURL(p), '_blank');
+    window.open(buildIndeedURL(p), '_blank');
+    window.open(buildLinkedInURL(p), '_blank');
+  }, 300);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   JOB ANALYZER (Claude API via proxy)
+══════════════════════════════════════════════════════════════════════════ */
+function renderMarkdown(text) {
+  var escaped = text
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+
+  var lines = escaped.split("\n");
+  var html = "";
+  var inList = false;
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    var trimmed = line.trim();
+
+    if (!trimmed) {
+      if (inList) { html += "</ul>"; inList = false; }
+      html += "<div style='height:.4rem'></div>";
+      continue;
+    }
+
+    if (/^#{1,3}\s+/.test(trimmed)) {
+      if (inList) { html += "</ul>"; inList = false; }
+      var hText = trimmed.replace(/^#{1,3}\s+/, '');
+      hText = hText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html += "<h4 style='font-size:.85rem;font-weight:700;color:#0d1f3c;margin:.75rem 0 .3rem;'>" + hText + "</h4>";
+      continue;
+    }
+
+    if (/^[-*]\s+/.test(trimmed)) {
+      if (!inList) { html += "<ul style='padding-left:1.2rem;margin:.25rem 0;'>"; inList = true; }
+      var liText = trimmed.replace(/^[-*]\s+/, '');
+      liText = liText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html += "<li style='font-size:.82rem;color:#3a4a5a;line-height:1.7;margin-bottom:.2rem;'>" + liText + "</li>";
+      continue;
+    }
+
+    if (/^\d+\.\s+/.test(trimmed)) {
+      if (!inList) { html += "<ol style='padding-left:1.2rem;margin:.25rem 0;'>"; inList = true; }
+      var olText = trimmed.replace(/^\d+\.\s+/, '');
+      olText = olText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html += "<li style='font-size:.82rem;color:#3a4a5a;line-height:1.7;margin-bottom:.2rem;'>" + olText + "</li>";
+      continue;
+    }
+
+    if (inList) { html += "</ul>"; inList = false; }
+    var pText = trimmed.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    html += "<p style='font-size:.82rem;color:#3a4a5a;line-height:1.7;margin-bottom:.35rem;'>" + pText + "</p>";
+  }
+  if (inList) html += "</ul>";
+  return html;
+}
+
+function analyzeJob() {
+  var input = (document.getElementById('analyze-input').value||'').trim();
+  if (!input) { alert('Please paste a job URL or job description.'); return; }
+  if (!checkAccess()) { alert('This feature requires a subscription.'); return; }
+
+  var btn = document.getElementById('analyze-btn');
+  var loading = document.getElementById('analyze-loading');
+  var result = document.getElementById('analyze-result');
+
+  btn.disabled = true;
+  btn.textContent = 'Analyzing...';
+  loading.style.display = 'block';
+  result.style.display = 'none';
+
+  var ctx = buildProfileContext();
+
+  var prompt = "You are a veteran career advisor. Analyze this job posting against the veteran's military profile.\n\n" +
+    "=== VETERAN PROFILE ===\n" + ctx + "\n\n" +
+    "=== JOB POSTING (URL or Description) ===\n" + input + "\n\n" +
+    "Provide your analysis in this exact format:\n\n" +
+    "### Job Summary\n" +
+    "- **Job Title:** [extract or infer]\n" +
+    "- **Company/Agency:** [extract or infer]\n" +
+    "- **Location:** [extract or infer]\n\n" +
+    "### Match Score: [0-100]/100\n" +
+    "[One sentence explaining the score]\n\n" +
+    "### Strengths (Why You're a Good Fit)\n" +
+    "- [strength 1]\n" +
+    "- [strength 2]\n" +
+    "- [strength 3]\n\n" +
+    "### Gaps to Address\n" +
+    "- [gap 1]\n" +
+    "- [gap 2]\n\n" +
+    "### Action Items\n" +
+    "1. [specific action]\n" +
+    "2. [specific action]\n" +
+    "3. [specific action]\n\n" +
+    "### Resume Keywords to Include\n" +
+    "- [keyword 1], [keyword 2], [keyword 3], etc.\n\n" +
+    "If you only received a URL and cannot access it, analyze based on the URL pattern (company, role type) and provide general guidance. Be specific and actionable.";
+
+  fetch('https://vcp-proxy.vercel.app/api/claude', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1500,
+      messages: [{role:'user', content: prompt}]
+    })
+  })
+  .then(function(r) {
+    if(!r.ok) throw new Error('API error: ' + r.status);
+    return r.json();
+  })
+  .then(function(data) {
+    var text = '';
+    if(data.content && data.content[0]) text = data.content[0].text || '';
+    if(!text) text = 'No analysis returned. Please try again.';
+
+    // Extract match score for the badge
+    var scoreMatch = text.match(/Match Score[:\s]*(\d+)/i);
+    var score = scoreMatch ? parseInt(scoreMatch[1]) : null;
+
+    var scoreHtml = '';
+    if(score !== null) {
+      var scoreClass = score >= 70 ? 'score-high' : (score >= 40 ? 'score-mid' : 'score-low');
+      scoreHtml = '<div style="display:flex;align-items:center;margin-bottom:1rem;">' +
+        '<div class="match-score ' + scoreClass + '">' + score + '</div>' +
+        '<div><div style="font-weight:700;font-size:1rem;color:#0d1f3c;">Match Score: ' + score + '/100</div>' +
+        '<div style="font-size:.78rem;color:#5a6a7a;">' + (score >= 70 ? 'Strong match -- apply with confidence' : score >= 40 ? 'Moderate match -- address the gaps below' : 'Low match -- significant gaps to address') + '</div></div></div>';
+    }
+
+    result.innerHTML = scoreHtml + '<div class="md-output">' + renderMarkdown(text) + '</div>';
+    result.style.display = 'block';
+  })
+  .catch(function(err) {
+    result.innerHTML = '<div style="color:#c33;font-size:.85rem;padding:.75rem;">Error: ' + err.message + '. Please try again.</div>';
+    result.style.display = 'block';
+  })
+  .finally(function() {
+    btn.disabled = false;
+    btn.textContent = 'Analyze This Job';
+    loading.style.display = 'none';
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════════════════════ */
+document.addEventListener("DOMContentLoaded", function(){
+  // Init analyzer gate
+  initAnalyzer();
+
+  // Try firebase auth for analyzer access
+  try{
+    firebase.auth().onAuthStateChanged(function(user){
+      if(!user) return;
+      firebase.firestore().collection("profiles").doc(user.uid).get().then(function(doc){
+        if(!doc.exists) return;
+        var data=doc.data();
+        if(data.stripeSession){
+          var expiry=data.accessExpiry||(Date.now()+365*24*60*60*1000);
+          localStorage.setItem("vcb_access",JSON.stringify({type:"paid",stripeSession:data.stripeSession,expiry:expiry,plan:data.plan||"monthly"}));
+        } else if(data.accessCode){
+          localStorage.setItem("vcb_access",JSON.stringify({type:"code",code:data.accessCode}));
+        }
+        try{localStorage.setItem("vcb_profile",JSON.stringify(data));}catch(e){}
+        initAnalyzer();
+      }).catch(function(){});
+    });
+  }catch(e){}
+
+  // Auto-fill keyword from profile if available
+  var prof = getProfile();
+  if(prof) {
+    var t = prof.target||{};
+    var ex = ((prof.milExperiences||prof.experiences||[])[0])||{};
+    if(t.title && !document.getElementById('s-keyword').value) {
+      document.getElementById('s-keyword').value = t.title;
+    } else if(ex.mosTitle && !document.getElementById('s-keyword').value) {
+      document.getElementById('s-keyword').value = ex.mosTitle;
+    }
+  }
+});
 </script>
 </body>
 </html>

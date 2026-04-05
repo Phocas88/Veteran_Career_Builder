@@ -12,6 +12,7 @@
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:120px;}
 body{font-family:Inter,sans-serif;color:#1a2a3a;background:#fff;line-height:1.7}
 .hero{background:linear-gradient(160deg,#0a1628 0%,#1a3a6b 60%,#1e4a8a 100%);padding:3.5rem 6%;text-align:center;position:relative;overflow:hidden}
 .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,.1),transparent 70%)}
@@ -264,6 +265,72 @@ body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f2f5fa;font-size:1
 @media(max-width:640px){
   .page-divider,.rating-context{margin-left:0;margin-right:0;}
   .section-jump{padding:0 1rem;}
+}
+
+/* ── STICKY TABLE OF CONTENTS ── */
+.page-toc{
+  background:#fff;border-bottom:2px solid rgba(26,58,107,.1);
+  padding:.65rem 5%;position:sticky;top:56px;z-index:1500;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.page-toc-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;
+}
+.page-toc-label{
+  font-family:'Bebas Neue',sans-serif;font-size:.72rem;letter-spacing:.12em;
+  color:var(--nv2,#1a3a6b);text-transform:uppercase;margin-right:.5rem;
+  white-space:nowrap;flex-shrink:0;
+}
+.page-toc a{
+  display:inline-block;padding:.25rem .6rem;border-radius:20px;
+  font-size:.72rem;font-weight:500;color:var(--sl,#4a5a6a);
+  text-decoration:none;background:var(--lt,#f0f4fa);
+  border:1px solid var(--bd,#dde3ec);white-space:nowrap;
+  transition:all .12s;
+}
+.page-toc a:hover,.page-toc a.toc-active{
+  background:var(--nv,#0a1628);color:#f0c040;border-color:var(--nv,#0a1628);
+}
+.page-toc a.toc-calc{
+  background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;
+  font-weight:700;border-color:transparent;
+}
+.page-toc a.toc-calc:hover{opacity:.9;}
+@media(max-width:700px){
+  .page-toc{padding:.5rem 3%;top:56px;}
+  .page-toc-inner{gap:.25rem;}
+  .page-toc a{font-size:.65rem;padding:.2rem .45rem;}
+  .page-toc-label{display:none;}
+}
+
+/* ── SECTION DIVIDERS (improved) ── */
+.section-divider{
+  background:linear-gradient(135deg,#0a1628 0%,#1a3a6b 100%);
+  padding:2rem 5%;margin-top:3rem;position:relative;overflow:hidden;
+}
+.section-divider::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,#c8960a,#f0c040,#c8960a);
+}
+.section-divider h2{
+  font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.08em;
+  color:#f0c040;margin-bottom:.4rem;
+}
+.section-divider p{
+  font-size:.9rem;color:rgba(192,216,240,.75);max-width:700px;line-height:1.7;
+}
+.section-divider .section-number{
+  font-family:'Bebas Neue',sans-serif;font-size:3rem;color:rgba(240,192,64,.12);
+  position:absolute;right:5%;top:50%;transform:translateY(-50%);
+  letter-spacing:.05em;
+}
+
+/* ── CALCULATOR HIGHLIGHT BOX ── */
+.calc-highlight{
+  background:linear-gradient(135deg,rgba(200,150,10,.08),rgba(200,150,10,.02));
+  border:2px solid rgba(200,150,10,.2);border-radius:14px;
+  padding:.15rem;margin-bottom:1.5rem;
 }
 
 </style>
@@ -1124,22 +1191,31 @@ body.menu-open{overflow:hidden!important;}
 
 
 
-<!-- Quick section jump links -->
-<div class="section-jump">
-  <a href="#va-calculator">🧮 Calculate My Rating</a>
-  <a href="#rating-schedule">📋 Rating Schedule by Condition</a>
-  <a href="#how-it-works">❓ How VA Ratings Work</a>
-  <a href="#combined-math">📐 Combined Rating Math</a>
+<!-- ══ STICKY TABLE OF CONTENTS ══ -->
+<div class="page-toc" id="page-toc">
+  <div class="page-toc-inner">
+    <span class="page-toc-label">Jump to:</span>
+    <a href="#sec-calculator" class="toc-calc">Calculator</a>
+    <a href="#sec-2026-rates">2026 Rates</a>
+    <a href="#sec-combined-math">Combined Rating Math</a>
+    <a href="#sec-benefits-tiers">Benefits by Tier</a>
+    <a href="#sec-state-benefits">State Benefits</a>
+    <a href="#sec-tdiu">TDIU</a>
+    <a href="#sec-how-ratings-work">How Ratings Work</a>
+    <a href="#sec-rating-schedule">Rating Schedule</a>
+    <a href="#sec-dep-calculator">Dependent Calculator</a>
+    <a href="#sec-pay-table">Pay Tables</a>
+  </div>
 </div>
 
-<!-- ══ PART 1: CALCULATOR ════════════════════════════════════════════════════ -->
-<div id="va-calculator">
+<!-- ══ PART 1: HERO + CALCULATOR ═════════════════════════════════════════════ -->
+<div id="sec-calculator">
 <section class="hero">
   <div class="hero-inner">
     <div class="badge">&#9889; Disability Benefits</div>
     <h1>VA Disability <span>Benefits Calculator</span></h1>
-    <p class="hero-sub">2025 compensation rates, dependent allowances, and every benefit unlocked at each disability rating - from 10% to 100%.</p>
-    <a href="https://veterancareerpath.com/vre-chapter31-guide.html" class="btn-hero">Read the VR&amp;E Guide</a>
+    <p class="hero-sub">2026 compensation rates, dependent allowances, and every benefit unlocked at each disability rating - from 10% to 100%. Use the calculators below to estimate your combined rating and monthly pay.</p>
+    <a href="#sec-dep-calculator" class="btn-hero" style="text-decoration:none">Jump to Calculator</a>
   </div>
 </section>
 <div class="content">
@@ -1148,36 +1224,19 @@ body.menu-open{overflow:hidden!important;}
 
 <div class="callout"><div class="callout-label">Critical Point</div><p>Disability compensation is tax-free. A $2,000/month VA disability payment is equivalent to roughly $2,600-$2,800 in taxable civilian income for most veterans. Factor this into your salary negotiations.</p></div>
 
-<h2>2025 Monthly Disability Compensation Rates</h2>
-<p>These are the 2025 VA compensation rates for a veteran with no dependents. Rates increase with dependents (spouse, children, dependent parents) and with combined ratings.</p>
-
-<div class="tbl-wrap"><table>
-  <thead><tr><th>Rating</th><th>Monthly (No Dependents)</th><th>With Spouse</th><th>Annual (No Dependents)</th><th>Taxable Equivalent*</th></tr></thead>
-  <tbody>
-    <tr><td>10%</td><td>$175.51</td><td>$175.51</td><td>$2,106</td><td>~$2,800</td></tr>
-    <tr><td>20%</td><td>$346.95</td><td>$346.95</td><td>$4,163</td><td>~$5,500</td></tr>
-    <tr><td>30%</td><td>$537.42</td><td>$601.04</td><td>$6,449</td><td>~$8,600</td></tr>
-    <tr><td>40%</td><td>$774.16</td><td>$856.44</td><td>$9,290</td><td>~$12,400</td></tr>
-    <tr><td>50%</td><td>$1,102.04</td><td>$1,206.04</td><td>$13,224</td><td>~$17,600</td></tr>
-    <tr><td>60%</td><td>$1,395.93</td><td>$1,522.64</td><td>$16,751</td><td>~$22,300</td></tr>
-    <tr><td>70%</td><td>$1,759.19</td><td>$1,907.06</td><td>$21,110</td><td>~$28,100</td></tr>
-    <tr><td>80%</td><td>$2,044.89</td><td>$2,215.34</td><td>$24,539</td><td>~$32,700</td></tr>
-    <tr><td>90%</td><td>$2,297.96</td><td>$2,491.00</td><td>$27,576</td><td>~$36,700</td></tr>
-    <tr><td>100%</td><td>$3,737.85</td><td>$3,946.25</td><td>$44,854</td><td>~$59,800</td></tr>
-  </tbody>
-</table></div>
-<p style="font-size:.78rem;color:#8a9aaa;margin-top:.5rem">*Taxable equivalent assumes 25% effective tax rate. Actual equivalent varies by income bracket.</p>
-
 <div style="text-align:center;margin:2rem 0;padding:1rem 0;border-top:1px solid #eee;border-bottom:1px solid #eee">
   <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4999040528510137" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
   <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
 </div>
 
+<!-- ── Section: Combined Rating Math ── -->
+<div id="sec-combined-math"></div>
 <h2>How the VA Calculates Combined Ratings</h2>
 <p>The VA does NOT add percentages together. They use "Whole Person" math. Start with 100% as your whole person. A 50% rating takes 50% of that whole person, leaving 50%. A 30% rating then takes 30% of the remaining 50% (15 points), bringing you to 65%. The VA rounds this to the nearest 10%, giving a combined rating of 70%.</p>
 
 <div class="alert"><p><strong>Important:</strong> 70% combined rating is NOT the same as 70% pay. Use the VA's online combined ratings calculator at va.gov to see your exact combined rating before expecting a specific payment amount.</p></div>
 
+<div id="sec-benefits-tiers"></div>
 <h2>Benefits Unlocked at Each Rating Tier</h2>
 
 <h3>10% - 20% Rating</h3>
@@ -1224,6 +1283,7 @@ body.menu-open{overflow:hidden!important;}
   <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
 </div>
 
+<div id="sec-state-benefits"></div>
 <h2>State-by-State Additional Benefits (Selected)</h2>
 <div class="card-grid">
   <div class="card"><div class="card-title">Texas</div><p>100% disabled veterans: full property tax exemption on primary residence. No income limit. Applies to surviving spouse as well. Also: free state parks, driver license fee waiver.</p><span class="tag gold">Strong State Benefits</span></div>
@@ -1234,6 +1294,7 @@ body.menu-open{overflow:hidden!important;}
   <div class="card"><div class="card-title">North Carolina</div><p>100% disabled: full property tax exemption. Free recreational licenses. State income tax exemption on military retirement pay.</p><span class="tag">Moderate State Benefits</span></div>
 </div>
 
+<div id="sec-tdiu"></div>
 <h2>TDIU - The Path to 100% Pay with a Lower Rating</h2>
 <p>Total Disability Individual Unemployability (TDIU) is one of the most valuable and least-understood VA benefits. If your service-connected conditions prevent you from maintaining substantially gainful employment (earning above the federal poverty threshold), you may qualify for TDIU - which pays at the 100% rate even if your combined rating is lower.</p>
 <p>Standard qualifying requirements: a single disability rated at 60%+, OR multiple disabilities with a combined rating of 70%+ with at least one rated at 40%+. Application is made through VA Form 21-8940. A VSO or VA-accredited claims agent can significantly improve your approval odds.</p>
@@ -1248,7 +1309,8 @@ body.menu-open{overflow:hidden!important;}
 </div>
 
 <!-- ══ HOW IT WORKS ════════════════════════════════════════════════════════════ -->
-<div id="how-it-works" class="page-divider">
+<div id="sec-how-ratings-work" class="section-divider">
+  <span class="section-number">02</span>
   <h2>How VA Disability Ratings Work</h2>
   <p>The VA uses a "whole person" method to combine multiple ratings. Two 50% ratings do NOT equal 100% — they combine to 75%. Each disability is applied to your remaining able-bodied percentage, which is why understanding the math matters.</p>
 </div>
@@ -1262,19 +1324,25 @@ body.menu-open{overflow:hidden!important;}
 </div>
 
 <!-- ══ PART 2: RATING SCHEDULE ═══════════════════════════════════════════════ -->
-<div id="rating-schedule" class="page-divider">
+<div id="sec-rating-schedule" class="section-divider">
+  <span class="section-number">03</span>
   <h2>VA Disability Rating Schedule — All Conditions</h2>
   <p>The complete CFR 38 Part 4 rating schedule. Click any condition to see the rating criteria, percentage thresholds, and what the VA looks for when evaluating your claim. Updated for 2026.</p>
 </div>
 
-<div id="combined-math" style="background:#fff;padding:1rem 5%;">
-<div class="search-wrap">
-    <input type="text" id="cond-search" placeholder="🔍 Search condition (e.g. PTSD, knee, tinnitus)..." oninput="filterConds(this.value)">
+<div style="background:#fff;padding:1rem 5%;">
+<div class="search-wrap" style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+    <div style="flex:1;min-width:200px;">
+      <input type="text" id="cond-search" placeholder="Search condition (e.g. PTSD, knee, tinnitus)..." oninput="filterConds(this.value)" style="width:100%;">
+    </div>
+    <button onclick="toggleAllSections(true)" style="background:var(--nv2,#1a3a6b);color:#fff;border:none;border-radius:7px;padding:.45rem .8rem;font-size:.75rem;font-weight:600;cursor:pointer;white-space:nowrap;">Expand All</button>
+    <button onclick="toggleAllSections(false)" style="background:var(--lt,#f0f4fa);color:var(--nv,#0a1628);border:1.5px solid var(--bd,#dde3ec);border-radius:7px;padding:.45rem .8rem;font-size:.75rem;font-weight:600;cursor:pointer;white-space:nowrap;">Collapse All</button>
   </div>
+  <div id="cond-count" style="font-size:.78rem;color:var(--sl,#4a5a6a);margin-bottom:.5rem;display:none;"></div>
 
   <!-- Disclaimer -->
   <div class="disclaimer">
-    <strong>⚠️ For informational purposes only.</strong> Rating criteria is based on CFR 38 Part 4. Actual VA ratings are determined case-by-case. Consult a VSO or accredited claims agent for your specific situation.
+    <strong>For informational purposes only.</strong> Rating criteria is based on CFR 38 Part 4. Actual VA ratings are determined case-by-case. Consult a VSO or accredited claims agent for your specific situation.
   </div>
 
   <!-- Condition Sections -->
@@ -2048,24 +2116,33 @@ body.menu-open{overflow:hidden!important;}
   </div>
   </div>
 
-</div><!-- /main -->
-</div><!-- /wrap -->
+</div><!-- /cond-sections -->
+</div><!-- /bg wrap -->
 
 
 <script>
 function filterConds(query) {
   query = query.toLowerCase().trim();
+  var total = 0, shown = 0;
   document.querySelectorAll('.cond-card').forEach(function(card) {
+    total++;
     var text = card.textContent.toLowerCase();
-    card.style.display = (!query || text.includes(query)) ? '' : 'none';
+    var match = !query || text.includes(query);
+    card.style.display = match ? '' : 'none';
+    if(match) shown++;
   });
-  // If searching, expand all sections
-  if (query) {
+  var countEl = document.getElementById('cond-count');
+  if(query){
+    countEl.style.display = 'block';
+    countEl.textContent = 'Showing ' + shown + ' of ' + total + ' conditions matching "' + query + '"';
+    // Expand all sections when searching
     document.querySelectorAll('.sc-bd').forEach(function(bd) {
       bd.style.display = 'block';
       var btn = bd.previousElementSibling;
-      if (btn) { btn.classList.add('open'); btn.querySelector('.chv').textContent = '▲'; }
+      if (btn) { btn.classList.add('open'); btn.querySelector('.chv').textContent = '\u25B2'; }
     });
+  } else {
+    countEl.style.display = 'none';
   }
 }
 function toggleSec(btn) {
@@ -2073,11 +2150,30 @@ function toggleSec(btn) {
   var open = bd.style.display === 'block';
   bd.style.display = open ? 'none' : 'block';
   btn.classList.toggle('open', !open);
-  btn.querySelector('.chv').textContent = open ? '▼' : '▲';
+  btn.querySelector('.chv').textContent = open ? '\u25BC' : '\u25B2';
+}
+function toggleAllSections(expand) {
+  document.querySelectorAll('.sc-bd').forEach(function(bd) {
+    bd.style.display = expand ? 'block' : 'none';
+    var btn = bd.previousElementSibling;
+    if (btn) {
+      btn.classList.toggle('open', expand);
+      btn.querySelector('.chv').textContent = expand ? '\u25B2' : '\u25BC';
+    }
+  });
 }
 </script>
-<!-- COMPENSATION CALCULATOR -->
-  <div class="calc-card" id="calc">
+
+<!-- ══ PART 3: COMPENSATION CALCULATOR WITH DEPENDENTS ══════════════════════ -->
+<div id="sec-dep-calculator" class="section-divider" style="margin-top:0;">
+  <span class="section-number">04</span>
+  <h2>Compensation Calculator with Dependents</h2>
+  <p>Enter your individual service-connected ratings and dependent status to calculate your estimated monthly VA compensation using 2026 rates.</p>
+</div>
+
+<div style="background:#fff;padding:1rem 5%;">
+<div class="calc-highlight">
+  <div class="calc-card" id="calc" style="margin-bottom:0;border:none;box-shadow:none;">
     <div class="calc-hd"><h2>🧮 Compensation Calculator — With Dependents</h2></div>
     <div class="calc-body">
       <div class="alert aw" style="margin-top:0">
@@ -2162,8 +2258,16 @@ function toggleSec(btn) {
       </div>
     </div>
   </div>
+</div><!-- /calc-highlight -->
+</div><!-- /bg wrap -->
 
-  <!-- MONTHLY PAY TABLE -->
+  <!-- ══ 2026 PAY TABLE ═══════���══════════════════════════════════════════════ -->
+  <div id="sec-pay-table" class="section-divider" style="margin-top:0;">
+    <span class="section-number">05</span>
+    <h2>2026 Monthly Compensation Rates</h2>
+    <p>Complete 2026 VA disability pay tables including dependents, Special Monthly Compensation, and TDIU rates.</p>
+  </div>
+  <div id="sec-2026-rates" style="background:#fff;padding:1rem 5%;">
   <div class="calc-card" id="pay-table">
     <div class="calc-hd"><h2>💰 2026 Monthly Compensation Rates</h2></div>
     <div class="calc-body">
@@ -2171,7 +2275,6 @@ function toggleSec(btn) {
         <strong>2026 COLA — Effective December 1, 2025</strong>
         Rates increased 2.5%. Rates at 10–20% are the same regardless of dependents. Dependent rates begin at 30%.
       </div>
-      <div class="tbl-wrap">
       <div class="tbl-wrap"><table class="pay-tbl">
         <thead>
           <tr>
@@ -2200,7 +2303,6 @@ function toggleSec(btn) {
       <p style="font-size:.78rem;color:var(--sl);margin-top:.75rem;">Per-child additions at 30%+ (beyond first child): $32.51/mo per child under 18 · $105.33/mo per school-age child (18–23). Dependent parent additions: $35.96–$124.87/mo depending on rating. SMC (Special Monthly Compensation) not included above.</p>
 
       <h3 style="font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.08em;color:var(--nv);margin:1.25rem 0 .65rem;">Special Monthly Compensation (SMC) — 2026</h3>
-      <div class="tbl-wrap">
       <div class="tbl-wrap"><table class="pay-tbl">
         <thead><tr><th>Level</th><th>Qualifying Condition</th><th>2026 Monthly</th></tr></thead>
         <tbody>
@@ -2218,9 +2320,7 @@ function toggleSec(btn) {
       </div>
     </div>
   </div>
-
-</div><!-- /main -->
-</div><!-- /wrap -->
+  </div><!-- /sec-2026-rates -->
 
 <script>
 // SECTION TOGGLE
@@ -2397,10 +2497,27 @@ window.addEventListener('scroll', function(){
 document.querySelectorAll('.sc-bd.visible').forEach(function(bd){
   bd.style.display = 'block';
 });
+
+// TOC active link highlighting
+var tocLinks = document.querySelectorAll('.page-toc a');
+var tocSections = [];
+tocLinks.forEach(function(link){
+  var id = link.getAttribute('href');
+  if(id && id.charAt(0)==='#'){
+    var el = document.getElementById(id.slice(1));
+    if(el) tocSections.push({el:el, link:link});
+  }
+});
+window.addEventListener('scroll', function(){
+  var scrollY = window.scrollY + 120;
+  var active = null;
+  for(var i=tocSections.length-1;i>=0;i--){
+    if(tocSections[i].el.offsetTop <= scrollY){ active = tocSections[i].link; break; }
+  }
+  tocLinks.forEach(function(l){ l.classList.remove('toc-active'); });
+  if(active && !active.classList.contains('toc-calc')) active.classList.add('toc-active');
+});
 </script>
-</body>
-</html
-</div>
 
 <footer style="background:#0d1f3c;padding:2.5rem 6%;margin-top:2rem;">
   <div style="max-width:1100px;margin:0 auto;">
@@ -2456,527 +2573,6 @@ document.querySelectorAll('.sc-bd.visible').forEach(function(bd){
 </div>
 </footer>
 
-<script>
-
-(function(){
-  var btn=document.getElementById('vcp-more-btn');
-  var drop=document.getElementById('vcp-drop');
-  var ham=document.getElementById('vcp-ham');
-  var mob=document.getElementById('vcp-mob');
-  var si=document.getElementById('vcp-si');
-  var sr=document.getElementById('vcp-sr');
-  var msi=document.getElementById('vcp-mob-si');
-  var msr=document.getElementById('vcp-mob-sr');
-
-  // Dropdown
-  function closeAll(){
-    if(drop)drop.classList.remove('open');
-    if(btn)btn.classList.remove('active');
-    if(ham)ham.classList.remove('open');
-    if(mob)mob.classList.remove('open');
-  }
-  if(btn&&drop){
-    btn.addEventListener('click',function(e){
-      e.stopPropagation();
-      var o=drop.classList.contains('open');
-      closeAll();
-      if(!o){drop.classList.add('open');btn.classList.add('active');}
-    });
-    drop.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeAll);});
-  }
-  if(ham&&mob){
-    ham.addEventListener('click',function(e){
-      e.stopPropagation();
-      var o=mob.classList.contains('open');
-      closeAll();
-      if(!o){mob.classList.add('open');ham.classList.add('open');}
-    });
-  }
-  document.addEventListener('click',function(e){
-    var el=e.target;
-    var inside=false;
-    [btn,drop,ham,mob,si,sr,msi,msr].forEach(function(n){if(n&&n.contains(el))inside=true;});
-    if(!inside){closeAll();closeSearch();}
-  });
-
-  // Full-text search
-  var IDX=null,IDX_LOADING=false,IDX_CBS=[];
-  var SIDX='https://veterancareerpath.com/search_index.json';
-
-  function loadIdx(cb){
-    if(IDX){cb(IDX);return;}
-    IDX_CBS.push(cb);
-    if(IDX_LOADING)return;
-    IDX_LOADING=true;
-    fetch(SIDX).then(function(r){return r.json();}).then(function(d){
-      IDX=d;IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];
-    }).catch(function(){IDX=[];IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];});
-  }
-
-  function doSearch(idx,q){
-    var terms=q.toLowerCase().replace(/[^a-z0-9 ]/g,' ').trim().split(' ').filter(function(t){return t.length>1;});
-    if(!terms.length)return[];
-    // Also try searching for the raw query (handles "88m", "11b" etc)
-    var rawTerm=q.toLowerCase().trim();
-    var out=[];
-    for(var i=0;i<idx.length;i++){
-      var p=idx[i];
-      var kw=(p.keywords||'').toLowerCase();
-      var haystack=(p.title+' '+p.desc+' '+kw+' '+p.text).toLowerCase();
-      var score=0;
-      var miss=false;
-      for(var j=0;j<terms.length;j++){
-        var t=terms[j];
-        var tc=0,pos=0;
-        while((pos=haystack.indexOf(t,pos))>=0){tc++;pos++;}
-        var ttc=0,tpos=0,tl=p.title.toLowerCase();
-        while((tpos=tl.indexOf(t,tpos))>=0){ttc++;tpos++;}
-        var dtc=0,dpos=0,dl=(p.desc||'').toLowerCase();
-        while((dpos=dl.indexOf(t,dpos))>=0){dtc++;dpos++;}
-        var ktc=0,kpos=0;
-        while((kpos=kw.indexOf(t,kpos))>=0){ktc++;kpos++;}
-        if(!tc){miss=true;break;}
-        score+=ttc*20+dtc*8+ktc*12+(tc-ttc-dtc-ktc)*1;
-      }
-      if(miss||score===0)continue;
-      // Build snippet
-      var snip='';
-      var body=p.text||'';
-      var blow=body.toLowerCase();
-      var fp=blow.indexOf(terms[0]);
-      if(fp>=0){
-        var s=Math.max(0,fp-55),e=Math.min(body.length,fp+terms[0].length+80);
-        snip=(s>0?'...':'')+body.slice(s,e).replace(/[<>]/g,'')+(e<body.length?'...':'');
-      }else{snip=(p.desc||'').slice(0,130);}
-      // Highlight
-      for(var k=0;k<terms.length;k++){
-        snip=snip.replace(new RegExp('('+terms[k]+')','gi'),'<em>$1</em>');
-      }
-      var titHL=p.title;
-      for(var k=0;k<terms.length;k++){
-        titHL=titHL.replace(new RegExp('('+terms[k]+')','gi'),'<em>$1</em>');
-      }
-      out.push({url:p.url,title:titHL,snip:snip,score:score});
-    }
-    out.sort(function(a,b){return b.score-a.score;});
-    return out.slice(0,15);
-  }
-
-  function renderSR(results,q,container,mob){
-    if(!results.length){
-      container.innerHTML='<div class="vcp-sr-none">No results for "'+q+'"</div>';
-      container.classList.add('open');return;
-    }
-    var h='<div class="vcp-sr-header">'+results.length+' results for "'+q+'"</div>';
-    h+=results.map(function(r){
-      if(mob)return '<a href="'+r.url+'"><div class="vcp-mob-sr-title">'+r.title+'</div><div class="vcp-mob-sr-snip">'+r.snip+'</div></a>';
-      return '<a class="vcp-sr-item" href="'+r.url+'"><div class="vcp-sr-title">'+r.title+'</div><div class="vcp-sr-snippet">'+r.snip+'</div></a>';
-    }).join('');
-    container.innerHTML=h;
-    container.classList.add('open');
-  }
-
-  function closeSearch(){
-    if(sr){sr.classList.remove('open');}
-    if(msr){msr.classList.remove('open');}
-  }
-
-  var dt=null;
-  function onInput(input,container,isMob){
-    clearTimeout(dt);
-    var q=input.value.trim();
-    if(q.length<2){container.classList.remove('open');container.innerHTML='';return;}
-    container.innerHTML='<div class="vcp-sr-loading">Searching...</div>';
-    container.classList.add('open');
-    dt=setTimeout(function(){
-      loadIdx(function(idx){renderSR(doSearch(idx,q),q,container,isMob);});
-    },220);
-  }
-
-  if(si&&sr){
-    si.addEventListener('input',function(){onInput(si,sr,false);});
-    si.addEventListener('keydown',function(e){
-      if(e.key==='Escape'){closeSearch();this.blur();}
-      if(e.key==='Enter'){var f=sr.querySelector('.vcp-sr-item');if(f)window.location.href=f.href;}
-      if(e.key==='ArrowDown'){var f=sr.querySelector('.vcp-sr-item');if(f){f.focus();e.preventDefault();}}
-    });
-    si.addEventListener('focus',function(){loadIdx(function(){});});
-  }
-  if(msi&&msr){
-    msi.addEventListener('input',function(){onInput(msi,msr,true);});
-    msi.addEventListener('keydown',function(e){
-      if(e.key==='Enter'){var f=msr.querySelector('a');if(f)window.location.href=f.href;}
-    });
-  }
-  if(ham)ham.addEventListener('mouseenter',function(){loadIdx(function(){});});
-})();
-
-
-(function(){
-  var b=document.getElementById("hamburger-btn"),m=document.getElementById("mobile-menu");
-  if(!b||!m)return;
-  b.addEventListener("click",function(){b.classList.toggle("open");m.classList.toggle("open");});
-  m.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){b.classList.remove("open");m.classList.remove("open");});});
-  document.addEventListener("click",function(e){if(!b.contains(e.target)&&!m.contains(e.target)){b.classList.remove("open");m.classList.remove("open");}});
-})();
-
-</script>
-<script>
-
-(function(){
-  var btn=document.getElementById('vcp-more-btn');
-  var drop=document.getElementById('vcp-drop');
-  var ham=document.getElementById('vcp-ham');
-  var mob=document.getElementById('vcp-mob');
-  var si=document.getElementById('vcp-si');
-  var sr=document.getElementById('vcp-sr');
-  var msi=document.getElementById('vcp-mob-si');
-  var msr=document.getElementById('vcp-mob-sr');
-
-  // Dropdown
-  function closeAll(){
-    if(drop)drop.classList.remove('open');
-    if(btn)btn.classList.remove('active');
-    if(ham)ham.classList.remove('open');
-    if(mob)mob.classList.remove('open');
-  }
-  if(btn&&drop){
-    btn.addEventListener('click',function(e){
-      e.stopPropagation();
-      var o=drop.classList.contains('open');
-      closeAll();
-      if(!o){drop.classList.add('open');btn.classList.add('active');}
-    });
-    drop.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeAll);});
-  }
-  if(ham&&mob){
-    ham.addEventListener('click',function(e){
-      e.stopPropagation();
-      var o=mob.classList.contains('open');
-      closeAll();
-      if(!o){mob.classList.add('open');ham.classList.add('open');}
-    });
-  }
-  document.addEventListener('click',function(e){
-    var el=e.target;
-    var inside=false;
-    [btn,drop,ham,mob,si,sr,msi,msr].forEach(function(n){if(n&&n.contains(el))inside=true;});
-    if(!inside){closeAll();closeSearch();}
-  });
-
-  // Full-text search
-  var IDX=null,IDX_LOADING=false,IDX_CBS=[];
-  var SIDX='https://veterancareerpath.com/search_index.json';
-
-  function loadIdx(cb){
-    if(IDX){cb(IDX);return;}
-    IDX_CBS.push(cb);
-    if(IDX_LOADING)return;
-    IDX_LOADING=true;
-    fetch(SIDX).then(function(r){return r.json();}).then(function(d){
-      IDX=d;IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];
-    }).catch(function(){IDX=[];IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];});
-  }
-
-  function doSearch(idx,q){
-    var terms=q.toLowerCase().replace(/[^a-z0-9 ]/g,' ').trim().split(' ').filter(function(t){return t.length>1;});
-    if(!terms.length)return[];
-    // Also try searching for the raw query (handles "88m", "11b" etc)
-    var rawTerm=q.toLowerCase().trim();
-    var out=[];
-    for(var i=0;i<idx.length;i++){
-      var p=idx[i];
-      var kw=(p.keywords||'').toLowerCase();
-      var haystack=(p.title+' '+p.desc+' '+kw+' '+p.text).toLowerCase();
-      var score=0;
-      var miss=false;
-      for(var j=0;j<terms.length;j++){
-        var t=terms[j];
-        var tc=0,pos=0;
-        while((pos=haystack.indexOf(t,pos))>=0){tc++;pos++;}
-        var ttc=0,tpos=0,tl=p.title.toLowerCase();
-        while((tpos=tl.indexOf(t,tpos))>=0){ttc++;tpos++;}
-        var dtc=0,dpos=0,dl=(p.desc||'').toLowerCase();
-        while((dpos=dl.indexOf(t,dpos))>=0){dtc++;dpos++;}
-        var ktc=0,kpos=0;
-        while((kpos=kw.indexOf(t,kpos))>=0){ktc++;kpos++;}
-        if(!tc){miss=true;break;}
-        score+=ttc*20+dtc*8+ktc*12+(tc-ttc-dtc-ktc)*1;
-      }
-      if(miss||score===0)continue;
-      // Build snippet
-      var snip='';
-      var body=p.text||'';
-      var blow=body.toLowerCase();
-      var fp=blow.indexOf(terms[0]);
-      if(fp>=0){
-        var s=Math.max(0,fp-55),e=Math.min(body.length,fp+terms[0].length+80);
-        snip=(s>0?'...':'')+body.slice(s,e).replace(/[<>]/g,'')+(e<body.length?'...':'');
-      }else{snip=(p.desc||'').slice(0,130);}
-      // Highlight
-      for(var k=0;k<terms.length;k++){
-        snip=snip.replace(new RegExp('('+terms[k]+')','gi'),'<em>$1</em>');
-      }
-      var titHL=p.title;
-      for(var k=0;k<terms.length;k++){
-        titHL=titHL.replace(new RegExp('('+terms[k]+')','gi'),'<em>$1</em>');
-      }
-      out.push({url:p.url,title:titHL,snip:snip,score:score});
-    }
-    out.sort(function(a,b){return b.score-a.score;});
-    return out.slice(0,15);
-  }
-
-  function renderSR(results,q,container,mob){
-    if(!results.length){
-      container.innerHTML='<div class="vcp-sr-none">No results for "'+q+'"</div>';
-      container.classList.add('open');return;
-    }
-    var h='<div class="vcp-sr-header">'+results.length+' results for "'+q+'"</div>';
-    h+=results.map(function(r){
-      if(mob)return '<a href="'+r.url+'"><div class="vcp-mob-sr-title">'+r.title+'</div><div class="vcp-mob-sr-snip">'+r.snip+'</div></a>';
-      return '<a class="vcp-sr-item" href="'+r.url+'"><div class="vcp-sr-title">'+r.title+'</div><div class="vcp-sr-snippet">'+r.snip+'</div></a>';
-    }).join('');
-    container.innerHTML=h;
-    container.classList.add('open');
-  }
-
-  function closeSearch(){
-    if(sr){sr.classList.remove('open');}
-    if(msr){msr.classList.remove('open');}
-  }
-
-  var dt=null;
-  function onInput(input,container,isMob){
-    clearTimeout(dt);
-    var q=input.value.trim();
-    if(q.length<2){container.classList.remove('open');container.innerHTML='';return;}
-    container.innerHTML='<div class="vcp-sr-loading">Searching...</div>';
-    container.classList.add('open');
-    dt=setTimeout(function(){
-      loadIdx(function(idx){renderSR(doSearch(idx,q),q,container,isMob);});
-    },220);
-  }
-
-  if(si&&sr){
-    si.addEventListener('input',function(){onInput(si,sr,false);});
-    si.addEventListener('keydown',function(e){
-      if(e.key==='Escape'){closeSearch();this.blur();}
-      if(e.key==='Enter'){var f=sr.querySelector('.vcp-sr-item');if(f)window.location.href=f.href;}
-      if(e.key==='ArrowDown'){var f=sr.querySelector('.vcp-sr-item');if(f){f.focus();e.preventDefault();}}
-    });
-    si.addEventListener('focus',function(){loadIdx(function(){});});
-  }
-  if(msi&&msr){
-    msi.addEventListener('input',function(){onInput(msi,msr,true);});
-    msi.addEventListener('keydown',function(e){
-      if(e.key==='Enter'){var f=msr.querySelector('a');if(f)window.location.href=f.href;}
-    });
-  }
-  if(ham)ham.addEventListener('mouseenter',function(){loadIdx(function(){});});
-})();
-
-
-function filterConds(query) {
-  query = query.toLowerCase().trim();
-  document.querySelectorAll('.cond-card').forEach(function(card) {
-    var text = card.textContent.toLowerCase();
-    card.style.display = (!query || text.includes(query)) ? '' : 'none';
-  });
-  // If searching, expand all sections
-  if (query) {
-    document.querySelectorAll('.sc-bd').forEach(function(bd) {
-      bd.style.display = 'block';
-      var btn = bd.previousElementSibling;
-      if (btn) { btn.classList.add('open'); btn.querySelector('.chv').textContent = '▲'; }
-    });
-  }
-}
-function toggleSec(btn) {
-  var bd = btn.nextElementSibling;
-  var open = bd.style.display === 'block';
-  bd.style.display = open ? 'none' : 'block';
-  btn.classList.toggle('open', !open);
-  btn.querySelector('.chv').textContent = open ? '▼' : '▲';
-}
-
-
-// SECTION TOGGLE
-function tog(btn){
-  btn.classList.toggle('open');
-  btn.setAttribute('aria-expanded', btn.classList.contains('open'));
-  var bd = btn.nextElementSibling;
-  bd.classList.toggle('visible');
-  bd.style.display = bd.classList.contains('visible') ? 'block' : 'none';
-}
-
-// SEARCH
-function search(q){
-  var term = q.toLowerCase().trim();
-  document.querySelectorAll('.ct tbody tr').forEach(function(row){
-    var match = !term || row.textContent.toLowerCase().includes(term);
-    row.classList.toggle('hidden', !match);
-    if(match && term){
-      var bd = row.closest('.sc-bd');
-      if(bd && !bd.classList.contains('visible')){
-        bd.classList.add('visible');
-        bd.style.display = 'block';
-        var hd = bd.previousElementSibling;
-        if(hd) hd.classList.add('open');
-      }
-    }
-  });
-}
-
-// RATING PILLS
-function addRating(){
-  var val = document.getElementById('newRating').value;
-  var pill = document.createElement('div');
-  pill.className = 'r-pill';
-  pill.innerHTML = val + '<button onclick="remRating(this)">✕</button>';
-  document.getElementById('rPills').appendChild(pill);
-}
-function remRating(btn){
-  var pills = document.getElementById('rPills').querySelectorAll('.r-pill');
-  if(pills.length > 1) btn.parentElement.remove();
-}
-
-// MARITAL STATUS TOGGLE
-document.getElementById('dMarital').addEventListener('change', function(){
-  document.getElementById('dSpouseAA_wrap').style.display = this.value === 'spouse' ? 'block' : 'none';
-});
-
-// 2026 RATE TABLES
-var RATES = {"10": {"alone": 175.51, "spouse": 175.51, "child": 175.51, "spouse_child": 175.51, "spouse_aa": 175.51, "spouse_aa_child": 175.51}, "20": {"alone": 346.95, "spouse": 346.95, "child": 346.95, "spouse_child": 346.95, "spouse_aa": 346.95, "spouse_aa_child": 346.95}, "30": {"alone": 537.42, "spouse": 601.74, "child": 571.57, "spouse_child": 638.46, "spouse_aa": 663.28, "spouse_aa_child": 700.0}, "40": {"alone": 774.16, "spouse": 856.5, "child": 814.92, "spouse_child": 905.72, "spouse_aa": 942.1, "spouse_aa_child": 991.32}, "50": {"alone": 1102.04, "spouse": 1214.03, "child": 1154.19, "spouse_child": 1277.96, "spouse_aa": 1331.37, "spouse_aa_child": 1395.3}, "60": {"alone": 1395.93, "spouse": 1530.23, "child": 1451.91, "spouse_child": 1607.66, "spouse_aa": 1686.0, "spouse_aa_child": 1763.52}, "70": {"alone": 1759.19, "spouse": 1924.0, "child": 1820.31, "spouse_child": 2015.93, "spouse_aa": 2080.68, "spouse_aa_child": 2172.62}, "80": {"alone": 2044.89, "spouse": 2230.7, "child": 2110.33, "spouse_child": 2336.13, "spouse_aa": 2406.98, "spouse_aa_child": 2512.41}, "90": {"alone": 2297.96, "spouse": 2504.77, "child": 2366.97, "spouse_child": 2623.7, "spouse_aa": 2703.71, "spouse_aa_child": 2822.44}, "100": {"alone": 3831.3, "spouse": 4046.25, "child": 3992.96, "spouse_child": 4186.35, "spouse_aa": 4290.8, "spouse_aa_child": 4430.9}};
-var CHILD_U18 = 32.51;
-var CHILD_SCH  = 105.33;
-var PARENT_ADD = {"10": 0, "20": 0, "30": 35.96, "40": 47.93, "50": 60.78, "60": 73.64, "70": 86.5, "80": 99.35, "90": 112.21, "100": 124.87};
-
-function calcComp(){
-  // Get ratings
-  var pills = document.getElementById('rPills').querySelectorAll('.r-pill');
-  var ratings = Array.from(pills).map(function(p){
-    return parseInt(p.textContent.replace('%','').trim());
-  }).filter(function(n){return !isNaN(n);});
-
-  if(ratings.length === 0){ alert('Add at least one rating.'); return; }
-
-  ratings.sort(function(a,b){return b-a;});
-
-  // Combined rating (VA whole-person method)
-  var remaining = 100;
-  var mathStr = '100%';
-  ratings.forEach(function(r){
-    var taken = remaining * (r/100);
-    remaining -= taken;
-    mathStr += ' → ' + r + '% of remaining';
-  });
-  var combined = Math.round(100 - remaining);
-  var rounded = Math.round(combined / 10) * 10;
-  var capped = Math.min(rounded, 100);
-
-  // Dependents
-  var marital = document.getElementById('dMarital').value;
-  var hasSpouse = marital === 'spouse';
-  var spouseAA = hasSpouse && document.getElementById('dSpouseAA').value === 'yes';
-  var childU18 = parseInt(document.getElementById('dChildU18').value) || 0;
-  var childSch = parseInt(document.getElementById('dChildSchool').value) || 0;
-  var parents  = parseInt(document.getElementById('dParents').value) || 0;
-
-  // Base rate
-  var rateRow = RATES[capped] || RATES[10];
-  var base;
-  var statusLabel;
-
-  if(capped < 30){
-    // Under 30% — no dependent differential
-    base = rateRow['alone'];
-    statusLabel = 'Veteran alone (dependents not counted below 30%)';
-  } else {
-    if(!hasSpouse && childU18 === 0 && childSch === 0){
-      base = rateRow['alone'];
-      statusLabel = 'Veteran alone';
-    } else if(hasSpouse && spouseAA && (childU18 > 0 || childSch > 0)){
-      base = rateRow['spouse_aa_child'];
-      statusLabel = 'Veteran + spouse (A&A) + child';
-    } else if(hasSpouse && spouseAA){
-      base = rateRow['spouse_aa'];
-      statusLabel = 'Veteran + spouse (Aid and Attendance)';
-    } else if(hasSpouse && (childU18 > 0 || childSch > 0)){
-      base = rateRow['spouse_child'];
-      statusLabel = 'Veteran + spouse + child';
-    } else if(hasSpouse){
-      base = rateRow['spouse'];
-      statusLabel = 'Veteran + spouse';
-    } else if(childU18 > 0 || childSch > 0){
-      base = rateRow['child'];
-      statusLabel = 'Veteran + child (no spouse)';
-    } else {
-      base = rateRow['alone'];
-      statusLabel = 'Veteran alone';
-    }
-
-    // Additional children beyond first
-    var firstChild = (childU18 > 0 || childSch > 0) ? 1 : 0;
-    var extraU18 = Math.max(0, childU18 - (firstChild === 1 && childU18 > 0 ? 1 : 0));
-    var extraSch = childSch - (firstChild === 1 && childU18 === 0 && childSch > 0 ? 1 : 0);
-    // Actually simpler: the table covers "one child" — additional are per-child adds
-    // For first child already in table, count extras from 2nd child onward
-    var extraU18add = Math.max(0, childU18 - 1) * CHILD_U18;
-    var extraSchAdd = Math.max(0, childSch - (childU18 === 0 ? 1 : 0)) * CHILD_SCH;
-    if(childU18 === 0 && childSch > 0){ extraSchAdd = (childSch - 1) * CHILD_SCH; }
-    if(childU18 > 0){ extraU18add = (childU18 - 1) * CHILD_U18; extraSchAdd = childSch * CHILD_SCH; }
-    base += extraU18add + extraSchAdd;
-  }
-
-  // Parent addition
-  var parentAdd = (PARENT_ADD[capped] || 0) * parents;
-  var total = base + parentAdd;
-
-  // Render
-  var breakdown = [];
-  breakdown.push(['Base rate (' + statusLabel + ')', fmt(base)]);
-  if(parentAdd > 0) breakdown.push(['Dependent parent(s) addition', fmt(parentAdd)]);
-  if(base !== total) breakdown.push(['Total', fmt(total)]);
-
-  var breakdownHtml = breakdown.map(function(r){
-    return '<div class="rb-row"><span>' + r[0] + '</span><strong>' + r[1] + '</strong></div>';
-  }).join('');
-
-  var el = document.getElementById('calcResult');
-  document.getElementById('rcCombined').textContent = capped + '%';
-  document.getElementById('rcMath').textContent = 'Exact: ' + combined + '% → rounded to ' + capped + '%  |  Ratings: ' + ratings.join('%, ') + '%';
-  document.getElementById('rcPay').textContent = fmt(total) + '/month';
-  document.getElementById('rcBreakdown').innerHTML = breakdownHtml;
-  document.getElementById('rcNote').textContent = 'Estimate based on 2026 VA pay tables. Actual payment may vary. Does not include SMC, TDIU, or ancillary benefits.';
-  el.classList.add('show');
-  el.scrollIntoView({behavior:'smooth', block:'nearest'});
-}
-
-function fmt(n){
-  return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
-// SIDEBAR LINK ACTIVATION
-var sbLinks = document.querySelectorAll('.sb-link');
-window.addEventListener('scroll', function(){
-  var scrollY = window.scrollY + 100;
-  sbLinks.forEach(function(link){
-    var id = link.getAttribute('href').slice(1);
-    var el = document.getElementById(id);
-    if(el && el.offsetTop <= scrollY && el.offsetTop + el.offsetHeight > scrollY){
-      sbLinks.forEach(function(l){l.classList.remove('on');});
-      link.classList.add('on');
-    }
-  });
-});
-
-// INIT — open first section body
-document.querySelectorAll('.sc-bd.visible').forEach(function(bd){
-  bd.style.display = 'block';
-});
-
-</script>
 <!-- Structured data for calculator -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"SoftwareApplication","name":"VA Disability Rating Calculator","applicationCategory":"HealthApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free VA disability combined rating calculator with 2026 compensation tables."}

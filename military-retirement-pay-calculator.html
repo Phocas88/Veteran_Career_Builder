@@ -91,23 +91,6 @@ img,video,iframe,table,pre,code{max-width:100%;}
   .card-body{padding:.85rem!important;}
   .form-grid,.result-grid{grid-template-columns:1fr!important;}
   .total-bar{flex-direction:column;text-align:center;}
-  .tab-
-  .tab-btn{flex-shrink:0;}
-  .radio-group{flex-direction:column;}
-  .radio-opt{min-width:0;width:100%;}
-}
-
-/* ── Mobile overflow fix ── */
-*{box-sizing:border-box;}
-img,video,iframe,table,pre,code{max-width:100%;}
-.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.tbl-wrap table,.info-table{min-width:0;width:100%;}
-@media(max-width:768px){
-  main{padding:1rem!important;gap:1rem!important;}
-  .hero,.hero-section,.hero-inner{padding-left:1rem!important;padding-right:1rem!important;}
-  .card-body{padding:.85rem!important;}
-  .form-grid,.result-grid{grid-template-columns:1fr!important;}
-  .total-bar{flex-direction:column;text-align:center;}
   .tab-nav{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
   .tab-btn{flex-shrink:0;}
   .radio-group{flex-direction:column;}
@@ -1093,13 +1076,13 @@ body.menu-open{overflow:hidden!important;}
 </div>
 
 <script>
-const VA_RATES_2025 = {10:175.51,20:346.95,30:537.42,40:774.16,50:1102.04,60:1395.93,70:1759.19,80:2044.89,90:2297.96,100:3737.85};
+const VA_RATES_2026 = {10:175.51,20:346.95,30:537.42,40:774.16,50:1102.04,60:1395.93,70:1759.19,80:2044.89,90:2297.96,100:3831.30};
 function calcRetirement(){
   var ret=parseFloat(document.getElementById('ret-pay').value)||0;
   var rating=parseInt(document.getElementById('va-rating').value)||0;
   var roundedRating=Math.round(rating/10)*10;
   if(roundedRating>100)roundedRating=100;
-  var vaComp=VA_RATES_2025[roundedRating]||0;
+  var vaComp=VA_RATES_2026[roundedRating]||0;
   var crdpEligible=rating>=50;
   var total=crdpEligible?ret+vaComp:Math.max(ret-vaComp,0)+vaComp;
   var note=crdpEligible?'<span style="color:#1a7a40;font-weight:600">CRDP eligible</span> - you receive BOTH retirement pay and VA compensation with no offset.':'Default offset applies - VA comp reduces retirement pay. If disability is combat-related, apply for CRSC.';

@@ -1090,7 +1090,7 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
         <p style="font-size:.85rem;color:#3a5a3a;line-height:1.6;">Thank you for helping the next veteran. Your story will be reviewed and published within 24 hours.</p>
       </div>
     <!-- ADMIN TOGGLE -->
-    <button class="admin-toggle" onclick="toggleStoryAdmin()">⚙ Admin</button>
+    <button class="admin-toggle" id="story-admin-btn" onclick="toggleStoryAdmin()" style="display:none;">⚙ Admin</button>
     <div class="admin-panel" id="story-admin-panel">
       <h3>🔐 Admin Panel</h3>
       <div id="story-admin-locked">
@@ -1218,6 +1218,8 @@ function submitStory() {
 loadStories();
 
 var storyAdminUnlocked = false;
+// Only show admin button if ?admin=1 is in URL
+if(new URLSearchParams(window.location.search).get("admin")==="1"){var ab=document.getElementById("story-admin-btn");if(ab)ab.style.display="";}
 
 function toggleStoryAdmin() {
   document.getElementById('story-admin-panel').classList.toggle('open');

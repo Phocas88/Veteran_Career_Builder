@@ -289,6 +289,349 @@ body.menu-open{overflow:hidden!important;}
 }
 </style>
 
+<style id="vcp-page-css">
+/* ══════════════════════════════════════════════════════════════════════════════
+   TAP RESOURCE PACK — PAGE STYLES
+══════════════════════════════════════════════════════════════════════════════ */
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  margin:0;padding:0;
+  background:#f4f6f9;color:#1a2a3a;
+  line-height:1.6;
+}
+
+/* ── PRINT HEADER / FOOTER (hidden on screen) ── */
+.print-header,.print-footer{display:none;}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(135deg,#08111e 0%,#132744 60%,#1a3a6b 100%);
+  padding:3rem 6% 2.5rem;
+  text-align:center;
+  color:#fff;
+}
+.hero-badge{
+  display:inline-block;
+  background:rgba(240,192,64,.12);
+  border:1px solid rgba(240,192,64,.25);
+  color:#f0c040;
+  font-size:.75rem;font-weight:600;letter-spacing:.05em;
+  padding:.35rem 1rem;border-radius:20px;
+  margin-bottom:1rem;
+}
+.hero h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.8rem;letter-spacing:.06em;
+  margin:0 0 .5rem;color:#fff;line-height:1.1;
+}
+.hero h1 em{
+  color:#f0c040;font-style:normal;
+}
+.hero p{
+  max-width:740px;margin:0 auto 1.5rem;
+  font-size:.92rem;color:rgba(192,216,240,.75);line-height:1.65;
+}
+.btn-row{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;}
+.btn-print{
+  background:linear-gradient(135deg,#c8960a,#e8aa10);
+  color:#08111e;font-weight:700;font-size:.9rem;
+  border:none;border-radius:8px;padding:.7rem 1.5rem;
+  cursor:pointer;font-family:'Inter',sans-serif;
+  transition:opacity .15s;
+}
+.btn-print:hover{opacity:.88;}
+.btn-view{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:#fff;font-weight:600;font-size:.9rem;
+  border-radius:8px;padding:.7rem 1.5rem;
+  text-decoration:none;transition:background .15s;
+}
+.btn-view:hover{background:rgba(255,255,255,.18);}
+
+/* ── WRAP ── */
+.wrap{
+  max-width:1060px;margin:0 auto;padding:1.5rem 1.25rem 2rem;
+}
+
+/* ── SECTIONS ── */
+.section{
+  background:#fff;
+  border:1px solid #dce3eb;
+  border-radius:10px;
+  padding:1.75rem 2rem;
+  margin-bottom:1.5rem;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+  page-break-inside:avoid;
+}
+.section h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.45rem;letter-spacing:.06em;
+  color:#0d1f3c;
+  margin:0 0 .25rem;
+  padding-bottom:.6rem;
+  border-bottom:3px solid #f0c040;
+  display:flex;align-items:center;gap:.5rem;
+}
+.section h2 .sec-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:#0d1f3c;color:#f0c040;
+  font-family:'Bebas Neue',sans-serif;font-size:.85rem;
+  width:28px;height:28px;border-radius:6px;
+  flex-shrink:0;
+}
+.section h3{
+  font-size:1rem;font-weight:700;color:#1a3a6b;
+  margin:1.25rem 0 .5rem;padding-left:.25rem;
+  border-left:3px solid #f0c040;padding-left:.65rem;
+}
+
+/* ── CHECKLIST ── */
+.checklist{
+  list-style:none;padding:0;margin:.5rem 0;
+}
+.checklist li{
+  position:relative;padding:.55rem .5rem .55rem 2rem;
+  border-bottom:1px solid #f0f2f5;
+  font-size:.88rem;line-height:1.55;
+}
+.checklist li:last-child{border-bottom:none;}
+.checklist li::before{
+  content:'\\2610';
+  position:absolute;left:.35rem;top:.55rem;
+  font-size:1.1rem;color:#1a3a6b;
+}
+
+/* ── TABLES ── */
+.tbl-wrap{overflow-x:auto;margin:.75rem 0;}
+table{
+  width:100%;border-collapse:collapse;font-size:.82rem;
+}
+thead{background:#0d1f3c;}
+thead th{
+  color:#f0c040;font-weight:700;font-size:.72rem;
+  letter-spacing:.04em;text-transform:uppercase;
+  padding:.6rem .65rem;text-align:left;
+  border-bottom:2px solid #f0c040;
+  white-space:nowrap;
+}
+tbody td{
+  padding:.55rem .65rem;
+  border-bottom:1px solid #e8ecf1;
+  vertical-align:top;
+  color:#1a2a3a;
+}
+tbody tr:nth-child(even){background:#f8f9fb;}
+tbody tr:hover{background:#eef3fa;}
+
+/* ── CALLOUT / ALERT ── */
+.callout{
+  background:#fdf8ec;
+  border-left:4px solid #f0c040;
+  padding:.85rem 1rem;margin-top:1rem;
+  border-radius:0 6px 6px 0;
+  font-size:.85rem;line-height:1.55;color:#3a3018;
+}
+.callout strong{color:#8b6914;}
+.alert-box{
+  background:#fef2f2;
+  border-left:4px solid #dc2626;
+  padding:.85rem 1rem;margin-top:1rem;
+  border-radius:0 6px 6px 0;
+  font-size:.85rem;line-height:1.55;color:#7f1d1d;
+}
+.alert-box strong{color:#dc2626;}
+
+/* ── CRISIS BOX ── */
+.crisis-box{
+  background:linear-gradient(135deg,#1a0a0a,#2d1212);
+  border:2px solid #dc2626;
+  border-radius:10px;
+  padding:1.5rem 1.75rem;
+  color:#fff;text-align:center;
+}
+.crisis-box h3{
+  color:#ff6b6b;font-size:1.15rem;margin:0 0 .35rem;
+  border:none;padding:0;
+}
+.crisis-box p{font-size:.88rem;color:rgba(255,255,255,.8);margin:.35rem 0;line-height:1.55;}
+.crisis-line{
+  display:block;
+  font-size:1.2rem;font-weight:700;
+  color:#fff;margin:.4rem 0;
+}
+
+/* ── LINK GRID (Section 10, screen only) ── */
+.link-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:1rem;
+  margin-bottom:1.25rem;
+}
+.link-group{
+  background:#f4f7fb;border:1px solid #dce3eb;
+  border-radius:8px;padding:1rem 1.15rem;
+}
+.link-group-header{
+  font-size:.72rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:#1a3a6b;
+  margin-bottom:.5rem;padding-bottom:.35rem;
+  border-bottom:2px solid #f0c040;
+}
+.link-group a{
+  display:block;font-size:.82rem;
+  color:#1a3a6b;text-decoration:none;
+  padding:.25rem 0;
+  border-bottom:1px solid rgba(0,0,0,.04);
+}
+.link-group a:last-child{border-bottom:none;}
+.link-group a:hover{color:#c8960a;}
+
+/* ── AD SLOTS ── */
+.ad{margin:1.5rem 0;text-align:center;}
+
+/* ── BRANCH ICON HELPER ── */
+.branch-icon{
+  width:24px;height:24px;vertical-align:middle;
+  margin-right:.35rem;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .hero h1{font-size:2rem;}
+  .hero p{font-size:.85rem;}
+  .section{padding:1.25rem 1rem;}
+  .link-grid{grid-template-columns:1fr;}
+  table{font-size:.74rem;}
+  thead th,tbody td{padding:.4rem .45rem;}
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   PRINT STYLES
+══════════════════════════════════════════════════════════════════════════════ */
+@media print{
+  /* Hide non-essential elements */
+  .vcp-nav,.vcp-mega,.vcp-mob,
+  .hero,.ad,.no-print,
+  .btn-row,.btn-print,.btn-view,
+  footer,
+  .adsbygoogle,ins.adsbygoogle,
+  .vcp-search-results,
+  script{
+    display:none!important;
+  }
+
+  /* Show print header and footer */
+  .print-header{
+    display:block!important;
+    text-align:center;
+    padding:1rem 0 .75rem;
+    border-bottom:3px solid #000;
+    margin-bottom:1rem;
+  }
+  .print-header h1{
+    font-family:'Bebas Neue',Arial,sans-serif;
+    font-size:1.4rem;letter-spacing:.08em;
+    margin:0 0 .15rem;color:#000;
+  }
+  .print-header p{
+    font-size:.72rem;color:#444;margin:0;
+  }
+  .print-footer{
+    display:block!important;
+    text-align:center;
+    font-size:.65rem;color:#666;
+    border-top:2px solid #000;
+    padding:.65rem 0;
+    margin-top:1rem;
+  }
+
+  /* Reset page */
+  body{
+    background:#fff!important;color:#000!important;
+    font-size:10pt;line-height:1.45;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+  .wrap{
+    max-width:100%;padding:0;margin:0;
+  }
+
+  /* Sections */
+  .section{
+    border:1px solid #ccc;
+    box-shadow:none;
+    border-radius:0;
+    padding:1rem 1.25rem;
+    margin-bottom:.75rem;
+    page-break-inside:avoid;
+    break-inside:avoid;
+  }
+  .section h2{
+    font-size:1.15rem;color:#000;
+    border-bottom:2px solid #000;
+    page-break-after:avoid;
+    break-after:avoid;
+  }
+  .section h2 .sec-num{
+    background:#000;color:#fff;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+  .section h3{
+    color:#000;border-left-color:#000;
+    page-break-after:avoid;
+    break-after:avoid;
+  }
+
+  /* Tables */
+  table{width:100%;font-size:8pt;}
+  thead{background:#222!important;}
+  thead th{
+    color:#fff!important;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    font-size:7pt;padding:.35rem .4rem;
+  }
+  tbody td{padding:.3rem .4rem;border-bottom:1px solid #ccc;}
+  tbody tr:nth-child(even){background:#f5f5f5!important;}
+
+  /* Checklist */
+  .checklist li{font-size:9pt;padding:.35rem .5rem .35rem 1.8rem;}
+
+  /* Callout / Alert */
+  .callout{background:#f9f5e6!important;border-left:3px solid #000;}
+  .alert-box{background:#fef0f0!important;border-left:3px solid #c00;}
+
+  /* Crisis box */
+  .crisis-box{
+    background:#fff!important;color:#000!important;
+    border:3px solid #c00;
+    page-break-inside:avoid;
+  }
+  .crisis-box h3{color:#c00!important;}
+  .crisis-box p{color:#000!important;}
+  .crisis-line{color:#000!important;}
+
+  /* Page breaks between major sections */
+  .section:nth-of-type(3){page-break-before:always;}
+  .section:nth-of-type(5){page-break-before:always;}
+  .section:nth-of-type(7){page-break-before:always;}
+  .section:nth-of-type(9){page-break-before:always;}
+
+  /* Links show URL */
+  .section a[href]::after{
+    content:" (" attr(href) ")";
+    font-size:7pt;color:#666;
+    word-break:break-all;
+  }
+  .section table a[href]::after{content:none;}
+
+  /* Hide branch icons in print (they won't render well) */
+  .branch-icon{width:16px;height:16px;}
+}
+</style>
+
+</head>
+<body>
+
 <!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
 <nav class="vcp-nav">
   <a href="https://veterancareerpath.com" class="vcp-logo">
@@ -405,12 +748,12 @@ body.menu-open{overflow:hidden!important;}
 
       <div class="vcp-mega-section">
         <div class="vcp-mega-section-label">Find Your Branch</div>
-        <a href="https://veterancareerpath.com/army-mos-careers.html" class="featured">Army MOS Careers</a>
-        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" class="featured">Marine Corps MOS Careers</a>
-        <a href="https://veterancareerpath.com/navy-rate-careers.html" class="featured">Navy Rate Careers</a>
-        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" class="featured">Air Force AFSC Careers</a>
-        <a href="https://veterancareerpath.com/coast-guard-rating-careers.html" class="featured">Coast Guard Rating Careers</a>
-        <a href="https://veterancareerpath.com/space-force-afsc-careers.html" class="featured">Space Force AFSC Careers</a>
+        <a href="https://veterancareerpath.com/army-mos-careers.html" class="featured"><img src="https://veterancareerpath.com/army.png" width="18" height="18" alt="Army" style="vertical-align:middle;margin-right:.3rem;"> Army MOS Careers</a>
+        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" class="featured"><img src="https://veterancareerpath.com/marines.png" width="18" height="18" alt="Marines" style="vertical-align:middle;margin-right:.3rem;"> Marine Corps MOS Careers</a>
+        <a href="https://veterancareerpath.com/navy-rate-careers.html" class="featured"><img src="https://veterancareerpath.com/navy.png" width="18" height="18" alt="Navy" style="vertical-align:middle;margin-right:.3rem;"> Navy Rate Careers</a>
+        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" class="featured"><img src="https://veterancareerpath.com/airforce.png" width="18" height="18" alt="Air Force" style="vertical-align:middle;margin-right:.3rem;"> Air Force AFSC Careers</a>
+        <a href="https://veterancareerpath.com/coast-guard-rating-careers.html" class="featured"><img src="https://veterancareerpath.com/coastguard.png" width="18" height="18" alt="Coast Guard" style="vertical-align:middle;margin-right:.3rem;"> Coast Guard Rating Careers</a>
+        <a href="https://veterancareerpath.com/space-force-afsc-careers.html" class="featured"><img src="https://veterancareerpath.com/spaceforce.png" width="18" height="18" alt="Space Force" style="vertical-align:middle;margin-right:.3rem;"> Space Force AFSC Careers</a>
       </div>
 
       <div class="vcp-mega-section">
@@ -669,12 +1012,12 @@ body.menu-open{overflow:hidden!important;}
   <a href="https://veterancareerpath.com/free-assessment.html">Free Assessment</a>
 
   <span class="vcp-mob-sect">🎖️ MOS &amp; Branch Guides</span>
-  <a href="https://veterancareerpath.com/army-mos-careers.html">Army MOS Careers</a>
-  <a href="https://veterancareerpath.com/marine-corps-mos-careers.html">Marine Corps MOS</a>
-  <a href="https://veterancareerpath.com/navy-rate-careers.html">Navy Rate Careers</a>
-  <a href="https://veterancareerpath.com/air-force-afsc-careers.html">Air Force AFSC</a>
-  <a href="https://veterancareerpath.com/coast-guard-rating-careers.html">Coast Guard</a>
-  <a href="https://veterancareerpath.com/space-force-afsc-careers.html">Space Force</a>
+  <a href="https://veterancareerpath.com/army-mos-careers.html"><img src="https://veterancareerpath.com/army.png" width="18" height="18" alt="Army" style="vertical-align:middle;margin-right:.3rem;"> Army MOS Careers</a>
+  <a href="https://veterancareerpath.com/marine-corps-mos-careers.html"><img src="https://veterancareerpath.com/marines.png" width="18" height="18" alt="Marines" style="vertical-align:middle;margin-right:.3rem;"> Marine Corps MOS</a>
+  <a href="https://veterancareerpath.com/navy-rate-careers.html"><img src="https://veterancareerpath.com/navy.png" width="18" height="18" alt="Navy" style="vertical-align:middle;margin-right:.3rem;"> Navy Rate Careers</a>
+  <a href="https://veterancareerpath.com/air-force-afsc-careers.html"><img src="https://veterancareerpath.com/airforce.png" width="18" height="18" alt="Air Force" style="vertical-align:middle;margin-right:.3rem;"> Air Force AFSC</a>
+  <a href="https://veterancareerpath.com/coast-guard-rating-careers.html"><img src="https://veterancareerpath.com/coastguard.png" width="18" height="18" alt="Coast Guard" style="vertical-align:middle;margin-right:.3rem;"> Coast Guard</a>
+  <a href="https://veterancareerpath.com/space-force-afsc-careers.html"><img src="https://veterancareerpath.com/spaceforce.png" width="18" height="18" alt="Space Force" style="vertical-align:middle;margin-right:.3rem;"> Space Force</a>
 
   <span class="vcp-mob-sect">🏛️ Transition &amp; Federal</span>
   <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a>
@@ -996,7 +1339,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- SECTION 1: ETS CHECKLIST -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div class="section">
-<h2>&#9745; ETS Transition Checklist &mdash; 12 Months to Separation</h2>
+<h2><span class="sec-num">1</span> ETS Transition Checklist &mdash; 12 Months to Separation</h2>
 <h3>12 Months Out</h3>
 <ul class="checklist">
 <li><strong>Attend Initial TAP Counseling (Pre-Separation).</strong> Required by law. Schedule with your installation transition office.</li>
@@ -1046,7 +1389,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- SECTION 2: BENEFITS ELIGIBILITY QUICK-REFERENCE -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div class="section">
-<h2>&#128203; Benefits Eligibility Quick-Reference Card</h2>
+<h2><span class="sec-num">2</span> Benefits Eligibility Quick-Reference Card</h2>
 <div class="tbl-wrap">
 <table>
 <thead><tr><th>Benefit</th><th>Discharge Required</th><th>Service Length</th><th>Key Notes</th></tr></thead>
@@ -1070,7 +1413,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- SECTION 3: VA DISABILITY CLAIM FILING CHECKLIST -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div class="section">
-<h2>&#128196; VA Disability Claim Filing Checklist</h2>
+<h2><span class="sec-num">3</span> VA Disability Claim Filing Checklist</h2>
 <ul class="checklist">
 <li><strong>Step 1: Gather service medical records.</strong> Request complete STRs from your MTF or NPRC. Include all sick call records, dental, optometry, hearing tests.</li>
 <li><strong>Step 2: Identify all conditions.</strong> List every injury, illness, exposure, and chronic condition &mdash; even ones you think are minor. Tinnitus, knee pain, back pain, sleep issues, anxiety all count.</li>
@@ -1088,7 +1431,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- SECTION 4: GI BILL COMPARISON CHART -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div class="section">
-<h2>&#127891; GI Bill Comparison Chart</h2>
+<h2><span class="sec-num">4</span> GI Bill Comparison Chart</h2>
 <div class="tbl-wrap">
 <table>
 <thead><tr><th>Feature</th><th>Post-9/11 (Ch 33)</th><th>Montgomery (Ch 30)</th><th>VR&amp;E (Ch 31)</th><th>DEA (Ch 35)</th></tr></thead>
@@ -1113,7 +1456,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- SECTION 5: RESUME TRANSLATION CHEAT SHEET -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div class="section">
-<h2>&#128221; Military-to-Civilian Resume Translation Cheat Sheet</h2>
+<h2><span class="sec-num">5</span> Military-to-Civilian Resume Translation Cheat Sheet</h2>
 <div class="tbl-wrap">
 <table>
 <thead><tr><th>Military Term</th><th>Civilian Translation</th></tr></thead>
@@ -1145,7 +1488,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- SECTION 6: SALARY EXPECTATIONS BY MOS CATEGORY -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div class="section">
-<h2>&#128176; Salary Expectations by MOS Category</h2>
+<h2><span class="sec-num">6</span> Salary Expectations by MOS Category</h2>
 <div class="tbl-wrap">
 <table>
 <thead><tr><th>MOS Category</th><th>Entry Civilian Salary</th><th>Mid-Career</th><th>With Clearance Premium</th></tr></thead>
@@ -1170,7 +1513,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- SECTION 7: TOP 10 CERTIFICATIONS -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div class="section">
-<h2>&#127942; Top 10 Certifications Veterans Should Pursue</h2>
+<h2><span class="sec-num">7</span> Top 10 Certifications Veterans Should Pursue</h2>
 <div class="tbl-wrap">
 <table>
 <thead><tr><th>#</th><th>Certification</th><th>Cost</th><th>Timeline</th><th>Avg Salary Impact</th><th>Best For</th></tr></thead>
@@ -1197,7 +1540,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- SECTION 8: STATE BENEFITS QUICK-REFERENCE -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div class="section">
-<h2>&#127463;&#127480; State Veteran Benefits Quick-Reference</h2>
+<h2><span class="sec-num">8</span> State Veteran Benefits Quick-Reference</h2>
 <p>Every state offers unique veteran benefits including property tax exemptions, state education benefits, employment preference, and more. Complete guide with all 50 states:</p>
 <p style="text-align:center;margin:1rem 0;"><a href="https://veterancareerpath.com/state-veteran-benefits.html" style="display:inline-block;background:#0d1f3c;color:#f0c040;font-weight:700;font-size:.9rem;padding:.65rem 1.5rem;border-radius:8px;text-decoration:none;">View All 50 State Benefits Guides &rarr;</a></p>
 <div class="tbl-wrap">
@@ -1238,7 +1581,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- SECTION 9: CRISIS RESOURCES CARD -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div class="section">
-<h2>&#128680; Crisis Resources Card</h2>
+<h2><span class="sec-num">9</span> Crisis Resources Card</h2>
 <div class="crisis-box">
 <h3>VETERANS CRISIS LINE &mdash; FREE, CONFIDENTIAL, 24/7</h3>
 <p>Real people who understand service. Immediate support, no cost, no judgment.</p>
@@ -1259,7 +1602,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- SECTION 10: VCP TOOLS BY TAP SESSION -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div class="section no-print">
-<h2>&#128218; VCP Tools &amp; Resources by TAP Class Session</h2>
+<h2><span class="sec-num">10</span> VCP Tools &amp; Resources by TAP Class Session</h2>
 
 <h3>Session 1: Transition Overview &amp; Self-Assessment</h3>
 <div class="link-grid">
@@ -1411,10 +1754,10 @@ VeteranCareerPath.com &mdash; Built by a veteran, for veterans &mdash; Not affil
       </div>
       <div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">MOS Guides</div>
-        <a href="https://veterancareerpath.com/army-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Army MOS Careers</a>
-        <a href="https://veterancareerpath.com/navy-rate-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Navy Rate Careers</a>
-        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Marine Corps MOS</a>
-        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Air Force AFSC</a>
+        <a href="https://veterancareerpath.com/army-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;"><img src="https://veterancareerpath.com/army.png" width="16" height="16" alt="Army" style="vertical-align:middle;margin-right:.25rem;"> Army MOS Careers</a>
+        <a href="https://veterancareerpath.com/navy-rate-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;"><img src="https://veterancareerpath.com/navy.png" width="16" height="16" alt="Navy" style="vertical-align:middle;margin-right:.25rem;"> Navy Rate Careers</a>
+        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;"><img src="https://veterancareerpath.com/marines.png" width="16" height="16" alt="Marines" style="vertical-align:middle;margin-right:.25rem;"> Marine Corps MOS</a>
+        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;"><img src="https://veterancareerpath.com/airforce.png" width="16" height="16" alt="Air Force" style="vertical-align:middle;margin-right:.25rem;"> Air Force AFSC</a>
       </div>
       <div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">Company</div>

@@ -80,7 +80,7 @@
   .card{border-radius:8px!important;margin-bottom:.65rem!important;}
   .ch,.cb{padding:.85rem!important;}
   .nav-row{padding:.75rem!important;gap:.5rem!important;flex-wrap:wrap!important;}
-  .nav-row button{flex:1!important;font-size:.77rem!important;padding:.52rem!important;min-width:0!important;}
+  .nav-row button{flex:1!important;font-size:.77rem!important;padding:.52rem!important;min-width:0!important;min-height:44px!important;}
   .pw-plans{grid-template-columns:1fr!important;}
   .two-col,.result-row{grid-template-columns:1fr!important;}
   .card-grid{grid-template-columns:1fr!important;gap:.5rem!important;}
@@ -394,11 +394,26 @@ body.menu-open{overflow:hidden!important;}
   .vcp-desk{display:none!important;}
   .vcp-search-wrap{display:none!important;}
   .vcp-menu-btn{display:none!important;}
-  .vcp-ham{display:flex;}
+  .vcp-ham{display:flex;min-width:44px;min-height:44px;align-items:center;justify-content:center;}
   .vcp-mega{display:none!important;}
+  /* Mobile menu touch targets */
+  .vcp-mob a{min-height:44px;display:flex;align-items:center;padding:.6rem 5%;font-size:.88rem;}
+  .vcp-mob-cta{min-height:48px;display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+  .vcp-mob-sect{min-height:36px;display:flex;align-items:center;padding:.5rem 5% .25rem;}
+  /* Mobile menu scroll fix for long content */
+  .vcp-mob{max-height:calc(100vh - 56px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:2rem;}
+  /* Mobile search full-width and tappable */
+  .vcp-mob-search{padding:.75rem 5%;}
+  .vcp-mob-search input{min-height:44px;padding:.55rem 1rem;font-size:.9rem;}
 }
 @media(max-width:640px){
   .vcp-mega-inner{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:480px){
+  .vcp-nav{padding:0 3%;}
+  .vcp-logo-text{font-size:.8rem;}
+  .vcp-mob a{font-size:.85rem;padding:.55rem 4%;}
+  .vcp-mob-search{padding:.65rem 4%;}
 }
 </style>
 
@@ -1082,6 +1097,7 @@ body.menu-open{overflow:hidden!important;}
   } catch(e){}
 })();
 </script>
+
 
 
 
@@ -2358,12 +2374,50 @@ html{scroll-behavior:smooth;}
 .entry-badge{background:var(--navy);color:#fff;border:none;border-radius:20px;padding:.25rem .85rem;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
-@media(max-width:640px){
+/* ── TABLET ── */
+@media(max-width:768px){
   .g2,.g3{grid-template-columns:1fr;}
-  .wrap{padding:.85rem .75rem 5rem;}
+  .wrap{padding:1rem 1rem 5rem;}
   .tabs{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
   .tabs::-webkit-scrollbar{display:none;}
-  .tab{flex:0 0 auto;min-width:72px;padding:.6rem .6rem .5rem;font-size:.66rem;}
+  .tab{flex:0 0 auto;min-width:80px;padding:.65rem .65rem .55rem;font-size:.72rem;min-height:44px;}
+  .card{border-radius:10px;margin-bottom:1rem;}
+  .ch,.cb{padding:.9rem 1rem;}
+  .user-bar{padding:.5rem 1rem;flex-wrap:wrap;gap:.35rem;}
+  .hdr h1{font-size:clamp(1.6rem,5vw,2.4rem);}
+  .pw-plans{grid-template-columns:1fr;}
+  .two-col,.result-row{grid-template-columns:1fr;}
+  .card-grid{grid-template-columns:1fr;gap:.65rem;}
+  .resume-sections-grid{grid-template-columns:1fr;}
+  .grade-grid-2{grid-template-columns:1fr;}
+  .format-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));}
+  /* Profile dropdown fix */
+  .profile-dropdown{right:0;left:auto;min-width:200px;max-width:calc(100vw - 2rem);}
+  /* Nav row buttons */
+  .nav-row{flex-wrap:wrap;gap:.5rem;}
+  .nav-row button{min-height:44px;font-size:.82rem;}
+  /* Career grid */
+  .career-grid{grid-template-columns:1fr;}
+}
+/* ── PHONE ── */
+@media(max-width:480px){
+  .wrap{padding:.75rem .65rem 4rem;}
+  .tab{min-width:68px;padding:.55rem .5rem .45rem;font-size:.64rem;min-height:44px;}
+  .tab-n{font-size:.5rem;}
+  .ch,.cb{padding:.75rem .85rem;}
+  .hdr{padding:1.25rem .75rem 1rem;}
+  .hdr h1{font-size:clamp(1.4rem,6vw,2rem);}
+  .hdr p{font-size:.82rem;}
+  .user-bar{padding:.4rem .75rem;font-size:.72rem;}
+  .user-bar button{min-height:36px;padding:.3rem .6rem;}
+  .entry{padding:.85rem;}
+  .field input,.field select,.field textarea{font-size:.88rem;padding:.55rem .75rem;}
+  .tools-drawer{width:calc(100vw - 3rem);max-width:280px;}
+  .tools-fab{width:48px;height:48px;right:.75rem;bottom:4.5rem;}
+  .month-grid{grid-template-columns:repeat(3,1fr);}
+  .format-grid{grid-template-columns:1fr 1fr;}
+  /* Ensure all buttons are tappable */
+  button,.btn,.btn-sec,.btn-gold{min-height:44px;}
 }
 .field{margin-bottom:.75rem;}
 .field label{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--navy);font-weight:700;display:block;margin-bottom:.35rem;}

@@ -612,24 +612,71 @@ body{font-family:"Inter",sans-serif;background:var(--bg);color:var(--text);min-h
   .strength-grid{grid-template-columns:1fr 1fr!important;}
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
+/* ── TABLET ──────────────────────────────────────────────────────────────── */
+@media(max-width:768px){
+  .intro-wrap{padding:2rem 1rem 2.5rem;}
+  .assess-wrap{padding:1.5rem 1rem 2rem;}
+  .results-wrap{padding:2rem 1rem 3rem;}
+  .intro-callouts{grid-template-columns:1fr 1fr;}
+  .career-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));}
+  .strength-grid{grid-template-columns:1fr 1fr;}
+  .blend-grid{grid-template-columns:1fr;}
+  .bc-avoid-grid{grid-template-columns:1fr;}
+  .compare-fields{grid-template-columns:1fr 1fr;}
+  /* Touch targets */
+  .scale-btn{min-height:52px;min-width:52px;}
+  .btn-next,.btn-back,.start-btn,.gate-btn,.share-btn{min-height:44px;}
+  .topbar{padding:.6rem 1rem;}
+  /* Dim bar labels narrower */
+  .dim-bar-lbl{width:140px;font-size:.76rem;}
+  /* Share bar stack on narrow tablet */
+  .share-bar{flex-direction:column;align-items:stretch;gap:.75rem;}
+  .share-btns{justify-content:center;}
+  /* Gate box */
+  .gate-box{padding:2rem 1.5rem;}
+  .gate-features{grid-template-columns:1fr 1fr;gap:.5rem .65rem;}
+}
+
+/* ── PHONE ──────────────────────────────────────────────────────────────── */
 @media(max-width:480px){
-  .intro-wrap{padding:2rem 5% 2.5rem;}
+  .intro-wrap{padding:1.5rem 1rem 2rem;}
   .intro-callouts{grid-template-columns:1fr;}
-  .intro-stats{gap:1.5rem;}
-  .intro-stat .n{font-size:1.8rem;}
-  .dim-bar-lbl{width:115px;font-size:.72rem;}
+  .intro-stats{gap:1.25rem;}
+  .intro-stat .n{font-size:1.7rem;}
+  .intro-h{font-size:clamp(1.8rem,8vw,2.8rem);}
+  .dim-bar-lbl{width:100px;font-size:.7rem;}
   .compare-fields{grid-template-columns:1fr;}
-  .q-card{padding:1.15rem 1.1rem 1rem;}
-}
-@media(max-width:540px){
-  .strength-grid{grid-template-columns:1fr;}
-}
-@media(max-width:500px){
+  .q-card{padding:1rem .9rem .9rem;}
+  .q-text{font-size:.88rem;line-height:1.6;}
+  .assess-wrap{padding:1.25rem .85rem 1.75rem;}
+  .results-wrap{padding:1.5rem .85rem 2.5rem;}
+  /* Scale buttons: larger for touch */
   .scale-btn{min-height:54px;font-size:.98rem;border-radius:10px;}
-  .scale-row{gap:.5rem;}
-  .q-text{font-size:.9rem;}
-  .assess-wrap{padding:1.5rem 4% 2rem;}
+  .scale-row{gap:.45rem;}
+  /* Grids 1-col */
+  .strength-grid{grid-template-columns:1fr;}
+  .career-grid{grid-template-columns:1fr;}
+  /* Type card */
+  .type-card{padding:1.25rem 1rem;}
+  .type-header{flex-direction:column;gap:.65rem;}
+  /* Nav row */
+  .nav-row{gap:.5rem;flex-wrap:wrap;}
+  .btn-next{padding:.65rem 1.5rem;font-size:.92rem;}
+  .btn-back{padding:.55rem 1rem;font-size:.82rem;}
+  /* Gate */
+  .gate-box{padding:1.75rem 1.25rem;}
+  .gate-title{font-size:1.5rem;}
+  .gate-sub{font-size:.84rem;}
+  .gate-features{grid-template-columns:1fr;gap:.45rem;}
+  .gate-feat{font-size:.76rem;}
+  /* Results hero */
+  .results-h{font-size:clamp(1.6rem,7vw,2.4rem);}
+  .results-sub{font-size:.84rem;}
+  .profile-type{font-size:1.05rem;padding:.6rem 1.25rem;}
+  /* Share bar */
+  .share-bar{padding:.9rem 1rem;}
+  .share-info{font-size:.8rem;}
+  .share-btn{font-size:.76rem;padding:.45rem .85rem;min-height:44px;}
 }
 @media(min-width:768px){
   .scale-row{gap:.7rem;}

@@ -268,11 +268,26 @@ body.menu-open{overflow:hidden!important;}
   .vcp-desk{display:none!important;}
   .vcp-search-wrap{display:none!important;}
   .vcp-menu-btn{display:none!important;}
-  .vcp-ham{display:flex;}
+  .vcp-ham{display:flex;min-width:44px;min-height:44px;align-items:center;justify-content:center;}
   .vcp-mega{display:none!important;}
+  /* Mobile menu touch targets */
+  .vcp-mob a{min-height:44px;display:flex;align-items:center;padding:.6rem 5%;font-size:.88rem;}
+  .vcp-mob-cta{min-height:48px;display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+  .vcp-mob-sect{min-height:36px;display:flex;align-items:center;padding:.5rem 5% .25rem;}
+  /* Mobile menu scroll fix for long content */
+  .vcp-mob{max-height:calc(100vh - 56px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:2rem;}
+  /* Mobile search full-width and tappable */
+  .vcp-mob-search{padding:.75rem 5%;}
+  .vcp-mob-search input{min-height:44px;padding:.55rem 1rem;font-size:.9rem;}
 }
 @media(max-width:640px){
   .vcp-mega-inner{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:480px){
+  .vcp-nav{padding:0 3%;}
+  .vcp-logo-text{font-size:.8rem;}
+  .vcp-mob a{font-size:.85rem;padding:.55rem 4%;}
+  .vcp-mob-search{padding:.65rem 4%;}
 }
 </style>
 
@@ -963,6 +978,7 @@ body.menu-open{overflow:hidden!important;}
 
 
 
+
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
@@ -1054,6 +1070,65 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
 .resource-link .rl-desc{font-size:.75rem;color:#5a6a7a;}
 
 .ad-unit{text-align:center;padding:1rem 0;}
+
+/* ── TABLET ── */
+@media(max-width:768px){
+  .hero{padding:1.75rem 1rem 1.5rem;}
+  .hero h1{font-size:clamp(1.6rem,5vw,2.2rem);}
+  .hero p{font-size:.85rem;}
+  .hero-stats{gap:1rem;}
+  .wrap{padding:1.25rem 1rem 2rem;}
+  /* Search form fields stack */
+  .search-grid{grid-template-columns:1fr 1fr;}
+  /* Category cards 3-col on tablet */
+  .cat-grid{grid-template-columns:repeat(3,1fr);}
+  /* Platform buttons 1-col */
+  .platform-grid{grid-template-columns:1fr;}
+  .platform-btn{min-height:44px;}
+  /* Tips and resources */
+  .tips-grid{grid-template-columns:1fr 1fr;}
+  .resource-grid{grid-template-columns:1fr 1fr;}
+  /* Search button */
+  .search-btn{min-height:48px;font-size:1rem;}
+  .btn-outline{min-height:44px;}
+  /* Section card padding */
+  .section-card{padding:1.15rem;}
+  /* Inline grids */
+  [style*="grid-template-columns:1fr auto"]{grid-template-columns:1fr!important;}
+  [style*="grid-template-columns:repeat(auto-fit,minmax(160px"]{grid-template-columns:1fr 1fr!important;}
+}
+
+/* ── PHONE ── */
+@media(max-width:480px){
+  .hero{padding:1.25rem 1rem 1rem;}
+  .hero h1{font-size:clamp(1.4rem,7vw,1.9rem);}
+  .hero p{font-size:.82rem;line-height:1.6;}
+  .hero-badge{font-size:.62rem;padding:.2rem .65rem;}
+  .hero-stats{gap:.75rem;}
+  .hero-stat{font-size:.72rem;}
+  .hero-stat strong{font-size:.95rem;}
+  .wrap{padding:1rem .75rem 1.75rem;}
+  /* Search form full stack */
+  .search-grid{grid-template-columns:1fr;}
+  /* Category cards 2-col on phone */
+  .cat-grid{grid-template-columns:1fr 1fr;gap:.5rem;}
+  .cat-card{padding:.7rem .6rem;}
+  .cat-icon{font-size:1.3rem;}
+  .cat-name{font-size:.74rem;}
+  /* Tips and resources 1-col */
+  .tips-grid{grid-template-columns:1fr;}
+  .resource-grid{grid-template-columns:1fr;}
+  /* Section card */
+  .section-card{padding:.9rem;border-radius:10px;}
+  .section-card h2{font-size:.9rem;}
+  /* Analyze result */
+  .analyze-result{padding:1rem;}
+  .match-score{width:48px;height:48px;font-size:1rem;}
+  /* All buttons tappable */
+  .search-btn,.btn-outline,.platform-btn,.cat-card{min-height:44px;}
+  /* Field inputs */
+  .field input,.field select,.field textarea{font-size:.88rem;padding:.55rem .75rem;}
+}
 
 /* render markdown in analyzer */
 .md-output h3{font-size:.92rem;font-weight:700;color:#0d1f3c;margin:1rem 0 .4rem;}

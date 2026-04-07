@@ -945,8 +945,21 @@ body.menu-open{overflow:hidden!important;}
   // Preload search index when hovering menu
   if (menuBtn) menuBtn.addEventListener('mouseenter', function(){ loadIdx(function(){}); });
   if (ham) ham.addEventListener('mouseenter', function(){ loadIdx(function(){}); });
+
+  // Update CTA text for subscribers
+  try {
+    var acc = JSON.parse(localStorage.getItem("vcb_access")||"{}");
+    var isSub = (acc.type==="paid" && acc.stripeSession && acc.expiry>Date.now()) || (acc.type==="code" && acc.code);
+    if (isSub) {
+      var cta = document.querySelector('.vcp-cta-link');
+      if (cta) cta.textContent = 'AI Tools';
+      var megaFootBtn = document.querySelector('.btn-subscribe');
+      if (megaFootBtn) megaFootBtn.textContent = 'Open AI Tools →';
+    }
+  } catch(e){}
 })();
 </script>
+
 
 
 

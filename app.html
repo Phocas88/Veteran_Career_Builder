@@ -4076,25 +4076,59 @@ function MyProfileSaved(props) {
   
   
   <div className="card">
-    <div className="ch"><h3>Account</h3></div>
-    <div className="cb" style={{display:"flex",gap:".6rem",flexWrap:"wrap"}}>
-      {hasAccess?(
-        <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".4rem .75rem",fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>
-          ✓ Full Access Active
-          <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>window.open("https://billing.stripe.com/p/login/bJedR91qZcdieCZ8k7enS00","_blank")}>Manage Subscription ↗</button>
-        </div>
-      ):(
-        <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>
-          ⭐ Subscribe — $15/mo · All 16 AI Tools
-        </button>
-      )}
-      <button className="btn-sec" onClick={handleSaveProfile}>💾 Save All Progress</button>
-      <button className="btn-danger" onClick={()=>{if(window.confirm("Sign out?")) handleLogout();}}>Sign Out</button>
+    <div className="ch"><h3>Quick Links</h3></div>
+    <div className="cb">
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:".5rem"}}>
+        {[
+          {label:"Profile & Qualifications",icon:"📋",tab:0},
+          {label:"Career Pathways",icon:"🎯",tab:1},
+          {label:"Build Resume",icon:"📄",tab:2},
+          {label:"Cover Letter & Review",icon:"📝",tab:3},
+          {label:"Job Search Tools",icon:"🔍",tab:4},
+          {label:"Resources Hub",icon:"🏛️",tab:6}
+        ].map((link,i)=>(
+          <button key={i} onClick={()=>{setTab(link.tab);window.scrollTo(0,0);}} style={{display:"flex",alignItems:"center",gap:".45rem",background:"linear-gradient(135deg,#f8fafd,#f0f4fa)",border:"1.5px solid #e0e8f0",borderRadius:"8px",padding:".6rem .75rem",cursor:"pointer",textAlign:"left",fontSize:".8rem",fontWeight:600,color:"#1a3a6b",transition:"all .15s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#1a3a6b";e.currentTarget.style.background="#f0f4ff";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="#e0e8f0";e.currentTarget.style.background="linear-gradient(135deg,#f8fafd,#f0f4fa)";}}>
+            <span style={{fontSize:"1rem"}}>{link.icon}</span>
+            {link.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div className="card">
+    <div className="ch"><h3>Account & Subscription</h3></div>
+    <div className="cb">
+      <div style={{marginBottom:".75rem"}}>
+        {hasAccess?(
+          <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"8px",padding:".65rem 1rem",fontSize:".82rem",color:"#1a7a40",fontWeight:600,flexWrap:"wrap"}}>
+            <span style={{display:"inline-block",width:"8px",height:"8px",borderRadius:"50%",background:"#1a7a40",flexShrink:0}}></span>
+            Full Access Active
+            {(()=>{try{const d=JSON.parse(localStorage.getItem("vcb_access")||"null");if(d&&d.expiry)return React.createElement("span",{style:{fontSize:".75rem",color:"#5a7090",fontWeight:400}}," — expires "+new Date(d.expiry).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}));if(d&&d.type==="code")return React.createElement("span",{style:{fontSize:".75rem",color:"#5a7090",fontWeight:400}}," — Access Code");return null;}catch(e){return null;}})()}
+            <button style={{marginLeft:"auto",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",border:"none",color:"#fff",borderRadius:"5px",padding:".35rem .75rem",fontSize:".75rem",fontWeight:600,cursor:"pointer"}} onClick={()=>window.open("https://billing.stripe.com/p/login/bJedR91qZcdieCZ8k7enS00","_blank")}>Manage Subscription &#8599;</button>
+          </div>
+        ):(
+          <div style={{display:"flex",alignItems:"center",gap:".75rem",background:"#fff8e0",border:"1px solid #f0c040",borderRadius:"8px",padding:".65rem 1rem",flexWrap:"wrap"}}>
+            <div style={{flex:1,minWidth:"150px"}}>
+              <div style={{fontWeight:700,fontSize:".85rem",color:"#5a3a00"}}>No active subscription</div>
+              <div style={{fontSize:".75rem",color:"#8a6a20"}}>Unlock all 16 AI-powered career tools</div>
+            </div>
+            <button style={{background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"5px",color:"#0d1f3c",padding:".4rem 1rem",fontSize:".82rem",fontWeight:700,cursor:"pointer",letterSpacing:".03em"}} onClick={()=>setShowPaywall(true)}>
+              Subscribe — $15/mo
+            </button>
+          </div>
+        )}
+      </div>
+      <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+        <button className="btn-sec" onClick={handleSaveProfile}>Save All Progress</button>
+        <button className="btn-sec" onClick={()=>{setTab(0);window.scrollTo(0,0);}}>Edit Profile & Qualifications</button>
+        <button className="btn-danger" onClick={()=>{if(window.confirm("Sign out?")) handleLogout();}}>Sign Out</button>
+      </div>
     </div>
   </div>
   <div className="nav-row">
-    <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
-    <button className="btn-sec" onClick={()=>setTab(0)}>Back to Top →</button>
+    <button className="btn-sec" onClick={()=>setTab(2)}>Build Resume</button>
+    <button className="btn-sec" onClick={()=>setTab(0)}>Profile & Qualifications</button>
   </div>
   
 
@@ -5462,6 +5496,7 @@ Return this exact JSON structure:
 
   // Profile dropdown state
   const [profileOpen, setProfileOpen] = useState(false);
+  const [showAccountSettings, setShowAccountSettings] = useState(false);
   const profileRef = useRef(null);
   useEffect(() => {
     const handler = (e) => {
@@ -5490,13 +5525,13 @@ Return this exact JSON structure:
                 <div style={{fontSize:".72rem",color:"rgba(192,216,240,.5)",marginTop:".15rem",wordBreak:"break-all"}}>{personal.email||currentUser.email||""}</div>
               </div>
               <div style={{padding:".4rem 0"}}>
-                <button onClick={()=>{setTab(0);setProfileOpen(false);window.scrollTo(0,0);}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(192,216,240,.75)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.06)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
+                <button onClick={()=>{setTab(5);setProfileOpen(false);window.scrollTo(0,0);}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(192,216,240,.75)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.06)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
                   <span style={{marginRight:".5rem",opacity:.7}}>&#x1F464;</span> My Profile
                 </button>
                 <button onClick={()=>{setTab(5);setProfileOpen(false);window.scrollTo(0,0);}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(192,216,240,.75)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.06)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
                   <span style={{marginRight:".5rem",opacity:.7}}>&#x1F4BE;</span> My Saved Work
                 </button>
-                <button onClick={()=>{setShowPaywall(true);setProfileOpen(false);}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(192,216,240,.75)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.06)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
+                <button onClick={()=>{setShowAccountSettings(true);setProfileOpen(false);}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(192,216,240,.75)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.06)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
                   <span style={{marginRight:".5rem",opacity:.7}}>&#x2699;&#xFE0F;</span> Account Settings
                 </button>
               </div>
@@ -5509,7 +5544,84 @@ Return this exact JSON structure:
           )}
         </div>
 
-
+        {/* ── ACCOUNT SETTINGS MODAL ── */}
+        {showAccountSettings&&currentUser&&(()=>{
+          let accessData = null;
+          try { accessData = JSON.parse(localStorage.getItem("vcb_access")||"null"); } catch(e){}
+          const isSubscribed = hasAccess;
+          const planLabel = accessData ? (accessData.type==="paid" ? (accessData.plan==="annual"?"Annual Plan":"Monthly Plan") : accessData.type==="code" ? "Access Code" : "Active") : null;
+          const expiryDate = accessData && accessData.expiry ? new Date(accessData.expiry).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}) : null;
+          return (
+          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:3000,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}} onClick={e=>{if(e.target===e.currentTarget)setShowAccountSettings(false);}}>
+            <div style={{background:"#fff",borderRadius:"12px",maxWidth:"440px",width:"100%",boxShadow:"0 12px 48px rgba(0,0,0,.3)",overflow:"hidden"}}>
+              <div style={{background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",padding:"1.2rem 1.5rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.15rem",letterSpacing:".1em",color:"#f0c040"}}>Account Settings</div>
+                <button onClick={()=>setShowAccountSettings(false)} style={{background:"none",border:"none",color:"rgba(255,255,255,.6)",fontSize:"1.2rem",cursor:"pointer",padding:"0 .2rem",lineHeight:1}}>&times;</button>
+              </div>
+              <div style={{padding:"1.25rem 1.5rem"}}>
+                <div style={{marginBottom:"1.2rem"}}>
+                  <div style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#7a90a8",marginBottom:".4rem"}}>Account Info</div>
+                  <div style={{fontSize:".92rem",fontWeight:700,color:"#1a3a6b"}}>{personal.name||currentUser.displayName||"Veteran"}</div>
+                  <div style={{fontSize:".82rem",color:"#5a7090",wordBreak:"break-all"}}>{personal.email||currentUser.email||""}</div>
+                </div>
+                <div style={{borderTop:"1px solid #eef0f5",paddingTop:"1rem",marginBottom:"1rem"}}>
+                  <div style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#7a90a8",marginBottom:".5rem"}}>Subscription Status</div>
+                  {isSubscribed?(
+                    <div>
+                      <div style={{display:"flex",alignItems:"center",gap:".5rem",marginBottom:".6rem"}}>
+                        <span style={{display:"inline-block",width:"8px",height:"8px",borderRadius:"50%",background:"#1a7a40"}}></span>
+                        <span style={{fontWeight:700,fontSize:".88rem",color:"#1a7a40"}}>Active</span>
+                        {planLabel&&<span style={{background:"#f0f4fa",border:"1px solid #d0dae8",borderRadius:"4px",padding:".1rem .45rem",fontSize:".72rem",fontWeight:600,color:"#1a3a6b"}}>{planLabel}</span>}
+                      </div>
+                      {expiryDate&&<div style={{fontSize:".8rem",color:"#5a7090",marginBottom:".75rem"}}>Access expires: <strong>{expiryDate}</strong></div>}
+                      <button onClick={()=>window.open("https://billing.stripe.com/p/login/bJedR91qZcdieCZ8k7enS00","_blank")} style={{display:"flex",alignItems:"center",gap:".4rem",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",border:"none",borderRadius:"6px",padding:".55rem 1rem",fontSize:".82rem",fontWeight:600,cursor:"pointer",width:"100%",justifyContent:"center"}}>
+                        Manage Subscription
+                        <span style={{fontSize:".75rem",opacity:.7}}>&#8599;</span>
+                      </button>
+                    </div>
+                  ):(
+                    <div>
+                      <div style={{display:"flex",alignItems:"center",gap:".5rem",marginBottom:".6rem"}}>
+                        <span style={{display:"inline-block",width:"8px",height:"8px",borderRadius:"50%",background:"#c0392b"}}></span>
+                        <span style={{fontWeight:600,fontSize:".85rem",color:"#5a7090"}}>No active subscription</span>
+                      </div>
+                      <div style={{fontSize:".8rem",color:"#7a90a8",marginBottom:".75rem",lineHeight:1.5}}>Subscribe to unlock all 16 AI-powered career tools.</div>
+                      <button onClick={()=>{setShowAccountSettings(false);setShowPaywall(true);}} style={{display:"flex",alignItems:"center",gap:".4rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",color:"#0d1f3c",border:"none",borderRadius:"6px",padding:".55rem 1rem",fontSize:".88rem",fontWeight:700,cursor:"pointer",width:"100%",justifyContent:"center",letterSpacing:".03em"}}>
+                        Subscribe — $15/mo
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <div style={{borderTop:"1px solid #eef0f5",paddingTop:"1rem"}}>
+                  <div style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#7a90a8",marginBottom:".5rem"}}>Quick Stats</div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".5rem"}}>
+                    <div style={{background:"#f8fafd",borderRadius:"6px",padding:".5rem .65rem",textAlign:"center"}}>
+                      <div style={{fontWeight:800,fontSize:"1.1rem",color:"#1a3a6b"}}>{savedResumes.length}</div>
+                      <div style={{fontSize:".7rem",color:"#7a90a8"}}>Resumes</div>
+                    </div>
+                    <div style={{background:"#f8fafd",borderRadius:"6px",padding:".5rem .65rem",textAlign:"center"}}>
+                      <div style={{fontWeight:800,fontSize:"1.1rem",color:"#1a3a6b"}}>{savedCoverLetters.length}</div>
+                      <div style={{fontSize:".7rem",color:"#7a90a8"}}>Cover Letters</div>
+                    </div>
+                    <div style={{background:"#f8fafd",borderRadius:"6px",padding:".5rem .65rem",textAlign:"center"}}>
+                      <div style={{fontWeight:800,fontSize:"1.1rem",color:"#1a3a6b"}}>{savedScores.length}</div>
+                      <div style={{fontSize:".7rem",color:"#7a90a8"}}>Score Reports</div>
+                    </div>
+                    <div style={{background:"#f8fafd",borderRadius:"6px",padding:".5rem .65rem",textAlign:"center"}}>
+                      <div style={{fontWeight:800,fontSize:"1.1rem",color:"#1a3a6b"}}>{savedEmails.length}</div>
+                      <div style={{fontSize:".7rem",color:"#7a90a8"}}>Emails</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style={{borderTop:"1px solid #eef0f5",padding:".75rem 1.5rem",display:"flex",justifyContent:"space-between"}}>
+                <button onClick={()=>{setShowAccountSettings(false);setTab(5);window.scrollTo(0,0);}} style={{background:"none",border:"1px solid #d0dae8",borderRadius:"6px",padding:".4rem .85rem",fontSize:".8rem",color:"#1a3a6b",fontWeight:600,cursor:"pointer"}}>View Full Profile</button>
+                <button onClick={()=>setShowAccountSettings(false)} style={{background:"none",border:"1px solid #d0dae8",borderRadius:"6px",padding:".4rem .85rem",fontSize:".8rem",color:"#5a7090",cursor:"pointer"}}>Close</button>
+              </div>
+            </div>
+          </div>
+          );
+        })()}
 
         {showPaywall&&(
           <div className="pw-overlay" onClick={e=>e.target===e.currentTarget&&null}>
@@ -5812,7 +5924,7 @@ Return this exact JSON structure:
               <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleSaveProfile}>
                 {hasUnsaved?"⏳ Saving…":"✓ Profile Saved"}
               </button>
-              <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>setTab(3)}>
+              <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>{setTab(5);window.scrollTo(0,0);}}>
                 My Resumes ({savedResumes.length})
               </button>
               {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>⭐ All 8 Tools — $15/mo</button>}

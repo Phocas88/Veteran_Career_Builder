@@ -24,7 +24,7 @@
     #loading{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999;}
     #loading img{width:200px;height:200px;object-fit:contain;mix-blend-mode:screen;}
     #loading p{color:#f0c040;letter-spacing:.15em;font-size:1rem;font-family:Georgia,serif;}
-    .spin{width:36px;height:36px;border:3px solid rgba(240,192,64,.25);border-top-color:#f0c040;border-radius:50%;animation:sp .8s linear infinite;}
+    .spin{width:36px;height:36px;border:3px solid rgba(240,192,64,.25);border-top-color:#f0c040;border-radius:50%;animation:sp .8s linear infinite;will-change:transform;}
     @keyframes sp{to{transform:rotate(360deg)}}
     #admin-btn{position:fixed;bottom:16px;right:16px;z-index:9999;background:#1a3a6b;color:#fff;border:none;padding:9px 18px;border-radius:4px;cursor:pointer;font-weight:bold;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.25);display:none;}
     #admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;align-items:center;justify-content:center;padding:16px;}
@@ -41,7 +41,7 @@
 .btn-upgrade{width:100%;padding:.75rem;background:linear-gradient(135deg,#f0c040,#e0a820);border:none;border-radius:6px;color:#0d1f3c;font-weight:700;font-size:.95rem;cursor:pointer;letter-spacing:.03em;}
 .adsbygoogle{min-height:0!important;}
 </style>
-  <script src="https://js.stripe.com/v3/"></script>
+  <script defer src="https://js.stripe.com/v3/"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js" crossorigin="anonymous"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js" crossorigin="anonymous"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
@@ -104,6 +104,35 @@
 </script>
 </head>
 <body>
+  <div id="app-skeleton" style="position:fixed;inset:0;z-index:998;background:#f4f6fa;font-family:sans-serif;">
+    <div style="height:56px;background:#08111e;display:flex;align-items:center;padding:0 4%;">
+      <div style="width:28px;height:28px;background:rgba(240,192,64,.2);border-radius:50%;"></div>
+      <div style="width:120px;height:12px;background:rgba(240,192,64,.15);border-radius:4px;margin-left:.55rem;"></div>
+    </div>
+    <div style="max-width:980px;margin:0 auto;padding:1.5rem 1.2rem;">
+      <div style="display:flex;justify-content:center;margin-bottom:1.2rem;">
+        <div style="width:200px;height:200px;background:linear-gradient(135deg,rgba(26,58,107,.08),rgba(26,58,107,.04));border-radius:12px;"></div>
+      </div>
+      <div style="display:flex;gap:.5rem;justify-content:center;margin-bottom:1.5rem;">
+        <div style="width:80px;height:36px;background:rgba(26,58,107,.08);border-radius:6px;"></div>
+        <div style="width:80px;height:36px;background:rgba(26,58,107,.08);border-radius:6px;"></div>
+        <div style="width:80px;height:36px;background:rgba(26,58,107,.08);border-radius:6px;"></div>
+        <div style="width:80px;height:36px;background:rgba(26,58,107,.08);border-radius:6px;"></div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:1.25rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.06);">
+        <div style="width:60%;height:14px;background:rgba(26,58,107,.08);border-radius:4px;margin-bottom:.8rem;"></div>
+        <div style="width:90%;height:10px;background:rgba(26,58,107,.05);border-radius:4px;margin-bottom:.6rem;"></div>
+        <div style="width:75%;height:10px;background:rgba(26,58,107,.05);border-radius:4px;margin-bottom:.6rem;"></div>
+        <div style="width:85%;height:10px;background:rgba(26,58,107,.05);border-radius:4px;"></div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.06);">
+        <div style="width:45%;height:14px;background:rgba(26,58,107,.08);border-radius:4px;margin-bottom:.8rem;"></div>
+        <div style="width:100%;height:38px;background:rgba(26,58,107,.04);border-radius:6px;margin-bottom:.6rem;"></div>
+        <div style="width:100%;height:38px;background:rgba(26,58,107,.04);border-radius:6px;margin-bottom:.6rem;"></div>
+        <div style="width:100%;height:38px;background:rgba(26,58,107,.04);border-radius:6px;"></div>
+      </div>
+    </div>
+  </div>
   <div id="loading">
     <img id="loading-logo" src="https://raw.githubusercontent.com/Phocas88/Veteran_Career_Builder/main/logo.png" alt="Veteran Career Path"/>
     <p>VETERAN CAREER BUILDER</p>
@@ -2283,7 +2312,7 @@ body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-
 /* ── AI TOOLS QUICK NAV ─────────────────────────────────────────────────── */
 .tools-fab{position:fixed;right:1rem;bottom:5.5rem;z-index:900;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:50%;width:52px;height:52px;cursor:pointer;box-shadow:0 4px 18px rgba(200,150,10,.5);display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:transform .18s;}
 .tools-fab:hover{transform:scale(1.08);}
-.tools-drawer{position:fixed;right:0;top:0;bottom:0;width:280px;background:#0a1628;border-left:1.5px solid rgba(240,192,64,.2);z-index:950;transform:translateX(100%);transition:transform .25s ease;box-shadow:-6px 0 32px rgba(0,0,0,.5);display:flex;flex-direction:column;}
+.tools-drawer{position:fixed;right:0;top:0;bottom:0;width:280px;background:#0a1628;border-left:1.5px solid rgba(240,192,64,.2);z-index:950;transform:translateX(100%);transition:transform .25s ease;box-shadow:-6px 0 32px rgba(0,0,0,.5);display:flex;flex-direction:column;will-change:transform;}
 .tools-drawer.open{transform:translateX(0);}
 .tools-drawer-header{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);padding:1rem 1.1rem;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
 .tools-drawer-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:#f0c040;}
@@ -2310,12 +2339,12 @@ body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-
 .tab.on,.tab.active{color:var(--navy);border-bottom-color:transparent;background:linear-gradient(180deg,transparent,rgba(200,150,10,.04));}
 .tab:hover:not(.on):not(.active){color:var(--navy);background:rgba(26,58,107,.03);}
 .tab-n{font-size:.55rem;display:block;opacity:.6;margin-top:.1rem;font-family:'Inter',sans-serif;font-weight:500;}
-.panel{display:none;animation:panelFadeIn .35s ease-out;}
+.panel{display:none;animation:panelFadeIn .35s ease-out;will-change:opacity,transform;}
 .panel.on{display:block;}
 @keyframes panelFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 html{scroll-behavior:smooth;}
 .wrap{max-width:980px;margin:0 auto;padding:1.5rem 1.2rem 5rem;}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:1.25rem;overflow:hidden;box-shadow:var(--shadow);transition:box-shadow .25s ease,transform .25s ease;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:1.25rem;overflow:hidden;box-shadow:var(--shadow);transition:box-shadow .25s ease,transform .25s ease;will-change:box-shadow,transform;}
 .card:hover{box-shadow:0 8px 28px rgba(26,58,107,.16);transform:translateY(-1px);}
 .ch{background:linear-gradient(135deg,#f8fafd,#f0f4fa);border-bottom:1px solid var(--border);padding:.85rem 1.25rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
 .ch h3{font-family:'Bebas Neue',sans-serif;letter-spacing:.1em;font-size:1rem;color:var(--navy);}
@@ -3393,7 +3422,8 @@ function CareerDetailView(props) {
 
 function CareerTab(props) {
   const {careers,careerFilter,setCareerFilter,selectedCareer,setSelectedCareer,careerDetail,loading,careerError,openCareerDetail,findCareers,tab,setTab,target,upT,targetLocation,milExperiences,civExperiences,education,currentUser,showToast,setShowAuth,DI,RG,filterCareers,matchesSector,hasAccess,setShowPaywall,skills,personal} = props;
-  return (<div className={"panel "+(tab===1?"on":"")}>
+  if (tab!==1) return null;
+  return (<div className="panel on">
 
         <div className="intro">
           <strong>Your Civilian Qualifications Profile.</strong> Before finding your career matches, review what your service actually unlocks in the civilian world. Every MOS, clearance, ASI, SQI, and additional duty is an asset — here's what each one means to a civilian employer.
@@ -4170,8 +4200,9 @@ function MyProfileContent(props) {
 
 function MyProfileTab(props) {
   const {tab,currentUser,setShowAuth,personal,hasAccess,hasUnsaved,milExperiences,BRANCH_EMBLEMS,BRANCH_COLORS,RANKS,RankInsignia,careers,openCareerDetail,setTab,resume,savedResumes,handleDeleteResume,savedCoverLetters,savedEmails,savedScores,handleDeleteSaved,handleLogout,handleSaveProfile,handleSaveResume,showToast,setShowPaywall,savedPaths,setSavedPaths} = props;
+  if (tab!==5) return null;
   return (
-    <div className={"panel "+(tab===5?"on":"")}>
+    <div className="panel on">
       <MyProfileContent tab={tab} currentUser={currentUser} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} handleSaveResume={handleSaveResume} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} />
     </div>
   );
@@ -5423,10 +5454,60 @@ Return this exact JSON structure:
   const matchesSector = (c, filter) => filter==="All" || c.sector===filter || (filter===DI && c.sector===DI);
   const filterCareers = (careers, filter) => careers.filter(c => matchesSector(c, filter));
 
+  // Hide loading skeleton on first render
+  useEffect(() => {
+    const skel = document.getElementById('app-skeleton');
+    if (skel) skel.style.display = 'none';
+  }, []);
+
+  // Profile dropdown state
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef(null);
+  useEffect(() => {
+    const handler = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
   return (
     <>
       <style>{css}</style>
       <div className="app">
+
+        {/* ── PROFILE ICON (top-right) ── */}
+        <div ref={profileRef} style={{position:"fixed",top:"10px",right:"16px",zIndex:2500}}>
+          <button onClick={()=>currentUser?setProfileOpen(!profileOpen):setShowAuth(true)}
+            style={{width:"36px",height:"36px",borderRadius:"50%",border:"2px solid rgba(240,192,64,.5)",background:currentUser?"linear-gradient(135deg,#1a3a6b,#1e4a8a)":"rgba(255,255,255,.1)",color:"#f0c040",fontSize:currentUser?".85rem":"1rem",fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em",transition:"border-color .2s,background .2s"}}
+            title={currentUser?(personal.name||currentUser.displayName||"Profile"):"Sign In"}>
+            {currentUser?(personal.name||currentUser.displayName||"V").charAt(0).toUpperCase():<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f0c040" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>}
+          </button>
+          {profileOpen&&currentUser&&(
+            <div style={{position:"absolute",top:"44px",right:0,width:"240px",background:"#0d1a2d",border:"1px solid rgba(240,192,64,.2)",borderRadius:"10px",boxShadow:"0 8px 32px rgba(0,0,0,.6)",overflow:"hidden",zIndex:2501}}>
+              <div style={{padding:".85rem 1rem",borderBottom:"1px solid rgba(255,255,255,.08)",background:"rgba(240,192,64,.06)"}}>
+                <div style={{fontWeight:700,color:"#f0c040",fontSize:".88rem",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em"}}>{personal.name||currentUser.displayName||"Veteran"}</div>
+                <div style={{fontSize:".72rem",color:"rgba(192,216,240,.5)",marginTop:".15rem",wordBreak:"break-all"}}>{personal.email||currentUser.email||""}</div>
+              </div>
+              <div style={{padding:".4rem 0"}}>
+                <button onClick={()=>{setTab(0);setProfileOpen(false);window.scrollTo(0,0);}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(192,216,240,.75)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.06)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
+                  <span style={{marginRight:".5rem",opacity:.7}}>&#x1F464;</span> My Profile
+                </button>
+                <button onClick={()=>{setTab(5);setProfileOpen(false);window.scrollTo(0,0);}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(192,216,240,.75)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.06)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
+                  <span style={{marginRight:".5rem",opacity:.7}}>&#x1F4BE;</span> My Saved Work
+                </button>
+                <button onClick={()=>{setShowPaywall(true);setProfileOpen(false);}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(192,216,240,.75)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.06)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
+                  <span style={{marginRight:".5rem",opacity:.7}}>&#x2699;&#xFE0F;</span> Account Settings
+                </button>
+              </div>
+              <div style={{borderTop:"1px solid rgba(255,255,255,.08)",padding:".4rem 0"}}>
+                <button onClick={()=>{if(window.confirm("Sign out?")){handleLogout();setProfileOpen(false);}}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(255,120,120,.8)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,80,80,.08)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
+                  <span style={{marginRight:".5rem",opacity:.7}}>&#x1F6AA;</span> Logout
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
 
 
@@ -5775,7 +5856,7 @@ Return this exact JSON structure:
         <div className="wrap">
 
 
-          <div className={"panel "+(tab===0?"on":"")}>
+          {tab===0 && <div className="panel on">
             <div className="intro">
               <strong>Your service matters.</strong> Fill in your background below — your military experience, civilian work, education, and skills. The more you add, the better your career matches and resume will be. Take your time and be as detailed as you like.
             </div>
@@ -6718,7 +6799,7 @@ Return this exact JSON structure:
             )}
 
             <div className="nav-row"><div/><button className="btn-sec" onClick={()=>setTab(1)}>Next: Career Pathways →</button></div>
-          </div>
+          </div>}
 
 
 
@@ -6726,7 +6807,7 @@ Return this exact JSON structure:
 
 
 
-          <div className={"panel "+(tab===2?"on":"")}>
+          {tab===2 && <div className="panel on">
             <div className="intro">
               <strong>Generate Your Resume.</strong> Your complete military profile — MOS, ASIs, SQIs, additional duties, clearances, service history, and all experience — will be translated into a polished, ATS-optimized civilian resume.
             </div>
@@ -7406,10 +7487,10 @@ Return this exact JSON structure:
               </div>
             )}
             <div className="nav-row"><button className="btn-sec" onClick={()=>setTab(1)}>← Career Pathways</button><div/></div>
-          </div>
+          </div>}
 
 
-          <div className={"panel "+(tab===3?"on":"")}>
+          {tab===3 && <div className="panel on">
             <div className="intro"><strong>Cover Letter Builder & Resume Review.</strong> Generate a tailored cover letter and get AI-powered feedback on your resume.</div>
 
             {(!resume&&!resumeData)&&(
@@ -7663,11 +7744,11 @@ Return this exact JSON structure:
               <button className="btn-sec" onClick={()=>setTab(2)}>← Build Resume</button>
               <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
             </div>
-          </div>
+          </div>}
 
 
 
-          <div className={"panel "+(tab===4?"on":"")}>
+          {tab===4 && <div className="panel on">
 
             <div className="job-analyzer-card">
               <div style={{display:"flex",alignItems:"center",gap:".5rem",marginBottom:".6rem"}}>
@@ -8115,11 +8196,11 @@ Return this exact JSON structure:
               <button className="btn-sec" onClick={()=>setTab(3)}>← Cover Letter</button>
               <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
             </div>
-          </div>
+          </div>}
 
 
 
-          <div className={"panel "+(tab===99?"on":"")}>
+          {tab===99 && <div className="panel on">
 
 
             <div className="crisis-banner">
@@ -8394,7 +8475,7 @@ Return this exact JSON structure:
               <button className="btn-sec" onClick={()=>setTab(4)}>← Job Search Hub</button>
               <button className="btn-sec" onClick={()=>setTab(5)}>My Profile →</button>
             </div>
-          </div>
+          </div>}
 
 
 

@@ -164,6 +164,9 @@ body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f2f5fa;font-size:1
   .calc-grid{grid-template-columns:1fr!important;}
   /* Result breakdown */
   .rb-row{font-size:.73rem;}
+  /* Condition rating table mobile */
+  .crit-pct{width:42px;min-width:42px;font-size:.7rem;padding:.4rem .4rem;}
+  .crit-desc{font-size:.76rem;padding:.4rem .5rem;}
 }
 @media(max-width:400px){
   .ct{min-width:360px;font-size:.65rem;}
@@ -177,23 +180,27 @@ body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f2f5fa;font-size:1
 .cond-name{font-weight:700;font-size:.88rem;color:var(--nv);flex:1;}
 .cond-badges{display:flex;flex-wrap:wrap;gap:.25rem;}
 .cond-body{padding:.75rem 1rem;}
-.crit-table{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.6rem;}
-.crit-row{display:flex;align-items:flex-start;gap:.65rem;padding:.45rem .6rem;border-radius:7px;background:#f8fafd;border-left:3px solid #e2e8f0;transition:background .12s;}
-.crit-row:hover{background:#eef3fb;}
-.crit-pct{flex-shrink:0;min-width:36px;text-align:center;}
-.crit-desc{font-size:.82rem;color:#2a3a4a;line-height:1.6;flex:1;}
+.crit-table{display:table;width:100%;border-collapse:separate;border-spacing:0 .3rem;margin-bottom:.6rem;}
+.crit-row{display:table-row;}
+.crit-row>span{display:table-cell;padding:.5rem .65rem;vertical-align:top;background:#f8fafd;transition:background .12s;}
+.crit-row:hover>span{background:#eef3fb;}
+.crit-row>span:first-child{border-radius:7px 0 0 7px;border-left:3px solid #e2e8f0;}
+.crit-row>span:last-child{border-radius:0 7px 7px 0;}
+.crit-pct{white-space:nowrap;width:52px;min-width:52px;text-align:center;font-weight:700;font-size:.78rem;}
+.crit-desc{font-size:.82rem;color:#2a3a4a;line-height:1.6;}
 .sec-label{font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--sl);margin:.5rem 0 .3rem;}
 .sec-tags{display:flex;flex-wrap:wrap;gap:.3rem;}
 .crit-plain{font-size:.83rem;color:#2a3a4a;line-height:1.65;margin-bottom:.5rem;}
 
 /* Color code crit rows by severity */
-.crit-row:has(.p10){border-left-color:#93c5fd;}
-.crit-row:has(.p20){border-left-color:#fde68a;}
-.crit-row:has(.p30){border-left-color:#fdba74;}
-.crit-row:has(.p40){border-left-color:#f97316;}
-.crit-row:has(.p50){border-left-color:#ef4444;}
-.crit-row:has(.p60){border-left-color:#dc2626;}
-.crit-row:has(.p80),.crit-row:has(.p100){border-left-color:#991b1b;}
+.crit-row:has(.p10)>span:first-child{border-left-color:#93c5fd;}
+.crit-row:has(.p20)>span:first-child{border-left-color:#fde68a;}
+.crit-row:has(.p30)>span:first-child{border-left-color:#fdba74;}
+.crit-row:has(.p40)>span:first-child{border-left-color:#f97316;}
+.crit-row:has(.p50)>span:first-child{border-left-color:#ef4444;}
+.crit-row:has(.p60)>span:first-child{border-left-color:#dc2626;}
+.crit-row:has(.p70)>span:first-child{border-left-color:#b91c1c;}
+.crit-row:has(.p80)>span:first-child,.crit-row:has(.p100)>span:first-child{border-left-color:#991b1b;}
 </style>
 <meta property="og:title" content="VA Disability Rating Schedule 2026 | CFR 38 Part 4">
 <meta property="og:description" content="Complete 2026 VA disability rating schedule. Every condition, rating percentage, and compensation calculator with dependents, spouse A&A, children, and parents.">
@@ -2156,18 +2163,44 @@ body.menu-open{overflow:hidden!important;}
 <script>
 function filterConds(query) {
   query = query.toLowerCase().trim();
+  var words = query ? query.split(/\s+/) : [];
   document.querySelectorAll('.cond-card').forEach(function(card) {
+    if (!query) { card.style.display = ''; return; }
     var text = card.textContent.toLowerCase();
-    card.style.display = (!query || text.includes(query)) ? '' : 'none';
+    var match = words.every(function(w){ return text.indexOf(w) !== -1; });
+    card.style.display = match ? '' : 'none';
   });
-  // If searching, expand all sections
-  if (query) {
-    document.querySelectorAll('.sc-bd').forEach(function(bd) {
-      bd.style.display = 'block';
-      var btn = bd.previousElementSibling;
-      if (btn) { btn.classList.add('open'); btn.querySelector('.chv').textContent = '▲'; }
-    });
-  }
+  // Expand/collapse sections based on search state
+  document.querySelectorAll('.sc').forEach(function(sc) {
+    var bd = sc.querySelector('.sc-bd');
+    var btn = sc.querySelector('.sc-hd');
+    if (!bd || !btn) return;
+    if (query) {
+      // Check if any visible cards remain in this section
+      var visibleCards = bd.querySelectorAll('.cond-card');
+      var hasVisible = false;
+      for (var i = 0; i < visibleCards.length; i++) {
+        if (visibleCards[i].style.display !== 'none') { hasVisible = true; break; }
+      }
+      if (hasVisible) {
+        bd.style.display = 'block';
+        bd.classList.add('visible');
+        btn.classList.add('open');
+        var chv = btn.querySelector('.chv');
+        if (chv) chv.textContent = '▲';
+      } else {
+        sc.style.display = 'none';
+      }
+    } else {
+      // Restore: show all sections, collapse bodies
+      sc.style.display = '';
+      bd.style.display = '';
+      bd.classList.remove('visible');
+      btn.classList.remove('open');
+      var chv = btn.querySelector('.chv');
+      if (chv) chv.textContent = '▼';
+    }
+  });
 }
 function toggleSec(btn) {
   var bd = btn.nextElementSibling;

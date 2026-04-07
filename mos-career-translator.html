@@ -433,8 +433,8 @@ body.menu-open{overflow:hidden!important;}
     <a href="https://veterancareerpath.com/military-transition-guide.html">Transition</a>
     <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Guides</a>
     <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Benefits</a>
-    <a href="https://veterancareerpath.com/federal-jobs-search.html">🔴 Federal Jobs</a>
-    <a href="https://veterancareerpath.com/blog/">Blog</a>
+    <a href="https://veterancareerpath.com/military-special-qualifications-civilian-guide.html">ASI/ASQ Guide</a>
+    <a href="https://veterancareerpath.com/state-veteran-benefits.html">State Benefits</a>
 
     <button class="vcp-menu-btn" id="vcp-menu-btn" aria-expanded="false" aria-haspopup="true">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
@@ -469,10 +469,33 @@ body.menu-open{overflow:hidden!important;}
       <div class="vcp-mega-col-title">🤖 AI Career Tools</div>
 
       <div class="vcp-mega-section">
-        <div class="vcp-mega-section-label">Core App</div>
-        <a href="https://veterancareerpath.com/app.html" class="featured">AI Career Builder — $15/mo</a>
-        <a href="https://veterancareerpath.com/va-claim-builder.html" class="featured new">VA Claim Builder (AI)</a>
+        <div class="vcp-mega-section-label">Subscriber AI Tools — $15/mo</div>
+        <a href="https://veterancareerpath.com/app.html" class="featured">AI Career Builder App</a>
+        <a href="https://veterancareerpath.com/va-claim-builder.html" class="featured new">VA Claim Builder</a>
+        <a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
+        <a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume Builder</a>
+        <a href="https://veterancareerpath.com/tools-interview-simulator.html">Interview Simulator</a>
+        <a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Optimizer</a>
+        <a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Negotiator</a>
+        <a href="https://veterancareerpath.com/tools-cert-advisor.html">Certification Advisor</a>
+        <a href="https://veterancareerpath.com/dd214-decoder.html">DD-214 Decoder</a>
+        <a href="https://veterancareerpath.com/clearance-job-match.html">Clearance Job Match</a>
+        <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
+        <a href="https://veterancareerpath.com/linkedin-profile-rewriter.html">LinkedIn Rewriter</a>
+        <a href="https://veterancareerpath.com/federal-resume-builder-ai.html">Federal Resume AI</a>
+        <a href="https://veterancareerpath.com/salary-negotiation-roleplay.html">Salary Roleplay</a>
+        <a href="https://veterancareerpath.com/transition-timeline-planner.html">Transition Planner</a>
+        <a href="https://veterancareerpath.com/va-home-loan-analyzer.html">VA Loan Analyzer</a>
+        <a href="https://veterancareerpath.com/veteran-business-funding.html">Business Funding</a>
+        <a href="https://veterancareerpath.com/tools-job-tracker.html">Job Tracker</a>
+        <a href="https://veterancareerpath.com/tools-newsletter.html">Newsletter Generator</a>
+      </div>
+
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Free Tools</div>
         <a href="https://veterancareerpath.com/free-assessment.html">Free Career Assessment</a>
+        <a href="https://veterancareerpath.com/career-assessment-full.html">Full Assessment (AI)</a>
+        <a href="https://veterancareerpath.com/federal-jobs-search.html">Job Search Hub</a>
       </div>
 
       <div class="vcp-mega-section">
@@ -1065,8 +1088,22 @@ body.menu-open{overflow:hidden!important;}
   // Preload search index when hovering menu
   if (menuBtn) menuBtn.addEventListener('mouseenter', function(){ loadIdx(function(){}); });
   if (ham) ham.addEventListener('mouseenter', function(){ loadIdx(function(){}); });
+
+  // Update CTA text for subscribers
+  try {
+    var acc = JSON.parse(localStorage.getItem("vcb_access")||"{}");
+    var isSub = (acc.type==="paid" && acc.stripeSession && acc.expiry>Date.now()) || (acc.type==="code" && acc.code);
+    if (isSub) {
+      var cta = document.querySelector('.vcp-cta-link');
+      if (cta) cta.textContent = 'AI Tools';
+      var megaFootBtn = document.querySelector('.btn-subscribe');
+      if (megaFootBtn) megaFootBtn.textContent = 'Open AI Tools →';
+    }
+  } catch(e){}
 })();
 </script>
+
+
 
 
 

@@ -3694,6 +3694,7 @@ function MyProfileSaved(props) {
                 const w = window.open("","_blank");
                 const d = r.resumeData;
                 const tmpl = r.template || "ats_chrono";
+                const vstyle = VISUAL_STYLES[r.visualStyle||resumeVisualStyle] || VISUAL_STYLES.classic;
                 const PAGE_CSS = `
                   @page { size: letter; margin: 1.8cm 2cm; margin-top: 1.5cm; }
                   @page :first { margin-top: 1.5cm; }
@@ -3721,11 +3722,11 @@ function MyProfileSaved(props) {
                   const skills = (d.skills||[]).join(" &bull; ");
                   const certs = (d.certifications||[]).join(" &bull; ");
                   const sectionHdr = (label) =>
-                    "<div style='font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:2px solid #000;padding-bottom:2pt;margin:8pt 0 5pt'>"+label+"</div>";
+                    "<div style='font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:"+vstyle.sectionBorder+";padding-bottom:2pt;margin:8pt 0 5pt;color:"+vstyle.accent+"'>"+label+"</div>";
                   if (tmpl === "harvard" || tmpl === "classic") {
-                    body = "<div style='font-family:Garamond,Georgia,serif;font-size:11pt;line-height:1.5;padding:1.5cm 2cm'>"
-                      +"<div style='text-align:center;margin-bottom:8pt'><div style='font-size:16pt;font-weight:700;font-variant:small-caps;letter-spacing:.06em'>"+d.name+"</div>"
-                      +"<div style='height:1px;background:#000;margin:4pt 0'></div>"
+                    body = "<div style='font-family:"+vstyle.font+";font-size:11pt;line-height:1.5;padding:1.5cm 2cm'>"
+                      +"<div style='text-align:center;margin-bottom:8pt'><div style='font-size:16pt;font-weight:700;font-variant:small-caps;letter-spacing:.06em;color:"+vstyle.accent+"'>"+d.name+"</div>"
+                      +"<div style='height:1px;background:"+vstyle.accent+";margin:4pt 0'></div>"
                       +"<div style='font-size:9pt;color:#333'>"+d.contact+"</div></div>"
                       +"<div style='font-size:10pt;margin-bottom:10pt;line-height:1.7;text-align:justify'>"+d.summary+"</div>"
                       +sectionHdr("Experience")+exp
@@ -3733,12 +3734,12 @@ function MyProfileSaved(props) {
                       +sectionHdr("Skills & Certifications")+"<div style='font-size:9.5pt;line-height:1.8'>"+skills+(certs?" &bull; "+certs:"")+"</div>"
                       +"</div>";
                   } else if (tmpl === "executive") {
-                    body = "<div style='font-family:Arial,sans-serif;font-size:10pt;line-height:1.45'>"
-                      +"<div style='background:#1a3a6b;color:#fff;padding:1.2rem 2cm'>"
+                    body = "<div style='font-family:"+vstyle.font+";font-size:10pt;line-height:1.45'>"
+                      +"<div style='background:"+vstyle.accent+";color:#fff;padding:1.2rem 2cm'>"
                       +"<div style='font-size:18pt;font-weight:700;letter-spacing:.04em'>"+d.name+"</div>"
                       +"<div style='font-size:9pt;color:#c0d8f0;margin-top:3pt'>"+d.contact+"</div></div>"
                       +"<div style='padding:0 2cm'>"
-                      +"<div style='font-size:9.5pt;margin:10pt 0;line-height:1.65;border-left:3px solid #c8960a;padding-left:10pt'>"+d.summary+"</div>"
+                      +"<div style='font-size:9.5pt;margin:10pt 0;line-height:1.65;border-left:3px solid "+vstyle.accent2+";padding-left:10pt'>"+d.summary+"</div>"
                       +sectionHdr("Experience")+exp
                       +sectionHdr("Education")+edu
                       +"<div style='display:grid;grid-template-columns:1fr 1fr;gap:.5rem;font-size:9pt;line-height:1.8'>"
@@ -3758,8 +3759,8 @@ function MyProfileSaved(props) {
                       +"<div style='font-size:9pt;line-height:1.8'>"+skills+(certs?" &bull; "+certs:"")+"</div>"
                       +"</div>";
                   } else if (tmpl === "wharton") {
-                    body = "<div style='font-family:Calibri,Arial,sans-serif;font-size:10pt;line-height:1.35;padding:1.5cm 2cm'>"
-                      +"<div style='border-bottom:3px solid #000;padding-bottom:4pt;margin-bottom:6pt'>"
+                    body = "<div style='font-family:"+vstyle.font+";font-size:10pt;line-height:1.35;padding:1.5cm 2cm'>"
+                      +"<div style='border-bottom:3px solid "+vstyle.accent+";padding-bottom:4pt;margin-bottom:6pt'>"
                       +"<div style='font-size:17pt;font-weight:700'>"+d.name+"</div>"
                       +"<div style='font-size:9pt;color:#444;margin-top:2pt'>"+d.contact+"</div></div>"
                       +"<div style='font-weight:700;font-size:8.5pt;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4pt'>Education</div>"
@@ -3771,7 +3772,7 @@ function MyProfileSaved(props) {
                       +"<div style='font-size:9.5pt'><strong>Skills: </strong>"+skills+"<br>"+(certs?"<strong>Certifications: </strong>"+certs:"")+"</div>"
                       +"</div>";
                   } else if (tmpl === "minimalist") {
-                    body = "<div style='font-family:Helvetica Neue,Arial,sans-serif;font-size:10pt;line-height:1.6;padding:2cm 3cm'>"
+                    body = "<div style='font-family:"+vstyle.font+";font-size:10pt;line-height:1.6;padding:2cm 3cm'>"
                       +"<div style='margin-bottom:1.5rem'>"
                       +"<div style='font-size:22pt;font-weight:300;letter-spacing:-.01em'>"+d.name+"</div>"
                       +"<div style='font-size:9pt;color:#888'>"+d.contact+"</div></div>"
@@ -3791,7 +3792,7 @@ function MyProfileSaved(props) {
                       +"</div></div></div>";
                   } else {
                     // ATS Chrono, ATS Combo, Modern, Traditional — clean single column
-                    body = "<div style='font-family:Arial,sans-serif;font-size:10pt;line-height:1.45;padding:1.5cm 2cm'>"
+                    body = "<div style='font-family:"+vstyle.font+";font-size:10pt;line-height:1.45;padding:1.5cm 2cm'>"
                       +"<div style='text-align:center;margin-bottom:10pt'>"
                       +"<div style='font-size:15pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em'>"+d.name+"</div>"
                       +"<div style='font-size:9pt;color:#333;margin-top:3pt'>"+d.contact+"</div></div>"
@@ -4180,6 +4181,15 @@ function App() {
   const [careerError, setCareerError] = useState("");
   const [resumeData, setResumeData] = useState(null);
   const [resumeTemplate, setResumeTemplate] = useState("ats_chrono");
+  const [resumeVisualStyle, setResumeVisualStyle] = useState("classic");
+  const VISUAL_STYLES = {
+    classic: { name:"Classic", accent:"#000000", accent2:"#333333", headerBg:"#ffffff", headerText:"#000000", font:"Georgia,Times New Roman,serif", sectionBorder:"2px solid #000", preview:"#000" },
+    navy: { name:"Navy Professional", accent:"#1a3a6b", accent2:"#c8960a", headerBg:"#1a3a6b", headerText:"#ffffff", font:"Arial,Helvetica,sans-serif", sectionBorder:"2px solid #1a3a6b", preview:"#1a3a6b" },
+    slate: { name:"Slate Modern", accent:"#475569", accent2:"#0ea5e9", headerBg:"#f8fafc", headerText:"#0f172a", font:"Calibri,Segoe UI,sans-serif", sectionBorder:"1px solid #cbd5e1", preview:"#475569" },
+    amber: { name:"Warm Amber", accent:"#92400e", accent2:"#d97706", headerBg:"#fffbeb", headerText:"#78350f", font:"Cambria,Georgia,serif", sectionBorder:"2px solid #d97706", preview:"#92400e" },
+    midnight: { name:"Midnight", accent:"#1e293b", accent2:"#6366f1", headerBg:"#1e293b", headerText:"#f8fafc", font:"Inter,Helvetica Neue,sans-serif", sectionBorder:"2px solid #6366f1", preview:"#1e293b" }
+  };
+  const vs = VISUAL_STYLES[resumeVisualStyle] || VISUAL_STYLES.classic;
   
   const [resumeError, setResumeError] = useState("");
   const [copied, setCopied] = useState(false);
@@ -4524,6 +4534,7 @@ function App() {
         industry: target.industry || "",
         format: resumeFormat,
         template: resumeTemplate,
+        visualStyle: resumeVisualStyle,
         resumeData: resumeData || null,
         date: new Date().toLocaleDateString("en-US", { year:"numeric", month:"short", day:"numeric" }),
         preview: resume.slice(0, 120) + "...",
@@ -6714,6 +6725,21 @@ Return this exact JSON structure:
                         {t.l}
                       </button>
                     ))}
+                    <div style={{width:"100%",display:"flex",gap:".4rem",alignItems:"center",flexWrap:"wrap",marginTop:".5rem",paddingTop:".5rem",borderTop:"1px solid #e8edf5"}}>
+                      <span style={{fontSize:".72rem",fontWeight:600,color:"#5a7090",marginRight:".25rem"}}>Visual Style:</span>
+                      {Object.entries(VISUAL_STYLES).map(([key,s])=>(
+                        <button key={key} onClick={()=>setResumeVisualStyle(key)}
+                          style={{padding:".25rem .65rem",borderRadius:"3px",border:"1.5px solid",fontSize:".72rem",cursor:"pointer",display:"flex",alignItems:"center",gap:".3rem",
+                            background:resumeVisualStyle===key?"#f8f8f8":"#fff",
+                            color:resumeVisualStyle===key?s.accent:"#5a7090",
+                            borderColor:resumeVisualStyle===key?s.accent:"#d0daea",
+                            fontWeight:resumeVisualStyle===key?700:400,
+                            boxShadow:resumeVisualStyle===key?"0 0 0 2px "+s.accent+"33":"none"}}>
+                          <span style={{width:"10px",height:"10px",borderRadius:"50%",background:s.preview,border:"1px solid rgba(0,0,0,.15)",flexShrink:0}}/>
+                          {s.name}
+                        </button>
+                      ))}
+                    </div>
                     <div style={{marginLeft:"auto",display:"flex",gap:".4rem"}}>
                       <button style={{padding:".28rem .75rem",fontSize:".74rem",background:"#fff",color:"#1a3a6b",border:"1px solid #1a3a6b",borderRadius:"3px",cursor:"pointer"}} onClick={()=>{
                           const el=document.getElementById("resume-render");
@@ -6735,8 +6761,8 @@ Return this exact JSON structure:
                     {resumeData ? (
                       <div style={{width:"100%",maxWidth:"760px",background:"#fff",boxShadow:"0 4px 20px rgba(0,0,0,.15)"}}>
                         {resumeTemplate==="modern"&&(
-                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
-                            <div style={{background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff",padding:"1.8rem 2.2rem 1.4rem"}}>
+                          <div style={{fontFamily:vs.font,fontSize:"10pt",color:"#1a1a1a"}}>
+                            <div style={{background:vs.headerBg==="#ffffff"?"linear-gradient(135deg,"+vs.accent+","+vs.accent+"dd)":"linear-gradient(135deg,"+vs.headerBg+","+vs.accent+")",color:vs.headerText==="#000000"?"#fff":vs.headerText,padding:"1.8rem 2.2rem 1.4rem"}}>
                               <div style={{fontSize:"20pt",fontWeight:700,marginBottom:".3rem"}}>{resumeData.name||personal.name}</div>
                               <div style={{fontSize:"8.5pt",opacity:.85}}>{resumeData.contact||personal.email}</div>
                               {(includeClearance&&resumeData.clearance)&&(<div style={{marginTop:".5rem",display:"inline-block",background:"#b8860b",color:"#fff",padding:".12rem .6rem",borderRadius:"2px",fontSize:"7.5pt",fontWeight:700,letterSpacing:".08em"}}>CLEARANCE: {resumeData.clearance}</div>)}
@@ -6791,8 +6817,8 @@ Return this exact JSON structure:
                           </div>
                         )}
                         {resumeTemplate==="executive"&&(
-                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
-                            <div style={{background:"#0a0a0a",color:"#fff",padding:"2rem 2.4rem"}}>
+                          <div style={{fontFamily:vs.font,fontSize:"10pt",color:"#1a1a1a"}}>
+                            <div style={{background:vs.accent,color:"#fff",padding:"2rem 2.4rem"}}>
                               <div style={{fontSize:"22pt",fontWeight:300,letterSpacing:".08em",textTransform:"uppercase"}}>{resumeData.name||personal.name}</div>
                               <div style={{height:"2px",background:"#b8860b",width:"50px",margin:".6rem 0"}}/>
                               <div style={{fontSize:"8.5pt",color:"#aaa",letterSpacing:".05em"}}>{resumeData.contact||personal.email}</div>

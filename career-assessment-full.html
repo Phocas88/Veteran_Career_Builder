@@ -1027,8 +1027,94 @@ function calculateResults() {
   // ── Career Matching ──
   var rankedCareers = matchCareers(scores);
 
-  // ── Render Results ──
-  renderResults(scores, rankedCareers);
+  // ── AI Enhancement ──
+  enhanceWithAI(scores, rankedCareers).then(function(aiData) {
+    renderResults(scores, rankedCareers, aiData);
+  }).catch(function(err) {
+    console.warn("AI enhancement skipped:", err.message);
+    renderResults(scores, rankedCareers, null);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// AI ENHANCEMENT — Claude API enriches top career matches
+// ══════════════════════════════════════════════════════════════════════════════
+async function enhanceWithAI(scores, rankedCareers) {
+  var PROXY_URL = "https://vcp-proxy.vercel.app/api/claude";
+
+  // Check subscription
+  var acc = {};
+  try { acc = JSON.parse(localStorage.getItem('vcb_access') || '{}'); } catch(e) {}
+  var valid = (acc.type === 'paid' && acc.stripeSession && acc.expiry > Date.now()) ||
+              (acc.type === 'code' && acc.code);
+  if (!valid) throw new Error("No subscription");
+
+  // Show loading indicator
+  showScreen('scr-results');
+  document.getElementById('results-content').innerHTML = '<div style="text-align:center;padding:4rem 2rem;"><div style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;color:#1a3a6b;margin-bottom:.75rem;">Analyzing Your Results with AI...</div><p style="color:#5a7090;font-size:.9rem;max-width:400px;margin:0 auto 1.5rem;">Our AI is reviewing your scores alongside current 2026 job market data to personalize your career recommendations.</p><div style="width:48px;height:48px;border:3px solid #e8edf5;border-top-color:#1a3a6b;border-radius:50%;animation:aispin 1s linear infinite;margin:0 auto;"></div><style>@keyframes aispin{to{transform:rotate(360deg)}}</style></div>';
+
+  // Build prompt with top 15 careers and all scores
+  var top15 = rankedCareers.slice(0, 15).map(function(r) {
+    return r.career.title + " (" + r.matchPct + "% match, " + r.career.salary + ")";
+  });
+
+  var profileInfo = "";
+  if (userProfile) {
+    if (userProfile.mos) profileInfo += "MOS/Rate: " + userProfile.mos + ". ";
+    if (userProfile.mosTitle) profileInfo += "Title: " + userProfile.mosTitle + ". ";
+    if (userProfile.rank) profileInfo += "Rank: " + userProfile.rank + ". ";
+    if (userProfile.branch) profileInfo += "Branch: " + userProfile.branch + ". ";
+    if (userProfile.clearance) profileInfo += "Clearance: " + userProfile.clearance + ". ";
+    if (userProfile.yearsOfService) profileInfo += "Years of service: " + userProfile.yearsOfService + ". ";
+
+    var mil = userProfile.milExperiences || userProfile.experiences || [];
+    if (mil[0]) {
+      var m = mil[0];
+      if (m.mos) profileInfo += "Primary MOS: " + m.mos + (m.mosTitle ? " (" + m.mosTitle + ")" : "") + ". ";
+      if (m.rank) profileInfo += "Rank: " + m.rank + ". ";
+      if (m.duties) profileInfo += "Key duties: " + m.duties.substring(0, 300) + ". ";
+    }
+  }
+
+  var prompt = "You are a veteran career counselor providing results for the VCP PathFinder Pro assessment. " +
+    "The veteran just completed a 120-question career assessment. Here are their scores and top career matches.\n\n" +
+    "ASSESSMENT SCORES:\n" +
+    "- Mechanical & Technical: " + scores.mechanical.pct + "%\n" +
+    "- Verbal & Communication: " + scores.verbal.pct + "%\n" +
+    "- Numerical & Analytical: " + scores.numerical.pct + "%\n" +
+    "- Work Style highlights: " + Object.entries(scores.workStyle).sort(function(a,b){return b[1]-a[1];}).slice(0,5).map(function(e){return e[0]+": "+e[1]+"%";}).join(", ") + "\n" +
+    "- Top career interests: " + Object.entries(scores.interests).sort(function(a,b){return b[1]-a[1];}).slice(0,5).map(function(e){return e[0]+": "+e[1]+"%";}).join(", ") + "\n" +
+    "- Leadership overall: " + scores.leadershipOverall + "%\n\n" +
+    (profileInfo ? "MILITARY BACKGROUND:\n" + profileInfo + "\n\n" : "") +
+    "TOP 15 JS-MATCHED CAREERS:\n" + top15.join("\n") + "\n\n" +
+    "Return a JSON object with this structure (no markdown, no backticks, just raw JSON):\n" +
+    '{"insights":[' +
+    '{"career":"Career Title","currentSalary":"$XX,000-$XX,000 (2026 data)","whyYouFit":"2-3 sentence personalized explanation using their scores and military background","marketOutlook":"1 sentence on current demand","gapAnalysis":"What they need to transition - specific certs, education, or steps","timeframe":"Realistic transition timeline","topEmployers":"3-5 specific companies hiring for this role"}' +
+    '],"overallSummary":"3-4 sentence personalized career summary for this veteran","strengthsTranslation":"2-3 sentences translating their military strengths to civilian value","immediateActions":["action 1","action 2","action 3"]}' +
+    "\n\nProvide insights for the top 10 career matches. Be specific, realistic, and current with 2026 market data. " +
+    "If they have a clearance, emphasize cleared roles and salary premiums. " +
+    "If their technical scores are low, be honest — suggest roles that match their actual aptitude.";
+
+  var response = await fetch(PROXY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 3000,
+      system: 'You are a career counselor specializing in military-to-civilian transitions. Return ONLY valid JSON. No markdown, no backticks, no explanation outside the JSON object.',
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!response.ok) throw new Error("API call failed: " + response.status);
+  var data = await response.json();
+  var text = (data.content && data.content[0] && data.content[0].text) || "";
+  // Extract JSON from response
+  var jsonStart = text.indexOf('{');
+  var jsonEnd = text.lastIndexOf('}');
+  if (jsonStart === -1 || jsonEnd === -1) throw new Error("No JSON in response");
+  var aiResult = JSON.parse(text.substring(jsonStart, jsonEnd + 1));
+  return aiResult;
 }
 
 function matchCareers(scores) {
@@ -1126,7 +1212,7 @@ function matchCareers(scores) {
 // RESULTS RENDERING
 // ══════════════════════════════════════════════════════════════════════════════
 
-function renderResults(scores, rankedCareers) {
+function renderResults(scores, rankedCareers, aiData) {
   showScreen('scr-results');
   var output = document.getElementById('results-content');
   var userName = (userProfile && userProfile.name) ? userProfile.name : 'Service Member';
@@ -1162,11 +1248,37 @@ function renderResults(scores, rankedCareers) {
   // ── Strengths Summary ──
   html += renderStrengths(scores);
 
+  // ── AI-Powered Summary (if available) ──
+  if (aiData) {
+    html += '<div style="background:linear-gradient(135deg,#0a1628,#1a3a6b);border-radius:14px;padding:1.8rem 2rem;margin-bottom:2rem;border:1px solid rgba(240,192,64,.2);">';
+    html += '<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;"><span style="font-size:1.2rem;">🤖</span><span style="font-family:Bebas Neue,sans-serif;font-size:1.1rem;letter-spacing:.06em;color:#f0c040;">AI-Powered Career Intelligence</span></div>';
+    if (aiData.overallSummary) html += '<p style="color:rgba(192,216,240,.8);font-size:.9rem;line-height:1.7;margin-bottom:.6rem;">' + aiData.overallSummary + '</p>';
+    if (aiData.strengthsTranslation) html += '<p style="color:rgba(192,216,240,.65);font-size:.85rem;line-height:1.65;margin-bottom:.6rem;font-style:italic;">' + aiData.strengthsTranslation + '</p>';
+    if (aiData.immediateActions && aiData.immediateActions.length) {
+      html += '<div style="margin-top:.8rem;"><div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#f0c040;margin-bottom:.4rem;">Immediate Actions</div>';
+      aiData.immediateActions.forEach(function(a, i) {
+        html += '<div style="display:flex;gap:.5rem;align-items:baseline;color:rgba(192,216,240,.75);font-size:.85rem;line-height:1.55;margin-bottom:.25rem;"><span style="color:#f0c040;font-weight:700;">' + (i+1) + '.</span> ' + a + '</div>';
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+
   // ── Top 15 Career Matches ──
-  html += '<div class="careers-header">Top 15 Career Matches</div>';
+  html += '<div class="careers-header">Top 15 Career Matches' + (aiData ? ' <span style="font-size:.65rem;color:#5a7090;font-family:Inter,sans-serif;font-weight:400;letter-spacing:0;">— Enhanced with AI analysis</span>' : '') + '</div>';
   var top15 = rankedCareers.slice(0, 15);
+
+  // Build AI insight lookup by career title
+  var aiInsightMap = {};
+  if (aiData && aiData.insights) {
+    aiData.insights.forEach(function(ins) {
+      aiInsightMap[ins.career] = ins;
+    });
+  }
+
   top15.forEach(function(r, idx) {
-    html += renderCareerCard(r, idx, scores);
+    var aiInsight = aiInsightMap[r.career.title] || null;
+    html += renderCareerCard(r, idx, scores, aiInsight);
   });
 
   // ── Action Buttons ──
@@ -1181,7 +1293,7 @@ function renderResults(scores, rankedCareers) {
   output.innerHTML = html;
 
   // Save data for later
-  window._pfResults = { scores: scores, careers: rankedCareers, assessmentId: assessmentId, userName: userName, date: today };
+  window._pfResults = { scores: scores, careers: rankedCareers, aiData: aiData || null, assessmentId: assessmentId, userName: userName, date: today };
 }
 
 function renderSectionResult(name, pct, desc, detail, percentile, secId, scores) {
@@ -1297,24 +1409,40 @@ function renderStrengths(scores) {
   return html;
 }
 
-function renderCareerCard(r, idx, scores) {
+function renderCareerCard(r, idx, scores, aiInsight) {
   var c = r.career;
   var html = '<div class="career-card">';
   html += '<div class="career-card-top">';
-  html += '<div><div class="career-card-title">#' + (idx+1) + ' ' + c.title + '</div><div class="career-card-sector">' + c.sector + '</div></div>';
+  html += '<div><div class="career-card-title">#' + (idx+1) + ' ' + c.title + '</div><div class="career-card-sector">' + c.sector + (aiInsight ? ' · <span style="color:#f0c040;font-size:.6rem;">AI Enhanced</span>' : '') + '</div></div>';
   html += '<div class="career-card-match">' + r.matchPct + '%</div>';
   html += '</div>';
-  html += '<div class="career-card-salary">' + c.salary;
+  html += '<div class="career-card-salary">' + (aiInsight && aiInsight.currentSalary ? aiInsight.currentSalary : c.salary);
   if(c.clearancePremium) html += '<span class="clearance-note">+clearance premium</span>';
   html += '</div>';
-  html += '<div class="career-card-why">' + generateWhyFits(r, scores) + '</div>';
+  // Use AI "why you fit" if available, otherwise JS-generated
+  html += '<div class="career-card-why">' + (aiInsight && aiInsight.whyYouFit ? aiInsight.whyYouFit : generateWhyFits(r, scores)) + '</div>';
+  if(aiInsight && aiInsight.marketOutlook) {
+    html += '<div style="font-size:.78rem;color:#1a7a40;margin-bottom:.4rem;font-style:italic;">Market outlook: ' + aiInsight.marketOutlook + '</div>';
+  }
   html += '<div class="career-card-meta">';
   html += '<span>Education: ' + c.education.split(';')[0] + '</span>';
-  html += '<span>Transition: ' + c.timeToTransition + '</span>';
+  html += '<span>Transition: ' + (aiInsight && aiInsight.timeframe ? aiInsight.timeframe : c.timeToTransition) + '</span>';
   html += '</div>';
-  html += '<button class="career-expand-btn" onclick="toggleCareerExpand(' + idx + ')">Show full details</button>';
+  html += '<button class="career-expand-btn" onclick="toggleCareerExpand(' + idx + ')">Show full details &amp; gap analysis</button>';
   html += '<div class="career-card-expand" id="career_expand_' + idx + '">';
   html += renderCareerDetails(r, scores);
+  // AI-enhanced details
+  if(aiInsight) {
+    if(aiInsight.gapAnalysis) {
+      html += '<div style="margin-top:1rem;padding:1rem;background:rgba(240,192,64,.05);border-left:3px solid #f0c040;border-radius:0 8px 8px 0;">';
+      html += '<div style="font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8a6000;margin-bottom:.3rem;">AI Gap Analysis</div>';
+      html += '<div style="font-size:.85rem;color:#3a4a5a;line-height:1.6;">' + aiInsight.gapAnalysis + '</div>';
+      html += '</div>';
+    }
+    if(aiInsight.topEmployers) {
+      html += '<div style="margin-top:.75rem;font-size:.82rem;color:#5a7090;"><strong style="color:#1a3a6b;">Top employers hiring:</strong> ' + aiInsight.topEmployers + '</div>';
+    }
+  }
   html += '</div>';
   html += '</div>';
   return html;

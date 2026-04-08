@@ -16,6 +16,7 @@
 <link rel="apple-touch-icon" href="https://veterancareerpath.com/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/vcp-styles.css">
+<script src="/vcp-careers-db.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
@@ -622,8 +623,12 @@ var SECTIONS = [
   }
 ];
 
-// ── CAREER DATABASE (200+ careers) ──────────────────────────────────────────
-var CAREERS = [
+// ── CAREER DATABASE — loaded from external vcp-careers-db.js (750+ careers) + inline fallback ──
+var CAREERS = (window.VCP_CAREERS || []).map(function(c){
+  return {title:c.t,salary:c.s,sector:c.sec,clearancePremium:!!c.cp,education:c.ed||"",description:c.d||"",requirements:c.r||[],matchWeights:c.mw||{},mosMatch:c.mm||[],timeToTransition:c.tt||"Varies"};
+});
+// Inline fallback if external DB not loaded
+if(!CAREERS.length) CAREERS = [
   // ─── TRADES ───
   {title:'Electrician',salary:'$55,000-$95,000',sector:'Trades',clearancePremium:false,education:'Apprenticeship or trade school; state license required',description:'Install, maintain, and repair electrical systems in residential, commercial, or industrial settings.',requirements:['State journeyman/master electrician license','Apprenticeship (4 years typical)','OSHA 10/30 certification'],matchWeights:{mechanical:0.9,verbal:0.2,numerical:0.5,trades:0.9,structure:0.6,physical:0.8},mosMatch:['12R','12P','1141','3E0X1','CE'],timeToTransition:'3-6 months with military electrical experience'},
   {title:'Plumber',salary:'$50,000-$90,000',sector:'Trades',clearancePremium:false,education:'Apprenticeship; state license',description:'Install and repair piping systems for water, gas, and waste.',requirements:['State plumbing license','Apprenticeship program','Code knowledge'],matchWeights:{mechanical:0.8,verbal:0.2,numerical:0.4,trades:0.9,structure:0.5,physical:0.9},mosMatch:['12K','1141','3E4X1'],timeToTransition:'6-12 months'},

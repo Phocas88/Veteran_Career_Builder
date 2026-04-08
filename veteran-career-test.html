@@ -12,6 +12,7 @@
 <link rel="apple-touch-icon" href="https://veterancareerpath.com/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/vcp-styles.css">
+<script src="/vcp-careers-db.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
@@ -278,8 +279,11 @@ const OPTION_LABELS = [
   {val:5,label:"That\u2019s exactly me",sub:"This is me through and through"}
 ];
 
-// ── Career Database (80+ careers) ──
-const CAREERS = [
+// ── Career Database — loaded from external vcp-careers-db.js (750+ careers) + inline fallback ──
+var _extCareers = (window.VCP_CAREERS || []).map(function(c){
+  return {title:c.t,salary:c.s,sector:c.sec,primary:c.p||"tactical",secondary:c.sc||"structure",description:c.d||""};
+});
+var _fallbackCareers = [
   // Tactical + Leadership
   {title:"Construction Project Manager",salary:"$65,000\u2013$110,000",sector:"Construction",primary:"tactical",secondary:"leadership",description:"Manage construction projects from planning through completion. Your military field ops and resource management experience translates directly."},
   {title:"Fleet Manager",salary:"$55,000\u2013$95,000",sector:"Transportation",primary:"tactical",secondary:"leadership",description:"Oversee vehicle fleets and maintenance operations. Your motor pool experience makes this a natural transition."},
@@ -398,6 +402,7 @@ const CAREERS = [
   {title:"Retail Manager Trainee",salary:"$35,000\u2013$50,000",sector:"Retail",primary:"leadership",secondary:"service",description:"Learn retail management from the ground up. Your leadership potential will be recognized quickly."},
   {title:"Government Clerk",salary:"$32,000\u2013$48,000",sector:"Government",primary:"structure",secondary:"analytical",description:"Process government paperwork and support public services. Veterans receive hiring preference."},
 ];
+var CAREERS = _extCareers.length > 0 ? _extCareers : _fallbackCareers;
 
 // ── Profile Type Labels ──
 const PROFILE_TYPES = {

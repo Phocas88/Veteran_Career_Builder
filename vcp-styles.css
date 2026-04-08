@@ -561,3 +561,54 @@
     display: none;
   }
 }
+
+/* ── MOBILE FIXES FOR TOOL PAGES ────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Tool page dropdowns and inputs */
+  .tool-wrap select,
+  .tool-wrap input,
+  .tool-wrap textarea,
+  select, input[type="text"], input[type="email"], textarea {
+    font-size: 16px !important; /* Prevents iOS zoom */
+    max-width: 100% !important;
+  }
+  /* Field rows should stack */
+  .field-row, .g2, .g3 {
+    grid-template-columns: 1fr !important;
+    gap: .5rem !important;
+  }
+  /* Tool containers */
+  .tool-wrap, .content {
+    padding-left: .75rem !important;
+    padding-right: .75rem !important;
+  }
+  /* Paywall features grid */
+  .pw-features {
+    grid-template-columns: 1fr !important;
+    gap: .15rem !important;
+    font-size: .7rem !important;
+  }
+  /* Result boxes */
+  .result-box, .result-text {
+    font-size: .85rem !important;
+    padding: .75rem !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  /* Cards */
+  .card { padding: .75rem !important; }
+  .cb { padding: .5rem 0 !important; }
+}
+
+@media (max-width: 480px) {
+  .tool-wrap, .content {
+    padding-left: .5rem !important;
+    padding-right: .5rem !important;
+  }
+  h1, .hero h1 { font-size: 1.6rem !important; }
+  h2 { font-size: 1.2rem !important; }
+  .btn-hero, .btn-primary, .btn-ghost {
+    font-size: .85rem !important;
+    padding: .65rem 1.2rem !important;
+  }
+}

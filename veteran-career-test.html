@@ -635,14 +635,7 @@ function showResults(){
   }
   html += '</div></div>';
 
-  // Save results to localStorage for persistence
-  try {
-    localStorage.setItem('vcp_pathfinder_lite', JSON.stringify({
-      scores: scores, ranked: ranked, profileType: profileType,
-      matches: matches.map(function(m){ return {title:m.career.title, salary:m.career.salary, sector:m.career.sector}; }),
-      date: new Date().toISOString()
-    }));
-  } catch(e){}
+  // Lite results not persisted — only Pro results are saved
 
   // ── UPGRADE CTA — Pro Upsell ──
   html += '<div class="upgrade-cta" style="background:linear-gradient(135deg,#060f1e,#1a3a6b);border:2px solid rgba(240,192,64,.2);border-radius:16px;padding:2rem;margin:2rem 0;">';

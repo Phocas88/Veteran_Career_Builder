@@ -277,11 +277,17 @@ a:hover{color:var(--gold);}
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1.5rem 0 1rem;">
-      <div style="text-align:center;">
+      <div style="text-align:center;" id="standalone-option">
         <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.3rem;">Just the Assessment</div>
         <div style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:var(--gold);line-height:1;">$9.99</div>
         <div style="font-size:.68rem;color:var(--sub);margin-bottom:.6rem;">one-time</div>
-        <a href="https://buy.stripe.com/9B6dR94Db3GMcuReIvenS02" style="display:block;padding:.6rem;background:rgba(240,192,64,.1);border:1.5px solid var(--gold);border-radius:8px;color:var(--gold);font-weight:700;font-size:.82rem;text-decoration:none;">Buy Assessment Only</a>
+        <button onclick="document.getElementById('standalone-form').style.display='block';this.style.display='none';" style="display:block;width:100%;padding:.6rem;background:rgba(240,192,64,.1);border:1.5px solid var(--gold);border-radius:8px;color:var(--gold);font-weight:700;font-size:.82rem;cursor:pointer;">Buy Assessment Only</button>
+        <div id="standalone-form" style="display:none;margin-top:.6rem;text-align:left;">
+          <input id="sa-name" type="text" placeholder="Your full name" style="width:100%;padding:.45rem .65rem;margin-bottom:.4rem;border:1px solid var(--border);border-radius:6px;font-size:.82rem;background:rgba(255,255,255,.05);color:var(--text);">
+          <input id="sa-email" type="email" placeholder="Your email address" style="width:100%;padding:.45rem .65rem;margin-bottom:.4rem;border:1px solid var(--border);border-radius:6px;font-size:.82rem;background:rgba(255,255,255,.05);color:var(--text);">
+          <div id="sa-error" style="display:none;font-size:.72rem;color:#ff6b6b;margin-bottom:.3rem;"></div>
+          <button onclick="var n=document.getElementById('sa-name').value.trim(),e=document.getElementById('sa-email').value.trim();if(!n||!e||!e.includes('@')){document.getElementById('sa-error').textContent='Please enter your name and a valid email.';document.getElementById('sa-error').style.display='block';return;}localStorage.setItem('vcp_pf_user',JSON.stringify({name:n,email:e,date:new Date().toISOString()}));window.location.href='https://buy.stripe.com/9B6dR94Db3GMcuReIvenS02';" style="width:100%;padding:.55rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:8px;color:#0a1628;font-weight:700;font-size:.82rem;cursor:pointer;">Continue to Payment →</button>
+        </div>
       </div>
       <div style="text-align:center;position:relative;">
         <div style="position:absolute;top:-.5rem;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a1628;font-size:.55rem;font-weight:800;letter-spacing:.08em;padding:.1rem .5rem;border-radius:100px;text-transform:uppercase;">Best Value</div>

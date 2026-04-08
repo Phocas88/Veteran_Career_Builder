@@ -22,7 +22,7 @@
   <style>
     body{margin:0;background:#f4f6fa;}
     #loading{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999;}
-    #loading img{width:200px;height:200px;object-fit:contain;mix-blend-mode:screen;}
+    #loading img{width:100px;height:100px;object-fit:contain;mix-blend-mode:screen;}
     #loading p{color:#f0c040;letter-spacing:.15em;font-size:1rem;font-family:Georgia,serif;}
     .spin{width:36px;height:36px;border:3px solid rgba(240,192,64,.25);border-top-color:#f0c040;border-radius:50%;animation:sp .8s linear infinite;will-change:transform;}
     @keyframes sp{to{transform:rotate(360deg)}}
@@ -111,7 +111,7 @@
     </div>
     <div style="max-width:980px;margin:0 auto;padding:1.5rem 1.2rem;">
       <div style="display:flex;justify-content:center;margin-bottom:1.2rem;">
-        <div style="width:200px;height:200px;background:linear-gradient(135deg,rgba(26,58,107,.08),rgba(26,58,107,.04));border-radius:12px;"></div>
+        <div style="width:80px;height:80px;background:linear-gradient(135deg,rgba(26,58,107,.08),rgba(26,58,107,.04));border-radius:12px;"></div>
       </div>
       <div style="display:flex;gap:.5rem;justify-content:center;margin-bottom:1.5rem;">
         <div style="width:80px;height:36px;background:rgba(26,58,107,.08);border-radius:6px;"></div>
@@ -2394,7 +2394,7 @@ html{scroll-behavior:smooth;}
 .sdot.on{background:var(--gold);transform:scale(1.3);}
 .pw-overlay{position:fixed;inset:0;background:rgba(8,16,32,.88);backdrop-filter:blur(8px);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem;}
 .pw-box{background:#fff;border-radius:16px;width:100%;max-width:490px;overflow-y:auto;max-height:calc(100vh - 2rem);box-shadow:0 32px 80px rgba(0,0,0,.4);-webkit-overflow-scrolling:touch;}
-@media(max-width:640px){.pw-overlay{padding:.5rem;}.pw-box{max-width:100%;border-radius:12px;max-height:calc(100vh - 1rem);max-height:calc(100dvh - 1rem);}.pw-head{padding:1rem .75rem .75rem;}.pw-head img{width:50px!important;height:50px!important;margin-bottom:.3rem!important;}.pw-head p{font-size:.75rem!important;}.pw-footer{padding:.5rem .75rem .75rem;}.pw-cta{font-size:.85rem;padding:.65rem;}.pw-divider{margin:.5rem 1rem!important;}.pw-code-row{padding:0 .75rem!important;}}
+@media(max-width:640px){.pw-overlay{padding:.25rem;}.pw-box{max-width:100%;border-radius:10px;max-height:calc(100vh - .5rem);max-height:calc(100dvh - .5rem);font-size:.9rem;}.pw-head{padding:.75rem .5rem .5rem;}.pw-head img{width:40px!important;height:40px!important;margin-bottom:.2rem!important;}.pw-head p{font-size:.7rem!important;}.pw-footer{padding:.35rem .5rem .5rem;}.pw-cta{font-size:.8rem;padding:.55rem;}.pw-divider{margin:.35rem .5rem!important;}.pw-code-row{padding:0 .5rem!important;}.pw-skip{font-size:.72rem!important;padding:.3rem!important;}}
 .pw-head{background:linear-gradient(160deg,#0a1628,#1a3a6b);padding:2rem 1.8rem 1.5rem;text-align:center;}
 .pw-head h2{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:.12em;color:#f5d060;margin:0 0 .35rem;}
 .pw-head p{color:#a0c0e0;font-size:.85rem;margin:0;}
@@ -5742,14 +5742,14 @@ Return this exact JSON structure:
                   style={{width:"90px",height:"90px",objectFit:"contain",marginBottom:".6rem",filter:"drop-shadow(0 2px 8px rgba(0,0,0,.4))"}}/>
                 <p style={{color:"#a0c0e0",fontSize:".85rem",margin:0}}>AI-powered tools to translate your service into a civilian career</p>
               </div>
-              <div style={{padding:"1.2rem 1.5rem 0"}}>
+              <div style={{padding:".75rem 1rem 0"}}>
                 <div style={{border:"2.5px solid #1a3a6b",borderRadius:"10px",padding:"1.2rem",background:"linear-gradient(135deg,#f0f4ff,#e8edf5)",textAlign:"center"}}>
                   <div style={{textAlign:"center",marginBottom:".4rem"}}>
                     <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"3rem",color:"#1a3a6b",lineHeight:1}}>$15</div>
                     <div style={{fontSize:".85rem",fontWeight:700,color:"#1a3a6b",marginTop:".2rem"}}>Monthly Subscription</div>
                     <div style={{fontSize:".78rem",color:"#5a7090",marginTop:".15rem"}}>$15/month — 16 AI tools</div>
                   </div>
-                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".3rem .8rem",textAlign:"left",fontSize:".78rem",color:"#2a4a6a"}}>
+                  <div className="pw-features" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".2rem .6rem",textAlign:"left",fontSize:".72rem",color:"#2a4a6a"}}>
                     {["AI Career Matching","Military Language Translator","AI Resume Builder","5 Resume Templates","Cover Letter Generator","Resume Score & Review","Job Application Tracker","Interview Prep Generator","Follow-Up Email Generator","Transition Timeline","Weekly Progress Dashboard","Veteran Resources Hub"].map((f,i)=>(
                       <div key={i} style={{display:"flex",gap:".3rem",alignItems:"center"}}><span style={{color:"#1a7a40",fontWeight:700,fontSize:".8rem"}}>✓</span>{f}</div>
                     ))}

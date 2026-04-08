@@ -3022,307 +3022,321 @@ function newCivExp() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// GUIDED PROFILE WIZARD — Step-by-step with AI-prompted quantifiable inputs
+// GUIDED PROFILE WIZARD v2 — Multi-service, MOS dropdown, AI prompt-by-prompt
+// ══════════════════════════════════════════════════════════════════════════════
+// GUIDED PROFILE WIZARD v2 — Multi-service, MOS dropdown, AI prompt-by-prompt
 // ══════════════════════════════════════════════════════════════════════════════
 function GuidedProfileWizard({ personal, setPersonal, milExperiences, setMilExperiences, upP, upMilExp, BRANCHES, RANKS, MOS_DATA, showToast, hasAccess }) {
   const [step, setStep] = React.useState(0);
-  const [aiSuggestion, setAiSuggestion] = React.useState("");
+  const [svcIdx, setSvcIdx] = React.useState(0);
+  const [promptIdx, setPromptIdx] = React.useState(0);
   const [aiLoading, setAiLoading] = React.useState(false);
-  const exp = milExperiences[0] || {};
-  const uid = exp.id;
+  const [retired, setRetired] = React.useState(false);
 
-  const WIZARD_STEPS = [
-    { title:"Personal Info", icon:"👤", desc:"Let's start with the basics." },
-    { title:"Branch & Service", icon:"🎖️", desc:"Tell us about your military service." },
-    { title:"Rank & MOS", icon:"⭐", desc:"Your rank and military specialty." },
-    { title:"Time in Service", icon:"📅", desc:"When did you serve?" },
-    { title:"Key Responsibilities", icon:"📋", desc:"What did you actually do? We'll help you quantify it." },
-    { title:"Leadership", icon:"👥", desc:"How many people depended on you?" },
-    { title:"Clearance & Quals", icon:"🔐", desc:"Clearances, ASIs, and special qualifications." },
-    { title:"Deployments & Awards", icon:"🏅", desc:"Combat experience and recognition." },
-    { title:"Review & Save", icon:"✅", desc:"Review everything before continuing." }
+  const exp = milExperiences[svcIdx] || milExperiences[0] || {};
+  const uid = exp.id;
+  const mosList = React.useMemo(() => getMosByBranch(exp.branch || "Army"), [exp.branch]);
+  const svcLabel = (exp.branch||"") + (exp.mos?" · "+exp.mos:"") + (exp.mosTitle?" ("+exp.mosTitle+")":"");
+  const svcDates = (exp.startDate||"") + (exp.endDate?" – "+exp.endDate:"");
+
+  const STEPS = ["Personal","Branch","Rank & MOS","Dates","Duties & Leadership","Clearance","Awards","More Service?","Review"];
+
+  const goNext = () => { if(step<STEPS.length-1) setStep(step+1); };
+  const goBack = () => { if(step>0) setStep(step-1); };
+
+  const addNewService = () => {
+    const ne = newMilExp();
+    setMilExperiences(es => [...es, ne]);
+    setSvcIdx(milExperiences.length);
+    setStep(1);
+    setPromptIdx(0);
+    showToast("Adding new service entry ✓");
+  };
+
+  // AI prompt-by-prompt: ask one question, save answer, move to next
+  const DUTY_PROMPTS = [
+    {key:"_leaderCount", q:"How many service members did you directly supervise or lead?", ph:"e.g., 13", icon:"👥"},
+    {key:"_unitSize", q:"What was the total size of your unit or section?", ph:"e.g., 120", icon:"🏢"},
+    {key:"_equipValue", q:"What was the value of equipment/assets you were responsible for?", ph:"e.g., $4.2 million", icon:"💰"},
+    {key:"_trainedCount", q:"How many personnel did you train or mentor?", ph:"e.g., 25", icon:"🎓"},
+    {key:"duties", q:"Describe your main daily duties and responsibilities. Be specific — what did you actually do every day?", ph:"e.g., Planned and executed patrol missions, maintained accountability for crew-served weapons, conducted pre-combat inspections...", icon:"📝", textarea:true},
   ];
 
-  const goNext = () => setStep(Math.min(step + 1, WIZARD_STEPS.length - 1));
-  const goBack = () => setStep(Math.max(step - 1, 0));
+  const answerPrompt = (val) => {
+    upMilExp(uid, DUTY_PROMPTS[promptIdx].key, val);
+    if(promptIdx < DUTY_PROMPTS.length - 1) setPromptIdx(promptIdx + 1);
+  };
 
-  // AI helper — suggests quantifiable duty descriptions
-  const getAiDutySuggestion = async (context) => {
-    if (!hasAccess) { setAiSuggestion("Subscribe to unlock AI-assisted profile building."); return; }
+  // Get AI-enhanced duty description
+  const enhanceDuties = async () => {
+    if(!hasAccess){showToast("Subscribe to unlock AI duty enhancement");return;}
     setAiLoading(true);
-    setAiSuggestion("");
     try {
-      const PROXY_URL = window.VCB_PROXY_URL || "";
-      const prompt = "You are helping a veteran build their career profile. They served as a " + (exp.mosTitle || exp.mos || "service member") + " (" + (exp.mos||"") + ") in the " + (exp.branch||"military") + " at rank " + (exp.rank||"unknown") + ".\n\nThey described their duties as: \"" + context + "\"\n\nRewrite this into 3-5 resume-quality bullet points that:\n1. Start with strong action verbs\n2. Include specific numbers (team size, budget, equipment value, personnel count)\n3. Quantify results and impact\n4. Translate military jargon to civilian language\n\nIf their description is vague, ASK them specific questions like:\n- How many service members did you supervise/lead?\n- What was the value of equipment you were responsible for?\n- How many operations/missions did you plan or execute?\n- What was the size of your unit/team?\n\nReturn ONLY the bullet points, one per line, starting with •. If you need more info, start with QUESTIONS: followed by the questions.";
-      const resp = await fetch(PROXY_URL, {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ model:"claude-haiku-4-5-20251001", max_tokens:800,
-          system:"You help veterans write quantifiable, professional duty descriptions. Be specific and push for numbers.",
-          messages:[{role:"user",content:prompt}]
-        })
-      });
+      const prompt = "Rewrite this veteran's duties into 3-5 resume-quality bullet points with numbers:\n\nRole: " + (exp.mosTitle||exp.mos||"service member") + " in the " + (exp.branch||"military") + "\nRank: " + (exp.rank||"unknown") + "\nSupervised: " + (exp._leaderCount||"unknown") + " personnel\nUnit size: " + (exp._unitSize||"unknown") + "\nEquipment value: " + (exp._equipValue||"unknown") + "\nTrained: " + (exp._trainedCount||"unknown") + " personnel\nDuties: " + (exp.duties||"not provided") + "\n\nReturn ONLY bullet points starting with •. Use strong action verbs. Include specific numbers.";
+      const resp = await fetch(window.VCB_PROXY_URL||"", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-haiku-4-5-20251001",max_tokens:600,messages:[{role:"user",content:prompt}]})});
       const data = await resp.json();
-      const text = (data.content && data.content[0] && data.content[0].text) || "Unable to generate suggestion.";
-      setAiSuggestion(text);
-    } catch(e) { setAiSuggestion("AI suggestion unavailable. Describe your duties as specifically as possible."); }
+      const text = (data.content&&data.content[0]&&data.content[0].text)||"";
+      if(text) { upMilExp(uid,"duties",text); showToast("AI duties applied ✓"); }
+    } catch(e) { showToast("AI unavailable"); }
     setAiLoading(false);
   };
 
+  // ── Styles ──
+  const card = {background:"#fff",border:"1px solid #e8edf5",borderRadius:"12px",overflow:"hidden"};
+  const stepHeader = {background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",padding:".75rem 1rem",color:"#fff"};
+  const body = {padding:"1rem"};
+  const label = {fontSize:".78rem",fontWeight:600,color:"#3a5070",marginBottom:".25rem",display:"block"};
+  const input = {width:"100%",padding:".55rem .75rem",border:"1.5px solid #d0daea",borderRadius:"8px",fontSize:".88rem",fontFamily:"inherit",outline:"none"};
+  const select = {...input,background:"#fff"};
+  const btn = {padding:".55rem 1.2rem",borderRadius:"8px",border:"none",fontWeight:700,fontSize:".85rem",cursor:"pointer",fontFamily:"inherit"};
+  const btnPrimary = {...btn,background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#fff"};
+  const btnGhost = {...btn,background:"transparent",border:"1.5px solid #d0daea",color:"#5a7090"};
+  const btnGreen = {...btn,background:"#1a7a40",color:"#fff"};
+  const note = {fontSize:".75rem",color:"#8a9ab0",lineHeight:1.5,marginTop:".25rem"};
+  const fieldWrap = {marginBottom:".75rem"};
+  const row2 = {display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem"};
+
   return (
-    <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--radius)",overflow:"hidden"}}>
-      {/* Progress bar */}
-      <div style={{display:"flex",background:"rgba(26,58,107,.05)",borderBottom:"1px solid var(--border)"}}>
-        {WIZARD_STEPS.map((s,i) => (
-          <div key={i} onClick={()=>setStep(i)} style={{flex:1,padding:".5rem .25rem",textAlign:"center",cursor:"pointer",borderBottom:i===step?"2.5px solid var(--navy)":"2.5px solid transparent",background:i===step?"rgba(26,58,107,.08)":"transparent",transition:"all .15s"}}>
-            <div style={{fontSize:".95rem"}}>{s.icon}</div>
-            <div style={{fontSize:".55rem",fontWeight:i===step?700:400,color:i===step?"var(--navy)":"var(--dim)",letterSpacing:".02em",lineHeight:1.2,marginTop:".1rem"}}>{s.title}</div>
-          </div>
+    <div style={card}>
+      {/* ── Service indicator (when editing) ── */}
+      {step >= 1 && step <= 7 && (
+        <div style={{background:"rgba(240,192,64,.08)",borderBottom:"1px solid rgba(240,192,64,.15)",padding:".4rem 1rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <span style={{fontSize:".75rem",fontWeight:600,color:"#8a6000"}}>
+            📝 Editing: {svcLabel || "Service Entry " + (svcIdx+1)} {svcDates ? " ("+svcDates+")" : ""}
+          </span>
+          {milExperiences.length > 1 && (
+            <span style={{fontSize:".68rem",color:"#5a7090"}}>Entry {svcIdx+1} of {milExperiences.length}</span>
+          )}
+        </div>
+      )}
+
+      {/* ── Progress dots ── */}
+      <div style={{display:"flex",gap:"2px",padding:".5rem 1rem",background:"#f8fafc",borderBottom:"1px solid #e8edf5"}}>
+        {STEPS.map((s,i) => (
+          <div key={i} onClick={()=>setStep(i)} style={{flex:1,height:"4px",borderRadius:"2px",cursor:"pointer",background:i<step?"#1a7a40":i===step?"#1a3a6b":"#e0e8f0",transition:"background .2s"}} title={s}/>
         ))}
       </div>
 
-      {/* Step content */}
-      <div style={{padding:"1.5rem"}}>
-        <div style={{marginBottom:"1rem"}}>
-          <h3 style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:".25rem"}}>{WIZARD_STEPS[step].title}</h3>
-          <p style={{fontSize:".85rem",color:"var(--dim)",margin:0}}>{WIZARD_STEPS[step].desc}</p>
-        </div>
+      {/* ── Step header ── */}
+      <div style={stepHeader}>
+        <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"rgba(192,216,240,.5)",marginBottom:".15rem"}}>Step {step+1} of {STEPS.length}</div>
+        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.15rem",letterSpacing:".04em"}}>{STEPS[step]}</div>
+      </div>
 
-        {/* Step 0: Personal Info */}
-        {step===0 && (
-          <div className="g2">
-            <div className="field"><label>Full Name</label><input placeholder="First Last" value={personal.name} onChange={e=>upP("name",e.target.value)}/></div>
-            <div className="field"><label>Email</label><input placeholder="you@email.com" value={personal.email} onChange={e=>upP("email",e.target.value)}/></div>
-            <div className="field"><label>Phone</label><input placeholder="(555) 555-5555" value={personal.phone} onChange={e=>upP("phone",e.target.value)}/></div>
-            <div className="field"><label>City, State</label><input placeholder="Austin, TX" value={personal.location} onChange={e=>upP("location",e.target.value)}/></div>
-            <div className="field"><label>LinkedIn (optional)</label><input placeholder="linkedin.com/in/yourname" value={personal.linkedin} onChange={e=>upP("linkedin",e.target.value)}/></div>
+      <div style={body}>
+
+        {/* ════ STEP 0: Personal Info ════ */}
+        {step===0 && (<>
+          <div style={row2}>
+            <div style={fieldWrap}><label style={label}>Full Name *</label><input style={input} placeholder="First Last" value={personal.name} onChange={e=>upP("name",e.target.value)}/></div>
+            <div style={fieldWrap}><label style={label}>Email *</label><input style={input} type="email" placeholder="you@email.com" value={personal.email} onChange={e=>upP("email",e.target.value)}/></div>
           </div>
-        )}
+          <div style={row2}>
+            <div style={fieldWrap}><label style={label}>Phone</label><input style={input} placeholder="(555) 555-5555" value={personal.phone} onChange={e=>upP("phone",e.target.value)}/></div>
+            <div style={fieldWrap}><label style={label}>City, State</label><input style={input} placeholder="Austin, TX" value={personal.location} onChange={e=>upP("location",e.target.value)}/></div>
+          </div>
+          <div style={fieldWrap}><label style={label}>LinkedIn (optional)</label><input style={input} placeholder="linkedin.com/in/yourname" value={personal.linkedin} onChange={e=>upP("linkedin",e.target.value)}/></div>
+        </>)}
 
-        {/* Step 1: Branch & Service Type */}
-        {step===1 && (
-          <div className="g2">
-            <div className="field">
-              <label>Branch of Service</label>
-              <select value={exp.branch} onChange={e=>upMilExp(uid,"branch",e.target.value)}>
+        {/* ════ STEP 1: Branch & Service ════ */}
+        {step===1 && (<>
+          <div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:"8px",padding:".75rem",marginBottom:"1rem",fontSize:".8rem",color:"#92400e",lineHeight:1.6}}>
+            <strong>ℹ️ Multi-service note:</strong> You'll complete steps 2–7 for <em>each branch and MOS</em> you held. If you reclassed or served in multiple components (e.g., Active Duty then Reserve), create a separate entry for each. After step 7, you'll be asked if you have more service to add.
+          </div>
+          <div style={{...fieldWrap,...row2}}>
+            <div><label style={label}>Branch of Service *</label>
+              <select style={select} value={exp.branch} onChange={e=>{upMilExp(uid,"branch",e.target.value);upMilExp(uid,"mos","");upMilExp(uid,"mosTitle","");}}>
                 {BRANCHES.map(b=><option key={b}>{b}</option>)}
               </select>
             </div>
-            <div className="field">
-              <label>Service Type</label>
-              <select value={exp.serviceType} onChange={e=>upMilExp(uid,"serviceType",e.target.value)}>
+            <div><label style={label}>Service Type *</label>
+              <select style={select} value={exp.serviceType} onChange={e=>upMilExp(uid,"serviceType",e.target.value)}>
                 <option>Active Duty</option><option>Reserve</option><option>National Guard</option><option>Active Guard/Reserve (AGR)</option>
               </select>
             </div>
-            <div className="field">
-              <label>Unit / Command (optional)</label>
-              <input placeholder="e.g., 2nd Battalion, 75th Ranger Regiment" value={exp.unit||""} onChange={e=>upMilExp(uid,"unit",e.target.value)}/>
-            </div>
           </div>
-        )}
+          <div style={fieldWrap}><label style={label}>Unit / Command (optional)</label><input style={input} placeholder="e.g., 2nd Battalion, 75th Ranger Regiment" value={exp.unit||""} onChange={e=>upMilExp(uid,"unit",e.target.value)}/></div>
+          <div style={note}>* Create one entry per official MOS you held. If you reclassed while serving, each MOS should be a separate service entry — like listing different job titles at the same company on a civilian resume.</div>
+        </>)}
 
-        {/* Step 2: Rank & MOS */}
-        {step===2 && (
-          <div className="g2">
-            <div className="field">
-              <label>Rank at Separation / Current Rank</label>
-              <select value={exp.rank} onChange={e=>upMilExp(uid,"rank",e.target.value)}>
+        {/* ════ STEP 2: Rank & MOS ════ */}
+        {step===2 && (<>
+          <div style={row2}>
+            <div style={fieldWrap}><label style={label}>Rank at Separation / End of This Assignment *</label>
+              <select style={select} value={exp.rank} onChange={e=>upMilExp(uid,"rank",e.target.value)}>
                 <option value="">Select Rank</option>
                 <optgroup label="Enlisted">
-                  {(RANKS[exp.branch]||RANKS["Army"]).enlisted.map(r=>(
-                    <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
-                  ))}
+                  {(RANKS[exp.branch]||RANKS["Army"]).enlisted.map(r=>(<option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>))}
                 </optgroup>
                 <optgroup label="Warrant Officer">
-                  {(RANKS[exp.branch]||RANKS["Army"]).warrant.map(r=>(
-                    <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
-                  ))}
+                  {(RANKS[exp.branch]||RANKS["Army"]).warrant.map(r=>(<option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>))}
                 </optgroup>
                 <optgroup label="Officer">
-                  {(RANKS[exp.branch]||RANKS["Army"]).officer.map(r=>(
-                    <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
-                  ))}
+                  {(RANKS[exp.branch]||RANKS["Army"]).officer.map(r=>(<option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>))}
                 </optgroup>
               </select>
             </div>
-            <div className="field">
-              <label>MOS / Rate / AFSC</label>
-              <input placeholder="e.g., 11B, 68W, CTN, 2A5X1" value={exp.mos||""} onChange={e=>{
+            <div style={fieldWrap}><label style={label}>MOS / Rate / AFSC *</label>
+              <select style={select} value={exp.mos||""} onChange={e=>{
+                var code = e.target.value;
+                upMilExp(uid,"mos",code);
+                var d = MOS_DATA[code];
+                if(d) upMilExp(uid,"mosTitle",d.title);
+              }}>
+                <option value="">Select or type below</option>
+                {mosList.map(m=>(<option key={m.code} value={m.code}>{m.code} — {m.title}</option>))}
+              </select>
+              <input style={{...input,marginTop:".35rem"}} placeholder="Or type MOS code manually" value={exp.mos||""} onChange={e=>{
                 upMilExp(uid,"mos",e.target.value.toUpperCase());
                 var d = MOS_DATA[e.target.value.toUpperCase()];
                 if(d) upMilExp(uid,"mosTitle",d.title);
               }}/>
-              {exp.mosTitle && <div style={{fontSize:".78rem",color:"var(--green)",marginTop:".25rem",fontWeight:600}}>{exp.mosTitle}</div>}
+              {exp.mosTitle && <div style={{fontSize:".8rem",color:"#1a7a40",marginTop:".2rem",fontWeight:600}}>✓ {exp.mosTitle}</div>}
             </div>
           </div>
-        )}
+        </>)}
 
-        {/* Step 3: Time in Service */}
-        {step===3 && (
-          <div className="g2">
-            <div className="field">
-              <label>Total Time in Service</label>
-              <select value={exp.tos||""} onChange={e=>upMilExp(uid,"tos",e.target.value)}>
-                <option value="">Select</option>
-                <option>Less than 2 years</option><option>2-4 years</option><option>4-6 years</option>
-                <option>6-10 years</option><option>10-15 years</option><option>15-20 years</option><option>20+ years</option>
-              </select>
+        {/* ════ STEP 3: Time in Service ════ */}
+        {step===3 && (<>
+          <div style={row2}>
+            <div style={fieldWrap}><label style={label}>Start Date</label><input style={input} type="month" value={exp.startDate||""} onChange={e=>upMilExp(uid,"startDate",e.target.value)}/></div>
+            <div style={fieldWrap}><label style={label}>End Date</label>
+              {exp.current ? <div style={{padding:".55rem .75rem",background:"#f0fdf4",border:"1.5px solid #86efac",borderRadius:"8px",fontSize:".88rem",color:"#166534"}}>Currently Serving</div>
+              : <input style={input} type="month" value={exp.endDate||""} onChange={e=>upMilExp(uid,"endDate",e.target.value)}/>}
             </div>
-            <div className="field">
-              <label>Currently Serving?</label>
-              <select value={exp.current?"yes":"no"} onChange={e=>upMilExp(uid,"current",e.target.value==="yes")}>
-                <option value="no">No — I have separated</option>
-                <option value="yes">Yes — still serving</option>
+          </div>
+          <div style={row2}>
+            <div style={fieldWrap}><label style={label}>Exact years in this assignment</label>
+              <input style={input} type="number" min="0" max="40" step="0.5" placeholder="e.g., 3.5" value={exp.tos||""} onChange={e=>upMilExp(uid,"tos",e.target.value)}/>
+              <div style={note}>How many years in this specific MOS/assignment (not total career)</div>
+            </div>
+            <div style={fieldWrap}><label style={label}>Status</label>
+              <select style={select} value={exp.current?"serving":retired?"retired":"separated"} onChange={e=>{
+                if(e.target.value==="serving"){upMilExp(uid,"current",true);setRetired(false);}
+                else if(e.target.value==="retired"){upMilExp(uid,"current",false);setRetired(true);}
+                else{upMilExp(uid,"current",false);setRetired(false);}
+              }}>
+                <option value="separated">Separated</option>
+                <option value="retired">Retired from military</option>
+                <option value="serving">Currently serving</option>
               </select>
             </div>
           </div>
-        )}
+        </>)}
 
-        {/* Step 4: Key Responsibilities — THE BIG ONE with AI assist */}
-        {step===4 && (
-          <div>
-            <div style={{background:"rgba(240,192,64,.06)",border:"1px solid rgba(240,192,64,.2)",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
-              <div style={{fontWeight:700,fontSize:".85rem",color:"var(--navy)",marginBottom:".4rem"}}>💡 Pro tip: Be specific and use numbers</div>
-              <p style={{fontSize:".82rem",color:"var(--dim)",margin:0,lineHeight:1.6}}>
-                Instead of "led soldiers" → "Led a 13-person infantry squad through 150+ combat patrols"<br/>
-                Instead of "maintained equipment" → "Maintained 12 vehicles valued at $4.2M with 97% readiness rate"<br/>
-                Instead of "handled logistics" → "Coordinated supply operations for 500-person battalion, managing $2.8M inventory"
-              </p>
-            </div>
-            <div className="field">
-              <label>Describe your key responsibilities and duties</label>
-              <textarea placeholder={"What did you do in your day-to-day role as a " + (exp.mosTitle||exp.mos||"service member") + "? Include:\n• How many people you led or supervised\n• What equipment/assets you were responsible for (and their value)\n• How many missions, operations, or projects you completed\n• Any metrics: readiness rates, completion rates, personnel trained"} value={exp.duties||""} onChange={e=>upMilExp(uid,"duties",e.target.value)} style={{minHeight:"140px"}}/>
-            </div>
-            {hasAccess && (
-              <div style={{marginTop:".75rem"}}>
-                <button onClick={()=>getAiDutySuggestion(exp.duties||"")} disabled={aiLoading}
-                  style={{padding:".5rem 1rem",background:"var(--navy)",color:"#fff",border:"none",borderRadius:"6px",fontSize:".82rem",fontWeight:600,cursor:"pointer",opacity:aiLoading?.6:1}}>
-                  {aiLoading ? "⏳ AI is thinking..." : "🤖 AI: Help Me Quantify My Duties"}
-                </button>
-                {aiSuggestion && (
-                  <div style={{marginTop:".75rem",background:"rgba(26,58,107,.06)",border:"1px solid rgba(26,58,107,.15)",borderRadius:"8px",padding:"1rem"}}>
-                    <div style={{fontWeight:700,fontSize:".78rem",color:"var(--navy)",marginBottom:".4rem"}}>AI Suggestion:</div>
-                    <div style={{fontSize:".85rem",color:"var(--text)",lineHeight:1.7,whiteSpace:"pre-wrap"}}>{aiSuggestion}</div>
-                    <button onClick={()=>{upMilExp(uid,"duties",aiSuggestion.replace(/^QUESTIONS:[\s\S]*$/,"").replace(/^•\s*/gm,"• "));showToast("Applied AI suggestions ✓");setAiSuggestion("");}}
-                      style={{marginTop:".5rem",padding:".35rem .75rem",background:"var(--green)",color:"#fff",border:"none",borderRadius:"4px",fontSize:".78rem",fontWeight:600,cursor:"pointer"}}>
-                      ✓ Use These Descriptions
-                    </button>
-                  </div>
+        {/* ════ STEP 4: Duties & Leadership (prompt-by-prompt) ════ */}
+        {step===4 && (<>
+          <div style={{marginBottom:"1rem"}}>
+            {DUTY_PROMPTS.map((p,i) => (
+              <div key={p.key} style={{marginBottom:".75rem",opacity:i<=promptIdx?1:.4,pointerEvents:i<=promptIdx?"auto":"none",transition:"opacity .2s"}}>
+                <div style={{display:"flex",alignItems:"center",gap:".4rem",marginBottom:".3rem"}}>
+                  <span style={{fontSize:"1rem"}}>{p.icon}</span>
+                  <label style={{...label,margin:0}}>{p.q}</label>
+                </div>
+                {p.textarea ? (
+                  <textarea style={{...input,minHeight:"100px",resize:"vertical"}} placeholder={p.ph} value={exp[p.key]||""} onChange={e=>upMilExp(uid,p.key,e.target.value)} onBlur={()=>{if(i===promptIdx&&exp[p.key])setPromptIdx(Math.min(promptIdx+1,DUTY_PROMPTS.length-1));}}/>
+                ) : (
+                  <input style={input} placeholder={p.ph} value={exp[p.key]||""} onChange={e=>upMilExp(uid,p.key,e.target.value)} onBlur={()=>{if(i===promptIdx&&exp[p.key])setPromptIdx(Math.min(promptIdx+1,DUTY_PROMPTS.length-1));}} onKeyDown={e=>{if(e.key==="Enter"&&exp[p.key]){e.preventDefault();setPromptIdx(Math.min(promptIdx+1,DUTY_PROMPTS.length-1));}}}/>
+                )}
+                {i===promptIdx && i<DUTY_PROMPTS.length-1 && exp[p.key] && (
+                  <button onClick={()=>setPromptIdx(promptIdx+1)} style={{...btn,marginTop:".3rem",padding:".3rem .8rem",fontSize:".75rem",background:"#1a3a6b",color:"#fff"}}>Next question →</button>
                 )}
               </div>
-            )}
-            {!hasAccess && (
-              <div style={{marginTop:".5rem",fontSize:".78rem",color:"var(--dim)",fontStyle:"italic"}}>
-                💡 Subscribe to unlock AI-assisted duty descriptions that help you quantify your experience with numbers companies look for.
-              </div>
-            )}
+            ))}
           </div>
-        )}
+          {hasAccess && exp.duties && (
+            <button onClick={enhanceDuties} disabled={aiLoading} style={{...btnPrimary,width:"100%",opacity:aiLoading?.6:1}}>
+              {aiLoading ? "⏳ AI enhancing..." : "🤖 AI: Rewrite My Duties as Resume Bullet Points"}
+            </button>
+          )}
+          {!hasAccess && <div style={note}>💡 Subscribe to unlock AI-assisted duty descriptions that create resume-ready bullet points with quantifiable data.</div>}
+        </>)}
 
-        {/* Step 5: Leadership */}
-        {step===5 && (
-          <div>
-            <div style={{background:"rgba(26,58,107,.04)",border:"1px solid var(--border)",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
-              <div style={{fontWeight:700,fontSize:".85rem",color:"var(--navy)",marginBottom:".3rem"}}>Think about these questions:</div>
-              <ul style={{fontSize:".82rem",color:"var(--dim)",margin:0,paddingLeft:"1.25rem",lineHeight:1.8}}>
-                <li>How many service members did you directly supervise?</li>
-                <li>How many were in your unit overall?</li>
-                <li>Did you train or mentor junior personnel? How many?</li>
-                <li>What was the largest team you led on a single operation?</li>
-                <li>Did you serve as NCOIC, OIC, or in any leadership billet?</li>
-              </ul>
-            </div>
-            <div className="g2">
-              <div className="field">
-                <label>Number of personnel directly supervised</label>
-                <input type="number" placeholder="e.g., 13" value={exp._leaderCount||""} onChange={e=>upMilExp(uid,"_leaderCount",e.target.value)}/>
-              </div>
-              <div className="field">
-                <label>Total unit/section size</label>
-                <input type="number" placeholder="e.g., 120" value={exp._unitSize||""} onChange={e=>upMilExp(uid,"_unitSize",e.target.value)}/>
-              </div>
-              <div className="field">
-                <label>Personnel trained/mentored</label>
-                <input type="number" placeholder="e.g., 25" value={exp._trainedCount||""} onChange={e=>upMilExp(uid,"_trainedCount",e.target.value)}/>
-              </div>
-              <div className="field">
-                <label>Value of equipment/assets responsible for</label>
-                <input placeholder="e.g., $4.2 million" value={exp._equipValue||""} onChange={e=>upMilExp(uid,"_equipValue",e.target.value)}/>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Step 6: Clearance & Qualifications */}
-        {step===6 && (
-          <div className="g2">
-            <div className="field">
-              <label>Security Clearance Level</label>
-              <select value={exp.clearanceLevel||""} onChange={e=>upMilExp(uid,"clearanceLevel",e.target.value)}>
+        {/* ════ STEP 5: Clearance ════ */}
+        {step===5 && (<>
+          <div style={row2}>
+            <div style={fieldWrap}><label style={label}>Security Clearance Level</label>
+              <select style={select} value={exp.clearanceLevel||""} onChange={e=>upMilExp(uid,"clearanceLevel",e.target.value)}>
                 <option value="">None</option><option>Confidential</option><option>Secret</option><option>Top Secret</option><option>TS/SCI</option><option>TS/SCI with CI Poly</option><option>TS/SCI with Full Scope Poly</option>
               </select>
             </div>
-            <div className="field">
-              <label>Clearance Status</label>
-              <select value={exp.clearanceStatus||""} onChange={e=>upMilExp(uid,"clearanceStatus",e.target.value)}>
+            <div style={fieldWrap}><label style={label}>Clearance Status</label>
+              <select style={select} value={exp.clearanceStatus||""} onChange={e=>upMilExp(uid,"clearanceStatus",e.target.value)}>
                 <option value="">Select</option><option>Active</option><option>Inactive</option><option>Expired</option>
               </select>
             </div>
           </div>
-        )}
+        </>)}
 
-        {/* Step 7: Deployments & Awards */}
-        {step===7 && (
-          <div>
-            <div className="field">
-              <label>Deployments (locations, dates, duration)</label>
-              <textarea placeholder="e.g., Afghanistan (Kandahar Province), Jan 2019 - Sep 2019, 9 months" value={exp.deployments||""} onChange={e=>upMilExp(uid,"deployments",e.target.value)} style={{minHeight:"80px"}}/>
+        {/* ════ STEP 6: Awards & Deployments ════ */}
+        {step===6 && (<>
+          <div style={fieldWrap}>
+            <label style={label}>Deployments (locations, dates, duration)</label>
+            <textarea style={{...input,minHeight:"70px"}} placeholder="e.g., Afghanistan (Kandahar), Jan 2019 – Sep 2019, 9 months" value={exp.deployments||""} onChange={e=>upMilExp(uid,"deployments",e.target.value)}/>
+          </div>
+          <div style={fieldWrap}>
+            <label style={label}>Awards & Decorations (one per line)</label>
+            <textarea style={{...input,minHeight:"90px"}} placeholder={"Army Commendation Medal (x2)\nArmy Achievement Medal\nCombat Action Badge"} value={(exp.awards||[]).join("\n")} onChange={e=>upMilExp(uid,"awards",e.target.value.split("\n").filter(a=>a.trim()))}/>
+          </div>
+        </>)}
+
+        {/* ════ STEP 7: Add Another Service? ════ */}
+        {step===7 && (<>
+          <div style={{textAlign:"center",padding:"1rem 0"}}>
+            <div style={{fontSize:"1.5rem",marginBottom:".5rem"}}>🎖️</div>
+            <h3 style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.2rem",color:"#1a3a6b",marginBottom:".5rem"}}>Did you serve in another branch, component, or MOS?</h3>
+            <p style={{fontSize:".85rem",color:"#5a7090",maxWidth:"400px",margin:"0 auto .75rem",lineHeight:1.6}}>
+              If you reclassed, switched from Active to Reserve, or served in a different branch, add another entry. Each MOS = a separate job title on your resume.
+            </p>
+            <div style={{marginBottom:".5rem",fontSize:".8rem",color:"#5a7090"}}>
+              <strong>Entries so far:</strong> {milExperiences.map((e,i) => (
+                <span key={e.id} style={{display:"inline-block",background:i===svcIdx?"#1a3a6b":"#e8edf5",color:i===svcIdx?"#fff":"#3a5070",padding:".15rem .6rem",borderRadius:"100px",fontSize:".72rem",margin:".15rem",cursor:"pointer"}} onClick={()=>{setSvcIdx(i);setStep(1);}}>{e.branch||"Entry"} {e.mos||""} {e.tos?e.tos+"yr":""}</span>
+              ))}
             </div>
-            <div className="field" style={{marginTop:".75rem"}}>
-              <label>Awards & Decorations</label>
-              <textarea placeholder="List your awards, one per line. e.g.:\nArmy Commendation Medal (x2)\nArmy Achievement Medal\nCombat Action Badge\nGlobal War on Terrorism Service Medal" value={(exp.awards||[]).join("\n")} onChange={e=>upMilExp(uid,"awards",e.target.value.split("\n").filter(a=>a.trim()))} style={{minHeight:"100px"}}/>
+            <div style={{display:"flex",gap:".75rem",justifyContent:"center",marginTop:"1rem"}}>
+              <button onClick={addNewService} style={btnPrimary}>Yes — Add Another Service Entry</button>
+              <button onClick={goNext} style={btnGreen}>No — Continue to Review</button>
             </div>
           </div>
-        )}
+        </>)}
 
-        {/* Step 8: Review */}
-        {step===8 && (
-          <div>
-            <div style={{background:"rgba(26,122,64,.06)",border:"1px solid rgba(26,122,64,.2)",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
-              <div style={{fontWeight:700,color:"var(--green)",marginBottom:".3rem"}}>✅ Profile Summary</div>
-              <p style={{fontSize:".85rem",color:"var(--text)",margin:0,lineHeight:1.7}}>
-                <strong>{personal.name||"Name not set"}</strong> — {exp.rank||"Rank"} · {exp.branch||"Branch"} · {exp.mos||"MOS"} {exp.mosTitle ? "("+exp.mosTitle+")" : ""}<br/>
-                Service: {exp.tos||"Not specified"} · Clearance: {exp.clearanceLevel||"None"} {exp.clearanceStatus ? "("+exp.clearanceStatus+")" : ""}<br/>
-                {exp.deployments ? "Deployments: " + exp.deployments.substring(0,100) + (exp.deployments.length>100?"...":"") : "No deployments listed"}<br/>
-                {(exp.awards||[]).length > 0 ? "Awards: " + (exp.awards||[]).slice(0,3).join(", ") + ((exp.awards||[]).length>3?" + "+((exp.awards||[]).length-3)+" more":"") : "No awards listed"}<br/>
-                {exp.duties ? "Duties: " + exp.duties.substring(0,150) + "..." : "No duties described — go back to step 5 and add them!"}
-              </p>
-            </div>
-            <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
-              <button onClick={()=>showToast("Profile saved ✓")} style={{padding:".6rem 1.2rem",background:"var(--green)",color:"#fff",border:"none",borderRadius:"6px",fontWeight:700,fontSize:".85rem",cursor:"pointer"}}>💾 Save Profile</button>
-              <button onClick={()=>setStep(0)} style={{padding:".6rem 1.2rem",background:"transparent",color:"var(--navy)",border:"1.5px solid var(--border)",borderRadius:"6px",fontWeight:600,fontSize:".85rem",cursor:"pointer"}}>← Edit From Start</button>
+        {/* ════ STEP 8: Review ════ */}
+        {step===8 && (<>
+          <div style={{background:"#f0fdf4",border:"1px solid #86efac",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
+            <div style={{fontWeight:700,color:"#166534",marginBottom:".5rem"}}>✅ Profile Summary</div>
+            <div style={{fontSize:".85rem",color:"#1a2a3a",lineHeight:1.8}}>
+              <strong>{personal.name||"Name not set"}</strong> · {personal.email||"No email"}<br/>
+              {milExperiences.map((e,i) => (
+                <div key={e.id} style={{background:"#fff",border:"1px solid #e0e8f0",borderRadius:"6px",padding:".5rem .75rem",margin:".4rem 0"}}>
+                  <strong>{e.branch} · {e.rank} · {e.mos}</strong> {e.mosTitle ? "("+e.mosTitle+")" : ""}<br/>
+                  <span style={{fontSize:".8rem",color:"#5a7090"}}>
+                    {e.serviceType} · {e.tos||"?"} years · {e.startDate||"?"} – {e.current?"Present":e.endDate||"?"} · Clearance: {e.clearanceLevel||"None"}
+                    {e._leaderCount ? " · Led "+e._leaderCount : ""}{e._equipValue ? " · "+e._equipValue+" in assets" : ""}
+                  </span>
+                  {e.duties && <div style={{fontSize:".78rem",color:"#6b7a8d",marginTop:".2rem"}}>{(e.duties||"").substring(0,150)}...</div>}
+                </div>
+              ))}
+              {retired && <div style={{fontSize:".82rem",color:"#1a7a40",fontWeight:600,marginTop:".3rem"}}>✓ Military Retiree</div>}
             </div>
           </div>
-        )}
+          <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+            <button onClick={()=>{showToast("Profile saved ✓");}} style={btnGreen}>💾 Save Profile</button>
+            <button onClick={()=>{setSvcIdx(0);setStep(0);}} style={btnGhost}>← Edit From Start</button>
+          </div>
+        </>)}
 
-        {/* Navigation */}
-        <div style={{display:"flex",justifyContent:"space-between",marginTop:"1.25rem",paddingTop:".75rem",borderTop:"1px solid var(--border)"}}>
-          <button onClick={goBack} disabled={step===0}
-            style={{padding:".5rem 1rem",background:"transparent",border:"1px solid var(--border)",borderRadius:"6px",fontSize:".82rem",cursor:step===0?"default":"pointer",opacity:step===0?.3:1,color:"var(--dim)"}}>
-            ← Back
-          </button>
-          <div style={{fontSize:".75rem",color:"var(--dim)",alignSelf:"center"}}>Step {step+1} of {WIZARD_STEPS.length}</div>
-          {step < WIZARD_STEPS.length - 1 ? (
-            <button onClick={goNext}
-              style={{padding:".5rem 1rem",background:"var(--navy)",color:"#fff",border:"none",borderRadius:"6px",fontSize:".82rem",fontWeight:600,cursor:"pointer"}}>
-              Next →
-            </button>
-          ) : (
-            <button onClick={()=>{showToast("Profile complete! Head to Career Pathways →");}}
-              style={{padding:".5rem 1rem",background:"var(--green)",color:"#fff",border:"none",borderRadius:"6px",fontSize:".82rem",fontWeight:600,cursor:"pointer"}}>
-              ✅ Done — Find Careers
-            </button>
-          )}
-        </div>
+        {/* ── Navigation ── */}
+        {step!==7 && (
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:"1rem",paddingTop:".75rem",borderTop:"1px solid #e8edf5"}}>
+            <button onClick={goBack} disabled={step===0} style={{...btnGhost,opacity:step===0?.3:1}}>← Back</button>
+            {step < STEPS.length - 1 && step !== 7 && (
+              <button onClick={goNext} style={btnPrimary}>Next →</button>
+            )}
+            {step === STEPS.length - 1 && (
+              <button onClick={()=>{showToast("Profile complete! Head to Career Pathways →");}} style={btnGreen}>✅ Done</button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

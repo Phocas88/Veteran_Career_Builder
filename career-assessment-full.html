@@ -264,19 +264,41 @@ a:hover{color:var(--gold);}
     <img src="https://veterancareerpath.com/logo.png" alt="VCP" class="gate-logo">
     <div class="gate-title">VCP PathFinder&trade; Pro</div>
     <div class="gate-sub-title">Military Career Intelligence Assessment</div>
-    <div class="gate-sub">The most comprehensive career assessment built specifically for service members and veterans. 120 questions across 6 dimensions, 200+ career matches with salary data, gap analysis, and transition timelines.</div>
-    <div class="gate-price">$15<small>/month</small></div>
+    <div class="gate-sub">The most comprehensive career assessment built specifically for service members and veterans. 120 questions across 6 dimensions, 1,000+ career matches with salary data, AI analysis, gap analysis, and transition timelines.</div>
     <div class="gate-features">
       <div class="gate-feat">120 expert-crafted questions</div>
-      <div class="gate-feat">6 assessment dimensions</div>
-      <div class="gate-feat">200+ career matches</div>
-      <div class="gate-feat">Salary + clearance data</div>
+      <div class="gate-feat">6 assessment dimensions (incl. ASVAB-style)</div>
+      <div class="gate-feat">1,000+ career matches</div>
+      <div class="gate-feat">AI-powered analysis (Claude)</div>
+      <div class="gate-feat">Salary + clearance premiums</div>
       <div class="gate-feat">Personalized gap analysis</div>
-      <div class="gate-feat">Printable professional report</div>
+      <div class="gate-feat">Downloadable PDF report</div>
       <div class="gate-feat">MOS-weighted matching</div>
-      <div class="gate-feat">Unlimited retakes</div>
     </div>
-    <a href="/app.html" class="gate-btn">Subscribe &amp; Start Assessment</a>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1.5rem 0 1rem;">
+      <div style="text-align:center;">
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.3rem;">Just the Assessment</div>
+        <div style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:var(--gold);line-height:1;">$9.99</div>
+        <div style="font-size:.68rem;color:var(--sub);margin-bottom:.6rem;">one-time</div>
+        <a href="STANDALONE_STRIPE_LINK" style="display:block;padding:.6rem;background:rgba(240,192,64,.1);border:1.5px solid var(--gold);border-radius:8px;color:var(--gold);font-weight:700;font-size:.82rem;text-decoration:none;">Buy Assessment Only</a>
+      </div>
+      <div style="text-align:center;position:relative;">
+        <div style="position:absolute;top:-.5rem;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a1628;font-size:.55rem;font-weight:800;letter-spacing:.08em;padding:.1rem .5rem;border-radius:100px;text-transform:uppercase;">Best Value</div>
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.3rem;">Full AI Toolkit</div>
+        <div style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:var(--gold);line-height:1;">$15/mo</div>
+        <div style="font-size:.68rem;color:var(--sub);margin-bottom:.6rem;">assessment + 20 AI tools</div>
+        <a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:block;padding:.6rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.82rem;text-decoration:none;">Subscribe &amp; Unlock All</a>
+      </div>
+    </div>
+
+    <div style="font-size:.7rem;color:var(--sub);text-align:center;line-height:1.5;margin-bottom:.5rem;">
+      <strong style="color:var(--text);">Subscription includes:</strong> PathFinder Pro + AI Resume Builder + MOS Translator + Job Match Analyzer + Federal Resume + Interview Simulator + Salary Coach + LinkedIn Optimizer + VA Claim Builder + DD-214 Decoder + 10 more AI tools
+    </div>
+
+    <div style="text-align:center;">
+      <a href="/veteran-career-test.html" style="color:var(--sub);font-size:.78rem;text-decoration:underline;">Take the free PathFinder Lite (25 questions) instead</a>
+    </div>
     <a href="/" class="gate-skip">Back to Home</a>
   </div>
 </div>
@@ -382,10 +404,31 @@ a:hover{color:var(--gold);}
   var params = new URLSearchParams(window.location.search);
   var resultId = params.get('result');
   if(resultId){ document.getElementById('gate').classList.add('hidden'); return; }
+
+  // Check for standalone one-time purchase return from Stripe
+  var standaloneAccess = params.get('standalone_access');
+  var sessionId = params.get('session_id');
+  if(standaloneAccess === '1' && sessionId) {
+    // Grant one-time assessment access (7 days to complete + review)
+    var standaloneExpiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
+    localStorage.setItem('vcp_pathfinder_standalone', JSON.stringify({
+      type: 'standalone', session: sessionId, expiry: standaloneExpiry, purchaseDate: new Date().toISOString()
+    }));
+    // Clean URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  // Check subscription OR standalone access
   var acc = {};
   try { acc = JSON.parse(localStorage.getItem('vcb_access') || '{}'); } catch(e) {}
-  var valid = (acc.type === 'paid' && acc.stripeSession && acc.expiry > Date.now()) ||
-              (acc.type === 'code' && acc.code);
+  var standalone = {};
+  try { standalone = JSON.parse(localStorage.getItem('vcp_pathfinder_standalone') || '{}'); } catch(e) {}
+  var hasSubscription = (acc.type === 'paid' && acc.stripeSession && acc.expiry > Date.now()) ||
+                        (acc.type === 'code' && acc.code);
+  var hasStandalone = (standalone.type === 'standalone' && standalone.session && standalone.expiry > Date.now());
+  window._hasSubscription = hasSubscription;
+  window._hasStandalone = hasStandalone;
+  var valid = hasSubscription || hasStandalone;
   if(valid) document.getElementById('gate').classList.add('hidden');
 })();
 
@@ -1047,12 +1090,15 @@ function calculateResults() {
 async function enhanceWithAI(scores, rankedCareers) {
   var PROXY_URL = "https://vcp-proxy.vercel.app/api/claude";
 
-  // Check subscription
+  // Check subscription OR standalone
   var acc = {};
   try { acc = JSON.parse(localStorage.getItem('vcb_access') || '{}'); } catch(e) {}
+  var sa = {};
+  try { sa = JSON.parse(localStorage.getItem('vcp_pathfinder_standalone') || '{}'); } catch(e) {}
   var valid = (acc.type === 'paid' && acc.stripeSession && acc.expiry > Date.now()) ||
-              (acc.type === 'code' && acc.code);
-  if (!valid) throw new Error("No subscription");
+              (acc.type === 'code' && acc.code) ||
+              (sa.type === 'standalone' && sa.session && sa.expiry > Date.now());
+  if (!valid) throw new Error("No access");
 
   // Show loading indicator
   showScreen('scr-results');
@@ -1324,12 +1370,21 @@ function renderResults(scores, rankedCareers, aiData) {
 
   // ── Action Buttons ──
   html += '<div class="action-buttons no-print">';
-  html += '<button class="action-btn action-btn-primary" onclick="printReport()">Print Professional Report</button>';
-  html += '<button class="action-btn action-btn-secondary" onclick="saveResults()">Save to My Profile</button>';
-  html += '<button class="action-btn action-btn-secondary" onclick="shareResults()">Share Results</button>';
-  html += '<button class="action-btn action-btn-secondary" onclick="retakeAssessment()">Retake Assessment</button>';
-  html += '<a href="/app.html" class="action-btn action-btn-primary" style="text-decoration:none;">Build Your Resume &rarr;</a>';
+  html += '<button class="action-btn action-btn-primary" onclick="printReport()">&#128438; Download / Print PDF</button>';
+  html += '<button class="action-btn action-btn-secondary" onclick="saveResults()">&#128190; Save to My Profile</button>';
+  html += '<button class="action-btn action-btn-secondary" onclick="shareResults()">&#128279; Share Results</button>';
+  html += '<button class="action-btn action-btn-secondary" onclick="retakeAssessment()">&#128260; Retake Assessment</button>';
+  html += '<a href="/app.html" class="action-btn action-btn-primary" style="text-decoration:none;">&#128196; Build Your Resume &rarr;</a>';
   html += '</div>';
+
+  // Subscription upsell for standalone users
+  if(!window._hasSubscription && window._hasStandalone) {
+    html += '<div class="no-print" style="background:linear-gradient(135deg,#060f1e,#1a3a6b);border:2px solid rgba(240,192,64,.2);border-radius:14px;padding:2rem;margin:1.5rem 0;text-align:center;">';
+    html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.3rem;color:#f0c040;letter-spacing:.06em;margin-bottom:.5rem;">Get Even More from Your Results</div>';
+    html += '<p style="color:rgba(192,216,240,.65);font-size:.85rem;max-width:500px;margin:0 auto .8rem;line-height:1.6;">Subscribe to unlock 20+ AI career tools that use your PathFinder results: AI Resume Builder, Job Match Analyzer, Interview Simulator, Salary Coach, and more. Your assessment data is already saved — just fill out your profile.</p>';
+    html += '<a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:inline-block;padding:.7rem 1.8rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.9rem;text-decoration:none;">Subscribe — $15/mo &rarr;</a>';
+    html += '</div>';
+  }
 
   output.innerHTML = html;
 

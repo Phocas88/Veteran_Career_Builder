@@ -5244,8 +5244,8 @@ Return this exact JSON structure:
     setReviewLoading(false);
   };
   const copy = () => { navigator.clipboard.writeText(resume); setCopied(true); setTimeout(()=>setCopied(false),2200); };
-  const TABS = ["My Service Record","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","Saved Work"];
-  const TAB_ICONS = ["\u{1F396}\uFE0F","\u{1F3AF}","\u{1F4C4}","\u{2709}\uFE0F","\u{1F50D}","\u{1F4BE}"];
+  const TABS = ["My Service Record","Career Pathways","Build Resume","Cover Letter & Review","Job Search Hub","My Profile"];
+  const TAB_ICONS = ["\u{1F396}\uFE0F","\u{1F3AF}","\u{1F4C4}","\u{2709}\uFE0F","\u{1F50D}","\u{1F464}"];
   const AI_TABS = [2,3,4]; // tabs that are AI-powered tools
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
   const DI = "Defense/Intel";
@@ -5287,10 +5287,7 @@ Return this exact JSON structure:
               </div>
               <div style={{padding:".4rem 0"}}>
                 <button onClick={()=>{setTab(5);setProfileOpen(false);window.scrollTo(0,0);}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(192,216,240,.75)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.06)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
-                  <span style={{marginRight:".5rem",opacity:.7}}>&#x1F464;</span> My Profile
-                </button>
-                <button onClick={()=>{setTab(5);setProfileOpen(false);window.scrollTo(0,0);}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(192,216,240,.75)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.06)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
-                  <span style={{marginRight:".5rem",opacity:.7}}>&#x1F4BE;</span> My Saved Work
+                  <span style={{marginRight:".5rem",opacity:.7}}>&#x1F464;</span> My Profile &amp; Saved Work
                 </button>
                 <button onClick={()=>{setShowAccountSettings(true);setProfileOpen(false);}} style={{display:"block",width:"100%",textAlign:"left",background:"none",border:"none",color:"rgba(192,216,240,.75)",fontSize:".82rem",padding:".5rem 1rem",cursor:"pointer",fontFamily:"'Inter',sans-serif",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.06)"} onMouseLeave={e=>e.currentTarget.style.background="none"}>
                   <span style={{marginRight:".5rem",opacity:.7}}>&#x2699;&#xFE0F;</span> Account Settings

@@ -192,6 +192,96 @@
     }
   }
 
+  /* ── AI TOOLS QUICK-NAV DRAWER ───────────────────────────────────────── */
+  function initToolsDrawer() {
+    // Only show on AI tool pages
+    var toolPages = [
+      'tools-job-match', 'tools-cert-advisor', 'tools-interview-simulator',
+      'tools-federal-resume', 'tools-linkedin-builder', 'tools-salary-negotiator',
+      'tools-job-tracker', 'clearance-job-match', 'dd214-decoder',
+      'federal-resume-builder-ai', 'linkedin-profile-rewriter',
+      'salary-negotiation-roleplay', 'transition-timeline-planner',
+      'va-claim-builder', 'va-home-loan-analyzer', 'veteran-business-funding',
+      'mos-career-translator', 'career-assessment-full', 'veteran-career-test'
+    ];
+    var path = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '');
+    var isToolPage = false;
+    for (var i = 0; i < toolPages.length; i++) {
+      if (path === toolPages[i] || path.indexOf(toolPages[i]) > -1) { isToolPage = true; break; }
+    }
+    if (!isToolPage) return;
+
+    var tools = [
+      { icon: '\uD83D\uDCC4', name: 'AI Resume Builder', url: '/app.html' },
+      { icon: '\uD83C\uDFAF', name: 'Job Match Analyzer', url: '/tools-job-match.html' },
+      { icon: '\uD83D\uDCBC', name: 'Federal Resume', url: '/tools-federal-resume.html' },
+      { icon: '\uD83C\uDFA4', name: 'Interview Simulator', url: '/tools-interview-simulator.html' },
+      { icon: '\uD83D\uDD17', name: 'LinkedIn Optimizer', url: '/tools-linkedin-builder.html' },
+      { icon: '\uD83D\uDCB0', name: 'Salary Negotiator', url: '/tools-salary-negotiator.html' },
+      { icon: '\uD83D\uDCCA', name: 'Certification Advisor', url: '/tools-cert-advisor.html' },
+      { icon: '\uD83D\uDD04', name: 'MOS Translator', url: '/mos-career-translator.html' },
+      { icon: '\uD83D\uDCCB', name: 'DD-214 Decoder', url: '/dd214-decoder.html' },
+      { icon: '\uD83D\uDD10', name: 'Clearance Job Match', url: '/clearance-job-match.html' },
+      { icon: '\uD83C\uDFE0', name: 'VA Loan Analyzer', url: '/va-home-loan-analyzer.html' },
+      { icon: '\uD83C\uDFE5', name: 'VA Claim Builder', url: '/va-claim-builder.html' },
+      { icon: '\uD83D\uDCC5', name: 'Transition Planner', url: '/transition-timeline-planner.html' },
+      { icon: '\uD83D\uDCDD', name: 'LinkedIn Rewriter', url: '/linkedin-profile-rewriter.html' },
+      { icon: '\uD83D\uDCB5', name: 'Salary Roleplay', url: '/salary-negotiation-roleplay.html' },
+      { icon: '\uD83D\uDCBC', name: 'Business Funding', url: '/veteran-business-funding.html' },
+      { icon: '\uD83D\uDCCB', name: 'Job Tracker', url: '/tools-job-tracker.html' },
+      { icon: '\uD83D\uDC64', name: 'My Profile', url: '/app.html#profile' }
+    ];
+
+    // Build drawer HTML
+    var drawerEl = document.createElement('div');
+    drawerEl.id = 'vcp-tools-drawer';
+    drawerEl.style.cssText = 'position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:1500;';
+
+    // Toggle button
+    var toggleBtn = document.createElement('button');
+    toggleBtn.id = 'vcp-tools-toggle';
+    toggleBtn.innerHTML = '\u{1F6E0}\uFE0F';
+    toggleBtn.title = 'AI Tools';
+    toggleBtn.style.cssText = 'position:absolute;right:0;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:8px 0 0 8px;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);border:1px solid rgba(240,192,64,.3);border-right:none;color:#f0c040;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:-2px 0 12px rgba(0,0,0,.3);transition:all .2s;';
+    drawerEl.appendChild(toggleBtn);
+
+    // Panel
+    var panel = document.createElement('div');
+    panel.id = 'vcp-tools-panel';
+    panel.style.cssText = 'position:absolute;right:40px;top:50%;transform:translateY(-50%);width:220px;max-height:70vh;overflow-y:auto;background:#0d1a2d;border:1px solid rgba(240,192,64,.2);border-radius:10px 0 0 10px;box-shadow:-4px 0 20px rgba(0,0,0,.4);display:none;';
+
+    var header = '<div style="padding:.6rem .8rem;border-bottom:1px solid rgba(240,192,64,.15);font-family:Bebas Neue,sans-serif;font-size:.8rem;letter-spacing:.1em;color:#f0c040;">AI Tools</div>';
+    var links = '';
+    for (var j = 0; j < tools.length; j++) {
+      var t = tools[j];
+      var isCurrent = window.location.pathname.indexOf(t.url.replace('.html','').replace('#profile','')) > -1 && t.url !== '/app.html#profile' && t.url !== '/app.html';
+      var activeStyle = isCurrent ? 'background:rgba(240,192,64,.1);color:#f0c040;font-weight:600;' : '';
+      links += '<a href="' + t.url + '" style="display:flex;align-items:center;gap:.5rem;padding:.45rem .8rem;color:rgba(192,216,240,.7);text-decoration:none;font-size:.78rem;border-bottom:1px solid rgba(255,255,255,.03);transition:background .1s;' + activeStyle + '" onmouseover="this.style.background=\'rgba(255,255,255,.06)\'" onmouseout="this.style.background=\'' + (isCurrent ? 'rgba(240,192,64,.1)' : 'none') + '\'">' + t.icon + ' ' + t.name + '</a>';
+    }
+    panel.innerHTML = header + links;
+    drawerEl.appendChild(panel);
+
+    document.body.appendChild(drawerEl);
+
+    var open = false;
+    toggleBtn.addEventListener('click', function () {
+      open = !open;
+      panel.style.display = open ? 'block' : 'none';
+      toggleBtn.style.background = open ? 'linear-gradient(135deg,#c8960a,#e8aa10)' : 'linear-gradient(135deg,#1a3a6b,#1e4a8a)';
+      toggleBtn.style.color = open ? '#0a1628' : '#f0c040';
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', function (e) {
+      if (open && !drawerEl.contains(e.target)) {
+        open = false;
+        panel.style.display = 'none';
+        toggleBtn.style.background = 'linear-gradient(135deg,#1a3a6b,#1e4a8a)';
+        toggleBtn.style.color = '#f0c040';
+      }
+    });
+  }
+
   /* ── INIT ALL ───────────────────────────────────────────────────────── */
   function init() {
     enhanceBody();
@@ -203,6 +293,7 @@
     initBackToTop();
     initActiveNav();
     initAccountLink();
+    initToolsDrawer();
   }
 
   // Run when DOM is ready

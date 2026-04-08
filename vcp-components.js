@@ -167,6 +167,31 @@
     document.body.classList.add('vcp-enhanced');
   }
 
+  /* ── MY ACCOUNT LINK (inject into any nav that doesn't have it) ────── */
+  function initAccountLink() {
+    // Skip on app.html (has its own profile UI)
+    if (window.location.pathname.indexOf('app.html') > -1) return;
+    // Look for desktop nav (.vcp-desk) or simple nav links
+    var desk = document.querySelector('.vcp-desk');
+    if (desk && !desk.querySelector('.vcp-account-link')) {
+      var link = document.createElement('a');
+      link.href = 'https://veterancareerpath.com/app.html#profile';
+      link.className = 'vcp-account-link';
+      link.style.cssText = 'display:flex;align-items:center;gap:.3rem;padding:0 .5rem;color:rgba(192,216,240,.6);text-decoration:none;font-size:.72rem;font-weight:500;white-space:nowrap;flex-shrink:0;';
+      link.textContent = '\uD83D\uDC64 My Account';
+      desk.appendChild(link);
+    }
+    // Also add to mobile menu if it exists
+    var mob = document.querySelector('.vcp-mob');
+    if (mob && !mob.querySelector('.vcp-account-link')) {
+      var mlink = document.createElement('a');
+      mlink.href = 'https://veterancareerpath.com/app.html#profile';
+      mlink.className = 'vcp-account-link';
+      mlink.textContent = '\uD83D\uDC64 My Account';
+      mob.appendChild(mlink);
+    }
+  }
+
   /* ── INIT ALL ───────────────────────────────────────────────────────── */
   function init() {
     enhanceBody();
@@ -177,6 +202,7 @@
     initTilt();
     initBackToTop();
     initActiveNav();
+    initAccountLink();
   }
 
   // Run when DOM is ready

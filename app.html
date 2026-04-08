@@ -3020,6 +3020,314 @@ function newCivExp() {
     asi:[], sqi:[], additionalDuties:[], customDuty:"", customAsiCode:"", customAsiDesc:"", customSqiCode:"", customSqiDesc:"",
     employer:"", jobTitle:"" };
 }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GUIDED PROFILE WIZARD — Step-by-step with AI-prompted quantifiable inputs
+// ══════════════════════════════════════════════════════════════════════════════
+function GuidedProfileWizard({ personal, setPersonal, milExperiences, setMilExperiences, upP, upMilExp, BRANCHES, RANKS, MOS_DATA, showToast, hasAccess }) {
+  const [step, setStep] = React.useState(0);
+  const [aiSuggestion, setAiSuggestion] = React.useState("");
+  const [aiLoading, setAiLoading] = React.useState(false);
+  const exp = milExperiences[0] || {};
+  const uid = exp.id;
+
+  const WIZARD_STEPS = [
+    { title:"Personal Info", icon:"👤", desc:"Let's start with the basics." },
+    { title:"Branch & Service", icon:"🎖️", desc:"Tell us about your military service." },
+    { title:"Rank & MOS", icon:"⭐", desc:"Your rank and military specialty." },
+    { title:"Time in Service", icon:"📅", desc:"When did you serve?" },
+    { title:"Key Responsibilities", icon:"📋", desc:"What did you actually do? We'll help you quantify it." },
+    { title:"Leadership", icon:"👥", desc:"How many people depended on you?" },
+    { title:"Clearance & Quals", icon:"🔐", desc:"Clearances, ASIs, and special qualifications." },
+    { title:"Deployments & Awards", icon:"🏅", desc:"Combat experience and recognition." },
+    { title:"Review & Save", icon:"✅", desc:"Review everything before continuing." }
+  ];
+
+  const goNext = () => setStep(Math.min(step + 1, WIZARD_STEPS.length - 1));
+  const goBack = () => setStep(Math.max(step - 1, 0));
+
+  // AI helper — suggests quantifiable duty descriptions
+  const getAiDutySuggestion = async (context) => {
+    if (!hasAccess) { setAiSuggestion("Subscribe to unlock AI-assisted profile building."); return; }
+    setAiLoading(true);
+    setAiSuggestion("");
+    try {
+      const PROXY_URL = window.VCB_PROXY_URL || "";
+      const prompt = "You are helping a veteran build their career profile. They served as a " + (exp.mosTitle || exp.mos || "service member") + " (" + (exp.mos||"") + ") in the " + (exp.branch||"military") + " at rank " + (exp.rank||"unknown") + ".\n\nThey described their duties as: \"" + context + "\"\n\nRewrite this into 3-5 resume-quality bullet points that:\n1. Start with strong action verbs\n2. Include specific numbers (team size, budget, equipment value, personnel count)\n3. Quantify results and impact\n4. Translate military jargon to civilian language\n\nIf their description is vague, ASK them specific questions like:\n- How many service members did you supervise/lead?\n- What was the value of equipment you were responsible for?\n- How many operations/missions did you plan or execute?\n- What was the size of your unit/team?\n\nReturn ONLY the bullet points, one per line, starting with •. If you need more info, start with QUESTIONS: followed by the questions.";
+      const resp = await fetch(PROXY_URL, {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ model:"claude-haiku-4-5-20251001", max_tokens:800,
+          system:"You help veterans write quantifiable, professional duty descriptions. Be specific and push for numbers.",
+          messages:[{role:"user",content:prompt}]
+        })
+      });
+      const data = await resp.json();
+      const text = (data.content && data.content[0] && data.content[0].text) || "Unable to generate suggestion.";
+      setAiSuggestion(text);
+    } catch(e) { setAiSuggestion("AI suggestion unavailable. Describe your duties as specifically as possible."); }
+    setAiLoading(false);
+  };
+
+  return (
+    <div style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--radius)",overflow:"hidden"}}>
+      {/* Progress bar */}
+      <div style={{display:"flex",background:"rgba(26,58,107,.05)",borderBottom:"1px solid var(--border)"}}>
+        {WIZARD_STEPS.map((s,i) => (
+          <div key={i} onClick={()=>setStep(i)} style={{flex:1,padding:".5rem .25rem",textAlign:"center",cursor:"pointer",borderBottom:i===step?"2.5px solid var(--navy)":"2.5px solid transparent",background:i===step?"rgba(26,58,107,.08)":"transparent",transition:"all .15s"}}>
+            <div style={{fontSize:".95rem"}}>{s.icon}</div>
+            <div style={{fontSize:".55rem",fontWeight:i===step?700:400,color:i===step?"var(--navy)":"var(--dim)",letterSpacing:".02em",lineHeight:1.2,marginTop:".1rem"}}>{s.title}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Step content */}
+      <div style={{padding:"1.5rem"}}>
+        <div style={{marginBottom:"1rem"}}>
+          <h3 style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.3rem",letterSpacing:".05em",color:"var(--navy)",marginBottom:".25rem"}}>{WIZARD_STEPS[step].title}</h3>
+          <p style={{fontSize:".85rem",color:"var(--dim)",margin:0}}>{WIZARD_STEPS[step].desc}</p>
+        </div>
+
+        {/* Step 0: Personal Info */}
+        {step===0 && (
+          <div className="g2">
+            <div className="field"><label>Full Name</label><input placeholder="First Last" value={personal.name} onChange={e=>upP("name",e.target.value)}/></div>
+            <div className="field"><label>Email</label><input placeholder="you@email.com" value={personal.email} onChange={e=>upP("email",e.target.value)}/></div>
+            <div className="field"><label>Phone</label><input placeholder="(555) 555-5555" value={personal.phone} onChange={e=>upP("phone",e.target.value)}/></div>
+            <div className="field"><label>City, State</label><input placeholder="Austin, TX" value={personal.location} onChange={e=>upP("location",e.target.value)}/></div>
+            <div className="field"><label>LinkedIn (optional)</label><input placeholder="linkedin.com/in/yourname" value={personal.linkedin} onChange={e=>upP("linkedin",e.target.value)}/></div>
+          </div>
+        )}
+
+        {/* Step 1: Branch & Service Type */}
+        {step===1 && (
+          <div className="g2">
+            <div className="field">
+              <label>Branch of Service</label>
+              <select value={exp.branch} onChange={e=>upMilExp(uid,"branch",e.target.value)}>
+                {BRANCHES.map(b=><option key={b}>{b}</option>)}
+              </select>
+            </div>
+            <div className="field">
+              <label>Service Type</label>
+              <select value={exp.serviceType} onChange={e=>upMilExp(uid,"serviceType",e.target.value)}>
+                <option>Active Duty</option><option>Reserve</option><option>National Guard</option><option>Active Guard/Reserve (AGR)</option>
+              </select>
+            </div>
+            <div className="field">
+              <label>Unit / Command (optional)</label>
+              <input placeholder="e.g., 2nd Battalion, 75th Ranger Regiment" value={exp.unit||""} onChange={e=>upMilExp(uid,"unit",e.target.value)}/>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Rank & MOS */}
+        {step===2 && (
+          <div className="g2">
+            <div className="field">
+              <label>Rank at Separation / Current Rank</label>
+              <select value={exp.rank} onChange={e=>upMilExp(uid,"rank",e.target.value)}>
+                <option value="">Select Rank</option>
+                <optgroup label="Enlisted">
+                  {(RANKS[exp.branch]||RANKS["Army"]).enlisted.map(r=>(
+                    <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
+                  ))}
+                </optgroup>
+                <optgroup label="Warrant Officer">
+                  {(RANKS[exp.branch]||RANKS["Army"]).warrant.map(r=>(
+                    <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
+                  ))}
+                </optgroup>
+                <optgroup label="Officer">
+                  {(RANKS[exp.branch]||RANKS["Army"]).officer.map(r=>(
+                    <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
+                  ))}
+                </optgroup>
+              </select>
+            </div>
+            <div className="field">
+              <label>MOS / Rate / AFSC</label>
+              <input placeholder="e.g., 11B, 68W, CTN, 2A5X1" value={exp.mos||""} onChange={e=>{
+                upMilExp(uid,"mos",e.target.value.toUpperCase());
+                var d = MOS_DATA[e.target.value.toUpperCase()];
+                if(d) upMilExp(uid,"mosTitle",d.title);
+              }}/>
+              {exp.mosTitle && <div style={{fontSize:".78rem",color:"var(--green)",marginTop:".25rem",fontWeight:600}}>{exp.mosTitle}</div>}
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Time in Service */}
+        {step===3 && (
+          <div className="g2">
+            <div className="field">
+              <label>Total Time in Service</label>
+              <select value={exp.tos||""} onChange={e=>upMilExp(uid,"tos",e.target.value)}>
+                <option value="">Select</option>
+                <option>Less than 2 years</option><option>2-4 years</option><option>4-6 years</option>
+                <option>6-10 years</option><option>10-15 years</option><option>15-20 years</option><option>20+ years</option>
+              </select>
+            </div>
+            <div className="field">
+              <label>Currently Serving?</label>
+              <select value={exp.current?"yes":"no"} onChange={e=>upMilExp(uid,"current",e.target.value==="yes")}>
+                <option value="no">No — I have separated</option>
+                <option value="yes">Yes — still serving</option>
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Key Responsibilities — THE BIG ONE with AI assist */}
+        {step===4 && (
+          <div>
+            <div style={{background:"rgba(240,192,64,.06)",border:"1px solid rgba(240,192,64,.2)",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
+              <div style={{fontWeight:700,fontSize:".85rem",color:"var(--navy)",marginBottom:".4rem"}}>💡 Pro tip: Be specific and use numbers</div>
+              <p style={{fontSize:".82rem",color:"var(--dim)",margin:0,lineHeight:1.6}}>
+                Instead of "led soldiers" → "Led a 13-person infantry squad through 150+ combat patrols"<br/>
+                Instead of "maintained equipment" → "Maintained 12 vehicles valued at $4.2M with 97% readiness rate"<br/>
+                Instead of "handled logistics" → "Coordinated supply operations for 500-person battalion, managing $2.8M inventory"
+              </p>
+            </div>
+            <div className="field">
+              <label>Describe your key responsibilities and duties</label>
+              <textarea placeholder={"What did you do in your day-to-day role as a " + (exp.mosTitle||exp.mos||"service member") + "? Include:\n• How many people you led or supervised\n• What equipment/assets you were responsible for (and their value)\n• How many missions, operations, or projects you completed\n• Any metrics: readiness rates, completion rates, personnel trained"} value={exp.duties||""} onChange={e=>upMilExp(uid,"duties",e.target.value)} style={{minHeight:"140px"}}/>
+            </div>
+            {hasAccess && (
+              <div style={{marginTop:".75rem"}}>
+                <button onClick={()=>getAiDutySuggestion(exp.duties||"")} disabled={aiLoading}
+                  style={{padding:".5rem 1rem",background:"var(--navy)",color:"#fff",border:"none",borderRadius:"6px",fontSize:".82rem",fontWeight:600,cursor:"pointer",opacity:aiLoading?.6:1}}>
+                  {aiLoading ? "⏳ AI is thinking..." : "🤖 AI: Help Me Quantify My Duties"}
+                </button>
+                {aiSuggestion && (
+                  <div style={{marginTop:".75rem",background:"rgba(26,58,107,.06)",border:"1px solid rgba(26,58,107,.15)",borderRadius:"8px",padding:"1rem"}}>
+                    <div style={{fontWeight:700,fontSize:".78rem",color:"var(--navy)",marginBottom:".4rem"}}>AI Suggestion:</div>
+                    <div style={{fontSize:".85rem",color:"var(--text)",lineHeight:1.7,whiteSpace:"pre-wrap"}}>{aiSuggestion}</div>
+                    <button onClick={()=>{upMilExp(uid,"duties",aiSuggestion.replace(/^QUESTIONS:[\s\S]*$/,"").replace(/^•\s*/gm,"• "));showToast("Applied AI suggestions ✓");setAiSuggestion("");}}
+                      style={{marginTop:".5rem",padding:".35rem .75rem",background:"var(--green)",color:"#fff",border:"none",borderRadius:"4px",fontSize:".78rem",fontWeight:600,cursor:"pointer"}}>
+                      ✓ Use These Descriptions
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+            {!hasAccess && (
+              <div style={{marginTop:".5rem",fontSize:".78rem",color:"var(--dim)",fontStyle:"italic"}}>
+                💡 Subscribe to unlock AI-assisted duty descriptions that help you quantify your experience with numbers companies look for.
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Step 5: Leadership */}
+        {step===5 && (
+          <div>
+            <div style={{background:"rgba(26,58,107,.04)",border:"1px solid var(--border)",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
+              <div style={{fontWeight:700,fontSize:".85rem",color:"var(--navy)",marginBottom:".3rem"}}>Think about these questions:</div>
+              <ul style={{fontSize:".82rem",color:"var(--dim)",margin:0,paddingLeft:"1.25rem",lineHeight:1.8}}>
+                <li>How many service members did you directly supervise?</li>
+                <li>How many were in your unit overall?</li>
+                <li>Did you train or mentor junior personnel? How many?</li>
+                <li>What was the largest team you led on a single operation?</li>
+                <li>Did you serve as NCOIC, OIC, or in any leadership billet?</li>
+              </ul>
+            </div>
+            <div className="g2">
+              <div className="field">
+                <label>Number of personnel directly supervised</label>
+                <input type="number" placeholder="e.g., 13" value={exp._leaderCount||""} onChange={e=>upMilExp(uid,"_leaderCount",e.target.value)}/>
+              </div>
+              <div className="field">
+                <label>Total unit/section size</label>
+                <input type="number" placeholder="e.g., 120" value={exp._unitSize||""} onChange={e=>upMilExp(uid,"_unitSize",e.target.value)}/>
+              </div>
+              <div className="field">
+                <label>Personnel trained/mentored</label>
+                <input type="number" placeholder="e.g., 25" value={exp._trainedCount||""} onChange={e=>upMilExp(uid,"_trainedCount",e.target.value)}/>
+              </div>
+              <div className="field">
+                <label>Value of equipment/assets responsible for</label>
+                <input placeholder="e.g., $4.2 million" value={exp._equipValue||""} onChange={e=>upMilExp(uid,"_equipValue",e.target.value)}/>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 6: Clearance & Qualifications */}
+        {step===6 && (
+          <div className="g2">
+            <div className="field">
+              <label>Security Clearance Level</label>
+              <select value={exp.clearanceLevel||""} onChange={e=>upMilExp(uid,"clearanceLevel",e.target.value)}>
+                <option value="">None</option><option>Confidential</option><option>Secret</option><option>Top Secret</option><option>TS/SCI</option><option>TS/SCI with CI Poly</option><option>TS/SCI with Full Scope Poly</option>
+              </select>
+            </div>
+            <div className="field">
+              <label>Clearance Status</label>
+              <select value={exp.clearanceStatus||""} onChange={e=>upMilExp(uid,"clearanceStatus",e.target.value)}>
+                <option value="">Select</option><option>Active</option><option>Inactive</option><option>Expired</option>
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Step 7: Deployments & Awards */}
+        {step===7 && (
+          <div>
+            <div className="field">
+              <label>Deployments (locations, dates, duration)</label>
+              <textarea placeholder="e.g., Afghanistan (Kandahar Province), Jan 2019 - Sep 2019, 9 months" value={exp.deployments||""} onChange={e=>upMilExp(uid,"deployments",e.target.value)} style={{minHeight:"80px"}}/>
+            </div>
+            <div className="field" style={{marginTop:".75rem"}}>
+              <label>Awards & Decorations</label>
+              <textarea placeholder="List your awards, one per line. e.g.:\nArmy Commendation Medal (x2)\nArmy Achievement Medal\nCombat Action Badge\nGlobal War on Terrorism Service Medal" value={(exp.awards||[]).join("\n")} onChange={e=>upMilExp(uid,"awards",e.target.value.split("\n").filter(a=>a.trim()))} style={{minHeight:"100px"}}/>
+            </div>
+          </div>
+        )}
+
+        {/* Step 8: Review */}
+        {step===8 && (
+          <div>
+            <div style={{background:"rgba(26,122,64,.06)",border:"1px solid rgba(26,122,64,.2)",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
+              <div style={{fontWeight:700,color:"var(--green)",marginBottom:".3rem"}}>✅ Profile Summary</div>
+              <p style={{fontSize:".85rem",color:"var(--text)",margin:0,lineHeight:1.7}}>
+                <strong>{personal.name||"Name not set"}</strong> — {exp.rank||"Rank"} · {exp.branch||"Branch"} · {exp.mos||"MOS"} {exp.mosTitle ? "("+exp.mosTitle+")" : ""}<br/>
+                Service: {exp.tos||"Not specified"} · Clearance: {exp.clearanceLevel||"None"} {exp.clearanceStatus ? "("+exp.clearanceStatus+")" : ""}<br/>
+                {exp.deployments ? "Deployments: " + exp.deployments.substring(0,100) + (exp.deployments.length>100?"...":"") : "No deployments listed"}<br/>
+                {(exp.awards||[]).length > 0 ? "Awards: " + (exp.awards||[]).slice(0,3).join(", ") + ((exp.awards||[]).length>3?" + "+((exp.awards||[]).length-3)+" more":"") : "No awards listed"}<br/>
+                {exp.duties ? "Duties: " + exp.duties.substring(0,150) + "..." : "No duties described — go back to step 5 and add them!"}
+              </p>
+            </div>
+            <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+              <button onClick={()=>showToast("Profile saved ✓")} style={{padding:".6rem 1.2rem",background:"var(--green)",color:"#fff",border:"none",borderRadius:"6px",fontWeight:700,fontSize:".85rem",cursor:"pointer"}}>💾 Save Profile</button>
+              <button onClick={()=>setStep(0)} style={{padding:".6rem 1.2rem",background:"transparent",color:"var(--navy)",border:"1.5px solid var(--border)",borderRadius:"6px",fontWeight:600,fontSize:".85rem",cursor:"pointer"}}>← Edit From Start</button>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation */}
+        <div style={{display:"flex",justifyContent:"space-between",marginTop:"1.25rem",paddingTop:".75rem",borderTop:"1px solid var(--border)"}}>
+          <button onClick={goBack} disabled={step===0}
+            style={{padding:".5rem 1rem",background:"transparent",border:"1px solid var(--border)",borderRadius:"6px",fontSize:".82rem",cursor:step===0?"default":"pointer",opacity:step===0?.3:1,color:"var(--dim)"}}>
+            ← Back
+          </button>
+          <div style={{fontSize:".75rem",color:"var(--dim)",alignSelf:"center"}}>Step {step+1} of {WIZARD_STEPS.length}</div>
+          {step < WIZARD_STEPS.length - 1 ? (
+            <button onClick={goNext}
+              style={{padding:".5rem 1rem",background:"var(--navy)",color:"#fff",border:"none",borderRadius:"6px",fontSize:".82rem",fontWeight:600,cursor:"pointer"}}>
+              Next →
+            </button>
+          ) : (
+            <button onClick={()=>{showToast("Profile complete! Head to Career Pathways →");}}
+              style={{padding:".5rem 1rem",background:"var(--green)",color:"#fff",border:"none",borderRadius:"6px",fontSize:".82rem",fontWeight:600,cursor:"pointer"}}>
+              ✅ Done — Find Careers
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 function CareerListView(props) {
   const {careers,careerFilter,setCareerFilter,openCareerDetail,findCareers,loading,careerError,milExperiences,target,upT,currentUser,setShowAuth,showToast,DI,filterCareers,matchesSector,setSelectedCareer} = props;
@@ -3328,11 +3636,46 @@ function CareerTab(props) {
                   {exp.tos&&<span className="tos-badge">⏱ {exp.tos} Time in Service</span>}
                   {exp.startDate&&<span className="tos-badge">📅 {exp.startDate} – {exp.current?"Present":exp.endDate||"?"}</span>}
                 </div>
-                <div style={{marginTop:".6rem",background:"rgba(255,255,255,.03)",border:"1px solid rgba(201,168,76,.12)",borderRadius:"3px",padding:".7rem .9rem"}}>
-                  <div style={{fontSize:".68rem",letterSpacing:".12em",textTransform:"uppercase",color:"var(--slate)",marginBottom:".3rem"}}>What this MOS means to a civilian employer</div>
-                  <div style={{fontSize:".85rem",color:"var(--dim)",fontStyle:"italic"}}>
-                    {exp.mos ? "Your "+(exp.mosTitle||exp.mos)+" background demonstrates technical expertise, disciplined execution, and mission-critical responsibility. Civilian employers in operations, logistics, healthcare, security, and government sectors actively seek this experience." : "Enter your MOS code on the Profile tab to see what it unlocks."}
+                {/* ── CIVILIAN TRANSLATION BOX ── */}
+                <div style={{marginTop:".6rem",background:"linear-gradient(135deg,rgba(26,58,107,.06),rgba(240,192,64,.03))",border:"1px solid rgba(201,168,76,.15)",borderLeft:"4px solid var(--gold-light)",borderRadius:"0 8px 8px 0",padding:".9rem 1.1rem"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:".4rem",marginBottom:".5rem"}}>
+                    <span style={{fontSize:"1rem"}}>🔄</span>
+                    <div style={{fontSize:".72rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"var(--gold-light)"}}>Your Military Experience → Civilian Translation</div>
                   </div>
+                  {exp.mos ? (<>
+                    <div style={{fontSize:".88rem",color:"var(--text)",lineHeight:1.7,marginBottom:".6rem"}}>
+                      <strong>In civilian terms, you were:</strong> {
+                        (function(){
+                          var r = exp.rank || "";
+                          var isNCO = r.indexOf("E-5")!==-1||r.indexOf("E-6")!==-1||r.indexOf("E-7")!==-1||r.indexOf("E-8")!==-1||r.indexOf("E-9")!==-1;
+                          var isSrNCO = r.indexOf("E-7")!==-1||r.indexOf("E-8")!==-1||r.indexOf("E-9")!==-1;
+                          var isOfficer = r.indexOf("O-")!==-1||r.indexOf("W-")!==-1;
+                          var title = exp.mosTitle || exp.mos;
+                          if(isOfficer) return "A department director or senior program manager leading " + (exp._unitSize||"multiple teams of") + " personnel, responsible for strategic planning, resource allocation, and mission execution in a " + (exp.branch||"military") + " " + title + " organization.";
+                          if(isSrNCO) return "A senior operations manager supervising " + (exp._leaderCount||"multiple") + " direct reports and " + (exp._unitSize||"a team of") + " personnel, with full accountability for training, performance, equipment worth " + (exp._equipValue||"significant assets") + ", and day-to-day execution of " + title + " operations.";
+                          if(isNCO) return "A team lead / front-line supervisor managing " + (exp._leaderCount||"a team of") + " personnel, responsible for training, task execution, quality control, and operational readiness in " + title + " operations.";
+                          return "A trained specialist in " + title + " operations with hands-on experience in mission execution, technical procedures, teamwork, and accountability under pressure.";
+                        })()
+                      }
+                    </div>
+                    {exp.duties && (
+                      <div style={{fontSize:".82rem",color:"var(--dim)",lineHeight:1.65}}>
+                        <strong style={{color:"var(--text)"}}>What companies see when they read your background:</strong> {
+                          (exp.duties||"").replace(/led/gi,"managed").replace(/soldiers|Marines|sailors|airmen|service members/gi,"team members").replace(/platoon/gi,"division").replace(/squad/gi,"team").replace(/company/gi,"department").replace(/battalion/gi,"organization").replace(/mission/gi,"project").replace(/field exercise/gi,"operational exercise").replace(/PT\b/g,"fitness training").replace(/NCOIC/gi,"supervisor").replace(/OIC/gi,"manager").replace(/COP|FOB|base/gi,"facility").substring(0,300) + (exp.duties.length>300?"...":"")
+                        }
+                      </div>
+                    )}
+                    {(exp._leaderCount || exp._unitSize || exp._equipValue || exp._trainedCount) && (
+                      <div style={{display:"flex",gap:".6rem",flexWrap:"wrap",marginTop:".5rem"}}>
+                        {exp._leaderCount && <span style={{background:"rgba(26,122,64,.1)",border:"1px solid rgba(26,122,64,.2)",borderRadius:"100px",padding:".2rem .65rem",fontSize:".72rem",color:"var(--green)",fontWeight:600}}>Led {exp._leaderCount} personnel</span>}
+                        {exp._unitSize && <span style={{background:"rgba(26,58,107,.08)",border:"1px solid rgba(26,58,107,.15)",borderRadius:"100px",padding:".2rem .65rem",fontSize:".72rem",color:"var(--navy)",fontWeight:600}}>{exp._unitSize}-person organization</span>}
+                        {exp._equipValue && <span style={{background:"rgba(200,150,10,.08)",border:"1px solid rgba(200,150,10,.2)",borderRadius:"100px",padding:".2rem .65rem",fontSize:".72rem",color:"var(--gold-light)",fontWeight:600}}>{exp._equipValue} in assets</span>}
+                        {exp._trainedCount && <span style={{background:"rgba(26,122,64,.1)",border:"1px solid rgba(26,122,64,.2)",borderRadius:"100px",padding:".2rem .65rem",fontSize:".72rem",color:"var(--green)",fontWeight:600}}>Trained {exp._trainedCount} personnel</span>}
+                      </div>
+                    )}
+                  </>) : (
+                    <div style={{fontSize:".85rem",color:"var(--dim)",fontStyle:"italic"}}>Enter your MOS code on the Profile tab to see your civilian translation.</div>
+                  )}
                 </div>
               </div>
       
@@ -4181,6 +4524,7 @@ function App() {
   const [careerError, setCareerError] = useState("");
   const [resumeData, setResumeData] = useState(null);
   const [resumeTemplate, setResumeTemplate] = useState("ats_chrono");
+  const [profileMode, setProfileMode] = useState("guided");
   const [resumeVisualStyle, setResumeVisualStyle] = useState("classic");
   const VISUAL_STYLES = {
     classic: { name:"Classic", accent:"#000000", accent2:"#333333", headerBg:"#ffffff", headerText:"#000000", font:"Georgia,Times New Roman,serif", sectionBorder:"2px solid #000", preview:"#000" },
@@ -5726,6 +6070,25 @@ Return this exact JSON structure:
         <div className="steps">{TABS.map((_,i)=><div key={i} className={"sdot "+(tab===i?"on":"")}/>)}</div>
         <div className="wrap">
           {tab===0 && <div className="panel on">
+            {/* ── MODE TOGGLE: Guided Wizard vs Manual Entry ── */}
+            <div style={{display:"flex",gap:".5rem",marginBottom:"1rem",background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--radius)",padding:".5rem"}}>
+              <button onClick={()=>setProfileMode("guided")} style={{flex:1,padding:".6rem",borderRadius:"6px",border:"none",cursor:"pointer",fontWeight:700,fontSize:".82rem",fontFamily:"inherit",background:profileMode==="guided"?"var(--navy)":"transparent",color:profileMode==="guided"?"#fff":"var(--dim)",transition:"all .15s"}}>🎯 Guided Wizard</button>
+              <button onClick={()=>setProfileMode("manual")} style={{flex:1,padding:".6rem",borderRadius:"6px",border:"none",cursor:"pointer",fontWeight:700,fontSize:".82rem",fontFamily:"inherit",background:profileMode==="manual"?"var(--navy)":"transparent",color:profileMode==="manual"?"#fff":"var(--dim)",transition:"all .15s"}}>✏️ Manual Entry</button>
+            </div>
+
+            {/* ══ GUIDED WIZARD ══ */}
+            {profileMode==="guided" && (
+              <GuidedProfileWizard
+                personal={personal} setPersonal={setPersonal}
+                milExperiences={milExperiences} setMilExperiences={setMilExperiences}
+                upP={upP} upMilExp={upMilExp}
+                BRANCHES={BRANCHES} RANKS={RANKS} MOS_DATA={MOS_DATA}
+                showToast={showToast} hasAccess={hasAccess}
+              />
+            )}
+
+            {/* ══ MANUAL ENTRY (existing form) ══ */}
+            {profileMode==="manual" && <>
             <div className="intro">
               <strong>Your service matters.</strong> Fill in your background below — your military experience, civilian work, education, and skills. The more you add, the better your career matches and resume will be. Take your time and be as detailed as you like.
             </div>
@@ -6603,6 +6966,7 @@ Return this exact JSON structure:
               </div>
             )}
             <div className="nav-row"><div/><button className="btn-sec" onClick={()=>setTab(1)}>Next: Career Pathways →</button></div>
+            </>}
           </div>}
           <CareerTab careers={careers} careerFilter={careerFilter} setCareerFilter={setCareerFilter} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} careerDetail={careerDetail} loading={loading} careerError={careerError} openCareerDetail={openCareerDetail} findCareers={findCareers} tab={tab} setTab={setTab} target={target} upT={upT} targetLocation={targetLocation} milExperiences={milExperiences} civExperiences={civExperiences} education={education} currentUser={currentUser} showToast={showToast} setShowAuth={setShowAuth} DI={DI} filterCareers={filterCareers} matchesSector={matchesSector}  hasAccess={hasAccess} RG={RG} setShowPaywall={setShowPaywall}  skills={skills} personal={personal} />
           {tab===2 && <div className="panel on">

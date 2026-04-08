@@ -133,6 +133,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
   <!-- Stats -->
   <div class="stats-row" id="stats-row">
+    <div class="stat-card"><div class="stat-n" id="stat-email-total">—</div><div class="stat-l">Email Subscribers</div><div class="stat-sub">Newsletter signups</div></div>
     <div class="stat-card"><div class="stat-n" id="stat-salary-pending">—</div><div class="stat-l">Salary Submissions</div><div class="stat-sub">Pending approval</div></div>
     <div class="stat-card"><div class="stat-n" id="stat-story-pending">—</div><div class="stat-l">Success Stories</div><div class="stat-sub">Pending approval</div></div>
     <div class="stat-card"><div class="stat-n" id="stat-salary-total">—</div><div class="stat-l">Total Salary Entries</div><div class="stat-sub">Live on site</div></div>
@@ -141,14 +142,24 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('salary',this)">💰 Salary Data</button>
+    <button class="tab active" onclick="switchTab('emails',this)">📧 Email Subscribers</button>
+    <button class="tab" onclick="switchTab('salary',this)">💰 Salary Data</button>
     <button class="tab" onclick="switchTab('stories',this)">🎖 Success Stories</button>
     <button class="tab" onclick="switchTab('add-salary',this)">+ Add Salary Entry</button>
     <button class="tab" onclick="switchTab('add-story',this)">+ Add Story</button>
   </div>
 
+  <!-- EMAIL SUBSCRIBERS -->
+  <div class="panel active" id="panel-emails">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
+      <div style="font-size:.85rem;color:rgba(192,216,240,.5);">All newsletter signups from email walls across the site</div>
+      <button style="background:rgba(240,192,64,.15);border:1px solid rgba(240,192,64,.3);color:#f0c040;padding:.4rem .9rem;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;" onclick="exportEmails()">📋 Copy All Emails</button>
+    </div>
+    <div id="email-list"><div class="loading">Loading email subscribers...</div></div>
+  </div>
+
   <!-- SALARY PENDING -->
-  <div class="panel active" id="panel-salary">
+  <div class="panel" id="panel-salary">
     <div id="salary-pending-list"><div class="loading">Loading salary submissions...</div></div>
   </div>
 
@@ -251,17 +262,87 @@ function toast(msg, color) {
   setTimeout(function(){ t.style.display = 'none'; }, 2500);
 }
 
+var allEmails = [];
+
 function loadAll() {
-  if(!window.db){ 
+  if(!window.db){
+    document.getElementById('email-list').innerHTML = '<div class="empty"><h3>Firebase Not Connected</h3>Add your Firebase config to see data.</div>';
     document.getElementById('salary-pending-list').innerHTML = '<div class="empty"><h3>Firebase Not Connected</h3>Add your Firebase config to see submissions.</div>';
     document.getElementById('story-pending-list').innerHTML = '<div class="empty"><h3>Firebase Not Connected</h3>Add your Firebase config to see submissions.</div>';
-    ['stat-salary-pending','stat-story-pending','stat-salary-total','stat-story-total'].forEach(function(id){
+    ['stat-email-total','stat-salary-pending','stat-story-pending','stat-salary-total','stat-story-total'].forEach(function(id){
       document.getElementById(id).textContent = '—';
     });
     return;
   }
+  loadEmailSubscribers();
   loadSalaryData();
   loadStoryData();
+}
+
+// ── EMAIL SUBSCRIBERS ────────────────────────────────────────────────────────
+function loadEmailSubscribers() {
+  var db = window.db;
+  db.collection('email_subscribers').orderBy('timestamp','desc').get().then(function(snap){
+    document.getElementById('stat-email-total').textContent = snap.size;
+    allEmails = [];
+    if(snap.empty){
+      document.getElementById('email-list').innerHTML = '<div class="empty"><h3>No subscribers yet</h3>Email signups from the site will appear here.</div>';
+      return;
+    }
+    var html = '<table style="width:100%;border-collapse:collapse;font-size:.82rem;">';
+    html += '<thead><tr style="border-bottom:2px solid rgba(240,192,64,.2);text-align:left;">';
+    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Email</th>';
+    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Source</th>';
+    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Date</th>';
+    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Status</th>';
+    html += '<th style="padding:.6rem .75rem;"></th>';
+    html += '</tr></thead><tbody>';
+    snap.forEach(function(doc){
+      var d = doc.data();
+      allEmails.push(d.email);
+      var date = d.timestamp ? new Date(d.timestamp.seconds ? d.timestamp.seconds*1000 : d.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+      var source = (d.source||'').replace('https://veterancareerpath.com/','').replace('https://veterancareerpath.com','Home') || '—';
+      if(source.length > 30) source = source.substring(0,30) + '…';
+      var status = d.status || 'active';
+      var statusColor = status === 'active' ? '#4ade80' : '#ff8080';
+      html += '<tr style="border-bottom:1px solid rgba(255,255,255,.05);">';
+      html += '<td style="padding:.55rem .75rem;color:#e8f0f8;font-weight:500;">'+d.email+'</td>';
+      html += '<td style="padding:.55rem .75rem;color:rgba(192,216,240,.5);font-size:.78rem;">'+source+'</td>';
+      html += '<td style="padding:.55rem .75rem;color:rgba(192,216,240,.5);font-size:.78rem;">'+date+'</td>';
+      html += '<td style="padding:.55rem .75rem;"><span style="color:'+statusColor+';font-size:.75rem;font-weight:600;">'+status+'</span></td>';
+      html += '<td style="padding:.55rem .75rem;"><button style="background:rgba(255,80,80,.15);border:1px solid rgba(255,80,80,.3);color:#ff8080;padding:.2rem .5rem;border-radius:4px;font-size:.72rem;cursor:pointer;" onclick="deleteEmail(\''+doc.id+'\')">Remove</button></td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('email-list').innerHTML = html;
+  }).catch(function(err){
+    document.getElementById('email-list').innerHTML = '<div class="empty"><h3>Error loading subscribers</h3>'+err.message+'</div>';
+  });
+}
+
+function deleteEmail(id) {
+  if(!confirm('Remove this subscriber?')) return;
+  window.db.collection('email_subscribers').doc(id).delete().then(function(){
+    toast('Subscriber removed','#c0392b');
+    loadEmailSubscribers();
+  });
+}
+
+function exportEmails() {
+  if(!allEmails.length){ toast('No emails to copy','#c0392b'); return; }
+  var text = allEmails.join('\n');
+  navigator.clipboard.writeText(text).then(function(){
+    toast('Copied '+allEmails.length+' emails to clipboard!');
+  }).catch(function(){
+    // Fallback
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    toast('Copied '+allEmails.length+' emails to clipboard!');
+  });
 }
 
 // ── SALARY ────────────────────────────────────────────────────────────────────

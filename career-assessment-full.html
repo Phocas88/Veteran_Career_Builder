@@ -1157,44 +1157,80 @@ function matchCareers(scores) {
 
     var basePct = totalWeight > 0 ? Math.round((matchScore / totalWeight) * 100) : 50;
 
+    // ── CRITICAL: Overall aptitude ceiling ──
+    // Calculate the user's average score across ALL dimensions
+    // If their scores are genuinely low, cap how high any match can go
+    var allScores = [
+      scores.mechanical.pct, scores.verbal.pct, scores.numerical.pct,
+      scores.leadershipOverall
+    ];
+    Object.keys(scores.interests).forEach(function(k){ allScores.push(scores.interests[k]); });
+    Object.keys(scores.workstyle).forEach(function(k){ allScores.push(scores.workstyle[k]); });
+    var avgOverall = allScores.reduce(function(a,b){return a+b;},0) / allScores.length;
+
+    // Apply aptitude ceiling — you can't match 90% on a career if your overall scores average 30%
+    // Max match = average score + 15 (generous buffer for strong specific dimensions)
+    var aptitudeCeiling = Math.min(95, Math.round(avgOverall + 15));
+
+    // For technical careers (high mechanical/numerical weights), also check technical aptitude
+    var techWeight = (w.mechanical || 0) + (w.numerical || 0);
+    if(techWeight > 1.0) {
+      var techAvg = (scores.mechanical.pct + scores.numerical.pct) / 2;
+      var techCeiling = Math.round(techAvg + 10);
+      aptitudeCeiling = Math.min(aptitudeCeiling, techCeiling);
+    }
+
+    // For leadership-heavy careers, check leadership score
+    if((w.leadership || 0) > 0.6) {
+      var leadCeiling = Math.round(scores.leadershipOverall + 12);
+      aptitudeCeiling = Math.min(aptitudeCeiling, leadCeiling);
+    }
+
+    basePct = Math.min(basePct, aptitudeCeiling);
+
     // ── Profile weighting ──
+    // Profile bonuses are SMALLER and capped — they can't rescue a bad assessment
     var profileBonus = 0;
+    var maxProfileBonus = Math.round(avgOverall * 0.15); // Max bonus = 15% of avg score
     if(userProfile) {
       // MOS match bonus
       if(career.mosMatch && career.mosMatch.length > 0 && userProfile.mos) {
         var userMos = (userProfile.mos || '').toUpperCase().replace(/\s/g,'');
         career.mosMatch.forEach(function(m){
           if(userMos.indexOf(m.toUpperCase()) !== -1 || m.toUpperCase().indexOf(userMos) !== -1) {
-            profileBonus += 12;
+            profileBonus += 6;
           }
         });
       }
-      // Rank-based leadership boost
+      // Rank-based leadership boost (smaller)
       if(userProfile.rank) {
         var rank = userProfile.rank.toUpperCase();
         var isNCO = rank.indexOf('E-7') !== -1 || rank.indexOf('E-8') !== -1 || rank.indexOf('E-9') !== -1 || rank.indexOf('E7') !== -1 || rank.indexOf('E8') !== -1 || rank.indexOf('E9') !== -1;
         var isOfficer = rank.indexOf('O-') !== -1 || rank.indexOf('W-') !== -1;
         if((isNCO || isOfficer) && (w.leadership > 0.4)) {
-          profileBonus += 5;
+          profileBonus += 3;
         }
       }
-      // Clearance boost
+      // Clearance boost (smaller)
       if(userProfile.clearance && career.clearancePremium) {
         var cl = userProfile.clearance.toUpperCase();
         if(cl.indexOf('SECRET') !== -1 || cl.indexOf('TS') !== -1 || cl.indexOf('SCI') !== -1) {
-          profileBonus += 8;
+          profileBonus += 4;
         }
       }
       // Years of service experience factor
       if(userProfile.yearsOfService) {
         var yos = parseInt(userProfile.yearsOfService) || 0;
         if(yos >= 10 && (w.leadership > 0.5 || career.sector === 'Government' || career.sector === 'Business')) {
-          profileBonus += 3;
+          profileBonus += 2;
         }
       }
     }
 
-    var finalPct = Math.min(99, Math.max(15, basePct + profileBonus));
+    // Cap profile bonus — can't rescue a bad assessment
+    profileBonus = Math.min(profileBonus, maxProfileBonus);
+
+    var finalPct = Math.min(aptitudeCeiling, Math.max(8, basePct + profileBonus));
 
     results.push({
       career: career,

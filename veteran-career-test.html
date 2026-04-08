@@ -609,9 +609,17 @@ function showResults(){
   for(var i=0;i<matches.length;i++){
     var m = matches[i];
     var c = m.career;
-    var matchPct = Math.min(99, Math.round((m.score / (matches[0].score)) * 100));
-    if(i === 0) matchPct = isLow ? Math.round(primary.score * 1.5) : 97;
-    else matchPct = Math.max(60, matchPct);
+    // Calculate match % relative to best match, but constrained by actual score levels
+    var rawPct = Math.round((m.score / (matches[0].score || 1)) * 100);
+    // Scale to user's actual aptitude — can't show 97% match when scores are low
+    var avgScore = ranked.reduce(function(s,d){return s+d.score;},0) / ranked.length;
+    var ceiling = Math.min(95, Math.round(avgScore + 12)); // Max match = avg score + 12
+    if(i === 0) {
+      matchPct = isLow ? Math.round(primary.score * 1.2) : Math.min(ceiling, Math.round(avgScore * 1.3 + 10));
+    } else {
+      matchPct = Math.min(ceiling, Math.round(rawPct * (avgScore / 100) + avgScore * 0.3));
+    }
+    matchPct = Math.max(8, Math.min(ceiling, matchPct));
     html += '<div class="career-card">';
     html += '<div class="cc-match">' + matchPct + '% Match</div>';
     html += '<h3>' + c.title + '</h3>';

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="170" viewBox="0 0 400 170">
+  <style>
+    @keyframes flowRight { 0%{opacity:1;transform:translateX(0)} 100%{opacity:0;transform:translateX(30px)} }
+    .flow-dot { animation: flowRight 1s linear infinite; }
+    .flow-dot:nth-child(2) { animation-delay: .33s; }
+    .flow-dot:nth-child(3) { animation-delay: .66s; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="170" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Tank A -->
+  <rect x="30" y="25" width="110" height="100" rx="12" fill="#e0e8f5" stroke="#1a3a6b" stroke-width="2.5"/>
+  <rect x="30" y="25" width="110" height="30" rx="12" fill="#1a3a6b"/>
+  <rect x="30" y="40" width="110" height="15" fill="#1a3a6b"/>
+  <text x="85" y="45" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">TANK A</text>
+  <text x="85" y="85" text-anchor="middle" font-size="32" font-weight="800" fill="#c8960a">100</text>
+  <text x="85" y="105" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">PSI</text>
+
+  <!-- Tank B -->
+  <rect x="260" y="25" width="110" height="100" rx="12" fill="#e0e8f5" stroke="#1a3a6b" stroke-width="2.5"/>
+  <rect x="260" y="25" width="110" height="30" rx="12" fill="#1a3a6b"/>
+  <rect x="260" y="40" width="110" height="15" fill="#1a3a6b"/>
+  <text x="315" y="45" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">TANK B</text>
+  <text x="315" y="85" text-anchor="middle" font-size="32" font-weight="800" fill="#5a7090">30</text>
+  <text x="315" y="105" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">PSI</text>
+
+  <!-- Pipe -->
+  <rect x="140" y="68" width="120" height="18" rx="4" fill="#b0c4de" stroke="#1a3a6b" stroke-width="1.5"/>
+
+  <!-- Valve -->
+  <rect x="185" y="60" width="30" height="34" rx="4" fill="#c8960a" stroke="#8a6000" stroke-width="2"/>
+  <text x="200" y="82" text-anchor="middle" font-size="9" font-weight="800" fill="#fff">OPEN</text>
+
+  <!-- Flow arrows (animated dots) -->
+  <g class="flow-dot"><circle cx="160" cy="77" r="3" fill="#1a3a6b"/></g>
+  <g class="flow-dot"><circle cx="165" cy="77" r="3" fill="#1a3a6b"/></g>
+  <g class="flow-dot"><circle cx="170" cy="77" r="3" fill="#1a3a6b"/></g>
+
+  <!-- Direction arrow -->
+  <polygon points="225,72 235,77 225,82" fill="#1a3a6b"/>
+  <polygon points="230,72 240,77 230,82" fill="#1a3a6b" opacity=".5"/>
+
+  <!-- Label -->
+  <text x="200" y="150" text-anchor="middle" font-size="13" font-weight="700" fill="#dc2626">What happens when the valve opens?</text>
+</svg>

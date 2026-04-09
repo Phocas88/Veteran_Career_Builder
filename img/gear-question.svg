@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <style>
+    @keyframes rotateCW { to { transform: rotate(360deg); } }
+    @keyframes rotateCCW { to { transform: rotate(-360deg); } }
+    .gear-a { animation: rotateCW 3s linear infinite; transform-origin: 110px 100px; }
+    .gear-b { animation: rotateCCW 6s linear infinite; transform-origin: 270px 100px; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="200" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Gear A: 10 teeth shown (representing 20), radius 45 -->
+  <g class="gear-a">
+    <path d="
+      M110,55 L106,47 L114,47 Z
+      M145,70 L153,66 L153,74 Z
+      M155,100 L163,96 L163,104 Z
+      M145,130 L153,126 L153,134 Z
+      M110,145 L106,153 L114,153 Z
+      M75,130 L67,134 L67,126 Z
+      M65,100 L57,104 L57,96 Z
+      M75,70 L67,74 L67,66 Z
+      M93,58 L88,51 L96,48 Z
+      M127,58 L132,51 L124,48 Z
+      M152,85 L160,80 L158,88 Z
+      M152,115 L160,120 L158,112 Z
+      M127,142 L132,149 L124,152 Z
+      M93,142 L88,149 L96,152 Z
+      M68,115 L60,120 L62,112 Z
+      M68,85 L60,80 L62,88 Z
+    " fill="#2d5a9e"/>
+    <circle cx="110" cy="100" r="40" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2.5"/>
+    <circle cx="110" cy="100" r="35" fill="none" stroke="#b0c4de" stroke-width="1" stroke-dasharray="4,4"/>
+    <circle cx="110" cy="100" r="12" fill="#fff" stroke="#1a3a6b" stroke-width="2"/>
+    <circle cx="110" cy="100" r="4" fill="#1a3a6b"/>
+    <line x1="110" y1="65" x2="110" y2="135" stroke="#1a3a6b" stroke-width="1.5" opacity=".25"/>
+    <line x1="75" y1="100" x2="145" y2="100" stroke="#1a3a6b" stroke-width="1.5" opacity=".25"/>
+  </g>
+
+  <!-- Gear B: 16 teeth shown (representing 40), radius 65 -->
+  <g class="gear-b">
+    <path d="
+      M270,35 L266,26 L274,26 Z
+      M305,45 L313,39 L311,48 Z
+      M330,65 L339,61 L337,70 Z
+      M340,90 L349,88 L347,96 Z
+      M340,110 L349,112 L347,104 Z
+      M330,135 L339,139 L337,130 Z
+      M305,155 L313,161 L311,152 Z
+      M270,165 L266,174 L274,174 Z
+      M235,155 L227,161 L229,152 Z
+      M210,135 L201,139 L203,130 Z
+      M200,110 L191,112 L193,104 Z
+      M200,90 L191,88 L193,96 Z
+      M210,65 L201,61 L203,70 Z
+      M235,45 L227,39 L229,48 Z
+      M287,38 L293,30 L283,30 Z
+      M253,38 L247,30 L257,30 Z
+      M335,78 L344,74 L342,84 Z
+      M335,122 L344,126 L342,116 Z
+      M287,162 L293,170 L283,170 Z
+      M253,162 L247,170 L257,170 Z
+      M205,122 L196,126 L198,116 Z
+      M205,78 L196,74 L198,84 Z
+    " fill="#2d5a9e"/>
+    <circle cx="270" cy="100" r="60" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2.5"/>
+    <circle cx="270" cy="100" r="54" fill="none" stroke="#b0c4de" stroke-width="1" stroke-dasharray="4,4"/>
+    <circle cx="270" cy="100" r="16" fill="#fff" stroke="#1a3a6b" stroke-width="2"/>
+    <circle cx="270" cy="100" r="5" fill="#1a3a6b"/>
+    <line x1="270" y1="46" x2="270" y2="154" stroke="#1a3a6b" stroke-width="1.5" opacity=".2"/>
+    <line x1="216" y1="100" x2="324" y2="100" stroke="#1a3a6b" stroke-width="1.5" opacity=".2"/>
+  </g>
+
+  <!-- Labels -->
+  <text x="110" y="178" text-anchor="middle" font-size="14" font-weight="700" fill="#1a3a6b">GEAR A</text>
+  <text x="110" y="193" text-anchor="middle" font-size="11" fill="#5a7090">20 teeth · 80 RPM ↻</text>
+  <text x="270" y="185" text-anchor="middle" font-size="14" font-weight="700" fill="#1a3a6b">GEAR B</text>
+  <text x="270" y="198" text-anchor="middle" font-size="12" font-weight="700" fill="#dc2626">40 teeth · ? RPM · ?</text>
+
+  <!-- Mesh indicator -->
+  <line x1="150" y1="100" x2="210" y2="100" stroke="#c8960a" stroke-width="1.5" stroke-dasharray="4"/>
+  <text x="180" y="93" text-anchor="middle" font-size="9" fill="#c8960a" font-weight="600">meshed</text>
+</svg>

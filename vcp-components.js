@@ -282,9 +282,69 @@
     });
   }
 
+  /* ── UNIFORM NAV — upgrade old navs to consistent style ─────────────── */
+  function initUniformNav() {
+    // Skip app.html (has its own nav) and pages with the full mega menu
+    if (window.location.pathname.indexOf('app.html') > -1) return;
+    if (document.querySelector('.vcp-nav')) return; // already has mega menu nav
+
+    // Find any existing nav element
+    var oldNav = document.querySelector('nav');
+    if (!oldNav) return;
+
+    // Build uniform nav
+    var nav = document.createElement('nav');
+    nav.style.cssText = 'background:#08111e;padding:0 4%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:2000;border-bottom:1px solid rgba(240,192,64,.15);height:56px;gap:.5rem;';
+
+    nav.innerHTML = '<a href="https://veterancareerpath.com" style="display:flex;align-items:center;gap:.55rem;text-decoration:none;flex-shrink:0;">'
+      + '<img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28" style="object-fit:contain;">'
+      + '<span style="font-family:Bebas Neue,sans-serif;font-size:.9rem;letter-spacing:.12em;color:#f0c040;">Veteran Career Path</span></a>'
+      + '<div class="vcp-uni-links" style="display:flex;align-items:center;gap:.7rem;overflow:hidden;flex-wrap:nowrap;">'
+      + '<a href="/career-assessment-full.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">PathFinder™ Pro</a>'
+      + '<a href="/military-transition-guide.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Transition</a>'
+      + '<a href="/army-mos-careers.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">MOS Guides</a>'
+      + '<a href="/va-disability-rating-schedule.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">VA Benefits</a>'
+      + '<a href="/federal-jobs-search.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Job Search</a>'
+      + '<a href="/veteran-discounts.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Discounts</a>'
+      + '<a href="/blog/" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Blog</a>'
+      + '<a href="/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.72rem;padding:.3rem .7rem;border-radius:6px;text-decoration:none;white-space:nowrap;flex-shrink:0;">AI Tools — $15/mo</a>'
+      + '</div>';
+
+    // Add mobile CSS
+    var style = document.createElement('style');
+    style.textContent = '@media(max-width:768px){.vcp-uni-links a:not(:last-child){display:none!important;}}';
+    document.head.appendChild(style);
+
+    // Also remove any old mobile menu
+    var oldMob = document.querySelector('.mobile-menu,.mmenu');
+    if (oldMob) oldMob.remove();
+    var oldHam = document.querySelector('.hamburger');
+    if (oldHam) oldHam.remove();
+
+    // Replace old nav
+    oldNav.parentNode.replaceChild(nav, oldNav);
+  }
+
+  /* ── MEGA MENU COLLAPSIBLE SECTIONS ──────────────────────────────── */
+  function initMegaCollapse() {
+    var labels = document.querySelectorAll('.vcp-mega-section-label');
+    labels.forEach(function(label) {
+      // Skip labels that are already featured/always-open (first in each column)
+      if (!label.getAttribute('data-toggle')) {
+        label.setAttribute('data-toggle', '1');
+      }
+      label.addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.classList.toggle('sec-open');
+      });
+    });
+  }
+
   /* ── INIT ALL ───────────────────────────────────────────────────────── */
   function init() {
     enhanceBody();
+    initUniformNav();
+    initMegaCollapse();
     initScrollReveal();
     initSmoothScroll();
     initCounters();

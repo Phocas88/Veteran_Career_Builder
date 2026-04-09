@@ -562,6 +562,29 @@
   }
 }
 
+/* ── MEGA MENU COLLAPSIBLE SECTIONS ──────────────────────────────────── */
+.vcp-mega-section-label[data-toggle] {
+  cursor: pointer;
+  user-select: none;
+}
+.vcp-mega-section-label[data-toggle]::after {
+  content: ' ▸';
+  font-size: .55rem;
+  color: rgba(192, 216, 240, .3);
+  transition: transform .2s;
+  display: inline-block;
+}
+.vcp-mega-section-label[data-toggle].sec-open::after {
+  transform: rotate(90deg);
+  color: rgba(240, 192, 64, .5);
+}
+.vcp-mega-section-label[data-toggle] ~ a {
+  display: none;
+}
+.vcp-mega-section-label[data-toggle].sec-open ~ a {
+  display: block;
+}
+
 /* ── MOBILE FIXES FOR TOOL PAGES ────────────────────────────────────── */
 @media (max-width: 640px) {
   /* Tool page dropdowns and inputs */

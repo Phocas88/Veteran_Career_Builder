@@ -444,7 +444,8 @@
     // Also make mobile menu categories collapsible
     var mobSects = document.querySelectorAll('.vcp-mob-sect');
     mobSects.forEach(function(sect) {
-      // Add collapse indicator
+      // Override pointer-events:none from CSS
+      sect.style.pointerEvents = 'auto';
       sect.style.cursor = 'pointer';
       sect.style.display = 'flex';
       sect.style.justifyContent = 'space-between';

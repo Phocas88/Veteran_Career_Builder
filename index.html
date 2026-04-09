@@ -1729,14 +1729,23 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
       var isSubscriber = acc && acc.type === 'paid' && acc.stripeSession;
 
       if(isSubscriber && p) {
-        // Try to get rank + last name from military experience
+        // Try to get rank title + last name from military experience
         var mil = p.milExperiences || p.experiences || [];
         var lastRank = '';
         var lastName = '';
+        var RANK_TITLES = {
+          'E-1':'Private','E-2':'Private','E-3':'Private First Class','E-4':'Specialist',
+          'E-5':'Sergeant','E-6':'Staff Sergeant','E-7':'Sergeant First Class',
+          'E-8':'Master Sergeant','E-9':'Sergeant Major',
+          'W-1':'Warrant Officer','W-2':'Chief Warrant Officer','W-3':'Chief Warrant Officer',
+          'W-4':'Chief Warrant Officer','W-5':'Chief Warrant Officer',
+          'O-1':'Lieutenant','O-2':'Lieutenant','O-3':'Captain',
+          'O-4':'Major','O-5':'Lieutenant Colonel','O-6':'Colonel',
+          'O-7':'Brigadier General','O-8':'Major General','O-9':'Lieutenant General','O-10':'General'
+        };
         if(mil.length > 0) {
-          // Get the last (most recent) service entry's rank
           for(var i = mil.length - 1; i >= 0; i--) {
-            if(mil[i].rank) { lastRank = mil[i].rank; break; }
+            if(mil[i].rank) { lastRank = RANK_TITLES[mil[i].rank] || mil[i].rank; break; }
           }
         }
         // Get last name from profile name

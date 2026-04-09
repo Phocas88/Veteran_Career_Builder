@@ -278,10 +278,10 @@ a:hover{color:var(--gold);}
       <div class="gate-feat">Downloadable PDF report</div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1.5rem 0 1rem;">
-      <div style="text-align:center;" id="standalone-option">
-        <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.3rem;">Just the Assessment</div>
-        <div style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:var(--gold);line-height:1;">$9.99</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1.25rem 0 1rem;padding-top:.75rem;">
+      <div style="text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.75rem;" id="standalone-option">
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.25rem;">Just the Assessment</div>
+        <div style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;color:var(--gold);line-height:1;">$9.99</div>
         <div style="font-size:.68rem;color:var(--sub);margin-bottom:.6rem;">one-time</div>
         <button onclick="document.getElementById('standalone-form').style.display='block';this.style.display='none';" style="display:block;width:100%;padding:.6rem;background:rgba(240,192,64,.1);border:1.5px solid var(--gold);border-radius:8px;color:var(--gold);font-weight:700;font-size:.82rem;cursor:pointer;">Buy Assessment Only</button>
         <div id="standalone-form" style="display:none;margin-top:.6rem;text-align:left;">
@@ -291,11 +291,11 @@ a:hover{color:var(--gold);}
           <button onclick="var n=document.getElementById('sa-name').value.trim(),e=document.getElementById('sa-email').value.trim();if(!n||!e||!e.includes('@')){document.getElementById('sa-error').textContent='Please enter your name and a valid email.';document.getElementById('sa-error').style.display='block';return;}localStorage.setItem('vcp_pf_user',JSON.stringify({name:n,email:e,date:new Date().toISOString()}));window.location.href='https://buy.stripe.com/9B6dR94Db3GMcuReIvenS02';" style="width:100%;padding:.55rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:8px;color:#0a1628;font-weight:700;font-size:.82rem;cursor:pointer;">Continue to Payment →</button>
         </div>
       </div>
-      <div style="text-align:center;position:relative;">
-        <div style="position:absolute;top:-.5rem;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a1628;font-size:.55rem;font-weight:800;letter-spacing:.08em;padding:.1rem .5rem;border-radius:100px;text-transform:uppercase;">Best Value</div>
-        <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.3rem;">Full AI Toolkit</div>
-        <div style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:var(--gold);line-height:1;">$15/mo</div>
-        <div style="font-size:.68rem;color:var(--sub);margin-bottom:.6rem;">assessment + 20 AI tools</div>
+      <div style="text-align:center;background:rgba(240,192,64,.05);border:1.5px solid rgba(240,192,64,.2);border-radius:10px;padding:.75rem;position:relative;">
+        <div style="position:absolute;top:-.55rem;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a1628;font-size:.55rem;font-weight:800;letter-spacing:.08em;padding:.12rem .55rem;border-radius:100px;text-transform:uppercase;white-space:nowrap;">Best Value</div>
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.25rem;margin-top:.25rem;">Full AI Toolkit</div>
+        <div style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;color:var(--gold);line-height:1;">$15/mo</div>
+        <div style="font-size:.68rem;color:var(--sub);margin-bottom:.5rem;">assessment + 20 AI tools</div>
         <a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:block;padding:.6rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.82rem;text-decoration:none;">Subscribe &amp; Unlock All</a>
       </div>
     </div>

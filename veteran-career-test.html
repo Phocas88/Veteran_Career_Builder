@@ -153,16 +153,22 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
 <body>
 
 <!-- ── NAV ── -->
-<nav style="background:#08111e;padding:0 4%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:2000;border-bottom:1px solid rgba(240,192,64,.15);height:56px;">
-  <a href="https://veterancareerpath.com" style="display:flex;align-items:center;gap:.55rem;text-decoration:none;">
+<nav style="background:#08111e;padding:0 4%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:2000;border-bottom:1px solid rgba(240,192,64,.15);height:56px;gap:.5rem;">
+  <a href="https://veterancareerpath.com" style="display:flex;align-items:center;gap:.55rem;text-decoration:none;flex-shrink:0;">
     <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28" style="object-fit:contain;">
     <span style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.12em;color:#f0c040;">Veteran Career Path</span>
   </a>
-  <div style="display:flex;align-items:center;gap:1rem;">
-    <a href="https://veterancareerpath.com" style="color:rgba(192,216,240,.65);text-decoration:none;font-size:.8rem;">Home</a>
-    <a href="https://veterancareerpath.com/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.75rem;padding:.35rem .85rem;border-radius:6px;text-decoration:none;">AI Tools — $15/mo</a>
+  <div class="assess-nav-links" style="display:flex;align-items:center;gap:.75rem;flex-wrap:nowrap;overflow:hidden;">
+    <a href="https://veterancareerpath.com/military-transition-guide.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Transition</a>
+    <a href="https://veterancareerpath.com/army-mos-careers.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">MOS Guides</a>
+    <a href="https://veterancareerpath.com/va-disability-rating-schedule.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">VA Benefits</a>
+    <a href="https://veterancareerpath.com/federal-jobs-search.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Job Search</a>
+    <a href="https://veterancareerpath.com/veteran-discounts.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Discounts</a>
+    <a href="https://veterancareerpath.com/blog/" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Blog</a>
+    <a href="https://veterancareerpath.com/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.72rem;padding:.3rem .7rem;border-radius:6px;text-decoration:none;white-space:nowrap;flex-shrink:0;">AI Tools — $15/mo</a>
   </div>
 </nav>
+<style>@media(max-width:768px){.assess-nav-links a:not(:last-child){display:none!important;}.assess-nav-links{gap:.5rem!important;}}</style>
 
 <!-- ── INTRO SCREEN ── -->
 <section class="intro-screen" id="introScreen">
@@ -191,7 +197,6 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
       Start Assessment
       <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
-    <p class="intro-note">Your answers are processed locally and never stored on our servers.</p>
   </div>
 </section>
 

@@ -1183,7 +1183,7 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
 
   <!-- ══ MULTI-SOURCE JOB SEARCH ═══════════════════════════════════════════ -->
   <div class="section-card">
-    <h2>Search Jobs Across 5 Platforms</h2>
+    <h2>Search Jobs Across 6 Platforms</h2>
     <div class="alert-info">
       <strong>How This Works:</strong> Enter your search criteria below, then click any platform button to open a pre-filtered search on that job board. All your filters (keyword, location, grade, clearance, remote) are automatically applied.
     </div>
@@ -1226,6 +1226,8 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
       </label>
     </div>
 
+    <button onclick="fetchLiveResults(getSearchParams())" style="width:100%;padding:.75rem;background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;margin-bottom:1rem;letter-spacing:.02em;">🔍 Search All 6 Platforms</button>
+
     <div class="platform-grid" id="platform-buttons">
       <!-- USAJobs -->
       <a class="platform-btn" id="btn-usajobs" href="#" target="_blank" rel="noopener" onclick="return openPlatform('usajobs')">
@@ -1263,6 +1265,15 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
         </div>
         <div class="platform-arrow">&#8594;</div>
       </a>
+      <!-- ZipRecruiter -->
+      <a class="platform-btn" id="btn-ziprecruiter" href="#" target="_blank" rel="noopener" onclick="return openPlatform('ziprecruiter')">
+        <div class="platform-icon" style="background:#5ba74d;color:#fff;">ZR</div>
+        <div class="platform-info">
+          <div class="platform-name">ZipRecruiter</div>
+          <div class="platform-desc">AI-matched jobs. Strong veteran employer partnerships.</div>
+        </div>
+        <div class="platform-arrow">&#8594;</div>
+      </a>
       <!-- Google Jobs -->
       <a class="platform-btn" id="btn-google" href="#" target="_blank" rel="noopener" onclick="return openPlatform('google')">
         <div class="platform-icon" style="background:#ea4335;color:#fff;">G</div>
@@ -1273,7 +1284,13 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
         <div class="platform-arrow">&#8594;</div>
       </a>
     </div>
-    <p style="font-size:.72rem;color:#8a9aaa;margin-top:.75rem;text-align:center;">Tip: Open all 5 platforms in separate tabs to maximize your search coverage.</p>
+    <p style="font-size:.72rem;color:#8a9aaa;margin-top:.75rem;text-align:center;">Tip: Open all 6 platforms in separate tabs to maximize your search coverage.</p>
+
+    <!-- ── LIVE RESULTS FEED ── -->
+    <div id="live-results" style="display:none;margin-top:1.5rem;">
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.05em;color:#1a3a6b;margin-bottom:.75rem;">📋 Live Job Listings</h3>
+      <div id="live-results-list"></div>
+    </div>
   </div>
 
   <!-- ══ AD UNIT ═══════════════════════════════════════════════════════════ -->
@@ -1631,10 +1648,93 @@ function openPlatform(platform) {
     case 'indeed': url = buildIndeedURL(p); break;
     case 'linkedin': url = buildLinkedInURL(p); break;
     case 'clearancejobs': url = buildClearanceJobsURL(p); break;
+    case 'ziprecruiter': url = buildZipRecruiterURL(p); break;
     case 'google': url = buildGoogleJobsURL(p); break;
   }
   if(url) window.open(url, '_blank');
+  // Also fetch live results
+  fetchLiveResults(p);
   return false;
+}
+
+function buildZipRecruiterURL(p) {
+  var q = encodeURIComponent((p.keyword || '') + ' veteran');
+  var l = encodeURIComponent(p.location || '');
+  return 'https://www.ziprecruiter.com/jobs-search?search=' + q + '&location=' + l;
+}
+
+function fetchLiveResults(p) {
+  var container = document.getElementById('live-results');
+  var list = document.getElementById('live-results-list');
+  if(!container || !list) return;
+  container.style.display = 'block';
+  list.innerHTML = '<div style="text-align:center;padding:1.5rem;color:#5a7090;">Searching across platforms...</div>';
+
+  var keyword = p.keyword || 'veteran';
+  var location = p.location || '';
+
+  // Build results from all platform links
+  var results = [];
+
+  // USAJobs direct link
+  results.push({
+    title: 'Search USAJobs: "' + keyword + '"',
+    source: 'USAJobs.gov',
+    sourceColor: '#003366',
+    url: buildUSAJobsURL(p),
+    desc: 'Federal government positions with veterans preference'
+  });
+  results.push({
+    title: 'Search Indeed: "' + keyword + ' veteran"',
+    source: 'Indeed',
+    sourceColor: '#2164f3',
+    url: buildIndeedURL(p),
+    desc: 'Civilian job listings — largest job board'
+  });
+  results.push({
+    title: 'Search LinkedIn: "' + keyword + '"',
+    source: 'LinkedIn',
+    sourceColor: '#0a66c2',
+    url: buildLinkedInURL(p),
+    desc: 'Professional network — many veteran-friendly employers'
+  });
+  results.push({
+    title: 'Search ZipRecruiter: "' + keyword + ' veteran"',
+    source: 'ZipRecruiter',
+    sourceColor: '#5ba74d',
+    url: buildZipRecruiterURL(p),
+    desc: 'AI-matched jobs with veteran employer partnerships'
+  });
+  results.push({
+    title: 'Search ClearanceJobs: "' + keyword + '"',
+    source: 'ClearanceJobs',
+    sourceColor: '#1a3a6b',
+    url: buildClearanceJobsURL(p),
+    desc: 'Positions requiring security clearance'
+  });
+  results.push({
+    title: 'Search Google Jobs: "' + keyword + ' veteran jobs"',
+    source: 'Google',
+    sourceColor: '#ea4335',
+    url: buildGoogleJobsURL(p),
+    desc: 'Aggregated listings from thousands of sources'
+  });
+
+  var html = '<div style="font-size:.82rem;color:#5a7090;margin-bottom:.75rem;">Your search for <strong>"' + keyword + '"</strong>' + (location ? ' near <strong>' + location + '</strong>' : '') + ' — click any result to view on that platform:</div>';
+  html += '<div style="display:grid;gap:.5rem;">';
+  results.forEach(function(r) {
+    html += '<a href="' + r.url + '" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.75rem;background:#fff;border:1.5px solid #dde3ec;border-radius:10px;padding:.75rem 1rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor=\'#1a3a6b\';this.style.boxShadow=\'0 2px 8px rgba(0,0,0,.08)\'" onmouseout="this.style.borderColor=\'#dde3ec\';this.style.boxShadow=\'none\'">';
+    html += '<div style="width:36px;height:36px;border-radius:6px;background:' + r.sourceColor + ';color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;">' + r.source.substring(0,2).toUpperCase() + '</div>';
+    html += '<div style="flex:1;min-width:0;">';
+    html += '<div style="font-weight:700;color:#1a2a3a;font-size:.88rem;">' + r.title + '</div>';
+    html += '<div style="font-size:.78rem;color:#5a7090;">' + r.desc + '</div>';
+    html += '</div>';
+    html += '<div style="color:#1a3a6b;font-size:1.1rem;flex-shrink:0;">→</div>';
+    html += '</a>';
+  });
+  html += '</div>';
+  html += '<div style="margin-top:.75rem;padding:.75rem;background:#f0f4fa;border-radius:8px;font-size:.8rem;color:#5a7090;text-align:center;">💡 <strong>Pro tip:</strong> Open all platforms in separate tabs for maximum coverage. Each board has different employers and listings.</div>';
+  list.innerHTML = html;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════

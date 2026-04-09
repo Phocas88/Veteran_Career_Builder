@@ -2743,7 +2743,7 @@ function calcComp() {
   breakdown.push(['<strong>Total Monthly Compensation</strong>', '<strong>' + fmt(total) + '</strong>']);
 
   // Annual estimate (VA disability compensation is tax-free)
-  breakdown.push(['<em>Estimated Annual (Non-Taxed)</em>', '<em>' + fmt(total * 12) + '/year — tax free</em>']);
+  breakdown.push(['<em>Estimated Annual (Non-Taxed)</em>', '<em>' + fmt(total * 12) + '/year</em>']);
   var breakdownHtml = breakdown.map(function(r) {
     return '<div class="rb-row"><span>' + r[0] + '</span><span>' + r[1] + '</span></div>';
   }).join('');

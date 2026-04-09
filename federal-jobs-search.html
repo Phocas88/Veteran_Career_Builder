@@ -1226,7 +1226,7 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
       </label>
     </div>
 
-    <button onclick="fetchLiveResults(getSearchParams())" style="width:100%;padding:.75rem;background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;margin-bottom:1rem;letter-spacing:.02em;">🔍 Search All 6 Platforms</button>
+    <button onclick="var p=getSearchParams();fetchLiveResults(p);fetchUSAJobsAPI(p);" style="width:100%;padding:.75rem;background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;margin-bottom:1rem;letter-spacing:.02em;">🔍 Search All 6 Platforms + Live Federal Jobs</button>
 
     <div class="platform-grid" id="platform-buttons">
       <!-- USAJobs -->
@@ -1652,8 +1652,9 @@ function openPlatform(platform) {
     case 'google': url = buildGoogleJobsURL(p); break;
   }
   if(url) window.open(url, '_blank');
-  // Also fetch live results
+  // Also fetch live results + USAJobs API
   fetchLiveResults(p);
+  fetchUSAJobsAPI(p);
   return false;
 }
 
@@ -1735,6 +1736,88 @@ function fetchLiveResults(p) {
   html += '</div>';
   html += '<div style="margin-top:.75rem;padding:.75rem;background:#f0f4fa;border-radius:8px;font-size:.8rem;color:#5a7090;text-align:center;">💡 <strong>Pro tip:</strong> Open all platforms in separate tabs for maximum coverage. Each board has different employers and listings.</div>';
   list.innerHTML = html;
+}
+
+// ── LIVE USAJOBS API FEED ──────────────────────────────────────────────────
+function fetchUSAJobsAPI(p) {
+  var container = document.getElementById('live-results');
+  if(!container) return;
+
+  // Add a live federal jobs section below the platform links
+  var feedDiv = document.getElementById('usajobs-feed');
+  if(!feedDiv) {
+    feedDiv = document.createElement('div');
+    feedDiv.id = 'usajobs-feed';
+    feedDiv.style.cssText = 'margin-top:1.5rem;';
+    container.appendChild(feedDiv);
+  }
+  feedDiv.innerHTML = '<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;"><div style="width:32px;height:32px;border-radius:6px;background:#003366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;">USA</div><div><div style="font-family:Bebas Neue,sans-serif;font-size:1.1rem;letter-spacing:.05em;color:#1a3a6b;">Live Federal Job Listings</div><div style="font-size:.72rem;color:#5a7090;">From USAJobs.gov API — updated in real time</div></div></div><div id="usajobs-list"><div style="text-align:center;padding:1rem;color:#5a7090;font-size:.85rem;">Loading federal jobs...</div></div>';
+
+  var keyword = encodeURIComponent(p.keyword || 'veteran');
+  var location = encodeURIComponent(p.location || '');
+  var vetPref = p.vet ? '1' : '0';
+  var remote = p.remote ? '&RemoteIndicator=True' : '';
+
+  // USAJobs API v2 — public endpoint (CORS-enabled)
+  var url = 'https://data.usajobs.gov/api/search?Keyword=' + keyword +
+    (location ? '&LocationName=' + location : '') +
+    '&ResultsPerPage=10' +
+    '&WhoMayApply=veterans' + remote;
+
+  fetch(url, {
+    headers: {
+      'Host': 'data.usajobs.gov',
+      'User-Agent': 'veterancareerpath.com',
+      'Authorization-Key': 'veterancareerpath'
+    }
+  })
+  .then(function(r) {
+    if(!r.ok) throw new Error('API ' + r.status);
+    return r.json();
+  })
+  .then(function(data) {
+    var items = (data.SearchResult && data.SearchResult.SearchResultItems) || [];
+    if(!items.length) {
+      document.getElementById('usajobs-list').innerHTML = '<div style="padding:1rem;text-align:center;color:#5a7090;font-size:.85rem;">No federal jobs found for "' + (p.keyword||'veteran') + '". Try different keywords or broaden your search.</div>';
+      return;
+    }
+    var total = data.SearchResult.SearchResultCount || items.length;
+    var html = '<div style="font-size:.82rem;color:#5a7090;margin-bottom:.75rem;">Showing ' + items.length + ' of ' + total + ' federal positions matching "<strong>' + (p.keyword||'veteran') + '</strong>"</div>';
+    items.forEach(function(item) {
+      var job = item.MatchedObjectDescriptor;
+      var title = job.PositionTitle || 'Untitled';
+      var org = job.OrganizationName || job.DepartmentName || '';
+      var locations = (job.PositionLocation || []).map(function(l){ return l.LocationName; }).join(', ') || 'Multiple locations';
+      var salMin = job.PositionRemuneration && job.PositionRemuneration[0] ? job.PositionRemuneration[0].MinimumRange : '';
+      var salMax = job.PositionRemuneration && job.PositionRemuneration[0] ? job.PositionRemuneration[0].MaximumRange : '';
+      var salary = salMin && salMax ? '$' + parseInt(salMin).toLocaleString() + ' – $' + parseInt(salMax).toLocaleString() : '';
+      var grade = job.JobGrade && job.JobGrade[0] ? job.JobGrade[0].Code : '';
+      var closeDate = job.PositionEndDate ? new Date(job.PositionEndDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+      var url = job.PositionURI || job.ApplyURI && job.ApplyURI[0] || '#';
+      var schedule = job.PositionSchedule && job.PositionSchedule[0] ? job.PositionSchedule[0].Name : '';
+
+      html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:block;background:#fff;border:1.5px solid #dde3ec;border-radius:10px;padding:1rem 1.25rem;margin-bottom:.5rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor=\'#1a3a6b\';this.style.boxShadow=\'0 2px 10px rgba(0,0,0,.08)\'" onmouseout="this.style.borderColor=\'#dde3ec\';this.style.boxShadow=\'none\'">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.3rem;margin-bottom:.3rem;">';
+      html += '<div style="font-weight:700;color:#1a3a6b;font-size:.92rem;">' + title + '</div>';
+      if(grade) html += '<span style="font-size:.7rem;background:#003366;color:#fff;padding:.15rem .5rem;border-radius:100px;font-weight:600;">' + grade + '</span>';
+      html += '</div>';
+      html += '<div style="font-size:.82rem;color:#3a5070;margin-bottom:.2rem;">' + org + '</div>';
+      html += '<div style="display:flex;flex-wrap:wrap;gap:.5rem;font-size:.78rem;color:#5a7090;">';
+      html += '<span>📍 ' + locations + '</span>';
+      if(salary) html += '<span style="color:#1a7a40;font-weight:600;">💰 ' + salary + '</span>';
+      if(schedule) html += '<span>⏰ ' + schedule + '</span>';
+      if(closeDate) html += '<span style="color:#dc2626;">📅 Closes ' + closeDate + '</span>';
+      html += '</div>';
+      html += '<div style="margin-top:.4rem;font-size:.75rem;color:#1a3a6b;font-weight:600;">View on USAJobs →</div>';
+      html += '</a>';
+    });
+    html += '<a href="' + buildUSAJobsURL(p) + '" target="_blank" rel="noopener" style="display:block;text-align:center;padding:.75rem;background:#003366;color:#fff;border-radius:8px;font-weight:700;font-size:.88rem;text-decoration:none;margin-top:.5rem;">View All ' + total + ' Federal Jobs on USAJobs.gov →</a>';
+    document.getElementById('usajobs-list').innerHTML = html;
+  })
+  .catch(function(err) {
+    console.warn('USAJobs API error:', err);
+    document.getElementById('usajobs-list').innerHTML = '<div style="padding:1rem;background:#f8fafd;border-radius:8px;text-align:center;"><div style="font-size:.88rem;color:#3a5070;margin-bottom:.5rem;">Unable to load live federal jobs directly.</div><a href="' + buildUSAJobsURL(p) + '" target="_blank" rel="noopener" style="display:inline-block;padding:.55rem 1.25rem;background:#003366;color:#fff;border-radius:6px;font-weight:700;font-size:.85rem;text-decoration:none;">Search USAJobs.gov Directly →</a></div>';
+  });
 }
 
 /* ══════════════════════════════════════════════════════════════════════════

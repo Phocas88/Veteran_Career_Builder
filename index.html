@@ -1251,6 +1251,38 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
 </head>
 <body>
 
+<!-- ═══ NEW VISITOR WELCOME POPUP ═══════════════════════════════════════════ -->
+<div id="vcp-welcome-popup" style="display:none;position:fixed;inset:0;background:rgba(8,16,32,.85);backdrop-filter:blur(6px);z-index:10000;display:none;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#0d1f3c,#1a3a6b);padding:1.5rem;text-align:center;">
+      <img src="https://veterancareerpath.com/logo.png" alt="VCP" width="48" height="48" style="margin-bottom:.5rem;object-fit:contain;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#f0c040;">Welcome to Veteran Career Path</div>
+      <div style="font-size:.82rem;color:rgba(192,216,240,.65);margin-top:.25rem;">800+ free resources built for veterans like you</div>
+    </div>
+    <div style="padding:1.25rem;">
+      <div style="margin-bottom:.65rem;">
+        <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Full Name</label>
+        <input id="wp-name" type="text" placeholder="First Last" style="width:100%;padding:.6rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;">
+      </div>
+      <div style="margin-bottom:.65rem;">
+        <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Email Address</label>
+        <input id="wp-email" type="email" placeholder="you@email.com" style="width:100%;padding:.6rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;">
+      </div>
+      <div style="margin-bottom:.85rem;">
+        <label style="display:flex;align-items:flex-start;gap:.4rem;cursor:pointer;font-size:.82rem;color:#3a5070;">
+          <input type="checkbox" id="wp-optin" checked style="accent-color:#1a3a6b;width:18px;height:18px;margin-top:2px;flex-shrink:0;">
+          <span>Yes, send me free career tips, benefits updates, and veteran resources. <span style="color:#8a9ab0;font-size:.75rem;">(You can unsubscribe anytime)</span></span>
+        </label>
+      </div>
+      <div id="wp-error" style="display:none;font-size:.78rem;color:#dc2626;margin-bottom:.4rem;"></div>
+      <button onclick="submitWelcome()" id="wp-submit" style="width:100%;padding:.7rem;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;letter-spacing:.02em;">Explore the Site →</button>
+      <div style="text-align:center;margin-top:.6rem;">
+        <button onclick="skipWelcome()" style="background:none;border:none;color:#8a9ab0;font-size:.75rem;cursor:pointer;text-decoration:underline;">Skip for now</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ RETURNING USER DASHBOARD ════════════════════════════════════════════ -->
 <div id="vcp-dashboard" style="display:none;">
   <section style="background:linear-gradient(160deg,#060f1e 0%,#0d1f3c 50%,#1a3a6b 100%);padding:2rem 5% 1.5rem;">
@@ -1711,6 +1743,45 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
   </div>
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+try{firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"auth.veterancareerpath.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}catch(e){}
+var _wpDb = null;
+try{_wpDb = firebase.firestore();}catch(e){}
+
+// Welcome popup for new visitors
+function submitWelcome(){
+  var name = document.getElementById('wp-name').value.trim();
+  var email = document.getElementById('wp-email').value.trim().toLowerCase();
+  var optin = document.getElementById('wp-optin').checked;
+  var err = document.getElementById('wp-error');
+  if(!name){err.textContent="Please enter your name.";err.style.display="block";return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent="Please enter a valid email.";err.style.display="block";return;}
+  err.style.display="none";
+  document.getElementById('wp-submit').textContent="Welcome!";
+  document.getElementById('wp-submit').disabled=true;
+  // Save to localStorage
+  localStorage.setItem('vcp_pf_user',JSON.stringify({name:name,email:email,optin:optin,date:new Date().toISOString()}));
+  localStorage.setItem('vcp_welcome_done','1');
+  // Save to Firestore if opted in
+  if(optin && _wpDb){
+    _wpDb.collection('email_subscribers').add({
+      email:email,name:name,source:'welcome-popup',optin:true,
+      timestamp:firebase.firestore.FieldValue.serverTimestamp(),status:'active'
+    }).catch(function(){});
+  }
+  // Close popup
+  setTimeout(function(){
+    document.getElementById('vcp-welcome-popup').style.display='none';
+  },500);
+}
+function skipWelcome(){
+  localStorage.setItem('vcp_welcome_done','1');
+  document.getElementById('vcp-welcome-popup').style.display='none';
+}
+</script>
+
 <script>
 // Smart homepage — detect returning users
 (function(){
@@ -1785,6 +1856,13 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
     if(greeting) {
       var g = document.getElementById('dash-greeting');
       if(g) g.textContent = 'Welcome Back, ' + greeting;
+    }
+  } else {
+    // New visitor — show welcome popup if not already dismissed
+    var welcomeDone = localStorage.getItem('vcp_welcome_done');
+    if(!welcomeDone) {
+      var popup = document.getElementById('vcp-welcome-popup');
+      if(popup) popup.style.display = 'flex';
     }
   }
 })();

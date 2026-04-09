@@ -365,6 +365,7 @@ a:hover{color:var(--gold);}
   <div id="questions-container"></div>
   <div class="nav-row">
     <button class="btn-back" id="btn-back" onclick="prevSection()">Back</button>
+    <button onclick="saveAndExit()" style="padding:.4rem .8rem;background:transparent;border:1px solid rgba(240,192,64,.3);border-radius:6px;color:var(--gold);font-size:.72rem;font-weight:600;cursor:pointer;">💾 Save & Exit</button>
     <span class="q-remain" id="q-remain"></span>
     <button class="btn-next" id="btn-next" onclick="nextSection()" disabled>Next Section</button>
   </div>
@@ -833,8 +834,36 @@ if(!CAREERS.length) CAREERS = [
 // ── ASSESSMENT STATE ────────────────────────────────────────────────────────
 var currentSection = 0;
 var answers = {};
-// answers['mechanical_0'] = 2 (selected option index for MC)
-// answers['workstyle_3'] = 4 (likert value 1-5)
+var SAVE_KEY = 'vcp_pathfinder_pro_progress';
+
+// Auto-save progress to localStorage
+function saveProgress() {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      answers: answers,
+      section: currentSection,
+      timestamp: Date.now()
+    }));
+  } catch(e) {}
+}
+
+// Load saved progress
+function loadProgress() {
+  try {
+    var saved = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
+    if (saved && saved.answers && saved.timestamp) {
+      // Check if progress is less than 30 days old
+      if (Date.now() - saved.timestamp < 30 * 24 * 60 * 60 * 1000) {
+        return saved;
+      }
+    }
+  } catch(e) {}
+  return null;
+}
+
+function clearProgress() {
+  try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
+}
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
@@ -842,9 +871,22 @@ function showScreen(id) {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-function startAssessment() {
+function startAssessment(fresh) {
+  if(!fresh) {
+    var saved = loadProgress();
+    if(saved) {
+      if(confirm('You have saved progress (' + Object.keys(saved.answers).length + ' answers, Section ' + (saved.section+1) + ').\n\nResume where you left off?')) {
+        answers = saved.answers;
+        currentSection = saved.section;
+        showScreen('scr-assessment');
+        renderSection();
+        return;
+      }
+    }
+  }
   currentSection = 0;
   answers = {};
+  clearProgress();
   showScreen('scr-assessment');
   renderSection();
 }
@@ -949,6 +991,7 @@ function renderLikertQuestions(sec, container) {
 
 function selectMC(key, optIdx) {
   answers[key] = optIdx;
+  saveProgress();
   var qEl = document.getElementById('q_' + key);
   if(qEl) {
     qEl.classList.add('answered');
@@ -961,6 +1004,7 @@ function selectMC(key, optIdx) {
 
 function selectLikert(key, val) {
   answers[key] = val;
+  saveProgress();
   var qEl = document.getElementById('q_' + key);
   if(qEl) {
     qEl.classList.add('answered');
@@ -997,8 +1041,10 @@ function updateNavState() {
 function nextSection() {
   if(currentSection < SECTIONS.length - 1) {
     currentSection++;
+    saveProgress();
     renderSection();
   } else {
+    clearProgress(); // Assessment complete — remove saved progress
     showScreen('scr-saving');
     setTimeout(calculateResults, 2000);
   }
@@ -1007,8 +1053,17 @@ function nextSection() {
 function prevSection() {
   if(currentSection > 0) {
     currentSection--;
+    saveProgress();
     renderSection();
   }
+}
+
+function saveAndExit() {
+  saveProgress();
+  var totalQ = 0, answeredQ = 0;
+  SECTIONS.forEach(function(s){ totalQ += s.questions.length; s.questions.forEach(function(q,j){ if(answers[s.id+'_'+j] !== undefined) answeredQ++; }); });
+  alert('Progress saved! You\'ve completed ' + answeredQ + ' of ' + totalQ + ' questions (Section ' + (currentSection+1) + ' of ' + SECTIONS.length + ').\n\nCome back anytime to pick up where you left off.');
+  window.location.href = '/';
 }
 
 // ══════════════════════════════════════════════════════════════════════════════

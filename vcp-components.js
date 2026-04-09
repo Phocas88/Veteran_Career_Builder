@@ -322,7 +322,12 @@
       var newMega = temp.firstChild;
       if (newMega) {
         existingMega.parentNode.replaceChild(newMega, existingMega);
-        // Re-bind the All Pages button to the new mega menu
+        // Replace the menu button to remove old event listeners
+        var oldBtn = document.getElementById('vcp-menu-btn');
+        if (oldBtn) {
+          var newBtn = oldBtn.cloneNode(true);
+          oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+        }
         var btn = document.getElementById('vcp-menu-btn');
         var mega = document.getElementById('vcp-mega');
         var ham = document.getElementById('vcp-ham');

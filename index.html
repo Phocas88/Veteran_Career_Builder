@@ -374,16 +374,15 @@ body.menu-open{overflow:hidden!important;}
       </div>
 
       <div class="vcp-mega-section">
-        <div class="vcp-mega-section-label">Free Tools</div>
-        <a href="https://veterancareerpath.com/free-assessment.html">VCP PathFinder™ Lite</a>
+        <div class="vcp-mega-section-label">Career Assessment</div>
+        <a href="https://veterancareerpath.com/veteran-career-test.html">VCP PathFinder™ Lite (Free)</a>
         <a href="https://veterancareerpath.com/career-assessment-full.html" class="featured">VCP PathFinder™ Pro</a>
-        <a href="https://veterancareerpath.com/federal-jobs-search.html">Job Search Hub</a>
+        <a href="https://veterancareerpath.com/veteran-soft-skills.html">Soft Skills Training (Free)</a>
       </div>
 
       <div class="vcp-mega-section">
         <div class="vcp-mega-section-label">Resume &amp; Profile</div>
         <a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume Builder</a>
-        <a href="https://veterancareerpath.com/federal-resume-builder-ai.html">Federal Resume AI</a>
         <a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Optimizer</a>
         <a href="https://veterancareerpath.com/linkedin-profile-rewriter.html">LinkedIn Rewriter</a>
         <a href="https://veterancareerpath.com/military-civilian-resume.html">Military Resume Guide</a>
@@ -392,25 +391,28 @@ body.menu-open{overflow:hidden!important;}
       </div>
 
       <div class="vcp-mega-section">
-        <div class="vcp-mega-section-label">Job Search Tools</div>
-        <a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
-        <a href="https://veterancareerpath.com/tools-job-tracker.html">Job Application Tracker</a>
+        <div class="vcp-mega-section-label">Job Search</div>
         <a href="https://veterancareerpath.com/federal-jobs-search.html" class="featured">Veteran Job Search</a>
+        <a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
+        <a href="https://veterancareerpath.com/tools-job-tracker.html">Job Tracker</a>
         <a href="https://veterancareerpath.com/clearance-job-match.html">Clearance Job Match</a>
         <a href="https://veterancareerpath.com/dd214-decoder.html">DD-214 Decoder</a>
         <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
       </div>
 
       <div class="vcp-mega-section">
-        <div class="vcp-mega-section-label">Interview &amp; Salary</div>
+        <div class="vcp-mega-section-label">Interview, Salary &amp; Career</div>
         <a href="https://veterancareerpath.com/tools-interview-simulator.html">Interview Simulator</a>
-        <a href="https://veterancareerpath.com/salary-negotiation-roleplay.html">Salary Negotiation Roleplay</a>
         <a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Negotiator</a>
+        <a href="https://veterancareerpath.com/salary-negotiation-roleplay.html">Salary Roleplay</a>
         <a href="https://veterancareerpath.com/tools-cert-advisor.html">Certification Advisor</a>
-        <a href="https://veterancareerpath.com/career-assessment-full.html">VCP PathFinder™ Pro</a>
         <a href="https://veterancareerpath.com/transition-timeline-planner.html">Transition Planner</a>
+      </div>
+
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Financial Tools</div>
         <a href="https://veterancareerpath.com/va-home-loan-analyzer.html">VA Loan Analyzer</a>
-        <a href="https://veterancareerpath.com/veteran-business-funding.html">Business Funding</a>
+        <a href="https://veterancareerpath.com/veteran-business-funding.html">Business Funding Advisor</a>
       </div>
     </div>
 
@@ -570,9 +572,13 @@ body.menu-open{overflow:hidden!important;}
         <a href="https://veterancareerpath.com/veteran-apprenticeship-guide.html">Apprenticeship Guide</a>
         <a href="https://veterancareerpath.com/veteran-trade-school-guide.html">Trade School Guide</a>
         <a href="https://veterancareerpath.com/training.html">Training Library</a>
+        <a href="https://veterancareerpath.com/veteran-soft-skills.html" class="new">Soft Skills Training</a>
         <a href="https://veterancareerpath.com/vet-resources.html">Resources Directory</a>
-        <a href="https://veterancareerpath.com/veteran-discounts.html" class="new">Veteran Discounts</a>
         <a href="https://veterancareerpath.com/veteran-success-stories.html">Success Stories</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">More Resources</div>
+        <a href="https://veterancareerpath.com/veteran-discounts.html" class="new">Veteran Discounts (100+)</a>
       </div>
     </div>
 
@@ -1744,9 +1750,13 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
           'O-7':'Brigadier General','O-8':'Major General','O-9':'Lieutenant General','O-10':'General'
         };
         if(mil.length > 0) {
-          for(var i = mil.length - 1; i >= 0; i--) {
-            if(mil[i].rank) { lastRank = RANK_TITLES[mil[i].rank] || mil[i].rank; break; }
-          }
+          // Find the most recent service entry by end date
+          var sorted = mil.filter(function(m){return m.rank;}).sort(function(a,b){
+            var da = a.endDate || a.startDate || '0';
+            var db = b.endDate || b.startDate || '0';
+            return db.localeCompare(da); // most recent first
+          });
+          if(sorted.length > 0) lastRank = RANK_TITLES[sorted[0].rank] || sorted[0].rank;
         }
         // Get last name from profile name (could be in p.personal.name or p.name)
         var fullName = (p.personal && p.personal.name) || p.name || p.displayName || '';

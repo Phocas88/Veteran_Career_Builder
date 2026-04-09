@@ -1670,8 +1670,11 @@ function GuidedProfileWizard({ personal, setPersonal, milExperiences, setMilExpe
                 ) : (
                   <input style={input} placeholder={p.ph} value={exp[p.key]||""} onChange={e=>upMilExp(uid,p.key,e.target.value)} onBlur={()=>{if(i===promptIdx&&exp[p.key])setPromptIdx(Math.min(promptIdx+1,DUTY_PROMPTS.length-1));}} onKeyDown={e=>{if(e.key==="Enter"&&exp[p.key]){e.preventDefault();setPromptIdx(Math.min(promptIdx+1,DUTY_PROMPTS.length-1));}}}/>
                 )}
-                {i===promptIdx && i<DUTY_PROMPTS.length-1 && exp[p.key] && (
-                  <button onClick={()=>setPromptIdx(promptIdx+1)} style={{...btn,marginTop:".3rem",padding:".3rem .8rem",fontSize:".75rem",background:"#1a3a6b",color:"#fff"}}>Next question →</button>
+                {i===promptIdx && i<DUTY_PROMPTS.length-1 && (
+                  <div style={{display:"flex",gap:".4rem",marginTop:".3rem"}}>
+                    {exp[p.key] && <button onClick={()=>setPromptIdx(promptIdx+1)} style={{...btn,padding:".3rem .8rem",fontSize:".75rem",background:"#1a3a6b",color:"#fff"}}>Next question →</button>}
+                    <button onClick={()=>setPromptIdx(promptIdx+1)} style={{...btn,padding:".3rem .8rem",fontSize:".72rem",background:"transparent",border:"1px solid #d0daea",color:"#8a9ab0"}}>Skip — N/A</button>
+                  </div>
                 )}
               </div>
             ))}

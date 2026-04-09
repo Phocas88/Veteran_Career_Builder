@@ -1722,19 +1722,49 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
     if(dash) dash.style.display = 'block';
     if(landing) landing.style.display = 'none';
 
-    // Personalize greeting
-    var name = '';
+    // Personalize greeting — subscribers see rank + last name
+    var greeting = '';
     try {
       var p = JSON.parse(localStorage.getItem('vcb_profile') || '{}');
-      name = (p && p.name) ? p.name.split(' ')[0] : '';
-      if(!name) {
+      var isSubscriber = acc && acc.type === 'paid' && acc.stripeSession;
+
+      if(isSubscriber && p) {
+        // Try to get rank + last name from military experience
+        var mil = p.milExperiences || p.experiences || [];
+        var lastRank = '';
+        var lastName = '';
+        if(mil.length > 0) {
+          // Get the last (most recent) service entry's rank
+          for(var i = mil.length - 1; i >= 0; i--) {
+            if(mil[i].rank) { lastRank = mil[i].rank; break; }
+          }
+        }
+        // Get last name from profile name
+        var fullName = p.name || '';
+        if(fullName) {
+          var parts = fullName.trim().split(' ');
+          lastName = parts[parts.length - 1];
+        }
+        if(lastRank && lastName) {
+          greeting = lastRank + ' ' + lastName;
+        } else if(lastName) {
+          greeting = lastName;
+        } else if(fullName) {
+          greeting = fullName.split(' ')[0];
+        }
+      }
+
+      if(!greeting && p && p.name) {
+        greeting = p.name.split(' ')[0];
+      }
+      if(!greeting) {
         var u = JSON.parse(localStorage.getItem('vcp_pf_user') || '{}');
-        name = (u && u.name) ? u.name.split(' ')[0] : '';
+        if(u && u.name) greeting = u.name.split(' ')[0];
       }
     } catch(e) {}
-    if(name) {
+    if(greeting) {
       var g = document.getElementById('dash-greeting');
-      if(g) g.textContent = 'Welcome Back, ' + name;
+      if(g) g.textContent = 'Welcome Back, ' + greeting;
     }
   }
 })();

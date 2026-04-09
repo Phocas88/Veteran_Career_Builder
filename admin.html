@@ -9,6 +9,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <script>
   try{
@@ -134,6 +135,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <!-- Stats -->
   <div class="stats-row" id="stats-row">
     <div class="stat-card"><div class="stat-n" id="stat-email-total">—</div><div class="stat-l">Email Subscribers</div><div class="stat-sub">Newsletter signups</div></div>
+    <div class="stat-card"><div class="stat-n" id="stat-user-total">—</div><div class="stat-l">Registered Users</div><div class="stat-sub">Firebase profiles</div></div>
     <div class="stat-card"><div class="stat-n" id="stat-salary-pending">—</div><div class="stat-l">Salary Submissions</div><div class="stat-sub">Pending approval</div></div>
     <div class="stat-card"><div class="stat-n" id="stat-story-pending">—</div><div class="stat-l">Success Stories</div><div class="stat-sub">Pending approval</div></div>
     <div class="stat-card"><div class="stat-n" id="stat-salary-total">—</div><div class="stat-l">Total Salary Entries</div><div class="stat-sub">Live on site</div></div>
@@ -142,7 +144,8 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('emails',this)">📧 Email Subscribers</button>
+    <button class="tab active" onclick="switchTab('emails',this)">📧 Subscribers</button>
+    <button class="tab" onclick="switchTab('users',this)">👥 Users</button>
     <button class="tab" onclick="switchTab('salary',this)">💰 Salary Data</button>
     <button class="tab" onclick="switchTab('stories',this)">🎖 Success Stories</button>
     <button class="tab" onclick="switchTab('add-salary',this)">+ Add Salary Entry</button>
@@ -156,6 +159,12 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
       <button style="background:rgba(240,192,64,.15);border:1px solid rgba(240,192,64,.3);color:#f0c040;padding:.4rem .9rem;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;" onclick="exportEmails()">📋 Copy All Emails</button>
     </div>
     <div id="email-list"><div class="loading">Loading email subscribers...</div></div>
+  </div>
+
+  <!-- USERS -->
+  <div class="panel" id="panel-users">
+    <div style="font-size:.85rem;color:rgba(192,216,240,.5);margin-bottom:1rem;">Registered users who have created profiles in the Career Builder app.</div>
+    <div id="user-list"><div class="loading">Loading user profiles...</div></div>
   </div>
 
   <!-- SALARY PENDING -->
@@ -233,7 +242,18 @@ function doLogin() {
     authed = true;
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    loadAll();
+    // Sign in anonymously to Firebase for Firestore access
+    if(firebase.auth) {
+      firebase.auth().signInAnonymously().then(function(){
+        console.log('Firebase auth OK');
+        loadAll();
+      }).catch(function(e){
+        console.warn('Auth failed, trying without:', e.message);
+        loadAll();
+      });
+    } else {
+      loadAll();
+    }
   } else {
     document.getElementById('login-error').style.display = 'block';
     document.getElementById('pin-input').value = '';
@@ -275,8 +295,60 @@ function loadAll() {
     return;
   }
   loadEmailSubscribers();
+  loadUsers();
   loadSalaryData();
   loadStoryData();
+}
+
+// ── REGISTERED USERS ─────────────────────────────────────────────────────────
+function loadUsers() {
+  var db = window.db;
+  db.collection('profiles').orderBy('updatedAt','desc').limit(100).get().then(function(snap){
+    document.getElementById('stat-user-total').textContent = snap.size;
+    if(snap.empty){
+      document.getElementById('user-list').innerHTML = '<div class="empty"><h3>No registered users yet</h3></div>';
+      return;
+    }
+    var html = '<table style="width:100%;border-collapse:collapse;font-size:.82rem;">';
+    html += '<thead><tr style="border-bottom:2px solid rgba(240,192,64,.2);text-align:left;">';
+    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Name</th>';
+    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Branch</th>';
+    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Rank</th>';
+    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">MOS</th>';
+    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Subscription</th>';
+    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Last Active</th>';
+    html += '</tr></thead><tbody>';
+    snap.forEach(function(doc){
+      var d = doc.data();
+      var name = d.name || d.displayName || '—';
+      var branch = '—'; var rank = '—'; var mos = '—';
+      if(d.milExperiences && d.milExperiences[0]){
+        var m = d.milExperiences[0];
+        branch = m.branch || '—';
+        rank = m.rank || '—';
+        mos = m.mos || '—';
+      } else if(d.experiences && d.experiences[0]){
+        var m2 = d.experiences[0];
+        branch = m2.branch || '—';
+        rank = m2.rank || '—';
+        mos = m2.mos || '—';
+      }
+      var hasSub = d.stripeSession ? '<span style="color:#4ade80;font-weight:600;">Active</span>' : '<span style="color:rgba(192,216,240,.3);">Free</span>';
+      var lastActive = d.updatedAt ? new Date(d.updatedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+      html += '<tr style="border-bottom:1px solid rgba(255,255,255,.05);">';
+      html += '<td style="padding:.55rem .75rem;color:#e8f0f8;font-weight:500;">'+name+'</td>';
+      html += '<td style="padding:.55rem .75rem;color:rgba(192,216,240,.6);font-size:.78rem;">'+branch+'</td>';
+      html += '<td style="padding:.55rem .75rem;color:rgba(192,216,240,.6);font-size:.78rem;">'+rank+'</td>';
+      html += '<td style="padding:.55rem .75rem;color:rgba(192,216,240,.6);font-size:.78rem;">'+mos+'</td>';
+      html += '<td style="padding:.55rem .75rem;">'+hasSub+'</td>';
+      html += '<td style="padding:.55rem .75rem;color:rgba(192,216,240,.5);font-size:.78rem;">'+lastActive+'</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('user-list').innerHTML = html;
+  }).catch(function(err){
+    document.getElementById('user-list').innerHTML = '<div class="empty"><h3>Error loading users</h3>'+err.message+'</div>';
+  });
 }
 
 // ── EMAIL SUBSCRIBERS ────────────────────────────────────────────────────────

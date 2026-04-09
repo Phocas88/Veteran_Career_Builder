@@ -781,8 +781,9 @@ var SECTIONS = [
   {
     id: 'memory',
     name: 'Memory & Recall',
-    desc: 'You will be shown information briefly, then asked questions about it. Pay close attention — you won\'t be able to go back and look.',
+    desc: 'Each question shows information briefly. Click "Study" to reveal it for 10 seconds, then it hides and you answer from memory. You only get one look.',
     type: 'mc',
+    memoryMode: true,
     questions: [
       {q:'Memorize this sequence: <strong style="font-size:1.3rem;color:#1a3a6b;letter-spacing:.15em;">7 - 3 - 9 - 1 - 5 - 8</strong><br><br>(Remember it, then select the correct sequence below)', opts:['7-3-9-1-5-8','7-3-1-9-5-8','7-9-3-1-5-8','7-3-9-5-1-8'], correct:0},
       {q:'A briefing states: "Alpha Company will move at 0600 to Grid Reference 384927. Bravo Company provides overwatch from Hill 247. Charlie Company is in reserve at FOB Wilson."<br><br>What is Alpha Company\'s grid reference?', opts:['384927','384972','348927','389427'], correct:0},
@@ -1109,11 +1110,26 @@ function renderSection() {
 
 function renderMCQuestions(sec, container) {
   var letters = ['A','B','C','D'];
+  var isMemory = sec.memoryMode === true;
   sec.questions.forEach(function(q, idx) {
     var key = sec.id + '_' + idx;
     var selected = answers[key];
     var html = '<div class="mc-question' + (selected !== undefined ? ' answered' : '') + '" id="q_' + key + '">';
     html += '<div class="mc-q-num">Question ' + (idx+1) + ' of ' + sec.questions.length + '</div>';
+
+    // Memory mode: wrap question content in a reveal/hide mechanism
+    if(isMemory) {
+      var memId = 'mem_' + key;
+      html += '<div id="' + memId + '_cover" style="text-align:center;padding:1.5rem;background:#f0f4fa;border:2px dashed #d0daea;border-radius:10px;margin-bottom:.75rem;">';
+      html += '<div style="font-size:1.5rem;margin-bottom:.5rem;">🧠</div>';
+      html += '<div style="font-size:.88rem;color:#1a3a6b;font-weight:600;margin-bottom:.5rem;">Memory Challenge</div>';
+      html += '<div style="font-size:.8rem;color:#5a7090;margin-bottom:.75rem;">Click "Study" to reveal information for 10 seconds. You only get one look.</div>';
+      html += '<button onclick="startMemoryTimer(\'' + memId + '\')" id="' + memId + '_btn" style="padding:.55rem 1.5rem;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.9rem;cursor:pointer;">👁 Study (10 seconds)</button>';
+      html += '<div id="' + memId + '_timer" style="display:none;font-family:Bebas Neue,sans-serif;font-size:1.5rem;color:#dc2626;margin-top:.5rem;"></div>';
+      html += '</div>';
+      html += '<div id="' + memId + '_content" style="display:none;">';
+    }
+
     if(q.passage) {
       var parts = q.q.split('\n\n');
       if(parts.length > 1) {
@@ -1127,6 +1143,7 @@ function renderMCQuestions(sec, container) {
     } else {
       html += '<div class="mc-q-text">' + q.q + '</div>';
     }
+    if(isMemory) html += '</div>'; // close memory content wrapper
     html += '<div class="mc-options">';
     q.opts.forEach(function(opt, oi) {
       var selClass = selected === oi ? ' selected' : '';
@@ -1157,6 +1174,44 @@ function renderLikertQuestions(sec, container) {
     html += '</div>';
     container.innerHTML += html;
   });
+}
+
+// Memory study timer — shows content for 10 seconds then hides
+function startMemoryTimer(memId) {
+  var cover = document.getElementById(memId + '_cover');
+  var content = document.getElementById(memId + '_content');
+  var btn = document.getElementById(memId + '_btn');
+  var timerEl = document.getElementById(memId + '_timer');
+  if(!cover || !content) return;
+  // Disable button
+  btn.disabled = true;
+  btn.textContent = 'Studying...';
+  btn.style.opacity = '.5';
+  // Show content
+  content.style.display = 'block';
+  cover.style.background = 'rgba(26,122,64,.06)';
+  cover.style.borderColor = '#86efac';
+  timerEl.style.display = 'block';
+  // Countdown
+  var secs = 10;
+  timerEl.textContent = secs + 's';
+  var interval = setInterval(function(){
+    secs--;
+    timerEl.textContent = secs + 's';
+    if(secs <= 3) timerEl.style.color = '#dc2626';
+    if(secs <= 0) {
+      clearInterval(interval);
+      // Hide content
+      content.style.display = 'none';
+      cover.style.background = '#fef2f2';
+      cover.style.borderColor = '#fca5a5';
+      btn.textContent = '🔒 Time\'s up — answer from memory';
+      btn.style.background = '#888';
+      timerEl.textContent = 'Content hidden — answer below';
+      timerEl.style.color = '#dc2626';
+      timerEl.style.fontSize = '.85rem';
+    }
+  }, 1000);
 }
 
 function selectMC(key, optIdx) {
@@ -1360,10 +1415,12 @@ function calculateResults() {
 
   // ── AI Enhancement ──
   enhanceWithAI(scores, rankedCareers).then(function(aiData) {
-    renderResults(scores, rankedCareers, aiData);
+    try { renderResults(scores, rankedCareers, aiData); }
+    catch(e) { console.error("Render error (with AI):", e); document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);">Results Error</h2><p>Error rendering AI-enhanced results. Retrying without AI...</p></div>'; setTimeout(function(){ try{renderResults(scores, rankedCareers, null);}catch(e2){document.getElementById('results-content').innerHTML='<pre>'+JSON.stringify(scores,null,2)+'</pre>';} }, 500); }
   }).catch(function(err) {
     console.warn("AI enhancement skipped:", err.message);
-    renderResults(scores, rankedCareers, null);
+    try { renderResults(scores, rankedCareers, null); }
+    catch(e) { console.error("Render error (no AI):", e); document.getElementById('results-content').innerHTML = '<div style="padding:2rem;"><h2 style="color:var(--gold);">Assessment Complete</h2><p>There was an issue rendering the full report. Your scores:</p><pre style="background:#f8f8f8;padding:1rem;border-radius:8px;overflow:auto;">'+JSON.stringify(scores,null,2)+'</pre></div>'; }
   });
 }
 

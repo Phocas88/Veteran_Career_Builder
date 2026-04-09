@@ -306,7 +306,7 @@
       + '<a href="/va-disability-rating-schedule.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">VA Benefits</a>'
       + '<a href="/federal-jobs-search.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Job Search</a>'
       + '<a href="/veteran-discounts.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Discounts</a>'
-      + '<a href="/blog/" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Blog</a>'
+      + '<a href="/va-disability-rating-schedule.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">VA Calculator</a>'
       + '<a href="/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.72rem;padding:.3rem .7rem;border-radius:6px;text-decoration:none;white-space:nowrap;flex-shrink:0;">AI Tools — $15/mo</a>'
       + '</div>';
 

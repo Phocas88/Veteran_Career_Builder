@@ -316,7 +316,7 @@ body.menu-open{overflow:hidden!important;}
     <a href="https://veterancareerpath.com/federal-jobs-search.html">Job Search</a>
     <a href="https://veterancareerpath.com/veteran-discounts.html">Discounts</a>
     <a href="https://veterancareerpath.com/state-veteran-benefits.html">State Benefits</a>
-    <a href="https://veterancareerpath.com/blog/">Blog</a>
+    <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Calculator</a>
 
     <button class="vcp-menu-btn" id="vcp-menu-btn" aria-expanded="false" aria-haspopup="true">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
@@ -1245,6 +1245,72 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
 </head>
 <body>
 
+<!-- ═══ RETURNING USER DASHBOARD ════════════════════════════════════════════ -->
+<div id="vcp-dashboard" style="display:none;">
+  <section style="background:linear-gradient(160deg,#060f1e 0%,#0d1f3c 50%,#1a3a6b 100%);padding:2rem 5% 1.5rem;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+        <div>
+          <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,192,64,.6);margin-bottom:.3rem;">Welcome Back</div>
+          <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:.05em;color:#fff;margin:0;" id="dash-greeting">Welcome Back, Veteran</h1>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <a href="/app.html" style="display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.82rem;padding:.55rem 1.1rem;border-radius:8px;text-decoration:none;">🤖 Open AI Career Builder</a>
+          <button onclick="document.getElementById('vcp-dashboard').style.display='none';document.getElementById('vcp-landing').style.display='block';" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(192,216,240,.7);font-size:.78rem;padding:.55rem 1rem;border-radius:8px;cursor:pointer;">View Full Site</button>
+        </div>
+      </div>
+
+      <!-- Quick Tools Grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem;margin-bottom:1.5rem;">
+        <a href="/app.html" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor='rgba(240,192,64,.3)';this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='rgba(255,255,255,.04)'">
+          <div style="font-size:1.2rem;margin-bottom:.3rem;">📄</div>
+          <div style="font-weight:700;color:#fff;font-size:.85rem;margin-bottom:.15rem;">Build Resume</div>
+          <div style="font-size:.72rem;color:rgba(192,216,240,.5);">AI-powered, ATS-optimized</div>
+        </a>
+        <a href="/va-disability-rating-schedule.html" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor='rgba(240,192,64,.3)';this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='rgba(255,255,255,.04)'">
+          <div style="font-size:1.2rem;margin-bottom:.3rem;">🧮</div>
+          <div style="font-weight:700;color:#fff;font-size:.85rem;margin-bottom:.15rem;">VA Calculator</div>
+          <div style="font-size:.72rem;color:rgba(192,216,240,.5);">Disability + compensation</div>
+        </a>
+        <a href="/career-assessment-full.html" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor='rgba(240,192,64,.3)';this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='rgba(255,255,255,.04)'">
+          <div style="font-size:1.2rem;margin-bottom:.3rem;">🎯</div>
+          <div style="font-weight:700;color:#fff;font-size:.85rem;margin-bottom:.15rem;">PathFinder Pro</div>
+          <div style="font-size:.72rem;color:rgba(192,216,240,.5);">Career assessment</div>
+        </a>
+        <a href="/federal-jobs-search.html" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor='rgba(240,192,64,.3)';this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='rgba(255,255,255,.04)'">
+          <div style="font-size:1.2rem;margin-bottom:.3rem;">🔍</div>
+          <div style="font-weight:700;color:#fff;font-size:.85rem;margin-bottom:.15rem;">Job Search</div>
+          <div style="font-size:.72rem;color:rgba(192,216,240,.5);">Federal + veteran jobs</div>
+        </a>
+        <a href="/mos-career-translator.html" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor='rgba(240,192,64,.3)';this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='rgba(255,255,255,.04)'">
+          <div style="font-size:1.2rem;margin-bottom:.3rem;">🔄</div>
+          <div style="font-weight:700;color:#fff;font-size:.85rem;margin-bottom:.15rem;">MOS Translator</div>
+          <div style="font-size:.72rem;color:rgba(192,216,240,.5);">Translate your experience</div>
+        </a>
+        <a href="/veteran-discounts.html" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor='rgba(240,192,64,.3)';this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='rgba(255,255,255,.04)'">
+          <div style="font-size:1.2rem;margin-bottom:.3rem;">💰</div>
+          <div style="font-weight:700;color:#fff;font-size:.85rem;margin-bottom:.15rem;">Discounts</div>
+          <div style="font-size:.72rem;color:rgba(192,216,240,.5);">100+ military discounts</div>
+        </a>
+      </div>
+
+      <!-- Quick links row -->
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;padding-top:1rem;border-top:1px solid rgba(255,255,255,.06);">
+        <a href="/military-transition-guide.html" style="color:rgba(192,216,240,.5);text-decoration:none;font-size:.75rem;">Transition Guide</a>
+        <a href="/army-mos-careers.html" style="color:rgba(192,216,240,.5);text-decoration:none;font-size:.75rem;">MOS Guides</a>
+        <a href="/state-veteran-benefits.html" style="color:rgba(192,216,240,.5);text-decoration:none;font-size:.75rem;">State Benefits</a>
+        <a href="/ets-transition-checklist.html" style="color:rgba(192,216,240,.5);text-decoration:none;font-size:.75rem;">ETS Checklist</a>
+        <a href="/skillbridge-program-guide.html" style="color:rgba(192,216,240,.5);text-decoration:none;font-size:.75rem;">SkillBridge</a>
+        <a href="/veteran-mental-health-resources.html" style="color:rgba(192,216,240,.5);text-decoration:none;font-size:.75rem;">Mental Health</a>
+        <a href="/about.html" style="color:rgba(192,216,240,.5);text-decoration:none;font-size:.75rem;">About</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══ LANDING PAGE (for new visitors) ════════════════════════════════════ -->
+<div id="vcp-landing">
+
 <!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
 <section class="hero">
   <div class="hero-content">
@@ -1584,6 +1650,8 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
   </div>
 </section>
 
+</div><!-- /vcp-landing -->
+
 <!-- ═══ FOOTER ════════════════════════════════════════════════════════════════ -->
 <footer>
   <div class="footer-grid">
@@ -1637,6 +1705,40 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
   </div>
 </footer>
 
+<script>
+// Smart homepage — detect returning users
+(function(){
+  var isReturning = false;
+  try {
+    var acc = JSON.parse(localStorage.getItem('vcb_access') || '{}');
+    var profile = JSON.parse(localStorage.getItem('vcb_profile') || 'null');
+    var pfUser = JSON.parse(localStorage.getItem('vcp_pf_user') || 'null');
+    isReturning = !!(acc.type || profile || pfUser);
+  } catch(e) {}
+
+  if(isReturning) {
+    var dash = document.getElementById('vcp-dashboard');
+    var landing = document.getElementById('vcp-landing');
+    if(dash) dash.style.display = 'block';
+    if(landing) landing.style.display = 'none';
+
+    // Personalize greeting
+    var name = '';
+    try {
+      var p = JSON.parse(localStorage.getItem('vcb_profile') || '{}');
+      name = (p && p.name) ? p.name.split(' ')[0] : '';
+      if(!name) {
+        var u = JSON.parse(localStorage.getItem('vcp_pf_user') || '{}');
+        name = (u && u.name) ? u.name.split(' ')[0] : '';
+      }
+    } catch(e) {}
+    if(name) {
+      var g = document.getElementById('dash-greeting');
+      if(g) g.textContent = 'Welcome Back, ' + name;
+    }
+  }
+})();
+</script>
 <script src="/vcp-components.js"></script>
 <script>
 // Scroll reveal

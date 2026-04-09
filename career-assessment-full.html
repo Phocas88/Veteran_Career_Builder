@@ -341,15 +341,19 @@ a:hover{color:var(--gold);}
       <div class="intro-stat"><div class="intro-stat-num">15</div><div class="intro-stat-label">Top Recommendations</div></div>
     </div>
     <div class="intro-sections">
-      <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(26,92,154,.2);color:#3b82f6;">1</div><div class="intro-sec-info"><h4>Mechanical &amp; Technical Reasoning</h4><p>20 ASVAB-style questions testing practical aptitude</p></div></div>
+      <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(26,92,154,.2);color:#3b82f6;">1</div><div class="intro-sec-info"><h4>Mechanical &amp; Technical Reasoning</h4><p>25 ASVAB-style questions with visual diagrams — gears, circuits, levers, pressure</p></div></div>
       <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(168,85,247,.2);color:#a855f7;">2</div><div class="intro-sec-info"><h4>Verbal &amp; Communication</h4><p>15 questions on comprehension, vocabulary, writing</p></div></div>
       <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(34,197,94,.2);color:#22c55e;">3</div><div class="intro-sec-info"><h4>Numerical &amp; Analytical</h4><p>15 math and data interpretation problems</p></div></div>
       <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(251,146,60,.2);color:#fb923c;">4</div><div class="intro-sec-info"><h4>Work Style &amp; Environment</h4><p>25 questions on your ideal work preferences</p></div></div>
       <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(236,72,153,.2);color:#ec4899;">5</div><div class="intro-sec-info"><h4>Career Interest Domains</h4><p>25 questions mapping your professional interests</p></div></div>
       <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(240,192,64,.2);color:var(--gold);">6</div><div class="intro-sec-info"><h4>Leadership &amp; Interpersonal</h4><p>20 questions assessing leadership and teamwork</p></div></div>
+      <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(220,38,38,.2);color:#dc2626;">7</div><div class="intro-sec-info"><h4>Soft Skills &amp; Civilian Workplace</h4><p>15 questions on civilian workplace adaptability — critical for transition success</p></div></div>
+    </div>
+    <div style="background:rgba(240,192,64,.06);border:1px solid rgba(240,192,64,.15);border-radius:8px;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.82rem;color:var(--sub);line-height:1.6;">
+      <strong style="color:var(--gold);">⏱ Timed Assessment:</strong> Each section has a countdown timer based on question count. If time runs out, you'll automatically move to the next section. This simulates real aptitude test conditions.
     </div>
     <button class="intro-start-btn" onclick="startAssessment()">Begin Assessment</button>
-    <div class="intro-time">Estimated time: 35-50 minutes</div>
+    <div class="intro-time">Estimated time: 45-60 minutes · 7 sections · Timed</div>
   </div>
 </div>
 
@@ -359,9 +363,16 @@ a:hover{color:var(--gold);}
   <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
   <div class="section-tabs" id="section-tabs"></div>
   <div class="q-section-header">
-    <div class="q-section-name" id="section-name"></div>
-    <div class="q-section-desc" id="section-desc"></div>
-    <div class="q-section-counter" id="section-counter"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem;">
+      <div>
+        <div class="q-section-name" id="section-name"></div>
+        <div class="q-section-desc" id="section-desc"></div>
+        <div class="q-section-counter" id="section-counter"></div>
+      </div>
+      <div id="section-timer" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.05em;color:var(--gold);background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:8px;padding:.3rem .8rem;white-space:nowrap;">
+        ⏱ --:--
+      </div>
+    </div>
   </div>
   <div id="questions-container"></div>
   <div class="nav-row">
@@ -496,7 +507,18 @@ var SECTIONS = [
       {q:'A vehicle pulls a trailer weighing 3,000 lbs up a 10% grade. Approximately how much additional force (beyond flat ground) is needed just to overcome the grade?',
        opts:['30 lbs','300 lbs','3,000 lbs','150 lbs'], correct:1},
       {q:'Which type of valve is best for regulating flow in a pipe (partial open/close)?',
-       opts:['Ball valve','Gate valve','Globe valve','Check valve'], correct:2}
+       opts:['Ball valve','Gate valve','Globe valve','Check valve'], correct:2},
+      // ── VISUAL/IMAGE QUESTIONS ──
+      {q:'<div style="text-align:center;margin-bottom:.5rem;"><svg width="260" height="120" viewBox="0 0 260 120"><circle cx="60" cy="60" r="40" fill="none" stroke="#1a3a6b" stroke-width="3"/><circle cx="60" cy="60" r="3" fill="#1a3a6b"/><text x="60" y="108" text-anchor="middle" font-size="11" fill="#5a7090">Gear A (20 teeth)</text><line x1="60" y1="18" x2="60" y2="28" stroke="#c8960a" stroke-width="2"/><path d="M55 20 L60 12 L65 20" fill="#c8960a"/><circle cx="170" cy="60" r="55" fill="none" stroke="#1a3a6b" stroke-width="3"/><circle cx="170" cy="60" r="3" fill="#1a3a6b"/><text x="170" y="118" text-anchor="middle" font-size="11" fill="#5a7090">Gear B (40 teeth)</text><line x1="100" y1="60" x2="115" y2="60" stroke="#888" stroke-width="1" stroke-dasharray="4"/></svg></div>Gear A (20 teeth) rotates clockwise at 80 RPM and meshes with Gear B (40 teeth). What direction does Gear B rotate and at what speed?',
+       opts:['Clockwise at 40 RPM','Counter-clockwise at 40 RPM','Clockwise at 160 RPM','Counter-clockwise at 160 RPM'], correct:1},
+      {q:'<div style="text-align:center;margin-bottom:.5rem;"><svg width="200" height="150" viewBox="0 0 200 150"><rect x="20" y="10" width="160" height="20" fill="none" stroke="#1a3a6b" stroke-width="2" rx="3"/><text x="100" y="24" text-anchor="middle" font-size="10" fill="#1a3a6b">Beam</text><polygon points="90,30 100,50 80,50" fill="#5a7090"/><text x="90" y="62" text-anchor="middle" font-size="9" fill="#5a7090">Fulcrum</text><rect x="15" y="5" width="20" height="20" fill="rgba(200,150,10,.3)" stroke="#c8960a" stroke-width="1.5"/><text x="25" y="80" text-anchor="middle" font-size="9" fill="#c8960a">50 kg</text><text x="25" y="92" text-anchor="middle" font-size="8" fill="#888">2m from fulcrum</text><circle cx="170" cy="15" r="5" fill="none" stroke="#dc2626" stroke-width="2"/><text x="170" y="80" text-anchor="middle" font-size="9" fill="#dc2626">? Force</text><text x="170" y="92" text-anchor="middle" font-size="8" fill="#888">6m from fulcrum</text></svg></div>A 50 kg weight sits 2 meters from the fulcrum. How much force is needed 6 meters from the fulcrum on the other side to balance the beam?',
+       opts:['150 kg','25 kg','16.7 kg','100 kg'], correct:2},
+      {q:'<div style="text-align:center;margin-bottom:.5rem;"><svg width="220" height="130" viewBox="0 0 220 130"><rect x="10" y="40" width="60" height="60" fill="rgba(26,58,107,.1)" stroke="#1a3a6b" stroke-width="2" rx="5"/><text x="40" y="75" text-anchor="middle" font-size="11" fill="#1a3a6b">Tank A</text><text x="40" y="90" text-anchor="middle" font-size="9" fill="#5a7090">PSI: 100</text><rect x="150" y="40" width="60" height="60" fill="rgba(26,58,107,.1)" stroke="#1a3a6b" stroke-width="2" rx="5"/><text x="180" y="75" text-anchor="middle" font-size="11" fill="#1a3a6b">Tank B</text><text x="180" y="90" text-anchor="middle" font-size="9" fill="#5a7090">PSI: 30</text><line x1="70" y1="70" x2="150" y2="70" stroke="#c8960a" stroke-width="3"/><polygon points="140,65 150,70 140,75" fill="#c8960a"/><text x="110" y="60" text-anchor="middle" font-size="9" fill="#888">Pipe (valve open)</text></svg></div>Tank A is pressurized to 100 PSI and Tank B to 30 PSI. When the valve between them opens, what happens?',
+       opts:['Air flows from B to A','Air flows from A to B until pressure equalizes','Both tanks drop to 0 PSI','Nothing — the valve prevents flow'], correct:1},
+      {q:'<div style="text-align:center;margin-bottom:.5rem;"><svg width="180" height="140" viewBox="0 0 180 140"><rect x="10" y="10" width="160" height="30" fill="rgba(26,58,107,.08)" stroke="#1a3a6b" stroke-width="1.5" rx="3"/><text x="90" y="30" text-anchor="middle" font-size="10" fill="#1a3a6b">Support Beam</text><rect x="30" y="40" width="8" height="80" fill="#5a7090"/><rect x="142" y="40" width="8" height="80" fill="#5a7090"/><rect x="75" y="40" width="8" height="80" fill="#5a7090" stroke-dasharray="4"/><text x="79" y="135" text-anchor="middle" font-size="9" fill="#dc2626">Column C (removed)</text><circle cx="90" cy="60" r="3" fill="#c8960a"/><text x="110" y="63" font-size="9" fill="#c8960a">Load: 2000 lbs</text></svg></div>A beam is supported by three columns (left, center, right). If the center column (C) is removed, what happens to the load on the remaining two columns?',
+       opts:['Each remaining column carries 1000 lbs','Each remaining column carries more than 1000 lbs due to the span','The beam collapses immediately','The load shifts entirely to the left column'], correct:1},
+      {q:'<div style="text-align:center;margin-bottom:.5rem;"><svg width="160" height="120" viewBox="0 0 160 120"><circle cx="40" cy="50" r="25" fill="none" stroke="#1a3a6b" stroke-width="2"/><circle cx="40" cy="50" r="3" fill="#1a3a6b"/><circle cx="110" cy="50" r="15" fill="none" stroke="#1a3a6b" stroke-width="2"/><circle cx="110" cy="50" r="3" fill="#1a3a6b"/><line x1="65" y1="50" x2="95" y2="50" stroke="#888" stroke-width="1"/><text x="40" y="85" text-anchor="middle" font-size="9" fill="#5a7090">Pulley A (large)</text><text x="110" y="75" text-anchor="middle" font-size="9" fill="#5a7090">Pulley B (small)</text><path d="M35 25 L40 15 L45 25" fill="#c8960a"/><text x="40" y="12" text-anchor="middle" font-size="8" fill="#c8960a">Slow</text><text x="110" y="105" text-anchor="middle" font-size="9" fill="#dc2626">Speed = ?</text></svg></div>A belt connects large Pulley A to small Pulley B. If Pulley A rotates slowly, how does Pulley B behave?',
+       opts:['Same speed, same direction','Faster, same direction','Slower, opposite direction','Faster, same direction as A'], correct:3}
     ]
   },
   // ═══ SECTION 2: VERBAL & COMMUNICATION (15 MC) ═══
@@ -915,9 +937,45 @@ function startAssessment(fresh) {
   renderSection();
 }
 
+// ── SECTION TIMER ──
+var sectionTimer = null;
+var timerSeconds = 0;
+var SECONDS_PER_QUESTION = {mc: 60, likert: 20}; // 60s per MC question, 20s per likert
+
+function startSectionTimer(sec) {
+  clearInterval(sectionTimer);
+  var perQ = SECONDS_PER_QUESTION[sec.type] || 30;
+  timerSeconds = sec.questions.length * perQ;
+  updateTimerDisplay();
+  sectionTimer = setInterval(function(){
+    timerSeconds--;
+    updateTimerDisplay();
+    if(timerSeconds <= 0) {
+      clearInterval(sectionTimer);
+      // Auto-advance when time runs out
+      var el = document.getElementById('section-timer');
+      if(el) { el.style.color = '#dc2626'; el.textContent = '⏱ TIME UP'; }
+      setTimeout(function(){ nextSection(); }, 2000);
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  var el = document.getElementById('section-timer');
+  if(!el) return;
+  var m = Math.floor(timerSeconds / 60);
+  var s = timerSeconds % 60;
+  el.textContent = '⏱ ' + m + ':' + (s < 10 ? '0' : '') + s;
+  // Color warning when low
+  if(timerSeconds <= 30) el.style.color = '#dc2626';
+  else if(timerSeconds <= 60) el.style.color = '#f97316';
+  else el.style.color = 'var(--gold)';
+}
+
 function renderSection() {
   window.scrollTo({top:0, behavior:'smooth'});
   var sec = SECTIONS[currentSection];
+  startSectionTimer(sec);
   var container = document.getElementById('questions-container');
   container.innerHTML = '';
 
@@ -1096,6 +1154,7 @@ function saveAndExit() {
 // ══════════════════════════════════════════════════════════════════════════════
 
 function calculateResults() {
+  clearInterval(sectionTimer);
   var scores = {};
 
   // ── Technical section scores (percentage correct) ──

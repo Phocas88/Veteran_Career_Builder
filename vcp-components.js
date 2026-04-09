@@ -282,6 +282,20 @@
     });
   }
 
+  /* ── SYNC MEGA MENU — replace ALL mega menus with canonical version ── */
+  function initSyncMegaMenu() {
+    if (window.location.pathname.indexOf('app.html') > -1) return;
+    var existingMega = document.getElementById('vcp-mega');
+    if (!existingMega) return; // No mega menu on this page
+    // Fetch the canonical mega menu
+    fetch('/vcp-mega-menu.html').then(function(r){ return r.text(); }).then(function(html) {
+      var temp = document.createElement('div');
+      temp.innerHTML = html.trim();
+      var newMega = temp.firstChild;
+      if (newMega) existingMega.parentNode.replaceChild(newMega, existingMega);
+    }).catch(function(){});
+  }
+
   /* ── UNIFORM NAV — upgrade old navs to consistent style ─────────────── */
   function initUniformNav() {
     // Skip app.html (has its own nav) and pages with the full mega menu
@@ -362,6 +376,7 @@
   /* ── INIT ALL ───────────────────────────────────────────────────────── */
   function init() {
     enhanceBody();
+    initSyncMegaMenu();
     initUniformNav();
     initMegaCollapse();
     initScrollReveal();

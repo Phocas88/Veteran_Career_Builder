@@ -212,6 +212,30 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
   <div class="question-container" id="questionContainer"></div>
 </section>
 
+<!-- ── EMAIL GATE ── -->
+<section id="emailGate" style="display:none;min-height:80vh;background:linear-gradient(160deg,#060f1e,#1a3a6b);display:none;align-items:center;justify-content:center;padding:2rem;">
+  <div style="max-width:440px;width:100%;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#1a3a6b,#1e4a8a);padding:1.5rem;text-align:center;">
+      <img src="https://veterancareerpath.com/logo.png" alt="VCP" width="48" height="48" style="margin-bottom:.5rem;object-fit:contain;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#f0c040;">Your Results Are Ready!</div>
+      <div style="font-size:.82rem;color:rgba(192,216,240,.7);margin-top:.25rem;">Enter your name and email to view your career matches.</div>
+    </div>
+    <div style="padding:1.25rem;">
+      <div style="margin-bottom:.6rem;">
+        <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Full Name</label>
+        <input id="gate-name" type="text" placeholder="First Last" style="width:100%;padding:.6rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;">
+      </div>
+      <div style="margin-bottom:.6rem;">
+        <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Email Address</label>
+        <input id="gate-email" type="email" placeholder="you@email.com" style="width:100%;padding:.6rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;">
+      </div>
+      <div id="gate-error" style="display:none;font-size:.78rem;color:#dc2626;margin-bottom:.4rem;"></div>
+      <button id="gate-submit" onclick="submitEmailGate()" style="width:100%;padding:.7rem;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;letter-spacing:.02em;">View My Career Matches →</button>
+      <div style="font-size:.68rem;color:#8a9ab0;text-align:center;margin-top:.5rem;line-height:1.4;">We'll send you career tips and updates. Unsubscribe anytime. No spam.</div>
+    </div>
+  </div>
+</section>
+
 <!-- ── RESULTS SCREEN ── -->
 <section class="results-screen" id="resultsScreen"></section>
 
@@ -570,6 +594,21 @@ function matchCareers(scores){
 // ── Show Results ──
 function showResults(){
   assessScreen.style.display = "none";
+
+  // Check if user already provided email (skip gate)
+  var existingUser = null;
+  try { existingUser = JSON.parse(localStorage.getItem("vcp_pf_user")); } catch(e){}
+  if(!existingUser || !existingUser.email) {
+    // Show email gate first
+    document.getElementById("emailGate").style.display = "flex";
+    _pendingShowResults = function(){ _renderResults(); };
+    return;
+  }
+  _renderResults();
+}
+
+function _renderResults(){
+  document.getElementById("emailGate").style.display = "none";
   resultsScreen.style.display = "block";
   document.body.style.background = "#f4f6fb";
 
@@ -729,6 +768,39 @@ function retakeAssessment(){
   document.body.style.background = "var(--bg-intro)";
   window.scrollTo({top:0,behavior:"smooth"});
 }
+</script>
+<!-- Firebase for email collection -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+try{firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"auth.veterancareerpath.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}catch(e){}
+var _gateDb = null;
+try{_gateDb = firebase.firestore();}catch(e){}
+
+function submitEmailGate(){
+  var name = document.getElementById("gate-name").value.trim();
+  var email = document.getElementById("gate-email").value.trim().toLowerCase();
+  var err = document.getElementById("gate-error");
+  if(!name){err.textContent="Please enter your name.";err.style.display="block";return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent="Please enter a valid email address.";err.style.display="block";return;}
+  err.style.display="none";
+  document.getElementById("gate-submit").textContent="Loading results...";
+  document.getElementById("gate-submit").disabled=true;
+  // Save to Firestore
+  if(_gateDb){
+    _gateDb.collection("email_subscribers").add({
+      email:email,name:name,source:"pathfinder-lite",
+      timestamp:firebase.firestore.FieldValue.serverTimestamp(),status:"active"
+    }).catch(function(){});
+  }
+  // Store locally for profile pairing
+  try{localStorage.setItem("vcp_pf_user",JSON.stringify({name:name,email:email,date:new Date().toISOString()}));}catch(e){}
+  // Hide gate, show results
+  document.getElementById("emailGate").style.display="none";
+  _pendingShowResults();
+}
+
+var _pendingShowResults = function(){};
 </script>
 <script src="/vcp-components.js"></script>
 </body>

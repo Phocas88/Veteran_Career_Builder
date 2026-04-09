@@ -1495,19 +1495,17 @@ function renderResults(scores, rankedCareers, aiData) {
   // ── Section Scores ──
   html += '<h2 style="font-family:\'Bebas Neue\',sans-serif;font-size:1.4rem;letter-spacing:.06em;color:var(--gold);margin:2rem 0 1rem;">Assessment Scores</h2>';
 
-  // Mechanical
-  html += renderSectionResult('Mechanical & Technical Reasoning', scores.mechanical.pct, 'Tests practical aptitude across gears, electricity, tools, and vehicle systems.', scores.mechanical.raw + '/' + scores.mechanical.total + ' correct', estimatePercentile(scores.mechanical.pct, 'technical'), 'mechanical', scores);
-  // Verbal
-  html += renderSectionResult('Verbal & Communication', scores.verbal.pct, 'Reading comprehension, vocabulary, and professional communication skills.', scores.verbal.raw + '/' + scores.verbal.total + ' correct', estimatePercentile(scores.verbal.pct, 'verbal'), 'verbal', scores);
-  // Numerical
-  html += renderSectionResult('Numerical & Analytical', scores.numerical.pct, 'Math, data interpretation, and analytical problem-solving.', scores.numerical.raw + '/' + scores.numerical.total + ' correct', estimatePercentile(scores.numerical.pct, 'numerical'), 'numerical', scores);
-  // Work Style
-  html += renderSectionResult('Work Style & Environment', scores.workstyleOverall, 'Your ideal work environment, structure preferences, and career priorities.', 'Composite preference score', estimatePercentile(scores.workstyleOverall, 'workstyle'), 'workstyle', scores);
-  // Interests
-  html += renderSectionResult('Career Interest Domains', scores.interestsOverall, 'Your career interest areas and professional domain preferences.', 'Composite interest score', estimatePercentile(scores.interestsOverall, 'interests'), 'interests', scores);
-  // Leadership
-  html += renderSectionResult('Leadership & Interpersonal', scores.leadershipOverall, 'Leadership style, communication, teamwork, and people management.', 'Composite leadership score', estimatePercentile(scores.leadershipOverall, 'leadership'), 'leadership', scores);
-  if(scores.softSkills !== undefined) html += renderSectionResult('Soft Skills & Civilian Workplace', scores.softSkills, 'Adaptability to civilian workplace culture, communication flexibility, conflict resolution, and professional development.', 'Civilian readiness composite', estimatePercentile(scores.softSkills, 'general'), 'softskills', scores);
+  // All section results — each wrapped in try-catch so one failure doesn't kill all
+  var sections = [
+    function(){ return renderSectionResult('Mechanical & Technical Reasoning', scores.mechanical.pct||0, 'Tests practical aptitude across gears, electricity, tools, and vehicle systems.', (scores.mechanical.raw||0) + '/' + (scores.mechanical.total||0) + ' correct', estimatePercentile(scores.mechanical.pct||0, 'technical'), 'mechanical', scores); },
+    function(){ return renderSectionResult('Verbal & Communication', scores.verbal.pct||0, 'Reading comprehension, vocabulary, and professional communication skills.', (scores.verbal.raw||0) + '/' + (scores.verbal.total||0) + ' correct', estimatePercentile(scores.verbal.pct||0, 'verbal'), 'verbal', scores); },
+    function(){ return renderSectionResult('Numerical & Analytical', scores.numerical.pct||0, 'Math, data interpretation, and analytical problem-solving.', (scores.numerical.raw||0) + '/' + (scores.numerical.total||0) + ' correct', estimatePercentile(scores.numerical.pct||0, 'numerical'), 'numerical', scores); },
+    function(){ return renderSectionResult('Work Style & Environment', scores.workstyleOverall||0, 'Your ideal work environment, structure preferences, and career priorities.', 'Composite preference score', estimatePercentile(scores.workstyleOverall||0, 'workstyle'), 'workstyle', scores); },
+    function(){ return renderSectionResult('Career Interest Domains', scores.interestsOverall||0, 'Your career interest areas and professional domain preferences.', 'Composite interest score', estimatePercentile(scores.interestsOverall||0, 'interests'), 'interests', scores); },
+    function(){ return renderSectionResult('Leadership & Interpersonal', scores.leadershipOverall||0, 'Leadership style, communication, teamwork, and people management.', 'Composite leadership score', estimatePercentile(scores.leadershipOverall||0, 'leadership'), 'leadership', scores); },
+    function(){ if(scores.softSkills !== undefined) return renderSectionResult('Soft Skills & Civilian Workplace', scores.softSkills||0, 'Adaptability to civilian workplace culture, communication flexibility, conflict resolution, and professional development.', 'Civilian readiness composite', estimatePercentile(scores.softSkills||0, 'general'), 'softskills', scores); return ''; }
+  ];
+  sections.forEach(function(fn){ try { html += fn(); } catch(e){ console.error('Section render error:', e); } });
 
   // ── Strengths Summary ──
   html += renderStrengths(scores);
@@ -1751,12 +1749,25 @@ function renderStrengths(scores) {
 
 function renderCareerCard(r, idx, scores, aiInsight) {
   var c = r.career;
+  // Determine entry-level position from career ladder
+  var ladder = CAREER_LADDERS[c.title] || buildGenericLadder(c);
+  var entryTitle = c.title;
+  var entrySalary = c.salary;
+  var isLadder = false;
+  if(ladder && ladder.length > 1) {
+    entryTitle = ladder[0].title;
+    entrySalary = ladder[0].salary;
+    isLadder = true;
+  }
+
   var html = '<div class="career-card">';
   html += '<div class="career-card-top">';
-  html += '<div><div class="career-card-title">#' + (idx+1) + ' ' + c.title + '</div><div class="career-card-sector">' + c.sector + (aiInsight ? ' · <span style="color:#f0c040;font-size:.6rem;">AI Enhanced</span>' : '') + '</div></div>';
+  html += '<div><div class="career-card-title">#' + (idx+1) + ' ' + entryTitle + '</div>';
+  if(isLadder) html += '<div style="font-size:.72rem;color:#5a7090;margin-top:.1rem;">Career path → <strong style="color:#1a3a6b;">' + c.title + '</strong></div>';
+  html += '<div class="career-card-sector">' + c.sector + (aiInsight ? ' · <span style="color:#f0c040;font-size:.6rem;">AI Enhanced</span>' : '') + '</div></div>';
   html += '<div class="career-card-match">' + r.matchPct + '%</div>';
   html += '</div>';
-  html += '<div class="career-card-salary">' + (aiInsight && aiInsight.currentSalary ? aiInsight.currentSalary : c.salary);
+  html += '<div class="career-card-salary">' + entrySalary;
   if(c.clearancePremium) html += '<span class="clearance-note">+clearance premium</span>';
   html += '</div>';
   // Use AI "why you fit" if available, otherwise JS-generated
@@ -1839,18 +1850,40 @@ var CAREER_LADDERS = {
 // Build a generic ladder for any career not in CAREER_LADDERS
 function buildGenericLadder(career) {
   var title = career.title;
-  var sector = career.sector;
   var sal = career.salary;
   // Detect if this is a senior/management role
-  var isSenior = /manager|director|chief|captain|senior|lead|supervisor|vp|president|officer$/i.test(title);
+  var isSenior = /manager|director|chief|captain|senior|lead|supervisor|vp |president/i.test(title);
   if(!isSenior) return null; // Entry-level careers don't need a ladder
-  // Build a simple 3-step ladder
-  var entryTitle = title.replace(/senior |lead |chief |head |managing |executive /gi,'').replace(/ manager| director| supervisor| captain| chief| vp| president/gi,'');
-  if(entryTitle === title) entryTitle = "Junior " + title;
+
+  // Map senior titles to realistic entry-level equivalents
+  var entryMap = {
+    'Engineering Manager':'Junior Engineer','VP Engineering':'Junior Engineer','Senior Engineer':'Junior Engineer',
+    'IT Director':'IT Support Specialist','IT Manager':'IT Support Specialist','CISO':'Security Analyst',
+    'Operations Manager':'Operations Coordinator','COO':'Operations Coordinator','VP Operations':'Operations Coordinator',
+    'CFO':'Staff Accountant','Controller':'Staff Accountant',
+    'HR Director':'HR Coordinator','HR Manager':'HR Coordinator',
+    'Security Director':'Security Officer','Security Manager':'Security Officer',
+    'Sales Manager':'Sales Representative','District Manager':'Store Associate',
+    'Construction Superintendent':'Construction Laborer','General Contractor':'Construction Laborer',
+    'Plant Manager':'Production Associate','Maintenance Manager':'Maintenance Technician',
+    'Fire Captain':'Firefighter/EMT','Fire Chief':'Firefighter/EMT','Battalion Chief':'Firefighter/EMT',
+    'Police Sergeant':'Police Officer','Police Lieutenant':'Police Officer',
+    'Nurse Practitioner':'CNA/Medical Assistant','Nurse Manager':'Registered Nurse',
+  };
+  var entryTitle = entryMap[title];
+  if(!entryTitle) {
+    // Generic: strip management suffix for entry title
+    entryTitle = title.replace(/Senior |Lead |Chief |Head |Managing |Executive /gi,'')
+      .replace(/ Manager| Director| Supervisor| Captain| Chief/gi,' Associate')
+      .replace(/VP /gi,'Junior ').replace(/  /g,' ').trim();
+    if(entryTitle === title) entryTitle = title + ' Assistant';
+  }
+  var midTitle = title.replace(/Senior |Chief |Head |VP /gi,'').replace(/ Director/,' Manager').trim();
+  if(midTitle === title) midTitle = 'Senior ' + entryTitle;
   return [
-    {title:"Entry: " + entryTitle,salary:"See industry data",time:"Immediate–6 months",reqs:career.requirements.slice(0,2)},
-    {title:"Mid: " + title.replace(/senior |chief |head /gi,''),salary:"See industry data",time:"3-5 years experience",reqs:["Proven track record","Additional certifications"]},
-    {title:title,salary:sal,time:"5-10+ years",reqs:career.requirements}
+    {title:entryTitle,salary:"Entry-level salary",time:"Immediate–6 months",reqs:career.requirements.slice(0,2)},
+    {title:midTitle,salary:"Mid-career salary",time:"3-7 years experience",reqs:["Experience in role","Relevant certifications"]},
+    {title:title,salary:sal,time:"7-15+ years total",reqs:career.requirements}
   ];
 }
 

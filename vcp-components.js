@@ -325,6 +325,25 @@
     oldNav.parentNode.replaceChild(nav, oldNav);
   }
 
+  /* ── SAVE TO PROFILE (for standalone tool pages) ────────────────── */
+  window.vcpSaveToProfile = function(type, data) {
+    // type: 'jobMatch', 'certAdvice', 'interview', 'salary', etc.
+    // data: the result object to save
+    try {
+      var saved = JSON.parse(localStorage.getItem('vcp_saved_results') || '[]');
+      saved.unshift({
+        type: type,
+        data: data,
+        date: new Date().toISOString(),
+        id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5)
+      });
+      // Keep last 50 results
+      if (saved.length > 50) saved = saved.slice(0, 50);
+      localStorage.setItem('vcp_saved_results', JSON.stringify(saved));
+      return true;
+    } catch (e) { return false; }
+  };
+
   /* ── MEGA MENU COLLAPSIBLE SECTIONS ──────────────────────────────── */
   function initMegaCollapse() {
     var labels = document.querySelectorAll('.vcp-mega-section-label');

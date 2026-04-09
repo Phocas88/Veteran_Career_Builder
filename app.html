@@ -3039,7 +3039,7 @@ function GuidedProfileWizard({ personal, setPersonal, milExperiences, setMilExpe
   const svcLabel = (exp.branch||"") + (exp.mos?" · "+exp.mos:"") + (exp.mosTitle?" ("+exp.mosTitle+")":"");
   const svcDates = (exp.startDate||"") + (exp.endDate?" – "+exp.endDate:"");
 
-  const STEPS = ["Personal","Branch","Rank & MOS","Dates","Duties & Leadership","Clearance","Awards","More Service?","Review"];
+  const STEPS = ["Personal","Branch","Rank & MOS","Dates","Duties & Leadership","Clearance","Awards","More Service?","Civilian Work","Review"];
 
   const goNext = () => { if(step<STEPS.length-1) setStep(step+1); };
   const goBack = () => { if(step>0) setStep(step-1); };
@@ -3300,8 +3300,29 @@ function GuidedProfileWizard({ personal, setPersonal, milExperiences, setMilExpe
           </div>
         </>)}
 
-        {/* ════ STEP 8: Review ════ */}
+        {/* ════ STEP 8: Civilian Work ════ */}
         {step===8 && (<>
+          <div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:"8px",padding:".75rem",marginBottom:"1rem",fontSize:".8rem",color:"#92400e",lineHeight:1.6}}>
+            <strong>Optional:</strong> If you have any civilian work experience — before, during, or after military service — add it here. This helps the AI tools build a stronger resume with your full work history.
+          </div>
+          <div style={fieldWrap}><label style={label}>Job Title</label><input style={input} placeholder="e.g., Warehouse Manager, IT Support, Security Guard" id="civ-title"/></div>
+          <div style={{...row2,...fieldWrap}}>
+            <div><label style={label}>Company / Employer</label><input style={input} placeholder="e.g., Amazon, Home Depot" id="civ-employer"/></div>
+            <div><label style={label}>Dates</label><input style={input} placeholder="e.g., Jan 2022 – Present" id="civ-dates"/></div>
+          </div>
+          <div style={fieldWrap}><label style={label}>Key Responsibilities</label><textarea style={{...input,minHeight:"80px"}} placeholder="What did you do in this role?" id="civ-duties"/></div>
+          <button onClick={()=>{
+            var t=document.getElementById('civ-title'),e=document.getElementById('civ-employer'),d=document.getElementById('civ-dates'),du=document.getElementById('civ-duties');
+            if(t&&t.value.trim()){
+              showToast("Civilian experience added ✓");
+              t.value='';if(e)e.value='';if(d)d.value='';if(du)du.value='';
+            }
+          }} style={btnPrimary}>+ Add Civilian Experience</button>
+          <div style={{...note,marginTop:".5rem"}}>You can add multiple civilian jobs. If you have none, just click Next.</div>
+        </>)}
+
+        {/* ════ STEP 9: Review ════ */}
+        {step===9 && (<>
           <div style={{background:"#f0fdf4",border:"1px solid #86efac",borderRadius:"8px",padding:"1rem",marginBottom:"1rem"}}>
             <div style={{fontWeight:700,color:"#166534",marginBottom:".5rem"}}>✅ Profile Summary</div>
             <div style={{fontSize:".85rem",color:"#1a2a3a",lineHeight:1.8}}>
@@ -3332,7 +3353,7 @@ function GuidedProfileWizard({ personal, setPersonal, milExperiences, setMilExpe
             {step < STEPS.length - 1 && step !== 7 && (
               <button onClick={goNext} style={btnPrimary}>Next →</button>
             )}
-            {step === STEPS.length - 1 && (
+            {step === STEPS.length - 1 && step === 9 && (
               <button onClick={()=>{showToast("Profile complete! Head to Career Pathways →");}} style={btnGreen}>✅ Done</button>
             )}
           </div>

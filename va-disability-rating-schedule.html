@@ -97,8 +97,8 @@ body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f2f5fa;font-size:1
 
 /* CALCULATOR */
 .calc-card{background:#fff;border:1px solid var(--bd);border-radius:12px;margin-bottom:.9rem;box-shadow:0 1px 6px rgba(26,58,107,.05);overflow:hidden;}
-.calc-hd{background:linear-gradient(135deg,var(--nv),var(--nv2));padding:.8rem 1.15rem;}
-.calc-hd h2{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:#fff;}
+.calc-hd{background:linear-gradient(135deg,var(--nv),var(--nv2));padding:.8rem 1.15rem;text-align:left;}
+.calc-hd h2{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#fff;margin:0;}
 .calc-body{padding:1.25rem;}
 
 .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:1rem;}
@@ -120,6 +120,11 @@ body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f2f5fa;font-size:1
 
 .result-box{background:var(--nv);border-radius:10px;padding:1.25rem 1.4rem;margin-top:.9rem;display:none;}
 .result-box.show{display:block;}
+#condListWrap{max-height:300px;overflow-y:auto;}
+@media(max-width:560px){
+  #condList>div{flex-direction:column;align-items:flex-start;gap:.3rem;}
+  #condList>div>span{font-size:.78rem !important;}
+}
 .rb-combined{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.05em;color:#f0c040;line-height:1;}
 .rb-label{font-size:.7rem;opacity:.6;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem;color:#fff;}
 .rb-pay{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#f0c040;margin-top:.5rem;}
@@ -1278,6 +1283,156 @@ body.menu-open{overflow:hidden!important;}
     <strong>⚠️ For informational purposes only.</strong> Rating criteria is based on CFR 38 Part 4. Actual VA ratings are determined case-by-case. Consult a VSO or accredited claims agent for your specific situation.
   </div>
 
+  <!-- ═══ ENHANCED COMPENSATION CALCULATOR ═══ -->
+  <div class="calc-card" id="calc">
+    <div class="calc-hd"><h2>VA Disability Compensation Calculator</h2></div>
+    <div class="calc-body">
+      <div class="alert aw" style="margin-top:0">
+        <strong>2026 VA Compensation Rates</strong>
+        Based on the actual VA pay tables effective December 1, 2025. Includes all dependent categories per 38 CFR 3.4. Uses VA combined rating math (whole-person theory).
+      </div>
+
+      <p style="font-size:.84rem;color:var(--sl);margin-bottom:1rem;">Add your service-connected conditions with ratings, then enter dependent information for an accurate monthly compensation estimate.</p>
+
+      <!-- CONDITION BROWSER -->
+      <div style="margin-bottom:1.25rem;">
+        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--nv);margin-bottom:.6rem;">Add Service-Connected Conditions</div>
+        <div class="calc-grid" style="margin-bottom:.75rem;">
+          <div class="fld">
+            <label>Condition Category</label>
+            <select id="condCategory" onchange="updateConditionList()">
+              <option value="">-- Select Category --</option>
+              <option value="Musculoskeletal">Musculoskeletal</option>
+              <option value="Mental Health/PTSD">Mental Health / PTSD</option>
+              <option value="Neurological">Neurological</option>
+              <option value="Respiratory">Respiratory</option>
+              <option value="Cardiovascular">Cardiovascular</option>
+              <option value="Digestive">Digestive</option>
+              <option value="Skin">Skin</option>
+              <option value="Endocrine">Endocrine</option>
+              <option value="Genitourinary">Genitourinary</option>
+              <option value="Gynecological">Gynecological</option>
+              <option value="Hematologic">Hematologic</option>
+              <option value="Infectious Diseases">Infectious Diseases</option>
+              <option value="Dental/Oral">Dental / Oral</option>
+              <option value="Eye Conditions">Eye Conditions</option>
+              <option value="Ear/Hearing">Ear / Hearing</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label>Common Conditions</label>
+            <select id="condPreset" onchange="fillCondName()">
+              <option value="">-- Select a category first --</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label>Condition Name (or type your own)</label>
+            <input type="text" id="condName" placeholder="e.g. Lumbar Degenerative Disc Disease">
+          </div>
+          <div class="fld">
+            <label>Rating %</label>
+            <select id="condRating">
+              <option value="10">10%</option>
+              <option value="20">20%</option>
+              <option value="30">30%</option>
+              <option value="40">40%</option>
+              <option value="50">50%</option>
+              <option value="60">60%</option>
+              <option value="70">70%</option>
+              <option value="80">80%</option>
+              <option value="90">90%</option>
+              <option value="100">100%</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label>Condition Type</label>
+            <select id="condType">
+              <option value="primary">Primary (Direct Service-Connected)</option>
+              <option value="secondary">Secondary Condition</option>
+            </select>
+          </div>
+        </div>
+        <button class="add-rating-btn" onclick="addCondition()" style="padding:.55rem 1.25rem;font-size:.84rem;">+ Add Condition</button>
+      </div>
+
+      <!-- ADDED CONDITIONS LIST -->
+      <div id="condListWrap" style="display:none;margin-bottom:1.25rem;">
+        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--nv);margin-bottom:.5rem;">Your Conditions</div>
+        <div id="condList"></div>
+      </div>
+
+      <!-- DEPENDENT FIELDS -->
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--nv);margin-bottom:.5rem;">Dependent Information</div>
+      <div class="calc-grid">
+        <div class="fld">
+          <label>Marital Status</label>
+          <select id="dMarital">
+            <option value="single">Single / No Spouse</option>
+            <option value="spouse">Married (Spouse)</option>
+          </select>
+        </div>
+        <div class="fld" id="dSpouseAA_wrap" style="display:none">
+          <label>Spouse Requires Aid and Attendance?</label>
+          <select id="dSpouseAA">
+            <option value="no">No</option>
+            <option value="yes">Yes -- Spouse A&amp;A</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Dependent Children Under 18</label>
+          <select id="dChildU18">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5+</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Dependent Children Age 18-23 (in school)</label>
+          <select id="dChildSchool">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Dependent Parents</label>
+          <select id="dParents">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calcComp()">CALCULATE MY COMPENSATION</button>
+
+      <!-- RESULTS -->
+      <div class="result-box" id="calcResult">
+        <div style="display:flex;flex-wrap:wrap;gap:1.25rem;">
+          <div style="flex:1;min-width:180px;">
+            <div class="rb-label">Combined Rating (VA Method)</div>
+            <div class="rb-combined" id="rcCombined"></div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;" id="rcExact"></div>
+          </div>
+          <div style="flex:1;min-width:180px;">
+            <div class="rb-label" style="margin-top:0;">Estimated Monthly Compensation</div>
+            <div class="rb-pay" id="rcPay"></div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;" id="rcStatus"></div>
+          </div>
+        </div>
+        <div class="rb-breakdown" id="rcBreakdown"></div>
+        <div id="rcMathSteps" style="margin-top:.75rem;border-top:1px solid rgba(255,255,255,.1);padding-top:.75rem;"></div>
+        <div id="rcConditions" style="margin-top:.75rem;border-top:1px solid rgba(255,255,255,.1);padding-top:.75rem;"></div>
+        <div class="rb-math" id="rcNote"></div>
+        <button onclick="exportPDF()" style="margin-top:1rem;background:linear-gradient(135deg,var(--gd2),var(--gd));border:none;border-radius:7px;padding:.55rem 1.25rem;font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.08em;color:#0a1628;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;">Export as PDF</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Condition Sections -->
   <div id="cond-sections">
   <div class="sc" id="musculoskeletal-back-joints-bones">
@@ -2266,93 +2421,6 @@ function toggleSec(btn) {
   btn.querySelector('.chv').textContent = open ? '▼' : '▲';
 }
 </script>
-<!-- COMPENSATION CALCULATOR -->
-  <div class="calc-card" id="calc">
-    <div class="calc-hd"><h2>🧮 Compensation Calculator — With Dependents</h2></div>
-    <div class="calc-body">
-      <div class="alert aw" style="margin-top:0">
-        <strong>2026 VA Compensation Rates</strong>
-        Based on the actual VA pay tables effective December 1, 2025. Includes all dependent categories per 38 CFR 3.4.
-      </div>
-
-      <p style="font-size:.84rem;color:var(--sl);margin-bottom:.85rem;">Enter your individual service-connected ratings, then your dependent status for an accurate monthly compensation estimate.</p>
-
-      <!-- RATINGS INPUT -->
-      <div style="margin-bottom:1rem;">
-        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--nv);margin-bottom:.5rem;">Your Service-Connected Ratings</div>
-        <div class="rating-pills" id="rPills">
-          <div class="r-pill">40%<button onclick="remRating(this)">✕</button></div>
-          <div class="r-pill">20%<button onclick="remRating(this)">✕</button></div>
-          <div class="r-pill">10%<button onclick="remRating(this)">✕</button></div>
-        </div>
-        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
-          <select id="newRating" style="border:1.5px solid var(--bd);border-radius:7px;padding:.45rem .7rem;font-size:.85rem;font-family:'Inter',sans-serif;">
-            <option value="10" selected>10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option><option value="90">90%</option><option value="100">100%</option>
-          </select>
-          <button class="add-rating-btn" onclick="addRating()">+ Add Rating</button>
-        </div>
-      </div>
-
-      <!-- DEPENDENT FIELDS -->
-      <div class="calc-grid">
-        <div class="fld">
-          <label>Marital Status</label>
-          <select id="dMarital">
-            <option value="single">Single / No Spouse</option>
-            <option value="spouse">Married (Spouse)</option>
-          </select>
-        </div>
-        <div class="fld" id="dSpouseAA_wrap" style="display:none">
-          <label>Spouse Requires Aid and Attendance?</label>
-          <select id="dSpouseAA">
-            <option value="no">No</option>
-            <option value="yes">Yes — Spouse A&A</option>
-          </select>
-        </div>
-        <div class="fld">
-          <label>Dependent Children Under 18</label>
-          <select id="dChildU18">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5+</option>
-          </select>
-        </div>
-        <div class="fld">
-          <label>Dependent Children Age 18–23 (in school)</label>
-          <select id="dChildSchool">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
-        <div class="fld">
-          <label>Dependent Parents</label>
-          <select id="dParents">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-          </select>
-        </div>
-      </div>
-
-      <button class="calc-btn" onclick="calcComp()">CALCULATE MY COMPENSATION</button>
-
-      <div class="result-box" id="calcResult">
-        <div class="rb-label">Combined Rating (VA Method)</div>
-        <div class="rb-combined" id="rcCombined"></div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;" id="rcMath"></div>
-        <div class="rb-label" style="margin-top:.85rem;">Estimated Monthly Compensation</div>
-        <div class="rb-pay" id="rcPay"></div>
-        <div class="rb-breakdown" id="rcBreakdown"></div>
-        <div class="rb-math" id="rcNote"></div>
-      </div>
-    </div>
-  </div>
-
   <!-- MONTHLY PAY TABLE -->
   <div class="calc-card" id="pay-table">
     <div class="calc-hd"><h2>💰 2026 Monthly Compensation Rates</h2></div>
@@ -2440,17 +2508,95 @@ function search(q){
   });
 }
 
-// RATING PILLS
-function addRating(){
-  var val = document.getElementById('newRating').value;
-  var pill = document.createElement('div');
-  pill.className = 'r-pill';
-  pill.innerHTML = val + '<button onclick="remRating(this)">✕</button>';
-  document.getElementById('rPills').appendChild(pill);
+// ═══ CONDITION BROWSER DATA ═══
+var COND_DATA = {
+  "Musculoskeletal": ["Lumbar Degenerative Disc Disease","Cervical Strain","Knee Instability (Lateral)","Knee Limitation of Flexion","Knee Limitation of Extension","Shoulder Impingement","Ankle Instability","Plantar Fasciitis","Flat Feet (Pes Planus)","Hip Limitation of Motion","Thoracolumbar Spine Strain","Radiculopathy (Lower Extremity)","Radiculopathy (Upper Extremity)","Carpal Tunnel Syndrome","Gout","Rheumatoid Arthritis","Sciatica","Intervertebral Disc Syndrome (IVDS)","Traumatic Arthritis"],
+  "Mental Health/PTSD": ["PTSD","Major Depressive Disorder","Generalized Anxiety Disorder","Bipolar Disorder","Panic Disorder","Adjustment Disorder","Somatic Symptom Disorder","Insomnia (Secondary to PTSD)","Eating Disorder","Obsessive-Compulsive Disorder"],
+  "Neurological": ["Migraine Headaches","Traumatic Brain Injury (TBI)","Peripheral Neuropathy (Lower)","Peripheral Neuropathy (Upper)","Epilepsy / Seizure Disorder","Trigeminal Neuralgia","Parkinson's Disease","Multiple Sclerosis","Restless Leg Syndrome","Narcolepsy"],
+  "Respiratory": ["Asthma","Chronic Obstructive Pulmonary Disease (COPD)","Sleep Apnea (Obstructive)","Sinusitis (Chronic)","Rhinitis (Allergic)","Pulmonary Fibrosis","Restrictive Lung Disease","Bronchiectasis"],
+  "Cardiovascular": ["Hypertension","Coronary Artery Disease","Atrial Fibrillation","Heart Valve Disease","Peripheral Artery Disease","Aortic Aneurysm","Cardiomyopathy","Congestive Heart Failure","Deep Vein Thrombosis"],
+  "Digestive": ["GERD (Acid Reflux)","Irritable Bowel Syndrome (IBS)","Hiatal Hernia","Crohn's Disease","Ulcerative Colitis","Diverticulitis","Hemorrhoids","Liver Disease / Hepatitis","Gastroparesis"],
+  "Skin": ["Eczema / Dermatitis","Psoriasis","Acne / Chloracne","Urticaria (Hives)","Scars (Painful or Unstable)","Skin Cancer (Melanoma)","Burn Scars","Hidradenitis Suppurativa"],
+  "Endocrine": ["Diabetes Mellitus Type II","Hypothyroidism","Hyperthyroidism / Graves' Disease","Addison's Disease","Cushing's Syndrome","Growth Hormone Deficiency"],
+  "Genitourinary": ["Erectile Dysfunction","Kidney Disease / Renal Insufficiency","Kidney Stones (Recurrent)","Urinary Incontinence","Prostate Cancer","Benign Prostatic Hyperplasia","Bladder Cancer"],
+  "Gynecological": ["Endometriosis","Uterine Fibroids","Polycystic Ovary Syndrome","Chronic Pelvic Pain","Ovarian Cysts","Menstrual Disorders"],
+  "Hematologic": ["Anemia (Chronic)","Sickle Cell Disease","Leukemia","Lymphoma","Thrombocytopenia","Deep Vein Thrombosis"],
+  "Infectious Diseases": ["HIV/AIDS","Hepatitis B","Hepatitis C","Tuberculosis","Malaria (Residuals)","Lyme Disease"],
+  "Dental/Oral": ["TMJ Disorder","Periodontal Disease","Loss of Teeth (Service-Connected)","Oral Cancer"],
+  "Eye Conditions": ["Glaucoma","Cataracts","Macular Degeneration","Diabetic Retinopathy","Dry Eye Syndrome","Keratoconus","Visual Field Loss"],
+  "Ear/Hearing": ["Tinnitus","Bilateral Hearing Loss","Meniere's Disease","Otitis Media (Chronic)","Acoustic Neuroma","Vestibular Disorder"]
+};
+
+// Condition list state
+var conditionsList = [];
+var condIdCounter = 0;
+
+function updateConditionList() {
+  var cat = document.getElementById('condCategory').value;
+  var preset = document.getElementById('condPreset');
+  preset.innerHTML = '<option value="">-- Select Condition --</option>';
+  if (cat && COND_DATA[cat]) {
+    COND_DATA[cat].forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      preset.appendChild(opt);
+    });
+  } else {
+    preset.innerHTML = '<option value="">-- Select a category first --</option>';
+  }
 }
-function remRating(btn){
-  var pills = document.getElementById('rPills').querySelectorAll('.r-pill');
-  if(pills.length > 1) btn.parentElement.remove();
+
+function fillCondName() {
+  var v = document.getElementById('condPreset').value;
+  if (v) document.getElementById('condName').value = v;
+}
+
+function addCondition() {
+  var name = document.getElementById('condName').value.trim();
+  var category = document.getElementById('condCategory').value || 'Uncategorized';
+  var rating = parseInt(document.getElementById('condRating').value);
+  var type = document.getElementById('condType').value;
+
+  if (!name) { alert('Please enter a condition name.'); return; }
+
+  condIdCounter++;
+  conditionsList.push({ id: condIdCounter, name: name, category: category, rating: rating, type: type });
+  renderConditions();
+
+  // Reset inputs
+  document.getElementById('condName').value = '';
+  document.getElementById('condPreset').selectedIndex = 0;
+}
+
+function removeCondition(id) {
+  conditionsList = conditionsList.filter(function(c) { return c.id !== id; });
+  renderConditions();
+}
+
+function renderConditions() {
+  var wrap = document.getElementById('condListWrap');
+  var list = document.getElementById('condList');
+  if (conditionsList.length === 0) {
+    wrap.style.display = 'none';
+    list.innerHTML = '';
+    return;
+  }
+  wrap.style.display = 'block';
+  var html = '';
+  conditionsList.forEach(function(c) {
+    var typeLabel = c.type === 'primary' ? 'Primary' : 'Secondary';
+    var typeBg = c.type === 'primary' ? 'rgba(26,122,64,.1)' : 'rgba(26,58,107,.07)';
+    var typeColor = c.type === 'primary' ? '#1a7a40' : '#1a3a6b';
+    html += '<div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;background:#f8fafd;border:1px solid #e2e8f0;border-radius:8px;padding:.55rem .85rem;margin-bottom:.4rem;">';
+    html += '<span style="font-weight:700;font-size:.84rem;color:#0a1628;flex:1;min-width:140px;">' + c.name + '</span>';
+    html += '<span style="font-size:.72rem;color:#6a7a8a;">' + c.category + '</span>';
+    html += '<span class="pct p' + c.rating + '" style="font-size:.74rem;">' + c.rating + '%</span>';
+    html += '<span style="display:inline-block;background:' + typeBg + ';color:' + typeColor + ';border-radius:20px;padding:.1rem .55rem;font-size:.68rem;font-weight:600;">' + typeLabel + '</span>';
+    html += '<button onclick="removeCondition(' + c.id + ')" style="background:none;border:none;cursor:pointer;color:#c0392b;font-size:.9rem;padding:0 .2rem;line-height:1;" title="Remove condition">&#10005;</button>';
+    html += '</div>';
+  });
+  list.innerHTML = html;
 }
 
 // MARITAL STATUS TOGGLE
@@ -2464,26 +2610,28 @@ var CHILD_U18 = 32.51;
 var CHILD_SCH  = 105.33;
 var PARENT_ADD = {"10": 0, "20": 0, "30": 35.96, "40": 47.93, "50": 60.78, "60": 73.64, "70": 86.5, "80": 99.35, "90": 112.21, "100": 124.87};
 
-function calcComp(){
-  // Get ratings
-  var pills = document.getElementById('rPills').querySelectorAll('.r-pill');
-  var ratings = Array.from(pills).map(function(p){
-    return parseInt(p.textContent.replace('%','').trim());
-  }).filter(function(n){return !isNaN(n);});
+function calcComp() {
+  if (conditionsList.length === 0) { alert('Add at least one condition.'); return; }
 
-  if(ratings.length === 0){ alert('Add at least one rating.'); return; }
+  // Get ratings sorted highest first
+  var ratings = conditionsList.map(function(c) { return c.rating; });
+  ratings.sort(function(a, b) { return b - a; });
 
-  ratings.sort(function(a,b){return b-a;});
-
-  // Combined rating (VA whole-person method)
+  // Combined rating (VA whole-person method) with step-by-step math
   var remaining = 100;
-  var mathStr = '100%';
-  ratings.forEach(function(r){
-    var taken = remaining * (r/100);
+  var steps = [];
+  steps.push({ label: 'Start', value: '100% whole person', remaining: 100 });
+  ratings.forEach(function(r, i) {
+    var taken = remaining * (r / 100);
     remaining -= taken;
-    mathStr += ' → ' + r + '% of remaining';
+    steps.push({
+      label: 'Rating #' + (i + 1) + ': ' + r + '%',
+      value: r + '% of ' + (remaining + taken).toFixed(2) + ' = ' + taken.toFixed(2) + ' disability applied',
+      remaining: remaining
+    });
   });
-  var combined = Math.round(100 - remaining);
+  var exactCombined = 100 - remaining;
+  var combined = Math.round(exactCombined);
   var rounded = Math.round(combined / 10) * 10;
   var capped = Math.min(rounded, 100);
 
@@ -2497,30 +2645,28 @@ function calcComp(){
 
   // Base rate
   var rateRow = RATES[capped] || RATES[10];
-  var base;
-  var statusLabel;
+  var base, statusLabel;
 
-  if(capped < 30){
-    // Under 30% — no dependent differential
+  if (capped < 30) {
     base = rateRow['alone'];
     statusLabel = 'Veteran alone (dependents not counted below 30%)';
   } else {
-    if(!hasSpouse && childU18 === 0 && childSch === 0){
+    if (!hasSpouse && childU18 === 0 && childSch === 0) {
       base = rateRow['alone'];
       statusLabel = 'Veteran alone';
-    } else if(hasSpouse && spouseAA && (childU18 > 0 || childSch > 0)){
+    } else if (hasSpouse && spouseAA && (childU18 > 0 || childSch > 0)) {
       base = rateRow['spouse_aa_child'];
       statusLabel = 'Veteran + spouse (A&A) + child';
-    } else if(hasSpouse && spouseAA){
+    } else if (hasSpouse && spouseAA) {
       base = rateRow['spouse_aa'];
       statusLabel = 'Veteran + spouse (Aid and Attendance)';
-    } else if(hasSpouse && (childU18 > 0 || childSch > 0)){
+    } else if (hasSpouse && (childU18 > 0 || childSch > 0)) {
       base = rateRow['spouse_child'];
       statusLabel = 'Veteran + spouse + child';
-    } else if(hasSpouse){
+    } else if (hasSpouse) {
       base = rateRow['spouse'];
       statusLabel = 'Veteran + spouse';
-    } else if(childU18 > 0 || childSch > 0){
+    } else if (childU18 > 0 || childSch > 0) {
       base = rateRow['child'];
       statusLabel = 'Veteran + child (no spouse)';
     } else {
@@ -2529,15 +2675,9 @@ function calcComp(){
     }
 
     // Additional children beyond first
-    var firstChild = (childU18 > 0 || childSch > 0) ? 1 : 0;
-    var extraU18 = Math.max(0, childU18 - (firstChild === 1 && childU18 > 0 ? 1 : 0));
-    var extraSch = childSch - (firstChild === 1 && childU18 === 0 && childSch > 0 ? 1 : 0);
-    // Actually simpler: the table covers "one child" — additional are per-child adds
-    // For first child already in table, count extras from 2nd child onward
-    var extraU18add = Math.max(0, childU18 - 1) * CHILD_U18;
-    var extraSchAdd = Math.max(0, childSch - (childU18 === 0 ? 1 : 0)) * CHILD_SCH;
-    if(childU18 === 0 && childSch > 0){ extraSchAdd = (childSch - 1) * CHILD_SCH; }
-    if(childU18 > 0){ extraU18add = (childU18 - 1) * CHILD_U18; extraSchAdd = childSch * CHILD_SCH; }
+    var extraU18add = 0, extraSchAdd = 0;
+    if (childU18 === 0 && childSch > 0) { extraSchAdd = (childSch - 1) * CHILD_SCH; }
+    if (childU18 > 0) { extraU18add = (childU18 - 1) * CHILD_U18; extraSchAdd = childSch * CHILD_SCH; }
     base += extraU18add + extraSchAdd;
   }
 
@@ -2545,28 +2685,149 @@ function calcComp(){
   var parentAdd = (PARENT_ADD[capped] || 0) * parents;
   var total = base + parentAdd;
 
-  // Render
+  // Render results
+  document.getElementById('rcCombined').textContent = capped + '%';
+  document.getElementById('rcExact').textContent = 'Exact: ' + exactCombined.toFixed(2) + '% -> rounded to ' + capped + '%';
+  document.getElementById('rcPay').textContent = fmt(total) + '/month';
+  document.getElementById('rcStatus').textContent = statusLabel;
+
+  // Breakdown
   var breakdown = [];
   breakdown.push(['Base rate (' + statusLabel + ')', fmt(base)]);
-  if(parentAdd > 0) breakdown.push(['Dependent parent(s) addition', fmt(parentAdd)]);
-  if(base !== total) breakdown.push(['Total', fmt(total)]);
-
-  var breakdownHtml = breakdown.map(function(r){
-    return '<div class="rb-row"><span>' + r[0] + '</span><strong>' + r[1] + '</strong></div>';
+  if (parentAdd > 0) breakdown.push(['Dependent parent(s) addition (' + parents + ')', '+' + fmt(parentAdd)]);
+  breakdown.push(['<strong>Total Monthly Compensation</strong>', '<strong>' + fmt(total) + '</strong>']);
+  var breakdownHtml = breakdown.map(function(r) {
+    return '<div class="rb-row"><span>' + r[0] + '</span><span>' + r[1] + '</span></div>';
   }).join('');
-
-  var el = document.getElementById('calcResult');
-  document.getElementById('rcCombined').textContent = capped + '%';
-  document.getElementById('rcMath').textContent = 'Exact: ' + combined + '% → rounded to ' + capped + '%  |  Ratings: ' + ratings.join('%, ') + '%';
-  document.getElementById('rcPay').textContent = fmt(total) + '/month';
   document.getElementById('rcBreakdown').innerHTML = breakdownHtml;
+
+  // Step-by-step math
+  var mathHtml = '<div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.6);margin-bottom:.4rem;">Step-by-Step VA Math</div>';
+  mathHtml += '<div style="font-family:monospace;font-size:.74rem;color:rgba(255,255,255,.6);line-height:1.8;">';
+  steps.forEach(function(s, i) {
+    if (i === 0) {
+      mathHtml += '<div>Start: 100% whole person</div>';
+    } else {
+      mathHtml += '<div>' + s.label + ': ' + s.value + ' | Remaining: ' + s.remaining.toFixed(2) + '%</div>';
+    }
+  });
+  mathHtml += '<div style="margin-top:.3rem;color:#f0c040;">Combined = ' + exactCombined.toFixed(2) + '% -> rounds to <strong>' + capped + '%</strong></div>';
+  mathHtml += '</div>';
+  document.getElementById('rcMathSteps').innerHTML = mathHtml;
+
+  // Conditions listing
+  var primary = conditionsList.filter(function(c) { return c.type === 'primary'; });
+  var secondary = conditionsList.filter(function(c) { return c.type === 'secondary'; });
+  var condHtml = '<div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.6);margin-bottom:.4rem;">Conditions Included</div>';
+  if (primary.length > 0) {
+    condHtml += '<div style="font-size:.68rem;color:#f0c040;font-weight:700;margin-bottom:.2rem;">PRIMARY CONDITIONS</div>';
+    primary.forEach(function(c) {
+      condHtml += '<div style="font-size:.78rem;color:rgba(255,255,255,.75);padding:.15rem 0;">' + c.name + ' (' + c.category + ') -- ' + c.rating + '%</div>';
+    });
+  }
+  if (secondary.length > 0) {
+    condHtml += '<div style="font-size:.68rem;color:#f0c040;font-weight:700;margin-top:.4rem;margin-bottom:.2rem;">SECONDARY CONDITIONS</div>';
+    secondary.forEach(function(c) {
+      condHtml += '<div style="font-size:.78rem;color:rgba(255,255,255,.75);padding:.15rem 0;">' + c.name + ' (' + c.category + ') -- ' + c.rating + '%</div>';
+    });
+  }
+  document.getElementById('rcConditions').innerHTML = condHtml;
+
   document.getElementById('rcNote').textContent = 'Estimate based on 2026 VA pay tables. Actual payment may vary. Does not include SMC, TDIU, or ancillary benefits.';
+  var el = document.getElementById('calcResult');
   el.classList.add('show');
-  el.scrollIntoView({behavior:'smooth', block:'nearest'});
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-function fmt(n){
+function fmt(n) {
   return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// ═══ PDF EXPORT ═══
+function exportPDF() {
+  var marital = document.getElementById('dMarital').value;
+  var hasSpouse = marital === 'spouse';
+  var spouseAA = hasSpouse && document.getElementById('dSpouseAA').value === 'yes';
+  var childU18 = parseInt(document.getElementById('dChildU18').value) || 0;
+  var childSch = parseInt(document.getElementById('dChildSchool').value) || 0;
+  var parents  = parseInt(document.getElementById('dParents').value) || 0;
+
+  var combinedText = document.getElementById('rcCombined').textContent;
+  var exactText = document.getElementById('rcExact').textContent;
+  var payText = document.getElementById('rcPay').textContent;
+  var statusText = document.getElementById('rcStatus').textContent;
+
+  var primary = conditionsList.filter(function(c) { return c.type === 'primary'; });
+  var secondary = conditionsList.filter(function(c) { return c.type === 'secondary'; });
+
+  var today = new Date();
+  var dateStr = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  var condRows = '';
+  conditionsList.forEach(function(c) {
+    condRows += '<tr><td>' + c.name + '</td><td>' + c.category + '</td><td style="text-align:center;font-weight:700;">' + c.rating + '%</td><td>' + (c.type === 'primary' ? 'Primary' : 'Secondary') + '</td></tr>';
+  });
+
+  var depDetails = [];
+  depDetails.push('Marital Status: ' + (hasSpouse ? 'Married' : 'Single'));
+  if (hasSpouse && spouseAA) depDetails.push('Spouse Aid & Attendance: Yes');
+  depDetails.push('Children Under 18: ' + childU18);
+  depDetails.push('Children 18-23 in School: ' + childSch);
+  depDetails.push('Dependent Parents: ' + parents);
+
+  var html = '<!DOCTYPE html><html><head><title>VA Disability Compensation Estimate</title>';
+  html += '<style>';
+  html += 'body{font-family:Arial,Helvetica,sans-serif;color:#1a2a3a;max-width:750px;margin:0 auto;padding:2rem;font-size:14px;line-height:1.6;}';
+  html += '.logo-area{text-align:center;margin-bottom:1.5rem;}';
+  html += '.logo-area img{width:48px;height:48px;}';
+  html += '.logo-area h1{font-size:1.5rem;color:#0a1628;margin:.5rem 0 0;}';
+  html += '.logo-area p{color:#6a7a8a;font-size:.85rem;}';
+  html += 'h2{font-size:1.1rem;color:#0a1628;border-bottom:2px solid #c8960a;padding-bottom:.4rem;margin:1.5rem 0 .75rem;}';
+  html += '.big-num{font-size:2rem;font-weight:700;color:#0a1628;text-align:center;margin:.75rem 0;}';
+  html += '.big-pay{font-size:1.5rem;font-weight:700;color:#1a7a40;text-align:center;margin:.5rem 0;}';
+  html += '.status{text-align:center;font-size:.85rem;color:#6a7a8a;margin-bottom:1rem;}';
+  html += 'table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem;}';
+  html += 'th{background:#0a1628;color:#fff;text-align:left;padding:.5rem .6rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;}';
+  html += 'td{padding:.45rem .6rem;border-bottom:1px solid #e2e8f0;}';
+  html += 'tr:nth-child(even) td{background:#f8fafd;}';
+  html += '.dep-list{list-style:none;padding:0;}';
+  html += '.dep-list li{padding:.3rem 0;border-bottom:1px solid #f0f4fa;font-size:.85rem;}';
+  html += '.disclaimer{background:#fff8e0;border:1px solid #e8d080;border-radius:6px;padding:.75rem 1rem;margin-top:1.5rem;font-size:.78rem;color:#5a4a00;}';
+  html += '.footer{text-align:center;margin-top:1.5rem;font-size:.75rem;color:#8a9aaa;}';
+  html += '@media print{body{padding:.5rem;}}';
+  html += '</style></head><body>';
+
+  html += '<div class="logo-area">';
+  html += '<img src="https://veterancareerpath.com/logo.png" alt="VCP">';
+  html += '<h1>VA Disability Compensation Estimate</h1>';
+  html += '<p>Generated on ' + dateStr + ' | VeteranCareerPath.com</p>';
+  html += '</div>';
+
+  html += '<h2>Combined Rating</h2>';
+  html += '<div class="big-num">' + combinedText + '</div>';
+  html += '<div class="status">' + exactText + '</div>';
+
+  html += '<h2>Monthly Compensation</h2>';
+  html += '<div class="big-pay">' + payText + '</div>';
+  html += '<div class="status">' + statusText + '</div>';
+
+  html += '<h2>Service-Connected Conditions</h2>';
+  html += '<table><thead><tr><th>Condition</th><th>Category</th><th>Rating</th><th>Type</th></tr></thead>';
+  html += '<tbody>' + condRows + '</tbody></table>';
+
+  html += '<h2>Dependent Information</h2>';
+  html += '<ul class="dep-list">';
+  depDetails.forEach(function(d) { html += '<li>' + d + '</li>'; });
+  html += '</ul>';
+
+  html += '<div class="disclaimer"><strong>Disclaimer:</strong> This is an estimate only. Official ratings are determined by the VA. Compensation amounts are based on 2026 VA pay tables (effective Dec 1, 2025). Does not include SMC, TDIU, or ancillary benefits. Consult a VSO or accredited claims agent for your specific situation.</div>';
+  html += '<div class="footer">Veteran Career Path | veterancareerpath.com</div>';
+  html += '</body></html>';
+
+  var win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  setTimeout(function() { win.print(); }, 500);
 }
 
 // SIDEBAR LINK ACTIVATION
@@ -2583,7 +2844,7 @@ window.addEventListener('scroll', function(){
   });
 });
 
-// INIT — open first section body
+// INIT -- open first section body
 document.querySelectorAll('.sc-bd.visible').forEach(function(bd){
   bd.style.display = 'block';
 });

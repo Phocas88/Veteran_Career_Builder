@@ -892,6 +892,7 @@ function startAssessment(fresh) {
 }
 
 function renderSection() {
+  window.scrollTo({top:0, behavior:'smooth'});
   var sec = SECTIONS[currentSection];
   var container = document.getElementById('questions-container');
   container.innerHTML = '';
@@ -1638,6 +1639,43 @@ function generateWhyFits(r, scores) {
   return 'This career fits you because of your ' + reasons.slice(0,3).join(', ') + '.';
 }
 
+// Career progression ladders — maps senior titles to realistic entry → growth paths
+var CAREER_LADDERS = {
+  // Emergency Services
+  "Fire Captain":[{title:"Firefighter/EMT",salary:"$38,000–$55,000",time:"6-12 months (academy)",reqs:["Fire academy","EMT-B certification","Physical fitness test"]},{title:"Firefighter",salary:"$42,000–$65,000",time:"2-4 years",reqs:["Fire academy graduate","EMT-B","Probationary period"]},{title:"Fire Engineer",salary:"$55,000–$75,000",time:"4-6 years",reqs:["Apparatus operator certification","3+ years experience"]},{title:"Fire Captain",salary:"$65,000–$95,000",time:"8-12 years",reqs:["Fire officer certification","Leadership experience","Fire science degree preferred"]}],
+  "Fire Chief":[{title:"Firefighter",salary:"$42,000–$65,000",time:"6-12 months",reqs:["Fire academy","EMT-B"]},{title:"Fire Captain",salary:"$65,000–$95,000",time:"8-12 years",reqs:["Fire officer cert"]},{title:"Battalion Chief",salary:"$85,000–$110,000",time:"12-18 years",reqs:["Executive fire officer"]},{title:"Fire Chief",salary:"$95,000–$140,000",time:"18-25 years",reqs:["Master's preferred","20+ years"]}],
+  // Engineering Management
+  "Engineering Manager":[{title:"Junior Engineer / Engineering Technician",salary:"$45,000–$65,000",time:"Immediate with degree",reqs:["Bachelor's in engineering","EIT certification"]},{title:"Engineer",salary:"$65,000–$90,000",time:"2-4 years",reqs:["PE license progress","Project experience"]},{title:"Senior Engineer",salary:"$85,000–$120,000",time:"5-8 years",reqs:["PE license","Technical leadership"]},{title:"Engineering Manager",salary:"$100,000–$150,000",time:"8-12 years",reqs:["PE license","PMP helpful","Team management experience"]}],
+  // IT Management
+  "IT Director":[{title:"Help Desk / IT Support",salary:"$38,000–$55,000",time:"Immediate",reqs:["CompTIA A+","Customer service"]},{title:"Systems Administrator",salary:"$55,000–$80,000",time:"2-3 years",reqs:["Network+/Security+","Server experience"]},{title:"IT Manager",salary:"$80,000–$110,000",time:"5-8 years",reqs:["PMP or ITIL","Team leadership"]},{title:"IT Director",salary:"$100,000–$160,000",time:"10-15 years",reqs:["Master's preferred","Strategic planning","Budget management"]}],
+  "CISO":[{title:"SOC Analyst / Security Analyst",salary:"$55,000–$80,000",time:"Immediate with Security+",reqs:["Security+","Degree or experience"]},{title:"Senior Security Analyst",salary:"$80,000–$110,000",time:"3-5 years",reqs:["CISSP progress","Incident response"]},{title:"Security Manager",salary:"$100,000–$140,000",time:"6-10 years",reqs:["CISSP","Team leadership"]},{title:"CISO",salary:"$150,000–$250,000",time:"12-18 years",reqs:["CISSP","Executive experience","Board communication"]}],
+  // Business Management
+  "COO":[{title:"Operations Coordinator",salary:"$40,000–$55,000",time:"Immediate",reqs:["Bachelor's degree","Organizational skills"]},{title:"Operations Manager",salary:"$60,000–$85,000",time:"3-5 years",reqs:["Process improvement","Team management"]},{title:"Director of Operations",salary:"$90,000–$130,000",time:"7-10 years",reqs:["P&L accountability","Strategic planning"]},{title:"VP Operations / COO",salary:"$130,000–$250,000",time:"12-18 years",reqs:["MBA preferred","Executive leadership"]}],
+  "CFO":[{title:"Staff Accountant",salary:"$45,000–$62,000",time:"Immediate with degree",reqs:["Accounting degree"]},{title:"Senior Accountant / CPA",salary:"$65,000–$90,000",time:"3-5 years",reqs:["CPA license"]},{title:"Controller",salary:"$90,000–$140,000",time:"8-12 years",reqs:["CPA","Management experience"]},{title:"CFO",salary:"$130,000–$250,000",time:"15-20 years",reqs:["MBA preferred","Strategic finance"]}],
+  // Law Enforcement
+  "Police Sergeant":[{title:"Police Officer / Patrol",salary:"$48,000–$65,000",time:"6-12 months (academy)",reqs:["Police academy","Background check","Physical fitness"]},{title:"Police Officer (experienced)",salary:"$55,000–$78,000",time:"3-5 years",reqs:["Field training","Specialization"]},{title:"Police Sergeant",salary:"$65,000–$90,000",time:"6-10 years",reqs:["Sergeant exam","Supervisory experience"]}],
+  // Healthcare
+  "Nurse Practitioner":[{title:"CNA / Medical Assistant",salary:"$28,000–$38,000",time:"1-3 months cert",reqs:["CNA certification"]},{title:"Registered Nurse (RN)",salary:"$60,000–$90,000",time:"2-4 years (BSN)",reqs:["BSN degree","NCLEX-RN","GI Bill eligible"]},{title:"Experienced RN / Charge Nurse",salary:"$75,000–$100,000",time:"5-8 years",reqs:["Specialty certification","Leadership"]},{title:"Nurse Practitioner",salary:"$100,000–$135,000",time:"8-12 years",reqs:["MSN/DNP degree","Board certification"]}],
+};
+
+// Build a generic ladder for any career not in CAREER_LADDERS
+function buildGenericLadder(career) {
+  var title = career.title;
+  var sector = career.sector;
+  var sal = career.salary;
+  // Detect if this is a senior/management role
+  var isSenior = /manager|director|chief|captain|senior|lead|supervisor|vp|president|officer$/i.test(title);
+  if(!isSenior) return null; // Entry-level careers don't need a ladder
+  // Build a simple 3-step ladder
+  var entryTitle = title.replace(/senior |lead |chief |head |managing |executive /gi,'').replace(/ manager| director| supervisor| captain| chief| vp| president/gi,'');
+  if(entryTitle === title) entryTitle = "Junior " + title;
+  return [
+    {title:"Entry: " + entryTitle,salary:"See industry data",time:"Immediate–6 months",reqs:career.requirements.slice(0,2)},
+    {title:"Mid: " + title.replace(/senior |chief |head /gi,''),salary:"See industry data",time:"3-5 years experience",reqs:["Proven track record","Additional certifications"]},
+    {title:title,salary:sal,time:"5-10+ years",reqs:career.requirements}
+  ];
+}
+
 function renderCareerDetails(r, scores) {
   var c = r.career;
   var html = '';
@@ -1645,43 +1683,100 @@ function renderCareerDetails(r, scores) {
   // Description
   html += '<div class="career-detail-section"><h5>About This Career</h5><p>' + c.description + '</p></div>';
 
-  // Requirements
-  html += '<div class="career-detail-section"><h5>Requirements</h5><ul>';
-  c.requirements.forEach(function(req){ html += '<li>' + req + '</li>'; });
-  html += '</ul></div>';
+  // ── CAREER PROGRESSION MAP ──
+  var ladder = CAREER_LADDERS[c.title] || buildGenericLadder(c);
+  if(ladder && ladder.length > 1) {
+    html += '<div class="career-detail-section"><h5>📈 Career Progression Path</h5>';
+    html += '<p style="font-size:.8rem;color:var(--sub);margin-bottom:.75rem;">This shows the realistic path from entry-level to <strong>' + c.title + '</strong>. Most veterans start at Step 1.</p>';
+    html += '<div style="position:relative;padding-left:1.5rem;border-left:3px solid var(--gold);margin-left:.5rem;">';
 
-  // Education
-  html += '<div class="career-detail-section"><h5>Education & Certification</h5><p>' + c.education + '</p></div>';
-
-  // Gap analysis
-  if(userProfile) {
-    html += '<div class="career-detail-section"><h5>Gap Analysis</h5>';
-    // What they have
-    html += '<div class="gap-item"><span class="gap-have">HAVE:</span> Military experience, discipline, leadership training';
-    if(userProfile.clearance && c.clearancePremium) html += ', active security clearance';
-    if(c.mosMatch && c.mosMatch.length > 0 && userProfile.mos) {
-      var userMos = (userProfile.mos || '').toUpperCase();
-      c.mosMatch.forEach(function(m){
-        if(userMos.indexOf(m.toUpperCase()) !== -1) html += ', directly relevant MOS (' + m + ')';
-      });
+    // Determine where the vet currently falls based on experience
+    var currentStep = 0;
+    if(userProfile) {
+      var mil = userProfile.milExperiences || userProfile.experiences || [];
+      var hasMosMatch = false;
+      if(c.mosMatch && mil[0] && mil[0].mos) {
+        c.mosMatch.forEach(function(m){ if(mil[0].mos.toUpperCase().indexOf(m.toUpperCase())!==-1) hasMosMatch=true; });
+      }
+      if(hasMosMatch) currentStep = 1; // Relevant MOS = at least step 1
+      var yos = 0;
+      if(mil[0] && mil[0].tos) yos = parseFloat(mil[0].tos) || 0;
+      if(yos >= 8 && hasMosMatch) currentStep = Math.min(2, ladder.length-2);
     }
-    html += '</div>';
-    // What they need
-    html += '<div class="gap-item"><span class="gap-need">NEED:</span> ';
-    var needs = [];
-    c.requirements.forEach(function(req){
-      if(req.toLowerCase().indexOf('certification') !== -1 || req.toLowerCase().indexOf('license') !== -1) needs.push(req);
-      if(req.toLowerCase().indexOf('degree') !== -1 || req.toLowerCase().indexOf('bachelor') !== -1) needs.push(req);
+
+    ladder.forEach(function(step, i) {
+      var isCurrent = (i === currentStep);
+      var isPast = (i < currentStep);
+      var dotColor = isPast ? '#1a7a40' : isCurrent ? '#f0c040' : '#d0daea';
+      var bgColor = isCurrent ? 'rgba(240,192,64,.06)' : 'transparent';
+      html += '<div style="position:relative;padding:.75rem .75rem .75rem 1rem;margin-bottom:.5rem;background:' + bgColor + ';border-radius:8px;border:' + (isCurrent?'1px solid rgba(240,192,64,.2)':'1px solid transparent') + ';">';
+      html += '<div style="position:absolute;left:-1.75rem;top:.85rem;width:12px;height:12px;border-radius:50%;background:' + dotColor + ';border:2px solid #fff;box-shadow:0 0 0 1px ' + dotColor + ';"></div>';
+      if(isCurrent) html += '<div style="position:absolute;left:-3rem;top:.75rem;font-size:.6rem;color:#f0c040;font-weight:700;">⭐ YOU</div>';
+      html += '<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.3rem;">';
+      html += '<div style="font-weight:700;font-size:.88rem;color:' + (isCurrent?'var(--gold)':'var(--text)') + ';">Step ' + (i+1) + ': ' + step.title + '</div>';
+      html += '<div style="font-size:.82rem;color:var(--green);font-weight:600;">' + step.salary + '</div>';
+      html += '</div>';
+      html += '<div style="font-size:.75rem;color:var(--sub);margin-top:.2rem;">⏱ ' + step.time + '</div>';
+      if(step.reqs && step.reqs.length > 0) {
+        html += '<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.35rem;">';
+        step.reqs.forEach(function(req){
+          html += '<span style="font-size:.68rem;padding:.15rem .5rem;border-radius:100px;background:rgba(26,58,107,.06);color:var(--navy);border:1px solid rgba(26,58,107,.1);">' + req + '</span>';
+        });
+        html += '</div>';
+      }
+      html += '</div>';
     });
-    html += needs.length > 0 ? needs.join('; ') : 'Minimal additional requirements';
-    html += '</div>';
-    // Where to get it
-    html += '<div class="gap-item"><span class="gap-where">WHERE:</span> GI Bill-eligible programs, SkillBridge opportunities, industry certification courses, DoD SkillBridge partner companies</div>';
-    html += '</div>';
+    html += '</div></div>';
   }
 
+  // ── TRUE GAP ANALYSIS ──
+  html += '<div class="career-detail-section"><h5>🔍 Gap Analysis</h5>';
+  var entryStep = ladder ? ladder[0] : null;
+
+  // HAVE
+  html += '<div class="gap-item"><span class="gap-have">✅ WHAT YOU HAVE:</span><ul style="margin:.3rem 0 0 1rem;font-size:.82rem;color:var(--text);line-height:1.7;">';
+  html += '<li>Military leadership and discipline</li>';
+  html += '<li>Mission-critical operational experience</li>';
+  if(userProfile) {
+    if(userProfile.clearance && c.clearancePremium) html += '<li>Active security clearance (salary premium of $15K–$40K)</li>';
+    var mil = (userProfile.milExperiences||userProfile.experiences||[]);
+    if(mil[0] && mil[0].mos) {
+      var hasMos = false;
+      if(c.mosMatch) c.mosMatch.forEach(function(m){ if(mil[0].mos.toUpperCase().indexOf(m.toUpperCase())!==-1) hasMos=true; });
+      if(hasMos) html += '<li>Directly relevant MOS experience (' + mil[0].mos + ')</li>';
+    }
+    if(mil[0] && mil[0]._leaderCount) html += '<li>Supervised ' + mil[0]._leaderCount + ' personnel</li>';
+    if(mil[0] && mil[0]._equipValue) html += '<li>Managed ' + mil[0]._equipValue + ' in assets</li>';
+  }
+  html += '</ul></div>';
+
+  // NEED for entry-level position
+  if(entryStep) {
+    html += '<div class="gap-item"><span class="gap-need">📋 WHAT YOU NEED (for entry: ' + entryStep.title + '):</span><ul style="margin:.3rem 0 0 1rem;font-size:.82rem;color:var(--text);line-height:1.7;">';
+    entryStep.reqs.forEach(function(req){ html += '<li>' + req + '</li>'; });
+    html += '</ul></div>';
+  } else {
+    html += '<div class="gap-item"><span class="gap-need">📋 REQUIREMENTS:</span><ul style="margin:.3rem 0 0 1rem;font-size:.82rem;">';
+    c.requirements.forEach(function(req){ html += '<li>' + req + '</li>'; });
+    html += '</ul></div>';
+  }
+
+  // WHERE to get it
+  html += '<div class="gap-item"><span class="gap-where">🎓 WHERE TO GET IT:</span><ul style="margin:.3rem 0 0 1rem;font-size:.82rem;color:var(--text);line-height:1.7;">';
+  html += '<li><strong>GI Bill:</strong> Covers tuition at accredited programs, trade schools, and certification courses</li>';
+  html += '<li><strong>SkillBridge:</strong> Up to 6 months of paid training with civilian employers before separation</li>';
+  html += '<li><strong>Army/Navy COOL:</strong> Funds industry certifications while still serving</li>';
+  html += '<li><strong>Vet Tec:</strong> Covers high-tech training programs (IT, coding, cyber)</li>';
+  c.requirements.forEach(function(req){
+    if(req.toLowerCase().indexOf('pmp') !== -1) html += '<li><strong>PMP:</strong> PMI.org — 35 hours training + exam ($555, GI Bill eligible)</li>';
+    if(req.toLowerCase().indexOf('security+') !== -1) html += '<li><strong>Security+:</strong> CompTIA.org — Study 4-8 weeks, exam $404 (COOL eligible)</li>';
+    if(req.toLowerCase().indexOf('cissp') !== -1) html += '<li><strong>CISSP:</strong> ISC2.org — 5 years experience required, exam $749</li>';
+  });
+  html += '</ul></div>';
+  html += '</div>';
+
   // Transition timeline
-  html += '<div class="career-detail-section"><h5>Estimated Transition Timeline</h5><p>' + c.timeToTransition + '</p></div>';
+  html += '<div class="career-detail-section"><h5>⏱ Estimated Timeline to Entry-Level Position</h5><p style="font-size:.88rem;">' + (entryStep ? entryStep.time : c.timeToTransition) + '</p></div>';
 
   return html;
 }

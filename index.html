@@ -1730,7 +1730,7 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
 
       if(isSubscriber && p) {
         // Try to get rank title + last name from military experience
-        var mil = p.milExperiences || p.experiences || [];
+        var mil = p.milExperiences || p.experiences || p.military || [];
         var lastRank = '';
         var lastName = '';
         var RANK_TITLES = {
@@ -1748,8 +1748,8 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
             if(mil[i].rank) { lastRank = RANK_TITLES[mil[i].rank] || mil[i].rank; break; }
           }
         }
-        // Get last name from profile name
-        var fullName = p.name || '';
+        // Get last name from profile name (could be in p.personal.name or p.name)
+        var fullName = (p.personal && p.personal.name) || p.name || p.displayName || '';
         if(fullName) {
           var parts = fullName.trim().split(' ');
           lastName = parts[parts.length - 1];
@@ -1763,8 +1763,9 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
         }
       }
 
-      if(!greeting && p && p.name) {
-        greeting = p.name.split(' ')[0];
+      if(!greeting && p) {
+        var pName = (p.personal && p.personal.name) || p.name || p.displayName || '';
+        if(pName) greeting = pName.split(' ')[0];
       }
       if(!greeting) {
         var u = JSON.parse(localStorage.getItem('vcp_pf_user') || '{}');

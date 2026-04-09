@@ -355,6 +355,8 @@
             document.body.classList.remove('menu-open');
           }
         });
+        // Re-apply collapsible sections to the new mega menu
+        initMegaCollapse();
       }
     }).catch(function(){});
   }

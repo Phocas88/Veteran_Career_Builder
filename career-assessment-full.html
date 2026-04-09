@@ -1381,22 +1381,32 @@ function matchCareers(scores) {
       }
     });
 
-    var basePct = totalWeight > 0 ? Math.round((matchScore / totalWeight) * 100) : 50;
+    // ── Rebalance: aptitude scores count 60%, interests count 40% ──
+    // Separate aptitude score from interest score
+    var aptitudeScore = 0, aptitudeWeight = 0;
+    var interestScore = 0, interestWeight = 0;
 
-    // ── CRITICAL: Overall aptitude ceiling ──
-    // Calculate the user's average score across ALL dimensions
-    // If their scores are genuinely low, cap how high any match can go
-    var allScores = [
-      scores.mechanical.pct, scores.verbal.pct, scores.numerical.pct,
-      scores.leadershipOverall
-    ];
-    Object.keys(scores.interests).forEach(function(k){ allScores.push(scores.interests[k]); });
-    Object.keys(scores.workstyle).forEach(function(k){ allScores.push(scores.workstyle[k]); });
-    var avgOverall = allScores.reduce(function(a,b){return a+b;},0) / allScores.length;
+    if(w.mechanical !== undefined) { aptitudeScore += (scores.mechanical.pct/100) * w.mechanical; aptitudeWeight += w.mechanical; }
+    if(w.verbal !== undefined) { aptitudeScore += (scores.verbal.pct/100) * w.verbal; aptitudeWeight += w.verbal; }
+    if(w.numerical !== undefined) { aptitudeScore += (scores.numerical.pct/100) * w.numerical; aptitudeWeight += w.numerical; }
+    if(w.leadership !== undefined) { aptitudeScore += (scores.leadershipOverall/100) * w.leadership; aptitudeWeight += w.leadership; }
 
-    // Apply aptitude ceiling — you can't match 90% on a career if your overall scores average 30%
-    // Max match = average score + 15 (generous buffer for strong specific dimensions)
-    var aptitudeCeiling = Math.min(95, Math.round(avgOverall + 15));
+    Object.keys(w).forEach(function(wk) {
+      if(['mechanical','verbal','numerical','leadership'].indexOf(wk) !== -1) return;
+      if(scores.interests[wk] !== undefined) { interestScore += (scores.interests[wk]/100) * w[wk]; interestWeight += w[wk]; }
+      if(scores.workstyle[wk] !== undefined) { interestScore += (scores.workstyle[wk]/100) * w[wk]; interestWeight += w[wk]; }
+      if(scores.leadership[wk] !== undefined) { aptitudeScore += (scores.leadership[wk]/100) * w[wk]; aptitudeWeight += w[wk]; }
+    });
+
+    var aptPct = aptitudeWeight > 0 ? (aptitudeScore / aptitudeWeight) * 100 : 50;
+    var intPct = interestWeight > 0 ? (interestScore / interestWeight) * 100 : 50;
+    // Aptitude counts 60%, interest counts 40%
+    var basePct = Math.round(aptPct * 0.6 + intPct * 0.4);
+
+    // ── CRITICAL: Aptitude ceiling — based ONLY on demonstrated ability, not interest ──
+    var aptitudeAvg = ((scores.mechanical?scores.mechanical.pct:0) + (scores.verbal?scores.verbal.pct:0) + (scores.numerical?scores.numerical.pct:0) + (scores.leadershipOverall||0)) / 4;
+    // Max match = aptitude average + 20 (allows some stretch for strong interests but not runaway)
+    var aptitudeCeiling = Math.min(90, Math.round(aptitudeAvg + 20));
 
     // For technical careers (high mechanical/numerical weights), also check technical aptitude
     var techWeight = (w.mechanical || 0) + (w.numerical || 0);
@@ -1821,12 +1831,17 @@ function generateWhyFits(r, scores) {
   if(w.numerical > 0.5 && scores.numerical.pct >= 70) reasons.push('solid analytical reasoning');
   if(w.leadership > 0.5 && scores.leadershipOverall >= 70) reasons.push('proven leadership ability');
 
-  // Interest alignment
+  // Interest alignment — find the TOP matching interest, only add once
+  var topInterest = '';
+  var topInterestScore = 0;
+  var interestLabels = {cyber:'cybersecurity',healthcare:'healthcare',trades:'skilled trades',lawenforcement:'law enforcement',business:'business',education:'education',finance:'finance',engineering:'engineering',logistics:'logistics',government:'government',creative:'creative fields',science:'science',it:'IT',intelligence:'intelligence'};
   Object.keys(w).forEach(function(wk) {
-    if(scores.interests[wk] && scores.interests[wk] >= 70 && w[wk] >= 0.6) {
-      reasons.push('high interest alignment');
+    if(scores.interests[wk] && scores.interests[wk] >= 70 && w[wk] >= 0.5 && scores.interests[wk] > topInterestScore) {
+      topInterestScore = scores.interests[wk];
+      topInterest = interestLabels[wk] || wk;
     }
   });
+  if(topInterest) reasons.push('strong interest in ' + topInterest);
 
   // Profile bonuses
   if(r.profileBonus > 0) {

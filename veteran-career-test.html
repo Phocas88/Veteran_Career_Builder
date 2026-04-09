@@ -470,8 +470,19 @@ const progressFill = document.getElementById("progressFill");
 const progressLabel = document.getElementById("progressLabel");
 const progressPct = document.getElementById("progressPct");
 
+// ── Block accidental refresh during assessment ──
+var assessmentInProgress = false;
+window.addEventListener('beforeunload', function(e) {
+  if (assessmentInProgress) {
+    e.preventDefault();
+    e.returnValue = 'You have an assessment in progress. Are you sure you want to leave?';
+    return e.returnValue;
+  }
+});
+
 // ── Start ──
 document.getElementById("startBtn").addEventListener("click", function(){
+  assessmentInProgress = true;
   introScreen.style.display = "none";
   assessScreen.style.display = "block";
   document.body.style.background = "#f4f6fb";
@@ -593,6 +604,7 @@ function matchCareers(scores){
 
 // ── Show Results ──
 function showResults(){
+  assessmentInProgress = false;
   assessScreen.style.display = "none";
 
   // Check if user already provided email (skip gate)

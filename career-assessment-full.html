@@ -918,6 +918,16 @@ function showScreen(id) {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
+// Block accidental refresh/close during assessment
+var assessmentInProgress = false;
+window.addEventListener('beforeunload', function(e) {
+  if (assessmentInProgress) {
+    e.preventDefault();
+    e.returnValue = 'You have an assessment in progress. Your answers are auto-saved, but are you sure you want to leave?';
+    return e.returnValue;
+  }
+});
+
 function startAssessment(fresh) {
   if(!fresh) {
     var saved = loadProgress();
@@ -925,6 +935,7 @@ function startAssessment(fresh) {
       if(confirm('You have saved progress (' + Object.keys(saved.answers).length + ' answers, Section ' + (saved.section+1) + ').\n\nResume where you left off?')) {
         answers = saved.answers;
         currentSection = saved.section;
+        assessmentInProgress = true;
         showScreen('scr-assessment');
         renderSection();
         return;
@@ -934,6 +945,7 @@ function startAssessment(fresh) {
   currentSection = 0;
   answers = {};
   clearProgress();
+  assessmentInProgress = true;
   showScreen('scr-assessment');
   renderSection();
 }
@@ -1143,6 +1155,7 @@ function prevSection() {
 }
 
 function saveAndExit() {
+  assessmentInProgress = false;
   saveProgress();
   var totalQ = 0, answeredQ = 0;
   SECTIONS.forEach(function(s){ totalQ += s.questions.length; s.questions.forEach(function(q,j){ if(answers[s.id+'_'+j] !== undefined) answeredQ++; }); });
@@ -1155,6 +1168,7 @@ function saveAndExit() {
 // ══════════════════════════════════════════════════════════════════════════════
 
 function calculateResults() {
+  assessmentInProgress = false;
   clearInterval(sectionTimer);
   var scores = {};
 

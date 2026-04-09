@@ -715,52 +715,38 @@ function _renderResults(){
 
   // ── UPGRADE CTA — Pro Upsell ──
   html += '<div class="upgrade-cta" style="background:linear-gradient(135deg,#060f1e,#1a3a6b);border:2px solid rgba(240,192,64,.2);border-radius:16px;padding:2rem;margin:2rem 0;">';
-  html += '<div style="text-align:center;margin-bottom:1.5rem;">';
+  html += '<div style="text-align:center;margin-bottom:1.25rem;">';
   html += '<div style="font-size:1.4rem;margin-bottom:.4rem;">\uD83C\uDFAF</div>';
-  html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;letter-spacing:.06em;color:#f0c040;margin:0 0 .4rem;">Ready for the Full Picture?</h2>';
-  html += '<p style="color:rgba(192,216,240,.65);font-size:.88rem;max-width:550px;margin:0 auto;line-height:1.6;">Your PathFinder Lite results are a great starting point. PathFinder Pro goes 10x deeper with 120 questions, ASVAB-style technical testing, AI-powered analysis, and 1,000+ career matches.</p>';
+  html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:1.5rem;letter-spacing:.06em;color:#f0c040;margin:0 0 .4rem;">Want the Full Picture?</h2>';
+  html += '<p style="color:rgba(192,216,240,.65);font-size:.85rem;max-width:550px;margin:0 auto;line-height:1.6;">PathFinder Lite gave you a snapshot. PathFinder Pro goes 10x deeper:</p>';
+  html += '</div>';
+
+  // What Pro includes (selling points)
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem .8rem;max-width:500px;margin:0 auto 1.25rem;text-align:left;">';
+  var proFeats = ['180 questions · 10 dimensions','ASVAB-style aptitude testing','Spatial reasoning & patterns','Processing speed & memory','Your personality type revealed','1,000+ career matches','Career progression paths','AI-powered gap analysis','Soft skills assessment','Downloadable PDF report'];
+  proFeats.forEach(function(f){ html += '<div style="font-size:.75rem;color:rgba(192,216,240,.6);display:flex;align-items:center;gap:.3rem;"><span style="width:5px;height:5px;border-radius:50%;background:#f0c040;flex-shrink:0;"></span>' + f + '</div>'; });
   html += '</div>';
 
   // Two options side by side
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:600px;margin:0 auto;">';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;max-width:500px;margin:0 auto;">';
 
   // Option 1: Standalone assessment
-  html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.25rem;text-align:center;">';
-  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1rem;color:#fff;letter-spacing:.05em;margin-bottom:.3rem;">One-Time Assessment</div>';
-  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:2rem;color:#f0c040;line-height:1;">$9.99</div>';
-  html += '<div style="font-size:.72rem;color:rgba(192,216,240,.4);margin-bottom:.8rem;">One-time purchase</div>';
-  html += '<ul style="text-align:left;font-size:.75rem;color:rgba(192,216,240,.6);margin:0 0 1rem .5rem;padding-left:.8rem;line-height:1.7;">';
-  html += '<li>120-question assessment</li>';
-  html += '<li>ASVAB-style technical sections</li>';
-  html += '<li>1,000+ career matches</li>';
-  html += '<li>AI-powered analysis</li>';
-  html += '<li>Downloadable PDF report</li>';
-  html += '</ul>';
+  html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1rem;text-align:center;">';
+  html += '<div style="font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(192,216,240,.5);margin-bottom:.2rem;">Assessment Only</div>';
+  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:#f0c040;line-height:1;">$9.99</div>';
+  html += '<div style="font-size:.65rem;color:rgba(192,216,240,.35);margin-bottom:.5rem;">one-time · 75% aptitude scoring</div>';
   html += '<a href="https://buy.stripe.com/9B6dR94Db3GMcuReIvenS02" style="display:block;padding:.65rem;background:rgba(240,192,64,.15);border:1.5px solid rgba(240,192,64,.3);border-radius:8px;color:#f0c040;font-weight:700;font-size:.85rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.background=\'rgba(240,192,64,.25)\'" onmouseout="this.style.background=\'rgba(240,192,64,.15)\'">Buy Assessment \u2192</a>';
   html += '</div>';
 
   // Option 2: Full subscription (recommended)
-  html += '<div style="background:rgba(240,192,64,.06);border:2px solid rgba(240,192,64,.3);border-radius:12px;padding:1.25rem;text-align:center;position:relative;">';
-  html += '<div style="position:absolute;top:-.6rem;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;font-size:.6rem;font-weight:800;letter-spacing:.1em;padding:.15rem .6rem;border-radius:100px;text-transform:uppercase;">Best Value</div>';
-  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1rem;color:#fff;letter-spacing:.05em;margin-bottom:.3rem;">Full Subscription</div>';
-  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:2rem;color:#f0c040;line-height:1;">$15/mo</div>';
-  html += '<div style="font-size:.72rem;color:rgba(192,216,240,.4);margin-bottom:.8rem;">Cancel anytime</div>';
-  html += '<ul style="text-align:left;font-size:.75rem;color:rgba(192,216,240,.6);margin:0 0 1rem .5rem;padding-left:.8rem;line-height:1.7;">';
-  html += '<li><strong style="color:#f0c040;">Everything in One-Time, PLUS:</strong></li>';
-  html += '<li>AI Resume Builder (5 templates)</li>';
-  html += '<li>Real MOS Experience Translator</li>';
-  html += '<li>Job Match Analyzer</li>';
-  html += '<li>Federal Resume Builder</li>';
-  html += '<li>Interview Simulator</li>';
-  html += '<li>Salary Negotiation Coach</li>';
-  html += '<li>LinkedIn Profile Optimizer</li>';
-  html += '<li>VA Claim Builder</li>';
-  html += '<li>DD-214 Decoder</li>';
-  html += '<li>+ 10 more AI tools</li>';
-  html += '<li>Profile-weighted career matching</li>';
-  html += '<li>Saved resumes &amp; cover letters</li>';
-  html += '</ul>';
-  html += '<a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:block;padding:.65rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.85rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.transform=\'none\'">Subscribe &amp; Unlock All \u2192</a>';
+  html += '<div style="background:rgba(240,192,64,.06);border:2px solid rgba(240,192,64,.3);border-radius:10px;padding:1rem;text-align:center;position:relative;">';
+  html += '<div style="position:absolute;top:-.55rem;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;font-size:.55rem;font-weight:800;letter-spacing:.08em;padding:.12rem .55rem;border-radius:100px;text-transform:uppercase;white-space:nowrap;">Best Value</div>';
+  html += '<div style="font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(192,216,240,.5);margin-bottom:.2rem;margin-top:.2rem;">Full AI Toolkit</div>';
+  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:#f0c040;line-height:1;">$15/mo</div>';
+  html += '<div style="font-size:.65rem;color:rgba(192,216,240,.35);margin-bottom:.3rem;">cancel anytime</div>';
+  html += '<div style="font-size:.62rem;color:#4ade80;font-weight:600;margin-bottom:.5rem;">✓ Profile-weighted scoring<br>(60% aptitude + 30% experience + 10% interest)</div>';
+  html += '<div style="font-size:.65rem;color:rgba(192,216,240,.5);margin-bottom:.5rem;">Assessment + 20 AI tools:<br>Resume Builder, MOS Translator, Interview Sim, Salary Coach, LinkedIn Optimizer, VA Claim Builder + more</div>';
+  html += '<a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:block;padding:.6rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.85rem;text-decoration:none;">Subscribe &amp; Unlock All \u2192</a>';
   html += '</div>';
 
   html += '</div>'; // grid

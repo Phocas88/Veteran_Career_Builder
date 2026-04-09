@@ -1410,14 +1410,14 @@ body.menu-open{overflow:hidden!important;}
       </div>
 
       <!-- SMC Options -->
-      <div style="margin-top:.75rem;padding:.75rem;background:rgba(240,192,64,.04);border:1px solid rgba(240,192,64,.15);border-radius:8px;">
-        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gd2);margin-bottom:.5rem;">Special Monthly Compensation (SMC)</div>
-        <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
-          <label style="display:flex;align-items:center;gap:.3rem;font-size:.82rem;color:var(--text);cursor:pointer;">
-            <input type="checkbox" id="smcK" style="accent-color:var(--gd2);"> SMC-K (+$123.04/mo — loss of creative organ, hand/foot, eye)
+      <div style="margin-top:.75rem;padding:.75rem;background:#fffbf0;border:1px solid rgba(200,150,10,.25);border-radius:8px;">
+        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#8a6000;margin-bottom:.5rem;">Special Monthly Compensation (SMC)</div>
+        <div style="display:flex;flex-direction:column;gap:.4rem;">
+          <label style="display:flex;align-items:center;gap:.4rem;font-size:.85rem;color:#2a3a4a;cursor:pointer;font-weight:500;">
+            <input type="checkbox" id="smcK" style="accent-color:#c8960a;width:18px;height:18px;"> SMC-K (+$123.04/mo — loss of creative organ, hand/foot, eye)
           </label>
-          <label style="display:flex;align-items:center;gap:.3rem;font-size:.82rem;color:var(--text);cursor:pointer;">
-            <input type="checkbox" id="smcS" style="accent-color:var(--gd2);"> SMC-S Housebound (+$835.87/mo)
+          <label style="display:flex;align-items:center;gap:.4rem;font-size:.85rem;color:#2a3a4a;cursor:pointer;font-weight:500;">
+            <input type="checkbox" id="smcS" style="accent-color:#c8960a;width:18px;height:18px;"> SMC-S Housebound (+$835.87/mo)
           </label>
         </div>
       </div>
@@ -2742,8 +2742,8 @@ function calcComp() {
   if(smcSAmount > 0) breakdown.push(['SMC-S (Housebound)', '+' + fmt(smcSAmount)]);
   breakdown.push(['<strong>Total Monthly Compensation</strong>', '<strong>' + fmt(total) + '</strong>']);
 
-  // Annual estimate
-  breakdown.push(['<em>Estimated Annual</em>', '<em>' + fmt(total * 12) + '/year</em>']);
+  // Annual estimate (VA disability compensation is tax-free)
+  breakdown.push(['<em>Estimated Annual (Non-Taxed)</em>', '<em>' + fmt(total * 12) + '/year — tax free</em>']);
   var breakdownHtml = breakdown.map(function(r) {
     return '<div class="rb-row"><span>' + r[0] + '</span><span>' + r[1] + '</span></div>';
   }).join('');

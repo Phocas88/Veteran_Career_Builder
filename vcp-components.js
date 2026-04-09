@@ -442,38 +442,37 @@
     });
 
     // Also make mobile menu categories collapsible
+    // Replace each span.vcp-mob-sect with a clickable button and wrap links in a div
     var mobSects = document.querySelectorAll('.vcp-mob-sect');
     mobSects.forEach(function(sect) {
-      // Override pointer-events:none from CSS
-      sect.style.pointerEvents = 'auto';
-      sect.style.cursor = 'pointer';
-      sect.style.display = 'flex';
-      sect.style.justifyContent = 'space-between';
-      sect.style.alignItems = 'center';
-      if (!sect.querySelector('.mob-chev')) {
-        var chev = document.createElement('span');
-        chev.className = 'mob-chev';
-        chev.textContent = '▸';
-        chev.style.cssText = 'font-size:.6rem;color:rgba(240,192,64,.4);transition:transform .2s;';
-        sect.appendChild(chev);
-      }
-      // Collect all sibling <a> tags until next .vcp-mob-sect or end
+      // Collect sibling links
       var links = [];
       var next = sect.nextElementSibling;
       while (next && !next.classList.contains('vcp-mob-sect') && !next.classList.contains('vcp-mob-cta')) {
-        if (next.tagName === 'A') links.push(next);
+        links.push(next);
         next = next.nextElementSibling;
       }
-      // Start collapsed
-      links.forEach(function(a) { a.style.display = 'none'; });
-      // Toggle on click
-      sect.addEventListener('click', function(e) {
+      if (!links.length) return;
+
+      // Create a wrapper div for the links
+      var wrapper = document.createElement('div');
+      wrapper.style.cssText = 'display:none;';
+      links.forEach(function(link) { wrapper.appendChild(link); });
+      sect.parentNode.insertBefore(wrapper, sect.nextSibling);
+
+      // Replace the span with a button
+      var btn = document.createElement('button');
+      btn.innerHTML = sect.innerHTML + ' <span style="font-size:.55rem;color:rgba(240,192,64,.4);margin-left:auto;">▸</span>';
+      btn.style.cssText = 'display:flex;align-items:center;width:100%;background:rgba(240,192,64,.04);border:none;border-top:1px solid rgba(240,192,64,.1);color:rgba(240,192,64,.5);font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.6rem 5% .4rem;cursor:pointer;margin-top:.25rem;text-align:left;';
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
         e.stopPropagation();
-        var isOpen = links[0] && links[0].style.display !== 'none';
-        links.forEach(function(a) { a.style.display = isOpen ? 'none' : 'block'; });
-        var c = sect.querySelector('.mob-chev');
-        if (c) c.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+        var isOpen = wrapper.style.display !== 'none';
+        wrapper.style.display = isOpen ? 'none' : 'block';
+        var arrow = btn.querySelector('span:last-child');
+        if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
       });
+      sect.parentNode.replaceChild(btn, sect);
     });
   }
 

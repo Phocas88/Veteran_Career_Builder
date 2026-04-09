@@ -441,39 +441,56 @@
       });
     });
 
-    // Also make mobile menu categories collapsible
-    // Replace each span.vcp-mob-sect with a clickable button and wrap links in a div
-    var mobSects = document.querySelectorAll('.vcp-mob-sect');
-    mobSects.forEach(function(sect) {
-      // Collect sibling links
-      var links = [];
-      var next = sect.nextElementSibling;
-      while (next && !next.classList.contains('vcp-mob-sect') && !next.classList.contains('vcp-mob-cta')) {
-        links.push(next);
-        next = next.nextElementSibling;
+    // Mobile menu collapsible categories
+    // Wait a tick for DOM to settle, then process
+    setTimeout(function() {
+      var mob = document.getElementById('vcp-mob');
+      if (!mob) return;
+      // Find all category spans and convert to collapsible
+      var allChildren = Array.from(mob.children);
+      var i = 0;
+      while (i < allChildren.length) {
+        var el = allChildren[i];
+        if (el.classList && el.classList.contains('vcp-mob-sect')) {
+          // This is a category header — collect links until next category
+          var catLinks = [];
+          var j = i + 1;
+          while (j < allChildren.length && allChildren[j].classList && !allChildren[j].classList.contains('vcp-mob-sect') && !allChildren[j].classList.contains('vcp-mob-cta') && !allChildren[j].classList.contains('vcp-mob-search')) {
+            catLinks.push(allChildren[j]);
+            j++;
+          }
+          // Hide links initially
+          catLinks.forEach(function(link) { link.style.display = 'none'; });
+          // Make the span clickable
+          el.setAttribute('style', el.getAttribute('style') + ';pointer-events:auto!important;cursor:pointer;display:flex!important;justify-content:space-between;align-items:center;-webkit-tap-highlight-color:transparent;');
+          // Add chevron if not present
+          if (!el.querySelector('.mob-arr')) {
+            var arr = document.createElement('span');
+            arr.className = 'mob-arr';
+            arr.textContent = '▸';
+            arr.setAttribute('style', 'font-size:.65rem;color:rgba(240,192,64,.5);pointer-events:none;transition:transform .2s;');
+            el.appendChild(arr);
+          }
+          // Use ontouchstart + onclick for maximum mobile compatibility
+          (function(header, links) {
+            var handler = function(evt) {
+              evt.preventDefault();
+              evt.stopPropagation();
+              evt.stopImmediatePropagation();
+              var open = links[0] && links[0].style.display !== 'none';
+              links.forEach(function(l) { l.style.display = open ? 'none' : 'block'; });
+              var a = header.querySelector('.mob-arr');
+              if (a) a.style.transform = open ? '' : 'rotate(90deg)';
+            };
+            header.ontouchend = handler;
+            header.onclick = handler;
+          })(el, catLinks);
+          i = j;
+        } else {
+          i++;
+        }
       }
-      if (!links.length) return;
-
-      // Create a wrapper div for the links
-      var wrapper = document.createElement('div');
-      wrapper.style.cssText = 'display:none;';
-      links.forEach(function(link) { wrapper.appendChild(link); });
-      sect.parentNode.insertBefore(wrapper, sect.nextSibling);
-
-      // Replace the span with a button
-      var btn = document.createElement('button');
-      btn.innerHTML = sect.innerHTML + ' <span style="font-size:.55rem;color:rgba(240,192,64,.4);margin-left:auto;">▸</span>';
-      btn.style.cssText = 'display:flex;align-items:center;width:100%;background:rgba(240,192,64,.04);border:none;border-top:1px solid rgba(240,192,64,.1);color:rgba(240,192,64,.5);font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.6rem 5% .4rem;cursor:pointer;margin-top:.25rem;text-align:left;';
-      btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var isOpen = wrapper.style.display !== 'none';
-        wrapper.style.display = isOpen ? 'none' : 'block';
-        var arrow = btn.querySelector('span:last-child');
-        if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
-      });
-      sect.parentNode.replaceChild(btn, sect);
-    });
+    }, 200);
   }
 
   /* ── INIT ALL ───────────────────────────────────────────────────────── */

@@ -1745,6 +1745,9 @@ function renderResults(scores, rankedCareers, aiData) {
     }
   });
 
+  // ── Personality Profile ──
+  html += renderPersonalityProfile(scores);
+
   // ── Strengths Summary ──
   html += renderStrengths(scores);
 
@@ -1914,6 +1917,79 @@ function estimatePercentile(pct, type) {
   // Add slight randomness for realism
   var jitter = Math.floor(Math.random() * 5) - 2;
   return Math.min(99, Math.max(1, base + jitter));
+}
+
+function renderPersonalityProfile(scores) {
+  // Determine personality type from score patterns
+  var mech = scores.mechanical ? scores.mechanical.pct : 0;
+  var verb = scores.verbal ? scores.verbal.pct : 0;
+  var num = scores.numerical ? scores.numerical.pct : 0;
+  var spatial = scores.spatial ? scores.spatial.pct : 0;
+  var speed = scores.speed ? scores.speed.pct : 0;
+  var memory = scores.memory ? scores.memory.pct : 0;
+  var lead = scores.leadershipOverall || 0;
+  var soft = scores.softSkills || 0;
+  var ws = scores.workstyleOverall || 0;
+  var interests = scores.interestsOverall || 0;
+
+  // Calculate composite dimensions
+  var technical = (mech + num + spatial) / 3;
+  var analytical = (num + verb + speed + memory) / 4;
+  var people = (lead + soft) / 2;
+  var creative = verb * 0.4 + interests * 0.3 + spatial * 0.3;
+
+  // Determine primary type
+  var types = [
+    {dim:'technical', score:technical},
+    {dim:'analytical', score:analytical},
+    {dim:'people', score:people},
+    {dim:'creative', score:creative}
+  ].sort(function(a,b){return b.score - a.score;});
+  var p = types[0].dim;
+  var s = types[1].dim;
+
+  // Personality archetypes based on top 2 dimensions
+  var archetypes = {
+    'technical-analytical': {name:'The Engineer', icon:'⚙️', desc:'You think in systems and solve problems through logic and precision. You understand how things work at a fundamental level and enjoy optimizing processes. In the military, you were likely the person everyone came to when equipment broke or when a plan needed technical validation.', strengths:'Technical problem-solving, systematic thinking, attention to detail, data-driven decisions', workStyle:'Prefers structured environments with clear objectives and measurable outcomes.', careers:'Engineering, IT/Cyber, Data Analysis, Quality Control, Technical Project Management'},
+    'technical-people': {name:'The Field Commander', icon:'🎖️', desc:'You combine hands-on technical capability with natural leadership. You lead by example — you would never ask someone to do something you could not do yourself. You bridge the gap between the technical team and management, translating complex problems into actionable plans.', strengths:'Leading technical teams, field operations, training and mentoring, hands-on problem solving', workStyle:'Prefers action-oriented roles where leadership is demonstrated through competence.', careers:'Operations Management, Construction Management, Technical Team Lead, First Responder Leadership, Maintenance Supervisor'},
+    'technical-creative': {name:'The Innovator', icon:'💡', desc:'You have a rare combination of technical skill and creative thinking. You do not just fix problems — you reimagine them. You are drawn to building new things, improving existing systems, and finding unconventional solutions to conventional problems.', strengths:'Innovation, design thinking, prototype development, creative problem-solving', workStyle:'Thrives in environments that value experimentation and tolerate calculated risk.', careers:'Product Development, UX/UI Design, Technical Writing, Architecture, Robotics'},
+    'analytical-technical': {name:'The Strategist', icon:'🧠', desc:'You are a systems thinker who sees patterns others miss. Your analytical mind combined with technical understanding makes you exceptional at planning, forecasting, and risk assessment. In the military, you likely excelled in intelligence, operations planning, or logistics.', strengths:'Strategic planning, pattern recognition, risk assessment, data analysis, complex problem-solving', workStyle:'Prefers roles with autonomy to analyze and recommend before acting.', careers:'Intelligence Analysis, Cybersecurity, Business Analysis, Supply Chain, Financial Analysis'},
+    'analytical-people': {name:'The Counselor', icon:'🤝', desc:'You combine sharp analytical skills with genuine care for people. You listen carefully, ask the right questions, and help others see their situation clearly. You are equally comfortable with data and with emotions — a rare and valuable combination.', strengths:'Empathetic analysis, counseling, conflict mediation, talent assessment, program evaluation', workStyle:'Prefers roles where analysis serves human outcomes — not just spreadsheets.', careers:'HR Management, Counseling/Social Work, Healthcare Administration, Training & Development, Recruiting'},
+    'analytical-creative': {name:'The Architect', icon:'📐', desc:'You are a visionary problem-solver who combines analytical rigor with creative insight. You see both the big picture and the fine details. You are drawn to designing systems, processes, and solutions that are both elegant and effective.', strengths:'System design, research, strategic communication, content creation, data visualization', workStyle:'Prefers complex problems with room for original thinking and structured analysis.', careers:'UX Research, Data Science, Technical Architecture, Marketing Analytics, Policy Analysis'},
+    'people-technical': {name:'The Operator', icon:'🛡', desc:'You are a hands-on leader who earns respect through competence and character. You understand that the best leadership comes from being in the trenches with your team. People trust you because you know the work as well as they do — and you genuinely care about their success.', strengths:'Team building, operational leadership, technical training, mission execution', workStyle:'Prefers leading from the front in high-stakes, team-oriented environments.', careers:'Law Enforcement, Security Management, Emergency Services, Military Contracting, Facility Management'},
+    'people-analytical': {name:'The Advisor', icon:'📋', desc:'You are a trusted guide who helps others navigate complex decisions. Your combination of people skills and analytical thinking makes you the person everyone turns to for advice — not because you have all the answers, but because you ask the right questions and listen with genuine intent.', strengths:'Mentoring, advisory, stakeholder management, program management, executive communication', workStyle:'Prefers roles where influence comes through trust and expertise, not authority.', careers:'Management Consulting, Executive Coaching, Program Management, VSO/Veteran Services, Career Counseling'},
+    'people-creative': {name:'The Communicator', icon:'📢', desc:'You connect with people through stories, ideas, and shared experiences. You have a gift for making complex things simple and making dry topics compelling. Whether in person or in writing, you know how to reach people and move them to action.', strengths:'Public speaking, writing, team motivation, brand building, community engagement', workStyle:'Prefers roles with high human interaction and creative freedom.', careers:'Public Affairs, Communications, Sales, Training, Nonprofit Leadership, Event Management'},
+    'creative-technical': {name:'The Builder', icon:'🔨', desc:'You bring ideas to life. Where others see concepts, you see blueprints. Your creativity is not abstract — it is practical, tangible, and results-oriented. You are happiest when creating something real that people can use, see, or interact with.', strengths:'Prototyping, design-build, creative engineering, visual communication', workStyle:'Prefers maker environments where thinking and doing are integrated.', careers:'Web Development, Graphic Design, Video Production, Industrial Design, Fabrication'},
+    'creative-analytical': {name:'The Detective', icon:'🔍', desc:'You see the world differently. Your creative instincts lead you to ask questions others overlook, and your analytical skills help you find answers others cannot. You are drawn to investigation, research, and uncovering hidden truths.', strengths:'Investigation, research, creative analysis, unconventional problem-solving', workStyle:'Prefers roles that reward curiosity, persistence, and original thinking.', careers:'Forensic Analysis, Investigative Journalism, Research, Competitive Intelligence, Fraud Detection'},
+    'creative-people': {name:'The Inspirer', icon:'✨', desc:'You see potential in people and ideas that others miss. Your creativity combined with your people skills makes you a natural motivator, storyteller, and culture builder. You do not just lead teams — you inspire movements.', strengths:'Team culture, creative leadership, storytelling, vision casting, community building', workStyle:'Prefers collaborative environments where innovation and people development intersect.', careers:'Creative Direction, Nonprofit Leadership, Education, HR Culture & Engagement, Marketing'}
+  };
+
+  var key = p + '-' + s;
+  var profile = archetypes[key] || archetypes[s + '-' + p] || {name:'The Versatile Professional', icon:'🎯', desc:'Your assessment shows a balanced profile across multiple dimensions. You are adaptable and capable in diverse environments. This versatility is a significant asset — focus on roles that value multi-skilled professionals.', strengths:'Adaptability, broad capability, cross-functional thinking', workStyle:'Flexible — thrives in varied environments.', careers:'Project Management, Operations, Consulting, Business Analysis'};
+
+  var html = '<div style="background:linear-gradient(135deg,#0a1628,#1a3a6b);border-radius:14px;padding:2rem;margin-bottom:2rem;border:1px solid rgba(240,192,64,.2);">';
+  html += '<div style="text-align:center;margin-bottom:1.25rem;">';
+  html += '<div style="font-size:2.5rem;margin-bottom:.5rem;">' + profile.icon + '</div>';
+  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;letter-spacing:.08em;color:#f0c040;">Your Personality Type</div>';
+  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.2rem;letter-spacing:.06em;color:#fff;margin-top:.25rem;">' + profile.name + '</div>';
+  html += '</div>';
+  html += '<p style="color:rgba(192,216,240,.8);font-size:.9rem;line-height:1.75;margin-bottom:1rem;text-align:center;max-width:550px;margin-left:auto;margin-right:auto;">' + profile.desc + '</p>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:550px;margin:0 auto;">';
+  html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.85rem;">';
+  html += '<div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,192,64,.6);margin-bottom:.35rem;">Core Strengths</div>';
+  html += '<div style="font-size:.82rem;color:rgba(192,216,240,.7);line-height:1.6;">' + profile.strengths + '</div>';
+  html += '</div>';
+  html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.85rem;">';
+  html += '<div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,192,64,.6);margin-bottom:.35rem;">Work Style</div>';
+  html += '<div style="font-size:.82rem;color:rgba(192,216,240,.7);line-height:1.6;">' + profile.workStyle + '</div>';
+  html += '</div>';
+  html += '</div>';
+  html += '<div style="text-align:center;margin-top:1rem;">';
+  html += '<div style="font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(240,192,64,.5);margin-bottom:.3rem;">Best Career Sectors</div>';
+  html += '<div style="font-size:.82rem;color:rgba(192,216,240,.65);">' + profile.careers + '</div>';
+  html += '</div>';
+  html += '</div>';
+  return html;
 }
 
 function renderStrengths(scores) {

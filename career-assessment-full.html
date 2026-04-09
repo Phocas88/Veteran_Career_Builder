@@ -231,7 +231,8 @@ a:hover{color:var(--gold);}
   .career-card-sector{background:#f0f0f0!important;color:#666!important;border-color:#ddd!important;}
   *{color:#111!important;}
   .career-card-expand{display:block!important;}
-  .section-review{display:block!important;}
+  .section-review{display:none!important;}
+  .review-toggle{display:none!important;}
   .careers-header,.strengths-title{color:#8B6914!important;}
   @page{margin:1.5cm;}
 }
@@ -673,6 +674,29 @@ var SECTIONS = [
       {q:'I build strong professional networks and maintain those relationships over time.', dim:'networking'},
       {q:'I can read a room and adjust my approach based on the group dynamic.', dim:'awareness'},
       {q:'I take ownership of failures and share credit for successes.', dim:'ownership'}
+    ]
+  },
+  {
+    id: 'softskills',
+    name: 'Soft Skills & Civilian Workplace',
+    desc: 'Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree). Be honest — this section identifies areas where many veterans need development.',
+    type: 'likert',
+    questions: [
+      {q:'I can accept constructive criticism from someone younger or less experienced than me without getting defensive.', dim:'humility'},
+      {q:'I am comfortable with ambiguity — not every task has a clear SOP or directive.', dim:'ambiguity'},
+      {q:'I can disagree with a coworker without making it personal or escalating the situation.', dim:'conflict'},
+      {q:'I understand that civilian workplaces move slower than the military, and I can be patient with the pace.', dim:'patience'},
+      {q:'I am comfortable making small talk and building relationships with people who have no military background.', dim:'social'},
+      {q:'I can receive feedback from a civilian manager who has never served without dismissing their perspective.', dim:'respect'},
+      {q:'I understand that "because I said so" is not an effective leadership style in most civilian workplaces.', dim:'adaptability'},
+      {q:'I am comfortable expressing my emotions and asking for help when I need it.', dim:'vulnerability'},
+      {q:'I can adjust my communication style — I don\'t default to military directness in every situation.', dim:'communication'},
+      {q:'I recognize that my military experience, while valuable, does not automatically make me more qualified than civilian colleagues.', dim:'humility2'},
+      {q:'I am comfortable working in environments where not everyone shares my work ethic or sense of urgency.', dim:'tolerance'},
+      {q:'I can handle workplace politics and navigate office dynamics without becoming frustrated or withdrawn.', dim:'politics'},
+      {q:'I am able to network and promote myself professionally without feeling uncomfortable.', dim:'selfpromotion'},
+      {q:'I can take direction from someone I don\'t respect without it affecting my performance.', dim:'professionalism'},
+      {q:'I understand that civilian dress codes, schedules, and workplace norms are different from military standards, and I can adapt.', dim:'culture'}
     ]
   }
 ];
@@ -1138,6 +1162,17 @@ function calculateResults() {
   });
   scores.leadershipOverall = Math.round((leadTotal / (leadCount * 5)) * 100);
 
+  // Soft skills score
+  var ssSec = SECTIONS.filter(function(s){return s.id==='softskills';})[0];
+  if(ssSec) {
+    var ssTotal = 0, ssCount = 0;
+    ssSec.questions.forEach(function(q,j){
+      var val = answers['softskills_'+j];
+      if(val !== undefined){ ssTotal += val; ssCount++; }
+    });
+    scores.softSkills = ssCount > 0 ? Math.round((ssTotal / (ssCount * 5)) * 100) : 50;
+  }
+
   // ── Career Matching ──
   var rankedCareers = matchCareers(scores);
 
@@ -1397,6 +1432,7 @@ function renderResults(scores, rankedCareers, aiData) {
   html += renderSectionResult('Career Interest Domains', scores.interestsOverall, 'Your career interest areas and professional domain preferences.', 'Composite interest score', estimatePercentile(scores.interestsOverall, 'interests'), 'interests', scores);
   // Leadership
   html += renderSectionResult('Leadership & Interpersonal', scores.leadershipOverall, 'Leadership style, communication, teamwork, and people management.', 'Composite leadership score', estimatePercentile(scores.leadershipOverall, 'leadership'), 'leadership', scores);
+  if(scores.softSkills !== undefined) html += renderSectionResult('Soft Skills & Civilian Workplace', scores.softSkills, 'Adaptability to civilian workplace culture, communication flexibility, conflict resolution, and professional development.', 'Civilian readiness composite', estimatePercentile(scores.softSkills, 'general'), 'softskills', scores);
 
   // ── Strengths Summary ──
   html += renderStrengths(scores);
@@ -1417,9 +1453,29 @@ function renderResults(scores, rankedCareers, aiData) {
     html += '</div>';
   }
 
-  // ── Top 15 Career Matches ──
-  html += '<div class="careers-header">Top 15 Career Matches' + (aiData ? ' <span style="font-size:.65rem;color:#5a7090;font-family:Inter,sans-serif;font-weight:400;letter-spacing:0;">— Enhanced with AI analysis</span>' : '') + '</div>';
-  var top15 = rankedCareers.slice(0, 15);
+  // ── Career Matches (50%+ threshold) ──
+  var matchedCareers = rankedCareers.filter(function(r){ return r.matchPct >= 50; });
+  if(matchedCareers.length < 5) matchedCareers = rankedCareers.slice(0, 10); // fallback: show top 10 if few above 50%
+  var topCareers = matchedCareers.slice(0, 30); // cap at 30
+
+  html += '<div class="careers-header">Career Matches (' + topCareers.length + ' results at 50%+ match)' + (aiData ? ' <span style="font-size:.65rem;color:#5a7090;font-family:Inter,sans-serif;font-weight:400;letter-spacing:0;">— Enhanced with AI analysis</span>' : '') + '</div>';
+
+  // Sort/Filter controls
+  html += '<div class="no-print" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center;">';
+  html += '<label style="font-size:.75rem;color:var(--sub);font-weight:600;">Sort:</label>';
+  html += '<select id="careerSort" onchange="sortCareers()" style="padding:.3rem .6rem;border:1px solid var(--border);border-radius:6px;font-size:.78rem;background:var(--card-bg);color:var(--text);">';
+  html += '<option value="match">Match % (highest)</option><option value="salary">Salary (highest)</option><option value="alpha">A–Z</option><option value="time">Transition Time</option></select>';
+  html += '<label style="font-size:.75rem;color:var(--sub);font-weight:600;margin-left:.5rem;">Filter:</label>';
+  html += '<select id="careerFilter" onchange="filterCareers()" style="padding:.3rem .6rem;border:1px solid var(--border);border-radius:6px;font-size:.78rem;background:var(--card-bg);color:var(--text);">';
+  html += '<option value="all">All Sectors</option>';
+  var sectors = {};
+  topCareers.forEach(function(r){ sectors[r.career.sector] = true; });
+  Object.keys(sectors).sort().forEach(function(s){ html += '<option value="' + s + '">' + s + '</option>'; });
+  html += '</select>';
+  html += '</div>';
+  html += '<div id="careerResults">';
+
+  var top15 = topCareers;
 
   // Build AI insight lookup by career title
   var aiInsightMap = {};
@@ -1433,6 +1489,13 @@ function renderResults(scores, rankedCareers, aiData) {
     var aiInsight = aiInsightMap[r.career.title] || null;
     html += renderCareerCard(r, idx, scores, aiInsight);
   });
+
+  html += '</div>'; // close careerResults
+
+  // Store for sorting/filtering
+  window._careerResults = topCareers;
+  window._aiInsightMap = aiInsightMap;
+  window._scores = scores;
 
   // ── Action Buttons ──
   html += '<div class="action-buttons no-print">';
@@ -1536,37 +1599,73 @@ function estimatePercentile(pct, type) {
 }
 
 function renderStrengths(scores) {
-  // Find top 3 strengths
-  var allScores = [];
-  allScores.push({name:'Mechanical & Technical Aptitude', pct:scores.mechanical.pct, civilian:'Your hands-on technical skills translate to trades, engineering, maintenance, and technical roles where practical problem-solving is valued.'});
-  allScores.push({name:'Verbal & Communication Skills', pct:scores.verbal.pct, civilian:'Strong communication skills are essential in management, consulting, sales, and any client-facing role. Your ability to convey complex ideas clearly is a premium asset.'});
-  allScores.push({name:'Numerical & Analytical Reasoning', pct:scores.numerical.pct, civilian:'Data-driven decision making is highly valued in finance, analytics, engineering, and operations. Your quantitative skills give you an edge in these fields.'});
-  allScores.push({name:'Leadership & Interpersonal Skills', pct:scores.leadershipOverall, civilian:'Military leadership experience is one of the most sought-after qualities by civilian employers. Your ability to lead teams, manage conflict, and drive results sets you apart.'});
+  // Only show APTITUDE strengths (not interest-only) — must score 50%+ to be a "strength"
+  var aptitudes = [];
+  if(scores.mechanical.pct >= 50) aptitudes.push({name:'Mechanical & Technical Aptitude', pct:scores.mechanical.pct, civilian:'Your hands-on technical skills translate to trades, engineering, maintenance, and technical roles where practical problem-solving is valued.'});
+  if(scores.verbal.pct >= 50) aptitudes.push({name:'Verbal & Communication Skills', pct:scores.verbal.pct, civilian:'Strong communication skills are essential in management, consulting, sales, and any client-facing role. Your ability to convey complex ideas clearly is a premium asset.'});
+  if(scores.numerical.pct >= 50) aptitudes.push({name:'Numerical & Analytical Reasoning', pct:scores.numerical.pct, civilian:'Data-driven decision making is highly valued in finance, analytics, engineering, and operations. Your quantitative skills give you an edge in these fields.'});
+  if(scores.leadershipOverall >= 50) aptitudes.push({name:'Leadership & Interpersonal Skills', pct:scores.leadershipOverall, civilian:'Military leadership experience is one of the most sought-after qualities by civilian employers. Your ability to lead teams, manage conflict, and drive results sets you apart.'});
 
-  // Add top interest domain
-  var topInterest = {name:'', pct:0};
-  var interestLabels = {cyber:'Cybersecurity',healthcare:'Healthcare',trades:'Skilled Trades',lawenforcement:'Law Enforcement',business:'Business & Management',education:'Education & Training',finance:'Finance',engineering:'Engineering',logistics:'Logistics & Supply Chain',government:'Government & Policy',creative:'Creative & Design',science:'Science & Research',it:'Information Technology',projectmgmt:'Project Management',construction:'Construction',emergency:'Emergency Services',hr:'Human Resources',environmental:'Environmental',intelligence:'Intelligence & Security',realestate:'Real Estate',data:'Data Analytics',sales:'Sales',aerospace:'Aerospace & Aviation',socialwork:'Social Work & Counseling',telecom:'Telecommunications'};
-  Object.keys(scores.interests).forEach(function(dim){
-    if(scores.interests[dim] > topInterest.pct) {
-      topInterest = {name:interestLabels[dim] || dim, pct:scores.interests[dim]};
-    }
-  });
-  if(topInterest.name) {
-    allScores.push({name:topInterest.name + ' Interest', pct:topInterest.pct, civilian:'Your strong interest in ' + topInterest.name.toLowerCase() + ' aligns with a growing sector that actively recruits veterans. Pursue opportunities in this area for maximum career satisfaction.'});
+  // Add work style strengths (only if high)
+  if(scores.workstyle) {
+    var wsLabels = {stresstolerance:'Performs Under Pressure',structure:'Organized & Process-Driven',autonomy:'Self-Directed & Independent',physicality:'Physically Capable',stability:'Values Stability & Reliability'};
+    Object.keys(scores.workstyle).forEach(function(ws){
+      if(scores.workstyle[ws] >= 80 && wsLabels[ws]) {
+        aptitudes.push({name:wsLabels[ws], pct:scores.workstyle[ws], civilian:'This trait is highly valued by employers and sets you apart from many civilian candidates.'});
+      }
+    });
   }
 
-  allScores.sort(function(a,b){ return b.pct - a.pct; });
-  var top3 = allScores.slice(0, 3);
+  // If no aptitudes scored 50%+, show the highest ones with honest messaging
+  if(aptitudes.length === 0) {
+    aptitudes.push({name:'Military Discipline & Accountability', pct:null, civilian:'Your military service demonstrates reliability, accountability, and the ability to follow through on commitments — qualities every employer values.'});
+    aptitudes.push({name:'Adaptability & Resilience', pct:null, civilian:'Veterans consistently demonstrate the ability to learn new skills quickly and adapt to changing environments. Focus on entry-level roles where you can build domain expertise.'});
+  }
+
+  aptitudes.sort(function(a,b){ return (b.pct||0) - (a.pct||0); });
+  var top3 = aptitudes.slice(0, 3);
+
+  // Top career interest (separate from strengths)
+  var interestLabels = {cyber:'Cybersecurity',healthcare:'Healthcare',trades:'Skilled Trades',lawenforcement:'Law Enforcement',business:'Business & Management',education:'Education & Training',finance:'Finance',engineering:'Engineering',logistics:'Logistics & Supply Chain',government:'Government & Policy',creative:'Creative & Design',science:'Science & Research',it:'Information Technology',projectmgmt:'Project Management',construction:'Construction',emergency:'Emergency Services',hr:'Human Resources',environmental:'Environmental',intelligence:'Intelligence & Security',realestate:'Real Estate',dataanalytics:'Data Analytics',sales:'Sales',aerospace:'Aerospace & Aviation',socialwork:'Social Work & Counseling',telecom:'Telecommunications'};
+  var topInterests = [];
+  Object.keys(scores.interests).forEach(function(dim){
+    if(scores.interests[dim] >= 70) topInterests.push({name:interestLabels[dim]||dim, pct:scores.interests[dim]});
+  });
+  topInterests.sort(function(a,b){return b.pct-a.pct;});
 
   var html = '<div class="strengths-section">';
   html += '<div class="strengths-title">Your Top Strengths</div>';
-  html += '<p style="font-size:.85rem;color:var(--sub);margin-bottom:1.2rem;">Veterans with your profile typically excel in roles that leverage these capabilities:</p>';
+  html += '<p style="font-size:.85rem;color:var(--sub);margin-bottom:1rem;">Based on your assessment scores — these are demonstrated abilities, not just interests:</p>';
   top3.forEach(function(s){
     html += '<div class="strength-item">';
-    html += '<div class="strength-name">' + s.name + ' (' + s.pct + '%)</div>';
+    html += '<div class="strength-name">' + s.name + (s.pct !== null ? ' (' + s.pct + '%)' : '') + '</div>';
     html += '<div class="strength-desc">' + s.civilian + '</div>';
     html += '</div>';
   });
+
+  // Show interests separately
+  if(topInterests.length > 0) {
+    html += '<div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--border);">';
+    html += '<div class="strengths-title" style="font-size:.95rem;">Top Career Interests</div>';
+    html += '<p style="font-size:.82rem;color:var(--sub);margin-bottom:.6rem;">Sectors you expressed strong interest in (interest ≠ aptitude — consider whether you have or can build the skills for these fields):</p>';
+    html += '<div style="display:flex;flex-wrap:wrap;gap:.4rem;">';
+    topInterests.slice(0,5).forEach(function(i){
+      html += '<span style="padding:.25rem .7rem;border-radius:100px;font-size:.75rem;font-weight:600;background:rgba(240,192,64,.1);color:var(--gold);border:1px solid rgba(240,192,64,.2);">' + i.name + ' ' + i.pct + '%</span>';
+    });
+    html += '</div></div>';
+  }
+
+  // Soft skills score check
+  if(scores.softSkills !== undefined && scores.softSkills < 75) {
+    html += '<div style="margin-top:1.2rem;padding:1rem;background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.2);border-radius:8px;">';
+    html += '<div style="font-weight:700;color:#dc2626;font-size:.88rem;margin-bottom:.3rem;">⚠️ Soft Skills — Area for Growth (' + scores.softSkills + '%)</div>';
+    html += '<p style="font-size:.82rem;color:var(--text);margin-bottom:.5rem;">Many veterans struggle with soft skills in civilian workplaces — communication styles, conflict resolution, and workplace culture differ significantly from military environments. This is completely normal and trainable.</p>';
+    html += '<a href="/veteran-soft-skills.html" style="display:inline-block;padding:.5rem 1rem;background:#dc2626;color:#fff;border-radius:6px;font-weight:700;font-size:.82rem;text-decoration:none;">🎓 Take Free Soft Skills Training →</a>';
+    html += '</div>';
+  } else if(scores.softSkills !== undefined) {
+    html += '<div style="margin-top:.75rem;"><a href="/veteran-soft-skills.html" style="display:inline-block;padding:.4rem .85rem;background:rgba(26,122,64,.1);border:1px solid rgba(26,122,64,.2);color:#1a7a40;border-radius:6px;font-weight:600;font-size:.78rem;text-decoration:none;">✅ Soft Skills: Strong (' + scores.softSkills + '%) — Review Tips →</a></div>';
+  }
+
   html += '</div>';
   return html;
 }
@@ -1781,6 +1880,33 @@ function renderCareerDetails(r, scores) {
   return html;
 }
 
+function sortCareers() {
+  var by = document.getElementById('careerSort').value;
+  var cars = (window._careerResults || []).slice();
+  if(by === 'salary') cars.sort(function(a,b){ var sa=parseInt((a.career.salary||'').replace(/[^0-9]/g,'')); var sb=parseInt((b.career.salary||'').replace(/[^0-9]/g,'')); return sb-sa; });
+  else if(by === 'alpha') cars.sort(function(a,b){ return a.career.title.localeCompare(b.career.title); });
+  else if(by === 'time') cars.sort(function(a,b){ return (a.career.timeToTransition||'').localeCompare(b.career.timeToTransition||''); });
+  else cars.sort(function(a,b){ return b.matchPct - a.matchPct; });
+  reRenderCareers(cars);
+}
+function filterCareers() {
+  var sector = document.getElementById('careerFilter').value;
+  var cars = (window._careerResults || []).slice();
+  if(sector !== 'all') cars = cars.filter(function(r){ return r.career.sector === sector; });
+  reRenderCareers(cars);
+}
+function reRenderCareers(cars) {
+  var container = document.getElementById('careerResults');
+  if(!container) return;
+  var html = '';
+  var map = window._aiInsightMap || {};
+  var scores = window._scores || {};
+  cars.forEach(function(r, idx) {
+    var ai = map[r.career.title] || null;
+    html += renderCareerCard(r, idx, scores, ai);
+  });
+  container.innerHTML = html;
+}
 function toggleCareerExpand(idx) {
   var el = document.getElementById('career_expand_' + idx);
   if(el) el.classList.toggle('open');

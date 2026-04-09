@@ -1409,6 +1409,19 @@ body.menu-open{overflow:hidden!important;}
         </div>
       </div>
 
+      <!-- SMC Options -->
+      <div style="margin-top:.75rem;padding:.75rem;background:rgba(240,192,64,.04);border:1px solid rgba(240,192,64,.15);border-radius:8px;">
+        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gd2);margin-bottom:.5rem;">Special Monthly Compensation (SMC)</div>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+          <label style="display:flex;align-items:center;gap:.3rem;font-size:.82rem;color:var(--text);cursor:pointer;">
+            <input type="checkbox" id="smcK" style="accent-color:var(--gd2);"> SMC-K (+$123.04/mo — loss of creative organ, hand/foot, eye)
+          </label>
+          <label style="display:flex;align-items:center;gap:.3rem;font-size:.82rem;color:var(--text);cursor:pointer;">
+            <input type="checkbox" id="smcS" style="accent-color:var(--gd2);"> SMC-S Housebound (+$835.87/mo)
+          </label>
+        </div>
+      </div>
+
       <button class="calc-btn" onclick="calcComp()">CALCULATE MY COMPENSATION</button>
 
       <!-- RESULTS -->
@@ -2675,28 +2688,62 @@ function calcComp() {
       statusLabel = 'Veteran alone';
     }
 
-    // Additional children beyond first
+    // Additional children beyond first (VA tables include 1 child in base rate)
     var extraU18add = 0, extraSchAdd = 0;
-    if (childU18 === 0 && childSch > 0) { extraSchAdd = (childSch - 1) * CHILD_SCH; }
-    if (childU18 > 0) { extraU18add = (childU18 - 1) * CHILD_U18; extraSchAdd = childSch * CHILD_SCH; }
+    var totalChildren = childU18 + childSch;
+    if(totalChildren > 0) {
+      // First child is included in the base rate table above
+      // Each additional child under 18 adds CHILD_U18
+      // Each additional child 18-23 in school adds CHILD_SCH
+      if(childU18 > 1) extraU18add = (childU18 - 1) * CHILD_U18;
+      if(childU18 === 0 && childSch > 1) extraSchAdd = (childSch - 1) * CHILD_SCH;
+      if(childU18 >= 1) extraSchAdd = childSch * CHILD_SCH; // All school children are "additional" if we have U18
+      if(childU18 === 1 && childSch > 0) extraSchAdd = childSch * CHILD_SCH;
+    }
     base += extraU18add + extraSchAdd;
   }
 
-  // Parent addition
+  // Parent addition (per parent, VA rate is per-parent)
   var parentAdd = (PARENT_ADD[capped] || 0) * parents;
-  var total = base + parentAdd;
+
+  // SMC additions
+  var smcKAmount = 0, smcSAmount = 0;
+  var smcKEl = document.getElementById('smcK');
+  var smcSEl = document.getElementById('smcS');
+  if(smcKEl && smcKEl.checked) smcKAmount = 123.04;
+  if(smcSEl && smcSEl.checked) smcSAmount = 835.87;
+
+  // Also check conditions for auto-SMC-K
+  var addedConds = window._addedConditions || [];
+  addedConds.forEach(function(c) {
+    var name = (c.name||'').toLowerCase();
+    if(name.indexOf('erectile') !== -1 || name.indexOf('loss of use') !== -1 || name.indexOf('creative organ') !== -1) {
+      smcKAmount = 123.04;
+      if(smcKEl) smcKEl.checked = true;
+    }
+  });
+
+  var total = base + parentAdd + smcKAmount + smcSAmount;
 
   // Render results
   document.getElementById('rcCombined').textContent = capped + '%';
-  document.getElementById('rcExact').textContent = 'Exact: ' + exactCombined.toFixed(2) + '% -> rounded to ' + capped + '%';
+  document.getElementById('rcExact').textContent = 'Exact: ' + exactCombined.toFixed(2) + '% → rounded to ' + capped + '%';
   document.getElementById('rcPay').textContent = fmt(total) + '/month';
   document.getElementById('rcStatus').textContent = statusLabel;
 
-  // Breakdown
+  // Detailed Breakdown
   var breakdown = [];
-  breakdown.push(['Base rate (' + statusLabel + ')', fmt(base)]);
-  if (parentAdd > 0) breakdown.push(['Dependent parent(s) addition (' + parents + ')', '+' + fmt(parentAdd)]);
+  var baseBeforeExtras = base - extraU18add - extraSchAdd;
+  breakdown.push(['Base rate (' + capped + '%, ' + statusLabel + ')', fmt(baseBeforeExtras)]);
+  if(extraU18add > 0) breakdown.push(['Additional children under 18 (' + (childU18-1) + ' × ' + fmt(CHILD_U18) + ')', '+' + fmt(extraU18add)]);
+  if(extraSchAdd > 0) breakdown.push(['Children 18-23 in school (' + (childU18>=1?childSch:childSch-1) + ' × ' + fmt(CHILD_SCH) + ')', '+' + fmt(extraSchAdd)]);
+  if(parentAdd > 0) breakdown.push(['Dependent parent(s) (' + parents + ' × ' + fmt(PARENT_ADD[capped]||0) + ')', '+' + fmt(parentAdd)]);
+  if(smcKAmount > 0) breakdown.push(['SMC-K (loss of creative organ/hand/foot/eye)', '+' + fmt(smcKAmount)]);
+  if(smcSAmount > 0) breakdown.push(['SMC-S (Housebound)', '+' + fmt(smcSAmount)]);
   breakdown.push(['<strong>Total Monthly Compensation</strong>', '<strong>' + fmt(total) + '</strong>']);
+
+  // Annual estimate
+  breakdown.push(['<em>Estimated Annual</em>', '<em>' + fmt(total * 12) + '/year</em>']);
   var breakdownHtml = breakdown.map(function(r) {
     return '<div class="rb-row"><span>' + r[0] + '</span><span>' + r[1] + '</span></div>';
   }).join('');

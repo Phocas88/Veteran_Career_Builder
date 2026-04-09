@@ -286,13 +286,76 @@
   function initSyncMegaMenu() {
     if (window.location.pathname.indexOf('app.html') > -1) return;
     var existingMega = document.getElementById('vcp-mega');
-    if (!existingMega) return; // No mega menu on this page
-    // Fetch the canonical mega menu
+    if (!existingMega) return;
+
+    // Also normalize the desktop nav links
+    var desk = document.querySelector('.vcp-desk');
+    if (desk) {
+      var links = desk.querySelectorAll('a:not(.vcp-cta-link):not(.vcp-account-link)');
+      var correctLinks = [
+        {href:'/career-assessment-full.html', text:'PathFinder™ Pro'},
+        {href:'/military-transition-guide.html', text:'Transition'},
+        {href:'/army-mos-careers.html', text:'MOS Guides'},
+        {href:'/va-disability-rating-schedule.html', text:'VA Calculator'},
+        {href:'/federal-jobs-search.html', text:'Job Search'},
+        {href:'/veteran-discounts.html', text:'Discounts'},
+        {href:'/state-veteran-benefits.html', text:'State Benefits'}
+      ];
+      // Remove existing non-button links
+      links.forEach(function(l) { l.remove(); });
+      // Find the menu button to insert before
+      var menuBtn = desk.querySelector('.vcp-menu-btn');
+      correctLinks.forEach(function(lk) {
+        var a = document.createElement('a');
+        a.href = 'https://veterancareerpath.com' + lk.href;
+        a.textContent = lk.text;
+        a.style.cssText = 'display:flex;align-items:center;padding:0 .6rem;color:rgba(192,216,240,.65);text-decoration:none;font-size:.73rem;font-weight:500;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;flex-shrink:0;';
+        if (menuBtn) desk.insertBefore(a, menuBtn);
+        else desk.appendChild(a);
+      });
+    }
+
+    // Fetch and replace the mega menu
     fetch('/vcp-mega-menu.html').then(function(r){ return r.text(); }).then(function(html) {
       var temp = document.createElement('div');
       temp.innerHTML = html.trim();
       var newMega = temp.firstChild;
-      if (newMega) existingMega.parentNode.replaceChild(newMega, existingMega);
+      if (newMega) {
+        existingMega.parentNode.replaceChild(newMega, existingMega);
+        // Re-bind the All Pages button to the new mega menu
+        var btn = document.getElementById('vcp-menu-btn');
+        var mega = document.getElementById('vcp-mega');
+        var ham = document.getElementById('vcp-ham');
+        var mob = document.getElementById('vcp-mob');
+        if (btn && mega) {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var isOpen = mega.classList.contains('open');
+            mega.classList.toggle('open', !isOpen);
+            btn.classList.toggle('active', !isOpen);
+            btn.setAttribute('aria-expanded', !isOpen);
+            if (mob) mob.classList.remove('open');
+            if (ham) ham.classList.remove('open');
+            document.body.classList.toggle('menu-open', !isOpen);
+          });
+        }
+        // Close mega when clicking a link inside it
+        mega.querySelectorAll('a').forEach(function(a) {
+          a.addEventListener('click', function() {
+            mega.classList.remove('open');
+            btn.classList.remove('active');
+            document.body.classList.remove('menu-open');
+          });
+        });
+        // Close on outside click
+        document.addEventListener('click', function(e) {
+          if (mega.classList.contains('open') && !mega.contains(e.target) && !btn.contains(e.target)) {
+            mega.classList.remove('open');
+            btn.classList.remove('active');
+            document.body.classList.remove('menu-open');
+          }
+        });
+      }
     }).catch(function(){});
   }
 

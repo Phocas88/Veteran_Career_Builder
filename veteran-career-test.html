@@ -577,6 +577,7 @@ function matchCareers(scores){
   var ranked = getRanked(scores);
   var primary = ranked[0].dim;
   var secondary = ranked[1].dim;
+  var third = ranked[2].dim;
   var primaryScore = ranked[0].score;
   var secondaryScore = ranked[1].score;
 
@@ -584,22 +585,36 @@ function matchCareers(scores){
   for(var i=0;i<CAREERS.length;i++){
     var c = CAREERS[i];
     var score = 0;
-    // Primary dimension match
-    if(c.primary === primary) score += primaryScore * 2;
-    else if(c.secondary === primary) score += primaryScore * 1;
+    // Primary dimension match — strong weight
+    if(c.primary === primary) score += primaryScore * 3;
+    else if(c.secondary === primary) score += primaryScore * 1.2;
     // Secondary dimension match
-    if(c.primary === secondary) score += secondaryScore * 1.5;
-    else if(c.secondary === secondary) score += secondaryScore * 0.75;
-    // Bonus for exact primary+secondary combo match
-    if(c.primary === primary && c.secondary === secondary) score += 30;
-    // Bonus for reversed combo
-    if(c.primary === secondary && c.secondary === primary) score += 15;
+    if(c.primary === secondary) score += secondaryScore * 2;
+    else if(c.secondary === secondary) score += secondaryScore * 0.8;
+    // Exact combo match bonus (biggest differentiator)
+    if(c.primary === primary && c.secondary === secondary) score += 50;
+    // Reversed combo
+    if(c.primary === secondary && c.secondary === primary) score += 25;
+    // Penalty if career's primary is user's weakest dimension
+    if(c.primary === ranked[4].dim) score *= 0.5;
+    // Slight bonus if matches third dimension
+    if(c.primary === third || c.secondary === third) score += 10;
 
     if(score > 0) matched.push({career:c, score:score});
   }
 
   matched.sort(function(a,b){ return b.score - a.score; });
-  return matched.slice(0, 8);
+  // Deduplicate by sector — show variety, not 3 of the same type
+  var seen = {};
+  var diverse = [];
+  for(var j=0;j<matched.length && diverse.length<8;j++){
+    var sectorKey = matched[j].career.sector;
+    if(!seen[sectorKey] || seen[sectorKey] < 2) {
+      diverse.push(matched[j]);
+      seen[sectorKey] = (seen[sectorKey]||0) + 1;
+    }
+  }
+  return diverse;
 }
 
 // ── Show Results ──
@@ -670,17 +685,22 @@ function _renderResults(){
   for(var i=0;i<matches.length;i++){
     var m = matches[i];
     var c = m.career;
-    // Calculate match % relative to best match, but constrained by actual score levels
-    var rawPct = Math.round((m.score / (matches[0].score || 1)) * 100);
-    // Scale to user's actual aptitude — can't show 97% match when scores are low
+    // Calculate match % with real spread between results
+    var topScore = matches[0].score || 1;
+    var rawPct = Math.round((m.score / topScore) * 100);
     var avgScore = ranked.reduce(function(s,d){return s+d.score;},0) / ranked.length;
-    var ceiling = Math.min(95, Math.round(avgScore + 12)); // Max match = avg score + 12
-    if(i === 0) {
-      matchPct = isLow ? Math.round(primary.score * 1.2) : Math.min(ceiling, Math.round(avgScore * 1.3 + 10));
+    var ceiling = Math.min(92, Math.round(avgScore + 10));
+
+    if(isLow) {
+      // Low scores: top match gets primary*1.2, others descend sharply
+      matchPct = Math.round(primary.score * 1.1 * (rawPct / 100));
     } else {
-      matchPct = Math.min(ceiling, Math.round(rawPct * (avgScore / 100) + avgScore * 0.3));
+      // Normal: top match gets ceiling, others descend by relative score
+      // Create real spread: top=ceiling, #2=ceiling-5, #3=ceiling-9, etc.
+      var dropoff = i * 4 + Math.round((100 - rawPct) * 0.3);
+      matchPct = Math.max(ceiling - dropoff, Math.round(avgScore * 0.5));
     }
-    matchPct = Math.max(8, Math.min(ceiling, matchPct));
+    matchPct = Math.max(15, Math.min(ceiling, matchPct));
     html += '<div class="career-card">';
     html += '<div class="cc-match">' + matchPct + '% Match</div>';
     html += '<h3>' + c.title + '</h3>';

@@ -432,13 +432,46 @@
   function initMegaCollapse() {
     var labels = document.querySelectorAll('.vcp-mega-section-label');
     labels.forEach(function(label) {
-      // Skip labels that are already featured/always-open (first in each column)
       if (!label.getAttribute('data-toggle')) {
         label.setAttribute('data-toggle', '1');
       }
       label.addEventListener('click', function(e) {
         e.stopPropagation();
         this.classList.toggle('sec-open');
+      });
+    });
+
+    // Also make mobile menu categories collapsible
+    var mobSects = document.querySelectorAll('.vcp-mob-sect');
+    mobSects.forEach(function(sect) {
+      // Add collapse indicator
+      sect.style.cursor = 'pointer';
+      sect.style.display = 'flex';
+      sect.style.justifyContent = 'space-between';
+      sect.style.alignItems = 'center';
+      if (!sect.querySelector('.mob-chev')) {
+        var chev = document.createElement('span');
+        chev.className = 'mob-chev';
+        chev.textContent = '▸';
+        chev.style.cssText = 'font-size:.6rem;color:rgba(240,192,64,.4);transition:transform .2s;';
+        sect.appendChild(chev);
+      }
+      // Collect all sibling <a> tags until next .vcp-mob-sect or end
+      var links = [];
+      var next = sect.nextElementSibling;
+      while (next && !next.classList.contains('vcp-mob-sect') && !next.classList.contains('vcp-mob-cta')) {
+        if (next.tagName === 'A') links.push(next);
+        next = next.nextElementSibling;
+      }
+      // Start collapsed
+      links.forEach(function(a) { a.style.display = 'none'; });
+      // Toggle on click
+      sect.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var isOpen = links[0] && links[0].style.display !== 'none';
+        links.forEach(function(a) { a.style.display = isOpen ? 'none' : 'block'; });
+        var c = sect.querySelector('.mob-chev');
+        if (c) c.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
       });
     });
   }

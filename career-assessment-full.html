@@ -1495,17 +1495,25 @@ function renderResults(scores, rankedCareers, aiData) {
   // ── Section Scores ──
   html += '<h2 style="font-family:\'Bebas Neue\',sans-serif;font-size:1.4rem;letter-spacing:.06em;color:var(--gold);margin:2rem 0 1rem;">Assessment Scores</h2>';
 
-  // All section results — each wrapped in try-catch so one failure doesn't kill all
-  var sections = [
-    function(){ return renderSectionResult('Mechanical & Technical Reasoning', scores.mechanical.pct||0, 'Tests practical aptitude across gears, electricity, tools, and vehicle systems.', (scores.mechanical.raw||0) + '/' + (scores.mechanical.total||0) + ' correct', estimatePercentile(scores.mechanical.pct||0, 'technical'), 'mechanical', scores); },
-    function(){ return renderSectionResult('Verbal & Communication', scores.verbal.pct||0, 'Reading comprehension, vocabulary, and professional communication skills.', (scores.verbal.raw||0) + '/' + (scores.verbal.total||0) + ' correct', estimatePercentile(scores.verbal.pct||0, 'verbal'), 'verbal', scores); },
-    function(){ return renderSectionResult('Numerical & Analytical', scores.numerical.pct||0, 'Math, data interpretation, and analytical problem-solving.', (scores.numerical.raw||0) + '/' + (scores.numerical.total||0) + ' correct', estimatePercentile(scores.numerical.pct||0, 'numerical'), 'numerical', scores); },
-    function(){ return renderSectionResult('Work Style & Environment', scores.workstyleOverall||0, 'Your ideal work environment, structure preferences, and career priorities.', 'Composite preference score', estimatePercentile(scores.workstyleOverall||0, 'workstyle'), 'workstyle', scores); },
-    function(){ return renderSectionResult('Career Interest Domains', scores.interestsOverall||0, 'Your career interest areas and professional domain preferences.', 'Composite interest score', estimatePercentile(scores.interestsOverall||0, 'interests'), 'interests', scores); },
-    function(){ return renderSectionResult('Leadership & Interpersonal', scores.leadershipOverall||0, 'Leadership style, communication, teamwork, and people management.', 'Composite leadership score', estimatePercentile(scores.leadershipOverall||0, 'leadership'), 'leadership', scores); },
-    function(){ if(scores.softSkills !== undefined) return renderSectionResult('Soft Skills & Civilian Workplace', scores.softSkills||0, 'Adaptability to civilian workplace culture, communication flexibility, conflict resolution, and professional development.', 'Civilian readiness composite', estimatePercentile(scores.softSkills||0, 'general'), 'softskills', scores); return ''; }
+  // All section results — defensive rendering with error output
+  var sectionDefs = [
+    {name:'Mechanical & Technical Reasoning', pct:scores.mechanical?scores.mechanical.pct:0, desc:'Tests practical aptitude.', detail:scores.mechanical?(scores.mechanical.raw+'/'+scores.mechanical.total+' correct'):'N/A', type:'technical', id:'mechanical'},
+    {name:'Verbal & Communication', pct:scores.verbal?scores.verbal.pct:0, desc:'Reading comprehension and vocabulary.', detail:scores.verbal?(scores.verbal.raw+'/'+scores.verbal.total+' correct'):'N/A', type:'verbal', id:'verbal'},
+    {name:'Numerical & Analytical', pct:scores.numerical?scores.numerical.pct:0, desc:'Math and data interpretation.', detail:scores.numerical?(scores.numerical.raw+'/'+scores.numerical.total+' correct'):'N/A', type:'numerical', id:'numerical'},
+    {name:'Work Style & Environment', pct:scores.workstyleOverall||0, desc:'Work environment and career priorities.', detail:'Composite score', type:'workstyle', id:'workstyle'},
+    {name:'Career Interest Domains', pct:scores.interestsOverall||0, desc:'Professional interest areas.', detail:'Composite score', type:'interests', id:'interests'},
+    {name:'Leadership & Interpersonal', pct:scores.leadershipOverall||0, desc:'Leadership and teamwork.', detail:'Composite score', type:'leadership', id:'leadership'},
+    {name:'Soft Skills & Civilian Workplace', pct:scores.softSkills||0, desc:'Civilian workplace adaptability.', detail:'Composite score', type:'general', id:'softskills'}
   ];
-  sections.forEach(function(fn){ try { html += fn(); } catch(e){ console.error('Section render error:', e); } });
+  sectionDefs.forEach(function(s){
+    try {
+      var pct = isNaN(s.pct) ? 0 : s.pct;
+      html += renderSectionResult(s.name, pct, s.desc, s.detail, estimatePercentile(pct, s.type), s.id, scores);
+    } catch(e) {
+      console.error('Section "' + s.name + '" render error:', e);
+      html += '<div class="section-result" style="padding:1rem;margin-bottom:1rem;border:1px solid #fca5a5;border-radius:8px;background:#fef2f2;"><strong>' + s.name + '</strong>: ' + (s.pct||0) + '% <span style="color:#dc2626;font-size:.8rem;">(render error: ' + e.message + ')</span></div>';
+    }
+  });
 
   // ── Strengths Summary ──
   html += renderStrengths(scores);
@@ -1626,7 +1634,9 @@ function renderReviewContent(secId, scores) {
       var userAns = answers[secId + '_' + j];
       var isCorrect = userAns === q.correct;
       html += '<div class="review-item">';
-      html += '<div class="review-q">' + (j+1) + '. ' + q.q.split('\n')[0].substring(0,120) + (q.q.length > 120 ? '...' : '') + '</div>';
+      // Strip HTML tags from question text for review display
+      var qText = q.q.replace(/<[^>]*>/g, '').trim();
+      html += '<div class="review-q">' + (j+1) + '. ' + qText.substring(0,150) + (qText.length > 150 ? '...' : '') + '</div>';
       html += '<div class="review-a ' + (isCorrect ? 'correct' : 'incorrect') + '">';
       html += isCorrect ? 'Correct' : 'Your answer: ' + (userAns !== undefined ? letters[userAns] + '. ' + q.opts[userAns] : 'Skipped');
       if(!isCorrect) html += ' | Correct: ' + letters[q.correct] + '. ' + q.opts[q.correct];
@@ -1638,7 +1648,8 @@ function renderReviewContent(secId, scores) {
     sec.questions.forEach(function(q, j) {
       var val = answers[secId + '_' + j] || 0;
       html += '<div class="review-item">';
-      html += '<div class="review-q">' + (j+1) + '. ' + q.q + '</div>';
+      var lqText = (q.q||'').replace(/<[^>]*>/g, '').trim();
+      html += '<div class="review-q">' + (j+1) + '. ' + lqText + '</div>';
       html += '<div class="review-a neutral">Your rating: ' + val + '/5 &mdash; Dimension: ' + q.dim + ' (' + (dimScores[q.dim] || 0) + '%)</div>';
       html += '</div>';
     });

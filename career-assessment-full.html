@@ -17,6 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/vcp-styles.css">
 <script src="/vcp-careers-db.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
@@ -1538,9 +1539,9 @@ function calculateResults() {
   var rankedCareers = matchCareers(scores);
 
   // ── AI Enhancement ──
-  // Race the AI call against a 15-second timeout
+  // Race the AI call against a 30-second timeout (Claude needs time for 10 career insights)
   var aiTimeout = new Promise(function(_, reject) {
-    setTimeout(function() { reject(new Error('AI timeout — showing results without AI')); }, 15000);
+    setTimeout(function() { reject(new Error('AI timeout — showing results without AI')); }, 30000);
   });
 
   Promise.race([enhanceWithAI(scores, rankedCareers), aiTimeout]).then(function(aiData) {
@@ -1591,7 +1592,7 @@ async function enhanceWithAI(scores, rankedCareers) {
   loadingEl.innerHTML = '<div style="text-align:center;padding:3rem 2rem;"><div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:#1a3a6b;margin-bottom:.75rem;">Analyzing Your Results with AI...</div><p style="color:#5a7090;font-size:.88rem;max-width:400px;margin:0 auto 1rem;">Our AI is reviewing your scores alongside current job market data.</p><div style="width:48px;height:48px;border:3px solid #e8edf5;border-top-color:#1a3a6b;border-radius:50%;animation:aispin 1s linear infinite;margin:0 auto;"></div><style>@keyframes aispin{to{transform:rotate(360deg)}}</style><div id="ai-status" style="margin-top:1rem;font-size:.78rem;color:#8a9ab0;"></div></div>';
   var statusEl = document.getElementById('ai-status');
   window._vcpStatusTimer = setInterval(function() {
-    if(statusEl) statusEl.textContent = 'Still processing... (will timeout at 15 seconds)';
+    if(statusEl) statusEl.textContent = 'Still processing... AI is analyzing your career matches.';
   }, 5000);
 
   // Build prompt with top 15 careers and all scores
@@ -2595,7 +2596,197 @@ function toggleCareerExpand(idx) {
 // ══════════════════════════════════════════════════════════════════════════════
 
 function printReport() {
-  window.print();
+  if(!window._pfResults) { showNotification('No results to export.'); return; }
+  var r = window._pfResults;
+  var scores = r.scores;
+  var careers = r.careers || [];
+  var aiData = r.aiData;
+  var doc = new jspdf.jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+  var W = 210, H = 297, M = 18; // page width, height, margin
+  var CW = W - M*2; // content width
+  var y = 0;
+
+  // Colors
+  var navy = [10,22,40], gold = [200,150,10], darkText = [26,42,58], sub = [90,112,144], white = [255,255,255];
+
+  function addPage() { doc.addPage(); y = M; }
+  function checkPage(need) { if(y + need > H - 20) addPage(); }
+  function drawLine(x1,yy,x2,color,w) { doc.setDrawColor(color[0],color[1],color[2]); doc.setLineWidth(w||0.3); doc.line(x1,yy,x2,yy); }
+
+  // ═══ PAGE 1: COVER & SUMMARY ═══
+  // Navy header bar
+  doc.setFillColor(navy[0],navy[1],navy[2]);
+  doc.rect(0,0,W,52,'F');
+  // Gold accent line
+  doc.setFillColor(gold[0],gold[1],gold[2]);
+  doc.rect(0,52,W,1.5,'F');
+
+  // Title
+  doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(255,255,255);
+  doc.text('VCP PathFinder\u2122 Pro', W/2, 18, {align:'center'});
+  doc.setFontSize(11); doc.setTextColor(240,192,64);
+  doc.text('Military Career Intelligence Assessment \u2014 Results Report', W/2, 27, {align:'center'});
+  doc.setFontSize(9); doc.setTextColor(192,216,240);
+  doc.text(r.userName + '  |  ' + r.date + '  |  ID: ' + r.assessmentId, W/2, 36, {align:'center'});
+
+  // Scoring method
+  var hasProfile = scores._hasProfile;
+  doc.setFontSize(8); doc.setTextColor(192,216,240);
+  var method = hasProfile ? 'Profile-Weighted: 60% Aptitude / 30% Experience / 10% Interest' : 'Assessment Only: 75% Aptitude / 25% Interest';
+  doc.text(method, W/2, 45, {align:'center'});
+
+  y = 62;
+
+  // ═══ SECTION SCORES ═══
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(gold[0],gold[1],gold[2]);
+  doc.text('ASSESSMENT SCORES', M, y); y += 2;
+  drawLine(M, y, W-M, gold, 0.5); y += 6;
+
+  var sections = [
+    {name:'Mechanical & Technical', pct:scores.mechanical?scores.mechanical.pct:0, detail:scores.mechanical?(scores.mechanical.raw+'/'+scores.mechanical.total):'N/A'},
+    {name:'Verbal & Communication', pct:scores.verbal?scores.verbal.pct:0, detail:scores.verbal?(scores.verbal.raw+'/'+scores.verbal.total):'N/A'},
+    {name:'Numerical & Analytical', pct:scores.numerical?scores.numerical.pct:0, detail:scores.numerical?(scores.numerical.raw+'/'+scores.numerical.total):'N/A'},
+    {name:'Spatial Reasoning', pct:scores.spatial?scores.spatial.pct:0, detail:scores.spatial?(scores.spatial.raw+'/'+scores.spatial.total):'N/A'},
+    {name:'Processing Speed', pct:scores.speed?scores.speed.pct:0, detail:scores.speed?(scores.speed.raw+'/'+scores.speed.total):'N/A'},
+    {name:'Memory & Recall', pct:scores.memory?scores.memory.pct:0, detail:scores.memory?(scores.memory.raw+'/'+scores.memory.total):'N/A'},
+    {name:'Leadership & Interpersonal', pct:scores.leadershipOverall||0, detail:'Composite'},
+    {name:'Work Style & Environment', pct:scores.workstyleOverall||0, detail:'Composite'},
+    {name:'Career Interests', pct:scores.interestsOverall||0, detail:'Composite'},
+    {name:'Soft Skills & Workplace', pct:scores.softSkills||0, detail:'Composite'}
+  ];
+
+  sections.forEach(function(s) {
+    checkPage(10);
+    // Score bar background
+    doc.setFillColor(235,238,245); doc.roundedRect(M, y, CW, 8, 1.5, 1.5, 'F');
+    // Score bar fill
+    var barW = Math.max(1, (s.pct/100) * CW);
+    var barColor = s.pct >= 80 ? [34,197,94] : s.pct >= 60 ? [240,192,64] : s.pct >= 40 ? [251,146,60] : [248,113,113];
+    doc.setFillColor(barColor[0],barColor[1],barColor[2]); doc.roundedRect(M, y, barW, 8, 1.5, 1.5, 'F');
+    // Label
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(darkText[0],darkText[1],darkText[2]);
+    doc.text(s.name, M+3, y+5.5);
+    // Score
+    doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text(s.pct + '%', W-M-3, y+5.5, {align:'right'});
+    // Detail
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(sub[0],sub[1],sub[2]);
+    doc.text(s.detail, W-M-16, y+5.5, {align:'right'});
+    y += 11;
+  });
+
+  y += 4;
+
+  // ═══ AI SUMMARY (if available) ═══
+  if(aiData && aiData.overallSummary) {
+    checkPage(35);
+    doc.setFillColor(10,22,40); doc.roundedRect(M, y, CW, 30, 3, 3, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(240,192,64);
+    doc.text('AI-POWERED CAREER INTELLIGENCE', M+5, y+7);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(192,216,240);
+    var summaryLines = doc.splitTextToSize(aiData.overallSummary, CW-10);
+    doc.text(summaryLines.slice(0,4), M+5, y+13);
+    if(aiData.strengthsTranslation) {
+      var stLines = doc.splitTextToSize(aiData.strengthsTranslation, CW-10);
+      doc.setFontSize(7.5); doc.setTextColor(160,190,220);
+      doc.text(stLines.slice(0,2), M+5, y+24);
+    }
+    y += 34;
+  }
+
+  // ═══ PAGE 2+: CAREER MATCHES ═══
+  addPage();
+  doc.setFillColor(navy[0],navy[1],navy[2]); doc.rect(0,0,W,16,'F');
+  doc.setFillColor(gold[0],gold[1],gold[2]); doc.rect(0,16,W,1,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(255,255,255);
+  doc.text('CAREER MATCHES', W/2, 11, {align:'center'});
+  y = 24;
+
+  var topCareers = careers.filter(function(c){return c.matchPct >= 50;}).slice(0,20);
+  if(topCareers.length < 5) topCareers = careers.slice(0,10);
+
+  var aiMap = {};
+  if(aiData && aiData.insights) aiData.insights.forEach(function(i){ aiMap[i.career] = i; });
+
+  topCareers.forEach(function(cr, idx) {
+    var cardH = 22;
+    var ai = aiMap[cr.career.title];
+    if(ai) cardH = 38;
+    checkPage(cardH + 4);
+
+    // Card background
+    var isEven = idx % 2 === 0;
+    doc.setFillColor(isEven ? 248 : 255, isEven ? 250 : 255, isEven ? 253 : 255);
+    doc.roundedRect(M, y, CW, cardH, 2, 2, 'F');
+    doc.setDrawColor(220,227,236); doc.roundedRect(M, y, CW, cardH, 2, 2, 'S');
+
+    // Match badge
+    var matchColor = cr.matchPct >= 80 ? [34,197,94] : cr.matchPct >= 65 ? [240,192,64] : [251,146,60];
+    doc.setFillColor(matchColor[0],matchColor[1],matchColor[2]);
+    doc.roundedRect(M+2, y+2, 14, 7, 1.5, 1.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(255,255,255);
+    doc.text(cr.matchPct+'%', M+9, y+6.8, {align:'center'});
+
+    // Title & salary
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(darkText[0],darkText[1],darkText[2]);
+    doc.text((idx+1)+'. '+cr.career.title, M+19, y+7);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(sub[0],sub[1],sub[2]);
+    doc.text(cr.career.salary + '  |  ' + cr.career.sector, M+19, y+12.5);
+
+    // Requirements
+    if(cr.career.requirements && cr.career.requirements.length) {
+      doc.setFontSize(6.5);
+      doc.text('Requirements: ' + cr.career.requirements.slice(0,3).join(', '), M+19, y+17);
+    }
+
+    // AI insight
+    if(ai) {
+      doc.setFillColor(245,248,252); doc.rect(M+4, y+20, CW-8, 15, 'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(gold[0],gold[1],gold[2]);
+      doc.text('AI ANALYSIS', M+6, y+24);
+      doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(darkText[0],darkText[1],darkText[2]);
+      var fitLines = doc.splitTextToSize(ai.whyYouFit || '', CW-14);
+      doc.text(fitLines.slice(0,2), M+6, y+28);
+      if(ai.timeframe) {
+        doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(sub[0],sub[1],sub[2]);
+        doc.text('Timeline: ' + ai.timeframe, M+6, y+33.5);
+      }
+    }
+
+    y += cardH + 3;
+  });
+
+  // ═══ IMMEDIATE ACTIONS (if AI) ═══
+  if(aiData && aiData.immediateActions && aiData.immediateActions.length) {
+    checkPage(30);
+    y += 4;
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(gold[0],gold[1],gold[2]);
+    doc.text('RECOMMENDED NEXT STEPS', M, y); y += 2;
+    drawLine(M, y, W-M, gold, 0.4); y += 6;
+    aiData.immediateActions.forEach(function(action, i) {
+      checkPage(10);
+      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(gold[0],gold[1],gold[2]);
+      doc.text((i+1)+'.', M, y+1);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(darkText[0],darkText[1],darkText[2]);
+      var actionLines = doc.splitTextToSize(action, CW-8);
+      doc.text(actionLines, M+6, y+1);
+      y += actionLines.length * 4 + 3;
+    });
+  }
+
+  // ═══ FOOTER ON EVERY PAGE ═══
+  var pages = doc.internal.getNumberOfPages();
+  for(var p = 1; p <= pages; p++) {
+    doc.setPage(p);
+    doc.setFillColor(navy[0],navy[1],navy[2]); doc.rect(0, H-10, W, 10, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(6); doc.setTextColor(192,216,240);
+    doc.text('VCP PathFinder\u2122 Pro  |  veterancareerpath.com  |  ' + r.date, W/2, H-4, {align:'center'});
+    doc.setTextColor(120,140,160);
+    doc.text('Page ' + p + ' of ' + pages, W-M, H-4, {align:'right'});
+  }
+
+  doc.save('VCP-PathFinder-Pro-Report-' + r.assessmentId + '.pdf');
+  showNotification('PDF report downloaded.');
 }
 
 function saveResults() {

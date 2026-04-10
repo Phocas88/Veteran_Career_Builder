@@ -42,10 +42,12 @@ body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f2f5fa;font-size:1
 .sb-link:hover,.sb-link.on{background:var(--lt);color:var(--nv);font-weight:600;}
 @media(max-width:880px){
   .sidebar{position:static;}
-  .sb-box{display:flex;flex-wrap:wrap;gap:.35rem;padding:.75rem;}
-  .sb-title{width:100%;margin-bottom:.35rem;}
-  .sb-link{padding:.25rem .6rem;background:var(--lt);border-radius:20px;font-size:.75rem;}
+  .sb-box{padding:.75rem;}
+  .sb-title{margin-bottom:.35rem;}
+  .sb-link{display:none;}
+  .sb-select{display:block;width:100%;padding:.6rem .75rem;border:1.5px solid var(--bd);border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif;color:var(--nv);background:#fff;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%235a7a8a' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;cursor:pointer;}
 }
+@media(min-width:881px){.sb-select{display:none;}}
 
 /* SEARCH */
 .search-wrap{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:.85rem 1rem;margin-bottom:1.1rem;}
@@ -150,11 +152,11 @@ body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f2f5fa;font-size:1
   .calc-grid{grid-template-columns:1fr;}
   .calc-body{padding:.9rem;}
   .sc-bd{padding:.9rem;}
-  /* Sidebar becomes horizontal scroll */
+  /* Sidebar as dropdowns on mobile */
   .sidebar{position:static;margin-bottom:.75rem;}
-  .sb-box{display:flex;flex-wrap:wrap;gap:.35rem;padding:.65rem;max-height:none;max-width:100%;}
-  .sb-title{width:auto;flex-shrink:0;margin-bottom:0;padding-bottom:0;border-bottom:none;margin-right:.5rem;}
-  .sb-link{flex-shrink:0;white-space:nowrap;min-height:44px;display:flex;align-items:center;padding:.35rem .65rem;}
+  .sb-box{padding:.5rem .65rem;margin-bottom:.5rem;}
+  .sb-link{display:none;}
+  .sb-select{min-height:44px;font-size:.88rem;}
   /* Tables horizontally scrollable */
   .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:calc(100vw - 2rem);}
   .ct{font-size:.76rem;min-width:0;width:max-content;}
@@ -207,8 +209,8 @@ body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#f2f5fa;font-size:1
   .crit-pct{width:100%!important;min-width:0!important;text-align:left!important;padding:.35rem .6rem!important;font-size:.75rem!important;border-radius:7px 7px 0 0!important;border-left:3px solid #e2e8f0!important;}
   .crit-desc{width:100%;padding:.35rem .6rem .5rem!important;font-size:.78rem!important;line-height:1.5!important;border-radius:0 0 7px 7px!important;}
   /* Sidebar compact */
-  .sb-link{font-size:.7rem;padding:.2rem .5rem;}
-  .sb-box{gap:.25rem;padding:.5rem;}
+  .sb-box{padding:.35rem .5rem;}
+  .sb-select{font-size:.85rem;padding:.5rem .65rem;}
   .search-wrap{padding:.5rem .65rem;margin-bottom:.65rem;}
   .search-wrap input{font-size:.85rem;padding:.5rem .7rem;}
   .disclaimer{padding:.5rem .65rem;font-size:.73rem;}
@@ -1308,6 +1310,22 @@ body.menu-open{overflow:hidden!important;}
     <a class="sb-link" href="#infectious-immune-toxic-exposure">🦠 Infectious, Immune & Toxic Exposure</a>
     <a class="sb-link" href="#dental-oral">🦷 Dental & Oral</a>
     <a class="sb-link" href="#burn-pit-pact-act">🔥 Burn Pit & PACT Act</a>
+    <select class="sb-select" onchange="if(this.value)document.querySelector(this.value).scrollIntoView({behavior:'smooth',block:'start'});this.selectedIndex=0;">
+      <option value="">Jump to Category...</option>
+      <option value="#musculoskeletal-back-joints-bones">Musculoskeletal — Back, Joints & Bones</option>
+      <option value="#mental-health">Mental Health</option>
+      <option value="#neurological">Neurological</option>
+      <option value="#respiratory-pulmonary">Respiratory / Pulmonary</option>
+      <option value="#cardiovascular">Cardiovascular</option>
+      <option value="#digestive-gi">Digestive / GI</option>
+      <option value="#genitourinary-kidney">Genitourinary / Kidney</option>
+      <option value="#skin-conditions">Skin Conditions</option>
+      <option value="#hearing-vision">Hearing & Vision</option>
+      <option value="#endocrine-metabolic">Endocrine / Metabolic</option>
+      <option value="#infectious-immune-toxic-exposure">Infectious, Immune & Toxic Exposure</option>
+      <option value="#dental-oral">Dental & Oral</option>
+      <option value="#burn-pit-pact-act">Burn Pit & PACT Act</option>
+    </select>
   </div>
   <div class="sb-box">
     <div class="sb-title">Quick Links</div>
@@ -1315,6 +1333,13 @@ body.menu-open{overflow:hidden!important;}
     <a class="sb-link" href="va-disability-rating-guide.html">Rating Guide</a>
     <a class="sb-link" href="va-disability-benefits-calculator.html">Benefits Calc</a>
     <a class="sb-link" href="va-disability-claim-checklist.html">Claim Checklist</a>
+    <select class="sb-select" onchange="if(this.value){if(this.value.startsWith('#')){document.querySelector(this.value).scrollIntoView({behavior:'smooth',block:'start'});}else{window.location.href=this.value;}}this.selectedIndex=0;">
+      <option value="">Quick Links...</option>
+      <option value="#calc">Calculator</option>
+      <option value="va-disability-rating-guide.html">Rating Guide</option>
+      <option value="va-disability-benefits-calculator.html">Benefits Calc</option>
+      <option value="va-disability-claim-checklist.html">Claim Checklist</option>
+    </select>
   </div>
 </div>
 

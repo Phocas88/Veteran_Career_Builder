@@ -13,6 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/vcp-styles.css">
 <script src="/vcp-careers-db.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
@@ -1075,12 +1076,21 @@ function _renderResults(){
 
   // Action buttons
   html += '<div class="action-btns">';
-  html += '<button class="action-btn primary" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Print Results</button>';
+  html += '<button class="action-btn primary" onclick="exportPDF()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Download PDF</button>';
   html += '<button class="action-btn secondary" onclick="retakeAssessment()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg> Retake Assessment</button>';
   html += '<a href="/app.html" class="action-btn primary" style="text-decoration:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Build Your Resume</a>';
   html += '</div>';
 
   html += '</div>'; // results-body
+
+  // Store results for PDF export
+  window._liteResults = {
+    profileType: profileType,
+    date: new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),
+    ranked: ranked,
+    matches: matches,
+    scores: scores
+  };
 
   resultsScreen.innerHTML = html;
 
@@ -1093,6 +1103,86 @@ function _renderResults(){
   }, 100);
 
   window.scrollTo({top:0,behavior:"smooth"});
+}
+
+// ── PDF Export ──
+function exportPDF(){
+  if(!window._liteResults) return;
+  var r = window._liteResults;
+  var doc = new jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  var W=210,H=297,M=12,CW=W-M*2,y=0;
+  var navy=[10,22,40],gold=[200,150,10],dk=[26,42,58],sub=[90,112,144];
+  function addPage(){doc.addPage();y=10;}
+  function checkPage(n){if(y+n>H-12)addPage();}
+
+  // Header
+  doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,18,'F');
+  doc.setFillColor(gold[0],gold[1],gold[2]);doc.rect(0,18,W,0.8,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(255,255,255);
+  doc.text('VCP PathFinder\u2122 Lite \u2014 Results Report',M,8);
+  doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(192,216,240);
+  doc.text(r.date+'  |  Profile: '+r.profileType,M,14);
+  y=24;
+
+  // Scores — 2-column
+  doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(gold[0],gold[1],gold[2]);
+  doc.text('ASSESSMENT SCORES',M,y);y+=5;
+  var DIM_LABELS={mechanical:'Mechanical',verbal:'Verbal',numerical:'Numerical',spatial:'Spatial',speed:'Speed',memory:'Memory',workstyle:'Work Style',interests:'Interests',leadership:'Leadership',softskills:'Soft Skills'};
+  var colW=(CW-4)/2;
+  r.ranked.forEach(function(s,i){
+    var col=i%2;var xOff=M+col*(colW+4);
+    if(col===0&&i>0)y+=7;
+    doc.setFillColor(235,238,245);doc.roundedRect(xOff,y,colW,5.5,1,1,'F');
+    var bW=Math.max(1,(s.score/100)*colW);
+    var bc=s.score>=80?[34,197,94]:s.score>=60?[240,192,64]:s.score>=40?[251,146,60]:[248,113,113];
+    doc.setFillColor(bc[0],bc[1],bc[2]);doc.roundedRect(xOff,y,bW,5.5,1,1,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.setTextColor(dk[0],dk[1],dk[2]);
+    doc.text(DIM_LABELS[s.dim]||s.dim,xOff+2,y+3.8);
+    doc.text(s.score+'%',xOff+colW-2,y+3.8,{align:'right'});
+  });
+  if(r.ranked.length%2!==0)y+=7;
+  y+=10;
+
+  // Career Matches — compact table
+  checkPage(10);
+  doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(gold[0],gold[1],gold[2]);
+  doc.text('CAREER MATCHES',M,y);y+=4;
+  doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(M,y,CW,5,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(6);doc.setTextColor(255,255,255);
+  doc.text('#',M+1.5,y+3.5);doc.text('Career',M+8,y+3.5);
+  doc.text('Salary',W-M-38,y+3.5);doc.text('Sector',W-M-16,y+3.5);
+  y+=6;
+
+  r.matches.forEach(function(m,idx){
+    checkPage(6);
+    if(idx%2===0){doc.setFillColor(248,250,253);doc.rect(M,y,CW,5,'F');}
+    doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.setTextColor(dk[0],dk[1],dk[2]);
+    doc.text(''+(idx+1),M+2,y+3.5);
+    doc.text(m.career.title.substring(0,45),M+8,y+3.5);
+    doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(sub[0],sub[1],sub[2]);
+    doc.text((m.career.salary||'').substring(0,18),W-M-38,y+3.5);
+    doc.text((m.career.sector||'').substring(0,14),W-M-16,y+3.5);
+    doc.setDrawColor(230,235,242);doc.setLineWidth(0.15);doc.line(M,y+5,W-M,y+5);
+    y+=5.5;
+  });
+
+  // Upsell
+  y+=6;checkPage(14);
+  doc.setFillColor(245,248,252);doc.roundedRect(M,y,CW,10,2,2,'F');
+  doc.setDrawColor(200,150,10);doc.roundedRect(M,y,CW,10,2,2,'S');
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(gold[0],gold[1],gold[2]);
+  doc.text('Upgrade to PathFinder Pro for 180 questions, 1,000+ career matches, AI analysis, and more.',M+4,y+6);
+
+  // Footer
+  var pages=doc.internal.getNumberOfPages();
+  for(var p=1;p<=pages;p++){
+    doc.setPage(p);
+    doc.setDrawColor(200,200,200);doc.setLineWidth(0.2);doc.line(M,H-8,W-M,H-8);
+    doc.setFont('helvetica','normal');doc.setFontSize(5.5);doc.setTextColor(140,150,165);
+    doc.text('VCP PathFinder\u2122 Lite  |  veterancareerpath.com  |  '+r.date,M,H-4);
+    doc.text('Page '+p+'/'+pages,W-M,H-4,{align:'right'});
+  }
+  doc.save('VCP-PathFinder-Lite-Report.pdf');
 }
 
 // ── Retake ──

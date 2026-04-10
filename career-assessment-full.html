@@ -1097,6 +1097,9 @@ function updateTimerDisplay() {
 
 function renderSection() {
   window.scrollTo({top:0, behavior:'smooth'});
+  // Restore nav row (hidden during break screen)
+  var navRow = document.querySelector('.nav-row');
+  if(navRow) navRow.style.display = '';
   var sec = SECTIONS[currentSection];
   startSectionTimer(sec);
   var container = document.getElementById('questions-container');
@@ -1383,6 +1386,9 @@ function nextSection() {
 }
 
 function showBreakPrompt() {
+  // Hide the nav row during break (it has its own Continue button)
+  var navRow = document.querySelector('.nav-row');
+  if(navRow) navRow.style.display = 'none';
   var container = document.getElementById('questions-container');
   var secName = SECTIONS[currentSection] ? SECTIONS[currentSection].name : 'Next Section';
   var completed = currentSection;
@@ -1949,7 +1955,7 @@ function renderResults(scores, rankedCareers, aiData) {
 
   // ── Report Header ──
   html += '<div class="report-header">';
-  html += '<img src="https://veterancareerpath.com/logo.png" alt="VCP" class="report-logo">';
+  html += '<img src="https://veterancareerpath.com/logo.png" alt="VCP" class="report-logo no-print">';
   html += '<div class="report-title">VCP PathFinder&trade; Pro</div>';
   html += '<div class="report-subtitle">Military Career Intelligence Assessment &mdash; Results Report</div>';
   html += '<div class="report-meta"><strong>' + userName + '</strong><span>|</span>' + today + '<span>|</span>ID: ' + assessmentId + '</div>';
@@ -2759,19 +2765,24 @@ function printReport() {
 function saveResults() {
   if(!window._pfResults) return;
   try {
+    var topCareers = window._pfResults.careers.slice(0,15).map(function(r){
+      return { title: r.career.title, name: r.career.title, match: r.matchPct, matchPct: r.matchPct, salary: r.career.salary, sector: r.career.sector };
+    });
     var data = {
       assessmentId: window._pfResults.assessmentId,
-      date: window._pfResults.date,
+      type: 'VCP PathFinder\u2122 Pro',
+      date: Date.now(),
       userName: window._pfResults.userName,
       scores: window._pfResults.scores,
-      topCareers: window._pfResults.careers.slice(0,15).map(function(r){
-        return { title: r.career.title, matchPct: r.matchPct, salary: r.career.salary, sector: r.career.sector };
-      }),
+      topCareers: topCareers,
+      results: topCareers,
       answers: answers,
       timestamp: Date.now()
     };
+    // Save to both keys so app.html profile can find it
     localStorage.setItem('vcp_pathfinder_result', JSON.stringify(data));
-    showNotification('Results saved to your profile.');
+    localStorage.setItem('vcb_assessment_result', JSON.stringify(data));
+    showNotification('Results saved to your profile!');
   } catch(e) {
     showNotification('Error saving results. Please try again.');
   }

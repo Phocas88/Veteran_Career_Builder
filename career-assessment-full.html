@@ -477,22 +477,56 @@ a:hover{color:var(--gold);}
 
   var viewSaved = params.get('view_saved');
   if(viewSaved === '1') {
+    document.getElementById('gate').classList.add('hidden');
+    // Try localStorage first, then Firestore
     var savedResult = null;
     try { savedResult = JSON.parse(localStorage.getItem('vcp_pathfinder_result') || 'null'); } catch(e) {}
     if(savedResult && savedResult.scores) {
-      document.getElementById('gate').classList.add('hidden');
-      setTimeout(function(){
-        window._pfResults = savedResult;
-        var scores = savedResult.scores;
-        var rankedCareers = savedResult.careers || savedResult.topCareers || [];
-        showScreen('scr-results');
-        try { renderResults(scores, rankedCareers, savedResult.aiData || null); }
-        catch(e) {
-          document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);font-family:Bebas Neue,sans-serif;">Your Saved Results</h2><p style="color:var(--sub);margin-bottom:1rem;">Assessment ID: '+(savedResult.assessmentId||'N/A')+' | Date: '+(savedResult.date ? new Date(savedResult.date).toLocaleDateString() : 'Unknown')+'</p><pre style="text-align:left;font-size:.75rem;background:rgba(255,255,255,.05);padding:1rem;border-radius:8px;overflow:auto;max-height:300px;color:var(--sub);">'+JSON.stringify(scores,null,2)+'</pre><p style="margin-top:1rem;"><a href="/career-assessment-full.html" style="padding:.5rem 1rem;background:var(--navy);color:#fff;border:none;border-radius:6px;text-decoration:none;font-weight:700;">Retake Assessment</a></p></div>';
-        }
-      }, 500);
+      _displaySavedResult(savedResult);
       return;
     }
+    // Not in localStorage — try Firestore (different device)
+    document.getElementById('results-content').innerHTML = '<div style="text-align:center;padding:3rem;"><div style="width:40px;height:40px;border:3px solid rgba(255,255,255,.1);border-top-color:#f0c040;border-radius:50%;animation:aispin 1s linear infinite;margin:0 auto 1rem;"></div><p style="color:var(--sub);">Loading your saved results...</p></div>';
+    showScreen('scr-results');
+    try {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if(!user) {
+          document.getElementById('results-content').innerHTML = '<div style="text-align:center;padding:2rem;"><h2 style="color:var(--gold);font-family:Bebas Neue,sans-serif;">No Saved Results Found</h2><p style="color:var(--sub);margin:1rem 0;">Sign in to access your results from any device, or take the assessment on this device.</p><a href="/app.html" style="display:inline-block;padding:.6rem 1.2rem;background:var(--navy);color:#fff;border-radius:8px;text-decoration:none;font-weight:700;margin-right:.5rem;">Sign In</a><a href="/career-assessment-full.html" style="display:inline-block;padding:.6rem 1.2rem;background:var(--gold);color:#0a1628;border-radius:8px;text-decoration:none;font-weight:700;">Take Assessment</a></div>';
+          return;
+        }
+        firebase.firestore().collection('profiles').doc(user.uid).get().then(function(doc) {
+          if(doc.exists && doc.data().assessmentResult) {
+            var fsResult = doc.data().assessmentResult;
+            // Cache to localStorage for next time
+            try {
+              localStorage.setItem('vcp_pathfinder_result', JSON.stringify(fsResult));
+              localStorage.setItem('vcb_assessment_result', JSON.stringify(fsResult));
+            } catch(e) {}
+            _displaySavedResult(fsResult);
+          } else {
+            document.getElementById('results-content').innerHTML = '<div style="text-align:center;padding:2rem;"><h2 style="color:var(--gold);font-family:Bebas Neue,sans-serif;">No Saved Results</h2><p style="color:var(--sub);margin:1rem 0;">You haven\'t completed an assessment yet.</p><a href="/career-assessment-full.html" style="display:inline-block;padding:.6rem 1.2rem;background:var(--gold);color:#0a1628;border-radius:8px;text-decoration:none;font-weight:700;">Take Assessment</a></div>';
+          }
+        }).catch(function() {
+          document.getElementById('results-content').innerHTML = '<div style="text-align:center;padding:2rem;"><p style="color:var(--sub);">Could not load results. Please try again.</p></div>';
+        });
+      });
+    } catch(e) {
+      document.getElementById('results-content').innerHTML = '<div style="text-align:center;padding:2rem;"><p style="color:var(--sub);">Could not connect. Please try again.</p></div>';
+    }
+    return;
+  }
+
+  function _displaySavedResult(savedResult) {
+    setTimeout(function(){
+      window._pfResults = savedResult;
+      var scores = savedResult.scores;
+      var rankedCareers = savedResult.careers || savedResult.topCareers || [];
+      showScreen('scr-results');
+      try { renderResults(scores, rankedCareers, savedResult.aiData || null); }
+      catch(e) {
+        document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);font-family:Bebas Neue,sans-serif;">Your Saved Results</h2><p style="color:var(--sub);margin-bottom:1rem;">Assessment ID: '+(savedResult.assessmentId||'N/A')+' | Date: '+(savedResult.date ? new Date(savedResult.date).toLocaleDateString() : 'Unknown')+'</p><pre style="text-align:left;font-size:.75rem;background:rgba(255,255,255,.05);padding:1rem;border-radius:8px;overflow:auto;max-height:300px;color:var(--sub);">'+JSON.stringify(scores,null,2)+'</pre><p style="margin-top:1rem;"><a href="/career-assessment-full.html" style="padding:.5rem 1rem;background:var(--navy);color:#fff;border:none;border-radius:6px;text-decoration:none;font-weight:700;">Retake Assessment</a></p></div>';
+      }
+    }, 300);
   }
 
   // Check for standalone one-time purchase return from Stripe
@@ -2204,6 +2238,8 @@ function renderResults(scores, rankedCareers, aiData) {
 
   // Save data for later
   window._pfResults = { scores: scores, careers: rankedCareers, aiData: aiData || null, assessmentId: assessmentId, userName: userName, date: today };
+  // Auto-save results on completion
+  try { saveResults(); } catch(e) {}
   } catch(err) {
     console.error('Results render error:', err);
     output.innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);">Results Processing Error</h2><p>There was an issue rendering your results. Your scores have been calculated.</p><pre style="text-align:left;font-size:.75rem;background:#f8f8f8;padding:1rem;border-radius:8px;overflow:auto;max-height:200px;">' + JSON.stringify(scores, null, 2) + '</pre><p style="margin-top:1rem;"><button onclick="location.reload()" style="padding:.5rem 1rem;background:var(--navy);color:#fff;border:none;border-radius:6px;cursor:pointer;">Retry</button></p></div>';
@@ -2898,13 +2934,30 @@ function saveResults() {
       aiData: window._pfResults.aiData || null,
       topCareers: topCareers,
       results: topCareers,
-      answers: answers,
       timestamp: Date.now()
     };
-    // Save to both keys so app.html profile can find it
+    // Save to localStorage
     localStorage.setItem('vcp_pathfinder_result', JSON.stringify(data));
     localStorage.setItem('vcb_assessment_result', JSON.stringify(data));
-    showNotification('Results saved to your profile!');
+
+    // Save to Firestore for cross-device access
+    try {
+      if(typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
+        var user = firebase.auth().currentUser;
+        if(user) {
+          firebase.firestore().collection('profiles').doc(user.uid).set({
+            assessmentResult: data,
+            lastAssessmentDate: Date.now()
+          }, {merge: true}).then(function(){
+            showNotification('Results saved to your profile! Accessible from any device.');
+          }).catch(function(){
+            showNotification('Results saved locally. Sign in to sync across devices.');
+          });
+          return;
+        }
+      }
+    } catch(e) {}
+    showNotification('Results saved! Sign in to access from any device.');
   } catch(e) {
     showNotification('Error saving results. Please try again.');
   }

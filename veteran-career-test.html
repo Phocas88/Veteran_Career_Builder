@@ -300,7 +300,7 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
     <!-- Comparison to Pro -->
     <div style="background:rgba(240,192,64,.04);border:1px solid rgba(240,192,64,.12);border-radius:10px;padding:.85rem 1.1rem;margin-bottom:1.5rem;text-align:left;">
       <div style="font-size:.78rem;color:rgba(255,255,255,.55);line-height:1.6;">
-        <strong style="color:#f0c040;">Lite vs Pro:</strong> This free assessment covers all 10 dimensions with 40 questions. Want deeper analysis? <a href="/career-assessment-full.html" style="color:#f0c040;text-decoration:underline;">PathFinder Pro</a> goes 4.5x deeper with 180 questions, ASVAB-style visuals, timed sections, personality profiling, AI-powered gap analysis, and career progression maps.
+        <strong style="color:#f0c040;">Lite vs Pro:</strong> This free assessment covers all 10 dimensions with 44 questions. Want deeper analysis? <a href="/career-assessment-full.html" style="color:#f0c040;text-decoration:underline;">PathFinder Pro</a> goes 4.5x deeper with 180 questions, ASVAB-style visuals, timed sections, personality profiling, AI-powered gap analysis, and career progression maps.
       </div>
     </div>
 
@@ -508,14 +508,24 @@ const QUESTIONS = [
   {dim:"softskills",section:"Soft Skills",type:"likert",sub:"adaptability",
    text:"I recognize that my military experience, while valuable, does not automatically make me more qualified than civilian colleagues."},
   {dim:"softskills",section:"Soft Skills",type:"likert",sub:"culture",
-   text:"I understand civilian dress codes, schedules, and workplace norms are different from military standards, and I can adapt."}
+   text:"I understand civilian dress codes, schedules, and workplace norms are different from military standards, and I can adapt."},
+
+  // ═══ PHYSICAL CAPABILITIES (4 Likert) ═══
+  {dim:"workstyle",section:"Physical Capabilities",type:"likert",sub:"heights_ok",
+   text:"I am comfortable working at significant heights \u2014 towers, rooftops, scaffolding, or elevated platforms."},
+  {dim:"workstyle",section:"Physical Capabilities",type:"likert",sub:"heavy_lift_ok",
+   text:"I can regularly lift and carry 50 pounds or more as part of my daily work."},
+  {dim:"workstyle",section:"Physical Capabilities",type:"likert",sub:"no_physical_limits",
+   text:"I have no physical disabilities or conditions that would limit the type of work I can perform."},
+  {dim:"workstyle",section:"Physical Capabilities",type:"likert",sub:"has_disability",
+   text:"I have a current VA disability rating of 30% or higher."}
 ];
 
-var TOTAL_Q = QUESTIONS.length; // 40
+var TOTAL_Q = QUESTIONS.length; // 44
 
 // Section order and labels for display
-var SECTION_ORDER = ["Mechanical & Technical","Verbal & Communication","Numerical & Analytical","Spatial Reasoning","Processing Speed","Memory & Recall","Work Style","Career Interests","Leadership","Soft Skills"];
-var SECTION_COLORS = {"Mechanical & Technical":"#3b82f6","Verbal & Communication":"#8b5cf6","Numerical & Analytical":"#10b981","Spatial Reasoning":"#f59e0b","Processing Speed":"#ef4444","Memory & Recall":"#06b6d4","Work Style":"#e8aa10","Career Interests":"#ec4899","Leadership":"#ef4444","Soft Skills":"#14b8a6"};
+var SECTION_ORDER = ["Mechanical & Technical","Verbal & Communication","Numerical & Analytical","Spatial Reasoning","Processing Speed","Memory & Recall","Work Style","Career Interests","Leadership","Soft Skills","Physical Capabilities"];
+var SECTION_COLORS = {"Mechanical & Technical":"#3b82f6","Verbal & Communication":"#8b5cf6","Numerical & Analytical":"#10b981","Spatial Reasoning":"#f59e0b","Processing Speed":"#ef4444","Memory & Recall":"#06b6d4","Work Style":"#e8aa10","Career Interests":"#ec4899","Leadership":"#ef4444","Soft Skills":"#14b8a6","Physical Capabilities":"#6366f1"};
 
 // Map old 5-dim system for career matching compatibility
 var DIM_LABELS = {
@@ -925,6 +935,21 @@ function matchCareers(scores){
     // Slight bonus if matches third dimension
     if(c.primary === third || c.secondary === third) score += 10;
 
+    // Physical requirements penalty
+    var ph = c.ph;
+    if(ph && score > 0) {
+      var heightsOk = getLikertSub('workstyle','heights_ok');
+      var liftOk = getLikertSub('workstyle','heavy_lift_ok');
+      var noLimits = getLikertSub('workstyle','no_physical_limits');
+      var hasDis = getLikertSub('workstyle','has_disability');
+      if(ph.h && heightsOk < 40) score *= 0.4;
+      if(ph.l && liftOk < 40) score *= 0.5;
+      if(hasDis >= 60 && noLimits < 60) {
+        var physDemand = (ph.h?1:0)+(ph.l?1:0)+(ph.s?1:0)+(ph.o?1:0);
+        score *= Math.max(0.3, 1 - physDemand * 0.15);
+      }
+    }
+
     if(score > 0) matched.push({career:c, score:score});
   }
 
@@ -1061,7 +1086,7 @@ function _renderResults(){
   html += '<div style="text-align:center;margin-bottom:1.25rem;">';
   html += '<div style="font-size:1.4rem;margin-bottom:.4rem;">\uD83C\uDFAF</div>';
   html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:1.5rem;letter-spacing:.06em;color:#f0c040;margin:0 0 .4rem;">Want the Full Picture?</h2>';
-  html += '<p style="color:rgba(192,216,240,.65);font-size:.85rem;max-width:550px;margin:0 auto;line-height:1.6;">PathFinder Lite gave you a snapshot with 40 questions. PathFinder Pro goes 4.5x deeper:</p>';
+  html += '<p style="color:rgba(192,216,240,.65);font-size:.85rem;max-width:550px;margin:0 auto;line-height:1.6;">PathFinder Lite gave you a snapshot with 44 questions. PathFinder Pro goes 4.5x deeper:</p>';
   html += '</div>';
 
   // What Pro includes (selling points)

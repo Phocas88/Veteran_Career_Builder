@@ -729,7 +729,14 @@ var SECTIONS = [
       {q:'I want a career that makes use of my security clearance.', dim:'clearance'},
       {q:'I enjoy solving problems that have no clear right answer.', dim:'ambiguity'},
       {q:'I am comfortable in competitive environments where performance is publicly measured.', dim:'competition'},
-      {q:'I would prefer to start my own business rather than work for someone else.', dim:'entrepreneur'}
+      {q:'I would prefer to start my own business rather than work for someone else.', dim:'entrepreneur'},
+      // Physical capability questions — used to filter careers with physical requirements
+      {q:'I am comfortable working at significant heights — towers, rooftops, scaffolding, or elevated platforms.', dim:'heights_ok'},
+      {q:'I can regularly lift and carry 50 pounds or more as part of my daily work.', dim:'heavy_lift_ok'},
+      {q:'I can stand or walk for 8 or more hours per day without significant difficulty.', dim:'standing_ok'},
+      {q:'I have no physical disabilities or conditions that limit the type of work I can perform.', dim:'no_physical_limits'},
+      {q:'I am comfortable working outdoors in all weather conditions for extended periods.', dim:'outdoors_ok'},
+      {q:'I have a current VA disability rating of 30% or higher.', dim:'has_disability'}
     ]
   },
   // ═══ SECTION 5: CAREER INTEREST DOMAINS (25 LIKERT) ═══
@@ -2001,6 +2008,44 @@ function matchCareers(scores) {
     profileBonus = Math.min(profileBonus, maxProfileBonus);
 
     var finalPct = Math.min(aptitudeCeiling, Math.max(8, basePct + profileBonus));
+
+    // ── Physical requirements matching ──
+    // If career has physical requirements (ph field), check user's workstyle answers
+    var ph = career.physicalReqs || career.ph;
+    if(ph && scores.workstyle) {
+      var physPenalty = 0;
+      // Heights — Likert 1-5, convert to 0-100. Score < 40 means uncomfortable with heights
+      if(ph.h && scores.workstyle.heights_ok !== undefined && scores.workstyle.heights_ok < 40) {
+        physPenalty += 25; // Major penalty — can't do the core job
+      }
+      // Heavy lifting
+      if(ph.l && scores.workstyle.heavy_lift_ok !== undefined && scores.workstyle.heavy_lift_ok < 40) {
+        physPenalty += 20;
+      }
+      // Standing/walking
+      if(ph.s && scores.workstyle.standing_ok !== undefined && scores.workstyle.standing_ok < 40) {
+        physPenalty += 15;
+      }
+      // Outdoor work
+      if(ph.o && scores.workstyle.outdoors_ok !== undefined && scores.workstyle.outdoors_ok < 40) {
+        physPenalty += 10;
+      }
+      // Has disability rating 30%+ (Likert 4-5 = 80-100%) AND career is physically demanding
+      var hasDisability = scores.workstyle.has_disability !== undefined && scores.workstyle.has_disability >= 60;
+      var noPhysLimits = scores.workstyle.no_physical_limits !== undefined && scores.workstyle.no_physical_limits >= 60;
+      if(hasDisability && !noPhysLimits) {
+        // Veteran has disability AND reports physical limitations
+        var physDemand = (ph.h?1:0) + (ph.l?1:0) + (ph.s?1:0) + (ph.o?1:0);
+        physPenalty += physDemand * 8; // Scale penalty by how physical the job is
+      }
+      finalPct = Math.max(8, finalPct - physPenalty);
+    }
+
+    // ── Disability boost for desk/remote-friendly careers ──
+    if(scores.workstyle && scores.workstyle.has_disability >= 60 && !ph) {
+      // Boost non-physical careers for veterans with disabilities
+      finalPct = Math.min(95, finalPct + 5);
+    }
 
     results.push({
       career: career,

@@ -1704,6 +1704,28 @@ async function enhanceWithAI(scores, rankedCareers) {
 }
 
 function matchCareers(scores) {
+  // Map career DB weight keys to assessment dimension keys
+  // Career DB uses different names than what the assessment stores
+  var dimMap = {
+    physicality: 'physical', stresstolerance: 'stress',
+    service: 'purpose', team: 'team', autonomy: 'autonomy',
+    creative: 'creative', government: 'government', technical: 'technical'
+  };
+  function getWorkstyleScore(key) {
+    var mapped = dimMap[key] || key;
+    if(scores.workstyle[mapped] !== undefined) return scores.workstyle[mapped];
+    if(scores.workstyle[key] !== undefined) return scores.workstyle[key];
+    return undefined;
+  }
+  function getInterestScore(key) {
+    if(scores.interests[key] !== undefined) return scores.interests[key];
+    return undefined;
+  }
+  function getLeadershipScore(key) {
+    if(scores.leadership[key] !== undefined) return scores.leadership[key];
+    return undefined;
+  }
+
   var results = [];
   CAREERS.forEach(function(career) {
     var matchScore = 0;
@@ -1715,29 +1737,22 @@ function matchCareers(scores) {
     if(w.verbal !== undefined) { matchScore += (scores.verbal.pct/100) * w.verbal; totalWeight += w.verbal; }
     if(w.numerical !== undefined) { matchScore += (scores.numerical.pct/100) * w.numerical; totalWeight += w.numerical; }
 
-    // Interest domain matching
-    var interestKeys = Object.keys(scores.interests);
+    // Interest, workstyle, and leadership matching (with dimension name mapping)
     Object.keys(w).forEach(function(wk) {
       if(['mechanical','verbal','numerical'].indexOf(wk) !== -1) return;
-      // Check if it's a work style dimension
-      if(scores.workstyle[wk] !== undefined) {
-        matchScore += (scores.workstyle[wk]/100) * w[wk];
-        totalWeight += w[wk];
-      }
-      // Check if it's an interest dimension
-      if(scores.interests[wk] !== undefined) {
-        matchScore += (scores.interests[wk]/100) * w[wk];
-        totalWeight += w[wk];
-      }
-      // Check if it's a leadership dimension
-      if(scores.leadership[wk] !== undefined) {
-        matchScore += (scores.leadership[wk]/100) * w[wk];
-        totalWeight += w[wk];
-      }
-      // Generic leadership overall
-      if(wk === 'leadership' && scores.leadership[wk] === undefined) {
-        matchScore += (scores.leadershipOverall/100) * w[wk];
-        totalWeight += w[wk];
+      var matched = false;
+      // Check workstyle (with name mapping)
+      var wsVal = getWorkstyleScore(wk);
+      if(wsVal !== undefined) { matchScore += (wsVal/100) * w[wk]; totalWeight += w[wk]; matched = true; }
+      // Check interests
+      var intVal = getInterestScore(wk);
+      if(intVal !== undefined) { matchScore += (intVal/100) * w[wk]; totalWeight += w[wk]; matched = true; }
+      // Check leadership dimensions
+      var leadVal = getLeadershipScore(wk);
+      if(leadVal !== undefined) { matchScore += (leadVal/100) * w[wk]; totalWeight += w[wk]; matched = true; }
+      // Fallback: leadership overall for generic 'leadership' key
+      if(!matched && wk === 'leadership') {
+        matchScore += (scores.leadershipOverall/100) * w[wk]; totalWeight += w[wk];
       }
     });
 
@@ -1753,9 +1768,12 @@ function matchCareers(scores) {
 
     Object.keys(w).forEach(function(wk) {
       if(['mechanical','verbal','numerical','leadership'].indexOf(wk) !== -1) return;
-      if(scores.interests[wk] !== undefined) { interestScore += (scores.interests[wk]/100) * w[wk]; interestWeight += w[wk]; }
-      if(scores.workstyle[wk] !== undefined) { interestScore += (scores.workstyle[wk]/100) * w[wk]; interestWeight += w[wk]; }
-      if(scores.leadership[wk] !== undefined) { aptitudeScore += (scores.leadership[wk]/100) * w[wk]; aptitudeWeight += w[wk]; }
+      var intVal = getInterestScore(wk);
+      if(intVal !== undefined) { interestScore += (intVal/100) * w[wk]; interestWeight += w[wk]; }
+      var wsVal = getWorkstyleScore(wk);
+      if(wsVal !== undefined) { interestScore += (wsVal/100) * w[wk]; interestWeight += w[wk]; }
+      var leadVal = getLeadershipScore(wk);
+      if(leadVal !== undefined) { aptitudeScore += (leadVal/100) * w[wk]; aptitudeWeight += w[wk]; }
     });
 
     var aptPct = aptitudeWeight > 0 ? (aptitudeScore / aptitudeWeight) * 100 : 50;
@@ -1866,31 +1884,33 @@ function matchCareers(scores) {
       basePct = Math.round(aptPct * 0.75 + intPct * 0.25);
     }
 
-    // ── CRITICAL: Aptitude ceiling — based ONLY on demonstrated ability, not interest ──
-    var aptitudeAvg = ((scores.mechanical?scores.mechanical.pct:0) + (scores.verbal?scores.verbal.pct:0) + (scores.numerical?scores.numerical.pct:0) + (scores.leadershipOverall||0)) / 4;
-    // Max match = aptitude average + 20 (allows some stretch for strong interests but not runaway)
-    var aptitudeCeiling = Math.min(90, Math.round(aptitudeAvg + 20));
-
-    // For technical careers (high mechanical/numerical weights), also check technical aptitude
-    var techWeight = (w.mechanical || 0) + (w.numerical || 0);
-    if(techWeight > 1.0) {
-      var techAvg = (scores.mechanical.pct + scores.numerical.pct) / 2;
-      var techCeiling = Math.round(techAvg + 10);
-      aptitudeCeiling = Math.min(aptitudeCeiling, techCeiling);
-    }
-
-    // For leadership-heavy careers, check leadership score
-    if((w.leadership || 0) > 0.6) {
-      var leadCeiling = Math.round(scores.leadershipOverall + 12);
-      aptitudeCeiling = Math.min(aptitudeCeiling, leadCeiling);
-    }
+    // ── Career-specific ceiling — based on how well user's aptitude matches THIS career's requirements ──
+    // Instead of a flat global ceiling, weight the ceiling by each career's own weight profile
+    var ceilNum = 0, ceilDen = 0;
+    var aptScores = {
+      mechanical: scores.mechanical ? scores.mechanical.pct : 0,
+      verbal: scores.verbal ? scores.verbal.pct : 0,
+      numerical: scores.numerical ? scores.numerical.pct : 0,
+      spatial: scores.spatial ? scores.spatial.pct : 0,
+      speed: scores.speed ? scores.speed.pct : 0,
+      memory: scores.memory ? scores.memory.pct : 0,
+      leadership: scores.leadershipOverall || 0
+    };
+    Object.keys(aptScores).forEach(function(dim) {
+      var wt = w[dim] || 0;
+      if(wt > 0) { ceilNum += aptScores[dim] * wt; ceilDen += wt; }
+    });
+    // Weighted aptitude for THIS career — how well your skills match what it needs
+    var careerAptitude = ceilDen > 0 ? ceilNum / ceilDen : 50;
+    // Ceiling = your weighted aptitude for this career + stretch room (careers you're close to)
+    var aptitudeCeiling = Math.min(95, Math.round(careerAptitude + 15));
 
     basePct = Math.min(basePct, aptitudeCeiling);
 
     // ── Profile weighting ──
     // Profile bonuses are SMALLER and capped — they can't rescue a bad assessment
     var profileBonus = 0;
-    var maxProfileBonus = Math.round(aptitudeAvg * 0.15); // Max bonus = 15% of avg score
+    var maxProfileBonus = Math.round(careerAptitude * 0.15); // Max bonus = 15% of career aptitude
     if(userProfile) {
       // MOS match bonus
       if(career.mosMatch && career.mosMatch.length > 0 && userProfile.mos) {

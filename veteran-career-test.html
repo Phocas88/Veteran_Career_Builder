@@ -341,8 +341,31 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
         <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Email Address</label>
         <input id="gate-email" type="email" placeholder="you@email.com" style="width:100%;padding:.6rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;">
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem;">
+        <div>
+          <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Rank</label>
+          <select id="gate-rank" style="width:100%;padding:.55rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.85rem;font-family:inherit;outline:none;background:#fff;color:#1a2a3a;">
+            <option value="">Select rank...</option>
+            <optgroup label="Enlisted"><option>E-1</option><option>E-2</option><option>E-3</option><option>E-4</option><option>E-5</option><option>E-6</option><option>E-7</option><option>E-8</option><option>E-9</option></optgroup>
+            <optgroup label="Warrant Officer"><option>W-1</option><option>W-2</option><option>W-3</option><option>W-4</option><option>W-5</option></optgroup>
+            <optgroup label="Officer"><option>O-1</option><option>O-2</option><option>O-3</option><option>O-4</option><option>O-5</option><option>O-6</option><option>O-7+</option></optgroup>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Current Status</label>
+          <select id="gate-status" style="width:100%;padding:.55rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.85rem;font-family:inherit;outline:none;background:#fff;color:#1a2a3a;">
+            <option value="">Select...</option>
+            <option value="active">Active Duty</option>
+            <option value="reserve">Reserve</option>
+            <option value="guard">National Guard</option>
+            <option value="retired">Retired</option>
+            <option value="separated">Separated</option>
+            <option value="medically-retired">Medically Retired</option>
+          </select>
+        </div>
+      </div>
       <div id="gate-error" style="display:none;font-size:.78rem;color:#dc2626;margin-bottom:.4rem;"></div>
-      <button id="gate-submit" onclick="submitEmailGate()" style="width:100%;padding:.7rem;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;letter-spacing:.02em;">View My Career Matches →</button>
+      <button id="gate-submit" onclick="submitEmailGate()" style="width:100%;padding:.7rem;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;letter-spacing:.02em;">View My Career Matches &rarr;</button>
       <div style="font-size:.68rem;color:#8a9ab0;text-align:center;margin-top:.5rem;line-height:1.4;">We'll send you career tips and updates. Unsubscribe anytime. No spam.</div>
     </div>
   </div>
@@ -1207,6 +1230,8 @@ try{_gateDb = firebase.firestore();}catch(e){}
 function submitEmailGate(){
   var name = document.getElementById("gate-name").value.trim();
   var email = document.getElementById("gate-email").value.trim().toLowerCase();
+  var rank = document.getElementById("gate-rank").value;
+  var milStatus = document.getElementById("gate-status").value;
   var err = document.getElementById("gate-error");
   if(!name){err.textContent="Please enter your name.";err.style.display="block";return;}
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent="Please enter a valid email address.";err.style.display="block";return;}
@@ -1216,12 +1241,13 @@ function submitEmailGate(){
   // Save to Firestore
   if(_gateDb){
     _gateDb.collection("email_subscribers").add({
-      email:email,name:name,source:"pathfinder-lite",
+      email:email,name:name,rank:rank||null,militaryStatus:milStatus||null,
+      source:"pathfinder-lite",
       timestamp:firebase.firestore.FieldValue.serverTimestamp(),status:"active"
     }).catch(function(){});
   }
   // Store locally for profile pairing
-  try{localStorage.setItem("vcp_pf_user",JSON.stringify({name:name,email:email,date:new Date().toISOString()}));}catch(e){}
+  try{localStorage.setItem("vcp_pf_user",JSON.stringify({name:name,email:email,rank:rank,militaryStatus:milStatus,date:new Date().toISOString()}));}catch(e){}
   // Hide gate, show results
   document.getElementById("emailGate").style.display="none";
   _pendingShowResults();

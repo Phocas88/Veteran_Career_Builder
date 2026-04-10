@@ -39,15 +39,23 @@
 <div class="vcp-mob" id="vcp-mob"><a href="https://veterancareerpath.com/app.html" class="vcp-mob-cta">🤖 AI Career Builder — $15/mo</a><span class="vcp-mob-sect">Quick Links</span><a href="https://veterancareerpath.com/army-mos-careers.html">Army MOS Careers</a><a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a><a href="https://veterancareerpath.com/federal-jobs-search.html">🔴 Federal Jobs</a><a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Disability</a><a href="https://veterancareerpath.com/blog/">Blog</a><a href="https://veterancareerpath.com/contact.html">Contact</a></div>
 
 <script id="vcp-nav-js">(function(){var mb=document.getElementById('vcp-menu-btn'),mega=document.getElementById('vcp-mega'),ham=document.getElementById('vcp-ham'),mob=document.getElementById('vcp-mob'),si=document.getElementById('vcp-si'),sr=document.getElementById('vcp-sr');function closeAll(){mega&&mega.classList.remove('open');mb&&mb.classList.remove('active');ham&&ham.classList.remove('open');mob&&mob.classList.remove('open');document.body.classList.remove('menu-open');}if(mb&&mega)mb.addEventListener('click',function(e){e.stopPropagation();var o=mega.classList.contains('open');closeAll();if(!o){mega.classList.add('open');mb.classList.add('active');document.body.classList.add('menu-open');}});if(ham&&mob)ham.addEventListener('click',function(e){e.stopPropagation();var o=mob.classList.contains('open');closeAll();if(!o){mob.classList.add('open');ham.classList.add('open');document.body.classList.add('menu-open');}});document.addEventListener('click',function(e){var inside=false;[mb,mega,ham,mob].forEach(function(n){if(n&&n.contains(e.target))inside=true;});if(!inside)closeAll();});document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll();});var IDX=null,LOADING=false,CBS=[];function loadIdx(cb){if(IDX){cb(IDX);return;}CBS.push(cb);if(LOADING)return;LOADING=true;fetch('https://veterancareerpath.com/search_index.json').then(function(r){return r.json();}).then(function(d){IDX=d;CBS.forEach(function(f){f(d);});CBS=[];}).catch(function(){IDX=[];CBS.forEach(function(f){f([]);});CBS=[];});}if(si&&sr){si.addEventListener('input',function(){var q=si.value.trim();if(q.length<2){sr.classList.remove('open');return;}loadIdx(function(idx){var terms=q.toLowerCase().split(' ').filter(function(t){return t.length>1;}),out=[];for(var i=0;i<idx.length;i++){var p=idx[i],h=(p.title+' '+p.desc+' '+p.text).toLowerCase(),s=0,m=false;for(var j=0;j<terms.length;j++){if(h.indexOf(terms[j])<0){m=true;break;}s++;}if(!m&&s)out.push(p);}sr.innerHTML=out.length?out.slice(0,10).map(function(r){return'<a style="display:block;padding:.5rem .9rem;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.04);color:#fff;font-size:.82rem;" href="'+r.url+'">'+r.title+'</a>';}).join(''):'<div style="padding:.9rem;color:rgba(192,216,240,.4);font-size:.82rem;text-align:center;">No results</div>';sr.classList.add('open');});});}
-  // Update CTA for subscribers
+  // Update nav for subscribers + login state
   try {
     var _acc = JSON.parse(localStorage.getItem('vcb_access')||'{}');
     var _isSub = (_acc.type==='paid'&&_acc.stripeSession&&_acc.expiry>Date.now())||(_acc.type==='code'&&_acc.code);
     if(_isSub){
-      document.querySelectorAll('.vcp-cta-link').forEach(function(el){el.textContent='AI Tools';});
+      document.querySelectorAll('.vcp-cta-link').forEach(function(el){el.textContent='AI Tools';el.style.background='linear-gradient(135deg,#1a7a40,#22c55e)';});
       document.querySelectorAll('.btn-subscribe').forEach(function(el){el.textContent='Open AI Tools \u2192';});
       document.querySelectorAll('.vcp-mob-cta').forEach(function(el){el.textContent='\uD83E\uDD16 AI Career Builder';});
     }
+  
+    var _user=null;
+    try{_user=JSON.parse(localStorage.getItem('vcb_profile')||'null');}catch(ee){}
+    if(!_user)try{_user=JSON.parse(localStorage.getItem('vcp_pf_user')||'null');}catch(ee){}
+    document.querySelectorAll('.vcp-account-link').forEach(function(el){
+      if(_user&&_user.name){el.textContent=_user.name.split(' ')[0];el.style.color='#f0c040';}
+      else if(_isSub){el.style.color='#f0c040';}
+    });
   }catch(e){}
 })();</script>
 

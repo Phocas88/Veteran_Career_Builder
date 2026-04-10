@@ -1417,13 +1417,22 @@ function calculateResults() {
   var rankedCareers = matchCareers(scores);
 
   // ── AI Enhancement ──
-  enhanceWithAI(scores, rankedCareers).then(function(aiData) {
+  // Race the AI call against a 15-second timeout
+  var aiTimeout = new Promise(function(_, reject) {
+    setTimeout(function() { reject(new Error('AI timeout — showing results without AI')); }, 15000);
+  });
+
+  Promise.race([enhanceWithAI(scores, rankedCareers), aiTimeout]).then(function(aiData) {
     try { renderResults(scores, rankedCareers, aiData); }
-    catch(e) { console.error("Render error (with AI):", e); document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);">Results Error</h2><p>Error rendering AI-enhanced results. Retrying without AI...</p></div>'; setTimeout(function(){ try{renderResults(scores, rankedCareers, null);}catch(e2){document.getElementById('results-content').innerHTML='<pre>'+JSON.stringify(scores,null,2)+'</pre>';} }, 500); }
+    catch(e) {
+      console.error("Render error (with AI):", e);
+      try { renderResults(scores, rankedCareers, null); }
+      catch(e2) { document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);">Assessment Complete</h2><p>Scores calculated but report rendering failed.</p><pre style="background:#f8f8f8;padding:1rem;border-radius:8px;overflow:auto;text-align:left;">'+JSON.stringify(scores,null,2)+'</pre></div>'; }
+    }
   }).catch(function(err) {
-    console.warn("AI enhancement skipped:", err.message);
+    console.warn("AI skipped:", err.message);
     try { renderResults(scores, rankedCareers, null); }
-    catch(e) { console.error("Render error (no AI):", e); document.getElementById('results-content').innerHTML = '<div style="padding:2rem;"><h2 style="color:var(--gold);">Assessment Complete</h2><p>There was an issue rendering the full report. Your scores:</p><pre style="background:#f8f8f8;padding:1rem;border-radius:8px;overflow:auto;">'+JSON.stringify(scores,null,2)+'</pre></div>'; }
+    catch(e) { document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);">Assessment Complete</h2><p>Your scores have been calculated.</p><pre style="background:#f8f8f8;padding:1rem;border-radius:8px;overflow:auto;text-align:left;">'+JSON.stringify(scores,null,2)+'</pre></div>'; }
   });
 }
 

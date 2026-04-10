@@ -1146,8 +1146,13 @@ function renderMCQuestions(sec, container) {
     } else {
       html += '<div class="mc-q-text">' + q.q + '</div>';
     }
-    if(isMemory) html += '</div>'; // close memory content wrapper
-    html += '<div class="mc-options">';
+    if(isMemory) {
+      html += '</div>'; // close memory content wrapper
+      // Hide options until timer completes
+      html += '<div class="mc-options" id="opts_' + key + '" style="display:none;">';
+    } else {
+      html += '<div class="mc-options">';
+    }
     q.opts.forEach(function(opt, oi) {
       var selClass = selected === oi ? ' selected' : '';
       html += '<div class="mc-opt' + selClass + '" onclick="selectMC(\'' + key + '\',' + oi + ')">';
@@ -1210,9 +1215,12 @@ function startMemoryTimer(memId) {
       cover.style.borderColor = '#fca5a5';
       btn.textContent = '🔒 Time\'s up — answer from memory';
       btn.style.background = '#888';
-      timerEl.textContent = 'Content hidden — answer below';
+      timerEl.textContent = 'Content hidden — select your answer below';
       timerEl.style.color = '#dc2626';
       timerEl.style.fontSize = '.85rem';
+      // Now reveal the answer options
+      var optsEl = document.getElementById('opts_' + memId.replace('mem_',''));
+      if(optsEl) optsEl.style.display = 'grid';
     }
   }, 1000);
 }
@@ -1423,17 +1431,23 @@ function calculateResults() {
   });
 
   Promise.race([enhanceWithAI(scores, rankedCareers), aiTimeout]).then(function(aiData) {
+    clearInterval(statusTimer);
     try { renderResults(scores, rankedCareers, aiData); }
     catch(e) {
       console.error("Render error (with AI):", e);
       try { renderResults(scores, rankedCareers, null); }
-      catch(e2) { document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);">Assessment Complete</h2><p>Scores calculated but report rendering failed.</p><pre style="background:#f8f8f8;padding:1rem;border-radius:8px;overflow:auto;text-align:left;">'+JSON.stringify(scores,null,2)+'</pre></div>'; }
+      catch(e2) { showFallbackResults(scores); }
     }
   }).catch(function(err) {
+    clearInterval(statusTimer);
     console.warn("AI skipped:", err.message);
     try { renderResults(scores, rankedCareers, null); }
-    catch(e) { document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);">Assessment Complete</h2><p>Your scores have been calculated.</p><pre style="background:#f8f8f8;padding:1rem;border-radius:8px;overflow:auto;text-align:left;">'+JSON.stringify(scores,null,2)+'</pre></div>'; }
+    catch(e) { showFallbackResults(scores); }
   });
+
+  function showFallbackResults(s) {
+    document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);font-family:Bebas Neue,sans-serif;">Assessment Complete</h2><p style="color:var(--sub);margin-bottom:1rem;">Your scores have been calculated. AI enhancement was unavailable.</p><div style="text-align:left;max-width:500px;margin:0 auto;"><div style="margin-bottom:.5rem;"><strong>Mechanical:</strong> '+(s.mechanical?s.mechanical.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Verbal:</strong> '+(s.verbal?s.verbal.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Numerical:</strong> '+(s.numerical?s.numerical.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Spatial:</strong> '+(s.spatial?s.spatial.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Speed:</strong> '+(s.speed?s.speed.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Memory:</strong> '+(s.memory?s.memory.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Leadership:</strong> '+(s.leadershipOverall||0)+'%</div><div style="margin-bottom:.5rem;"><strong>Soft Skills:</strong> '+(s.softSkills||0)+'%</div></div><button onclick="location.reload()" style="margin-top:1rem;padding:.6rem 1.5rem;background:var(--navy);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Retry Report Generation</button></div>';
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1452,9 +1466,14 @@ async function enhanceWithAI(scores, rankedCareers) {
               (sa.type === 'standalone' && sa.session && sa.expiry > Date.now());
   if (!valid) throw new Error("No access");
 
-  // Show loading indicator
+  // Show loading indicator with status updates
   showScreen('scr-results');
-  document.getElementById('results-content').innerHTML = '<div style="text-align:center;padding:4rem 2rem;"><div style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;color:#1a3a6b;margin-bottom:.75rem;">Analyzing Your Results with AI...</div><p style="color:#5a7090;font-size:.9rem;max-width:400px;margin:0 auto 1.5rem;">Our AI is reviewing your scores alongside current 2026 job market data to personalize your career recommendations.</p><div style="width:48px;height:48px;border:3px solid #e8edf5;border-top-color:#1a3a6b;border-radius:50%;animation:aispin 1s linear infinite;margin:0 auto;"></div><style>@keyframes aispin{to{transform:rotate(360deg)}}</style></div>';
+  var loadingEl = document.getElementById('results-content');
+  loadingEl.innerHTML = '<div style="text-align:center;padding:3rem 2rem;"><div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:#1a3a6b;margin-bottom:.75rem;">Analyzing Your Results with AI...</div><p style="color:#5a7090;font-size:.88rem;max-width:400px;margin:0 auto 1rem;">Our AI is reviewing your scores alongside current job market data.</p><div style="width:48px;height:48px;border:3px solid #e8edf5;border-top-color:#1a3a6b;border-radius:50%;animation:aispin 1s linear infinite;margin:0 auto;"></div><style>@keyframes aispin{to{transform:rotate(360deg)}}</style><div id="ai-status" style="margin-top:1rem;font-size:.78rem;color:#8a9ab0;"></div></div>';
+  var statusEl = document.getElementById('ai-status');
+  var statusTimer = setInterval(function() {
+    if(statusEl) statusEl.textContent = 'Still processing... (will timeout at 15 seconds)';
+  }, 5000);
 
   // Build prompt with top 15 careers and all scores
   var top15 = rankedCareers.slice(0, 15).map(function(r) {
@@ -1509,6 +1528,7 @@ async function enhanceWithAI(scores, rankedCareers) {
     })
   });
 
+  clearInterval(statusTimer);
   if (!response.ok) throw new Error("API call failed: " + response.status);
   var data = await response.json();
   var text = (data.content && data.content[0] && data.content[0].text) || "";

@@ -1639,7 +1639,7 @@ async function enhanceWithAI(scores, rankedCareers) {
     "- Mechanical & Technical: " + scores.mechanical.pct + "%\n" +
     "- Verbal & Communication: " + scores.verbal.pct + "%\n" +
     "- Numerical & Analytical: " + scores.numerical.pct + "%\n" +
-    "- Work Style highlights: " + Object.entries(scores.workStyle).sort(function(a,b){return b[1]-a[1];}).slice(0,5).map(function(e){return e[0]+": "+e[1]+"%";}).join(", ") + "\n" +
+    "- Work Style highlights: " + Object.entries(scores.workstyle).sort(function(a,b){return b[1]-a[1];}).slice(0,5).map(function(e){return e[0]+": "+e[1]+"%";}).join(", ") + "\n" +
     "- Top career interests: " + Object.entries(scores.interests).sort(function(a,b){return b[1]-a[1];}).slice(0,5).map(function(e){return e[0]+": "+e[1]+"%";}).join(", ") + "\n" +
     "- Leadership overall: " + scores.leadershipOverall + "%\n\n" +
     (profileInfo ? "VETERAN PROFILE (Military + Civilian Experience):\n" + profileInfo + "\n\n" : "") +
@@ -2239,9 +2239,9 @@ function renderPersonalityProfile(scores) {
 function renderStrengths(scores) {
   // Only show APTITUDE strengths (not interest-only) — must score 50%+ to be a "strength"
   var aptitudes = [];
-  if(scores.mechanical.pct >= 50) aptitudes.push({name:'Mechanical & Technical Aptitude', pct:scores.mechanical.pct, civilian:'Your hands-on technical skills translate to trades, engineering, maintenance, and technical roles where practical problem-solving is valued.'});
-  if(scores.verbal.pct >= 50) aptitudes.push({name:'Verbal & Communication Skills', pct:scores.verbal.pct, civilian:'Strong communication skills are essential in management, consulting, sales, and any client-facing role. Your ability to convey complex ideas clearly is a premium asset.'});
-  if(scores.numerical.pct >= 50) aptitudes.push({name:'Numerical & Analytical Reasoning', pct:scores.numerical.pct, civilian:'Data-driven decision making is highly valued in finance, analytics, engineering, and operations. Your quantitative skills give you an edge in these fields.'});
+  if(scores.mechanical && scores.mechanical.pct >= 50) aptitudes.push({name:'Mechanical & Technical Aptitude', pct:scores.mechanical.pct, civilian:'Your hands-on technical skills translate to trades, engineering, maintenance, and technical roles where practical problem-solving is valued.'});
+  if(scores.verbal && scores.verbal.pct >= 50) aptitudes.push({name:'Verbal & Communication Skills', pct:scores.verbal.pct, civilian:'Strong communication skills are essential in management, consulting, sales, and any client-facing role. Your ability to convey complex ideas clearly is a premium asset.'});
+  if(scores.numerical && scores.numerical.pct >= 50) aptitudes.push({name:'Numerical & Analytical Reasoning', pct:scores.numerical.pct, civilian:'Data-driven decision making is highly valued in finance, analytics, engineering, and operations. Your quantitative skills give you an edge in these fields.'});
   if(scores.leadershipOverall >= 50) aptitudes.push({name:'Leadership & Interpersonal Skills', pct:scores.leadershipOverall, civilian:'Military leadership experience is one of the most sought-after qualities by civilian employers. Your ability to lead teams, manage conflict, and drive results sets you apart.'});
 
   // Add work style strengths (only if high)
@@ -2366,8 +2366,8 @@ function generateWhyFits(r, scores) {
   var w = c.matchWeights;
 
   // Check top scoring areas that match career weights
-  if(w.mechanical > 0.6 && scores.mechanical.pct >= 70) reasons.push('strong technical aptitude');
-  if(w.verbal > 0.5 && scores.verbal.pct >= 70) reasons.push('excellent communication skills');
+  if(w.mechanical > 0.6 && scores.mechanical && scores.mechanical.pct >= 70) reasons.push('strong technical aptitude');
+  if(w.verbal > 0.5 && scores.verbal && scores.verbal.pct >= 70) reasons.push('excellent communication skills');
   if(w.numerical > 0.5 && scores.numerical.pct >= 70) reasons.push('solid analytical reasoning');
   if(w.leadership > 0.5 && scores.leadershipOverall >= 70) reasons.push('proven leadership ability');
 

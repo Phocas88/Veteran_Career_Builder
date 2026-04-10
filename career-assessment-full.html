@@ -1346,9 +1346,11 @@ function calculateResults() {
   clearInterval(sectionTimer);
   var scores = {};
 
+  try {
   // ── Technical section scores (percentage correct) ──
   ['mechanical','verbal','numerical','spatial','speed','memory'].forEach(function(secId){
     var sec = SECTIONS.filter(function(s){return s.id===secId;})[0];
+    if(!sec) { scores[secId] = {raw:0, total:0, pct:0}; return; }
     var correct = 0;
     sec.questions.forEach(function(q,j){
       if(answers[secId+'_'+j] === q.correct) correct++;
@@ -1446,7 +1448,13 @@ function calculateResults() {
   });
 
   function showFallbackResults(s) {
+    showScreen('scr-results');
     document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);font-family:Bebas Neue,sans-serif;">Assessment Complete</h2><p style="color:var(--sub);margin-bottom:1rem;">Your scores have been calculated. AI enhancement was unavailable.</p><div style="text-align:left;max-width:500px;margin:0 auto;"><div style="margin-bottom:.5rem;"><strong>Mechanical:</strong> '+(s.mechanical?s.mechanical.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Verbal:</strong> '+(s.verbal?s.verbal.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Numerical:</strong> '+(s.numerical?s.numerical.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Spatial:</strong> '+(s.spatial?s.spatial.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Speed:</strong> '+(s.speed?s.speed.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Memory:</strong> '+(s.memory?s.memory.pct:0)+'%</div><div style="margin-bottom:.5rem;"><strong>Leadership:</strong> '+(s.leadershipOverall||0)+'%</div><div style="margin-bottom:.5rem;"><strong>Soft Skills:</strong> '+(s.softSkills||0)+'%</div></div><button onclick="location.reload()" style="margin-top:1rem;padding:.6rem 1.5rem;background:var(--navy);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Retry Report Generation</button></div>';
+  }
+  } catch(calcErr) {
+    console.error("calculateResults crashed:", calcErr);
+    showScreen('scr-results');
+    document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:#dc2626;">Scoring Error</h2><p>An error occurred while calculating your results: ' + calcErr.message + '</p><button onclick="location.reload()" style="margin-top:1rem;padding:.6rem 1.5rem;background:var(--navy);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Retry</button></div>';
   }
 }
 

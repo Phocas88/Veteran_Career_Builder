@@ -440,6 +440,26 @@ a:hover{color:var(--gold);}
   var resultId = params.get('result');
   if(resultId){ document.getElementById('gate').classList.add('hidden'); return; }
 
+  var viewSaved = params.get('view_saved');
+  if(viewSaved === '1') {
+    var savedResult = null;
+    try { savedResult = JSON.parse(localStorage.getItem('vcp_pathfinder_result') || 'null'); } catch(e) {}
+    if(savedResult && savedResult.scores) {
+      document.getElementById('gate').classList.add('hidden');
+      setTimeout(function(){
+        window._pfResults = savedResult;
+        var scores = savedResult.scores;
+        var rankedCareers = savedResult.careers || savedResult.topCareers || [];
+        showScreen('scr-results');
+        try { renderResults(scores, rankedCareers, savedResult.aiData || null); }
+        catch(e) {
+          document.getElementById('results-content').innerHTML = '<div style="padding:2rem;text-align:center;"><h2 style="color:var(--gold);font-family:Bebas Neue,sans-serif;">Your Saved Results</h2><p style="color:var(--sub);margin-bottom:1rem;">Assessment ID: '+(savedResult.assessmentId||'N/A')+' | Date: '+(savedResult.date ? new Date(savedResult.date).toLocaleDateString() : 'Unknown')+'</p><pre style="text-align:left;font-size:.75rem;background:rgba(255,255,255,.05);padding:1rem;border-radius:8px;overflow:auto;max-height:300px;color:var(--sub);">'+JSON.stringify(scores,null,2)+'</pre><p style="margin-top:1rem;"><a href="/career-assessment-full.html" style="padding:.5rem 1rem;background:var(--navy);color:#fff;border:none;border-radius:6px;text-decoration:none;font-weight:700;">Retake Assessment</a></p></div>';
+        }
+      }, 500);
+      return;
+    }
+  }
+
   // Check for standalone one-time purchase return from Stripe
   var standaloneAccess = params.get('standalone_access');
   var sessionId = params.get('session_id');
@@ -2774,6 +2794,8 @@ function saveResults() {
       date: Date.now(),
       userName: window._pfResults.userName,
       scores: window._pfResults.scores,
+      careers: window._pfResults.careers ? window._pfResults.careers.slice(0,30).map(function(r){ return {career:r.career, matchPct:r.matchPct}; }) : [],
+      aiData: window._pfResults.aiData || null,
       topCareers: topCareers,
       results: topCareers,
       answers: answers,

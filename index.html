@@ -972,6 +972,17 @@ body.menu-open{overflow:hidden!important;}
       if (megaFootBtn) megaFootBtn.textContent = 'Open AI Tools →';
     }
   } catch(e){}
+
+  // Update CTA for subscribers
+  try {
+    var _acc = JSON.parse(localStorage.getItem('vcb_access')||'{}');
+    var _isSub = (_acc.type==='paid'&&_acc.stripeSession&&_acc.expiry>Date.now())||(_acc.type==='code'&&_acc.code);
+    if(_isSub){
+      document.querySelectorAll('.vcp-cta-link').forEach(function(el){el.textContent='AI Tools';});
+      document.querySelectorAll('.btn-subscribe').forEach(function(el){el.textContent='Open AI Tools \u2192';});
+      document.querySelectorAll('.vcp-mob-cta').forEach(function(el){el.textContent='\uD83E\uDD16 AI Career Builder';});
+    }
+  }catch(e){}
 })();
 </script>
 
@@ -1261,7 +1272,7 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
   .crisis-strip{padding:1.25rem 1rem;}
   .crisis-btn{min-height:44px;padding:.5rem 1rem;font-size:.82rem;}
   /* Footer 1-col */
-  .footer-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
   footer{padding:1.75rem 1rem 1.25rem;}
   .footer-bottom{flex-direction:column;gap:.75rem;}
   .footer-brand-desc{max-width:100%;}

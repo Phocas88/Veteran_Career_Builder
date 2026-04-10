@@ -424,6 +424,7 @@ body.menu-open{overflow:hidden!important;}
       </svg>
     </button>
     <a href="https://veterancareerpath.com/app.html" class="vcp-cta-link">AI Tools — $15/mo</a>
+    <a href="https://veterancareerpath.com/app.html#profile" class="vcp-account-link" style="display:flex;align-items:center;gap:.3rem;padding:0 .5rem;color:rgba(192,216,240,.6);text-decoration:none;font-size:.72rem;font-weight:500;white-space:nowrap;flex-shrink:0;">👤 My Account</a>
   </div>
   <div class="vcp-search-wrap" id="vcp-search-wrap">
     <span class="vcp-search-icon">⌕</span>
@@ -891,6 +892,7 @@ body.menu-open{overflow:hidden!important;}
   <a href="https://veterancareerpath.com/vet-resources.html">Resources Directory</a>
   <a href="https://veterancareerpath.com/veteran-success-stories.html">Success Stories</a>
   <a href="https://veterancareerpath.com/contact.html">Contact</a>
+  <a href="https://veterancareerpath.com/app.html#profile" style="background:rgba(240,192,64,.08);border-top:1px solid rgba(240,192,64,.1);">👤 My Account / Login</a>
 </div>
 <script id="vcp-nav-js">
 (function(){
@@ -1049,6 +1051,17 @@ body.menu-open{overflow:hidden!important;}
       if (megaFootBtn) megaFootBtn.textContent = 'Open AI Tools →';
     }
   } catch(e){}
+
+  // Update CTA for subscribers
+  try {
+    var _acc = JSON.parse(localStorage.getItem('vcb_access')||'{}');
+    var _isSub = (_acc.type==='paid'&&_acc.stripeSession&&_acc.expiry>Date.now())||(_acc.type==='code'&&_acc.code);
+    if(_isSub){
+      document.querySelectorAll('.vcp-cta-link').forEach(function(el){el.textContent='AI Tools';});
+      document.querySelectorAll('.btn-subscribe').forEach(function(el){el.textContent='Open AI Tools \u2192';});
+      document.querySelectorAll('.vcp-mob-cta').forEach(function(el){el.textContent='\uD83E\uDD16 AI Career Builder';});
+    }
+  }catch(e){}
 })();
 </script>
 <div id="root"></div>
@@ -2854,9 +2867,10 @@ function MyProfileSaved(props) {
                   {assessmentResult.date ? new Date(assessmentResult.date).toLocaleDateString() : "Date unknown"}
                 </div>
               </div>
-              <a href="https://veterancareerpath.com/career-assessment-full.html" className="btn-sec" style={{fontSize:".72rem",padding:".28rem .7rem",textDecoration:"none"}}>
-                Retake Assessment
-              </a>
+              <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
+                <a href="https://veterancareerpath.com/career-assessment-full.html?view_saved=1" className="btn-pri" style={{fontSize:".72rem",padding:".28rem .7rem",textDecoration:"none",background:"var(--navy)",color:"#fff",borderRadius:"6px"}}>View Results</a>
+                <a href="https://veterancareerpath.com/career-assessment-full.html" className="btn-sec" style={{fontSize:".72rem",padding:".28rem .7rem",textDecoration:"none"}}>Retake</a>
+              </div>
             </div>
             {(assessmentResult.topCareers||assessmentResult.results||[]).length>0&&(
               <div>

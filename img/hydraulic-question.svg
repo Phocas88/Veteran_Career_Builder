@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes pushDown { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+    .smallPiston { animation: pushDown 2.5s ease-in-out infinite; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Fluid reservoir connecting both cylinders -->
+  <rect x="60" y="110" width="280" height="30" rx="4" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+
+  <!-- Small cylinder (left) -->
+  <rect x="80" y="55" width="40" height="56" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+  <!-- Small piston -->
+  <g class="smallPiston">
+    <rect x="78" y="48" width="44" height="12" rx="2" fill="#1a3a6b"/>
+    <!-- Force arrow pushing down -->
+    <line x1="100" y1="22" x2="100" y2="45" stroke="#c8960a" stroke-width="2.5" marker-end="url(#arrowGold)"/>
+    <text x="100" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#c8960a">10 lbs</text>
+  </g>
+  <!-- Small cylinder label -->
+  <text x="100" y="146" text-anchor="middle" font-size="10" font-weight="600" fill="#1a3a6b">2 sq in</text>
+
+  <!-- Large cylinder (right) -->
+  <rect x="240" y="55" width="100" height="56" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+  <!-- Large piston -->
+  <rect x="237" y="48" width="106" height="12" rx="2" fill="#1a3a6b"/>
+  <!-- Large cylinder label -->
+  <text x="290" y="146" text-anchor="middle" font-size="10" font-weight="600" fill="#1a3a6b">20 sq in</text>
+
+  <!-- Connecting pipe shown by fluid fill -->
+  <rect x="120" y="110" width="120" height="8" fill="#a8c4e0"/>
+
+  <!-- Unknown force label on large piston -->
+  <text x="290" y="42" text-anchor="middle" font-size="15" font-weight="700" fill="#dc2626">F = ?</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowGold" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#c8960a"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="200" y="172" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Hydraulic System — Find the Output Force</text>
+</svg>

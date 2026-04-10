@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes fire1 { 0%,10% { fill: #c8960a; opacity: .9; } 11%,100% { fill: #dce4f0; opacity: 1; } }
+    @keyframes fire3 { 0%,25% { fill: #dce4f0; } 26%,35% { fill: #c8960a; opacity: .9; } 36%,100% { fill: #dce4f0; opacity: 1; } }
+    @keyframes fire4 { 0%,50% { fill: #dce4f0; } 51%,60% { fill: #c8960a; opacity: .9; } 61%,100% { fill: #dce4f0; opacity: 1; } }
+    @keyframes fire2 { 0%,75% { fill: #dce4f0; } 76%,85% { fill: #c8960a; opacity: .9; } 86%,100% { fill: #dce4f0; opacity: 1; } }
+    @keyframes glow1 { 0%,10% { stroke: #c8960a; stroke-width: 3; } 11%,100% { stroke: #1a3a6b; stroke-width: 2; } }
+    @keyframes glow3 { 0%,25% { stroke: #1a3a6b; stroke-width: 2; } 26%,35% { stroke: #c8960a; stroke-width: 3; } 36%,100% { stroke: #1a3a6b; stroke-width: 2; } }
+    @keyframes glow4 { 0%,50% { stroke: #1a3a6b; stroke-width: 2; } 51%,60% { stroke: #c8960a; stroke-width: 3; } 61%,100% { stroke: #1a3a6b; stroke-width: 2; } }
+    @keyframes glow2 { 0%,75% { stroke: #1a3a6b; stroke-width: 2; } 76%,85% { stroke: #c8960a; stroke-width: 3; } 86%,100% { stroke: #1a3a6b; stroke-width: 2; } }
+    .c1 { animation: fire1 2.4s ease infinite; }
+    .c2 { animation: fire2 2.4s ease infinite; }
+    .c3 { animation: fire3 2.4s ease infinite; }
+    .c4 { animation: fire4 2.4s ease infinite; }
+    .s1 { animation: glow1 2.4s ease infinite; }
+    .s2 { animation: glow2 2.4s ease infinite; }
+    .s3 { animation: glow3 2.4s ease infinite; }
+    .s4 { animation: glow4 2.4s ease infinite; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Engine block -->
+  <rect x="50" y="35" width="300" height="80" rx="4" fill="none" stroke="#1a3a6b" stroke-width="2"/>
+
+  <!-- Cylinder 1 -->
+  <rect x="65" y="42" width="55" height="66" rx="3" class="c1 s1"/>
+  <text x="92" y="82" text-anchor="middle" font-size="22" font-weight="700" fill="#1a3a6b">1</text>
+
+  <!-- Cylinder 2 -->
+  <rect x="130" y="42" width="55" height="66" rx="3" class="c2 s2"/>
+  <text x="157" y="82" text-anchor="middle" font-size="22" font-weight="700" fill="#1a3a6b">2</text>
+
+  <!-- Cylinder 3 -->
+  <rect x="195" y="42" width="55" height="66" rx="3" class="c3 s3"/>
+  <text x="222" y="82" text-anchor="middle" font-size="22" font-weight="700" fill="#1a3a6b">3</text>
+
+  <!-- Cylinder 4 -->
+  <rect x="260" y="42" width="55" height="66" rx="3" class="c4 s4"/>
+  <text x="287" y="82" text-anchor="middle" font-size="22" font-weight="700" fill="#1a3a6b">4</text>
+
+  <!-- Firing order arrows below -->
+  <text x="200" y="135" text-anchor="middle" font-size="13" font-weight="700" fill="#c8960a">Firing Order: 1 → 3 → 4 → 2</text>
+
+  <!-- Sequence markers -->
+  <text x="92" y="28" text-anchor="middle" font-size="10" font-weight="600" fill="#c8960a">1st</text>
+  <text x="222" y="28" text-anchor="middle" font-size="10" font-weight="600" fill="#c8960a">2nd</text>
+  <text x="287" y="28" text-anchor="middle" font-size="10" font-weight="600" fill="#c8960a">3rd</text>
+  <text x="157" y="28" text-anchor="middle" font-size="10" font-weight="600" fill="#c8960a">4th</text>
+
+  <!-- Title -->
+  <text x="200" y="165" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">4-Cylinder Engine — Firing Order Sequence</text>
+</svg>

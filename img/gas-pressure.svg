@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes compress { 0%,100% { transform: translateY(0); } 50% { transform: translateY(20px); } }
+    .piston2 { animation: compress 3s ease-in-out infinite; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- LEFT: Normal state cylinder -->
+  <!-- Cylinder walls -->
+  <rect x="40" y="40" width="80" height="100" rx="3" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+  <!-- Piston at top -->
+  <rect x="38" y="36" width="84" height="10" rx="2" fill="#1a3a6b"/>
+  <!-- Gas dots -->
+  <circle cx="60" cy="75" r="2" fill="#5a7090" opacity=".5"/>
+  <circle cx="80" cy="90" r="2" fill="#5a7090" opacity=".5"/>
+  <circle cx="100" cy="70" r="2" fill="#5a7090" opacity=".5"/>
+  <circle cx="65" cy="110" r="2" fill="#5a7090" opacity=".5"/>
+  <circle cx="95" cy="120" r="2" fill="#5a7090" opacity=".5"/>
+  <circle cx="75" cy="100" r="2" fill="#5a7090" opacity=".5"/>
+  <!-- Labels -->
+  <text x="80" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#1a3a6b">P</text>
+  <text x="80" y="30" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Normal</text>
+
+  <!-- Arrow between -->
+  <line x1="145" y1="90" x2="175" y2="90" stroke="#c8960a" stroke-width="2" marker-end="url(#arrowG)"/>
+  <text x="160" y="82" text-anchor="middle" font-size="9" fill="#c8960a" font-weight="600">compress</text>
+
+  <!-- RIGHT: Compressed state cylinder -->
+  <rect x="200" y="40" width="80" height="100" rx="3" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+  <!-- Animated piston pushing down -->
+  <g class="piston2">
+    <rect x="198" y="36" width="84" height="10" rx="2" fill="#1a3a6b"/>
+    <!-- Down arrow on piston -->
+    <line x1="240" y1="20" x2="240" y2="34" stroke="#c8960a" stroke-width="2" marker-end="url(#arrowG)"/>
+  </g>
+  <!-- Compressed gas dots (clustered lower) -->
+  <circle cx="220" cy="115" r="2" fill="#5a7090" opacity=".6"/>
+  <circle cx="235" cy="120" r="2" fill="#5a7090" opacity=".6"/>
+  <circle cx="250" cy="110" r="2" fill="#5a7090" opacity=".6"/>
+  <circle cx="225" cy="128" r="2" fill="#5a7090" opacity=".6"/>
+  <circle cx="255" cy="125" r="2" fill="#5a7090" opacity=".6"/>
+  <circle cx="240" cy="130" r="2" fill="#5a7090" opacity=".6"/>
+  <!-- Labels -->
+  <text x="240" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#1a3a6b">2P</text>
+
+  <!-- Unknown -->
+  <text x="340" y="95" text-anchor="middle" font-size="15" font-weight="700" fill="#dc2626">V = ?</text>
+  <text x="340" y="110" text-anchor="middle" font-size="10" fill="#dc2626">(new volume)</text>
+
+  <defs>
+    <marker id="arrowG" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#c8960a"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="200" y="174" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Gas Law — Pressure Doubles, Find New Volume</text>
+</svg>

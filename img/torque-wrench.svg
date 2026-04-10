@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes applyForce { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-8deg); } }
+    .wrenchGroup { animation: applyForce 2s ease-in-out infinite; transform-origin: 120px 90px; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Bolt -->
+  <polygon points="120,75 132,69 144,75 144,89 132,95 120,89" fill="#5a7090" stroke="#1a3a6b" stroke-width="2"/>
+  <circle cx="132" cy="82" r="5" fill="#1a3a6b"/>
+
+  <!-- Wrench assembly -->
+  <g class="wrenchGroup">
+    <!-- Socket on bolt -->
+    <rect x="115" y="68" width="34" height="28" rx="4" fill="none" stroke="#1a3a6b" stroke-width="2.5"/>
+
+    <!-- Wrench handle -->
+    <rect x="149" y="78" width="180" height="12" rx="3" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+
+    <!-- Handle grip -->
+    <rect x="295" y="74" width="45" height="20" rx="4" fill="#1a3a6b"/>
+
+    <!-- Torque gauge arc near socket -->
+    <path d="M158,72 A20,20 0 0,1 158,98" fill="none" stroke="#c8960a" stroke-width="2"/>
+    <!-- Gauge tick marks -->
+    <line x1="156" y1="73" x2="150" y2="70" stroke="#c8960a" stroke-width="1.5"/>
+    <line x1="154" y1="85" x2="147" y2="85" stroke="#c8960a" stroke-width="1.5"/>
+    <line x1="156" y1="97" x2="150" y2="100" stroke="#c8960a" stroke-width="1.5"/>
+    <!-- Gauge needle -->
+    <line x1="158" y1="85" x2="150" y2="78" stroke="#dc2626" stroke-width="2"/>
+
+    <!-- Force arrow at handle end -->
+    <line x1="360" y1="60" x2="340" y2="73" stroke="#c8960a" stroke-width="2.5" marker-end="url(#arrowT)"/>
+    <text x="370" y="56" text-anchor="middle" font-size="11" font-weight="700" fill="#c8960a">Force</text>
+  </g>
+
+  <!-- Length dimension line -->
+  <line x1="132" y1="115" x2="320" y2="115" stroke="#1a3a6b" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="132" y1="112" x2="132" y2="118" stroke="#1a3a6b" stroke-width="1.5"/>
+  <line x1="320" y1="112" x2="320" y2="118" stroke="#1a3a6b" stroke-width="1.5"/>
+  <text x="226" y="128" text-anchor="middle" font-size="11" font-weight="600" fill="#1a3a6b">Lever Arm Length</text>
+
+  <!-- Torque equation hint -->
+  <text x="200" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="#c8960a">Torque = Force x Distance</text>
+
+  <defs>
+    <marker id="arrowT" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#c8960a"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="200" y="174" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Torque Wrench — Applying Specific Force</text>
+</svg>

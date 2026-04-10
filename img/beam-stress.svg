@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes loadPush { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+    .loadAnim { animation: loadPush 2.5s ease-in-out infinite; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Support triangles -->
+  <!-- Left support -->
+  <polygon points="60,110 50,130 70,130" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+  <line x1="45" y1="132" x2="75" y2="132" stroke="#1a3a6b" stroke-width="2"/>
+  <!-- Right support -->
+  <polygon points="340,110 330,130 350,130" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+  <line x1="325" y1="132" x2="355" y2="132" stroke="#1a3a6b" stroke-width="2"/>
+
+  <!-- Beam -->
+  <g class="loadAnim">
+    <rect x="50" y="95" width="300" height="16" rx="2" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+
+    <!-- Compression arrows on top (pushing inward/down) -->
+    <line x1="150" y1="85" x2="150" y2="95" stroke="#1a3a6b" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+    <line x1="200" y1="85" x2="200" y2="95" stroke="#1a3a6b" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+    <line x1="250" y1="85" x2="250" y2="95" stroke="#1a3a6b" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+    <text x="200" y="80" text-anchor="middle" font-size="10" font-weight="600" fill="#1a3a6b">Compression ↓</text>
+
+    <!-- Tension arrows on bottom (pulling outward) -->
+    <line x1="130" y1="118" x2="110" y2="118" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrowRed)"/>
+    <line x1="270" y1="118" x2="290" y2="118" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrowRed)"/>
+    <text x="200" y="128" text-anchor="middle" font-size="10" font-weight="600" fill="#dc2626">← Tension →</text>
+  </g>
+
+  <!-- Center load arrow (large, above beam) -->
+  <line x1="200" y1="30" x2="200" y2="62" stroke="#c8960a" stroke-width="3" marker-end="url(#arrowGoldB)"/>
+  <text x="200" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#c8960a">Load</text>
+
+  <!-- Neutral axis label -->
+  <line x1="60" y1="103" x2="340" y2="103" stroke="#5a7090" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+  <text x="375" y="106" text-anchor="end" font-size="8" fill="#5a7090">neutral axis</text>
+
+  <defs>
+    <marker id="arrowDown" viewBox="0 0 10 10" refX="5" refY="10" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L5,10 L10,0 Z" fill="#1a3a6b"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowGoldB" viewBox="0 0 10 10" refX="5" refY="10" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L5,10 L10,0 Z" fill="#c8960a"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="200" y="160" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Beam Under Load — Compression &amp; Tension</text>
+</svg>

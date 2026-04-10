@@ -224,7 +224,7 @@ a:hover{color:var(--gold);}
   .results-wrap{max-width:100%!important;}
   .report-header{border-bottom:2px solid #333!important;}
   .report-header::before{content:'';display:block;width:120px;height:auto;margin:0 auto 1rem;}
-  .print-logo{display:block!important;width:100px;margin:0 auto 1rem;}
+  .print-logo{display:none!important;}
   .report-title{color:#111!important;}
   .report-subtitle{color:#444!important;}
   .report-meta{color:#666!important;}
@@ -2602,190 +2602,157 @@ function printReport() {
   var careers = r.careers || [];
   var aiData = r.aiData;
   var doc = new jspdf.jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
-  var W = 210, H = 297, M = 18; // page width, height, margin
-  var CW = W - M*2; // content width
+  var W = 210, H = 297, M = 12; // tighter margins
+  var CW = W - M*2;
   var y = 0;
 
-  // Colors
-  var navy = [10,22,40], gold = [200,150,10], darkText = [26,42,58], sub = [90,112,144], white = [255,255,255];
+  var navy = [10,22,40], gold = [200,150,10], dk = [26,42,58], sub = [90,112,144];
 
-  function addPage() { doc.addPage(); y = M; }
-  function checkPage(need) { if(y + need > H - 20) addPage(); }
-  function drawLine(x1,yy,x2,color,w) { doc.setDrawColor(color[0],color[1],color[2]); doc.setLineWidth(w||0.3); doc.line(x1,yy,x2,yy); }
+  function addPage() { doc.addPage(); y = 10; }
+  function checkPage(n) { if(y + n > H - 12) addPage(); }
 
-  // ═══ PAGE 1: COVER & SUMMARY ═══
-  // Navy header bar
-  doc.setFillColor(navy[0],navy[1],navy[2]);
-  doc.rect(0,0,W,52,'F');
-  // Gold accent line
-  doc.setFillColor(gold[0],gold[1],gold[2]);
-  doc.rect(0,52,W,1.5,'F');
-
-  // Title
-  doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(255,255,255);
-  doc.text('VCP PathFinder\u2122 Pro', W/2, 18, {align:'center'});
-  doc.setFontSize(11); doc.setTextColor(240,192,64);
-  doc.text('Military Career Intelligence Assessment \u2014 Results Report', W/2, 27, {align:'center'});
-  doc.setFontSize(9); doc.setTextColor(192,216,240);
-  doc.text(r.userName + '  |  ' + r.date + '  |  ID: ' + r.assessmentId, W/2, 36, {align:'center'});
-
-  // Scoring method
+  // ═══ HEADER (compact — single line) ═══
+  doc.setFillColor(navy[0],navy[1],navy[2]); doc.rect(0,0,W,18,'F');
+  doc.setFillColor(gold[0],gold[1],gold[2]); doc.rect(0,18,W,0.8,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(255,255,255);
+  doc.text('VCP PathFinder\u2122 Pro \u2014 Results Report', M, 8);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(192,216,240);
+  doc.text(r.userName + '  |  ' + r.date + '  |  ' + r.assessmentId, M, 14);
   var hasProfile = scores._hasProfile;
-  doc.setFontSize(8); doc.setTextColor(192,216,240);
-  var method = hasProfile ? 'Profile-Weighted: 60% Aptitude / 30% Experience / 10% Interest' : 'Assessment Only: 75% Aptitude / 25% Interest';
-  doc.text(method, W/2, 45, {align:'center'});
-
-  y = 62;
-
-  // ═══ SECTION SCORES ═══
-  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(gold[0],gold[1],gold[2]);
-  doc.text('ASSESSMENT SCORES', M, y); y += 2;
-  drawLine(M, y, W-M, gold, 0.5); y += 6;
-
-  var sections = [
-    {name:'Mechanical & Technical', pct:scores.mechanical?scores.mechanical.pct:0, detail:scores.mechanical?(scores.mechanical.raw+'/'+scores.mechanical.total):'N/A'},
-    {name:'Verbal & Communication', pct:scores.verbal?scores.verbal.pct:0, detail:scores.verbal?(scores.verbal.raw+'/'+scores.verbal.total):'N/A'},
-    {name:'Numerical & Analytical', pct:scores.numerical?scores.numerical.pct:0, detail:scores.numerical?(scores.numerical.raw+'/'+scores.numerical.total):'N/A'},
-    {name:'Spatial Reasoning', pct:scores.spatial?scores.spatial.pct:0, detail:scores.spatial?(scores.spatial.raw+'/'+scores.spatial.total):'N/A'},
-    {name:'Processing Speed', pct:scores.speed?scores.speed.pct:0, detail:scores.speed?(scores.speed.raw+'/'+scores.speed.total):'N/A'},
-    {name:'Memory & Recall', pct:scores.memory?scores.memory.pct:0, detail:scores.memory?(scores.memory.raw+'/'+scores.memory.total):'N/A'},
-    {name:'Leadership & Interpersonal', pct:scores.leadershipOverall||0, detail:'Composite'},
-    {name:'Work Style & Environment', pct:scores.workstyleOverall||0, detail:'Composite'},
-    {name:'Career Interests', pct:scores.interestsOverall||0, detail:'Composite'},
-    {name:'Soft Skills & Workplace', pct:scores.softSkills||0, detail:'Composite'}
-  ];
-
-  sections.forEach(function(s) {
-    checkPage(10);
-    // Score bar background
-    doc.setFillColor(235,238,245); doc.roundedRect(M, y, CW, 8, 1.5, 1.5, 'F');
-    // Score bar fill
-    var barW = Math.max(1, (s.pct/100) * CW);
-    var barColor = s.pct >= 80 ? [34,197,94] : s.pct >= 60 ? [240,192,64] : s.pct >= 40 ? [251,146,60] : [248,113,113];
-    doc.setFillColor(barColor[0],barColor[1],barColor[2]); doc.roundedRect(M, y, barW, 8, 1.5, 1.5, 'F');
-    // Label
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(darkText[0],darkText[1],darkText[2]);
-    doc.text(s.name, M+3, y+5.5);
-    // Score
-    doc.setFont('helvetica','bold'); doc.setFontSize(9);
-    doc.text(s.pct + '%', W-M-3, y+5.5, {align:'right'});
-    // Detail
-    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(sub[0],sub[1],sub[2]);
-    doc.text(s.detail, W-M-16, y+5.5, {align:'right'});
-    y += 11;
-  });
-
-  y += 4;
-
-  // ═══ AI SUMMARY (if available) ═══
-  if(aiData && aiData.overallSummary) {
-    checkPage(35);
-    doc.setFillColor(10,22,40); doc.roundedRect(M, y, CW, 30, 3, 3, 'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(240,192,64);
-    doc.text('AI-POWERED CAREER INTELLIGENCE', M+5, y+7);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(192,216,240);
-    var summaryLines = doc.splitTextToSize(aiData.overallSummary, CW-10);
-    doc.text(summaryLines.slice(0,4), M+5, y+13);
-    if(aiData.strengthsTranslation) {
-      var stLines = doc.splitTextToSize(aiData.strengthsTranslation, CW-10);
-      doc.setFontSize(7.5); doc.setTextColor(160,190,220);
-      doc.text(stLines.slice(0,2), M+5, y+24);
-    }
-    y += 34;
-  }
-
-  // ═══ PAGE 2+: CAREER MATCHES ═══
-  addPage();
-  doc.setFillColor(navy[0],navy[1],navy[2]); doc.rect(0,0,W,16,'F');
-  doc.setFillColor(gold[0],gold[1],gold[2]); doc.rect(0,16,W,1,'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(255,255,255);
-  doc.text('CAREER MATCHES', W/2, 11, {align:'center'});
+  var method = hasProfile ? '60/30/10 Profile-Weighted' : '75/25 Aptitude/Interest';
+  doc.text(method, W-M, 14, {align:'right'});
   y = 24;
 
-  var topCareers = careers.filter(function(c){return c.matchPct >= 50;}).slice(0,20);
+  // ═══ SCORES — compact two-column grid ═══
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(gold[0],gold[1],gold[2]);
+  doc.text('ASSESSMENT SCORES', M, y); y += 5;
+
+  var sections = [
+    {n:'Mechanical',p:scores.mechanical?scores.mechanical.pct:0},{n:'Verbal',p:scores.verbal?scores.verbal.pct:0},
+    {n:'Numerical',p:scores.numerical?scores.numerical.pct:0},{n:'Spatial',p:scores.spatial?scores.spatial.pct:0},
+    {n:'Speed',p:scores.speed?scores.speed.pct:0},{n:'Memory',p:scores.memory?scores.memory.pct:0},
+    {n:'Leadership',p:scores.leadershipOverall||0},{n:'Work Style',p:scores.workstyleOverall||0},
+    {n:'Interests',p:scores.interestsOverall||0},{n:'Soft Skills',p:scores.softSkills||0}
+  ];
+
+  var colW = (CW - 4) / 2;
+  sections.forEach(function(s, i) {
+    var col = i % 2;
+    var xOff = M + col * (colW + 4);
+    if(col === 0 && i > 0) y += 7;
+    // Bar bg
+    doc.setFillColor(235,238,245); doc.roundedRect(xOff, y, colW, 5.5, 1, 1, 'F');
+    // Bar fill
+    var bW = Math.max(1, (s.p/100) * colW);
+    var bc = s.p >= 80 ? [34,197,94] : s.p >= 60 ? [240,192,64] : s.p >= 40 ? [251,146,60] : [248,113,113];
+    doc.setFillColor(bc[0],bc[1],bc[2]); doc.roundedRect(xOff, y, bW, 5.5, 1, 1, 'F');
+    // Label + score
+    doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(dk[0],dk[1],dk[2]);
+    doc.text(s.n, xOff+2, y+3.8);
+    doc.text(s.p+'%', xOff+colW-2, y+3.8, {align:'right'});
+  });
+  if(sections.length % 2 !== 0) y += 7;
+  y += 10;
+
+  // ═══ AI SUMMARY (compact) ═══
+  if(aiData && aiData.overallSummary) {
+    checkPage(20);
+    doc.setFillColor(10,22,40); doc.roundedRect(M, y, CW, 18, 2, 2, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(240,192,64);
+    doc.text('AI CAREER INTELLIGENCE', M+4, y+5);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(192,216,240);
+    var sl = doc.splitTextToSize(aiData.overallSummary, CW-8);
+    doc.text(sl.slice(0,3), M+4, y+9);
+    y += 21;
+  }
+
+  // ═══ CAREER MATCHES (compact table style) ═══
+  checkPage(10);
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(gold[0],gold[1],gold[2]);
+  doc.text('CAREER MATCHES', M, y); y += 4;
+
+  // Table header
+  doc.setFillColor(navy[0],navy[1],navy[2]); doc.rect(M, y, CW, 5, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(255,255,255);
+  doc.text('#', M+1.5, y+3.5);
+  doc.text('Match', M+6, y+3.5);
+  doc.text('Career', M+22, y+3.5);
+  doc.text('Salary', W-M-40, y+3.5);
+  doc.text('Sector', W-M-18, y+3.5);
+  y += 6;
+
+  var topCareers = careers.filter(function(c){return c.matchPct >= 50;}).slice(0,25);
   if(topCareers.length < 5) topCareers = careers.slice(0,10);
 
   var aiMap = {};
   if(aiData && aiData.insights) aiData.insights.forEach(function(i){ aiMap[i.career] = i; });
 
   topCareers.forEach(function(cr, idx) {
-    var cardH = 22;
     var ai = aiMap[cr.career.title];
-    if(ai) cardH = 38;
-    checkPage(cardH + 4);
+    var rowH = ai ? 10.5 : 5;
+    checkPage(rowH + 1);
 
-    // Card background
-    var isEven = idx % 2 === 0;
-    doc.setFillColor(isEven ? 248 : 255, isEven ? 250 : 255, isEven ? 253 : 255);
-    doc.roundedRect(M, y, CW, cardH, 2, 2, 'F');
-    doc.setDrawColor(220,227,236); doc.roundedRect(M, y, CW, cardH, 2, 2, 'S');
+    // Alternating row bg
+    if(idx % 2 === 0) { doc.setFillColor(248,250,253); doc.rect(M, y, CW, rowH, 'F'); }
+
+    // Row data
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(dk[0],dk[1],dk[2]);
+    doc.text(''+(idx+1), M+2, y+3.5);
 
     // Match badge
-    var matchColor = cr.matchPct >= 80 ? [34,197,94] : cr.matchPct >= 65 ? [240,192,64] : [251,146,60];
-    doc.setFillColor(matchColor[0],matchColor[1],matchColor[2]);
-    doc.roundedRect(M+2, y+2, 14, 7, 1.5, 1.5, 'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(255,255,255);
-    doc.text(cr.matchPct+'%', M+9, y+6.8, {align:'center'});
+    var mc = cr.matchPct >= 80 ? [34,197,94] : cr.matchPct >= 65 ? [200,150,10] : [251,146,60];
+    doc.setFont('helvetica','bold'); doc.setTextColor(mc[0],mc[1],mc[2]);
+    doc.text(cr.matchPct+'%', M+7, y+3.5);
 
-    // Title & salary
-    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(darkText[0],darkText[1],darkText[2]);
-    doc.text((idx+1)+'. '+cr.career.title, M+19, y+7);
-    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(sub[0],sub[1],sub[2]);
-    doc.text(cr.career.salary + '  |  ' + cr.career.sector, M+19, y+12.5);
+    doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(dk[0],dk[1],dk[2]);
+    doc.text(cr.career.title.substring(0,40), M+22, y+3.5);
 
-    // Requirements
-    if(cr.career.requirements && cr.career.requirements.length) {
-      doc.setFontSize(6.5);
-      doc.text('Requirements: ' + cr.career.requirements.slice(0,3).join(', '), M+19, y+17);
-    }
+    doc.setFont('helvetica','normal'); doc.setFontSize(6); doc.setTextColor(sub[0],sub[1],sub[2]);
+    doc.text((cr.career.salary||'').substring(0,18), W-M-40, y+3.5);
+    doc.text((cr.career.sector||'').substring(0,14), W-M-18, y+3.5);
 
-    // AI insight
-    if(ai) {
-      doc.setFillColor(245,248,252); doc.rect(M+4, y+20, CW-8, 15, 'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(gold[0],gold[1],gold[2]);
-      doc.text('AI ANALYSIS', M+6, y+24);
-      doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(darkText[0],darkText[1],darkText[2]);
-      var fitLines = doc.splitTextToSize(ai.whyYouFit || '', CW-14);
-      doc.text(fitLines.slice(0,2), M+6, y+28);
+    // AI one-liner if available
+    if(ai && ai.whyYouFit) {
+      doc.setFont('helvetica','italic'); doc.setFontSize(5.5); doc.setTextColor(90,112,144);
+      var fitLine = doc.splitTextToSize(ai.whyYouFit, CW-26);
+      doc.text(fitLine.slice(0,1), M+22, y+7.5);
       if(ai.timeframe) {
-        doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(sub[0],sub[1],sub[2]);
-        doc.text('Timeline: ' + ai.timeframe, M+6, y+33.5);
+        doc.setFont('helvetica','bold'); doc.setFontSize(5.5); doc.setTextColor(gold[0],gold[1],gold[2]);
+        doc.text('Timeline: ' + ai.timeframe, M+22, y+10);
       }
     }
 
-    y += cardH + 3;
+    // Bottom border
+    doc.setDrawColor(230,235,242); doc.setLineWidth(0.15); doc.line(M, y+rowH, W-M, y+rowH);
+    y += rowH + 0.5;
   });
 
-  // ═══ IMMEDIATE ACTIONS (if AI) ═══
+  // ═══ NEXT STEPS (compact) ═══
   if(aiData && aiData.immediateActions && aiData.immediateActions.length) {
-    checkPage(30);
     y += 4;
-    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(gold[0],gold[1],gold[2]);
-    doc.text('RECOMMENDED NEXT STEPS', M, y); y += 2;
-    drawLine(M, y, W-M, gold, 0.4); y += 6;
-    aiData.immediateActions.forEach(function(action, i) {
-      checkPage(10);
-      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(gold[0],gold[1],gold[2]);
-      doc.text((i+1)+'.', M, y+1);
-      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(darkText[0],darkText[1],darkText[2]);
-      var actionLines = doc.splitTextToSize(action, CW-8);
-      doc.text(actionLines, M+6, y+1);
-      y += actionLines.length * 4 + 3;
+    checkPage(16);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(gold[0],gold[1],gold[2]);
+    doc.text('NEXT STEPS', M, y); y += 4;
+    aiData.immediateActions.forEach(function(a, i) {
+      checkPage(6);
+      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(dk[0],dk[1],dk[2]);
+      var lines = doc.splitTextToSize((i+1)+'. '+a, CW-4);
+      doc.text(lines.slice(0,2), M+2, y);
+      y += lines.length * 3.2 + 1.5;
     });
   }
 
-  // ═══ FOOTER ON EVERY PAGE ═══
+  // ═══ FOOTER ═══
   var pages = doc.internal.getNumberOfPages();
   for(var p = 1; p <= pages; p++) {
     doc.setPage(p);
-    doc.setFillColor(navy[0],navy[1],navy[2]); doc.rect(0, H-10, W, 10, 'F');
-    doc.setFont('helvetica','normal'); doc.setFontSize(6); doc.setTextColor(192,216,240);
-    doc.text('VCP PathFinder\u2122 Pro  |  veterancareerpath.com  |  ' + r.date, W/2, H-4, {align:'center'});
-    doc.setTextColor(120,140,160);
-    doc.text('Page ' + p + ' of ' + pages, W-M, H-4, {align:'right'});
+    doc.setDrawColor(200,200,200); doc.setLineWidth(0.2); doc.line(M, H-8, W-M, H-8);
+    doc.setFont('helvetica','normal'); doc.setFontSize(5.5); doc.setTextColor(140,150,165);
+    doc.text('VCP PathFinder\u2122 Pro  |  veterancareerpath.com  |  ' + r.date, M, H-4);
+    doc.text('Page ' + p + '/' + pages, W-M, H-4, {align:'right'});
   }
 
-  doc.save('VCP-PathFinder-Pro-Report-' + r.assessmentId + '.pdf');
+  doc.save('VCP-PathFinder-Report-' + r.assessmentId + '.pdf');
   showNotification('PDF report downloaded.');
 }
 

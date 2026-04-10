@@ -75,6 +75,10 @@
   /* Suppress browser print headers/footers */
 }
 </style><style id="mobile-gap-fix">
+/* Profile icon: position away from hamburger on mobile */
+@media(max-width:960px){
+  .profile-icon-wrap{right:56px!important;top:10px!important;}
+}
 @media(max-width:600px){
   .panel{padding:0!important;margin:0!important;}
   .card{border-radius:8px!important;margin-bottom:.65rem!important;}
@@ -4139,7 +4143,7 @@ Return this exact JSON structure:
       <style>{css}</style>
       <div className="app">
         {/* ── PROFILE ICON (top-right) ── */}
-        <div ref={profileRef} style={{position:"fixed",top:"10px",right:"16px",zIndex:2500}}>
+        <div ref={profileRef} className="profile-icon-wrap" style={{position:"fixed",top:"10px",right:"56px",zIndex:1999}}>
           <button onClick={()=>currentUser?setProfileOpen(!profileOpen):setShowAuth(true)}
             style={{width:"36px",height:"36px",borderRadius:"50%",border:"2px solid rgba(240,192,64,.5)",background:currentUser?"linear-gradient(135deg,#1a3a6b,#1e4a8a)":"rgba(255,255,255,.1)",color:"#f0c040",fontSize:currentUser?".85rem":"1rem",fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em",transition:"border-color .2s,background .2s"}}
             title={currentUser?(personal.name||currentUser.displayName||"Profile"):"Sign In"}>
@@ -4537,14 +4541,7 @@ Return this exact JSON structure:
               {hasUnsaved&&<span className="unsaved" title="Unsaved changes"/>}
             </div>
             <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
-              <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleSaveProfile}>
-                {hasUnsaved?"⏳ Saving…":"✓ Profile Saved"}
-              </button>
-              <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>{setTab(5);window.scrollTo(0,0);}}>
-                My Resumes ({savedResumes.length})
-              </button>
-              {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>⭐ All 8 Tools — $15/mo</button>}
-              <button className="btn-danger" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleLogout}>Sign Out</button>
+              {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>Subscribe — $15/mo</button>}
               {window.location.search.indexOf("admin=1")>-1&&<button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>SETUP</button>}
             </div>
           </div>
@@ -4563,9 +4560,8 @@ Return this exact JSON structure:
           <img
             src={window.VCB_LOGO}
             alt="Veteran to Civilian Career Transitions"
-            style={{display:"block",margin:"0 auto",width:"300px",height:"260px",objectFit:"contain",mixBlendMode:"screen",filter:"drop-shadow(0 2px 12px rgba(201,168,76,.2))"}}
+            style={{display:"block",margin:"0 auto",width:"80px",height:"80px",objectFit:"contain",mixBlendMode:"screen",filter:"drop-shadow(0 2px 12px rgba(201,168,76,.2))"}}
           />
-          <p style={{marginTop:".5rem"}}>From Service to Civilian Success</p>
         </div>
         <div className="tabs">
           {TABS.map((t,i)=>(
@@ -4581,11 +4577,16 @@ Return this exact JSON structure:
         <div className="steps">{TABS.map((_,i)=><div key={i} className={"sdot "+(tab===i?"on":"")}/>)}</div>
         <div className="wrap">
           {tab===0 && <div className="panel on">
-            {/* ── MODE TOGGLE: Guided Wizard vs Manual Entry ── */}
-            <div style={{display:"flex",gap:".5rem",marginBottom:"1rem",background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--radius)",padding:".5rem"}}>
-              <button onClick={()=>setProfileMode("guided")} style={{flex:1,padding:".6rem",borderRadius:"6px",border:"none",cursor:"pointer",fontWeight:700,fontSize:".82rem",fontFamily:"inherit",background:profileMode==="guided"?"var(--navy)":"transparent",color:profileMode==="guided"?"#fff":"var(--dim)",transition:"all .15s"}}>🎯 Guided Wizard</button>
-              <button onClick={()=>setProfileMode("manual")} style={{flex:1,padding:".6rem",borderRadius:"6px",border:"none",cursor:"pointer",fontWeight:700,fontSize:".82rem",fontFamily:"inherit",background:profileMode==="manual"?"var(--navy)":"transparent",color:profileMode==="manual"?"#fff":"var(--dim)",transition:"all .15s"}}>✏️ Manual Entry</button>
-            </div>
+            {/* ── GUIDED WIZARD LAUNCH BUTTON ── */}
+            {profileMode==="manual"&&<div style={{marginBottom:"1rem"}}>
+              <button onClick={()=>setProfileMode("guided")} style={{width:"100%",padding:".7rem 1rem",borderRadius:"8px",border:"1.5px solid var(--navy)",cursor:"pointer",fontWeight:700,fontSize:".85rem",fontFamily:"inherit",background:"linear-gradient(135deg,var(--navy),#2456a0)",color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",gap:".5rem",transition:"all .15s"}}>
+                <span style={{fontSize:"1.1rem"}}>🎯</span> Launch Guided Profile Wizard
+                <span style={{fontSize:".72rem",fontWeight:400,opacity:.7,marginLeft:".25rem"}}>(recommended for new users)</span>
+              </button>
+            </div>}
+            {profileMode==="guided"&&<div style={{marginBottom:".75rem",display:"flex",justifyContent:"flex-end"}}>
+              <button onClick={()=>setProfileMode("manual")} style={{padding:".35rem .75rem",borderRadius:"6px",border:"1px solid var(--border)",cursor:"pointer",fontWeight:600,fontSize:".75rem",fontFamily:"inherit",background:"transparent",color:"var(--dim)",transition:"all .15s"}}>Switch to Manual Entry</button>
+            </div>}
 
             {/* ══ GUIDED WIZARD ══ */}
             {profileMode==="guided" && (

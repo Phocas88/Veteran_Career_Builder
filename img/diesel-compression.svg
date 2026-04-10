@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes pistonMove {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-30px); }
+      100% { transform: translateY(0); }
+    }
+    @keyframes heatPulse {
+      0% { opacity: 0.15; }
+      50% { opacity: 0.45; }
+      100% { opacity: 0.15; }
+    }
+    .piston-group { animation: pistonMove 2.5s ease-in-out infinite; }
+    .heat-glow { animation: heatPulse 2.5s ease-in-out infinite; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Cylinder walls -->
+  <rect x="120" y="20" width="90" height="120" rx="3" fill="none" stroke="#1a3a6b" stroke-width="2.5"/>
+  <!-- Cylinder head (top) -->
+  <rect x="118" y="18" width="94" height="8" rx="2" fill="#1a3a6b"/>
+
+  <!-- Compressed air area (above piston) -->
+  <rect x="122" y="27" width="86" height="35" fill="#e0ecff" class="heat-glow"/>
+  <!-- Heat lines in compressed air -->
+  <line x1="140" y1="35" x2="140" y2="50" stroke="#c8960a" stroke-width="1" opacity="0.5" stroke-dasharray="2,3"/>
+  <line x1="155" y1="32" x2="155" y2="52" stroke="#c8960a" stroke-width="1" opacity="0.5" stroke-dasharray="2,3"/>
+  <line x1="170" y1="35" x2="170" y2="50" stroke="#c8960a" stroke-width="1" opacity="0.5" stroke-dasharray="2,3"/>
+  <line x1="185" y1="33" x2="185" y2="48" stroke="#c8960a" stroke-width="1" opacity="0.5" stroke-dasharray="2,3"/>
+
+  <!-- Fuel injector at top -->
+  <rect x="157" y="10" width="16" height="14" rx="2" fill="#1a3a6b"/>
+  <line x1="165" y1="24" x2="165" y2="34" stroke="#c8960a" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <line x1="165" y1="34" x2="158" y2="42" stroke="#c8960a" stroke-width="1" stroke-dasharray="2,2"/>
+  <line x1="165" y1="34" x2="172" y2="42" stroke="#c8960a" stroke-width="1" stroke-dasharray="2,2"/>
+
+  <!-- Piston (animated) -->
+  <g class="piston-group">
+    <rect x="123" y="65" width="84" height="18" rx="2" fill="#b0c4de" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Piston rod -->
+    <rect x="158" y="83" width="14" height="35" rx="2" fill="#8aa0c0" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Connecting rod base -->
+    <circle cx="165" cy="120" r="6" fill="#8aa0c0" stroke="#1a3a6b" stroke-width="1.5"/>
+  </g>
+
+  <!-- Labels: Fuel injection -->
+  <line x1="175" y1="14" x2="230" y2="14" stroke="#c8960a" stroke-width="1"/>
+  <text x="233" y="18" font-size="10" font-weight="600" fill="#c8960a">Fuel injection</text>
+
+  <!-- Label: Compressed air -->
+  <line x1="210" y1="44" x2="240" y2="44" stroke="#1a3a6b" stroke-width="1"/>
+  <text x="243" y="48" font-size="10" font-weight="600" fill="#1a3a6b">Compressed air</text>
+
+  <!-- Label: Piston (pointing to static position area) -->
+  <text x="243" y="78" font-size="10" font-weight="600" fill="#1a3a6b">Piston</text>
+  <line x1="210" y1="74" x2="240" y2="74" stroke="#1a3a6b" stroke-width="1"/>
+
+  <!-- Question label -->
+  <text x="42" y="55" text-anchor="middle" font-size="13" font-weight="700" fill="#dc2626">?</text>
+  <text x="42" y="70" text-anchor="middle" font-size="9" font-weight="600" fill="#dc2626">ignites</text>
+  <text x="42" y="81" text-anchor="middle" font-size="9" font-weight="600" fill="#dc2626">fuel</text>
+
+  <!-- Title -->
+  <text x="200" y="165" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Diesel Engine — What Ignites the Fuel?</text>
+</svg>

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes tilt {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(1deg); }
+      75% { transform: rotate(-1deg); }
+    }
+    .prism-group { animation: tilt 5s ease-in-out infinite; transform-origin: 170px 100px; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Title -->
+  <text x="200" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#5a7090" font-weight="600">Triangular Prism — Count the Faces</text>
+
+  <g class="prism-group">
+    <!-- Triangular prism in isometric view -->
+    <!-- Front triangular face -->
+    <polygon points="100,145 170,45 240,145" fill="rgba(93,141,217,0.35)" stroke="#1a3a6b" stroke-width="2"/>
+
+    <!-- Top rectangular face (receding) -->
+    <polygon points="170,45 240,145 330,115 260,15" fill="rgba(74,126,200,0.3)" stroke="#1a3a6b" stroke-width="2"/>
+
+    <!-- Right rectangular face (bottom, receding) -->
+    <polygon points="240,145 330,115 330,115 240,145" fill="rgba(61,111,181,0.25)" stroke="#1a3a6b" stroke-width="2"/>
+
+    <!-- Bottom rectangular face -->
+    <polygon points="100,145 240,145 330,115 190,115" fill="rgba(61,111,181,0.25)" stroke="#1a3a6b" stroke-width="2"/>
+
+    <!-- Back triangular face (partially visible) -->
+    <polygon points="190,115 260,15 330,115" fill="rgba(93,141,217,0.15)" stroke="#1a3a6b" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+    <!-- Hidden edges (dashed) -->
+    <line x1="100" y1="145" x2="190" y2="115" stroke="#1a3a6b" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+    <line x1="170" y1="45" x2="260" y2="15" stroke="#1a3a6b" stroke-width="1.5" opacity="0.7"/>
+
+    <!-- Face labels -->
+    <text x="168" y="110" text-anchor="middle" font-family="Arial" font-size="10" fill="#1a3a6b" font-weight="600">Front</text>
+    <text x="230" y="80" text-anchor="middle" font-family="Arial" font-size="10" fill="#1a3a6b" font-weight="600" transform="rotate(-35,230,80)">Top</text>
+    <text x="215" y="140" text-anchor="middle" font-family="Arial" font-size="10" fill="#1a3a6b" font-weight="600">Bottom</text>
+  </g>
+
+  <!-- Question box -->
+  <rect x="310" y="35" width="80" height="45" rx="6" fill="rgba(220,38,38,.08)" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="350" y="55" text-anchor="middle" font-family="Arial" font-size="12" fill="#5a7090" font-weight="600">Faces =</text>
+  <text x="350" y="74" text-anchor="middle" font-family="Arial" font-size="24" font-weight="700" fill="#dc2626">?</text>
+
+  <!-- Hint -->
+  <text x="350" y="165" text-anchor="middle" font-family="Arial" font-size="9" fill="#c8960a" font-weight="600">Count all faces</text>
+  <text x="350" y="176" text-anchor="middle" font-family="Arial" font-size="9" fill="#c8960a">(including hidden)</text>
+</svg>

@@ -1,9 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="120" viewBox="0 0 400 120">
   <style>
     @keyframes spin1{to{transform:rotate(360deg)}}
-    @keyframes spin2{to{transform:rotate(-360deg)}}
-    @keyframes spin3{to{transform:rotate(360deg)}}
-    /* Gear 4 does NOT animate — that's the question */
+    /* Only Gear 1 animates — Gears 2-4 are static so we don't give away the alternating direction pattern */
   </style>
   <rect width="400" height="120" rx="10" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
   <text x="200" y="16" text-anchor="middle" font-family="Arial" font-size="11" fill="#5a7090" font-weight="600">Gear Train — Gear 1 turns clockwise. What direction does Gear 4 turn?</text>
@@ -18,22 +16,22 @@
   <text x="55" y="100" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#1a3a6b">1 ↻</text>
 
   <!-- Gear 2 -->
-  <g style="transform-origin:130px 65px;animation:spin2 3s linear infinite">
+  <g>
     <circle cx="130" cy="65" r="22" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
     <circle cx="130" cy="65" r="4" fill="#1a3a6b"/>
     <line x1="130" y1="43" x2="130" y2="87" stroke="#1a3a6b" stroke-width="1.5" opacity=".3"/>
     <line x1="108" y1="65" x2="152" y2="65" stroke="#1a3a6b" stroke-width="1.5" opacity=".3"/>
   </g>
-  <text x="130" y="100" text-anchor="middle" font-family="Arial" font-size="10" font-weight="600" fill="#5a7090">2 ↺</text>
+  <text x="130" y="100" text-anchor="middle" font-family="Arial" font-size="10" font-weight="600" fill="#5a7090">2</text>
 
   <!-- Gear 3 -->
-  <g style="transform-origin:205px 65px;animation:spin3 3s linear infinite">
+  <g>
     <circle cx="205" cy="65" r="22" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
     <circle cx="205" cy="65" r="4" fill="#1a3a6b"/>
     <line x1="205" y1="43" x2="205" y2="87" stroke="#1a3a6b" stroke-width="1.5" opacity=".3"/>
     <line x1="183" y1="65" x2="227" y2="65" stroke="#1a3a6b" stroke-width="1.5" opacity=".3"/>
   </g>
-  <text x="205" y="100" text-anchor="middle" font-family="Arial" font-size="10" font-weight="600" fill="#5a7090">3 ↻</text>
+  <text x="205" y="100" text-anchor="middle" font-family="Arial" font-size="10" font-weight="600" fill="#5a7090">3</text>
 
   <!-- Gear 4 (question — STATIC, no animation) -->
   <g>

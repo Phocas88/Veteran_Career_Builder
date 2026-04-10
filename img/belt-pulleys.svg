@@ -3,7 +3,7 @@
     @keyframes spinFast { to { transform: rotate(360deg); } }
     @keyframes spinSlow { to { transform: rotate(360deg); } }
     .smallSpin { animation: spinFast 1s linear infinite; transform-origin: 110px 90px; }
-    .largeSpin { animation: spinSlow 2s linear infinite; transform-origin: 290px 90px; }
+    /* Large pulley is STATIC — its RPM is the question */
     text { font-family: Arial, sans-serif; }
   </style>
   <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
@@ -27,7 +27,7 @@
   </g>
 
   <!-- Large pulley (right) - 12" diameter = r48 -->
-  <g class="largeSpin">
+  <g>
     <circle cx="290" cy="90" r="48" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2.5"/>
     <circle cx="290" cy="90" r="12" fill="#fff" stroke="#1a3a6b" stroke-width="2"/>
     <circle cx="290" cy="90" r="4" fill="#1a3a6b"/>

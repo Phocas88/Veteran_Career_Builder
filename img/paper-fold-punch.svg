@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <style>
+    @keyframes flutter {
+      0%, 100% { transform: skewX(0deg) skewY(0deg); }
+      30% { transform: skewX(0.5deg) skewY(-0.3deg); }
+      70% { transform: skewX(-0.5deg) skewY(0.3deg); }
+    }
+    .paper { animation: flutter 4s ease-in-out infinite; transform-origin: 55px 105px; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="200" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Title -->
+  <text x="200" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#5a7090" font-weight="600">Paper Fold &amp; Punch — How Many Holes?</text>
+
+  <!-- Step 1: Original square paper -->
+  <g class="paper">
+    <rect x="20" y="38" width="68" height="68" fill="#fff" stroke="#1a3a6b" stroke-width="2" rx="1"/>
+    <text x="54" y="82" text-anchor="middle" font-family="Arial" font-size="9" fill="#5a7090">Paper</text>
+  </g>
+  <text x="54" y="120" text-anchor="middle" font-family="Arial" font-size="9" fill="#1a3a6b" font-weight="600">Step 1</text>
+
+  <!-- Arrow -->
+  <text x="97" y="75" font-family="Arial" font-size="16" fill="#c8960a">→</text>
+
+  <!-- Step 2: Folded in half (rectangle) -->
+  <rect x="112" y="38" width="34" height="68" fill="#fff" stroke="#1a3a6b" stroke-width="2" rx="1"/>
+  <rect x="112" y="38" width="34" height="68" fill="rgba(26,58,107,0.05)" stroke="none"/>
+  <!-- Fold indicator -->
+  <line x1="112" y1="38" x2="112" y2="106" stroke="#c8960a" stroke-width="2" stroke-dasharray="4,2"/>
+  <text x="106" y="75" text-anchor="end" font-family="Arial" font-size="8" fill="#c8960a">fold</text>
+  <text x="129" y="82" text-anchor="middle" font-family="Arial" font-size="8" fill="#5a7090">2 layers</text>
+  <text x="129" y="120" text-anchor="middle" font-family="Arial" font-size="9" fill="#1a3a6b" font-weight="600">Step 2</text>
+
+  <!-- Arrow -->
+  <text x="155" y="75" font-family="Arial" font-size="16" fill="#c8960a">→</text>
+
+  <!-- Step 3: Folded again (small square) -->
+  <rect x="170" y="38" width="34" height="34" fill="#fff" stroke="#1a3a6b" stroke-width="2" rx="1"/>
+  <rect x="170" y="38" width="34" height="34" fill="rgba(26,58,107,0.08)" stroke="none"/>
+  <!-- Fold indicator -->
+  <line x1="170" y1="72" x2="204" y2="72" stroke="#c8960a" stroke-width="2" stroke-dasharray="4,2"/>
+  <text x="187" y="84" text-anchor="middle" font-family="Arial" font-size="8" fill="#c8960a">fold</text>
+  <text x="187" y="60" text-anchor="middle" font-family="Arial" font-size="8" fill="#5a7090">4 layers</text>
+  <text x="187" y="120" text-anchor="middle" font-family="Arial" font-size="9" fill="#1a3a6b" font-weight="600">Step 3</text>
+
+  <!-- Arrow -->
+  <text x="213" y="58" font-family="Arial" font-size="16" fill="#c8960a">→</text>
+
+  <!-- Step 4: Punch hole -->
+  <rect x="228" y="38" width="34" height="34" fill="#fff" stroke="#1a3a6b" stroke-width="2" rx="1"/>
+  <circle cx="245" cy="55" r="5" fill="#1a3a6b" stroke="#1a3a6b" stroke-width="1"/>
+  <text x="245" y="84" text-anchor="middle" font-family="Arial" font-size="8" fill="#5a7090">1 hole</text>
+  <text x="245" y="96" text-anchor="middle" font-family="Arial" font-size="8" fill="#5a7090">punched</text>
+  <text x="245" y="120" text-anchor="middle" font-family="Arial" font-size="9" fill="#1a3a6b" font-weight="600">Step 4</text>
+
+  <!-- Arrow -->
+  <text x="272" y="58" font-family="Arial" font-size="16" fill="#c8960a">→</text>
+
+  <!-- Step 5: Unfold = ? -->
+  <rect x="290" y="38" width="90" height="90" rx="6" fill="rgba(220,38,38,.08)" stroke="#dc2626" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="335" y="65" text-anchor="middle" font-family="Arial" font-size="11" fill="#5a7090" font-weight="600">Unfolded:</text>
+  <text x="335" y="100" text-anchor="middle" font-family="Arial" font-size="32" font-weight="700" fill="#dc2626">?</text>
+  <text x="335" y="118" text-anchor="middle" font-family="Arial" font-size="12" fill="#dc2626" font-weight="600">holes</text>
+  <text x="335" y="145" text-anchor="middle" font-family="Arial" font-size="9" fill="#1a3a6b" font-weight="600">Result</text>
+
+  <!-- Bottom note -->
+  <text x="200" y="170" text-anchor="middle" font-family="Arial" font-size="10" fill="#c8960a" font-weight="600">Fold in half twice, punch once — how many holes when unfolded?</text>
+</svg>

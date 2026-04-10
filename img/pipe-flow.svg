@@ -1,9 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
   <style>
-    @keyframes flowSlow { 0% { transform: translateX(0); } 100% { transform: translateX(60px); } }
-    @keyframes flowFast { 0% { transform: translateX(0); } 100% { transform: translateX(60px); } }
-    .slow { animation: flowSlow 2s linear infinite; }
-    .fast { animation: flowFast 1s linear infinite; }
+    @keyframes flowGentle { 0% { transform: translateX(0); } 100% { transform: translateX(40px); } }
+    .slow { animation: flowGentle 2s linear infinite; }
+    /* Narrow section particles are static — velocity there is the question */
     .particle { fill: #4a90d9; }
     text { font-family: Arial, sans-serif; }
   </style>
@@ -34,7 +33,7 @@
   </g>
 
   <!-- Animated particles - narrow section (fast) -->
-  <g class="fast">
+  <g>
     <circle cx="270" cy="80" r="2.5" class="particle" opacity=".8"/>
     <circle cx="310" cy="80" r="2.5" class="particle" opacity=".8"/>
     <circle cx="340" cy="80" r="2.5" class="particle" opacity=".8"/>

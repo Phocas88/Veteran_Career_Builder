@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes arrowPulse {
+      0% { opacity: 0.5; stroke-width: 2; }
+      50% { opacity: 1; stroke-width: 3; }
+      100% { opacity: 0.5; stroke-width: 2; }
+    }
+    @keyframes glowPulse {
+      0% { opacity: 0.1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 0.1; }
+    }
+    .arrow-path { animation: arrowPulse 2s ease-in-out infinite; }
+    .arrow-glow { animation: glowPulse 2s ease-in-out infinite; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Left box with letter N -->
+  <rect x="40" y="30" width="100" height="110" rx="8" fill="#fff" stroke="#1a3a6b" stroke-width="2"/>
+  <text x="90" y="105" text-anchor="middle" font-size="64" font-weight="700" fill="#1a3a6b" font-family="Arial, sans-serif">N</text>
+  <text x="90" y="155" text-anchor="middle" font-size="10" fill="#5a7090">Original</text>
+
+  <!-- Curved 90-degree clockwise arrow -->
+  <!-- Glow effect behind arrow -->
+  <path class="arrow-glow" d="M165,55 A45,45 0 0,1 210,100" fill="none" stroke="#c8960a" stroke-width="10" stroke-linecap="round"/>
+  <!-- Arrow arc -->
+  <path class="arrow-path" d="M165,55 A45,45 0 0,1 210,100" fill="none" stroke="#c8960a" stroke-linecap="round"/>
+  <!-- Arrowhead -->
+  <polygon points="210,90 218,100 205,103" fill="#c8960a">
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+  </polygon>
+  <!-- 90 degree label -->
+  <text x="195" y="65" text-anchor="middle" font-size="13" font-weight="700" fill="#c8960a">90°</text>
+  <text x="220" y="78" text-anchor="start" font-size="10" font-weight="600" fill="#c8960a">CW</text>
+
+  <!-- Right box with question mark -->
+  <rect x="260" y="30" width="100" height="110" rx="8" fill="#fff" stroke="#d0daea" stroke-width="2" stroke-dasharray="6,4"/>
+  <text x="310" y="108" text-anchor="middle" font-size="68" font-weight="700" fill="#dc2626" font-family="Arial, sans-serif">?</text>
+  <text x="310" y="155" text-anchor="middle" font-size="10" fill="#5a7090">After rotation</text>
+
+  <!-- Title -->
+  <text x="200" y="174" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Letter Rotation — 90° Clockwise</text>
+</svg>

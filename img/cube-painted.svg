@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <style>
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(1.5deg); }
+      75% { transform: rotate(-1.5deg); }
+    }
+    .cube-group { animation: wobble 4s ease-in-out infinite; transform-origin: 160px 110px; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="200" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Title -->
+  <text x="200" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#5a7090" font-weight="600">Painted Cube — How Many Have 2 Blue Faces?</text>
+
+  <!-- Isometric 3x3x3 Cube -->
+  <g class="cube-group">
+    <!-- Back face (top-left visible face) — blue tinted -->
+    <!-- Top face -->
+    <polygon points="160,30 250,60 160,90 70,60" fill="#5b8dd9" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Top face grid lines -->
+    <line x1="100" y1="50" x2="190" y2="80" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+    <line x1="130" y1="40" x2="220" y2="70" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+    <line x1="130" y1="80" x2="220" y2="50" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+    <line x1="100" y1="70" x2="190" y2="40" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+
+    <!-- Left face — blue tinted -->
+    <polygon points="70,60 160,90 160,170 70,140" fill="#3d6fb5" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Left face grid lines -->
+    <line x1="70" y1="86.7" x2="160" y2="116.7" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+    <line x1="70" y1="113.3" x2="160" y2="143.3" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+    <line x1="100" y1="69" x2="100" y2="149" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+    <line x1="130" y1="78" x2="130" y2="158" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+
+    <!-- Right face — blue tinted -->
+    <polygon points="160,90 250,60 250,140 160,170" fill="#4a7ec8" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Right face grid lines -->
+    <line x1="160" y1="116.7" x2="250" y2="86.7" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+    <line x1="160" y1="143.3" x2="250" y2="113.3" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+    <line x1="190" y1="78" x2="190" y2="158" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+    <line x1="220" y1="69" x2="220" y2="149" stroke="#1a3a6b" stroke-width="0.7" opacity="0.5"/>
+
+    <!-- Highlight edge cubes with ? markers (cubes with exactly 2 painted faces = edge cubes) -->
+    <!-- Top face edges (middle of each edge) -->
+    <text x="130" y="55" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">?</text>
+    <text x="190" y="55" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">?</text>
+    <text x="105" y="78" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">?</text>
+    <text x="215" y="78" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">?</text>
+
+    <!-- Left face vertical edges (middle) -->
+    <text x="78" y="105" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">?</text>
+    <text x="152" y="135" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">?</text>
+
+    <!-- Right face vertical edges (middle) -->
+    <text x="242" y="105" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">?</text>
+    <text x="168" y="135" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">?</text>
+
+    <!-- Bottom edges -->
+    <text x="105" y="158" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">?</text>
+    <text x="215" y="158" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">?</text>
+  </g>
+
+  <!-- Info label -->
+  <text x="330" y="50" text-anchor="middle" font-family="Arial" font-size="11" fill="#1a3a6b" font-weight="700">3 × 3 × 3</text>
+  <text x="330" y="65" text-anchor="middle" font-family="Arial" font-size="10" fill="#5a7090">All sides blue</text>
+  <text x="330" y="85" text-anchor="middle" font-family="Arial" font-size="10" fill="#5a7090">Cut into 27</text>
+  <text x="330" y="100" text-anchor="middle" font-family="Arial" font-size="10" fill="#5a7090">small cubes</text>
+
+  <!-- Question -->
+  <rect x="290" y="115" width="80" height="35" rx="6" fill="rgba(220,38,38,.08)" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="330" y="130" text-anchor="middle" font-family="Arial" font-size="10" fill="#dc2626" font-weight="600">2 blue faces</text>
+  <text x="330" y="145" text-anchor="middle" font-family="Arial" font-size="16" font-weight="700" fill="#dc2626">= ?</text>
+
+  <!-- Legend -->
+  <text x="330" y="175" text-anchor="middle" font-family="Arial" font-size="9" fill="#c8960a" font-weight="600">? = edge cubes</text>
+</svg>

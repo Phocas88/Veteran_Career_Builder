@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes pulseHighlight {
+      0%,20%    { opacity: 0.6; }
+      10%       { opacity: 0; }
+    }
+    @keyframes pulse2 {
+      25%,45%   { opacity: 0.6; }
+      35%       { opacity: 0; }
+    }
+    @keyframes pulse3 {
+      50%,70%   { opacity: 0.6; }
+      60%       { opacity: 0; }
+    }
+    @keyframes pulse4 {
+      75%,95%   { opacity: 0.6; }
+      85%       { opacity: 0; }
+    }
+    .hl1 { animation: pulseHighlight 8s ease-in-out infinite; opacity: 0; }
+    .hl2 { animation: pulse2 8s ease-in-out infinite; opacity: 0; }
+    .hl3 { animation: pulse3 8s ease-in-out infinite; opacity: 0; }
+    .hl4 { animation: pulse4 8s ease-in-out infinite; opacity: 0; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Valve 1: Ball Valve -->
+  <g>
+    <!-- Highlight ring -->
+    <rect x="14" y="26" width="72" height="80" rx="6" fill="#c8960a" class="hl1"/>
+    <!-- Pipe sections -->
+    <rect x="14" y="50" width="20" height="18" fill="#b0c0d4" stroke="#1a3a6b" stroke-width="1.5"/>
+    <rect x="66" y="50" width="20" height="18" fill="#b0c0d4" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Valve body -->
+    <circle cx="50" cy="59" r="16" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Ball inside with hole -->
+    <circle cx="50" cy="59" r="10" fill="#5a7090"/>
+    <rect x="40" y="56" width="20" height="6" fill="#dce4f0"/>
+    <!-- Handle on top -->
+    <rect x="46" y="30" width="8" height="14" fill="#1a3a6b" rx="1"/>
+    <rect x="40" y="28" width="20" height="6" rx="2" fill="#c8960a"/>
+    <text x="50" y="100" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Ball</text>
+    <text x="50" y="110" text-anchor="middle" font-size="8" font-weight="600" fill="#1a3a6b">Valve</text>
+  </g>
+
+  <!-- Valve 2: Gate Valve -->
+  <g>
+    <rect x="104" y="26" width="72" height="80" rx="6" fill="#c8960a" class="hl2"/>
+    <!-- Pipe sections -->
+    <rect x="104" y="50" width="20" height="18" fill="#b0c0d4" stroke="#1a3a6b" stroke-width="1.5"/>
+    <rect x="156" y="50" width="20" height="18" fill="#b0c0d4" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Valve body -->
+    <rect x="122" y="42" width="36" height="34" rx="3" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Gate (wedge) partially shown -->
+    <rect x="138" y="38" width="4" height="24" fill="#5a7090" stroke="#3a5070" stroke-width="1"/>
+    <!-- Stem going up -->
+    <rect x="138" y="26" width="4" height="14" fill="#888" stroke="#666" stroke-width="1"/>
+    <!-- Handwheel -->
+    <circle cx="140" cy="26" r="7" fill="none" stroke="#1a3a6b" stroke-width="2"/>
+    <circle cx="140" cy="26" r="2" fill="#1a3a6b"/>
+    <text x="140" y="100" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Gate</text>
+    <text x="140" y="110" text-anchor="middle" font-size="8" font-weight="600" fill="#1a3a6b">Valve</text>
+  </g>
+
+  <!-- Valve 3: Globe Valve -->
+  <g>
+    <rect x="194" y="26" width="72" height="80" rx="6" fill="#c8960a" class="hl3"/>
+    <!-- Pipe sections -->
+    <rect x="194" y="50" width="20" height="18" fill="#b0c0d4" stroke="#1a3a6b" stroke-width="1.5"/>
+    <rect x="246" y="50" width="20" height="18" fill="#b0c0d4" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Globe body (rounded) -->
+    <ellipse cx="230" cy="55" rx="18" ry="20" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Internal baffle / S-path -->
+    <path d="M214,58 Q222,50 230,58 Q238,66 246,58" fill="none" stroke="#5a7090" stroke-width="2"/>
+    <!-- Disc/plug -->
+    <circle cx="230" cy="50" r="4" fill="#5a7090" stroke="#3a5070" stroke-width="1"/>
+    <!-- Stem -->
+    <rect x="228" y="28" width="4" height="18" fill="#888" stroke="#666" stroke-width="1"/>
+    <!-- Handwheel -->
+    <circle cx="230" cy="26" r="7" fill="none" stroke="#1a3a6b" stroke-width="2"/>
+    <circle cx="230" cy="26" r="2" fill="#1a3a6b"/>
+    <text x="230" y="100" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Globe</text>
+    <text x="230" y="110" text-anchor="middle" font-size="8" font-weight="600" fill="#1a3a6b">Valve</text>
+  </g>
+
+  <!-- Valve 4: Check Valve -->
+  <g>
+    <rect x="284" y="26" width="72" height="80" rx="6" fill="#c8960a" class="hl4"/>
+    <!-- Pipe sections -->
+    <rect x="284" y="50" width="20" height="18" fill="#b0c0d4" stroke="#1a3a6b" stroke-width="1.5"/>
+    <rect x="336" y="50" width="20" height="18" fill="#b0c0d4" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Valve body -->
+    <rect x="302" y="42" width="36" height="34" rx="3" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Flapper/swing disc -->
+    <line x1="320" y1="44" x2="310" y2="68" stroke="#5a7090" stroke-width="3" stroke-linecap="round"/>
+    <!-- Hinge point -->
+    <circle cx="320" cy="44" r="2.5" fill="#3a5070"/>
+    <!-- Flow arrow indicator -->
+    <polygon points="330,59 338,54 338,64" fill="#a0b8d8"/>
+    <text x="320" y="100" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Check</text>
+    <text x="320" y="110" text-anchor="middle" font-size="8" font-weight="600" fill="#1a3a6b">Valve</text>
+  </g>
+
+  <!-- Question -->
+  <text x="200" y="135" text-anchor="middle" font-size="14" font-weight="800" fill="#dc2626">Which regulates flow best?</text>
+
+  <!-- Title -->
+  <text x="200" y="168" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Valve Types — Which Regulates Flow Best?</text>
+</svg>

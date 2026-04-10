@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes needleWobble {
+      0% { transform: rotate(-15deg); }
+      25% { transform: rotate(5deg); }
+      50% { transform: rotate(-8deg); }
+      75% { transform: rotate(2deg); }
+      100% { transform: rotate(-15deg); }
+    }
+    @keyframes dotFlow {
+      0% { offset-distance: 0%; }
+      100% { offset-distance: 100%; }
+    }
+    .needle { animation: needleWobble 3s ease-in-out infinite; transform-origin: 200px 80px; }
+    .dot { r: 2.5; fill: #c8960a; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Circuit wires -->
+  <line x1="60" y1="50" x2="155" y2="50" stroke="#1a3a6b" stroke-width="2"/>
+  <line x1="245" y1="50" x2="340" y2="50" stroke="#1a3a6b" stroke-width="2"/>
+  <line x1="340" y1="50" x2="340" y2="130" stroke="#1a3a6b" stroke-width="2"/>
+  <line x1="340" y1="130" x2="60" y2="130" stroke="#1a3a6b" stroke-width="2"/>
+  <line x1="60" y1="130" x2="60" y2="50" stroke="#1a3a6b" stroke-width="2"/>
+
+  <!-- Battery on left -->
+  <rect x="48" y="72" width="24" height="36" fill="#f0f4fa"/>
+  <line x1="60" y1="72" x2="60" y2="78" stroke="#1a3a6b" stroke-width="2"/>
+  <line x1="48" y1="78" x2="72" y2="78" stroke="#1a3a6b" stroke-width="3"/>
+  <line x1="52" y1="84" x2="68" y2="84" stroke="#1a3a6b" stroke-width="1.5"/>
+  <line x1="48" y1="90" x2="72" y2="90" stroke="#1a3a6b" stroke-width="3"/>
+  <line x1="52" y1="96" x2="68" y2="96" stroke="#1a3a6b" stroke-width="1.5"/>
+  <line x1="60" y1="96" x2="60" y2="108" stroke="#1a3a6b" stroke-width="2"/>
+  <text x="34" y="90" text-anchor="middle" font-size="10" font-weight="600" fill="#1a3a6b">V</text>
+
+  <!-- Resistor on right -->
+  <rect x="328" y="72" width="24" height="36" fill="#f0f4fa"/>
+  <polyline points="340,72 340,76 348,79 332,85 348,91 332,97 340,100 340,108"
+            fill="none" stroke="#1a3a6b" stroke-width="2" stroke-linejoin="round"/>
+
+  <!-- Ammeter gauge (center) -->
+  <circle cx="200" cy="80" r="42" fill="#fff" stroke="#1a3a6b" stroke-width="2.5"/>
+  <!-- Gauge face arc -->
+  <path d="M165,80 A35,35 0 0,1 235,80" fill="none" stroke="#b0c4de" stroke-width="1.5"/>
+  <!-- Tick marks on gauge -->
+  <line x1="168" y1="80" x2="175" y2="80" stroke="#1a3a6b" stroke-width="1"/>
+  <line x1="173" y1="62" x2="178" y2="67" stroke="#1a3a6b" stroke-width="1"/>
+  <line x1="188" y1="50" x2="191" y2="57" stroke="#1a3a6b" stroke-width="1"/>
+  <line x1="200" y1="46" x2="200" y2="53" stroke="#1a3a6b" stroke-width="1.5"/>
+  <line x1="212" y1="50" x2="209" y2="57" stroke="#1a3a6b" stroke-width="1"/>
+  <line x1="227" y1="62" x2="222" y2="67" stroke="#1a3a6b" stroke-width="1"/>
+  <line x1="232" y1="80" x2="225" y2="80" stroke="#1a3a6b" stroke-width="1"/>
+  <!-- "A" marking -->
+  <text x="200" y="102" text-anchor="middle" font-size="16" font-weight="700" fill="#1a3a6b">A</text>
+  <!-- Needle (animated wobble) -->
+  <line class="needle" x1="200" y1="80" x2="200" y2="50" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
+  <!-- Needle pivot -->
+  <circle cx="200" cy="80" r="4" fill="#1a3a6b"/>
+
+  <!-- Connection wires to ammeter -->
+  <line x1="155" y1="50" x2="158" y2="50" stroke="#1a3a6b" stroke-width="2"/>
+  <line x1="158" y1="50" x2="158" y2="80" stroke="#1a3a6b" stroke-width="2"/>
+  <line x1="242" y1="80" x2="242" y2="50" stroke="#1a3a6b" stroke-width="2"/>
+  <line x1="242" y1="50" x2="245" y2="50" stroke="#1a3a6b" stroke-width="2"/>
+
+  <!-- Electron flow dots -->
+  <circle class="dot"><animateMotion dur="4s" repeatCount="indefinite" path="M60,50 L155,50 L158,80 L242,80 L242,50 L340,50 L340,130 L60,130 L60,50" begin="0s"/></circle>
+  <circle class="dot"><animateMotion dur="4s" repeatCount="indefinite" path="M60,50 L155,50 L158,80 L242,80 L242,50 L340,50 L340,130 L60,130 L60,50" begin="-1s"/></circle>
+  <circle class="dot"><animateMotion dur="4s" repeatCount="indefinite" path="M60,50 L155,50 L158,80 L242,80 L242,50 L340,50 L340,130 L60,130 L60,50" begin="-2s"/></circle>
+  <circle class="dot"><animateMotion dur="4s" repeatCount="indefinite" path="M60,50 L155,50 L158,80 L242,80 L242,50 L340,50 L340,130 L60,130 L60,50" begin="-3s"/></circle>
+
+  <!-- Label -->
+  <text x="200" y="140" text-anchor="middle" font-size="13" font-weight="700" fill="#1a3a6b">Ammeter</text>
+  <text x="200" y="153" text-anchor="middle" font-size="12" font-weight="700" fill="#dc2626">Measures = ?</text>
+
+  <!-- Title -->
+  <text x="200" y="173" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Ammeter — What Does It Measure?</text>
+</svg>

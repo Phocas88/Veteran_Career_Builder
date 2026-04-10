@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes caliperMove {
+      0%,100% { transform: translateX(0); }
+      50%     { transform: translateX(-4px); }
+    }
+    @keyframes caliperMoveR {
+      0%,100% { transform: translateX(0); }
+      50%     { transform: translateX(4px); }
+    }
+    .cal-left  { animation: caliperMove 3s ease-in-out infinite; }
+    .cal-right { animation: caliperMoveR 3s ease-in-out infinite; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Pipe cross-section (thick ring) -->
+  <circle cx="170" cy="82" r="55" fill="none" stroke="#888" stroke-width="12"/>
+  <circle cx="170" cy="82" r="55" fill="none" stroke="#a0a0a0" stroke-width="10"/>
+  <!-- Pipe inner surface highlight -->
+  <circle cx="170" cy="82" r="49" fill="none" stroke="#bbb" stroke-width="1"/>
+  <!-- Pipe label -->
+  <text x="170" y="14" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Pipe Cross-Section</text>
+
+  <!-- Inside calipers - left jaw -->
+  <g class="cal-left">
+    <!-- Jaw arm going up-left -->
+    <line x1="121" y1="82" x2="100" y2="30" stroke="#1a3a6b" stroke-width="3" stroke-linecap="round"/>
+    <!-- Tip touching inner wall -->
+    <circle cx="121" cy="82" r="2.5" fill="#c8960a"/>
+  </g>
+
+  <!-- Inside calipers - right jaw -->
+  <g class="cal-right">
+    <!-- Jaw arm going up-right -->
+    <line x1="219" y1="82" x2="240" y2="30" stroke="#1a3a6b" stroke-width="3" stroke-linecap="round"/>
+    <!-- Tip touching inner wall -->
+    <circle cx="219" cy="82" r="2.5" fill="#c8960a"/>
+  </g>
+
+  <!-- Caliper pivot/hinge at top -->
+  <circle cx="170" cy="22" r="4" fill="#1a3a6b"/>
+  <!-- Handle extensions above pivot -->
+  <line x1="100" y1="30" x2="155" y2="22" stroke="#1a3a6b" stroke-width="3" stroke-linecap="round"/>
+  <line x1="240" y1="30" x2="185" y2="22" stroke="#1a3a6b" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Inner diameter dimension line -->
+  <line x1="121" y1="110" x2="219" y2="110" stroke="#c8960a" stroke-width="1.5"/>
+  <line x1="121" y1="105" x2="121" y2="115" stroke="#c8960a" stroke-width="1.5"/>
+  <line x1="219" y1="105" x2="219" y2="115" stroke="#c8960a" stroke-width="1.5"/>
+  <!-- Arrowheads on dimension line -->
+  <polygon points="121,110 127,107 127,113" fill="#c8960a"/>
+  <polygon points="219,110 213,107 213,113" fill="#c8960a"/>
+  <text x="170" y="125" text-anchor="middle" font-size="11" font-weight="700" fill="#c8960a">Inner Diameter</text>
+
+  <!-- Tool identification question -->
+  <text x="320" y="55" text-anchor="middle" font-size="14" font-weight="800" fill="#dc2626">Which</text>
+  <text x="320" y="72" text-anchor="middle" font-size="14" font-weight="800" fill="#dc2626">tool?</text>
+  <text x="320" y="100" text-anchor="middle" font-size="28" font-weight="800" fill="#dc2626">?</text>
+
+  <!-- Title -->
+  <text x="200" y="168" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Measuring Pipe Inner Diameter</text>
+</svg>

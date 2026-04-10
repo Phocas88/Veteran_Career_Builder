@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <style>
+    @keyframes tilt {
+      0%,100% { transform: rotate(0deg); }
+      50%     { transform: rotate(-1.2deg); }
+    }
+    .lever-tilt { animation: tilt 3s ease-in-out infinite; transform-origin: 120px 105px; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+
+  <!-- Ground -->
+  <line x1="20" y1="140" x2="380" y2="140" stroke="#a0a0a0" stroke-width="1.5"/>
+  <pattern id="hatch2" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <line x1="0" y1="0" x2="0" y2="8" stroke="#c0c0c0" stroke-width="1"/>
+  </pattern>
+  <rect x="20" y="140" width="360" height="10" fill="url(#hatch2)"/>
+
+  <!-- Fulcrum (triangle) at 2 ft from left end -->
+  <polygon points="120,140 105,105 135,105" fill="#5a7090" stroke="#3a5070" stroke-width="2"/>
+
+  <g class="lever-tilt">
+    <!-- Beam: fulcrum at x=120, load at x=70 (2ft left), effort at x=360 (8ft right) -->
+    <rect x="45" y="92" width="325" height="14" fill="#d4a574" stroke="#8b6914" stroke-width="2" rx="3"/>
+
+    <!-- Weight (left side, 2 ft from fulcrum) -->
+    <rect x="50" y="50" width="50" height="44" fill="#c8960a" stroke="#8a6000" stroke-width="2" rx="5"/>
+    <text x="75" y="70" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">100</text>
+    <text x="75" y="85" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">lbs</text>
+
+    <!-- Force arrow (right side, 8 ft from fulcrum) -->
+    <line x1="345" y1="92" x2="345" y2="42" stroke="#dc2626" stroke-width="3"/>
+    <polygon points="338,50 345,32 352,50" fill="#dc2626"/>
+    <text x="345" y="27" text-anchor="middle" font-size="14" font-weight="800" fill="#dc2626">? lbs</text>
+  </g>
+
+  <!-- Distance markers -->
+  <line x1="75" y1="115" x2="75" y2="135" stroke="#888" stroke-width="1"/>
+  <line x1="120" y1="115" x2="120" y2="135" stroke="#888" stroke-width="1"/>
+  <line x1="345" y1="115" x2="345" y2="135" stroke="#888" stroke-width="1"/>
+  <!-- 2 ft span -->
+  <line x1="75" y1="128" x2="120" y2="128" stroke="#c8960a" stroke-width="2"/>
+  <text x="97" y="125" text-anchor="middle" font-size="12" font-weight="700" fill="#c8960a">2 ft</text>
+  <!-- 8 ft span -->
+  <line x1="120" y1="128" x2="345" y2="128" stroke="#dc2626" stroke-width="2"/>
+  <text x="232" y="125" text-anchor="middle" font-size="12" font-weight="700" fill="#dc2626">8 ft</text>
+
+  <!-- Fulcrum label -->
+  <text x="120" y="160" text-anchor="middle" font-size="10" font-weight="700" fill="#5a7090">FULCRUM</text>
+
+  <!-- Title -->
+  <text x="200" y="175" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Lever — Find the Effort Force</text>
+</svg>

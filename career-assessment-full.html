@@ -618,7 +618,7 @@ var SECTIONS = [
        opts:['3 days','4 days','5 days','6 days'], correct:2},
       {q:'An M1 Abrams tank consumes 1.85 gallons per mile. How many gallons does it need to travel 60 miles?',
        opts:['32.4 gallons','111 gallons','85 gallons','55.5 gallons'], correct:1},
-      {q:'Study the supply inventory below:<div style="margin:.75rem 0;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.85rem;background:#fff;border:1px solid #d0daea;border-radius:8px;overflow:hidden;"><thead><tr style="background:#1a3a6b;color:#fff;"><th style="padding:.5rem .75rem;text-align:left;font-size:.75rem;letter-spacing:.05em;">Item</th><th style="padding:.5rem .75rem;text-align:center;">On Hand</th><th style="padding:.5rem .75rem;text-align:center;">Required</th><th style="padding:.5rem .75rem;text-align:center;">On Order</th></tr></thead><tbody><tr style="border-bottom:1px solid #e8edf5;"><td style="padding:.45rem .75rem;font-weight:600;">Ammo (cases)</td><td style="padding:.45rem .75rem;text-align:center;">120</td><td style="padding:.45rem .75rem;text-align:center;">200</td><td style="padding:.45rem .75rem;text-align:center;">50</td></tr><tr style="border-bottom:1px solid #e8edf5;background:#f8fafd;"><td style="padding:.45rem .75rem;font-weight:600;">Water (pallets)</td><td style="padding:.45rem .75rem;text-align:center;">35</td><td style="padding:.45rem .75rem;text-align:center;">40</td><td style="padding:.45rem .75rem;text-align:center;">10</td></tr><tr style="border-bottom:1px solid #e8edf5;"><td style="padding:.45rem .75rem;font-weight:600;">Fuel (gallons)</td><td style="padding:.45rem .75rem;text-align:center;">800</td><td style="padding:.45rem .75rem;text-align:center;">1,000</td><td style="padding:.45rem .75rem;text-align:center;">150</td></tr><tr><td style="padding:.45rem .75rem;font-weight:600;">MREs (cases)</td><td style="padding:.45rem .75rem;text-align:center;">90</td><td style="padding:.45rem .75rem;text-align:center;">150</td><td style="padding:.45rem .75rem;text-align:center;">40</td></tr></tbody></table></div>After receiving all items on order, which item will still have the <strong>largest shortage</strong> (biggest gap between required and total available)?',
+      {q:'Study the supply inventory below:<div style="margin:.75rem 0;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.85rem;background:#fff;color:#1a2a3a;border:1px solid #d0daea;border-radius:8px;overflow:hidden;"><thead><tr style="background:#1a3a6b;color:#fff;"><th style="padding:.5rem .75rem;text-align:left;font-size:.75rem;letter-spacing:.05em;">Item</th><th style="padding:.5rem .75rem;text-align:center;">On Hand</th><th style="padding:.5rem .75rem;text-align:center;">Required</th><th style="padding:.5rem .75rem;text-align:center;">On Order</th></tr></thead><tbody><tr style="border-bottom:1px solid #e8edf5;"><td style="padding:.45rem .75rem;font-weight:600;">Ammo (cases)</td><td style="padding:.45rem .75rem;text-align:center;">120</td><td style="padding:.45rem .75rem;text-align:center;">200</td><td style="padding:.45rem .75rem;text-align:center;">50</td></tr><tr style="border-bottom:1px solid #e8edf5;background:#f8fafd;"><td style="padding:.45rem .75rem;font-weight:600;">Water (pallets)</td><td style="padding:.45rem .75rem;text-align:center;">35</td><td style="padding:.45rem .75rem;text-align:center;">40</td><td style="padding:.45rem .75rem;text-align:center;">10</td></tr><tr style="border-bottom:1px solid #e8edf5;"><td style="padding:.45rem .75rem;font-weight:600;">Fuel (gallons)</td><td style="padding:.45rem .75rem;text-align:center;">800</td><td style="padding:.45rem .75rem;text-align:center;">1,000</td><td style="padding:.45rem .75rem;text-align:center;">150</td></tr><tr><td style="padding:.45rem .75rem;font-weight:600;">MREs (cases)</td><td style="padding:.45rem .75rem;text-align:center;">90</td><td style="padding:.45rem .75rem;text-align:center;">150</td><td style="padding:.45rem .75rem;text-align:center;">40</td></tr></tbody></table></div>After receiving all items on order, which item will still have the <strong>largest shortage</strong> (biggest gap between required and total available)?',
        opts:['Ammo (30 short)','Water (surplus)','Fuel (50 short)','MREs (20 short)'], passage:true, correct:2},
       {q:'A military discount gives 15% off a $1,200 laptop. Sales tax is 8%. What is the total cost after discount and tax?',
        opts:['$1,101.60','$1,080.00','$979.20','$1,020.00'], correct:0},
@@ -1544,7 +1544,7 @@ function calculateResults() {
   });
 
   Promise.race([enhanceWithAI(scores, rankedCareers), aiTimeout]).then(function(aiData) {
-    clearInterval(statusTimer);
+    if(window._vcpStatusTimer) clearInterval(window._vcpStatusTimer);
     try { renderResults(scores, rankedCareers, aiData); }
     catch(e) {
       console.error("Render error (with AI):", e);
@@ -1552,7 +1552,7 @@ function calculateResults() {
       catch(e2) { showFallbackResults(scores); }
     }
   }).catch(function(err) {
-    clearInterval(statusTimer);
+    if(window._vcpStatusTimer) clearInterval(window._vcpStatusTimer);
     console.warn("AI skipped:", err.message);
     try { renderResults(scores, rankedCareers, null); }
     catch(e) { showFallbackResults(scores); }
@@ -1590,7 +1590,7 @@ async function enhanceWithAI(scores, rankedCareers) {
   var loadingEl = document.getElementById('results-content');
   loadingEl.innerHTML = '<div style="text-align:center;padding:3rem 2rem;"><div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:#1a3a6b;margin-bottom:.75rem;">Analyzing Your Results with AI...</div><p style="color:#5a7090;font-size:.88rem;max-width:400px;margin:0 auto 1rem;">Our AI is reviewing your scores alongside current job market data.</p><div style="width:48px;height:48px;border:3px solid #e8edf5;border-top-color:#1a3a6b;border-radius:50%;animation:aispin 1s linear infinite;margin:0 auto;"></div><style>@keyframes aispin{to{transform:rotate(360deg)}}</style><div id="ai-status" style="margin-top:1rem;font-size:.78rem;color:#8a9ab0;"></div></div>';
   var statusEl = document.getElementById('ai-status');
-  var statusTimer = setInterval(function() {
+  window._vcpStatusTimer = setInterval(function() {
     if(statusEl) statusEl.textContent = 'Still processing... (will timeout at 15 seconds)';
   }, 5000);
 
@@ -1664,7 +1664,7 @@ async function enhanceWithAI(scores, rankedCareers) {
     })
   });
 
-  clearInterval(statusTimer);
+  if(window._vcpStatusTimer) clearInterval(window._vcpStatusTimer);
   if (!response.ok) throw new Error("API call failed: " + response.status);
   var data = await response.json();
   var text = (data.content && data.content[0] && data.content[0].text) || "";

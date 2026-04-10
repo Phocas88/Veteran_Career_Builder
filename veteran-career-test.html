@@ -5,7 +5,7 @@
 <meta name="google-adsense-account" content="ca-pub-4999040528510137">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>VCP PathFinder™ | Free Military Career Assessment for Veterans</title>
-<meta name="description" content="Free 25-question career assessment built for service members and veterans. Discover your top civilian career matches based on your military strengths in 5 minutes — no account required.">
+<meta name="description" content="Free 40-question career assessment built for service members and veterans. 10 dimensions including aptitude, reasoning, and personality — discover your top civilian career matches in 10 minutes.">
 <meta name="keywords" content="veteran career assessment, military career quiz, free veteran career test, military to civilian careers, veteran career path, VCP PathFinder">
 <link rel="canonical" href="https://veterancareerpath.com/veteran-career-test.html">
 <link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/logo.png">
@@ -135,12 +135,64 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
 .footer-col a:hover{color:var(--gold)}
 .footer-bottom{max-width:900px;margin:1.5rem auto 0;padding-top:1rem;border-top:1px solid rgba(255,255,255,.05);text-align:center;font-size:.7rem;color:rgba(255,255,255,.25)}
 
-@media(max-width:600px){
-  .intro-features{flex-direction:column;align-items:center;gap:.75rem}
+/* ── MC Question Styles (Pro-style) ── */
+.mc-q-wrap{background:#fff;border-radius:12px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem;}
+.mc-q-num{font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem;}
+.mc-q-text{font-size:1rem;font-weight:500;color:var(--text);line-height:1.55;margin-bottom:1.25rem;}
+.mc-opts{display:flex;flex-direction:column;gap:.5rem;}
+.mc-opt{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;background:#f8fafd;}
+.mc-opt:hover{border-color:var(--gold2);background:rgba(232,170,16,.03);}
+.mc-opt.selected{border-color:var(--gold2);background:rgba(232,170,16,.06);box-shadow:0 0 0 3px rgba(232,170,16,.1);}
+.mc-opt-letter{width:28px;height:28px;border-radius:50%;border:2px solid #c0c8d4;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#6b7a8d;flex-shrink:0;transition:all .2s;}
+.mc-opt.selected .mc-opt-letter{border-color:var(--gold2);background:var(--gold2);color:#fff;}
+.mc-opt span{font-size:.88rem;color:var(--text);}
+
+/* Section progress indicator */
+.section-indicator{display:flex;align-items:center;gap:.4rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+.sec-dot{width:8px;height:8px;border-radius:50%;background:#d0daea;transition:all .3s;}
+.sec-dot.active{background:var(--gold);width:24px;border-radius:4px;}
+.sec-dot.done{background:#16a34a;}
+
+@media(max-width:768px){
+  .intro-screen{padding:2rem 4%;}
+  .intro-title{font-size:clamp(2rem,5vw,3rem);}
+  .intro-tagline{font-size:.95rem;margin-bottom:1.5rem;}
+  .lite-stats{grid-template-columns:1fr 1fr !important;gap:.5rem !important;}
+  .lite-sections{grid-template-columns:1fr !important;gap:.45rem !important;}
+  .start-btn{width:100%;justify-content:center;font-size:1rem;padding:.85rem 1.5rem;}
   .career-grid{grid-template-columns:1fr}
   .action-btns{flex-direction:column;align-items:stretch}
-  .q-text{font-size:1.05rem}
   .footer-inner{flex-direction:column;gap:1rem}
+  .results-hero{padding:2rem 4% 1.5rem;}
+  .results-title{font-size:1.6rem !important;}
+  .results-body{padding:1.5rem 4% 3rem;}
+  .dim-section{padding:1.25rem;}
+}
+@media(max-width:480px){
+  .intro-screen{padding:1.5rem 3%;}
+  .intro-title{font-size:1.8rem;}
+  .intro-tagline{font-size:.85rem;}
+  .lite-stats{gap:.4rem !important;margin-bottom:1.25rem !important;}
+  .lite-stats > div{padding:.7rem .4rem !important;}
+  .lite-stats > div > div:first-child{font-size:1.4rem !important;}
+  .lite-sections{margin-bottom:1.25rem !important;}
+  .lite-sections > div{padding:.6rem .75rem !important;}
+  .q-text{font-size:.95rem}
+  .mc-q-wrap{padding:.85rem;}
+  .mc-q-text{font-size:.9rem;}
+  .mc-opt{padding:.6rem .75rem;gap:.55rem;}
+  .mc-opt span{font-size:.82rem;}
+  .q-option{padding:.75rem 1rem;}
+  .question-container{padding:1.5rem 4% 3rem;}
+  .progress-wrap{padding:.5rem 4%;}
+  .section-indicator{gap:.3rem;}
+  .sec-dot{width:6px;height:6px;}
+  .sec-dot.active{width:18px;}
+  .dim-section{padding:1rem;}
+  .dim-section h2{font-size:1.1rem;}
+  .upgrade-cta{padding:1.5rem 1rem !important;}
+  .pro-feats-grid{grid-template-columns:1fr !important;}
+  .pro-pricing-grid{grid-template-columns:1fr !important;gap:.6rem !important;}
 }
 @media print{
   nav,.progress-wrap,.upgrade-cta,.action-btns,.site-footer{display:none!important}
@@ -172,31 +224,90 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
 
 <!-- ── INTRO SCREEN ── -->
 <section class="intro-screen" id="introScreen">
-  <div class="intro-inner">
+  <div class="intro-inner" style="max-width:820px;">
     <div class="intro-badge">
       <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
       Free Assessment
     </div>
     <h1 class="intro-title">VCP PathFinder<sup style="font-size:.4em;vertical-align:super">&trade;</sup> <span>Lite</span></h1>
-    <p class="intro-tagline">Find Your Civilian Mission in 5 Minutes</p>
-    <div class="intro-features">
-      <div class="intro-feat">
-        <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        25 Questions
+    <p class="intro-tagline">A real career assessment across 10 dimensions &mdash; completely free, no account required.</p>
+
+    <!-- Stat boxes like Pro -->
+    <div class="lite-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:2rem;">
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem .6rem;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#f0c040;">40</div>
+        <div style="font-size:.7rem;color:rgba(255,255,255,.4);">Questions</div>
       </div>
-      <div class="intro-feat">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        5 Minutes
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem .6rem;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#f0c040;">10</div>
+        <div style="font-size:.7rem;color:rgba(255,255,255,.4);">Dimensions</div>
       </div>
-      <div class="intro-feat">
-        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6m3-3h-6"/></svg>
-        No Account Required
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem .6rem;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#f0c040;">1,000+</div>
+        <div style="font-size:.7rem;color:rgba(255,255,255,.4);">Career Matches</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem .6rem;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#f0c040;">~10</div>
+        <div style="font-size:.7rem;color:rgba(255,255,255,.4);">Minutes</div>
       </div>
     </div>
+
+    <!-- 10 Section cards like Pro -->
+    <div class="lite-sections" style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:2rem;text-align:left;">
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.7rem;">
+        <div style="width:30px;height:30px;border-radius:7px;background:rgba(59,130,246,.2);color:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">1</div>
+        <div><div style="font-size:.82rem;font-weight:600;color:#e8f0f8;">Mechanical &amp; Technical</div><div style="font-size:.68rem;color:rgba(255,255,255,.35);">3 aptitude questions &mdash; gears, leverage, hydraulics</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.7rem;">
+        <div style="width:30px;height:30px;border-radius:7px;background:rgba(139,92,246,.2);color:#8b5cf6;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">2</div>
+        <div><div style="font-size:.82rem;font-weight:600;color:#e8f0f8;">Verbal &amp; Communication</div><div style="font-size:.68rem;color:rgba(255,255,255,.35);">3 questions &mdash; vocabulary, comprehension, context</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.7rem;">
+        <div style="width:30px;height:30px;border-radius:7px;background:rgba(16,185,129,.2);color:#10b981;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">3</div>
+        <div><div style="font-size:.82rem;font-weight:600;color:#e8f0f8;">Numerical &amp; Analytical</div><div style="font-size:.68rem;color:rgba(255,255,255,.35);">2 questions &mdash; math, budgets, rates</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.7rem;">
+        <div style="width:30px;height:30px;border-radius:7px;background:rgba(245,158,11,.2);color:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">4</div>
+        <div><div style="font-size:.82rem;font-weight:600;color:#e8f0f8;">Spatial Reasoning</div><div style="font-size:.68rem;color:rgba(255,255,255,.35);">2 questions &mdash; 3D visualization, paper folding</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.7rem;">
+        <div style="width:30px;height:30px;border-radius:7px;background:rgba(239,68,68,.2);color:#ef4444;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">5</div>
+        <div><div style="font-size:.82rem;font-weight:600;color:#e8f0f8;">Processing Speed</div><div style="font-size:.68rem;color:rgba(255,255,255,.35);">2 questions &mdash; quick-fire pattern recognition</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.7rem;">
+        <div style="width:30px;height:30px;border-radius:7px;background:rgba(6,182,212,.2);color:#06b6d4;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">6</div>
+        <div><div style="font-size:.82rem;font-weight:600;color:#e8f0f8;">Memory &amp; Recall</div><div style="font-size:.68rem;color:rgba(255,255,255,.35);">2 questions &mdash; study information, answer from memory</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.7rem;">
+        <div style="width:30px;height:30px;border-radius:7px;background:rgba(232,170,16,.2);color:#e8aa10;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">7</div>
+        <div><div style="font-size:.82rem;font-weight:600;color:#e8f0f8;">Work Style</div><div style="font-size:.68rem;color:rgba(255,255,255,.35);">6 questions &mdash; independence, teamwork, pace, detail</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.7rem;">
+        <div style="width:30px;height:30px;border-radius:7px;background:rgba(236,72,153,.2);color:#ec4899;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">8</div>
+        <div><div style="font-size:.82rem;font-weight:600;color:#e8f0f8;">Career Interests</div><div style="font-size:.68rem;color:rgba(255,255,255,.35);">6 questions &mdash; tech, trades, business, service, hands-on</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.7rem;">
+        <div style="width:30px;height:30px;border-radius:7px;background:rgba(239,68,68,.2);color:#ef4444;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">9</div>
+        <div><div style="font-size:.82rem;font-weight:600;color:#e8f0f8;">Leadership</div><div style="font-size:.68rem;color:rgba(255,255,255,.35);">6 questions &mdash; initiative, decision-making, mentoring</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.7rem;">
+        <div style="width:30px;height:30px;border-radius:7px;background:rgba(20,184,166,.2);color:#14b8a6;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;">10</div>
+        <div><div style="font-size:.82rem;font-weight:600;color:#e8f0f8;">Soft Skills</div><div style="font-size:.68rem;color:rgba(255,255,255,.35);">6 questions &mdash; civilian workplace adaptability</div></div>
+      </div>
+    </div>
+
+    <!-- Comparison to Pro -->
+    <div style="background:rgba(240,192,64,.04);border:1px solid rgba(240,192,64,.12);border-radius:10px;padding:.85rem 1.1rem;margin-bottom:1.5rem;text-align:left;">
+      <div style="font-size:.78rem;color:rgba(255,255,255,.55);line-height:1.6;">
+        <strong style="color:#f0c040;">Lite vs Pro:</strong> This free assessment covers all 10 dimensions with 40 questions. Want deeper analysis? <a href="/career-assessment-full.html" style="color:#f0c040;text-decoration:underline;">PathFinder Pro</a> goes 4.5x deeper with 180 questions, ASVAB-style visuals, timed sections, personality profiling, AI-powered gap analysis, and career progression maps.
+      </div>
+    </div>
+
     <button class="start-btn" id="startBtn">
-      Start Assessment
+      Start Free Assessment
       <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
+    <div class="intro-note">No account required &middot; Results in ~10 minutes &middot; 1,000+ career database</div>
   </div>
 </section>
 
@@ -204,7 +315,7 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
 <section class="assess-screen" id="assessScreen">
   <div class="progress-wrap">
     <div class="progress-inner">
-      <span class="progress-label" id="progressLabel">Q1 of 25</span>
+      <span class="progress-label" id="progressLabel">Q1 of 40</span>
       <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       <span class="progress-pct" id="progressPct">0%</span>
     </div>
@@ -262,50 +373,146 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
    VCP PathFinder™ Lite — Pure JavaScript Assessment
    ═══════════════════════════════════════════════════ */
 
-// ── Questions ──
+// ── 40 Questions across 10 Pro dimensions ──
+// type:"mc" = multiple choice (aptitude), type:"likert" = self-assessment
 const QUESTIONS = [
-  // Tactical & Hands-On (0-4)
-  {dim:"tactical",text:"In the motor pool or armory, I was the person others came to when something needed fixing or troubleshooting."},
-  {dim:"tactical",text:"I\u2019d rather build or repair something with my hands than sit behind a desk writing reports."},
-  {dim:"tactical",text:"During field exercises, I was more comfortable maintaining equipment and systems than planning operations."},
-  {dim:"tactical",text:"I enjoy understanding how machines, vehicles, or weapons systems actually work \u2014 not just how to operate them."},
-  {dim:"tactical",text:"If given the choice between a desk job and working outdoors or in a shop, I\u2019d pick the shop every time."},
-  // Analytical & Intelligence (5-9)
-  {dim:"analytical",text:"I was the person in my unit who noticed patterns others missed \u2014 in intel reports, maintenance logs, or operational data."},
-  {dim:"analytical",text:"I enjoy breaking down complex problems into smaller pieces and solving them methodically."},
-  {dim:"analytical",text:"During mission planning, I was drawn to the intelligence and analysis portion more than the execution phase."},
-  {dim:"analytical",text:"I\u2019d rather research and investigate a problem thoroughly than take immediate action based on a gut feeling."},
-  {dim:"analytical",text:"Working with data, spreadsheets, or technical documentation doesn\u2019t drain me \u2014 it energizes me."},
-  // Leadership & Operations (10-14)
-  {dim:"leadership",text:"I naturally took charge when my team needed direction, even before I had the rank to back it up."},
-  {dim:"leadership",text:"I\u2019m comfortable making high-stakes decisions quickly \u2014 and taking responsibility when things go wrong."},
-  {dim:"leadership",text:"I\u2019ve been told I\u2019m good at organizing people and resources to accomplish a mission."},
-  {dim:"leadership",text:"I\u2019d rather run a team or manage a project than be an individual contributor doing technical work."},
-  {dim:"leadership",text:"When I picture my civilian career, I see myself in a leadership or management role within 2\u20133 years."},
-  // Service & People (15-19)
-  {dim:"service",text:"The most rewarding part of my service was mentoring junior service members and watching them grow."},
-  {dim:"service",text:"I\u2019m the person my battle buddies came to when they needed to talk through a problem \u2014 personal or professional."},
-  {dim:"service",text:"I\u2019d find it fulfilling to work in a job where I directly help people every day \u2014 healthcare, counseling, education."},
-  {dim:"service",text:"Training new soldiers, sailors, marines, or airmen was one of my favorite duties, even when it wasn\u2019t my primary job."},
-  {dim:"service",text:"I\u2019m more motivated by making a difference in someone\u2019s life than by a high salary or job title."},
-  // Structure & Systems (20-24)
-  {dim:"structure",text:"I was the person who kept the paperwork straight \u2014 counseling packets, supply requests, accountability reports."},
-  {dim:"structure",text:"I find satisfaction in creating order out of chaos \u2014 organizing systems, tracking inventory, managing budgets."},
-  {dim:"structure",text:"I\u2019m detail-oriented to a fault. Incorrect forms, sloppy records, and broken processes genuinely bother me."},
-  {dim:"structure",text:"I\u2019d be comfortable in a job that involves compliance, regulations, auditing, or quality control."},
-  {dim:"structure",text:"During unit operations, I gravitated toward the logistics, supply, and administrative side rather than the tactical side."}
+  // ═══ MECHANICAL & TECHNICAL (2 MC) ═══
+  {dim:"mechanical",section:"Mechanical & Technical",type:"mc",
+   text:"A large gear with 40 teeth meshes with a small gear with 10 teeth. If the large gear makes 1 full rotation, how many rotations does the small gear make?",
+   opts:["2 rotations","4 rotations","10 rotations","0.25 rotations"],correct:1},
+  {dim:"mechanical",section:"Mechanical & Technical",type:"mc",
+   text:"You need to remove a stuck bolt. Which approach gives you the MOST leverage?",
+   opts:["Use a shorter wrench and apply more force","Use a longer wrench at the same force","Heat the bolt then use pliers","Tap the bolt head with a hammer first"],correct:1},
+  {dim:"mechanical",section:"Mechanical & Technical",type:"mc",
+   text:"In a hydraulic system, what happens when you push down on a small piston connected to a large piston?",
+   opts:["The large piston moves up with more force but less distance","The large piston moves up with less force but more distance","Both pistons move the same amount","Nothing \u2014 hydraulics only work horizontally"],correct:0},
+
+  // ═══ VERBAL & COMMUNICATION (3 MC) ═══
+  {dim:"verbal",section:"Verbal & Communication",type:"mc",
+   text:"\"The new policy will MITIGATE potential risks.\" What does mitigate mean in this context?",
+   opts:["Eliminate completely","Make less severe","Create new","Identify and list"],correct:1},
+  {dim:"verbal",section:"Verbal & Communication",type:"mc",
+   text:"Read the statement: \"Veterans possess unique leadership skills, but many struggle to translate military experience into civilian terminology during interviews.\"\n\nWhat is the main challenge described?",
+   opts:["Veterans lack relevant skills","Veterans can't work in offices","Veterans have trouble expressing military skills in civilian language","Veterans are overqualified"],correct:2},
+  {dim:"verbal",section:"Verbal & Communication",type:"mc",
+   text:"Choose the word that best completes the sentence: \"The manager\u2019s decision to _____ the project timeline was met with relief from the overworked team.\"",
+   opts:["Compress","Extend","Suspend","Replicate"],correct:1},
+
+  // ═══ NUMERICAL & ANALYTICAL (2 MC) ═══
+  {dim:"numerical",section:"Numerical & Analytical",type:"mc",
+   text:"A project budget is $240,000. If 35% has been spent, how much remains?",
+   opts:["$84,000","$156,000","$168,000","$205,000"],correct:1},
+  {dim:"numerical",section:"Numerical & Analytical",type:"mc",
+   text:"A team completed 18 tasks in 6 days. At that rate, how many tasks will they complete in 15 days?",
+   opts:["36","40","45","54"],correct:2},
+
+  // ═══ SPATIAL REASONING (2 MC) ═══
+  {dim:"spatial",section:"Spatial Reasoning",type:"mc",
+   text:"If you fold a square piece of paper in half diagonally and cut a small circle from the folded edge, how many holes appear when unfolded?",
+   opts:["1 hole","2 holes","4 holes","No holes \u2014 it's a notch on the edge"],correct:0},
+  {dim:"spatial",section:"Spatial Reasoning",type:"mc",
+   text:"A cube has its top face painted red and its front face painted blue. If you rotate the cube 90\u00B0 to the right, which face is now on top?",
+   opts:["Red face","Blue face","An unpainted face","The bottom face"],correct:2},
+
+  // ═══ PROCESSING SPEED (2 MC) ═══
+  {dim:"speed",section:"Processing Speed",type:"mc",
+   text:"Quick: Which number does NOT belong in the pattern? 2, 4, 8, 16, 24, 64",
+   opts:["8","16","24","64"],correct:2},
+  {dim:"speed",section:"Processing Speed",type:"mc",
+   text:"Quick: If TODAY is Wednesday, what day was it 3 days ago?",
+   opts:["Saturday","Sunday","Monday","Tuesday"],correct:1},
+
+  // ═══ MEMORY & RECALL (2 MC) ═══
+  {dim:"memory",section:"Memory & Recall",type:"mc",
+   text:"Study this sequence for a moment: BRAVO \u2013 7 \u2013 TANGO \u2013 3 \u2013 SIERRA \u2013 9\n\nWhat number follows TANGO?",
+   opts:["7","3","9","5"],correct:1},
+  {dim:"memory",section:"Memory & Recall",type:"mc",
+   text:"A briefing listed these priorities in order: 1) Secure perimeter, 2) Establish comms, 3) Set up aid station, 4) Begin patrol.\n\nWhat was Priority #3?",
+   opts:["Secure perimeter","Establish comms","Set up aid station","Begin patrol"],correct:2},
+
+  // ═══ WORK STYLE (6 Likert) ═══
+  {dim:"workstyle",section:"Work Style",type:"likert",sub:"independence",
+   text:"I perform best when I can plan my own schedule and work independently without constant supervision."},
+  {dim:"workstyle",section:"Work Style",type:"likert",sub:"teamwork",
+   text:"I thrive in team environments where I can collaborate closely with others on shared goals."},
+  {dim:"workstyle",section:"Work Style",type:"likert",sub:"adaptability",
+   text:"I handle sudden changes in plans or priorities without losing focus or getting frustrated."},
+  {dim:"workstyle",section:"Work Style",type:"likert",sub:"structure",
+   text:"I prefer clear procedures and checklists over figuring things out as I go."},
+  {dim:"workstyle",section:"Work Style",type:"likert",sub:"detail",
+   text:"I notice small errors that others miss \u2014 incorrect data, formatting issues, or broken processes."},
+  {dim:"workstyle",section:"Work Style",type:"likert",sub:"pace",
+   text:"I work well under pressure and tight deadlines \u2014 it actually brings out my best performance."},
+
+  // ═══ CAREER INTERESTS (6 Likert) ═══
+  {dim:"interests",section:"Career Interests",type:"likert",sub:"tactical",
+   text:"I\u2019d rather build or repair something with my hands than sit behind a desk writing reports."},
+  {dim:"interests",section:"Career Interests",type:"likert",sub:"analytical",
+   text:"I enjoy breaking down complex problems into smaller pieces and solving them methodically."},
+  {dim:"interests",section:"Career Interests",type:"likert",sub:"tech",
+   text:"I\u2019m excited about working with technology \u2014 software, cybersecurity, data, or IT systems."},
+  {dim:"interests",section:"Career Interests",type:"likert",sub:"service",
+   text:"I\u2019d find it fulfilling to work in a job where I directly help people every day \u2014 healthcare, counseling, education."},
+  {dim:"interests",section:"Career Interests",type:"likert",sub:"business",
+   text:"I\u2019m interested in the business side \u2014 management, finance, strategy, or entrepreneurship."},
+  {dim:"interests",section:"Career Interests",type:"likert",sub:"trades",
+   text:"I\u2019m drawn to skilled trades \u2014 electrical, plumbing, HVAC, welding, or construction."},
+
+  // ═══ LEADERSHIP (6 Likert) ═══
+  {dim:"leadership",section:"Leadership",type:"likert",sub:"initiative",
+   text:"I naturally took charge when my team needed direction, even before I had the rank to back it up."},
+  {dim:"leadership",section:"Leadership",type:"likert",sub:"decision",
+   text:"I\u2019m comfortable making high-stakes decisions quickly \u2014 and taking responsibility when things go wrong."},
+  {dim:"leadership",section:"Leadership",type:"likert",sub:"delegation",
+   text:"I\u2019m effective at assigning tasks to the right people based on their strengths."},
+  {dim:"leadership",section:"Leadership",type:"likert",sub:"mentoring",
+   text:"I get satisfaction from developing people \u2014 coaching, mentoring, and watching them succeed."},
+  {dim:"leadership",section:"Leadership",type:"likert",sub:"conflict",
+   text:"I can handle difficult conversations and resolve conflicts without making things worse."},
+  {dim:"leadership",section:"Leadership",type:"likert",sub:"vision",
+   text:"When I picture my civilian career, I see myself in a leadership or management role within 2\u20133 years."},
+
+  // ═══ SOFT SKILLS & CIVILIAN WORKPLACE (6 Likert) ═══
+  {dim:"softskills",section:"Soft Skills",type:"likert",sub:"communication",
+   text:"I can clearly explain a complex idea to someone with no background in the subject."},
+  {dim:"softskills",section:"Soft Skills",type:"likert",sub:"patience",
+   text:"I understand that civilian workplaces move slower than the military, and I can be patient with the pace."},
+  {dim:"softskills",section:"Soft Skills",type:"likert",sub:"networking",
+   text:"I\u2019m comfortable introducing myself to strangers and building professional relationships."},
+  {dim:"softskills",section:"Soft Skills",type:"likert",sub:"feedback",
+   text:"I can receive feedback from a civilian manager who has never served without dismissing their perspective."},
+  {dim:"softskills",section:"Soft Skills",type:"likert",sub:"adaptability",
+   text:"I recognize that my military experience, while valuable, does not automatically make me more qualified than civilian colleagues."},
+  {dim:"softskills",section:"Soft Skills",type:"likert",sub:"culture",
+   text:"I understand civilian dress codes, schedules, and workplace norms are different from military standards, and I can adapt."}
 ];
 
-const DIMS = ["tactical","analytical","leadership","service","structure"];
-const DIM_LABELS = {tactical:"Tactical & Hands-On",analytical:"Analytical & Intelligence",leadership:"Leadership & Operations",service:"Service & People",structure:"Structure & Systems"};
-const DIM_COLORS = {tactical:"#e8aa10",analytical:"#3b82f6",leadership:"#ef4444",service:"#10b981",structure:"#8b5cf6"};
+var TOTAL_Q = QUESTIONS.length; // 40
+
+// Section order and labels for display
+var SECTION_ORDER = ["Mechanical & Technical","Verbal & Communication","Numerical & Analytical","Spatial Reasoning","Processing Speed","Memory & Recall","Work Style","Career Interests","Leadership","Soft Skills"];
+var SECTION_COLORS = {"Mechanical & Technical":"#3b82f6","Verbal & Communication":"#8b5cf6","Numerical & Analytical":"#10b981","Spatial Reasoning":"#f59e0b","Processing Speed":"#ef4444","Memory & Recall":"#06b6d4","Work Style":"#e8aa10","Career Interests":"#ec4899","Leadership":"#ef4444","Soft Skills":"#14b8a6"};
+
+// Map old 5-dim system for career matching compatibility
+var DIM_LABELS = {
+  mechanical:"Mechanical & Technical",verbal:"Verbal & Communication",numerical:"Numerical & Analytical",
+  spatial:"Spatial Reasoning",speed:"Processing Speed",memory:"Memory & Recall",
+  workstyle:"Work Style",interests:"Career Interests",leadership:"Leadership",softskills:"Soft Skills",
+  // Legacy compatibility
+  tactical:"Tactical & Hands-On",analytical:"Analytical & Intelligence",service:"Service & People",structure:"Structure & Systems"
+};
+var DIM_COLORS = {
+  mechanical:"#3b82f6",verbal:"#8b5cf6",numerical:"#10b981",spatial:"#f59e0b",speed:"#ef4444",memory:"#06b6d4",
+  workstyle:"#e8aa10",interests:"#ec4899",leadership:"#ef4444",softskills:"#14b8a6",
+  tactical:"#e8aa10",analytical:"#3b82f6",service:"#10b981",structure:"#8b5cf6"
+};
 
 const OPTION_LABELS = [
-  {val:1,label:"Not me at all",sub:"This doesn\u2019t describe me"},
-  {val:2,label:"Rarely me",sub:"Occasionally, but not often"},
-  {val:3,label:"Sometimes me",sub:"Depends on the situation"},
-  {val:4,label:"Usually me",sub:"This sounds like me most of the time"},
-  {val:5,label:"That\u2019s exactly me",sub:"This is me through and through"}
+  {val:1,label:"Strongly Disagree",sub:"This doesn\u2019t describe me at all"},
+  {val:2,label:"Disagree",sub:"Rarely applies to me"},
+  {val:3,label:"Neutral",sub:"Depends on the situation"},
+  {val:4,label:"Agree",sub:"This sounds like me most of the time"},
+  {val:5,label:"Strongly Agree",sub:"This is me through and through"}
 ];
 
 // ── Career Database — loaded from external vcp-careers-db.js (750+ careers) + inline fallback ──
@@ -458,7 +665,7 @@ const PROFILE_TYPES = {
 };
 
 // ── State ──
-let answers = new Array(25).fill(0);
+let answers = new Array(TOTAL_Q).fill(0);
 let currentQ = 0;
 
 // ── DOM refs ──
@@ -492,25 +699,59 @@ document.getElementById("startBtn").addEventListener("click", function(){
 // ── Render Question ──
 function renderQuestion(){
   var q = QUESTIONS[currentQ];
-  var dimLabel = DIM_LABELS[q.dim];
-  var pct = Math.round((currentQ / 25) * 100);
+  var pct = Math.round((currentQ / TOTAL_Q) * 100);
   progressFill.style.width = pct + "%";
-  progressLabel.textContent = "Q" + (currentQ + 1) + " of 25";
+  progressLabel.textContent = "Q" + (currentQ + 1) + " of " + TOTAL_Q;
   progressPct.textContent = pct + "%";
 
-  var html = '<div class="q-dimension">' + dimLabel + '</div>';
-  html += '<div class="q-number">Question ' + (currentQ + 1) + ' of 25</div>';
-  html += '<div class="q-text">"' + q.text + '"</div>';
-  html += '<div class="q-options">';
-  for(var i = 0; i < OPTION_LABELS.length; i++){
-    var o = OPTION_LABELS[i];
-    var sel = answers[currentQ] === o.val ? " selected" : "";
-    html += '<div class="q-option' + sel + '" data-val="' + o.val + '" onclick="selectOption(this,' + o.val + ')">';
-    html += '<div class="circle"></div>';
-    html += '<div class="opt-text"><div class="opt-label">' + o.label + '</div><div class="opt-sub">' + o.sub + '</div></div>';
+  // Section dots indicator
+  var dots = '<div class="section-indicator">';
+  var currentSec = q.section;
+  for(var si=0;si<SECTION_ORDER.length;si++){
+    var sn = SECTION_ORDER[si];
+    var secQs = QUESTIONS.filter(function(qq){return qq.section===sn;});
+    var secStart = QUESTIONS.indexOf(secQs[0]);
+    var secEnd = secStart + secQs.length - 1;
+    var cls = 'sec-dot';
+    if(currentQ >= secStart && currentQ <= secEnd) cls += ' active';
+    else if(currentQ > secEnd) cls += ' done';
+    dots += '<div class="' + cls + '" title="' + sn + '"></div>';
+  }
+  dots += '</div>';
+
+  var html = dots;
+  html += '<div class="q-dimension" style="border-color:' + (SECTION_COLORS[q.section]||'rgba(232,170,16,.15)') + ';color:' + (SECTION_COLORS[q.section]||'#c8960a') + ';background:' + (SECTION_COLORS[q.section]||'#e8aa10') + '10;">' + q.section + '</div>';
+  html += '<div class="q-number">Question ' + (currentQ + 1) + ' of ' + TOTAL_Q + '</div>';
+
+  if(q.type === 'mc') {
+    // Multiple choice (aptitude)
+    html += '<div class="mc-q-wrap">';
+    html += '<div class="mc-q-text">' + q.text.replace(/\n/g,'<br>') + '</div>';
+    html += '<div class="mc-opts">';
+    var letters = ['A','B','C','D'];
+    for(var i=0;i<q.opts.length;i++){
+      var sel = answers[currentQ] === (i+1) ? ' selected' : '';
+      html += '<div class="mc-opt' + sel + '" onclick="selectMC(' + (i+1) + ')">';
+      html += '<div class="mc-opt-letter">' + letters[i] + '</div>';
+      html += '<span>' + q.opts[i] + '</span>';
+      html += '</div>';
+    }
+    html += '</div></div>';
+  } else {
+    // Likert (self-assessment)
+    html += '<div class="q-text">\u201C' + q.text + '\u201D</div>';
+    html += '<div class="q-options">';
+    for(var i = 0; i < OPTION_LABELS.length; i++){
+      var o = OPTION_LABELS[i];
+      var sel = answers[currentQ] === o.val ? " selected" : "";
+      html += '<div class="q-option' + sel + '" data-val="' + o.val + '" onclick="selectOption(this,' + o.val + ')">';
+      html += '<div class="circle"></div>';
+      html += '<div class="opt-text"><div class="opt-label">' + o.label + '</div><div class="opt-sub">' + o.sub + '</div></div>';
+      html += '</div>';
+    }
     html += '</div>';
   }
-  html += '</div>';
+
   html += '<div class="q-nav">';
   html += '<button class="q-back"' + (currentQ === 0 ? ' disabled' : '') + ' onclick="prevQuestion()">';
   html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button>';
@@ -525,14 +766,26 @@ function renderQuestion(){
   });
 }
 
-// ── Select Option ──
+// ── Select MC Answer ──
+function selectMC(val){
+  answers[currentQ] = val;
+  var opts = document.querySelectorAll('.mc-opt');
+  for(var i=0;i<opts.length;i++) opts[i].classList.remove('selected');
+  opts[val-1].classList.add('selected');
+  setTimeout(function(){
+    if(currentQ < TOTAL_Q - 1){ currentQ++; renderQuestion(); }
+    else { showResults(); }
+  }, 400);
+}
+
+// ── Select Option (Likert) ──
 function selectOption(el, val){
   answers[currentQ] = val;
   var opts = el.parentNode.querySelectorAll(".q-option");
   for(var i=0;i<opts.length;i++) opts[i].classList.remove("selected");
   el.classList.add("selected");
   setTimeout(function(){
-    if(currentQ < 24){
+    if(currentQ < TOTAL_Q - 1){
       currentQ++;
       renderQuestion();
     } else {
@@ -552,29 +805,77 @@ function prevQuestion(){
 // ── Calculate Scores ──
 function calcScores(){
   var scores = {};
-  for(var i=0;i<DIMS.length;i++) scores[DIMS[i]] = 0;
-  for(var i=0;i<QUESTIONS.length;i++){
-    scores[QUESTIONS[i].dim] += answers[i];
-  }
+  var counts = {};
+
+  // Score MC questions (correct/incorrect)
+  QUESTIONS.forEach(function(q, i){
+    if(!scores[q.dim]) { scores[q.dim] = 0; counts[q.dim] = 0; }
+    counts[q.dim]++;
+    if(q.type === 'mc') {
+      if(answers[i] === (q.correct + 1)) scores[q.dim]++; // +1 because answers are 1-indexed
+    } else {
+      scores[q.dim] += answers[i]; // likert 1-5
+    }
+  });
+
   // Convert to percentage
   var pct = {};
-  for(var i=0;i<DIMS.length;i++){
-    pct[DIMS[i]] = Math.round((scores[DIMS[i]] / 25) * 100);
+  for(var dim in scores) {
+    var q0 = QUESTIONS.filter(function(q){return q.dim===dim;})[0];
+    if(q0 && q0.type === 'mc') {
+      pct[dim] = Math.round((scores[dim] / counts[dim]) * 100);
+    } else {
+      pct[dim] = Math.round((scores[dim] / (counts[dim] * 5)) * 100);
+    }
   }
+
+  // Map to legacy 5-dim system for career matching
+  pct.tactical = Math.round(((pct.mechanical||0) + getLikertSub('interests','tactical') + getLikertSub('interests','trades')) / 3);
+  pct.analytical = Math.round(((pct.numerical||0) + (pct.verbal||0) + (pct.spatial||0)) / 3);
+  pct.service = Math.round(((pct.softskills||0) + getLikertSub('interests','service')) / 2);
+  pct.structure = Math.round(((getLikertSub('workstyle','structure')||50) + (getLikertSub('workstyle','detail')||50)) / 2);
+  // leadership already exists from the leadership section
+
   return pct;
 }
 
-// ── Get Ranked Dimensions ──
+// Helper: get a specific sub-dimension score from any likert section
+function getLikertSub(dimName, subName) {
+  var total = 0, count = 0;
+  QUESTIONS.forEach(function(q, i){
+    if(q.dim === dimName && q.sub === subName) {
+      total += answers[i]; count++;
+    }
+  });
+  return count > 0 ? Math.round((total / (count * 5)) * 100) : 50;
+}
+
+// ── Get Ranked Dimensions (10 display dims) ──
+var DISPLAY_DIMS = ["mechanical","verbal","numerical","spatial","speed","memory","workstyle","interests","leadership","softskills"];
 function getRanked(scores){
   var arr = [];
-  for(var d in scores) arr.push({dim:d, score:scores[d]});
+  for(var i=0;i<DISPLAY_DIMS.length;i++){
+    var d = DISPLAY_DIMS[i];
+    if(scores[d] !== undefined) arr.push({dim:d, score:scores[d]});
+  }
+  arr.sort(function(a,b){ return b.score - a.score; });
+  return arr;
+}
+
+// ── Get Legacy 5-dim ranked for career matching ──
+var LEGACY_DIMS = ["tactical","analytical","leadership","service","structure"];
+function getLegacyRanked(scores){
+  var arr = [];
+  for(var i=0;i<LEGACY_DIMS.length;i++){
+    arr.push({dim:LEGACY_DIMS[i], score:scores[LEGACY_DIMS[i]]||0});
+  }
   arr.sort(function(a,b){ return b.score - a.score; });
   return arr;
 }
 
 // ── Match Careers ──
 function matchCareers(scores){
-  var ranked = getRanked(scores);
+  var ranked = getLegacyRanked(scores);
   var primary = ranked[0].dim;
   var secondary = ranked[1].dim;
   var third = ranked[2].dim;
@@ -591,7 +892,7 @@ function matchCareers(scores){
     // Secondary dimension match
     if(c.primary === secondary) score += secondaryScore * 2;
     else if(c.secondary === secondary) score += secondaryScore * 0.8;
-    // Exact combo match bonus (biggest differentiator)
+    // Exact combo match bonus
     if(c.primary === primary && c.secondary === secondary) score += 50;
     // Reversed combo
     if(c.primary === secondary && c.secondary === primary) score += 25;
@@ -604,7 +905,7 @@ function matchCareers(scores){
   }
 
   matched.sort(function(a,b){ return b.score - a.score; });
-  // Deduplicate by sector — show variety, not 3 of the same type
+  // Sector diversity — max 2 per sector
   var seen = {};
   var diverse = [];
   for(var j=0;j<matched.length && diverse.length<8;j++){
@@ -641,12 +942,17 @@ function _renderResults(){
 
   var scores = calcScores();
   var ranked = getRanked(scores);
-  var primary = ranked[0];
-  var secondary = ranked[1];
+  var legacyRanked = getLegacyRanked(scores);
+  var primary = legacyRanked[0];
+  var secondary = legacyRanked[1];
   var profileKey = primary.dim + "-" + secondary.dim;
   var profileType = PROFILE_TYPES[profileKey] || "Versatile Professional";
   var isLow = primary.score < 40;
   var matches = matchCareers(scores);
+
+  // Find strongest aptitude and strongest personality sections
+  var aptitudeDims = ranked.filter(function(d){return ["mechanical","verbal","numerical","spatial","speed","memory"].indexOf(d.dim)!==-1;});
+  var personalityDims = ranked.filter(function(d){return ["workstyle","interests","leadership","softskills"].indexOf(d.dim)!==-1;});
 
   var html = '';
 
@@ -655,7 +961,7 @@ function _renderResults(){
   html += '<div class="results-badge">Your Results</div>';
   html += '<div class="results-title">VCP PathFinder&trade; Lite Results</div>';
   html += '<div class="profile-type">' + profileType + '</div>';
-  html += '<div class="profile-desc">Your top strengths: ' + DIM_LABELS[primary.dim] + ' + ' + DIM_LABELS[secondary.dim] + '</div>';
+  html += '<div class="profile-desc">Strongest aptitude: ' + DIM_LABELS[aptitudeDims[0].dim] + ' \u00B7 Strongest trait: ' + DIM_LABELS[personalityDims[0].dim] + '</div>';
   html += '</div></div>';
 
   html += '<div class="results-body">';
@@ -664,17 +970,30 @@ function _renderResults(){
   if(isLow){
     html += '<div class="low-notice">';
     html += '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>';
-    html += '<p><strong>Your profile is still developing.</strong> Your responses suggest you may still be exploring your interests, which is completely normal during transition. The careers below are solid starting points. Consider retaking this assessment after more reflection on what energizes you, or try the full VCP PathFinder Pro for deeper analysis.</p>';
+    html += '<p><strong>Your profile is still developing.</strong> Your responses suggest you may still be exploring your interests, which is completely normal during transition. The careers below are solid starting points. Consider retaking this assessment after more reflection, or try VCP PathFinder Pro for deeper analysis with 180 questions and AI-powered insights.</p>';
     html += '</div>';
   }
 
-  // Dimension bars
-  html += '<div class="dim-section"><h2>Your 5 Dimension Profile</h2>';
-  for(var i=0;i<ranked.length;i++){
-    var d = ranked[i];
+  // Aptitude scores
+  html += '<div class="dim-section"><h2>Aptitude Scores</h2>';
+  html += '<div style="font-size:.78rem;color:#6b7a8d;margin-bottom:1rem;">Based on your answers to the multiple-choice aptitude questions.</div>';
+  for(var i=0;i<aptitudeDims.length;i++){
+    var d = aptitudeDims[i];
     html += '<div class="dim-bar">';
     html += '<div class="dim-header"><span class="dim-name">' + DIM_LABELS[d.dim] + '</span><span class="dim-pct">' + d.score + '%</span></div>';
-    html += '<div class="dim-track"><div class="dim-fill" data-width="' + d.score + '" style="background:' + DIM_COLORS[d.dim] + ';"></div></div>';
+    html += '<div class="dim-track"><div class="dim-fill" data-width="' + d.score + '" style="background:' + (DIM_COLORS[d.dim]||'#3b82f6') + ';"></div></div>';
+    html += '</div>';
+  }
+  html += '</div>';
+
+  // Personality & work style scores
+  html += '<div class="dim-section"><h2>Personality & Work Style</h2>';
+  html += '<div style="font-size:.78rem;color:#6b7a8d;margin-bottom:1rem;">Based on your self-assessment responses.</div>';
+  for(var i=0;i<personalityDims.length;i++){
+    var d = personalityDims[i];
+    html += '<div class="dim-bar">';
+    html += '<div class="dim-header"><span class="dim-name">' + DIM_LABELS[d.dim] + '</span><span class="dim-pct">' + d.score + '%</span></div>';
+    html += '<div class="dim-track"><div class="dim-fill" data-width="' + d.score + '" style="background:' + (DIM_COLORS[d.dim]||'#e8aa10') + ';"></div></div>';
     html += '</div>';
   }
   html += '</div>';
@@ -718,17 +1037,17 @@ function _renderResults(){
   html += '<div style="text-align:center;margin-bottom:1.25rem;">';
   html += '<div style="font-size:1.4rem;margin-bottom:.4rem;">\uD83C\uDFAF</div>';
   html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:1.5rem;letter-spacing:.06em;color:#f0c040;margin:0 0 .4rem;">Want the Full Picture?</h2>';
-  html += '<p style="color:rgba(192,216,240,.65);font-size:.85rem;max-width:550px;margin:0 auto;line-height:1.6;">PathFinder Lite gave you a snapshot. PathFinder Pro goes 10x deeper:</p>';
+  html += '<p style="color:rgba(192,216,240,.65);font-size:.85rem;max-width:550px;margin:0 auto;line-height:1.6;">PathFinder Lite gave you a snapshot with 40 questions. PathFinder Pro goes 4.5x deeper:</p>';
   html += '</div>';
 
   // What Pro includes (selling points)
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem .8rem;max-width:500px;margin:0 auto 1.25rem;text-align:left;">';
-  var proFeats = ['180 questions · 10 dimensions','ASVAB-style aptitude testing','Spatial reasoning & patterns','Processing speed & memory','Your personality type revealed','1,000+ career matches','Career progression paths','AI-powered gap analysis','Soft skills assessment','Downloadable PDF report'];
+  html += '<div class="pro-feats-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem .8rem;max-width:500px;margin:0 auto 1.25rem;text-align:left;">';
+  var proFeats = ['180 questions (4.5x more depth)','25 mechanical reasoning questions','15 spatial reasoning with visuals','15 timed processing speed','10 memory & recall challenges','Your personality type (12 archetypes)','1,000+ career matches ranked','AI-powered gap analysis & insights','Career progression ladder maps','Profile-weighted scoring (subscribers)'];
   proFeats.forEach(function(f){ html += '<div style="font-size:.75rem;color:rgba(192,216,240,.6);display:flex;align-items:center;gap:.3rem;"><span style="width:5px;height:5px;border-radius:50%;background:#f0c040;flex-shrink:0;"></span>' + f + '</div>'; });
   html += '</div>';
 
   // Two options side by side
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;max-width:500px;margin:0 auto;">';
+  html += '<div class="pro-pricing-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;max-width:500px;margin:0 auto;">';
 
   // Option 1: Standalone assessment
   html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1rem;text-align:center;">';
@@ -778,7 +1097,7 @@ function _renderResults(){
 
 // ── Retake ──
 function retakeAssessment(){
-  answers = new Array(25).fill(0);
+  answers = new Array(TOTAL_Q).fill(0);
   currentQ = 0;
   resultsScreen.style.display = "none";
   resultsScreen.innerHTML = "";

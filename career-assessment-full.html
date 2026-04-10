@@ -94,6 +94,8 @@ a:hover{color:var(--gold);}
 .section-tab{padding:.45rem .85rem;border-radius:100px;font-size:.7rem;white-space:nowrap;border:1px solid var(--border);color:var(--sub2);background:transparent;cursor:default;transition:all .2s;}
 .section-tab.active{background:rgba(240,192,64,.1);border-color:rgba(240,192,64,.3);color:var(--gold);}
 .section-tab.done{background:rgba(26,122,64,.15);border-color:rgba(26,122,64,.3);color:#4ade80;}
+.section-tab.incomplete{background:rgba(220,38,38,.1);border-color:rgba(220,38,38,.35);color:#f87171;animation:pulse-warn 2s ease-in-out infinite;}
+@keyframes pulse-warn{0%,100%{opacity:1;}50%{opacity:.6;}}
 
 /* ── QUESTION SECTION ────────────────────────────────────────────────────── */
 .q-section-header{margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
@@ -467,6 +469,35 @@ a:hover{color:var(--gold);}
 // ── LOAD USER PROFILE ───────────────────────────────────────────────────────
 var userProfile = null;
 try { userProfile = JSON.parse(localStorage.getItem('vcb_profile') || 'null'); } catch(e) {}
+// Normalize: extract top-level shortcuts from nested data for scoring compatibility
+if(userProfile) {
+  var _mil = (userProfile.milExperiences || userProfile.experiences || []);
+  // Sort by endDate descending to get most recent service
+  _mil.sort(function(a,b){ return (b.endDate||'').localeCompare(a.endDate||''); });
+  var _m0 = _mil[0] || {};
+  if(!userProfile.mos && _m0.mos) userProfile.mos = _m0.mos;
+  if(!userProfile.mosTitle && _m0.mosTitle) userProfile.mosTitle = _m0.mosTitle;
+  if(!userProfile.rank && _m0.rank) userProfile.rank = _m0.rank;
+  if(!userProfile.branch && _m0.branch) userProfile.branch = _m0.branch;
+  if(!userProfile.yearsOfService && _m0.tos) userProfile.yearsOfService = _m0.tos;
+  // Name from personal object
+  if(!userProfile.name && userProfile.personal && userProfile.personal.name) userProfile.name = userProfile.personal.name;
+  // Clearance: check profile-level, then most recent mil experience
+  if(!userProfile.clearance) {
+    for(var _ci = 0; _ci < _mil.length; _ci++) {
+      var _cl = _mil[_ci].clearanceLevel;
+      if(_cl && _cl !== 'None') { userProfile.clearance = _cl; break; }
+    }
+    // Also check civilian experiences for clearance
+    var _civ = userProfile.civExperiences || [];
+    if(!userProfile.clearance) {
+      for(var _cj = 0; _cj < _civ.length; _cj++) {
+        var _ccl = _civ[_cj].clearanceLevel;
+        if(_ccl && _ccl !== 'None') { userProfile.clearance = _ccl; break; }
+      }
+    }
+  }
+}
 
 // ── SECTION DATA ────────────────────────────────────────────────────────────
 var SECTIONS = [
@@ -1087,15 +1118,17 @@ function renderSection() {
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-text').textContent = 'Section ' + (currentSection+1) + ' of ' + SECTIONS.length + ' — ' + pct + '% complete';
 
-  // Section tabs
+  // Section tabs with completion status
   var tabsHtml = '';
   SECTIONS.forEach(function(s,i){
     var secAnswered = 0;
     s.questions.forEach(function(q,j){ if(answers[s.id+'_'+j] !== undefined) secAnswered++; });
     var cls = 'section-tab';
-    if(i === currentSection) cls += ' active';
-    else if(secAnswered === s.questions.length) cls += ' done';
-    tabsHtml += '<div class="' + cls + '">' + (i+1) + '. ' + s.name.split(' ')[0] + '</div>';
+    var icon = '';
+    if(i === currentSection) { cls += ' active'; icon = '▶ '; }
+    else if(secAnswered === s.questions.length) { cls += ' done'; icon = '✓ '; }
+    else if(i < currentSection && secAnswered < s.questions.length) { cls += ' incomplete'; icon = '⚠ '; }
+    tabsHtml += '<div class="' + cls + '">' + icon + (i+1) + '. ' + s.name.split(' ')[0] + '</div>';
   });
   document.getElementById('section-tabs').innerHTML = tabsHtml;
 
@@ -1258,10 +1291,40 @@ function updateNavState() {
     if(answers[sec.id + '_' + j] !== undefined) answered++;
   });
   var remaining = sec.questions.length - answered;
-  document.getElementById('q-remain').textContent = remaining > 0 ? remaining + ' remaining' : 'All answered';
+  var remainEl = document.getElementById('q-remain');
+  remainEl.textContent = remaining > 0 ? remaining + ' remaining' : '✓ All answered';
+  remainEl.style.color = remaining > 0 ? '#dc2626' : '#16a34a';
+  remainEl.style.fontWeight = remaining > 0 ? '700' : '600';
   var nextBtn = document.getElementById('btn-next');
   nextBtn.disabled = remaining > 0;
   nextBtn.textContent = currentSection === SECTIONS.length - 1 ? 'Get Results' : 'Next Section';
+
+  // Highlight unanswered questions with a pulse border
+  sec.questions.forEach(function(q, j){
+    var qEl = document.getElementById('q_' + sec.id + '_' + j);
+    if(!qEl) return;
+    if(answers[sec.id + '_' + j] === undefined) {
+      qEl.style.borderLeft = '3px solid #dc2626';
+    } else {
+      qEl.style.borderLeft = '3px solid #16a34a';
+    }
+  });
+
+  // Show/hide unanswered warning banner
+  var warnBanner = document.getElementById('unanswered-warning');
+  if(!warnBanner) {
+    warnBanner = document.createElement('div');
+    warnBanner.id = 'unanswered-warning';
+    warnBanner.style.cssText = 'text-align:center;padding:.6rem 1rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;color:#991b1b;font-size:.85rem;font-weight:600;margin:.75rem auto;max-width:600px;display:none;';
+    var navArea = document.getElementById('btn-next').parentElement;
+    navArea.parentElement.insertBefore(warnBanner, navArea);
+  }
+  if(remaining > 0) {
+    warnBanner.style.display = 'block';
+    warnBanner.innerHTML = '⚠️ ' + remaining + ' unanswered question' + (remaining > 1 ? 's' : '') + ' — please answer all questions before continuing';
+  } else {
+    warnBanner.style.display = 'none';
+  }
 
   // Update progress bar
   var totalQ = 0, answeredQ = 0;
@@ -1281,6 +1344,36 @@ function nextSection() {
     saveProgress();
     showBreakPrompt();
   } else {
+    // Final gate: check ALL sections for unanswered questions
+    var incomplete = [];
+    SECTIONS.forEach(function(s, i){
+      var unanswered = 0;
+      s.questions.forEach(function(q, j){
+        if(answers[s.id + '_' + j] === undefined) unanswered++;
+      });
+      if(unanswered > 0) incomplete.push({index: i, name: s.name, count: unanswered});
+    });
+    if(incomplete.length > 0) {
+      var msg = 'You have unanswered questions in:\n\n';
+      incomplete.forEach(function(s){ msg += '• ' + s.name + ' — ' + s.count + ' unanswered\n'; });
+      msg += '\nYou must answer all questions to get accurate results. Going back to the first incomplete section.';
+      alert(msg);
+      currentSection = incomplete[0].index;
+      saveProgress();
+      renderSection();
+      // Scroll to first unanswered question
+      setTimeout(function(){
+        var sec = SECTIONS[currentSection];
+        for(var j = 0; j < sec.questions.length; j++){
+          if(answers[sec.id + '_' + j] === undefined) {
+            var el = document.getElementById('q_' + sec.id + '_' + j);
+            if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+            break;
+          }
+        }
+      }, 300);
+      return;
+    }
     assessmentInProgress = false;
     clearProgress();
     showScreen('scr-saving');
@@ -1295,14 +1388,32 @@ function showBreakPrompt() {
   var total = SECTIONS.length;
   var pctDone = Math.round((completed / total) * 100);
 
+  // Check for any incomplete earlier sections
+  var incompleteWarning = '';
+  var prevSec = SECTIONS[currentSection - 1];
+  if(prevSec) {
+    var prevUnanswered = 0;
+    prevSec.questions.forEach(function(q, j){
+      if(answers[prevSec.id + '_' + j] === undefined) prevUnanswered++;
+    });
+    if(prevUnanswered > 0) {
+      incompleteWarning = '<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;text-align:left;">' +
+        '<div style="color:#991b1b;font-weight:700;font-size:.85rem;margin-bottom:.3rem;">⚠️ Previous Section Incomplete</div>' +
+        '<div style="color:#b91c1c;font-size:.8rem;margin-bottom:.6rem;">' + prevUnanswered + ' unanswered question' + (prevUnanswered > 1 ? 's' : '') + ' in <strong>' + prevSec.name + '</strong>. You must complete all questions for accurate results.</div>' +
+        '<button onclick="currentSection=' + (currentSection - 1) + ';renderSection();" style="padding:.5rem 1rem;background:#dc2626;color:#fff;border:none;border-radius:6px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit;">← Go Back & Complete</button>' +
+      '</div>';
+    }
+  }
+
   window.scrollTo({top:0, behavior:'smooth'});
   container.innerHTML = '<div style="text-align:center;padding:2rem 1rem;max-width:500px;margin:0 auto;">' +
-    '<div style="font-size:2rem;margin-bottom:.75rem;">✅</div>' +
-    '<div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;letter-spacing:.05em;color:var(--gold);margin-bottom:.5rem;">Section Complete!</div>' +
+    '<div style="font-size:2rem;margin-bottom:.75rem;">' + (incompleteWarning ? '⚠️' : '✅') + '</div>' +
+    '<div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;letter-spacing:.05em;color:var(--gold);margin-bottom:.5rem;">' + (incompleteWarning ? 'Time\'s Up!' : 'Section Complete!') + '</div>' +
     '<div style="font-size:.9rem;color:var(--sub);margin-bottom:1.25rem;">You\'ve finished ' + completed + ' of ' + total + ' sections (' + pctDone + '% done).</div>' +
     '<div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;height:8px;margin-bottom:1.5rem;overflow:hidden;">' +
       '<div style="height:100%;width:' + pctDone + '%;background:var(--gold);border-radius:10px;transition:width .5s;"></div>' +
     '</div>' +
+    incompleteWarning +
     '<div style="font-size:.88rem;color:var(--text);margin-bottom:.5rem;">Next up: <strong>' + secName + '</strong></div>' +
     '<div style="font-size:.82rem;color:var(--sub);margin-bottom:1.5rem;">' + (SECTIONS[currentSection]?SECTIONS[currentSection].questions.length:'') + ' questions</div>' +
     '<div style="display:flex;flex-direction:column;gap:.6rem;max-width:300px;margin:0 auto;">' +
@@ -1498,11 +1609,27 @@ async function enhanceWithAI(scores, rankedCareers) {
     if (userProfile.yearsOfService) profileInfo += "Years of service: " + userProfile.yearsOfService + ". ";
 
     var mil = userProfile.milExperiences || userProfile.experiences || [];
-    if (mil[0]) {
-      var m = mil[0];
-      if (m.mos) profileInfo += "Primary MOS: " + m.mos + (m.mosTitle ? " (" + m.mosTitle + ")" : "") + ". ";
+    mil.forEach(function(m, i) {
+      profileInfo += "Military Experience " + (i+1) + ": ";
+      if (m.mos) profileInfo += "MOS " + m.mos + (m.mosTitle ? " (" + m.mosTitle + ")" : "") + ". ";
       if (m.rank) profileInfo += "Rank: " + m.rank + ". ";
-      if (m.duties) profileInfo += "Key duties: " + m.duties.substring(0, 300) + ". ";
+      if (m.branch) profileInfo += "Branch: " + m.branch + ". ";
+      if (m.tos) profileInfo += "Time in service: " + m.tos + " years. ";
+      if (m.duties) profileInfo += "Duties: " + m.duties.substring(0, 200) + ". ";
+    });
+
+    // Include civilian experience
+    var civExps = userProfile.civExperiences || [];
+    if (civExps.length > 0) {
+      profileInfo += "\nCIVILIAN EXPERIENCE: ";
+      civExps.forEach(function(c, i) {
+        if (!c.jobTitle) return;
+        profileInfo += "Civilian Job " + (i+1) + ": " + c.jobTitle;
+        if (c.employer) profileInfo += " at " + c.employer;
+        if (c.startDate) profileInfo += " (" + c.startDate + " – " + (c.current ? "Present" : c.endDate || "?") + ")";
+        if (c.duties) profileInfo += ". Duties: " + c.duties.substring(0, 200);
+        profileInfo += ". ";
+      });
     }
   }
 
@@ -1515,7 +1642,7 @@ async function enhanceWithAI(scores, rankedCareers) {
     "- Work Style highlights: " + Object.entries(scores.workStyle).sort(function(a,b){return b[1]-a[1];}).slice(0,5).map(function(e){return e[0]+": "+e[1]+"%";}).join(", ") + "\n" +
     "- Top career interests: " + Object.entries(scores.interests).sort(function(a,b){return b[1]-a[1];}).slice(0,5).map(function(e){return e[0]+": "+e[1]+"%";}).join(", ") + "\n" +
     "- Leadership overall: " + scores.leadershipOverall + "%\n\n" +
-    (profileInfo ? "MILITARY BACKGROUND:\n" + profileInfo + "\n\n" : "") +
+    (profileInfo ? "VETERAN PROFILE (Military + Civilian Experience):\n" + profileInfo + "\n\n" : "") +
     "TOP 15 JS-MATCHED CAREERS:\n" + top15.join("\n") + "\n\n" +
     "Return a JSON object with this structure (no markdown, no backticks, just raw JSON):\n" +
     '{"insights":[' +
@@ -1523,6 +1650,7 @@ async function enhanceWithAI(scores, rankedCareers) {
     '],"overallSummary":"3-4 sentence personalized career summary for this veteran","strengthsTranslation":"2-3 sentences translating their military strengths to civilian value","immediateActions":["action 1","action 2","action 3"]}' +
     "\n\nProvide insights for the top 10 career matches. Be specific, realistic, and current with 2026 market data. " +
     "If they have a clearance, emphasize cleared roles and salary premiums. " +
+    "If they have civilian work experience, factor it into your analysis — relevant civilian experience can accelerate transitions and boost competitiveness. " +
     "If their technical scores are low, be honest — suggest roles that match their actual aptitude.";
 
   var response = await fetch(PROXY_URL, {
@@ -1613,29 +1741,92 @@ function matchCareers(scores) {
     if(scores.memory && w.memory) { aptitudeScore += (scores.memory.pct/100) * (w.memory||0.4); aptitudeWeight += (w.memory||0.4); }
     aptPct = aptitudeWeight > 0 ? (aptitudeScore / aptitudeWeight) * 100 : 50;
 
-    var hasProfile = userProfile && (userProfile.milExperiences || userProfile.experiences);
+    var hasProfile = userProfile && (userProfile.milExperiences || userProfile.experiences || userProfile.civExperiences);
     var profileScore = 0;
     if(hasProfile) {
-      // Profile scoring: MOS match, rank, clearance, years of service
-      var mil = (userProfile.milExperiences || userProfile.experiences || [])[0] || {};
-      if(career.mosMatch && career.mosMatch.length > 0 && mil.mos) {
-        var userMos = (mil.mos || '').toUpperCase();
-        career.mosMatch.forEach(function(m){ if(userMos.indexOf(m.toUpperCase()) !== -1) profileScore += 30; });
-      }
-      if(mil.rank) {
-        var r = mil.rank;
-        var isNCO = /E-[5-9]|E5|E6|E7|E8|E9/i.test(r);
-        var isOfficer = /O-|W-/i.test(r);
-        if((isNCO||isOfficer) && (w.leadership||0) > 0.3) profileScore += 15;
-        if(isOfficer && (w.leadership||0) > 0.5) profileScore += 10;
-      }
+      // ── Military experience scoring ──
+      var allMil = userProfile.milExperiences || userProfile.experiences || [];
+      allMil.forEach(function(mil){
+        if(career.mosMatch && career.mosMatch.length > 0 && mil.mos) {
+          var userMos = (mil.mos || '').toUpperCase();
+          career.mosMatch.forEach(function(m){ if(userMos.indexOf(m.toUpperCase()) !== -1) profileScore += 30; });
+        }
+        if(mil.rank) {
+          var r = mil.rank;
+          var isNCO = /E-[5-9]|E5|E6|E7|E8|E9/i.test(r);
+          var isOfficer = /O-|W-/i.test(r);
+          if((isNCO||isOfficer) && (w.leadership||0) > 0.3) profileScore += 15;
+          if(isOfficer && (w.leadership||0) > 0.5) profileScore += 10;
+        }
+        var cl = (mil.clearanceLevel || '').toUpperCase();
+        if(cl && career.clearancePremium && (cl.indexOf('SECRET')!==-1||cl.indexOf('TS')!==-1)) {
+          profileScore += 20;
+        }
+        var yos = parseFloat(mil.tos) || 0;
+        if(yos >= 6) profileScore += 10;
+        if(yos >= 10) profileScore += 5;
+      });
+
+      // ── Civilian experience scoring ──
+      var civExps = userProfile.civExperiences || [];
+      civExps.forEach(function(civ){
+        if(!civ.jobTitle) return;
+        var civTitle = civ.jobTitle.toLowerCase();
+        var careerTitle = career.title.toLowerCase();
+        var careerDesc = (career.desc || '').toLowerCase();
+
+        // Direct title match — strongest signal (e.g., "Project Manager" matching "Project Manager" career)
+        if(careerTitle.indexOf(civTitle) !== -1 || civTitle.indexOf(careerTitle) !== -1) {
+          profileScore += 25;
+        } else {
+          // Keyword overlap between civilian job title/duties and career title/description
+          var civWords = (civTitle + ' ' + (civ.duties || '').toLowerCase()).split(/\s+/);
+          var careerWords = (careerTitle + ' ' + careerDesc).split(/\s+/);
+          var meaningfulWords = civWords.filter(function(w){ return w.length > 3; });
+          var matches = 0;
+          meaningfulWords.forEach(function(cw){
+            if(careerWords.some(function(kw){ return kw.indexOf(cw) !== -1 || cw.indexOf(kw) !== -1; })) matches++;
+          });
+          if(matches >= 3) profileScore += 15;
+          else if(matches >= 1) profileScore += 8;
+        }
+
+        // Sector match — civilian employer/role in same sector
+        if(civ.employer) {
+          var emp = civ.employer.toLowerCase();
+          var sec = (career.sector || '').toLowerCase();
+          // Check if employer or job title suggests same sector
+          var sectorKeywords = {
+            'healthcare': ['hospital','clinic','medical','health','nursing','pharma'],
+            'technology': ['tech','software','IT','cyber','data','cloud','digital'],
+            'trades': ['construction','electric','plumb','hvac','mechanic','weld'],
+            'government': ['federal','state','county','city','government','agency','dod'],
+            'law enforcement': ['police','sheriff','security','corrections','patrol'],
+            'business': ['consulting','finance','bank','insurance','accounting','management'],
+            'education': ['school','university','college','training','teaching','academy']
+          };
+          Object.keys(sectorKeywords).forEach(function(sKey){
+            if(sec.indexOf(sKey) !== -1) {
+              sectorKeywords[sKey].forEach(function(kw){
+                if(emp.indexOf(kw) !== -1 || civTitle.indexOf(kw) !== -1) profileScore += 5;
+              });
+            }
+          });
+        }
+
+        // Civilian clearance
+        if(civ.clearanceLevel && civ.clearanceLevel !== 'None' && career.clearancePremium) {
+          var civCl = civ.clearanceLevel.toUpperCase();
+          if(civCl.indexOf('SECRET')!==-1||civCl.indexOf('TS')!==-1) profileScore += 15;
+        }
+      });
+
+      // Overall clearance from profile level
       if(userProfile.clearance && career.clearancePremium) {
-        var cl = (typeof userProfile.clearance === 'string' ? userProfile.clearance : (mil.clearanceLevel||'')).toUpperCase();
-        if(cl.indexOf('SECRET')!==-1||cl.indexOf('TS')!==-1) profileScore += 20;
+        var pcl = (typeof userProfile.clearance === 'string' ? userProfile.clearance : '').toUpperCase();
+        if(pcl.indexOf('SECRET')!==-1||pcl.indexOf('TS')!==-1) profileScore += 20;
       }
-      var yos = parseFloat(mil.tos) || 0;
-      if(yos >= 6) profileScore += 10;
-      if(yos >= 10) profileScore += 5;
+
       profileScore = Math.min(profileScore, 100); // cap at 100
     }
 
@@ -1672,7 +1863,7 @@ function matchCareers(scores) {
     // ── Profile weighting ──
     // Profile bonuses are SMALLER and capped — they can't rescue a bad assessment
     var profileBonus = 0;
-    var maxProfileBonus = Math.round(avgOverall * 0.15); // Max bonus = 15% of avg score
+    var maxProfileBonus = Math.round(aptitudeAvg * 0.15); // Max bonus = 15% of avg score
     if(userProfile) {
       // MOS match bonus
       if(career.mosMatch && career.mosMatch.length > 0 && userProfile.mos) {
@@ -1706,6 +1897,22 @@ function matchCareers(scores) {
           profileBonus += 2;
         }
       }
+      // Civilian experience relevance bonus
+      var civExps2 = userProfile.civExperiences || [];
+      civExps2.forEach(function(civ){
+        if(!civ.jobTitle) return;
+        var ct = civ.jobTitle.toLowerCase();
+        var ct2 = career.title.toLowerCase();
+        // Direct title overlap
+        if(ct2.indexOf(ct) !== -1 || ct.indexOf(ct2) !== -1) {
+          profileBonus += 5;
+        } else {
+          // Partial keyword match
+          var words = ct.split(/\s+/).filter(function(w){ return w.length > 3; });
+          var hit = words.some(function(ww){ return ct2.indexOf(ww) !== -1; });
+          if(hit) profileBonus += 2;
+        }
+      });
     }
 
     // Cap profile bonus — can't rescue a bad assessment

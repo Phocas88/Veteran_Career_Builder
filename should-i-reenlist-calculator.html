@@ -1044,7 +1044,7 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
 .card.mil .card-title{color:#0d1f3c;border-color:#1a3a6b;}
 .card.civ .card-title{color:#1a4a1a;border-color:#2a7a2a;}
 .card.life .card-title{color:#4a2a0a;border-color:#c8960a;}
-.card.result .card-title{color:#0d1f3c;border-color:#f0c040;}
+.card.result .card-title{color:#0a1520;border-color:#f0c040;font-size:1.1rem;}
 .field{margin-bottom:.85rem;}
 .field label{display:block;font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#2a3a4a;margin-bottom:.28rem;}
 .field input,.field select{width:100%;border:1.5px solid #dde3ec;border-radius:8px;padding:.55rem .75rem;font-size:.88rem;color:#1a2a3a;font-family:'Inter',sans-serif;background:#fff;outline:none;transition:border-color .15s;}
@@ -1060,12 +1060,13 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
 .calc-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(200,150,10,.4);}
 #results{display:none;margin-top:1.5rem;}
 .verdict-bar{border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;}
-.verdict-bar.stay{background:linear-gradient(135deg,#eef4ff,#dde8f8);border:2px solid #1a3a6b;}
-.verdict-bar.go{background:linear-gradient(135deg,#eefff0,#d8f5dc);border:2px solid #1a6a1a;}
-.verdict-bar.close{background:linear-gradient(135deg,#fffbee,#fff3cc);border:2px solid #c8960a;}
-.verdict-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.07em;margin-bottom:.4rem;}
-.verdict-body{font-size:.88rem;line-height:1.75;margin-bottom:.5rem;}
-.verdict-note{font-size:.75rem;opacity:.85;font-style:italic;color:#2a3a4a;}
+.verdict-bar.stay{background:linear-gradient(135deg,#e0ecff,#ccdcf4);border:2px solid #1a3a6b;}
+.verdict-bar.go{background:linear-gradient(135deg,#dff5e4,#c8ecd0);border:2px solid #1a6a1a;}
+.verdict-bar.close{background:linear-gradient(135deg,#fff5d6,#ffe8a0);border:2px solid #c8960a;}
+.verdict-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.07em;margin-bottom:.5rem;color:#0a1520;}
+.verdict-body{font-size:.92rem;line-height:1.8;margin-bottom:.6rem;color:#0d1a2a;}
+.verdict-body strong{color:#000;font-weight:800;}
+.verdict-note{font-size:.78rem;font-style:italic;color:#1a2a3a;}
 .comp-header{display:grid;grid-template-columns:2fr 1fr 1fr;gap:.5rem;padding:.5rem .75rem;background:#0d1f3c;color:#fff;border-radius:8px 8px 0 0;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;}
 .comp-header .mil-h{color:#88aaff;} .comp-header .civ-h{color:#88ff88;}
 .comp-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:.5rem;padding:.5rem .75rem;border-bottom:1px solid #f0f4fa;font-size:.82rem;align-items:center;}
@@ -1076,7 +1077,7 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
 .comp-row.net-row{background:#0d1f3c;color:#fff;font-weight:700;border-radius:0 0 8px 8px;}
 .comp-row.net-row .mil-val{color:#88aaff;} .comp-row.net-row .civ-val{color:#88ff88;}
 .budget-grid{display:grid;grid-template-columns:1fr;gap:.35rem;}
-.budget-item{background:#f8fafd;border-radius:8px;padding:.6rem .85rem;display:flex;justify-content:space-between;align-items:center;font-size:.82rem;flex-wrap:wrap;gap:.3rem;}
+.budget-item{background:#f8fafd;border-radius:8px;padding:.6rem .85rem;display:flex;justify-content:space-between;align-items:center;font-size:.85rem;flex-wrap:wrap;gap:.3rem;color:#0d1a2a;}
 .budget-item .bi-label{color:#2a3a4a;}
 .proj-row{margin-bottom:1rem;}
 .proj-label{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:.3rem;font-weight:600;flex-wrap:wrap;gap:.3rem;}
@@ -1089,8 +1090,8 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
 .qol-label{font-size:.75rem;color:#1a2a3a;margin-bottom:.2rem;font-weight:600;}
 .qol-val{font-size:.88rem;font-weight:700;}
 .insight-item{background:#f8fafd;border-left:3px solid #1a3a6b;border-radius:0 8px 8px 0;padding:.75rem 1rem;margin-bottom:.6rem;font-size:.84rem;line-height:1.7;color:#1a2a3a;}
-@media(max-width:768px){.two-col{grid-template-columns:1fr;}.field-row{grid-template-columns:1fr;}.comp-header,.comp-row{grid-template-columns:1.5fr 1fr 1fr;font-size:.78rem;}.budget-item{font-size:.82rem;flex-direction:column;align-items:flex-start;}.budget-item span{font-size:.82rem;}.proj-label{font-size:.82rem;}.verdict-body{font-size:.88rem;line-height:1.8;}.insight-item{font-size:.84rem;}}
-@media(max-width:500px){.page-wrap{padding:1.25rem 4%;}.comp-header,.comp-row{grid-template-columns:1fr 80px 80px;font-size:.75rem;}.comp-row .mil-val,.comp-row .civ-val{font-size:.75rem;}.budget-item{font-size:.8rem;padding:.65rem .75rem;}.qol-grid{grid-template-columns:1fr 1fr;gap:.5rem;}.verdict-body{font-size:.85rem;}.insight-item{font-size:.82rem;padding:.65rem .85rem;}}
+@media(max-width:768px){.two-col{grid-template-columns:1fr;}.field-row{grid-template-columns:1fr;}.comp-header,.comp-row{grid-template-columns:1.5fr 1fr 1fr;font-size:.78rem;}.budget-item{font-size:.82rem;flex-direction:column;align-items:flex-start;}.budget-item span{font-size:.82rem;}.proj-label{font-size:.82rem;}.verdict-title{font-size:1.2rem;}.verdict-body{font-size:.9rem;line-height:1.8;}.verdict-note{font-size:.76rem;}.insight-item{font-size:.84rem;}}
+@media(max-width:500px){.page-wrap{padding:1.25rem 4%;}.comp-header,.comp-row{grid-template-columns:1fr 80px 80px;font-size:.75rem;}.comp-row .mil-val,.comp-row .civ-val{font-size:.75rem;}.budget-item{font-size:.8rem;padding:.65rem .75rem;}.qol-grid{grid-template-columns:1fr 1fr;gap:.5rem;}.verdict-title{font-size:1.15rem;}.verdict-body{font-size:.85rem;line-height:1.75;}.verdict-note{font-size:.74rem;}.insight-item{font-size:.82rem;padding:.65rem .85rem;}}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="/vcp-styles.css">
@@ -1723,22 +1724,22 @@ function runCalc(){
     ['Net Take-Home / Year (after all costs)', fmtD(mTakeHomeAnn), fmtD(cTakeHomeAnn)],
     ['Net Take-Home / Month',         fmtD(mTakeHomeAnn/12), fmtD(cTakeHomeAnn/12)],
   ];
-  var taxHtml = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;font-size:.83rem;">';
-  taxHtml += '<div style="padding:.45rem .75rem;font-weight:800;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#2a4060;border-bottom:2px solid #dde3ec;"></div>';
-  taxHtml += '<div style="padding:.45rem .75rem;font-weight:800;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#1a3a6b;border-bottom:2px solid #dde3ec;text-align:right;">🪖 Military</div>';
-  taxHtml += '<div style="padding:.45rem .75rem;font-weight:800;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#2a5a3a;border-bottom:2px solid #dde3ec;text-align:right;">💼 Civilian</div>';
+  var taxHtml = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;font-size:.88rem;color:#0d1a2a;">';
+  taxHtml += '<div style="padding:.5rem .75rem;font-weight:800;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:#0d1a2a;border-bottom:2px solid #c0cce0;"></div>';
+  taxHtml += '<div style="padding:.5rem .75rem;font-weight:800;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:#0d2a5b;border-bottom:2px solid #c0cce0;text-align:right;">🪖 Military</div>';
+  taxHtml += '<div style="padding:.5rem .75rem;font-weight:800;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:#0a4a2a;border-bottom:2px solid #c0cce0;text-align:right;">💼 Civilian</div>';
   taxRows.forEach(function(row, i) {
     var isNet = row[0].includes('Net Take-Home');
     var isTax = row[0].includes('Tax');
     var isSep = row[0].includes('After-Tax Income / Year');
     var bg = isNet ? 'background:#f0f8e8;font-weight:700;' : isTax ? 'background:#fff8f0;' : isSep ? 'border-top:2px solid #dde3ec;' : '';
     var taxColor = isTax ? 'color:#c0392b;' : '';
-    taxHtml += '<div style="padding:.45rem .75rem;border-bottom:1px solid #f0f4fa;'+bg+'">'+row[0]+'</div>';
-    taxHtml += '<div style="padding:.45rem .75rem;border-bottom:1px solid #f0f4fa;text-align:right;'+bg+taxColor+'">'+row[1]+'</div>';
-    taxHtml += '<div style="padding:.45rem .75rem;border-bottom:1px solid #f0f4fa;text-align:right;'+bg+taxColor+'">'+row[2]+'</div>';
+    taxHtml += '<div style="padding:.5rem .75rem;border-bottom:1px solid #e0e6f0;color:#0d1a2a;font-weight:500;'+bg+'">'+row[0]+'</div>';
+    taxHtml += '<div style="padding:.5rem .75rem;border-bottom:1px solid #e0e6f0;text-align:right;color:#0d1a2a;font-weight:600;'+bg+taxColor+'">'+row[1]+'</div>';
+    taxHtml += '<div style="padding:.5rem .75rem;border-bottom:1px solid #e0e6f0;text-align:right;color:#0d1a2a;font-weight:600;'+bg+taxColor+'">'+row[2]+'</div>';
   });
   taxHtml += '</div>';
-  taxHtml += '<p style="font-size:.72rem;color:#4a5a6a;padding:.6rem .75rem 0;">Estimates use 22% federal + 7.65% FICA + ~5% state. Military tax is only on taxable base pay — BAH and BAS are tax-free. Actual tax varies by filing status, deductions, and state.</p>';
+  taxHtml += '<p style="font-size:.78rem;color:#1a2a3a;padding:.65rem .75rem 0;">Estimates use 22% federal + 7.65% FICA + ~5% state. Military tax is only on taxable base pay — BAH and BAS are tax-free. Actual tax varies by filing status, deductions, and state.</p>';
   document.getElementById('tax-summary-body').innerHTML = taxHtml;
 
   document.getElementById('monthly-budget').innerHTML=bHtml;

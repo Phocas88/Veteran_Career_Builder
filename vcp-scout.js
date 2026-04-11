@@ -102,22 +102,36 @@
 
   // ── Search index for relevant pages ──
   function searchIndex(idx, query) {
-    var terms = query.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim().split(' ').filter(function(t) { return t.length > 2; });
+    var terms = query.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim().split(' ').filter(function(t) { return t.length > 1; });
     if (!terms.length) return [];
     var results = [];
     for (var i = 0; i < idx.length; i++) {
       var p = idx[i];
-      var hay = ((p.title || '') + ' ' + (p.desc || '') + ' ' + (p.keywords || '') + ' ' + (p.text || '')).toLowerCase();
+      var title = (p.title || '').toLowerCase();
+      var hay = (title + ' ' + (p.desc || '') + ' ' + (p.keywords || '') + ' ' + (p.text || '')).toLowerCase();
       var score = 0;
+      // Exact title match gets massive boost
+      var qLower = query.toLowerCase().trim();
+      if (title.indexOf(qLower) >= 0) score += 200;
+      // URL/slug match (e.g. "91b" matches "91b.html" or "mos/91b")
+      var urlLower = (p.url || '').toLowerCase();
+      if (urlLower.indexOf(qLower.replace(/\s+/g, '-')) >= 0 || urlLower.indexOf(qLower.replace(/\s+/g, '')) >= 0) score += 300;
       for (var j = 0; j < terms.length; j++) {
         var pos = 0, tc = 0;
         while ((pos = hay.indexOf(terms[j], pos)) >= 0) { tc++; pos++; }
-        if (tc > 0) score += tc + (p.title.toLowerCase().indexOf(terms[j]) >= 0 ? 15 : 0);
+        if (tc > 0) score += tc + (title.indexOf(terms[j]) >= 0 ? 15 : 0);
       }
       if (score > 0) results.push({ title: p.title, url: p.url, desc: (p.desc || '').slice(0, 100), score: score });
     }
     results.sort(function(a, b) { return b.score - a.score; });
     return results.slice(0, 8);
+  }
+
+  // ── Check if query is a direct page lookup (MOS code, specific term) ──
+  function isDirectLookup(query, results) {
+    if (!results.length) return false;
+    // If top result has a very high score (URL or exact title match), it's a direct hit
+    return results[0].score >= 200;
   }
 
   // ── Send message ──
@@ -133,17 +147,32 @@
     isLoading = true;
     document.getElementById('scout-send').disabled = true;
 
-    // Show typing indicator
-    var typing = document.createElement('div');
-    typing.className = 'scout-typing';
-    typing.textContent = BOT_NAME + ' is thinking...';
-    var msgs = document.getElementById('scout-msgs');
-    msgs.appendChild(typing);
-    msgs.scrollTop = msgs.scrollHeight;
-
-    // Search site index for relevant pages
+    // Search site index for relevant pages FIRST
     loadIndex(function(idx) {
       var relevant = searchIndex(idx, q);
+
+      // Direct match — show page links immediately without calling AI
+      if (isDirectLookup(q, relevant)) {
+        var html = 'Here\'s what I found:<br><br>';
+        relevant.slice(0, 5).forEach(function(r) {
+          html += '<a href="' + r.url + '">' + r.title + '</a>';
+          if (r.desc) html += '<br><span style="font-size:.75rem;opacity:.6;">' + r.desc + '</span>';
+          html += '<br><br>';
+        });
+        addMsg(html, 'bot');
+        chatHistory.push({ role: 'assistant', content: html });
+        isLoading = false;
+        document.getElementById('scout-send').disabled = false;
+        return;
+      }
+
+      // Show typing for AI call
+      var typing = document.createElement('div');
+      typing.className = 'scout-typing';
+      typing.textContent = BOT_NAME + ' is thinking...';
+      var msgs = document.getElementById('scout-msgs');
+      msgs.appendChild(typing);
+      msgs.scrollTop = msgs.scrollHeight;
       var context = 'You are ' + BOT_NAME + ', a helpful site assistant for veterancareerpath.com — a website with 800+ free resources for veterans transitioning to civilian careers. ';
       context += 'The site has: career assessments (PathFinder Pro $9.99 and Lite free), AI career tools ($15/mo subscription), VA disability guides, MOS-to-civilian translators for all branches, state benefits for all 50 states, GI Bill calculators, resume builders, interview prep, and more. ';
       context += 'Your job: help users find the right page or resource. Give direct links using the format [Page Title](https://veterancareerpath.com/page.html). ';

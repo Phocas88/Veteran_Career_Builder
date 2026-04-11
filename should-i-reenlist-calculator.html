@@ -1606,7 +1606,6 @@ function runCalc(){
   var cGrossAnn = cSalary + cBonus + cSpouseIncome + cOtherIncome*12;
   var cTaxAnn   = cTax*12; // estimated federal+FICA+state on full salary
   var cAfterTaxAnn = cGrossAnn - cTaxAnn; // gross minus tax
-  var cTakeHomeAnn = cNetMo*12; // net after ALL costs
   var cFoodMo = cFoodStyle==='custom' ? (parseFloat(document.getElementById('c-food-custom').value)||600) : FOOD[cFoodStyle][cFamilyN];
 
   // Civilian net monthly
@@ -1628,6 +1627,7 @@ function runCalc(){
   var cNetMo=cGrossMo+cBonusMo+vaMo+cSpouseMo+cOtherMo
     -cTax-cHousing-cFoodMo-cHealthCost-cCarPay-cCarIns-cGas
     -cChildcare-cUtilities-cOther-c401kEmployee;
+  var cTakeHomeAnn = cNetMo*12; // net after ALL costs
 
   // ── ANNUAL / COMP ───────────────────────────────────────────────────────
   var mAnn=mNetMo*12, cAnn=cNetMo*12;

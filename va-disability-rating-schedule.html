@@ -1334,14 +1334,18 @@ body.menu-open{overflow:hidden!important;}
   <div class="sb-box">
     <div class="sb-title">Quick Links</div>
     <a class="sb-link" href="#calc">💰 Calculator</a>
+    <a class="sb-link" href="#sec-benefits-tiers">🎖 Benefits by Tier</a>
+    <a class="sb-link" href="#sec-tdiu">📋 TDIU Guide</a>
+    <a class="sb-link" href="#sec-state-benefits">🗺 State Benefits</a>
     <a class="sb-link" href="va-disability-rating-guide.html">Rating Guide</a>
-    <a class="sb-link" href="va-disability-benefits-calculator.html">Benefits Calc</a>
     <a class="sb-link" href="va-disability-claim-checklist.html">Claim Checklist</a>
     <select class="sb-select" onchange="if(this.value){if(this.value.startsWith('#')){document.querySelector(this.value).scrollIntoView({behavior:'smooth',block:'start'});}else{window.location.href=this.value;}}this.selectedIndex=0;">
       <option value="">Quick Links...</option>
       <option value="#calc">Calculator</option>
+      <option value="#sec-benefits-tiers">Benefits by Tier</option>
+      <option value="#sec-tdiu">TDIU Guide</option>
+      <option value="#sec-state-benefits">State Benefits</option>
       <option value="va-disability-rating-guide.html">Rating Guide</option>
-      <option value="va-disability-benefits-calculator.html">Benefits Calc</option>
       <option value="va-disability-claim-checklist.html">Claim Checklist</option>
     </select>
   </div>
@@ -1519,6 +1523,119 @@ body.menu-open{overflow:hidden!important;}
         <div id="rcConditions" style="margin-top:.75rem;border-top:1px solid rgba(255,255,255,.1);padding-top:.75rem;"></div>
         <div class="rb-math" id="rcNote"></div>
         <button onclick="exportPDF()" style="margin-top:1rem;background:linear-gradient(135deg,var(--gd2),var(--gd));border:none;border-radius:7px;padding:.55rem 1.25rem;font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.08em;color:#0a1628;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;">Export as PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BENEFITS BY RATING TIER ══════════════════════════════════════════════ -->
+  <div class="sc" id="sec-benefits-tiers">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🎖 Benefits Unlocked at Each Rating Tier</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="cond-card">
+        <div class="cond-head"><strong>10% – 20% Rating</strong></div>
+        <div class="cond-body" style="display:block;">
+          <ul style="margin:.5rem 0;padding-left:1.25rem;font-size:.88rem;line-height:1.8;color:#1a2a3a;">
+            <li>Monthly tax-free compensation ($175–$347/month)</li>
+            <li>VA healthcare enrollment (Priority Group 3)</li>
+            <li>5-point veterans preference for federal employment</li>
+            <li>VA home loan eligibility (funding fee still applies)</li>
+            <li>Some state property tax discounts proportional to rating</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-head"><strong>30% – 40% Rating</strong></div>
+        <div class="cond-body" style="display:block;">
+          <ul style="margin:.5rem 0;padding-left:1.25rem;font-size:.88rem;line-height:1.8;color:#1a2a3a;">
+            <li><strong>All above benefits PLUS:</strong></li>
+            <li>Additional monthly allowances for dependents (spouse, children, parents)</li>
+            <li>Priority healthcare access (Priority Group 1-2)</li>
+            <li>10-point veterans preference for federal employment</li>
+            <li>State property tax exemptions begin in many states</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-head"><strong>50% – 90% Rating</strong></div>
+        <div class="cond-body" style="display:block;">
+          <ul style="margin:.5rem 0;padding-left:1.25rem;font-size:.88rem;line-height:1.8;color:#1a2a3a;">
+            <li><strong>All above benefits PLUS:</strong></li>
+            <li>VA home loan funding fee waived (saves $5,000–$15,000 on a typical purchase)</li>
+            <li>Free VA dental care if dental condition is service-connected</li>
+            <li>CHAMPVA eligibility for dependents at 100% total disability</li>
+            <li>Significantly expanded state benefit packages in most states</li>
+            <li>VR&E (Chapter 31) eligibility for career retraining</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-head"><strong>100% Rating (or TDIU)</strong></div>
+        <div class="cond-body" style="display:block;">
+          <ul style="margin:.5rem 0;padding-left:1.25rem;font-size:.88rem;line-height:1.8;color:#1a2a3a;">
+            <li><strong>All above benefits PLUS:</strong></li>
+            <li>Full commissary, Exchange, and MWR access for life</li>
+            <li>CHAMPVA full family healthcare coverage</li>
+            <li>Free VA dental care</li>
+            <li>Caregiver Support Program eligibility</li>
+            <li>Most states: full property tax exemption on primary residence</li>
+            <li>Free or reduced vehicle registration in most states</li>
+            <li>Free recreational licenses (hunting, fishing) in most states</li>
+            <li>DEA Chapter 35 education benefits for dependents</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TDIU GUIDE ═══════════════════════════════════════════════════════════ -->
+  <div class="sc" id="sec-tdiu">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>📋 TDIU — The Path to 100% Pay with a Lower Rating</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="alert ai" style="margin-bottom:.75rem"><strong>What is TDIU?</strong> Total Disability Individual Unemployability pays at the 100% rate even if your combined rating is lower, if your service-connected conditions prevent substantially gainful employment.</div>
+      <div class="cond-card">
+        <div class="cond-head"><strong>Eligibility Requirements</strong></div>
+        <div class="cond-body" style="display:block;">
+          <ul style="margin:.5rem 0;padding-left:1.25rem;font-size:.88rem;line-height:1.8;color:#1a2a3a;">
+            <li><strong>Standard (Schedular):</strong> One disability rated at 60%+, OR multiple disabilities with a combined 70%+ and at least one rated at 40%+</li>
+            <li><strong>Extra-Schedular:</strong> If you don't meet standard thresholds but still can't work due to service-connected conditions, the VA can grant TDIU on a case-by-case basis</li>
+            <li>Income must be below the federal poverty threshold (substantially gainful employment limit ~$15,000/year in 2026)</li>
+            <li>Apply via <strong>VA Form 21-8940</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-head"><strong>TDIU Benefits (Same as 100%)</strong></div>
+        <div class="cond-body" style="display:block;">
+          <ul style="margin:.5rem 0;padding-left:1.25rem;font-size:.88rem;line-height:1.8;color:#1a2a3a;">
+            <li>Paid at the <strong>100% compensation rate</strong> ($3,831+/month for veteran alone)</li>
+            <li>CHAMPVA for dependents, free dental, all 100% benefits</li>
+            <li>Property tax exemptions in most states (same as 100% P&T)</li>
+            <li>If granted P&T (Permanent & Total), DEA Chapter 35 education for dependents</li>
+          </ul>
+          <p style="font-size:.85rem;color:#1a2a3a;margin-top:.65rem;line-height:1.7;">A VSO or VA-accredited claims agent can significantly improve your TDIU approval odds. <a href="https://veterancareerpath.com/vre-chapter31-guide.html" style="color:var(--nv2);font-weight:600;">VR&E Chapter 31 Guide →</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ STATE BENEFITS ═══════════════════════════════════════════════════════ -->
+  <div class="sc" id="sec-state-benefits">
+    <button class="sc-hd" onclick="toggleSec(this)">
+      <span>🗺 State-by-State Additional VA Benefits</span><span class="chv">▼</span>
+    </button>
+    <div class="sc-bd">
+      <div class="alert ai" style="margin-bottom:.75rem"><strong>State benefits vary widely.</strong> These are in addition to federal VA benefits. Check your state's veteran affairs office for the most current information. <a href="https://veterancareerpath.com/state-veteran-benefits.html" style="color:var(--nv2);font-weight:600;">Full 50-state guide →</a></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.65rem;">
+        <div class="cond-card"><div class="cond-head"><strong>Texas</strong></div><div class="cond-body" style="display:block;font-size:.85rem;color:#1a2a3a;line-height:1.7;">100% disabled: full property tax exemption. Hazlewood Act: 150 credit hours free tuition at state universities (transferable to dependents). Free state parks, driver license fee waiver. No state income tax.</div></div>
+        <div class="cond-card"><div class="cond-head"><strong>Florida</strong></div><div class="cond-body" style="display:block;font-size:.85rem;color:#1a2a3a;line-height:1.7;">10%+: property tax discount proportional to rating. 100%: full exemption. No state income tax. Discounted vehicle registration. Free recreational licenses. Free toll road access (SunPass).</div></div>
+        <div class="cond-card"><div class="cond-head"><strong>Virginia</strong></div><div class="cond-body" style="display:block;font-size:.85rem;color:#1a2a3a;line-height:1.7;">100% disabled: full property tax exemption. 70%+: vehicle registration fee waiver. Strong career preference for state government employment. Military retirement income tax exemption.</div></div>
+        <div class="cond-card"><div class="cond-head"><strong>California</strong></div><div class="cond-body" style="display:block;font-size:.85rem;color:#1a2a3a;line-height:1.7;">100% or TDIU: property tax exemption up to $161k assessed value. CalVet home loans with competitive rates. Fee waivers for professional licenses. Free fishing license.</div></div>
+        <div class="cond-card"><div class="cond-head"><strong>North Carolina</strong></div><div class="cond-body" style="display:block;font-size:.85rem;color:#1a2a3a;line-height:1.7;">100%: full property tax exemption on primary residence. Free recreational licenses. State income tax exemption on military retirement pay. In-state tuition for dependents.</div></div>
+        <div class="cond-card"><div class="cond-head"><strong>Georgia</strong></div><div class="cond-body" style="display:block;font-size:.85rem;color:#1a2a3a;line-height:1.7;">100% disabled: full property tax exemption. Free vehicle registration. Free specialty license plate. Free hunting and fishing licenses. Military retirement income exclusion up to $35k.</div></div>
       </div>
     </div>
   </div>
@@ -2598,7 +2715,7 @@ function search(q){
   });
 }
 
-// ═══ CONDITION BROWSER DATA ═══
+// === CONDITION BROWSER DATA ===
 var COND_DATA = {
   "Musculoskeletal": ["Lumbar Degenerative Disc Disease","Cervical Strain","Knee Instability (Lateral)","Knee Limitation of Flexion","Knee Limitation of Extension","Shoulder Impingement","Ankle Instability","Plantar Fasciitis","Flat Feet (Pes Planus)","Hip Limitation of Motion","Thoracolumbar Spine Strain","Radiculopathy (Lower Extremity)","Radiculopathy (Upper Extremity)","Carpal Tunnel Syndrome","Gout","Rheumatoid Arthritis","Sciatica","Intervertebral Disc Syndrome (IVDS)","Traumatic Arthritis"],
   "Mental Health/PTSD": ["PTSD","Major Depressive Disorder","Generalized Anxiety Disorder","Bipolar Disorder","Panic Disorder","Adjustment Disorder","Somatic Symptom Disorder","Insomnia (Secondary to PTSD)","Eating Disorder","Obsessive-Compulsive Disorder"],
@@ -2867,7 +2984,7 @@ function fmt(n) {
   return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-// ═══ PDF EXPORT ═══
+// === PDF EXPORT ===
 function exportPDF() {
   var marital = document.getElementById('dMarital').value;
   var hasSpouse = marital === 'spouse';
@@ -2946,8 +3063,7 @@ function exportPDF() {
 
   html += '<div class="disclaimer"><strong>Disclaimer:</strong> This is an estimate only. Official ratings are determined by the VA. Compensation amounts are based on 2026 VA pay tables (effective Dec 1, 2025). Does not include SMC, TDIU, or ancillary benefits. Consult a VSO or accredited claims agent for your specific situation.</div>';
   html += '<div class="footer">Veteran Career Path | veterancareerpath.com</div>';
-  html += '<script defer src="/vcp-scout.js"></script>
-</body></html>';
+  html += '<scr' + 'ipt defer src="/vcp-scout.js"><\/scr' + 'ipt>\n</body></html>';
 
   var win = window.open('', '_blank');
   win.document.write(html);

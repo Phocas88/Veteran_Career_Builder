@@ -18,7 +18,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --navy:#0d1f3c;--navy2:#1a3a6b;--gold:#f0c040;--gold2:#c8960a;
-  --green:#1a7a40;--red:#c0392b;--slate:#4a5a6a;--dim:#6a7a8a;
+  --green:#1a7a40;--red:#c0392b;--slate:#2a3a4a;--dim:#3a4a5a;
   --border:#dde3ec;--light:#f0f4fa;
 }
 html,body{overflow-x:hidden;max-width:100%;font-family:'Inter',sans-serif;color:#1a2a3a;background:#f0f4fa;line-height:1.7;font-size:15px;}
@@ -44,7 +44,7 @@ img,table,iframe{max-width:100%;}
 @media(max-width:600px){.card-body{padding:.9rem .85rem;}}
 
 /* ── SECTION LABELS ── */
-.section-label{font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,192,64,.7);background:rgba(26,58,107,.5);padding:.25rem .75rem;margin:1rem -1.25rem .75rem;border-top:1px solid rgba(255,255,255,.07);}
+.section-label{font-family:'Bebas Neue',sans-serif;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,192,64,.95);background:rgba(26,58,107,.6);padding:.3rem .75rem;margin:1rem -1.25rem .75rem;border-top:1px solid rgba(255,255,255,.1);}
 @media(max-width:600px){.section-label{margin-left:-.85rem;margin-right:-.85rem;}}
 
 /* ── FORM ── */
@@ -55,7 +55,7 @@ img,table,iframe{max-width:100%;}
 .field select,.field input[type=text],.field input[type=number]{border:1.5px solid var(--border);border-radius:8px;padding:.6rem .85rem;font-size:.9rem;color:#1a2a3a;background:#fff;font-family:'Inter',sans-serif;width:100%;transition:border-color .2s;}
 .field select:focus,.field input:focus{outline:none;border-color:var(--navy2);box-shadow:0 0 0 3px rgba(26,58,107,.1);}
 .field-full{grid-column:1/-1;}
-.field-hint{font-size:.72rem;color:var(--dim);margin-top:.2rem;}
+.field-hint{font-size:.74rem;color:#3a4a5a;margin-top:.2rem;}
 
 /* ── RADIO PILLS ── */
 .radio-row{display:flex;gap:.45rem;flex-wrap:wrap;}
@@ -72,19 +72,19 @@ img,table,iframe{max-width:100%;}
 .results-wrap{display:none;}
 .results-wrap.show{display:block;}
 .total-bar{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:12px;padding:1.1rem 1.4rem;color:#fff;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.6rem;}
-.total-bar .tl{font-size:.75rem;opacity:.7;text-transform:uppercase;letter-spacing:.08em;}
+.total-bar .tl{font-size:.78rem;opacity:1;color:rgba(255,255,255,.9);text-transform:uppercase;letter-spacing:.08em;}
 .total-bar .tv{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.04em;color:#f0c040;}
-.total-bar .tn{font-size:.73rem;opacity:.6;max-width:240px;}
+.total-bar .tn{font-size:.76rem;opacity:1;color:rgba(255,255,255,.8);max-width:260px;}
 .res-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.85rem;}
 @media(max-width:500px){.res-grid{grid-template-columns:1fr;}}
 .res-item{background:var(--light);border:1px solid var(--border);border-radius:10px;padding:.8rem .95rem;}
 .res-item.hi{background:linear-gradient(135deg,#f0fff4,#e0f8e8);border-color:#a0d8b0;}
 .res-item.warn{background:#fff8f0;border-color:#f0c8a0;}
-.res-item.zero{opacity:.55;}
-.res-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:.15rem;}
+.res-item.zero{opacity:.75;}
+.res-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#1a2a3a;margin-bottom:.15rem;}
 .res-val{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.04em;color:var(--navy);}
 .res-val.green{color:var(--green);}
-.res-sub{font-size:.72rem;color:var(--dim);margin-top:.1rem;line-height:1.4;}
+.res-sub{font-size:.75rem;color:#2a3a4a;margin-top:.1rem;line-height:1.5;}
 
 /* ── ALERTS ── */
 .alert{border-radius:10px;padding:.85rem 1.05rem;margin:.65rem 0;font-size:.86rem;line-height:1.65;}
@@ -1330,24 +1330,166 @@ body.menu-open{overflow:hidden!important;}
     <div class="section-label">BAH Shift & Installation Lookup</div>
     <div class="form-grid">
       <div class="field field-full">
-        <label>Current Installation / Duty Station <span style="font-weight:400;font-size:.7rem;color:var(--green);letter-spacing:0;text-transform:none;">✓ Smart Lookup</span></label>
-        <input type="text" id="instFrom" placeholder='e.g. "Fort Liberty", "Camp Lejeune", "28307"' autocomplete="off">
-        <div class="field-hint">Type base name or ZIP — we'll estimate the BAH rate region</div>
+        <label>Current Installation / Duty Station</label>
+        <select id="instFrom" onchange="onInstChange()">
+          <option value="">— Select your current station —</option>
+          <optgroup label="ARMY — CONUS">
+            <option value="fort liberty" data-zip="28307" data-miles-key="liberty">Fort Bragg, NC</option>
+            <option value="fort cavazos" data-zip="76544" data-miles-key="cavazos">Fort Cavazos (Hood), TX</option>
+            <option value="fort campbell" data-zip="42223" data-miles-key="campbell">Fort Campbell, KY</option>
+            <option value="fort stewart" data-zip="31314" data-miles-key="stewart">Fort Stewart, GA</option>
+            <option value="fort moore" data-zip="31905" data-miles-key="moore">Fort Moore (Benning), GA</option>
+            <option value="fort bliss" data-zip="79916" data-miles-key="bliss">Fort Bliss, TX</option>
+            <option value="fort drum" data-zip="13602" data-miles-key="drum">Fort Drum, NY</option>
+            <option value="fort riley" data-zip="66442" data-miles-key="riley">Fort Riley, KS</option>
+            <option value="fort sill" data-zip="73503" data-miles-key="sill">Fort Sill, OK</option>
+            <option value="fort knox" data-zip="40121" data-miles-key="knox">Fort Knox, KY</option>
+            <option value="fort leonard wood" data-zip="65473" data-miles-key="leonardwood">Fort Leonard Wood, MO</option>
+            <option value="fort johnson" data-zip="71459" data-miles-key="johnson">Fort Johnson (Polk), LA</option>
+            <option value="fort jackson" data-zip="29207" data-miles-key="jackson">Fort Jackson, SC</option>
+            <option value="fort sam houston" data-zip="78234" data-miles-key="samhouston">Fort Sam Houston, TX</option>
+            <option value="fort huachuca" data-zip="85613" data-miles-key="huachuca">Fort Huachuca, AZ</option>
+            <option value="fort eisenhower" data-zip="30905" data-miles-key="eisenhower">Fort Eisenhower (Gordon), GA</option>
+            <option value="fort novosel" data-zip="36362" data-miles-key="novosel">Fort Novosel (Rucker), AL</option>
+            <option value="fort irwin" data-zip="92310" data-miles-key="irwin">Fort Irwin / NTC, CA</option>
+            <option value="fort leavenworth" data-zip="66027" data-miles-key="leavenworth">Fort Leavenworth, KS</option>
+            <option value="fort meade" data-zip="20755" data-miles-key="meade">Fort Meade, MD</option>
+            <option value="fort belvoir" data-zip="22060" data-miles-key="belvoir">Fort Belvoir, VA</option>
+            <option value="fort gregg-adams" data-zip="23801" data-miles-key="greggadams">Fort Gregg-Adams (Lee), VA</option>
+            <option value="west point" data-zip="10996" data-miles-key="westpoint">West Point / USMA, NY</option>
+          </optgroup>
+          <optgroup label="ARMY — OCONUS">
+            <option value="fort wainwright" data-zip="99703" data-miles-key="wainwright">Fort Wainwright, AK</option>
+            <option value="fort richardson" data-zip="99505" data-miles-key="richardson">Fort Richardson, AK</option>
+            <option value="schofield barracks" data-zip="96857" data-miles-key="schofield">Schofield Barracks, HI</option>
+          </optgroup>
+          <optgroup label="NAVY — CONUS">
+            <option value="norfolk" data-zip="23511" data-miles-key="norfolk">Naval Station Norfolk, VA</option>
+            <option value="naval base san diego" data-zip="92136" data-miles-key="sandiego">Naval Base San Diego, CA</option>
+            <option value="naval base kitsap" data-zip="98315" data-miles-key="kitsap">Naval Base Kitsap, WA</option>
+            <option value="nas jacksonville" data-zip="32212" data-miles-key="nasjax">NAS Jacksonville, FL</option>
+            <option value="nas pensacola" data-zip="32508" data-miles-key="pensacola">NAS Pensacola, FL</option>
+            <option value="nas oceana" data-zip="23460" data-miles-key="oceana">NAS Oceana, VA</option>
+            <option value="nas whidbey island" data-zip="98278" data-miles-key="whidbey">NAS Whidbey Island, WA</option>
+            <option value="nas lemoore" data-zip="93246" data-miles-key="lemoore">NAS Lemoore, CA</option>
+            <option value="nsb new london" data-zip="06349" data-miles-key="newlondon">NSB New London / Groton, CT</option>
+            <option value="nas patuxent river" data-zip="20670" data-miles-key="paxriver">NAS Patuxent River, MD</option>
+            <option value="nas corpus christi" data-zip="78419" data-miles-key="corpuschristi">NAS Corpus Christi, TX</option>
+            <option value="naval station great lakes" data-zip="60088" data-miles-key="greatlakes">NS Great Lakes, IL</option>
+          </optgroup>
+          <optgroup label="NAVY — OCONUS">
+            <option value="pearl harbor" data-zip="96860" data-miles-key="pearlharbor">JB Pearl Harbor-Hickam, HI</option>
+          </optgroup>
+          <optgroup label="MARINE CORPS — CONUS">
+            <option value="camp lejeune" data-zip="28547" data-miles-key="lejeune">Camp Lejeune, NC</option>
+            <option value="camp pendleton" data-zip="92055" data-miles-key="pendleton">Camp Pendleton, CA</option>
+            <option value="mcas miramar" data-zip="92145" data-miles-key="miramar">MCAS Miramar, CA</option>
+            <option value="29 palms" data-zip="92278" data-miles-key="29palms">MCAGCC Twentynine Palms, CA</option>
+            <option value="mcas cherry point" data-zip="28533" data-miles-key="cherrypoint">MCAS Cherry Point, NC</option>
+            <option value="mcb quantico" data-zip="22134" data-miles-key="quantico">MCB Quantico, VA</option>
+            <option value="mcas yuma" data-zip="85369" data-miles-key="yuma">MCAS Yuma, AZ</option>
+            <option value="mcas new river" data-zip="28545" data-miles-key="newriver">MCAS New River, NC</option>
+          </optgroup>
+          <optgroup label="MARINE CORPS — OCONUS">
+            <option value="camp foster" data-zip="96373" data-miles-key="okinawa">Camp Foster / Okinawa, Japan</option>
+            <option value="mcb hawaii" data-zip="96863" data-miles-key="mcbhawaii">MCB Hawaii (K-Bay), HI</option>
+          </optgroup>
+          <optgroup label="AIR FORCE — CONUS">
+            <option value="jblm" data-zip="98431" data-miles-key="jblm">JB Lewis-McChord, WA</option>
+            <option value="joint base andrews" data-zip="20762" data-miles-key="andrews">JB Andrews, MD</option>
+            <option value="jbsa" data-zip="78234" data-miles-key="jbsa">JB San Antonio, TX</option>
+            <option value="langley" data-zip="23665" data-miles-key="langley">JB Langley-Eustis, VA</option>
+            <option value="eglin" data-zip="32542" data-miles-key="eglin">Eglin AFB, FL</option>
+            <option value="macdill" data-zip="33621" data-miles-key="macdill">MacDill AFB, FL</option>
+            <option value="travis" data-zip="94535" data-miles-key="travis">Travis AFB, CA</option>
+            <option value="tinker" data-zip="73145" data-miles-key="tinker">Tinker AFB, OK</option>
+            <option value="scott" data-zip="62225" data-miles-key="scott">Scott AFB, IL</option>
+            <option value="wright-patterson" data-zip="45433" data-miles-key="wpafb">Wright-Patterson AFB, OH</option>
+            <option value="barksdale" data-zip="71110" data-miles-key="barksdale">Barksdale AFB, LA</option>
+            <option value="dyess" data-zip="79607" data-miles-key="dyess">Dyess AFB, TX</option>
+            <option value="luke" data-zip="85309" data-miles-key="luke">Luke AFB, AZ</option>
+            <option value="davis-monthan" data-zip="85707" data-miles-key="dm">Davis-Monthan AFB, AZ</option>
+            <option value="robins" data-zip="31098" data-miles-key="robins">Robins AFB, GA</option>
+            <option value="shaw" data-zip="29152" data-miles-key="shaw">Shaw AFB, SC</option>
+            <option value="seymour johnson" data-zip="27531" data-miles-key="seymourjohnson">Seymour Johnson AFB, NC</option>
+            <option value="minot" data-zip="58704" data-miles-key="minot">Minot AFB, ND</option>
+            <option value="ellsworth" data-zip="57706" data-miles-key="ellsworth">Ellsworth AFB, SD</option>
+            <option value="cannon" data-zip="88103" data-miles-key="cannon">Cannon AFB, NM</option>
+            <option value="holloman" data-zip="88330" data-miles-key="holloman">Holloman AFB, NM</option>
+            <option value="mountain home" data-zip="83648" data-miles-key="mountainhome">Mountain Home AFB, ID</option>
+            <option value="beale" data-zip="95903" data-miles-key="beale">Beale AFB, CA</option>
+            <option value="edwards" data-zip="93524" data-miles-key="edwards">Edwards AFB, CA</option>
+            <option value="vandenberg" data-zip="93437" data-miles-key="vandenberg">Vandenberg SFB, CA</option>
+            <option value="moody" data-zip="31699" data-miles-key="moody">Moody AFB, GA</option>
+            <option value="maxwell" data-zip="36112" data-miles-key="maxwell">Maxwell AFB, AL</option>
+            <option value="keesler" data-zip="39534" data-miles-key="keesler">Keesler AFB, MS</option>
+            <option value="patrick" data-zip="32925" data-miles-key="patrick">Patrick SFB, FL</option>
+            <option value="tyndall" data-zip="32403" data-miles-key="tyndall">Tyndall AFB, FL</option>
+            <option value="peterson" data-zip="80914" data-miles-key="peterson">Peterson SFB, CO</option>
+            <option value="buckley" data-zip="80011" data-miles-key="buckley">Buckley SFB, CO</option>
+            <option value="malmstrom" data-zip="59402" data-miles-key="malmstrom">Malmstrom AFB, MT</option>
+            <option value="grand forks" data-zip="58205" data-miles-key="grandforks">Grand Forks AFB, ND</option>
+            <option value="warren" data-zip="82005" data-miles-key="warren">F.E. Warren AFB, WY</option>
+            <option value="whiteman" data-zip="65305" data-miles-key="whiteman">Whiteman AFB, MO</option>
+            <option value="bolling" data-zip="20032" data-miles-key="bolling">JB Anacostia-Bolling, DC</option>
+            <option value="hanscom" data-zip="01731" data-miles-key="hanscom">Hanscom AFB, MA</option>
+          </optgroup>
+          <optgroup label="AIR FORCE — OCONUS">
+            <option value="ramstein" data-zip="66877" data-miles-key="ramstein">Ramstein AB, Germany</option>
+            <option value="spangdahlem" data-zip="54529" data-miles-key="spangdahlem">Spangdahlem AB, Germany</option>
+            <option value="aviano" data-zip="33081" data-miles-key="aviano">Aviano AB, Italy</option>
+            <option value="yokota" data-zip="96328" data-miles-key="yokota">Yokota AB, Japan</option>
+            <option value="kadena" data-zip="96368" data-miles-key="kadena">Kadena AB, Okinawa</option>
+            <option value="misawa" data-zip="96319" data-miles-key="misawa">Misawa AB, Japan</option>
+            <option value="osan" data-zip="96278" data-miles-key="osan">Osan AB, Korea</option>
+            <option value="kunsan" data-zip="96264" data-miles-key="kunsan">Kunsan AB, Korea</option>
+            <option value="incirlik" data-zip="09824" data-miles-key="incirlik">Incirlik AB, Turkey</option>
+          </optgroup>
+          <optgroup label="COAST GUARD — CONUS">
+            <option value="cg sector san diego" data-zip="92101" data-miles-key="cgsandiego">CG Sector San Diego, CA</option>
+            <option value="cg air station clearwater" data-zip="33762" data-miles-key="cgclearwater">CG Air Station Clearwater, FL</option>
+            <option value="cape may" data-zip="08204" data-miles-key="cgcapemay">Training Center Cape May, NJ</option>
+            <option value="training center petaluma" data-zip="94952" data-miles-key="cgpetaluma">Training Center Petaluma, CA</option>
+            <option value="cg base elizabeth city" data-zip="27909" data-miles-key="cgelizabeth">CG Base Elizabeth City, NC</option>
+            <option value="cg station boston" data-zip="02109" data-miles-key="cgboston">CG Sector Boston, MA</option>
+            <option value="cg base kodiak" data-zip="99619" data-miles-key="cgkodiak">CG Base Kodiak, AK</option>
+            <option value="cg yard baltimore" data-zip="21226" data-miles-key="cgbaltimore">CG Yard Baltimore, MD</option>
+            <option value="cg air station corpus christi" data-zip="78419" data-miles-key="cgcorpus">CG Air Station Corpus Christi, TX</option>
+            <option value="cg sector houston" data-zip="77029" data-miles-key="cghouston">CG Sector Houston-Galveston, TX</option>
+          </optgroup>
+          <optgroup label="SPACE FORCE">
+            <option value="los angeles sfb" data-zip="90245" data-miles-key="lasfb">Los Angeles SFB, CA</option>
+            <option value="cape canaveral sfs" data-zip="32925" data-miles-key="canaveral">Cape Canaveral SFS, FL</option>
+            <option value="peterson" data-zip="80914" data-miles-key="peterson">Peterson SFB, CO</option>
+            <option value="buckley" data-zip="80011" data-miles-key="buckley">Buckley SFB, CO</option>
+            <option value="schriever" data-zip="80912" data-miles-key="schriever">Schriever SFB, CO</option>
+            <option value="vandenberg" data-zip="93437" data-miles-key="vandenberg">Vandenberg SFB, CA</option>
+          </optgroup>
+          <optgroup label="OTHER / JOINT">
+            <option value="pentagon" data-zip="20301" data-miles-key="pentagon">The Pentagon, VA</option>
+            <option value="nsa" data-zip="20755" data-miles-key="meade">NSA / Fort Meade, MD</option>
+            <option value="dia" data-zip="20340" data-miles-key="bolling">DIA / JB Anacostia-Bolling, DC</option>
+          </optgroup>
+        </select>
+        <div class="field-hint">BAH rate auto-estimates when you select a station</div>
       </div>
       <div class="field field-full">
-        <label>Gaining Installation / New Duty Station <span style="font-weight:400;font-size:.7rem;color:var(--green);letter-spacing:0;text-transform:none;">✓ Smart Lookup</span></label>
-        <input type="text" id="instTo" placeholder='e.g. "Fort Cavazos", "Joint Base Lewis-McChord", "98431"' autocomplete="off">
-        <div class="field-hint">BAH at new station may be higher or lower — impact shown in results</div>
+        <label>Gaining Installation / New Duty Station</label>
+        <select id="instTo" onchange="onInstChange()">
+          <option value="">— Select your new station —</option>
+          <!-- Same options as above - populated by JS -->
+        </select>
+        <div class="field-hint">Distance and BAH difference auto-calculated when both stations selected</div>
       </div>
       <div class="field">
-        <label>Current BAH Rate ($/month) <span style="font-weight:400;font-size:.7rem;letter-spacing:0;text-transform:none;">— optional, overrides estimate</span></label>
-        <input type="number" id="bahFrom" placeholder="e.g. 2100" min="0">
-        <div class="field-hint">Enter exact rate from <a href="https://www.defensetravel.dod.mil/site/bahCalc.cfm" target="_blank" rel="noopener" style="color:var(--navy2);">DTMO BAH Calculator ↗</a></div>
+        <label>Current BAH Rate ($/month) <span style="font-weight:400;font-size:.7rem;letter-spacing:0;text-transform:none;">— auto or override</span></label>
+        <input type="number" id="bahFrom" placeholder="auto-estimated" min="0">
+        <div class="field-hint">Auto-fills from station. Override with exact rate from <a href="https://www.defensetravel.dod.mil/site/bahCalc.cfm" target="_blank" rel="noopener" style="color:var(--navy2);">DTMO ↗</a></div>
       </div>
       <div class="field">
-        <label>New Station BAH Rate ($/month) <span style="font-weight:400;font-size:.7rem;letter-spacing:0;text-transform:none;">— optional, overrides estimate</span></label>
-        <input type="number" id="bahTo" placeholder="e.g. 2400" min="0">
-        <div class="field-hint">Your gaining station's BAH rate for your grade & dep status</div>
+        <label>New Station BAH Rate ($/month) <span style="font-weight:400;font-size:.7rem;letter-spacing:0;text-transform:none;">— auto or override</span></label>
+        <input type="number" id="bahTo" placeholder="auto-estimated" min="0">
+        <div class="field-hint">Auto-fills from station. Override with your exact gaining rate</div>
       </div>
     </div>
 
@@ -1607,39 +1749,39 @@ body.menu-open{overflow:hidden!important;}
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.5rem;margin-bottom:2rem;">
       <div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">AI Tools</div>
-        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Career Builder App</a>
-        <a href="https://veterancareerpath.com/veteran-career-test.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Free Career Assessment</a>
-        <a href="https://veterancareerpath.com/mos-career-translator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">MOS Translator</a>
-        <a href="https://veterancareerpath.com/military-civilian-resume.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Resume Guide</a>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Career Builder App</a>
+        <a href="https://veterancareerpath.com/veteran-career-test.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Free Career Assessment</a>
+        <a href="https://veterancareerpath.com/mos-career-translator.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">MOS Translator</a>
+        <a href="https://veterancareerpath.com/military-civilian-resume.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Resume Guide</a>
       </div>
       <div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">Resources</div>
-        <a href="https://veterancareerpath.com/military-transition-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Transition Guide</a>
-        <a href="https://veterancareerpath.com/va-disability-rating-schedule.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">VA Disability Schedule</a>
-        <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">PCS / ETS Calculator</a>
-        <a href="https://veterancareerpath.com/gi-bill-school-comparison.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">GI Bill Guide</a>
-        <a href="https://veterancareerpath.com/security-clearance-salary.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Clearance Salary</a>
-        <a href="https://veterancareerpath.com/veteran-hiring-companies.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Top 50 Employers</a>
-        <a href="https://veterancareerpath.com/skillbridge-program-guide (1).html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">SkillBridge Guide</a>
-        <a href="https://veterancareerpath.com/veteran-action-verbs.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Action Verbs</a>
+        <a href="https://veterancareerpath.com/military-transition-guide.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Transition Guide</a>
+        <a href="https://veterancareerpath.com/va-disability-rating-schedule.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">VA Disability Schedule</a>
+        <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">PCS / ETS Calculator</a>
+        <a href="https://veterancareerpath.com/gi-bill-school-comparison.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">GI Bill Guide</a>
+        <a href="https://veterancareerpath.com/security-clearance-salary.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Clearance Salary</a>
+        <a href="https://veterancareerpath.com/veteran-hiring-companies.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Top 50 Employers</a>
+        <a href="https://veterancareerpath.com/skillbridge-program-guide (1).html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">SkillBridge Guide</a>
+        <a href="https://veterancareerpath.com/veteran-action-verbs.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Action Verbs</a>
       </div>
       <div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">MOS Guides</div>
-        <a href="https://veterancareerpath.com/army-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Army MOS Careers</a>
-        <a href="https://veterancareerpath.com/navy-rate-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Navy Rate Careers</a>
-        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Marine Corps MOS</a>
-        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Air Force AFSC</a>
-        <a href="https://veterancareerpath.com/coast-guard-rating-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Coast Guard Ratings</a>
-        <a href="https://veterancareerpath.com/space-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Space Force AFSC</a>
+        <a href="https://veterancareerpath.com/army-mos-careers.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Army MOS Careers</a>
+        <a href="https://veterancareerpath.com/navy-rate-careers.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Navy Rate Careers</a>
+        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Marine Corps MOS</a>
+        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Air Force AFSC</a>
+        <a href="https://veterancareerpath.com/coast-guard-rating-careers.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Coast Guard Ratings</a>
+        <a href="https://veterancareerpath.com/space-force-afsc-careers.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Space Force AFSC</a>
       </div>
       <div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">Company</div>
-        <a href="https://veterancareerpath.com" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Home</a>
-        <a href="https://veterancareerpath.com/about.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">About</a>
-        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Launch App</a>
-        <a href="https://veterancareerpath.com/contact.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Contact</a>
-        <a href="https://veterancareerpath.com/privacy-policy.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Privacy Policy</a>
-        <a href="https://veterancareerpath.com/terms.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Terms of Service</a>
+        <a href="https://veterancareerpath.com" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Home</a>
+        <a href="https://veterancareerpath.com/about.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">About</a>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Launch App</a>
+        <a href="https://veterancareerpath.com/contact.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Contact</a>
+        <a href="https://veterancareerpath.com/privacy-policy.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Privacy Policy</a>
+        <a href="https://veterancareerpath.com/terms.html" style="display:block;color:#a0c8f0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Terms of Service</a>
       </div>
     </div>
     <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:1.25rem;text-align:center;font-size:.73rem;color:rgba(255,255,255,.25);">
@@ -1926,8 +2068,119 @@ function estimateBAH(zip, hasDep) {
   const prefix = zip.substring(0,3);
   const base = BAH_REGIONS[prefix];
   if (!base) return null;
-  // Adjust for dependency status (no-dep is roughly 75% of with-dep)
   return hasDep ? base : Math.round(base * 0.75);
+}
+
+// ── Clone "From" dropdown options into "To" dropdown ──
+(function(){
+  const from = document.getElementById('instFrom');
+  const to = document.getElementById('instTo');
+  if(from && to) {
+    const firstOpt = to.querySelector('option');
+    to.innerHTML = '';
+    to.appendChild(firstOpt);
+    Array.from(from.querySelectorAll('optgroup')).forEach(function(og){
+      to.appendChild(og.cloneNode(true));
+    });
+  }
+})();
+
+// ── Approximate driving distances (miles) between major installation pairs ──
+// Key format: "from|to" using data-miles-key values, sorted alphabetically
+// Only CONUS pairs included; OCONUS bases don't have driving distances
+const INST_DIST = {
+  liberty_cavazos:1330, liberty_campbell:590, liberty_stewart:440, liberty_moore:450,
+  liberty_bliss:1770, liberty_drum:830, liberty_lejeune:170, liberty_norfolk:260,
+  liberty_jbsa:1280, liberty_meade:400, liberty_belvoir:340, liberty_quantico:310,
+  liberty_jackson:270, liberty_eglin:670, liberty_scott:810, liberty_langley:290,
+  cavazos_bliss:560, cavazos_sill:280, cavazos_jbsa:180, cavazos_campbell:860,
+  cavazos_johnson:390, cavazos_dyess:190, cavazos_barksdale:370,
+  campbell_stewart:470, campbell_moore:290, campbell_knox:170, campbell_scott:290,
+  campbell_leonardwood:350, campbell_meade:640, campbell_drum:910,
+  stewart_moore:260, stewart_lejeune:470, stewart_jackson:260, stewart_macdill:330,
+  stewart_nasjax:240, stewart_eisenhower:180, stewart_robins:180,
+  moore_jackson:210, moore_eisenhower:110, moore_novosel:100, moore_stewart:260,
+  bliss_sill:480, bliss_holloman:90, bliss_cannon:270, bliss_luke:390,
+  bliss_dm:280, bliss_huachuca:250, bliss_cavazos:560,
+  drum_meade:390, drum_belvoir:430, drum_westpoint:350, drum_newlondon:280,
+  drum_hanscom:320, drum_norfolk:620,
+  riley_sill:290, riley_leavenworth:130, riley_leonardwood:300, riley_scott:360,
+  riley_tinker:350, riley_whiteman:200, riley_cavazos:660,
+  jblm_travis:730, jblm_beale:680, jblm_vandenberg:1100, jblm_mountainhome:480,
+  jblm_kitsap:75, jblm_whidbey:90,
+  norfolk_meade:260, norfolk_belvoir:210, norfolk_langley:30, norfolk_oceana:20,
+  norfolk_quantico:190, norfolk_lejeune:260, norfolk_paxriver:160,
+  norfolk_andrews:220, norfolk_liberty:260,
+  sandiego_pendleton:40, sandiego_miramar:15, sandiego_29palms:180,
+  sandiego_irwin:250, sandiego_luke:360, sandiego_travis:510,
+  sandiego_edwards:200, sandiego_vandenberg:250, sandiego_lemoore:360,
+  pendleton_miramar:50, pendleton_29palms:150, pendleton_irwin:220,
+  pendleton_travis:480, pendleton_edwards:175,
+  jbsa_cavazos:180, jbsa_barksdale:450, jbsa_dyess:280, jbsa_corpuschristi:150,
+  jbsa_bliss:550, jbsa_johnson:410, jbsa_sill:440, jbsa_keesler:560,
+  eglin_macdill:370, eglin_tyndall:80, eglin_moody:180, eglin_maxwell:250,
+  eglin_keesler:150, eglin_nasjax:340, eglin_pensacola:60,
+  macdill_nasjax:200, macdill_patrick:130, macdill_moody:280,
+  scott_wpafb:290, scott_leonardwood:160, scott_whiteman:230, scott_greatlakes:290,
+  scott_tinker:470, scott_campbell:290, scott_meade:690,
+  meade_belvoir:40, meade_andrews:15, meade_bolling:35, meade_quantico:85,
+  meade_langley:200, meade_norfolk:260, meade_greggadams:130,
+  peterson_buckley:70, peterson_schriever:15, peterson_warren:180,
+  peterson_cannon:400, peterson_kirtland:450,
+  minot_grandforks:150, minot_ellsworth:440, minot_malmstrom:640,
+  ellsworth_warren:220, ellsworth_malmstrom:590,
+  travis_beale:60, travis_vandenberg:280, travis_edwards:340,
+  travis_lemoore:190, travis_irwin:380,
+  pearlharbor_schofield:15, pearlharbor_mcbhawaii:15,
+  lejeune_cherrypoint:50, lejeune_newriver:10, lejeune_liberty:170,
+  lejeune_jackson:270, lejeune_seymourjohnson:100,
+  luke_dm:120, luke_huachuca:200, luke_yuma:180, luke_irwin:280,
+  patrick_canaveral:5, patrick_macdill:130, patrick_nasjax:180,
+};
+
+function getDistance(keyA, keyB) {
+  if(!keyA || !keyB || keyA === keyB) return 0;
+  var k1 = keyA + '_' + keyB;
+  var k2 = keyB + '_' + keyA;
+  return INST_DIST[k1] || INST_DIST[k2] || 0;
+}
+
+function onInstChange() {
+  var fromSel = document.getElementById('instFrom');
+  var toSel = document.getElementById('instTo');
+  var fromOpt = fromSel.selectedOptions[0];
+  var toOpt = toSel.selectedOptions[0];
+  var hasDep = document.querySelector('input[name="dep"]:checked');
+  var isDep = hasDep && hasDep.value === 'yes';
+
+  // Auto-populate BAH from origin
+  if(fromOpt && fromOpt.dataset.zip) {
+    var bahEst = estimateBAH(fromOpt.dataset.zip, isDep);
+    var bahInput = document.getElementById('bahFrom');
+    if(bahEst && !bahInput.value) bahInput.value = bahEst;
+    // Also set origin ZIP
+    var originZip = document.getElementById('originZip');
+    if(originZip && !originZip.value) originZip.value = fromOpt.dataset.zip;
+  }
+
+  // Auto-populate BAH for destination
+  if(toOpt && toOpt.dataset.zip) {
+    var bahEst2 = estimateBAH(toOpt.dataset.zip, isDep);
+    var bahInput2 = document.getElementById('bahTo');
+    if(bahEst2 && !bahInput2.value) bahInput2.value = bahEst2;
+    // Also set dest ZIP
+    var destZip = document.getElementById('destZip');
+    if(destZip && !destZip.value) destZip.value = toOpt.dataset.zip;
+  }
+
+  // Auto-populate distance
+  if(fromOpt && toOpt && fromOpt.dataset.milesKey && toOpt.dataset.milesKey) {
+    var dist = getDistance(fromOpt.dataset.milesKey, toOpt.dataset.milesKey);
+    var milesInput = document.getElementById('miles');
+    if(dist > 0 && !milesInput.value) {
+      milesInput.value = dist;
+    }
+  }
 }
 
 

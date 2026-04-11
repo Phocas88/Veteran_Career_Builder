@@ -1176,16 +1176,76 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
       </select>
       <div class="hint">BAH amounts shown for E-5. Your actual BAH is calculated from your grade and family size below.</div>
     </div>
-    <div class="field"><label>Number of Dependents</label>
-      <select id="m-deps">
-        <option value="0">0 — No dependents (single)</option>
-        <option value="1">1 — Spouse only</option>
-        <option value="2" selected>2 — Spouse + 1 child</option>
-        <option value="3">3 — Spouse + 2 children</option>
-        <option value="4">4 — Spouse + 3 children</option>
-        <option value="5">5 — Spouse + 4+ children</option>
+    <div class="field"><label>Marital Status</label>
+      <select id="m-married">
+        <option value="0">Single</option>
+        <option value="1" selected>Married</option>
       </select>
-      <div class="hint">Used for BAH rate, VA disability pay, food costs, and childcare estimates.</div>
+    </div>
+  </div>
+  <div class="sec-label">Dependents (for BAH, VA Comp & Food)</div>
+  <div class="field-row">
+    <div class="field"><label>Children Under 18</label>
+      <select id="m-children-u18">
+        <option value="0">0</option><option value="1" selected>1</option>
+        <option value="2">2</option><option value="3">3</option>
+        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+      </select>
+    </div>
+    <div class="field"><label>Children 18+ In School</label>
+      <select id="m-children-o18">
+        <option value="0" selected>0</option><option value="1">1</option>
+        <option value="2">2</option><option value="3">3</option><option value="4">4</option>
+      </select>
+      <div class="hint">Children 18–23 attending school full-time</div>
+    </div>
+  </div>
+  <div class="field-row">
+    <div class="field"><label>Dependent Parents</label>
+      <select id="m-dep-parents">
+        <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option>
+      </select>
+      <div class="hint">Parents who depend on you for financial support</div>
+    </div>
+    <div class="field"><label>State of Legal Residence</label>
+      <select id="m-state">
+        <optgroup label="No State Income Tax">
+          <option value="AK">Alaska</option><option value="FL">Florida</option>
+          <option value="NV">Nevada</option><option value="NH">New Hampshire</option>
+          <option value="SD">South Dakota</option><option value="TN">Tennessee</option>
+          <option value="TX" selected>Texas</option><option value="WA">Washington</option>
+          <option value="WY">Wyoming</option>
+        </optgroup>
+        <optgroup label="Low Tax (under 4%)">
+          <option value="AZ">Arizona (2.5%)</option><option value="ND">North Dakota (1.95%)</option>
+          <option value="PA">Pennsylvania (3.07%)</option><option value="IN">Indiana (3.15%)</option>
+          <option value="LA">Louisiana (3%)</option><option value="OH">Ohio (3.5%)</option>
+          <option value="AR">Arkansas (3.9%)</option><option value="NM">New Mexico (3.9%)</option>
+        </optgroup>
+        <optgroup label="Moderate Tax (4–5.5%)">
+          <option value="AL">Alabama (4%)</option><option value="KY">Kentucky (4%)</option>
+          <option value="MI">Michigan (4.25%)</option><option value="OK">Oklahoma (4.25%)</option>
+          <option value="CO">Colorado (4.4%)</option><option value="IA">Iowa (4.4%)</option>
+          <option value="NC">North Carolina (4.5%)</option><option value="KS">Kansas (4.6%)</option>
+          <option value="UT">Utah (4.65%)</option><option value="WV">West Virginia (4.65%)</option>
+          <option value="MD">Maryland (4.75%)</option><option value="RI">Rhode Island (4.75%)</option>
+          <option value="VA">Virginia (4.75%)</option><option value="MS">Mississippi (4.7%)</option>
+          <option value="MO">Missouri (4.8%)</option><option value="DE">Delaware (4.8%)</option>
+          <option value="IL">Illinois (4.95%)</option><option value="SC">South Carolina (5%)</option>
+          <option value="MA">Massachusetts (5%)</option><option value="CT">Connecticut (5%)</option>
+          <option value="NE">Nebraska (5%)</option><option value="NJ">New Jersey (5.25%)</option>
+          <option value="WI">Wisconsin (5.3%)</option>
+        </optgroup>
+        <optgroup label="High Tax (5.5%+)">
+          <option value="GA">Georgia (5.49%)</option><option value="ME">Maine (5.5%)</option>
+          <option value="VT">Vermont (5.5%)</option><option value="ID">Idaho (5.8%)</option>
+          <option value="MN">Minnesota (5.85%)</option><option value="MT">Montana (5.9%)</option>
+          <option value="CA">California (6%)</option><option value="NY">New York (6%)</option>
+          <option value="DC">Washington DC (6%)</option><option value="HI">Hawaii (6.6%)</option>
+          <option value="OR">Oregon (7.5%)</option>
+        </optgroup>
+      </select>
+      <div class="hint">SCRA lets you keep your home state while serving. Many choose no-tax states.</div>
     </div>
   </div>
   <div class="sec-label">Additional Military Pay</div>
@@ -1217,7 +1277,7 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
       <option value="90">90% — $2,297+/mo</option>
       <option value="100">100% P&T — $3,737+/mo</option>
     </select>
-    <div class="hint">⚠️ VA disability compensation is <strong>NOT collected while on active duty</strong>. It counts only on your civilian side — paid after separation. Rate based on your dependent count above.</div>
+    <div class="hint">⚠️ VA disability compensation is <strong>NOT collected while on active duty</strong>. It counts only on your civilian side — paid after separation. Amounts at 30%+ are calculated from your marital status, children, and dependent parents above.</div>
   <div class="sec-label">Household Income While Serving</div>
   <div class="field-row">
     <div class="field"><label>Spouse / Partner Annual Income ($)</label>
@@ -1242,6 +1302,48 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
     <div class="field"><label>Spouse / Partner Annual Income ($)</label>
       <input type="number" id="c-spouse-income" value="0" min="0">
       <div class="hint">Include spouse employment income, business income, etc.</div>
+    </div>
+  </div>
+  <div class="field-row">
+    <div class="field"><label>State Moving To</label>
+      <select id="c-state">
+        <optgroup label="No State Income Tax">
+          <option value="AK">Alaska</option><option value="FL">Florida</option>
+          <option value="NV">Nevada</option><option value="NH">New Hampshire</option>
+          <option value="SD">South Dakota</option><option value="TN">Tennessee</option>
+          <option value="TX" selected>Texas</option><option value="WA">Washington</option>
+          <option value="WY">Wyoming</option>
+        </optgroup>
+        <optgroup label="Low Tax (under 4%)">
+          <option value="AZ">Arizona (2.5%)</option><option value="ND">North Dakota (1.95%)</option>
+          <option value="PA">Pennsylvania (3.07%)</option><option value="IN">Indiana (3.15%)</option>
+          <option value="LA">Louisiana (3%)</option><option value="OH">Ohio (3.5%)</option>
+          <option value="AR">Arkansas (3.9%)</option><option value="NM">New Mexico (3.9%)</option>
+        </optgroup>
+        <optgroup label="Moderate Tax (4–5.5%)">
+          <option value="AL">Alabama (4%)</option><option value="KY">Kentucky (4%)</option>
+          <option value="MI">Michigan (4.25%)</option><option value="OK">Oklahoma (4.25%)</option>
+          <option value="CO">Colorado (4.4%)</option><option value="IA">Iowa (4.4%)</option>
+          <option value="NC">North Carolina (4.5%)</option><option value="KS">Kansas (4.6%)</option>
+          <option value="UT">Utah (4.65%)</option><option value="WV">West Virginia (4.65%)</option>
+          <option value="MD">Maryland (4.75%)</option><option value="RI">Rhode Island (4.75%)</option>
+          <option value="VA">Virginia (4.75%)</option><option value="MS">Mississippi (4.7%)</option>
+          <option value="MO">Missouri (4.8%)</option><option value="DE">Delaware (4.8%)</option>
+          <option value="IL">Illinois (4.95%)</option><option value="SC">South Carolina (5%)</option>
+          <option value="MA">Massachusetts (5%)</option><option value="CT">Connecticut (5%)</option>
+          <option value="NE">Nebraska (5%)</option><option value="NJ">New Jersey (5.25%)</option>
+          <option value="WI">Wisconsin (5.3%)</option>
+        </optgroup>
+        <optgroup label="High Tax (5.5%+)">
+          <option value="GA">Georgia (5.49%)</option><option value="ME">Maine (5.5%)</option>
+          <option value="VT">Vermont (5.5%)</option><option value="ID">Idaho (5.8%)</option>
+          <option value="MN">Minnesota (5.85%)</option><option value="MT">Montana (5.9%)</option>
+          <option value="CA">California (6%)</option><option value="NY">New York (6%)</option>
+          <option value="DC">Washington DC (6%)</option><option value="HI">Hawaii (6.6%)</option>
+          <option value="OR">Oregon (7.5%)</option>
+        </optgroup>
+      </select>
+      <div class="hint">Your state after separation. Impacts your civilian tax estimate significantly.</div>
     </div>
   </div>
   <div class="field-row">
@@ -1474,19 +1576,44 @@ function getBAH(tier, depCount, grade) {
   return Math.round(base * mult);
 }
 var BAS_MONTHLY = 452.56;
-// 2026 VA Disability Monthly Rates by family size
-var VA_RATES = {
-  0:{1:0,2:0,3:0,4:0,5:0},
-  10:{1:175,2:175,3:175,4:175,5:175},
-  20:{1:346,2:346,3:346,4:346,5:346},
-  30:{1:536,2:599,3:633,4:666,5:700},
-  40:{1:772,2:858,3:905,4:952,5:998},
-  50:{1:1099,2:1211,3:1273,4:1335,5:1397},
-  60:{1:1395,2:1531,3:1604,4:1677,5:1750},
-  70:{1:1759,2:1921,3:2004,4:2088,5:2172},
-  80:{1:2044,2:2230,3:2326,4:2422,5:2517},
-  90:{1:2297,2:2509,3:2617,4:2726,5:2835},
-  100:{1:3831,2:4046,3:4199,4:4353,5:4506}
+// 2026 VA Disability — component-based rates (base + add-ons)
+// 10–20%: flat rate, no dependent additions
+// 30–100%: base + spouse + per child under 18 + per child 18+ in school + dependent parents
+// parent2 = total add for 2 parents (NOT per parent)
+var VA_COMP = {
+  0:  {base:0,    spouse:0,   childU18:0,  childO18:0,   parent1:0,   parent2:0},
+  10: {base:175,  spouse:0,   childU18:0,  childO18:0,   parent1:0,   parent2:0},
+  20: {base:346,  spouse:0,   childU18:0,  childO18:0,   parent1:0,   parent2:0},
+  30: {base:536,  spouse:65,  childU18:31, childO18:101,  parent1:49,  parent2:92},
+  40: {base:772,  spouse:88,  childU18:41, childO18:134,  parent1:66,  parent2:122},
+  50: {base:1099, spouse:115, childU18:51, childO18:167,  parent1:82,  parent2:153},
+  60: {base:1395, spouse:139, childU18:63, childO18:200,  parent1:99,  parent2:183},
+  70: {base:1759, spouse:165, childU18:73, childO18:234,  parent1:115, parent2:214},
+  80: {base:2044, spouse:190, childU18:83, childO18:267,  parent1:131, parent2:244},
+  90: {base:2297, spouse:216, childU18:94, childO18:301,  parent1:148, parent2:274},
+  100:{base:3831, spouse:214, childU18:104,childO18:338,  parent1:168, parent2:311}
+};
+function getVAComp(rating, married, childU18, childO18, depParents) {
+  var r = VA_COMP[rating];
+  if (!r) return 0;
+  var total = r.base;
+  if (married) total += r.spouse;
+  total += childU18 * r.childU18;
+  total += childO18 * r.childO18;
+  if (depParents >= 2) total += r.parent2;
+  else if (depParents === 1) total += r.parent1;
+  return Math.round(total);
+}
+// State income tax effective rates (approximate for ~$65k income)
+var STATE_TAX_RATES = {
+  'AL':0.04,'AK':0,'AZ':0.025,'AR':0.039,'CA':0.06,'CO':0.044,'CT':0.05,
+  'DE':0.048,'FL':0,'GA':0.055,'HI':0.066,'ID':0.058,'IL':0.0495,
+  'IN':0.0315,'IA':0.044,'KS':0.046,'KY':0.04,'LA':0.03,'ME':0.055,
+  'MD':0.0475,'MA':0.05,'MI':0.0425,'MN':0.0585,'MS':0.047,'MO':0.048,
+  'MT':0.059,'NE':0.05,'NV':0,'NH':0,'NJ':0.0525,'NM':0.039,
+  'NY':0.06,'NC':0.045,'ND':0.0195,'OH':0.035,'OK':0.0425,'OR':0.075,
+  'PA':0.0307,'RI':0.0475,'SC':0.05,'SD':0,'TN':0,'TX':0,'UT':0.0465,
+  'VT':0.055,'VA':0.0475,'WA':0,'WV':0.0465,'WI':0.053,'WY':0,'DC':0.06
 };
 // USDA food cost estimates monthly by family size and spending style
 var FOOD = {
@@ -1538,17 +1665,24 @@ function runCalc(){
   // ── INPUTS ──────────────────────────────────────────────────────────────
   var grade=sv('m-grade'), yos=iv('m-yos'), bahTier=sv('m-bah'), retSys=sv('m-ret');
   var mBonus=iv('m-bonus');
-  // Single dependent count drives BAH, VA rates, food, childcare
-  var depsN = parseInt(sv('m-deps')) || 0;
+  // Granular dependent inputs
+  var married = parseInt(sv('m-married')) || 0;
+  var childrenU18 = parseInt(sv('m-children-u18')) || 0;
+  var childrenO18 = parseInt(sv('m-children-o18')) || 0;
+  var depParents = parseInt(sv('m-dep-parents')) || 0;
+  var depsN = married + childrenU18 + childrenO18 + depParents; // total dependents for BAH
   var dep = depsN > 0 ? 'yes' : 'no';
-  // VA family size: 1=alone, 2=w/spouse, 3+=w/spouse+children
-  var vaFamily = Math.min(5, depsN > 0 ? depsN + 1 : 1); // +1 for veteran themselves
   var vaRating = parseInt(sv('va-rating'));
+  // State tax rates
+  var milState = sv('m-state');
+  var civState = sv('c-state');
+  var milStateRate = STATE_TAX_RATES[milState] || 0;
+  var civStateRate = STATE_TAX_RATES[civState] || 0;
 
   var cSalary=iv('c-salary'), cBonus=iv('c-bonus');
   var c401kPct=iv('c-401k'), cColaRate=iv('c-cola')/100;
   var cHousing=iv('c-housing'), cUtilities=iv('c-utilities');
-  var cFoodStyle=sv('c-food-style'), cFamilyN=Math.min(6, depsN + 1); // +1 for veteran
+  var cFoodStyle=sv('c-food-style'), cFamilyN=Math.min(6, 1 + married + childrenU18); // family eating at home
   var cHealthType=sv('c-health-type')||'employer';
   var cHealth=iv('c-health'), cHealthEmp=iv('c-health-emp');
   var cSpouseIncome=iv('c-spouse-income')||0;
@@ -1566,8 +1700,8 @@ function runCalc(){
   var sgli=27.60;
   var mBonusMo=mBonus/12;
 
-  // Tax: only base pay taxable; BAH+BAS tax-free
-  var mTax=(bp*(0.22+0.0765+0.045));
+  // Tax: only base pay taxable; BAH+BAS tax-free. State rate from selected state.
+  var mTax=(bp*(0.22+0.0765+milStateRate));
 
   // Military costs (real, both sides have these)
   var mFoodBase = cFoodStyle==='custom' ? (parseFloat(document.getElementById('c-food-custom').value)||600) : (dep==='yes' ? FOOD[cFoodStyle][cFamilyN] : FOOD[cFoodStyle][1]);
@@ -1577,9 +1711,8 @@ function runCalc(){
   var mUtilities=dep==='yes'?cUtilities*0.55:0; // partially included on base / covered by BAH
   var mOther=cOther*0.8;
 
-  // VA disability — on BOTH sides (it's a concurrent benefit)
-  var vaR=VA_RATES[vaRating]||VA_RATES[0];
-  var vaMo=vaR[vaFamily]||0;
+  // VA disability — component-based calculation (marital status, children, parents)
+  var vaMo=getVAComp(vaRating, married, childrenU18, childrenO18, depParents);
 
   // Military net monthly cash in pocket
   // ⚠️ VA disability is NOT collected on active duty (exception: retirees with CRDP/CRSC)
@@ -1591,7 +1724,7 @@ function runCalc(){
 
   // ── CIVILIAN MONTHLY ────────────────────────────────────────────────────
   var cGrossMo=cSalary/12, cBonusMo=cBonus/12;
-  var cTax=cGrossMo*(0.22+0.0765+0.05); // full salary taxable + slightly higher state
+  var cTax=cGrossMo*(0.22+0.0765+civStateRate); // full salary taxable + state from selection
   var c401kEmployee=cGrossMo*(c401kPct/100); // employee contribution (cost)
 
   // ── GROSS / NET TAX BREAKDOWN ────────────────────────────────────────────
@@ -1634,7 +1767,7 @@ function runCalc(){
   var tspMatchAnn=tspM*12;
   var c401kMatchAnn=cSalary*(c401kPct/100);
   var healthValAnn=14400; // TRICARE annual market value
-  var taxSaveAnn=(bah+bas)*12*0.22;
+  var taxSaveAnn=(bah+bas)*12*(0.22+0.0765+milStateRate);
   var mTotalComp=(bp+bah+bas)*12+tspMatchAnn+healthValAnn+taxSaveAnn+mBonus+(mSpouseIncome)+(mOtherIncome*12)-sgli*12;
   var cTotalComp=cSalary+cSpouseIncome+(cOtherIncome*12)+c401kMatchAnn+(cHealthEmp*12)+cBonus;
 
@@ -1739,7 +1872,9 @@ function runCalc(){
     taxHtml += '<div style="padding:.5rem .75rem;border-bottom:1px solid #e0e6f0;text-align:right;color:#0d1a2a;font-weight:600;'+bg+taxColor+'">'+row[2]+'</div>';
   });
   taxHtml += '</div>';
-  taxHtml += '<p style="font-size:.78rem;color:#1a2a3a;padding:.65rem .75rem 0;">Estimates use 22% federal + 7.65% FICA + ~5% state. Military tax is only on taxable base pay — BAH and BAS are tax-free. Actual tax varies by filing status, deductions, and state.</p>';
+  var milStateName = document.getElementById('m-state').selectedOptions[0].text.split(' (')[0];
+  var civStateName = document.getElementById('c-state').selectedOptions[0].text.split(' (')[0];
+  taxHtml += '<p style="font-size:.78rem;color:#1a2a3a;padding:.65rem .75rem 0;">Estimates use 22% federal + 7.65% FICA. Military state tax: '+milStateName+' ('+(milStateRate*100).toFixed(1)+'%). Civilian state tax: '+civStateName+' ('+(civStateRate*100).toFixed(1)+'%). Military tax is only on base pay — BAH and BAS are tax-free. Actual tax varies by filing status and deductions.</p>';
   document.getElementById('tax-summary-body').innerHTML = taxHtml;
 
   document.getElementById('monthly-budget').innerHTML=bHtml;
@@ -1756,7 +1891,7 @@ function runCalc(){
     ['Health — Employer Contribution',0,cHealthEmp*12,'Employer pays this toward your plan (part of total comp).'],
     ['Retirement (TSP/401k match)',tspMatchAnn,c401kMatchAnn,retSys==='brs'?'BRS: ~4% match after 2 yrs':'Legacy: no match (pension instead)'],
     ['Bonus / Incentive',mBonus,cBonus,'Annual or reenlistment bonus'],
-    ['Tax Advantage (BAH+BAS tax-free)',taxSaveAnn,0,'Saves ~22% on '+(bah+bas)+'*12 in tax-exempt allowances'],
+    ['Tax Advantage (BAH+BAS tax-free)',taxSaveAnn,0,'Saves ~'+((0.22+0.0765+milStateRate)*100).toFixed(0)+'% (fed+FICA+state) on $'+Math.round(bah+bas).toLocaleString()+'/mo in tax-exempt allowances'],
     ['VA Disability (post-separation, tax-free)',0,vaMo*12,'Paid after separation. NOT collected on active duty (except CRDP retirees).'],
     ['Transportation',-((mCarPay+mCarIns+mGas)*12),-((cCarPay+cCarIns+cGas)*12),'Military slightly lower (closer to base, lower insurance)'],
     ['Childcare',-mChildcare*12,-cChildcare*12,'CDCs subsidized ~55% below market. Huge family benefit.'],
@@ -1812,11 +1947,19 @@ function runCalc(){
   if(bahMo>=cHousing) ins.push('🏠 <strong>Your BAH ($'+bahMo.toLocaleString()+'/mo) covers your civilian housing estimate ($'+cHousing.toLocaleString()+'/mo)</strong> — you may actually pocket the difference if you live on-base or in a cheaper area. This is one of the biggest hidden military advantages.');
   else ins.push('🏠 <strong>Your civilian rent estimate ($'+cHousing.toLocaleString()+'/mo) exceeds your BAH ($'+bahMo.toLocaleString()+'/mo) by $'+(cHousing-bahMo).toLocaleString()+'/mo.</strong> Your BAH is still tax-free - a civilian making the same total would pay taxes on that equivalent.');
     ins.push("🏥 <strong>TRICARE saves you $"+Math.round(cHealthCost).toLocaleString()+"/month in health insurance premiums</strong> ($"+Math.round(cHealth*12).toLocaleString()+"/year). That's real money to budget for after separation. Family plans average $550-700/month employee cost.");
-  if(vaMo>0) ins.push('🎖 <strong>At '+vaRating+'% disability, you receive $'+vaMo.toLocaleString()+'/month tax-free</strong> regardless of whether you reenlist or separate. On the civilian side this significantly boosts your net take-home. Always file your VA claim before separating.');
+  if(vaMo>0) {
+    var vaBreak = 'Base: $'+VA_COMP[vaRating].base.toLocaleString();
+    if(married && vaRating>=30) vaBreak += ' + Spouse: $'+VA_COMP[vaRating].spouse;
+    if(childrenU18>0 && vaRating>=30) vaBreak += ' + '+childrenU18+' child(ren) under 18: $'+(VA_COMP[vaRating].childU18*childrenU18);
+    if(childrenO18>0 && vaRating>=30) vaBreak += ' + '+childrenO18+' child(ren) 18+ in school: $'+(VA_COMP[vaRating].childO18*childrenO18);
+    if(depParents>0 && vaRating>=30) vaBreak += ' + '+depParents+' dependent parent(s): $'+(depParents>=2?VA_COMP[vaRating].parent2:VA_COMP[vaRating].parent1);
+    ins.push('🎖 <strong>At '+vaRating+'% disability, you receive $'+vaMo.toLocaleString()+'/month tax-free</strong> ('+vaBreak+'). This compensation is paid after separation and significantly boosts your civilian net take-home. Always file your VA claim before separating.');
+  }
   if(cChildcare>0) ins.push('👶 <strong>Childcare: $'+cChildcare.toLocaleString()+'/month civilian vs ~$'+Math.round(mChildcare).toLocaleString()+'/month military</strong>. Child Development Centers (CDCs) on base are income-based subsidized — often $400-600/month vs $1,200+ civilian market rate. For families with young children this can be a $600-800/month military advantage.');
   if(yearsToRetire>0&&yearsToRetire<=6) ins.push('⚠️ <strong>'+yearsToRetire+' years from 20-year retirement.</strong> Your monthly pension would be '+fmtM(bp*retPct)+' for life starting around age '+(Math.round(18+(yos)+yearsToRetire))+'. Over 20 years that is approximately $'+Math.round(bp*retPct*12*20/1000).toLocaleString()+'k in payments  (not counting lifetime TRICARE Prime access or COLA increases).');
   if(yearsToRetire===0) ins.push('🏆 <strong>You have reached 20 years.</strong> Your pension ('+fmtM(bp*retPct)+') and lifetime TRICARE are secured. Additional years of service increase the base pay used to calculate your high-3 average - each year at a higher pay grade compounds the pension value.');
-  ins.push('💰 <strong>Tax advantage:</strong> BAH ($'+bahMo.toLocaleString()+') + BAS ($'+Math.round(bas).toLocaleString()+') = $'+Math.round(bahMo+bas).toLocaleString()+'/month in tax-free income. At a ~22% effective rate that is approximately $'+Math.round((bahMo+bas)*0.22).toLocaleString()+'/month you save vs if that income were taxable.');
+  var effRate = 0.22 + 0.0765 + milStateRate;
+  ins.push('💰 <strong>Tax advantage:</strong> BAH ($'+bahMo.toLocaleString()+') + BAS ($'+Math.round(bas).toLocaleString()+') = $'+Math.round(bahMo+bas).toLocaleString()+'/month in tax-free income. At your ~'+(effRate*100).toFixed(0)+'% effective rate (federal+FICA+'+milStateName+') that is approximately $'+Math.round((bahMo+bas)*effRate).toLocaleString()+'/month you save vs if that income were taxable.');
   ins.push('📈 <strong>Civilian upside:</strong> Military pay raises average ~1-1.5%/year. Civilian raises with promotions can average 3-5%+. If your civilian career trajectory is strong, the 10-year projections tell the real story - especially with promotions factored in.');
   document.getElementById('key-insights').innerHTML=ins.map(function(i){return '<div class="insight-item">'+i+'</div>';}).join('');
 

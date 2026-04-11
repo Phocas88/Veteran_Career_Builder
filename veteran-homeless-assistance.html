@@ -1801,20 +1801,18 @@ body.menu-open{overflow:hidden!important;}
 </div>
 
 
-<!-- ═══ ZIP CODE LOCATOR ═══════════════════════════════════════════════ -->
-<div class="zip-locator" id="sec-zip">
-  <h3>Find Local Resources by ZIP Code</h3>
-  <p style="font-size:.84rem;color:var(--sl);margin-bottom:.75rem;">Enter your ZIP code to find VA homeless services, local shelters, and treatment facilities near you.</p>
+<!-- ═══ ZIP CODE RESOURCE FINDER ═══════════════════════════════════════ -->
+<div class="zip-locator" id="sec-zip" style="background:linear-gradient(135deg,#0a1628,#1a3a6b);border-radius:14px;padding:2rem;margin-bottom:1.5rem;border:1px solid rgba(240,192,64,.2);">
+  <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.06em;color:#f0c040;margin-bottom:.35rem;">Find Resources Near You</h3>
+  <p style="font-size:.88rem;color:rgba(192,216,240,.7);margin-bottom:1rem;line-height:1.6;">Enter your ZIP code to find homeless shelters, VA facilities, housing assistance, food banks, and mental health services in your area.</p>
 
-  <div class="zip-input-row">
-    <input type="text" id="zip-input" placeholder="Enter ZIP code (e.g. 22030)" maxlength="5" pattern="[0-9]{5}" inputmode="numeric">
-    <button class="zip-btn" onclick="searchZip()">Find Resources</button>
+  <div class="zip-input-row" style="display:flex;gap:.5rem;margin-bottom:1rem;">
+    <input type="text" id="zip-input" placeholder="Enter your ZIP code" maxlength="5" pattern="[0-9]{5}" inputmode="numeric" style="flex:1;min-width:120px;border:2px solid rgba(240,192,64,.3);border-radius:8px;padding:.7rem 1rem;font-size:1rem;font-family:inherit;background:rgba(255,255,255,.08);color:#fff;outline:none;">
+    <button onclick="searchZip()" style="padding:.7rem 1.5rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:8px;font-weight:700;font-size:.95rem;color:#0a1628;cursor:pointer;font-family:inherit;white-space:nowrap;">Find Help</button>
   </div>
 
-  <div class="zip-results" id="zip-results" style="display:none;">
-    <a id="zip-va" href="#" target="_blank" rel="noopener">VA Homeless Services Near You →</a>
-    <a id="zip-211" href="#" target="_blank" rel="noopener">211.org Local Resources →</a>
-    <a id="zip-samhsa" href="#" target="_blank" rel="noopener">SAMHSA Treatment Locator →</a>
+  <div id="zip-results" style="display:none;">
+    <!-- Results loaded dynamically -->
   </div>
 </div>
 
@@ -1822,11 +1820,107 @@ body.menu-open{overflow:hidden!important;}
 function searchZip() {
   var zip = document.getElementById('zip-input').value.trim();
   if (!/^\d{5}$/.test(zip)) { alert('Please enter a valid 5-digit ZIP code.'); return; }
-  document.getElementById('zip-va').href = 'https://www.va.gov/find-locations/?facilityType=health&serviceType=homeless&address=' + zip;
-  document.getElementById('zip-211').href = 'https://www.211.org/get-help?zip=' + zip;
-  document.getElementById('zip-samhsa').href = 'https://findtreatment.gov/locator?sAddr=' + zip;
-  document.getElementById('zip-results').style.display = 'flex';
+  var results = document.getElementById('zip-results');
+  results.style.display = 'block';
+  results.innerHTML = '<div style="text-align:center;padding:1rem;color:rgba(192,216,240,.6);"><div style="width:32px;height:32px;border:3px solid rgba(255,255,255,.1);border-top-color:#f0c040;border-radius:50%;animation:aispin 1s linear infinite;margin:0 auto .5rem;"></div>Searching for resources near ' + zip + '...</div>';
+
+  var html = '';
+
+  // Header
+  html += '<div style="font-weight:700;color:#f0c040;font-size:1.05rem;margin-bottom:.75rem;font-family:Bebas Neue,sans-serif;letter-spacing:.06em;">Resources Near ZIP ' + zip + '</div>';
+
+  // EMERGENCY — always show first
+  html += '<div style="background:rgba(220,38,38,.12);border:1.5px solid rgba(220,38,38,.3);border-radius:10px;padding:.85rem 1rem;margin-bottom:.75rem;">';
+  html += '<div style="font-weight:700;color:#fca5a5;font-size:.88rem;margin-bottom:.35rem;">🆘 Immediate Help</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;font-size:.82rem;">';
+  html += '<a href="tel:18774243838" style="display:block;padding:.5rem;background:rgba(220,38,38,.15);border-radius:6px;color:#fca5a5;text-decoration:none;font-weight:600;text-align:center;">📞 1-877-4AID-VET</a>';
+  html += '<a href="tel:988" style="display:block;padding:.5rem;background:rgba(220,38,38,.15);border-radius:6px;color:#fca5a5;text-decoration:none;font-weight:600;text-align:center;">📞 988 Crisis Line</a>';
+  html += '<a href="sms:838255" style="display:block;padding:.5rem;background:rgba(220,38,38,.15);border-radius:6px;color:#fca5a5;text-decoration:none;font-weight:600;text-align:center;">💬 Text 838255</a>';
+  html += '<a href="tel:211" style="display:block;padding:.5rem;background:rgba(220,38,38,.15);border-radius:6px;color:#fca5a5;text-decoration:none;font-weight:600;text-align:center;">📞 Dial 211</a>';
+  html += '</div></div>';
+
+  // VA Facilities
+  html += makeResourceCard('🏥', 'VA Homeless Services', 'VA medical centers, Vet Centers, and homeless programs near you.', [
+    {text:'VA Homeless Health Care', url:'https://www.va.gov/find-locations/?facilityType=health&serviceType=homeless&address=' + zip},
+    {text:'Vet Centers (Counseling)', url:'https://www.va.gov/find-locations/?facilityType=vet_center&address=' + zip},
+    {text:'VA Medical Centers', url:'https://www.va.gov/find-locations/?facilityType=health&address=' + zip},
+    {text:'VA Benefits Office', url:'https://www.va.gov/find-locations/?facilityType=benefits&address=' + zip}
+  ]);
+
+  // Shelters & Housing
+  html += makeResourceCard('🏠', 'Shelters & Emergency Housing', 'Emergency shelters, transitional housing, and rapid re-housing programs.', [
+    {text:'211.org — Shelters & Housing', url:'https://www.211.org/get-help/housing?zip=' + zip},
+    {text:'HUD Homeless Resources', url:'https://www.hudexchange.info/housing-and-homeless-assistance/homeless-help/?csrf_token=&zipcode=' + zip + '&search=1'},
+    {text:'Salvation Army Shelters', url:'https://www.salvationarmyusa.org/usn/plugins/gdosCenterSearch?mode=query_2&lat=&lng=&code=' + zip + '&query=shelter'},
+    {text:'Catholic Charities', url:'https://www.catholiccharitiesusa.org/find-help/?zip=' + zip}
+  ]);
+
+  // Food & Basic Needs
+  html += makeResourceCard('🍽️', 'Food & Basic Needs', 'Food banks, clothing, hygiene supplies, and other essentials.', [
+    {text:'Feeding America — Food Banks', url:'https://www.feedingamerica.org/find-your-local-foodbank?zip=' + zip},
+    {text:'211.org — Food Assistance', url:'https://www.211.org/get-help/food?zip=' + zip},
+    {text:'SNAP Benefits Info', url:'https://www.fns.usda.gov/snap/recipient/eligibility'}
+  ]);
+
+  // Mental Health & Substance Abuse
+  html += makeResourceCard('🧠', 'Mental Health & Substance Abuse', 'Counseling, PTSD treatment, substance abuse programs, and crisis support.', [
+    {text:'SAMHSA Treatment Locator', url:'https://findtreatment.gov/locator?sAddr=' + encodeURIComponent(zip)},
+    {text:'VA Mental Health Services', url:'https://www.va.gov/find-locations/?facilityType=health&serviceType=mentalHealth&address=' + zip},
+    {text:'Psychology Today — Vet Therapists', url:'https://www.psychologytoday.com/us/therapists/veterans/' + zip},
+    {text:'AA Meeting Finder', url:'https://www.aa.org/find-aa/north-america'}
+  ]);
+
+  // Legal Aid
+  html += makeResourceCard('⚖️', 'Legal Assistance', 'Free legal help for veterans — eviction defense, VA claims, discharge upgrades.', [
+    {text:'Legal Aid Near You', url:'https://www.lsc.gov/about-lsc/what-legal-aid/get-legal-help?zip=' + zip},
+    {text:'Veterans Legal Services', url:'https://www.vetsprobono.org/'},
+    {text:'Stateside Legal', url:'https://statesidelegal.org/find-legal-help?zip=' + zip}
+  ]);
+
+  // Employment
+  html += makeResourceCard('💼', 'Employment & Job Training', 'Job placement, skills training, and career counseling for homeless veterans.', [
+    {text:'CareerOneStop Centers', url:'https://www.careeronestop.org/LocalHelp/AmericanJobCenters/find-american-job-centers.aspx?zipcode=' + zip},
+    {text:'HVRP Job Programs', url:'https://www.dol.gov/agencies/vets/programs/hvrp'},
+    {text:'VCP Career Assessment', url:'https://veterancareerpath.com/veteran-career-test.html'},
+    {text:'Federal Jobs for Vets', url:'https://veterancareerpath.com/federal-jobs-search.html'}
+  ]);
+
+  // Financial
+  html += makeResourceCard('💰', 'Financial Assistance', 'Emergency financial aid, utility assistance, and benefits enrollment.', [
+    {text:'211.org — Financial Help', url:'https://www.211.org/get-help/financial?zip=' + zip},
+    {text:'VA Disability Benefits', url:'https://veterancareerpath.com/va-disability-rating-schedule.html'},
+    {text:'LIHEAP (Utility Help)', url:'https://liheapch.acf.hhs.gov/search?search_zipcode=' + zip},
+    {text:'Emergency Assistance Fund', url:'https://www.operationhomefront.org/programs'}
+  ]);
+
+  // Veterans Service Organizations
+  html += makeResourceCard('🎖️', 'Veterans Service Organizations', 'Free advocacy, benefits help, and peer support from fellow veterans.', [
+    {text:'DAV — Find Local Chapter', url:'https://www.dav.org/membership/local-chapters/'},
+    {text:'VFW — Find a Post', url:'https://www.vfw.org/find-a-post'},
+    {text:'American Legion — Find a Post', url:'https://www.legion.org/posts'},
+    {text:'Team Rubicon', url:'https://teamrubiconusa.org/'}
+  ]);
+
+  // Tip
+  html += '<div style="background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.15);border-radius:8px;padding:.75rem 1rem;margin-top:.5rem;font-size:.82rem;color:rgba(192,216,240,.7);line-height:1.6;">';
+  html += '<strong style="color:#f0c040;">Tip:</strong> If you\'re in crisis, call <strong>988</strong> and press 1. For housing help, call <strong>1-877-4AID-VET</strong>. For everything else, dial <strong>211</strong> — it connects to your local United Way resource center and they know what\'s available in your specific area.';
+  html += '</div>';
+
+  results.innerHTML = html;
 }
+
+function makeResourceCard(icon, title, desc, links) {
+  var h = '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.85rem 1rem;margin-bottom:.65rem;">';
+  h += '<div style="font-weight:700;color:#fff;font-size:.92rem;margin-bottom:.25rem;">' + icon + ' ' + title + '</div>';
+  h += '<div style="font-size:.8rem;color:rgba(192,216,240,.5);margin-bottom:.6rem;">' + desc + '</div>';
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;">';
+  links.forEach(function(l) {
+    h += '<a href="' + l.url + '" target="_blank" rel="noopener" style="display:block;padding:.45rem .65rem;background:rgba(26,58,107,.4);border:1px solid rgba(26,58,107,.3);border-radius:6px;color:rgba(192,216,240,.85);text-decoration:none;font-size:.78rem;font-weight:500;transition:background .15s;text-align:center;">' + l.text + ' →</a>';
+  });
+  h += '</div></div>';
+  return h;
+}
+
 document.getElementById('zip-input').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') searchZip();
 });

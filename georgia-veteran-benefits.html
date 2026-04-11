@@ -1307,6 +1307,41 @@ body.menu-open{overflow:hidden!important;}
 <div class="cta-block"><h3>Compare All 50 States</h3><p>See how Georgia stacks up against every other state for veteran benefits — property tax, income tax, education, and more.</p><a href="https://veterancareerpath.com/state-veteran-benefits.html" class="btn" style="text-decoration:none">View All State Benefits</a></div>
 <div class="cta-block" style="background:linear-gradient(135deg,#1a3a6b,#1a5c9a);"><h3>AI Career Tools for Veterans</h3><p>Use our AI-powered tools to translate your military experience, build federal resumes, and find your best civilian career match.</p><a href="https://veterancareerpath.com/app.html" class="btn" style="text-decoration:none">Launch AI Career Builder</a></div>
 </div>
+
+<!-- ═══ LOCAL RESOURCE FINDER ═══ -->
+<div id="local-finder" style="background:linear-gradient(135deg,#0a1628,#1a3a6b);border-radius:14px;padding:1.75rem;margin:1.5rem 0;border:1px solid rgba(240,192,64,.2);">
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:#f0c040;margin-bottom:.35rem;">Find Local Resources</div>
+  <p style="font-size:.82rem;color:rgba(192,216,240,.6);margin-bottom:.75rem;line-height:1.5;">Enter your ZIP code to find VA facilities, shelters, food banks, legal aid, and support services near you.</p>
+  <div style="display:flex;gap:.5rem;margin-bottom:.75rem;">
+    <input type="text" id="state-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" style="flex:1;min-width:100px;padding:.6rem .85rem;border:2px solid rgba(240,192,64,.3);border-radius:8px;font-size:.95rem;font-family:inherit;background:rgba(255,255,255,.08);color:#fff;outline:none;">
+    <button onclick="stateZipSearch()" style="padding:.6rem 1.2rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:8px;font-weight:700;font-size:.88rem;color:#0a1628;cursor:pointer;font-family:inherit;">Search</button>
+  </div>
+  <div id="state-zip-results" style="display:none;"></div>
+</div>
+<script>
+function stateZipSearch(){
+  var z=document.getElementById('state-zip').value.trim();
+  if(!/^\d{5}$/.test(z)){alert('Enter a valid 5-digit ZIP.');return;}
+  var r=document.getElementById('state-zip-results');r.style.display='block';
+  var h='<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem;">';
+  var links=[
+    ['VA Health Care','https://www.va.gov/find-locations/?facilityType=health&address='+z],
+    ['Vet Centers','https://www.va.gov/find-locations/?facilityType=vet_center&address='+z],
+    ['Homeless Services','https://www.va.gov/find-locations/?facilityType=health&serviceType=homeless&address='+z],
+    ['211.org Local Help','https://www.211.org/get-help?zip='+z],
+    ['Food Banks','https://www.feedingamerica.org/find-your-local-foodbank?zip='+z],
+    ['Legal Aid','https://www.lsc.gov/about-lsc/what-legal-aid/get-legal-help?zip='+z],
+    ['Job Centers','https://www.careeronestop.org/LocalHelp/AmericanJobCenters/find-american-job-centers.aspx?zipcode='+z],
+    ['SAMHSA Treatment','https://findtreatment.gov/locator?sAddr='+encodeURIComponent(z)]
+  ];
+  links.forEach(function(l){h+='<a href="'+l[1]+'" target="_blank" rel="noopener" style="display:block;padding:.45rem .6rem;background:rgba(26,58,107,.4);border:1px solid rgba(26,58,107,.3);border-radius:6px;color:rgba(192,216,240,.85);text-decoration:none;font-size:.76rem;font-weight:500;text-align:center;">'+l[0]+' \u2192</a>';});
+  h+='</div>';
+  h+='<div style="margin-top:.5rem;font-size:.75rem;color:rgba(192,216,240,.4);">\uD83D\uDCDE Emergency: 988 (Crisis) | 211 (Local Resources) | 1-877-4AID-VET (Homeless)</div>';
+  r.innerHTML=h;
+}
+document.getElementById('state-zip').addEventListener('keydown',function(e){if(e.key==='Enter')stateZipSearch();});
+</script>
+
 <footer style="background:#0d1f3c;padding:2.5rem 6%;margin-top:2rem;">
   <div style="max-width:1100px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.5rem;margin-bottom:2rem;">

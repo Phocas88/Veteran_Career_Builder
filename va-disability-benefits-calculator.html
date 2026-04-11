@@ -1357,16 +1357,15 @@ body.menu-open{overflow:hidden!important;}
 <div class="page-toc" id="page-toc">
   <div class="page-toc-inner">
     <span class="page-toc-label">Jump to:</span>
-    <a href="#sec-calculator" class="toc-calc">Calculator</a>
-    <a href="#sec-2026-rates">2026 Rates</a>
+    <a href="#sec-dep-calculator" class="toc-calc">Calculator</a>
     <a href="#sec-combined-math">Combined Rating Math</a>
     <a href="#sec-benefits-tiers">Benefits by Tier</a>
     <a href="#sec-state-benefits">State Benefits</a>
     <a href="#sec-tdiu">TDIU</a>
     <a href="#sec-how-ratings-work">How Ratings Work</a>
     <a href="#sec-rating-schedule">Rating Schedule</a>
-    <a href="#sec-dep-calculator">Dependent Calculator</a>
     <a href="#sec-pay-table">Pay Tables</a>
+    <a href="#sec-2026-rates">2026 Rates</a>
   </div>
 </div>
 
@@ -1376,10 +1375,108 @@ body.menu-open{overflow:hidden!important;}
   <div class="hero-inner">
     <div class="badge">&#9889; Disability Benefits</div>
     <h1>VA Disability <span>Benefits Calculator</span></h1>
-    <p class="hero-sub">2026 compensation rates, dependent allowances, and every benefit unlocked at each disability rating - from 10% to 100%. Use the calculators below to estimate your combined rating and monthly pay.</p>
-    <a href="#sec-dep-calculator" class="btn-hero" style="text-decoration:none">Jump to Calculator</a>
+    <p class="hero-sub">2026 compensation rates, dependent allowances, and every benefit unlocked at each disability rating - from 10% to 100%. Use the calculator below to estimate your combined rating and monthly pay.</p>
+    <a href="#sec-dep-calculator" class="btn-hero" style="text-decoration:none">Calculate My Compensation ↓</a>
   </div>
 </section>
+
+<!-- ══ COMPENSATION CALCULATOR (moved to top for visibility) ══════════════ -->
+<div id="sec-dep-calculator" class="section-divider" style="margin-top:0;">
+  <span class="section-number">01</span>
+  <h2>Compensation Calculator with Dependents</h2>
+  <p>Enter your individual service-connected ratings and dependent status to calculate your estimated monthly VA compensation using 2026 rates.</p>
+</div>
+
+<div style="background:#fff;padding:1rem 5%;">
+<div class="calc-highlight">
+  <div class="calc-card" id="calc" style="margin-bottom:0;border:none;box-shadow:none;">
+    <div class="calc-hd"><h2>🧮 Compensation Calculator — With Dependents</h2></div>
+    <div class="calc-body">
+      <div class="alert aw" style="margin-top:0">
+        <strong>2026 VA Compensation Rates</strong>
+        Based on the actual VA pay tables effective December 1, 2025. Includes all dependent categories per 38 CFR 3.4.
+      </div>
+
+      <p style="font-size:.84rem;color:var(--sl);margin-bottom:.85rem;">Enter your individual service-connected ratings, then your dependent status for an accurate monthly compensation estimate.</p>
+
+      <!-- RATINGS INPUT -->
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--nv);margin-bottom:.5rem;">Your Service-Connected Ratings</div>
+        <div class="rating-pills" id="rPills">
+          <div class="r-pill">40%<button onclick="remRating(this)">✕</button></div>
+          <div class="r-pill">20%<button onclick="remRating(this)">✕</button></div>
+          <div class="r-pill">10%<button onclick="remRating(this)">✕</button></div>
+        </div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+          <select id="newRating" style="border:1.5px solid var(--bd);border-radius:7px;padding:.45rem .7rem;font-size:.85rem;font-family:'Inter',sans-serif;">
+            <option value="10" selected>10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option><option value="90">90%</option><option value="100">100%</option>
+          </select>
+          <button class="add-rating-btn" onclick="addRating()">+ Add Rating</button>
+        </div>
+      </div>
+
+      <!-- DEPENDENT FIELDS -->
+      <div class="calc-grid">
+        <div class="fld">
+          <label>Marital Status</label>
+          <select id="dMarital">
+            <option value="single">Single / No Spouse</option>
+            <option value="spouse">Married (Spouse)</option>
+          </select>
+        </div>
+        <div class="fld" id="dSpouseAA_wrap" style="display:none">
+          <label>Spouse Requires Aid and Attendance?</label>
+          <select id="dSpouseAA">
+            <option value="no">No</option>
+            <option value="yes">Yes — Spouse A&A</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Dependent Children Under 18</label>
+          <select id="dChildU18">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5+</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Dependent Children Age 18–23 (in school)</label>
+          <select id="dChildSchool">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Dependent Parents</label>
+          <select id="dParents">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calcComp()">CALCULATE MY COMPENSATION</button>
+
+      <div class="result-box" id="calcResult">
+        <div class="rb-label">Combined Rating (VA Method)</div>
+        <div class="rb-combined" id="rcCombined"></div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;" id="rcMath"></div>
+        <div class="rb-label" style="margin-top:.85rem;">Estimated Monthly Compensation</div>
+        <div class="rb-pay" id="rcPay"></div>
+        <div class="rb-breakdown" id="rcBreakdown"></div>
+        <div class="rb-math" id="rcNote"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /calc-highlight -->
+</div><!-- /bg wrap -->
+
 <div class="content">
 
 <p>Your VA disability rating directly determines your monthly tax-free compensation, access to healthcare, home loan benefits, and dozens of state-level benefits. Most veterans underestimate both what they qualify for and what each percentage point is actually worth financially.</p>
@@ -2325,103 +2422,6 @@ function toggleAllSections(expand) {
   });
 }
 </script>
-
-<!-- ══ PART 3: COMPENSATION CALCULATOR WITH DEPENDENTS ══════════════════════ -->
-<div id="sec-dep-calculator" class="section-divider" style="margin-top:0;">
-  <span class="section-number">04</span>
-  <h2>Compensation Calculator with Dependents</h2>
-  <p>Enter your individual service-connected ratings and dependent status to calculate your estimated monthly VA compensation using 2026 rates.</p>
-</div>
-
-<div style="background:#fff;padding:1rem 5%;">
-<div class="calc-highlight">
-  <div class="calc-card" id="calc" style="margin-bottom:0;border:none;box-shadow:none;">
-    <div class="calc-hd"><h2>🧮 Compensation Calculator — With Dependents</h2></div>
-    <div class="calc-body">
-      <div class="alert aw" style="margin-top:0">
-        <strong>2026 VA Compensation Rates</strong>
-        Based on the actual VA pay tables effective December 1, 2025. Includes all dependent categories per 38 CFR 3.4.
-      </div>
-
-      <p style="font-size:.84rem;color:var(--sl);margin-bottom:.85rem;">Enter your individual service-connected ratings, then your dependent status for an accurate monthly compensation estimate.</p>
-
-      <!-- RATINGS INPUT -->
-      <div style="margin-bottom:1rem;">
-        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--nv);margin-bottom:.5rem;">Your Service-Connected Ratings</div>
-        <div class="rating-pills" id="rPills">
-          <div class="r-pill">40%<button onclick="remRating(this)">✕</button></div>
-          <div class="r-pill">20%<button onclick="remRating(this)">✕</button></div>
-          <div class="r-pill">10%<button onclick="remRating(this)">✕</button></div>
-        </div>
-        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
-          <select id="newRating" style="border:1.5px solid var(--bd);border-radius:7px;padding:.45rem .7rem;font-size:.85rem;font-family:'Inter',sans-serif;">
-            <option value="10" selected>10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option><option value="90">90%</option><option value="100">100%</option>
-          </select>
-          <button class="add-rating-btn" onclick="addRating()">+ Add Rating</button>
-        </div>
-      </div>
-
-      <!-- DEPENDENT FIELDS -->
-      <div class="calc-grid">
-        <div class="fld">
-          <label>Marital Status</label>
-          <select id="dMarital">
-            <option value="single">Single / No Spouse</option>
-            <option value="spouse">Married (Spouse)</option>
-          </select>
-        </div>
-        <div class="fld" id="dSpouseAA_wrap" style="display:none">
-          <label>Spouse Requires Aid and Attendance?</label>
-          <select id="dSpouseAA">
-            <option value="no">No</option>
-            <option value="yes">Yes — Spouse A&A</option>
-          </select>
-        </div>
-        <div class="fld">
-          <label>Dependent Children Under 18</label>
-          <select id="dChildU18">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5+</option>
-          </select>
-        </div>
-        <div class="fld">
-          <label>Dependent Children Age 18–23 (in school)</label>
-          <select id="dChildSchool">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
-        <div class="fld">
-          <label>Dependent Parents</label>
-          <select id="dParents">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-          </select>
-        </div>
-      </div>
-
-      <button class="calc-btn" onclick="calcComp()">CALCULATE MY COMPENSATION</button>
-
-      <div class="result-box" id="calcResult">
-        <div class="rb-label">Combined Rating (VA Method)</div>
-        <div class="rb-combined" id="rcCombined"></div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;" id="rcMath"></div>
-        <div class="rb-label" style="margin-top:.85rem;">Estimated Monthly Compensation</div>
-        <div class="rb-pay" id="rcPay"></div>
-        <div class="rb-breakdown" id="rcBreakdown"></div>
-        <div class="rb-math" id="rcNote"></div>
-      </div>
-    </div>
-  </div>
-</div><!-- /calc-highlight -->
-</div><!-- /bg wrap -->
 
   <!-- ══ 2026 PAY TABLE ═══════���══════════════════════════════════════════════ -->
   <div id="sec-pay-table" class="section-divider" style="margin-top:0;">

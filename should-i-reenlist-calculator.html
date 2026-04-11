@@ -1250,10 +1250,16 @@ input[type=range]{width:100%;height:5px;border-radius:3px;accent-color:#1a3a6b;c
   </div>
   <div class="sec-label">Additional Military Pay</div>
   <div class="field-row">
+    <div class="field"><label>Special & Incentive Pay (monthly)</label>
+      <input type="number" id="m-special" value="0" min="0">
+      <div class="hint">Sea pay, sub pay, flight pay, jump pay, SDAP, hostile fire, dive pay, hazardous duty, foreign language bonus, nuclear pay, etc.</div>
+    </div>
     <div class="field"><label>Reenlistment Bonus ($)</label>
       <input type="number" id="m-bonus" value="0" min="0">
       <div class="hint">Total bonus amount (spread over contract years)</div>
     </div>
+  </div>
+  <div class="field-row">
     <div class="field"><label>Retirement System</label>
       <select id="m-ret">
         <option value="brs">BRS (Blended — post-2018)</option>
@@ -1664,7 +1670,7 @@ function syncHealthHint() { /* no-op — hint is static */ }
 function runCalc(){
   // ── INPUTS ──────────────────────────────────────────────────────────────
   var grade=sv('m-grade'), yos=iv('m-yos'), bahTier=sv('m-bah'), retSys=sv('m-ret');
-  var mBonus=iv('m-bonus');
+  var mBonus=iv('m-bonus'), mSpecial=iv('m-special');
   // Granular dependent inputs
   var married = parseInt(sv('m-married')) || 0;
   var childrenU18 = parseInt(sv('m-children-u18')) || 0;
@@ -1700,8 +1706,8 @@ function runCalc(){
   var sgli=27.60;
   var mBonusMo=mBonus/12;
 
-  // Tax: only base pay taxable; BAH+BAS tax-free. State rate from selected state.
-  var mTax=(bp*(0.22+0.0765+milStateRate));
+  // Tax: base pay + special pay are taxable; BAH+BAS tax-free. State rate from selected state.
+  var mTax=((bp+mSpecial)*(0.22+0.0765+milStateRate));
 
   // Military costs (real, both sides have these)
   var mFoodBase = cFoodStyle==='custom' ? (parseFloat(document.getElementById('c-food-custom').value)||600) : (dep==='yes' ? FOOD[cFoodStyle][cFamilyN] : FOOD[cFoodStyle][1]);
@@ -1720,7 +1726,7 @@ function runCalc(){
   // Household income on military side
   var mSpouseMo = mSpouseIncome / 12;
   var mOtherMo = mOtherIncome;
-  var mNetMo=(bp+bah+bas+mBonusMo+mSpouseMo+mOtherMo)-mTax-mFoodOOP-mCarPay-mCarIns-mGas-mChildcare-mUtilities-sgli-mOther;
+  var mNetMo=(bp+bah+bas+mSpecial+mBonusMo+mSpouseMo+mOtherMo)-mTax-mFoodOOP-mCarPay-mCarIns-mGas-mChildcare-mUtilities-sgli-mOther;
 
   // ── CIVILIAN MONTHLY ────────────────────────────────────────────────────
   var cGrossMo=cSalary/12, cBonusMo=cBonus/12;
@@ -1729,7 +1735,7 @@ function runCalc(){
 
   // ── GROSS / NET TAX BREAKDOWN ────────────────────────────────────────────
   // Military gross (taxable base pay only; BAH+BAS tax-free)
-  var mGrossAnn = bp*12 + mBonus + mSpouseIncome + mOtherIncome*12;
+  var mGrossAnn = bp*12 + mSpecial*12 + mBonus + mSpouseIncome + mOtherIncome*12;
   var mTaxAnn   = mTax*12; // estimated federal+FICA+state on base pay
   var mTaxableAnn = bp*12; // only base pay is taxable
   var mAfterTaxAnn = mGrossAnn - mTaxAnn; // gross minus tax (BAH+BAS still included)
@@ -1768,7 +1774,7 @@ function runCalc(){
   var c401kMatchAnn=cSalary*(c401kPct/100);
   var healthValAnn=14400; // TRICARE annual market value
   var taxSaveAnn=(bah+bas)*12*(0.22+0.0765+milStateRate);
-  var mTotalComp=(bp+bah+bas)*12+tspMatchAnn+healthValAnn+taxSaveAnn+mBonus+(mSpouseIncome)+(mOtherIncome*12)-sgli*12;
+  var mTotalComp=(bp+bah+bas+mSpecial)*12+tspMatchAnn+healthValAnn+taxSaveAnn+mBonus+(mSpouseIncome)+(mOtherIncome*12)-sgli*12;
   var cTotalComp=cSalary+cSpouseIncome+(cOtherIncome*12)+c401kMatchAnn+(cHealthEmp*12)+cBonus;
 
   // ── RETIREMENT ──────────────────────────────────────────────────────────
@@ -1819,7 +1825,7 @@ function runCalc(){
 
   // ── MONTHLY BUDGET ───────────────────────────────────────────────────────
   var bItems=[
-    ['Gross Monthly Pay',(bp+bah+bas+mBonusMo),(cGrossMo+cBonusMo),false],
+    ['Gross Monthly Pay',(bp+bah+bas+mSpecial+mBonusMo),(cGrossMo+cBonusMo),false],
     ['Taxes (est.)',-mTax,-cTax,true],
     ['Housing (BAH covers / rent)',0,-cHousing,true],
     ['Food',-mFoodOOP,-cFoodMo,true],
@@ -1885,6 +1891,7 @@ function runCalc(){
 
     var rows=[
     ['Base Pay / Salary (gross annual)',bp*12,cSalary,''],
+    ['Special & Incentive Pay',mSpecial*12,0,mSpecial>0?'Sea pay, flight pay, sub pay, jump pay, SDAP, hostile fire, etc. (taxable)':'No special pays entered'],
     ['Housing — BAH (mil) / Rent (civ)',bah*12,-cHousing*12,'BAH is tax-free & covers housing. Civilian pays rent from net.'],
     ['Food — BAS (mil) / Groceries (civ)',bas*12,-cFoodMo*12,'BAS is tax-free. Civilian pays full food costs from net.'],
     ['Health Insurance',14400,-(cHealthCost*12),'TRICARE = ~$1,200/yr cost. Civilian: '+healthTypeLabel+'.'],

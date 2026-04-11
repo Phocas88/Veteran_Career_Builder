@@ -11,6 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
   try{
     firebase.initializeApp({
@@ -103,6 +104,35 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
 /* TOAST */
 #toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1a7a40;color:#fff;padding:.65rem 1.25rem;border-radius:8px;font-size:.85rem;font-weight:600;display:none;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.4);}
+
+/* ANALYTICS */
+.ga-setup{background:#0d1f3c;border:1px solid rgba(240,192,64,.2);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem;}
+.ga-setup h3{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.35rem;}
+.ga-setup p{font-size:.78rem;color:rgba(192,216,240,.5);margin-bottom:.85rem;line-height:1.6;}
+.ga-setup-row{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.65rem;}
+.ga-connect-btn{background:linear-gradient(135deg,#4285f4,#1a73e8);color:#fff;border:none;border-radius:8px;padding:.65rem 1.5rem;font-weight:700;font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:.5rem;}
+.ga-connect-btn:hover{opacity:.9;}
+.ga-connect-btn:disabled{opacity:.5;cursor:not-allowed;}
+.ga-connected{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:#4ade80;font-weight:600;margin-left:.5rem;}
+.ga-widgets{display:none;}
+.ga-widgets.active{display:block;}
+.ga-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:1.25rem;}
+.ga-stat{background:#0d1f3c;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1rem 1.1rem;text-align:center;}
+.ga-stat-n{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:#f0c040;line-height:1;}
+.ga-stat-l{font-size:.72rem;color:rgba(192,216,240,.45);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem;}
+.ga-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.ga-card{background:#0d1f3c;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1rem 1.1rem;}
+.ga-card-title{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.75rem;padding-bottom:.35rem;border-bottom:1px solid rgba(240,192,64,.12);}
+.ga-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ga-table th{text-align:left;padding:.45rem .65rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(192,216,240,.4);border-bottom:1px solid rgba(255,255,255,.08);}
+.ga-table td{padding:.4rem .65rem;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(192,216,240,.75);}
+.ga-table td:last-child{text-align:right;font-weight:600;color:#f0c040;}
+.ga-table tr:hover td{background:rgba(255,255,255,.03);}
+.ga-bar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;}
+.ga-bar-label{font-size:.72rem;color:rgba(192,216,240,.5);width:40px;text-align:right;flex-shrink:0;}
+.ga-bar-track{flex:1;height:18px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;}
+.ga-bar-fill{height:100%;background:linear-gradient(90deg,rgba(240,192,64,.4),rgba(240,192,64,.7));border-radius:3px;min-width:2px;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;font-size:.62rem;color:#fff;font-weight:700;}
+@media(max-width:768px){.ga-stat-row{grid-template-columns:1fr 1fr;}.ga-grid{grid-template-columns:1fr;}.ga-setup-row{grid-template-columns:1fr;}}
 </style>
 <link rel="stylesheet" href="/vcp-styles.css">
 </head>
@@ -148,6 +178,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <button class="tab" onclick="switchTab('users',this)">👥 Users</button>
     <button class="tab" onclick="switchTab('salary',this)">💰 Salary Data</button>
     <button class="tab" onclick="switchTab('stories',this)">🎖 Success Stories</button>
+    <button class="tab" onclick="switchTab('analytics',this)">📊 Analytics</button>
     <button class="tab" onclick="switchTab('add-salary',this)">+ Add Salary Entry</button>
     <button class="tab" onclick="switchTab('add-story',this)">+ Add Story</button>
   </div>
@@ -200,6 +231,77 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
           <select id="as-since"><option>Less than 1 year</option><option>1-2 years</option><option>3-5 years</option><option>5+ years</option></select></div>
       </div>
       <button class="add-btn" onclick="addSalary()">➕ Add Entry — Publish Immediately</button>
+    </div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="panel" id="panel-analytics">
+    <div class="ga-setup" id="ga-setup">
+      <h3>Connect Google Analytics 4</h3>
+      <p>View your site traffic, top pages, visitor locations, and more — pulled directly from GA4.<br>
+      <strong style="color:rgba(240,192,64,.7);">One-time setup:</strong> You need a Google Cloud project with the GA4 Data API enabled and an OAuth Client ID.
+      <a href="https://console.cloud.google.com/apis/library/analyticsdata.googleapis.com" target="_blank" style="color:#4285f4;">Enable API</a> ·
+      <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:#4285f4;">Create OAuth ID</a>
+      (type: Web application, origin: <code style="background:rgba(255,255,255,.08);padding:.1rem .3rem;border-radius:3px;font-size:.75rem;">https://veterancareerpath.com</code>)</p>
+      <div class="ga-setup-row">
+        <div class="field"><label>OAuth Client ID</label>
+          <input id="ga-client-id" placeholder="xxxx.apps.googleusercontent.com" value="">
+        </div>
+        <div class="field"><label>GA4 Property ID (numeric)</label>
+          <input id="ga-property-id" placeholder="e.g. 348712345" value="">
+          <div style="font-size:.68rem;color:rgba(192,216,240,.35);margin-top:.15rem;">Find at: GA4 Admin → Property Settings → Property ID</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;">
+        <button class="ga-connect-btn" id="ga-connect-btn" onclick="gaConnect()">
+          <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#4285F4" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#34A853" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 019.5 24c0-1.59.28-3.14.77-4.59l-7.98-6.19A23.93 23.93 0 000 24c0 3.77.87 7.35 2.56 10.78l7.97-6.19z"/><path fill="#EA4335" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Sign in with Google
+        </button>
+        <span class="ga-connected" id="ga-connected" style="display:none;">Connected</span>
+      </div>
+    </div>
+
+    <div class="ga-widgets" id="ga-widgets">
+      <div class="ga-stat-row">
+        <div class="ga-stat"><div class="ga-stat-n" id="ga-today">—</div><div class="ga-stat-l">Today</div></div>
+        <div class="ga-stat"><div class="ga-stat-n" id="ga-7d">—</div><div class="ga-stat-l">Last 7 Days</div></div>
+        <div class="ga-stat"><div class="ga-stat-n" id="ga-30d">—</div><div class="ga-stat-l">Last 30 Days</div></div>
+        <div class="ga-stat"><div class="ga-stat-n" id="ga-users-30d">—</div><div class="ga-stat-l">Unique Users (30d)</div></div>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <div class="ga-card">
+          <div class="ga-card-title">Daily Sessions — Last 30 Days</div>
+          <div id="ga-chart" style="display:flex;align-items:flex-end;gap:2px;height:100px;padding-top:.5rem;"></div>
+        </div>
+      </div>
+
+      <div class="ga-grid">
+        <div class="ga-card">
+          <div class="ga-card-title">Top Pages</div>
+          <table class="ga-table"><thead><tr><th>Page</th><th>Views</th></tr></thead><tbody id="ga-pages"></tbody></table>
+        </div>
+        <div class="ga-card">
+          <div class="ga-card-title">Traffic Sources</div>
+          <table class="ga-table"><thead><tr><th>Source / Medium</th><th>Sessions</th></tr></thead><tbody id="ga-sources"></tbody></table>
+        </div>
+      </div>
+
+      <div class="ga-grid">
+        <div class="ga-card">
+          <div class="ga-card-title">Countries & Cities</div>
+          <table class="ga-table"><thead><tr><th>Location</th><th>Sessions</th></tr></thead><tbody id="ga-geo"></tbody></table>
+        </div>
+        <div class="ga-card">
+          <div class="ga-card-title">Devices</div>
+          <table class="ga-table"><thead><tr><th>Device</th><th>Sessions</th></tr></thead><tbody id="ga-devices"></tbody></table>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:1rem 0;">
+        <button style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(192,216,240,.6);padding:.45rem 1.2rem;border-radius:7px;font-size:.8rem;cursor:pointer;" onclick="gaFetchAll()">Refresh Data</button>
+        <button style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(192,216,240,.6);padding:.45rem 1.2rem;border-radius:7px;font-size:.8rem;cursor:pointer;margin-left:.5rem;" onclick="gaDisconnect()">Disconnect</button>
+      </div>
     </div>
   </div>
 
@@ -593,6 +695,193 @@ function addStory() {
       document.getElementById('stat-story-total').textContent = n;
       ['ss-mos','ss-name','ss-role','ss-story'].forEach(function(id){ document.getElementById(id).value=''; });
     }).catch(function(e){ toast('Error: '+e.message,'#c0392b'); });
+}
+
+// ── GOOGLE ANALYTICS 4 INTEGRATION ──────────────────────────────────────────
+
+var gaToken = null;
+var gaPropertyId = null;
+
+// Restore saved settings
+(function(){
+  var saved = JSON.parse(localStorage.getItem('vcp_ga_settings')||'{}');
+  if(saved.clientId) document.addEventListener('DOMContentLoaded', function(){ var el=document.getElementById('ga-client-id'); if(el) el.value=saved.clientId; });
+  if(saved.propertyId) document.addEventListener('DOMContentLoaded', function(){ var el=document.getElementById('ga-property-id'); if(el) el.value=saved.propertyId; });
+})();
+
+function gaConnect() {
+  var clientId = document.getElementById('ga-client-id').value.trim();
+  var propId = document.getElementById('ga-property-id').value.trim();
+  if(!clientId || !propId) { alert('Enter both your OAuth Client ID and GA4 Property ID.'); return; }
+
+  // Save settings
+  localStorage.setItem('vcp_ga_settings', JSON.stringify({clientId: clientId, propertyId: propId}));
+  gaPropertyId = propId;
+
+  var btn = document.getElementById('ga-connect-btn');
+  btn.disabled = true;
+  btn.innerHTML = 'Connecting...';
+
+  try {
+    var tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: 'https://www.googleapis.com/auth/analytics.readonly',
+      callback: function(response) {
+        if(response.error) {
+          btn.disabled = false;
+          btn.innerHTML = 'Sign in with Google';
+          toast('Auth error: ' + (response.error_description || response.error), '#c0392b');
+          return;
+        }
+        gaToken = response.access_token;
+        btn.style.display = 'none';
+        document.getElementById('ga-connected').style.display = 'flex';
+        document.getElementById('ga-widgets').classList.add('active');
+        toast('Connected to Google Analytics!');
+        gaFetchAll();
+      }
+    });
+    tokenClient.requestAccessToken();
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = 'Sign in with Google';
+    toast('Error: ' + e.message + '. Make sure the Google Identity script loaded.', '#c0392b');
+  }
+}
+
+function gaDisconnect() {
+  gaToken = null;
+  document.getElementById('ga-connect-btn').style.display = '';
+  document.getElementById('ga-connect-btn').disabled = false;
+  document.getElementById('ga-connect-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 48 48"><path fill="#4285F4" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#34A853" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 019.5 24c0-1.59.28-3.14.77-4.59l-7.98-6.19A23.93 23.93 0 000 24c0 3.77.87 7.35 2.56 10.78l7.97-6.19z"/><path fill="#EA4335" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Sign in with Google';
+  document.getElementById('ga-connected').style.display = 'none';
+  document.getElementById('ga-widgets').classList.remove('active');
+  toast('Disconnected from GA4', '#5a6a7a');
+}
+
+function gaRunReport(body) {
+  return fetch('https://analyticsdata.googleapis.com/v1beta/properties/' + gaPropertyId + ':runReport', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + gaToken, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(function(r) {
+    if(!r.ok) return r.json().then(function(e){ throw new Error(e.error && e.error.message || 'API error ' + r.status); });
+    return r.json();
+  });
+}
+
+function gaFetchAll() {
+  if(!gaToken || !gaPropertyId) return;
+
+  // 1. Sessions: today, 7d, 30d + unique users 30d
+  gaRunReport({
+    dateRanges: [
+      {startDate: 'today', endDate: 'today'},
+      {startDate: '7daysAgo', endDate: 'today'},
+      {startDate: '30daysAgo', endDate: 'today'}
+    ],
+    metrics: [{name: 'sessions'}, {name: 'totalUsers'}]
+  }).then(function(data) {
+    // GA4 returns rows for each date range
+    var rows = data.rows || [];
+    // With multiple dateRanges, each row has metricValues for each range
+    // Actually, GA4 returns separate rows per dateRange when no dimensions
+    // Let's parse: rows[0] = today, rows[1] = 7d, rows[2] = 30d
+    if(rows.length >= 1) document.getElementById('ga-today').textContent = fmtNum(rows[0].metricValues[0].value);
+    if(rows.length >= 2) document.getElementById('ga-7d').textContent = fmtNum(rows[1].metricValues[0].value);
+    if(rows.length >= 3) {
+      document.getElementById('ga-30d').textContent = fmtNum(rows[2].metricValues[0].value);
+      document.getElementById('ga-users-30d').textContent = fmtNum(rows[2].metricValues[1].value);
+    }
+  }).catch(function(e) { console.error('Sessions error:', e); toast('GA4 error: ' + e.message, '#c0392b'); });
+
+  // 2. Daily sessions chart (30 days)
+  gaRunReport({
+    dateRanges: [{startDate: '30daysAgo', endDate: 'today'}],
+    dimensions: [{name: 'date'}],
+    metrics: [{name: 'sessions'}],
+    orderBys: [{dimension: {dimensionName: 'date'}, desc: false}]
+  }).then(function(data) {
+    var rows = data.rows || [];
+    var maxVal = 1;
+    rows.forEach(function(r){ var v = parseInt(r.metricValues[0].value)||0; if(v>maxVal) maxVal=v; });
+    var chart = document.getElementById('ga-chart');
+    chart.innerHTML = rows.map(function(r) {
+      var v = parseInt(r.metricValues[0].value)||0;
+      var pct = Math.max(2, (v/maxVal)*100);
+      var d = r.dimensionValues[0].value;
+      var label = d.substring(4,6)+'/'+d.substring(6,8);
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;" title="'+label+': '+v+' sessions">' +
+        '<div style="width:100%;background:linear-gradient(180deg,rgba(240,192,64,.8),rgba(240,192,64,.3));border-radius:2px 2px 0 0;height:'+pct+'%;min-height:2px;"></div>' +
+        '</div>';
+    }).join('');
+  }).catch(function(e) { console.error('Chart error:', e); });
+
+  // 3. Top pages
+  gaRunReport({
+    dateRanges: [{startDate: '30daysAgo', endDate: 'today'}],
+    dimensions: [{name: 'pagePath'}],
+    metrics: [{name: 'screenPageViews'}],
+    orderBys: [{metric: {metricName: 'screenPageViews'}, desc: true}],
+    limit: 15
+  }).then(function(data) {
+    var rows = data.rows || [];
+    document.getElementById('ga-pages').innerHTML = rows.map(function(r) {
+      var page = r.dimensionValues[0].value;
+      if(page.length > 40) page = page.substring(0,40) + '…';
+      return '<tr><td style="font-size:.75rem;">'+page+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
+    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.3);">No data</td></tr>';
+  }).catch(function(e) { console.error('Pages error:', e); });
+
+  // 4. Traffic sources
+  gaRunReport({
+    dateRanges: [{startDate: '30daysAgo', endDate: 'today'}],
+    dimensions: [{name: 'sessionDefaultChannelGroup'}],
+    metrics: [{name: 'sessions'}],
+    orderBys: [{metric: {metricName: 'sessions'}, desc: true}],
+    limit: 10
+  }).then(function(data) {
+    var rows = data.rows || [];
+    document.getElementById('ga-sources').innerHTML = rows.map(function(r) {
+      return '<tr><td>'+r.dimensionValues[0].value+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
+    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.3);">No data</td></tr>';
+  }).catch(function(e) { console.error('Sources error:', e); });
+
+  // 5. Countries & cities
+  gaRunReport({
+    dateRanges: [{startDate: '30daysAgo', endDate: 'today'}],
+    dimensions: [{name: 'country'}, {name: 'city'}],
+    metrics: [{name: 'sessions'}],
+    orderBys: [{metric: {metricName: 'sessions'}, desc: true}],
+    limit: 15
+  }).then(function(data) {
+    var rows = data.rows || [];
+    document.getElementById('ga-geo').innerHTML = rows.map(function(r) {
+      var city = r.dimensionValues[1].value;
+      var country = r.dimensionValues[0].value;
+      var loc = (city && city !== '(not set)') ? city + ', ' + country : country;
+      return '<tr><td>'+loc+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
+    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.3);">No data</td></tr>';
+  }).catch(function(e) { console.error('Geo error:', e); });
+
+  // 6. Devices
+  gaRunReport({
+    dateRanges: [{startDate: '30daysAgo', endDate: 'today'}],
+    dimensions: [{name: 'deviceCategory'}],
+    metrics: [{name: 'sessions'}],
+    orderBys: [{metric: {metricName: 'sessions'}, desc: true}]
+  }).then(function(data) {
+    var rows = data.rows || [];
+    document.getElementById('ga-devices').innerHTML = rows.map(function(r) {
+      var device = r.dimensionValues[0].value;
+      device = device.charAt(0).toUpperCase() + device.slice(1);
+      return '<tr><td>'+device+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
+    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.3);">No data</td></tr>';
+  }).catch(function(e) { console.error('Devices error:', e); });
+}
+
+function fmtNum(n) {
+  return parseInt(n||0).toLocaleString();
 }
 
 // Focus PIN input on load

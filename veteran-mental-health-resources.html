@@ -624,6 +624,7 @@ body.menu-open{overflow:hidden!important;}
         <a href="https://veterancareerpath.com/military-spouse-resources.html">Spouse Resources</a>
         <a href="https://veterancareerpath.com/veteran-records-guide.html">Military Records Guide</a>
         <a href="https://veterancareerpath.com/veteran-emergency-assistance.html">Emergency Assistance</a>
+        <a href="https://veterancareerpath.com/veteran-homeless-assistance.html" class="new">Homeless Assistance</a>
         <a href="https://veterancareerpath.com/veteran-forms-directory.html" class="new">Forms Directory</a>
       </div>
 
@@ -764,6 +765,7 @@ body.menu-open{overflow:hidden!important;}
   <a href="https://veterancareerpath.com/military-special-qualifications-civilian-guide.html">ASI/ASQ/NEC Guide</a>
   <a href="https://veterancareerpath.com/veteran-records-guide.html">Military Records Guide</a>
   <a href="https://veterancareerpath.com/veteran-emergency-assistance.html">Emergency Assistance</a>
+  <a href="https://veterancareerpath.com/veteran-homeless-assistance.html">Homeless Assistance</a>
   <a href="https://veterancareerpath.com/veteran-forms-directory.html">Forms Directory</a>
   <a href="https://veterancareerpath.com/veteran-discounts.html">Veteran Discounts</a>
   <a href="https://veterancareerpath.com/veteran-soft-skills.html">Soft Skills Guide</a>
@@ -1363,7 +1365,7 @@ function findResources() {
   directLinks += '<div style="background:#fff;border:1.5px solid #dde3ec;border-radius:10px;padding:1rem 1.25rem;margin-bottom:.65rem">';
   directLinks += '<div style="font-weight:700;color:#1a3a6b;font-size:.95rem;margin-bottom:.3rem;">🔍 SAMHSA Treatment Locator</div>';
   directLinks += '<p style="font-size:.85rem;color:#3a5070;margin-bottom:.5rem;">Find substance abuse and mental health treatment facilities near you. Free, confidential, 24/7.</p>';
-  directLinks += '<a href="https://findtreatment.gov/locator?sAddr=' + zip + '&sType=' + sType + '" target="_blank" rel="noopener" style="display:inline-block;padding:.5rem 1rem;background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff;border-radius:6px;font-weight:700;font-size:.85rem;text-decoration:none;">Search SAMHSA →</a>';
+  directLinks += '<a href="https://findtreatment.gov/locator?sAddr=' + encodeURIComponent(zip) + '" target="_blank" rel="noopener" style="display:inline-block;padding:.5rem 1rem;background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff;border-radius:6px;font-weight:700;font-size:.85rem;text-decoration:none;">Search SAMHSA →</a>';
   directLinks += '<div style="font-size:.82rem;color:#5a7090;margin-top:.4rem;">📞 Or call <strong>1-800-662-4357</strong> (SAMHSA Helpline) for immediate help</div>';
   directLinks += '</div>';
 

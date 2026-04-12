@@ -1719,6 +1719,14 @@ body.menu-open{overflow:hidden!important;}
         <button class="btn-pay btn-pay-free" id="btn-sub-download" style="display:none;" onclick="downloadPDF()">Already Subscribed — Download Free</button>
       </div>
       <p class="pay-note">One-time purchase includes 24-hour access to re-download your resume.</p>
+      <div id="verify-code-box" style="display:none;background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:8px;padding:.85rem 1rem;margin-top:.75rem;text-align:center;">
+        <div style="font-size:.78rem;color:rgba(192,216,240,.6);margin-bottom:.25rem;">Your data is saved for 30 days. Subscribe later and your profile will auto-populate.</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.15em;color:#f0c040;">Your Data Code: <span id="verify-code"></span></div>
+        <div style="font-size:.72rem;color:rgba(192,216,240,.4);margin-top:.2rem;">Save this code — enter it when you subscribe to restore your data.</div>
+      </div>
+      <div style="text-align:center;margin-top:.65rem;">
+        <a href="/scout-cover-letter.html" style="display:inline-block;padding:.5rem 1.2rem;background:rgba(26,58,107,.4);border:1px solid rgba(26,58,107,.3);border-radius:8px;color:rgba(192,216,240,.85);text-decoration:none;font-size:.82rem;font-weight:600;">Need a cover letter too? Scout Cover Letter — $5 →</a>
+      </div>
     </div>
 
     <!-- Download Ready (shown after payment) -->
@@ -2201,6 +2209,25 @@ window.generateResume = function() {
       try {
         resumeData = JSON.parse(jsonMatch[0]);
         localStorage.setItem('vcp_scout_resume', JSON.stringify(resumeData));
+        // Save data with verification code for future subscription
+        var vCode = Math.random().toString(36).substr(2,6).toUpperCase();
+        var wizardState = JSON.parse(localStorage.getItem('vcp_scout_wizard') || '{}');
+        var scoutData = {
+          wizardData: wizardState,
+          resume: resumeData,
+          email: wizardState.email || p.email || '',
+          verificationCode: vCode,
+          created: Date.now(),
+          expiry: Date.now() + 30*24*60*60*1000
+        };
+        localStorage.setItem('vcp_scout_data', JSON.stringify(scoutData));
+        // Save to Firestore for cross-device retrieval
+        try {
+          if(typeof firebase!=='undefined' && firebase.firestore && scoutData.email) {
+            firebase.firestore().collection('scout_data').doc(scoutData.email).set(scoutData, {merge:true}).catch(function(){});
+          }
+        } catch(e){}
+        window._scoutVerifyCode = vCode;
         showResumePreview(resumeData, p);
       } catch(e) {
         alert('Error parsing resume data. Please try again.');
@@ -2392,6 +2419,11 @@ function checkPaymentAccess() {
       // Show payment options
       document.getElementById('payment-section').style.display = 'block';
       document.getElementById('download-ready').classList.remove('visible');
+      // Show verification code
+      if(window._scoutVerifyCode) {
+        document.getElementById('verify-code').textContent = window._scoutVerifyCode;
+        document.getElementById('verify-code-box').style.display = 'block';
+      }
 
       // Show subscriber button if subscribed
       try {

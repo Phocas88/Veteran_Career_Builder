@@ -2575,6 +2575,16 @@ document.getElementById('skill-suggestions').addEventListener('click', function(
   }
 })();
 
+// Event delegation for branch changes — more reliable than inline onchange
+document.addEventListener('change', function(e) {
+  if (e.target.classList.contains('sp-branch')) {
+    window.onSpBranchChange(e.target);
+  }
+  if (e.target.classList.contains('sp-mos')) {
+    window.onMosChange(e.target);
+  }
+});
+
 // Populate guided duty prompts into a container
 window.populateDutyPrompts = function(container) {
   if (!container || !window.VCP_MIL || !window.VCP_MIL.DUTY_PROMPTS) return;
@@ -2594,6 +2604,7 @@ window.populateDutyPrompts = function(container) {
 
 // Service Period branch change handler
 window.onSpBranchChange = function(selectEl) {
+  console.log('onSpBranchChange called, branch:', selectEl.value, 'VCP_MOS:', !!window.VCP_MOS, 'VCP_MIL:', !!window.VCP_MIL);
   var sp = selectEl.closest('.service-period');
   if (!sp) { console.warn('Scout: no service-period parent found'); return; }
   var branch = selectEl.value;

@@ -1165,15 +1165,23 @@ body.menu-open{overflow:hidden!important;}
     <h2>Your <span>Resume</span></h2>
 
     <div class="cl-field">
-      <label class="cl-label">Paste your resume here</label>
-      <textarea class="cl-textarea tall" id="cl-resume" placeholder="Paste your full resume text here..."></textarea>
+      <label class="cl-label">Paste your resume here — or upload a file</label>
+      <textarea class="cl-textarea tall" id="cl-resume" placeholder="Paste your full resume text here, or use the upload/Scout buttons below..."></textarea>
     </div>
 
-    <button class="cl-btn-scout" id="cl-use-scout" type="button" disabled>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      Use My Scout Resume
-    </button>
-    <div class="cl-scout-note">Scout Resumes produce the best results because your military experience is already translated into civilian language.</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem;">
+      <button class="cl-btn-scout" id="cl-use-scout" type="button" disabled style="flex:1;min-width:140px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Use My Scout Resume
+      </button>
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.6rem 1rem;background:rgba(26,58,107,.3);border:1.5px solid rgba(26,58,107,.4);border-radius:8px;color:rgba(192,216,240,.8);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;" onmouseover="this.style.background='rgba(26,58,107,.5)'" onmouseout="this.style.background='rgba(26,58,107,.3)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload PDF / Word
+        <input type="file" id="cl-file-upload" accept=".pdf,.doc,.docx,.txt" style="display:none;" onchange="handleFileUpload(this)">
+      </label>
+    </div>
+    <div id="cl-upload-status" style="display:none;font-size:.78rem;color:#f0c040;margin-bottom:.5rem;"></div>
+    <div class="cl-scout-note">Scout Resumes produce the best results — your military experience is already translated. You can also upload any PDF, Word doc, or text file.</div>
   </div>
 
   <!-- STEP 2: JOB DETAILS -->
@@ -1304,13 +1312,47 @@ body.menu-open{overflow:hidden!important;}
   var generatedLetter = null; // {greeting, body, closing, name}
   var hasPaid = false;
 
+  // ── Convert Scout Resume JSON to readable text ──
+  function scoutJsonToText(data) {
+    if (typeof data === 'string') {
+      try { data = JSON.parse(data); } catch(e) { return data; }
+    }
+    if (!data || typeof data !== 'object') return String(data || '');
+    var lines = [];
+    if (data.summary) lines.push(data.summary, '');
+    if (data.experience && data.experience.length) {
+      lines.push('EXPERIENCE');
+      data.experience.forEach(function(exp) {
+        lines.push((exp.title || '') + (exp.company ? ' — ' + exp.company : '') + (exp.dates ? ' (' + exp.dates + ')' : ''));
+        if (exp.bullets) exp.bullets.forEach(function(b) { lines.push('• ' + b); });
+        lines.push('');
+      });
+    }
+    if (data.education && data.education.length) {
+      lines.push('EDUCATION');
+      data.education.forEach(function(edu) {
+        lines.push((edu.degree || '') + (edu.school ? ' — ' + edu.school : '') + (edu.year ? ' (' + edu.year + ')' : ''));
+      });
+      lines.push('');
+    }
+    if (data.skills && data.skills.length) {
+      lines.push('SKILLS');
+      lines.push(data.skills.join(', '), '');
+    }
+    if (data.certifications && data.certifications.length) {
+      lines.push('CERTIFICATIONS');
+      data.certifications.forEach(function(c) { lines.push('• ' + c); });
+    }
+    return lines.join('\n').trim();
+  }
+
   // ── Pre-fill resume from localStorage ──
   try {
     var savedResume = localStorage.getItem('vcp_scout_resume');
     if (savedResume) {
-      resumeEl.value = savedResume;
+      resumeEl.value = scoutJsonToText(savedResume);
       useScoutBtn.disabled = false;
-      useScoutBtn.textContent = '✓ Scout Resume Loaded';
+      useScoutBtn.innerHTML = '✓ Scout Resume Loaded';
     }
   } catch(e){}
 
@@ -1319,10 +1361,10 @@ body.menu-open{overflow:hidden!important;}
     try {
       var sr = localStorage.getItem('vcp_scout_resume');
       if (sr) {
-        resumeEl.value = sr;
-        useScoutBtn.textContent = '✓ Scout Resume Loaded';
+        resumeEl.value = scoutJsonToText(sr);
+        useScoutBtn.innerHTML = '✓ Scout Resume Loaded';
       } else {
-        alert('No Scout Resume found. Build one at veterancareerpath.com/scout-resume-builder.html first!');
+        alert('No Scout Resume found. Build one first at veterancareerpath.com/scout-resume-builder.html');
       }
     } catch(e){
       alert('Could not load Scout Resume. Please paste your resume manually.');
@@ -1335,6 +1377,87 @@ body.menu-open{overflow:hidden!important;}
       useScoutBtn.disabled = false;
     }
   } catch(e){}
+
+  // ── File Upload Handler ──
+  window.handleFileUpload = function(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var status = document.getElementById('cl-upload-status');
+    var name = file.name.toLowerCase();
+
+    if (name.endsWith('.txt')) {
+      // Plain text
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        resumeEl.value = e.target.result;
+        status.textContent = '✓ Loaded: ' + file.name;
+        status.style.display = 'block';
+      };
+      reader.readAsText(file);
+    } else if (name.endsWith('.pdf')) {
+      // PDF — extract text client-side using pdf.js
+      status.textContent = 'Reading PDF...';
+      status.style.display = 'block';
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      script.onload = function() {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var data = new Uint8Array(e.target.result);
+          pdfjsLib.getDocument(data).promise.then(function(pdf) {
+            var pages = [];
+            var count = pdf.numPages;
+            function getPage(i) {
+              if (i > count) {
+                resumeEl.value = pages.join('\n\n');
+                status.textContent = '✓ Loaded: ' + file.name + ' (' + count + ' pages)';
+                return;
+              }
+              pdf.getPage(i).then(function(page) {
+                page.getTextContent().then(function(tc) {
+                  pages.push(tc.items.map(function(item) { return item.str; }).join(' '));
+                  getPage(i + 1);
+                });
+              });
+            }
+            getPage(1);
+          }).catch(function() {
+            status.textContent = 'Could not read PDF. Try pasting the text instead.';
+            status.style.color = '#fca5a5';
+          });
+        };
+        reader.readAsArrayBuffer(file);
+      };
+      document.head.appendChild(script);
+    } else if (name.endsWith('.doc') || name.endsWith('.docx')) {
+      // Word doc — use mammoth.js
+      status.textContent = 'Reading Word document...';
+      status.style.display = 'block';
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js';
+      script.onload = function() {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          mammoth.extractRawText({arrayBuffer: e.target.result}).then(function(result) {
+            resumeEl.value = result.value;
+            status.textContent = '✓ Loaded: ' + file.name;
+          }).catch(function() {
+            status.textContent = 'Could not read Word doc. Try saving as .txt and uploading again.';
+            status.style.color = '#fca5a5';
+          });
+        };
+        reader.readAsArrayBuffer(file);
+      };
+      document.head.appendChild(script);
+    } else {
+      status.textContent = 'Unsupported file type. Please use PDF, Word (.doc/.docx), or text (.txt).';
+      status.style.color = '#fca5a5';
+      status.style.display = 'block';
+    }
+    // Reset input so same file can be re-uploaded
+    input.value = '';
+  };
 
   // ── Check subscriber status ──
   function isSubscriber(){

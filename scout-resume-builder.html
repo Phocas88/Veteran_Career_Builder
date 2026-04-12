@@ -2507,6 +2507,27 @@ document.getElementById('skill-suggestions').addEventListener('click', function(
   }
 });
 
+/* ── DEFINE ALL WINDOW FUNCTIONS FIRST (before init) ── */
+
+// Populate guided duty prompts into a container
+window.populateDutyPrompts = function(container) {
+  if (!container || !window.VCP_MIL || !window.VCP_MIL.DUTY_PROMPTS) return;
+  var html = '';
+  window.VCP_MIL.DUTY_PROMPTS.forEach(function(dp) {
+    html += '<div class="duty-prompt-field">';
+    html += '<label>' + dp.q + '</label>';
+    if (dp.key === 'operations' || dp.key === 'improvement') {
+      html += '<textarea class="duty-prompt-input" data-duty-key="' + dp.key + '" rows="2" placeholder="' + dp.ph + '"></textarea>';
+    } else {
+      html += '<input type="text" class="duty-prompt-input" data-duty-key="' + dp.key + '" placeholder="' + dp.ph + '">';
+    }
+    html += '</div>';
+  });
+  html += '<div class="duty-prompt-field"><label>Any other duties not covered above?</label>';
+  html += '<textarea class="duty-prompt-input" data-duty-key="customDuties" rows="3" placeholder="Additional responsibilities, achievements, or context..."></textarea></div>';
+  container.innerHTML = html;
+};
+
 /* ── VCP_MIL DYNAMIC INITIALIZATION ── */
 (function initMilData() {
   if (!window.VCP_MIL) return;
@@ -2584,23 +2605,6 @@ document.addEventListener('change', function(e) {
     window.onMosChange(e.target);
   }
 });
-
-// Populate guided duty prompts into a container
-window.populateDutyPrompts = function(container) {
-  if (!container || !window.VCP_MIL || !window.VCP_MIL.DUTY_PROMPTS) return;
-  var html = '';
-  window.VCP_MIL.DUTY_PROMPTS.forEach(function(dp) {
-    html += '<div class="duty-prompt-field">';
-    html += '<label>' + dp.q + '</label>';
-    if (dp.key === 'operations' || dp.key === 'improvement') {
-      html += '<textarea class="duty-prompt-input" data-duty-key="' + dp.key + '" rows="2" placeholder="' + dp.ph + '"></textarea>';
-    } else {
-      html += '<input type="text" class="duty-prompt-input" data-duty-key="' + dp.key + '" placeholder="' + dp.ph + '">';
-    }
-    html += '</div>';
-  });
-  container.innerHTML = html;
-};
 
 // Service Period branch change handler
 window.onSpBranchChange = function(selectEl) {

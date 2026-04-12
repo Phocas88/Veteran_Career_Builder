@@ -99,16 +99,18 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 .scout-card .step-desc{font-size:.82rem;color:rgba(192,216,240,.6);margin-bottom:1.5rem;}
 
 /* ── FORM FIELDS ── */
-.sf-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.sf-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;width:100%;max-width:100%;overflow:hidden;}
 .sf-full{grid-column:1/-1;}
-.sf-field{display:flex;flex-direction:column;gap:.3rem;}
-.sf-field label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(192,216,240,.6);}
+.sf-field{display:flex;flex-direction:column;gap:.25rem;min-width:0;}
+.sf-field label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(192,216,240,.6);}
 .sf-field input,.sf-field select,.sf-field textarea{
   background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);
-  border-radius:8px;padding:.6rem .85rem;font-size:.88rem;
+  border-radius:8px;padding:.5rem .7rem;font-size:.85rem;
   font-family:'Inter',sans-serif;color:#fff;transition:border-color .2s;
-  min-height:44px;
+  min-height:40px;width:100%;max-width:100%;box-sizing:border-box;
 }
+/* Position block uses 4-col grid on desktop */
+.position-block .sf-grid{grid-template-columns:repeat(4,1fr);gap:.5rem;}
 .sf-field input:focus,.sf-field select:focus,.sf-field textarea:focus{
   outline:none;border-color:rgba(240,192,64,.5);background:rgba(255,255,255,.1);
 }
@@ -117,12 +119,12 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 .sf-field select option{background:#0d1a2d;color:#fff;padding:.3rem .5rem;}
 /* MOS dropdown — needs scroll on desktop */
 .sp-mos-wrap select{max-height:44px;overflow-y:auto;}
-/* Awards and qualifiers checkbox grid */
-.awards-checklist{display:grid;grid-template-columns:1fr 1fr;gap:.15rem;max-height:200px;overflow-y:auto;padding:.5rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;}
-.awards-checklist label{display:flex;align-items:center;gap:.35rem;font-size:.78rem;color:rgba(192,216,240,.75);padding:.25rem .35rem;border-radius:4px;cursor:pointer;transition:background .1s;}
-.awards-checklist label:hover{background:rgba(255,255,255,.06);}
-.awards-checklist input[type="checkbox"]{width:16px;height:16px;accent-color:#f0c040;flex-shrink:0;}
-.awards-group-title{grid-column:1/-1;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f0c040;padding:.35rem 0 .15rem;border-bottom:1px solid rgba(240,192,64,.15);margin-top:.25rem;}
+/* Awards and qualifiers — single column scrollable list */
+.awards-checklist{display:flex;flex-direction:column;gap:0;max-height:180px;overflow-y:auto;padding:.4rem .5rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;}
+.awards-checklist label{display:flex;align-items:center;gap:.35rem;font-size:.75rem;color:rgba(192,216,240,.7);padding:.2rem .25rem;border-radius:3px;cursor:pointer;line-height:1.3;}
+.awards-checklist label:hover{background:rgba(255,255,255,.05);}
+.awards-checklist input[type="checkbox"]{width:14px;height:14px;accent-color:#f0c040;flex-shrink:0;}
+.awards-group-title{font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f0c040;padding:.3rem 0 .1rem;border-bottom:1px solid rgba(240,192,64,.12);margin-top:.2rem;}
 .sf-field textarea{resize:vertical;min-height:100px;}
 
 .sf-check{display:flex;align-items:center;gap:.5rem;cursor:pointer;}
@@ -500,10 +502,19 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
   .resume-preview-header{flex-direction:column;align-items:flex-start;}
   .awards-checklist{grid-template-columns:1fr;}
   /* Fix dropdowns going off screen */
-  .sf-field select,.sf-field input,.sf-field textarea{max-width:100%;width:100%!important;box-sizing:border-box;}
-  .sp-mos-wrap select{font-size:.82rem;}
-  .position-block .sf-grid{grid-template-columns:1fr;}
-  .service-period{margin-left:0;padding-left:.75rem;}
+  .sf-field select,.sf-field input,.sf-field textarea{max-width:100%;width:100%!important;box-sizing:border-box;font-size:.82rem!important;padding:.45rem .6rem!important;min-height:38px!important;}
+  .sf-field label{font-size:.62rem!important;}
+  .sp-mos-wrap select{font-size:.8rem!important;}
+  .position-block .sf-grid{grid-template-columns:1fr!important;}
+  .service-period{margin-left:0;padding-left:.75rem;padding:.75rem;}
+  .position-block{padding:.65rem;}
+  /* Smaller checkboxes on mobile */
+  .awards-checklist{max-height:150px;padding:.3rem .4rem;}
+  .awards-checklist label{font-size:.7rem!important;padding:.15rem .2rem;}
+  .awards-checklist input[type="checkbox"]{width:12px!important;height:12px!important;}
+  .awards-group-title{font-size:.58rem!important;}
+  .duty-prompt-field label{font-size:.72rem!important;}
+  .duty-prompt-field input,.duty-prompt-field textarea{font-size:.8rem!important;padding:.4rem .6rem!important;}
 }
 @media(max-width:480px){
   .scout-hero{padding:1.5rem 3% 1.25rem;}

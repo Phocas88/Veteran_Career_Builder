@@ -1650,11 +1650,19 @@ body.menu-open{overflow:hidden!important;}
         <div class="sf-grid">
           <div class="sf-field">
             <label class="sp-qual-label">Special Qualifiers</label>
-            <input type="text" class="sp-quals" placeholder="Select branch first">
+            <div class="sp-quals-wrap">
+              <select class="sp-quals" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">
+                <option value="">Select branch first...</option>
+              </select>
+            </div>
           </div>
           <div class="sf-field">
             <label class="sp-sqi-label">Special Qualification</label>
-            <input type="text" class="sp-sqi" placeholder="Select branch first">
+            <div class="sp-sqi-wrap">
+              <select class="sp-sqi" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">
+                <option value="">Select branch first...</option>
+              </select>
+            </div>
           </div>
           <div class="sf-field">
             <label>Unit / Command</label>
@@ -2386,8 +2394,8 @@ window.addServicePeriod = function() {
       '<div class="sf-field"><label>Clearance Status</label><select class="sp-clearance-status"><option value="">Select...</option><option>Active</option><option>Inactive</option><option>Expired</option></select></div>' +
     '</div>' +
     '<div class="sf-grid">' +
-      '<div class="sf-field"><label class="sp-qual-label">Special Qualifiers</label><input type="text" class="sp-quals" placeholder="Select branch first"></div>' +
-      '<div class="sf-field"><label class="sp-sqi-label">Special Qualification</label><input type="text" class="sp-sqi" placeholder="Select branch first"></div>' +
+      '<div class="sf-field"><label class="sp-qual-label">Special Qualifiers</label><div class="sp-quals-wrap"><select class="sp-quals" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;"><option value="">Select branch first...</option></select></div></div>' +
+      '<div class="sf-field"><label class="sp-sqi-label">Special Qualification</label><div class="sp-sqi-wrap"><select class="sp-sqi" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;"><option value="">Select branch first...</option></select></div></div>' +
       '<div class="sf-field"><label>Unit / Command</label><input type="text" class="sp-unit" placeholder="e.g. 2/75 Ranger Rgt"></div>' +
     '</div>' +
     '<div class="sp-positions">' +
@@ -2638,40 +2646,32 @@ window.onSpBranchChange = function(selectEl) {
     awardsContainer.innerHTML = html;
   }
 
-  // 4. Update special qualifiers
+  // 4. Update special qualifiers as <select> dropdowns
   var quals = window.VCP_MIL && window.VCP_MIL.SPECIAL_QUALS ? window.VCP_MIL.SPECIAL_QUALS[branch] : null;
-  var qualInput = sp.querySelector('.sp-quals');
-  var sqiInput = sp.querySelector('.sp-sqi');
+  var qualWrap = sp.querySelector('.sp-quals-wrap');
+  var sqiWrap = sp.querySelector('.sp-sqi-wrap');
   var qualLabel = sp.querySelector('.sp-qual-label');
   var sqiLabel = sp.querySelector('.sp-sqi-label');
 
-  if (quals && qualInput) {
-    var dlId = 'qual-list-' + sp.getAttribute('data-sp');
-    var dl = document.getElementById(dlId);
-    if (!dl) { dl = document.createElement('datalist'); dl.id = dlId; sp.appendChild(dl); }
-    dl.innerHTML = '';
-    quals.items.forEach(function(q) {
-      var opt = document.createElement('option');
-      opt.value = q.code + ' - ' + q.title;
-      dl.appendChild(opt);
-    });
-    qualInput.setAttribute('list', dlId);
-    qualInput.placeholder = 'e.g. ' + quals.items[0].code + ' - ' + quals.items[0].title;
-    if (qualLabel) qualLabel.textContent = quals.label || 'Special Qualifiers';
+  if (qualWrap) {
+    var qhtml = '<select class="sp-quals" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">';
+    qhtml += '<option value="">None / Not Applicable</option>';
+    if (quals && quals.items) {
+      quals.items.forEach(function(q) { qhtml += '<option value="'+q.code+' - '+q.title+'">'+q.code+' - '+q.title+'</option>'; });
+    }
+    qhtml += '</select>';
+    qualWrap.innerHTML = qhtml;
+    if (qualLabel) qualLabel.textContent = quals ? quals.label : 'Special Qualifiers';
   }
-  if (quals && sqiInput) {
-    var dlId2 = 'sqi-list-' + sp.getAttribute('data-sp');
-    var dl2 = document.getElementById(dlId2);
-    if (!dl2) { dl2 = document.createElement('datalist'); dl2.id = dlId2; sp.appendChild(dl2); }
-    dl2.innerHTML = '';
-    (quals.sqiItems || []).forEach(function(q) {
-      var opt = document.createElement('option');
-      opt.value = q.code + ' - ' + q.title;
-      dl2.appendChild(opt);
-    });
-    sqiInput.setAttribute('list', dlId2);
-    sqiInput.placeholder = quals.sqiItems && quals.sqiItems[0] ? 'e.g. ' + quals.sqiItems[0].code + ' - ' + quals.sqiItems[0].title : '';
-    if (sqiLabel) sqiLabel.textContent = quals.sqiLabel || 'Special Qualification';
+  if (sqiWrap) {
+    var shtml = '<select class="sp-sqi" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">';
+    shtml += '<option value="">None / Not Applicable</option>';
+    if (quals && quals.sqiItems) {
+      quals.sqiItems.forEach(function(q) { shtml += '<option value="'+q.code+' - '+q.title+'">'+q.code+' - '+q.title+'</option>'; });
+    }
+    shtml += '</select>';
+    sqiWrap.innerHTML = shtml;
+    if (sqiLabel) sqiLabel.textContent = quals ? quals.sqiLabel : 'Special Qualification';
   }
 };
 

@@ -77,8 +77,13 @@ body{font-family:'Inter',sans-serif;background:#060e1a;color:#e8f0f8;font-size:1
 /* ── COVER LETTER PREVIEW ── */
 .cl-preview-wrap{display:none;margin-top:2rem;}
 .cl-preview-wrap.show{display:block;}
-.cl-preview-card{background:#fff;border-radius:12px;padding:2.5rem 2.5rem 3rem;color:#1a2a3a;position:relative;overflow:hidden;min-height:500px;box-shadow:0 4px 24px rgba(0,0,0,.4);}
-.cl-preview-card *{user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}
+.cl-preview-card{background:#fff;border-radius:12px;padding:2.5rem 2.5rem 3rem;color:#1a2a3a;position:relative;overflow:hidden;min-height:400px;box-shadow:0 4px 24px rgba(0,0,0,.4);}
+.cl-preview-card *{user-select:none!important;-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;}
+.cl-preview-card.locked .cl-preview-date{filter:blur(3px);}
+.cl-preview-card.locked .cl-preview-greeting{filter:blur(2px);}
+.cl-preview-card.locked .cl-preview-body{filter:blur(6px);-webkit-filter:blur(6px);pointer-events:none;}
+.cl-preview-card.locked .cl-preview-closing{display:none;}
+.cl-preview-card.locked .cl-preview-name{display:none;}
 .cl-preview-date{font-size:.85rem;color:#5a6a7a;margin-bottom:1.5rem;}
 .cl-preview-greeting{font-size:1rem;font-weight:600;color:#1a2a3a;margin-bottom:1rem;}
 .cl-preview-body{font-size:.92rem;line-height:1.8;color:#2a3a4a;white-space:pre-wrap;}
@@ -86,13 +91,24 @@ body{font-family:'Inter',sans-serif;background:#060e1a;color:#e8f0f8;font-size:1
 .cl-preview-closing{font-size:.95rem;color:#1a2a3a;margin-top:1.25rem;}
 .cl-preview-name{font-size:1rem;font-weight:700;color:#1a2a3a;margin-top:.4rem;}
 
-/* Watermark overlay */
-.cl-watermark{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:10;}
-.cl-watermark span{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.2rem,3vw,2rem);color:rgba(192,57,43,.18);letter-spacing:.15em;transform:rotate(-30deg);white-space:nowrap;text-transform:uppercase;}
+/* Heavy watermark overlay — multiple diagonal lines */
+.cl-watermark{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:10;overflow:hidden;}
+.cl-watermark-text{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:rgba(192,57,43,.22);letter-spacing:.12em;transform:rotate(-35deg);white-space:nowrap;text-transform:uppercase;}
 
-/* Bottom blur */
-.cl-preview-blur{position:absolute;bottom:0;left:0;right:0;height:180px;background:linear-gradient(transparent,#fff 70%);z-index:5;display:flex;align-items:flex-end;justify-content:center;padding-bottom:1rem;}
-.cl-preview-blur span{font-size:.78rem;color:#8a6a3a;font-weight:600;background:rgba(240,192,64,.15);padding:.3rem .75rem;border-radius:6px;}
+/* Full-cover overlay with CTA */
+.cl-preview-overlay{position:absolute;top:50%;left:0;right:0;bottom:0;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,.95) 15%,#fff 30%);z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
+.cl-preview-overlay .overlay-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#1a3a6b;margin-bottom:.5rem;}
+.cl-preview-overlay .overlay-desc{font-size:.85rem;color:#5a7090;max-width:320px;text-align:center;line-height:1.6;margin-bottom:1rem;}
+
+/* Unlocked state */
+.cl-preview-card.unlocked .cl-preview-body{filter:none;pointer-events:auto;}
+.cl-preview-card.unlocked .cl-preview-date{filter:none;}
+.cl-preview-card.unlocked .cl-preview-greeting{filter:none;}
+.cl-preview-card.unlocked .cl-preview-closing{display:block;}
+.cl-preview-card.unlocked .cl-preview-name{display:block;}
+.cl-preview-card.unlocked *{user-select:auto!important;-webkit-user-select:auto!important;}
+.cl-preview-card.unlocked .cl-watermark{display:none;}
+.cl-preview-card.unlocked .cl-preview-overlay{display:none;}
 
 /* ── DOWNLOAD SECTION ── */
 .cl-download{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:1.75rem;margin-top:1.5rem;text-align:center;display:none;}
@@ -1245,18 +1261,27 @@ body.menu-open{overflow:hidden!important;}
   <div class="cl-preview-wrap" id="cl-preview-wrap">
     <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.75rem;">Your Cover Letter Preview</h2>
 
-    <div class="cl-preview-card" id="cl-preview-card" oncontextmenu="return false;">
+    <div class="cl-preview-card locked" id="cl-preview-card" oncontextmenu="return false;" oncopy="return false;" oncut="return false;" ondragstart="return false;">
       <div class="cl-preview-date" id="cl-preview-date"></div>
       <div class="cl-preview-greeting" id="cl-preview-greeting"></div>
       <div class="cl-preview-body" id="cl-preview-body"></div>
       <div class="cl-preview-closing" id="cl-preview-closing"></div>
       <div class="cl-preview-name" id="cl-preview-name"></div>
 
+      <!-- Heavy watermark — 6 diagonal lines across the page -->
       <div class="cl-watermark" id="cl-watermark">
-        <span>PREVIEW — Purchase to Download</span>
+        <span class="cl-watermark-text" style="top:5%;left:-5%;">PREVIEW ONLY — PURCHASE TO DOWNLOAD</span>
+        <span class="cl-watermark-text" style="top:20%;left:10%;">PREVIEW ONLY — PURCHASE TO DOWNLOAD</span>
+        <span class="cl-watermark-text" style="top:35%;left:-10%;">PREVIEW ONLY — PURCHASE TO DOWNLOAD</span>
+        <span class="cl-watermark-text" style="top:50%;left:5%;">PREVIEW ONLY — PURCHASE TO DOWNLOAD</span>
+        <span class="cl-watermark-text" style="top:65%;left:-5%;">PREVIEW ONLY — PURCHASE TO DOWNLOAD</span>
+        <span class="cl-watermark-text" style="top:80%;left:10%;">PREVIEW ONLY — PURCHASE TO DOWNLOAD</span>
       </div>
-      <div class="cl-preview-blur" id="cl-preview-blur">
-        <span>Purchase to see the full cover letter</span>
+
+      <!-- Solid overlay covering bottom half with CTA -->
+      <div class="cl-preview-overlay" id="cl-preview-overlay">
+        <div class="overlay-title">Your Cover Letter is Ready</div>
+        <div class="overlay-desc">We generated a personalized cover letter matched to this specific job. Purchase to download the full, clean PDF.</div>
       </div>
     </div>
 
@@ -1502,9 +1527,12 @@ body.menu-open{overflow:hidden!important;}
   }
 
   function unlockDownload(){
-    watermarkEl.style.display = 'none';
-    blurEl.style.display = 'none';
-    previewWrap.querySelector('.cl-preview-card').style.userSelect = 'auto';
+    var card = document.getElementById('cl-preview-card');
+    card.classList.remove('locked');
+    card.classList.add('unlocked');
+    card.removeAttribute('oncontextmenu');
+    card.removeAttribute('oncopy');
+    card.removeAttribute('oncut');
     payBtn.textContent = 'Download PDF';
     payBtn.removeAttribute('href');
     payBtn.style.cursor = 'pointer';

@@ -236,41 +236,49 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
   position:relative;overflow:hidden;max-width:700px;margin:0 auto;
   box-shadow:0 8px 40px rgba(0,0,0,.4);
 }
+.resume-preview.locked *{user-select:none!important;-webkit-user-select:none!important;}
+.resume-preview.locked .resume-content{filter:blur(5px);-webkit-filter:blur(5px);pointer-events:none;}
+.resume-preview.locked .rc-name{filter:blur(2px);}
+.resume-preview.locked .rc-contact{filter:blur(4px);}
 
-/* Watermark */
+/* Watermark — heavy, repeating */
 .resume-preview .watermark{
   position:absolute;top:0;left:0;right:0;bottom:0;
-  pointer-events:none;z-index:10;
-  background:repeating-linear-gradient(
-    -45deg,
-    transparent,transparent 80px,
-    rgba(200,50,50,.06) 80px,rgba(200,50,50,.06) 82px
-  );
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
+  pointer-events:none;z-index:10;overflow:hidden;
 }
 .watermark-text{
   position:absolute;
-  font-family:'Bebas Neue',sans-serif;font-size:2.2rem;
-  color:rgba(200,50,50,.12);letter-spacing:.15em;
+  font-family:'Bebas Neue',sans-serif;font-size:1.6rem;
+  color:rgba(200,50,50,.22);letter-spacing:.12em;
   transform:rotate(-35deg);white-space:nowrap;
   pointer-events:none;user-select:none;-webkit-user-select:none;
 }
-.wm1{top:15%;left:-5%;}
-.wm2{top:45%;left:5%;}
-.wm3{top:75%;left:-2%;}
+.wm1{top:5%;left:-5%;}
+.wm2{top:20%;left:10%;}
+.wm3{top:35%;left:-10%;}
+.wm4{top:50%;left:5%;}
+.wm5{top:65%;left:-5%;}
+.wm6{top:80%;left:10%;}
 
-/* Blur bottom */
-.resume-preview .blur-overlay{
-  position:absolute;bottom:0;left:0;right:0;height:40%;
-  background:linear-gradient(to bottom,transparent,rgba(255,255,255,.6) 30%,rgba(255,255,255,.95));
-  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
-  z-index:11;pointer-events:none;
+/* Solid overlay covering bottom half */
+.resume-preview .preview-overlay{
+  position:absolute;top:45%;left:0;right:0;bottom:0;
+  background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,.95) 15%,#fff 25%);
+  z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;
 }
+.preview-overlay .ov-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#1a3a6b;margin-bottom:.5rem;}
+.preview-overlay .ov-desc{font-size:.85rem;color:#5a7090;max-width:320px;text-align:center;line-height:1.6;}
 
-/* Resume content (protected) */
+/* Unlocked state */
+.resume-preview.unlocked *{user-select:auto!important;-webkit-user-select:auto!important;}
+.resume-preview.unlocked .resume-content{filter:none;pointer-events:auto;}
+.resume-preview.unlocked .rc-name{filter:none;}
+.resume-preview.unlocked .rc-contact{filter:none;}
+.resume-preview.unlocked .watermark{display:none;}
+.resume-preview.unlocked .preview-overlay{display:none;}
+
+/* Resume content */
 .resume-content{
-  user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;
   position:relative;z-index:1;
 }
 .rc-name{font-family:'Inter',sans-serif;font-size:1.6rem;font-weight:700;color:#0a1628;margin-bottom:.15rem;}
@@ -1700,14 +1708,20 @@ body.menu-open{overflow:hidden!important;}
       </div>
     </div>
 
-    <div class="resume-preview" id="resume-preview" oncontextmenu="return false;">
+    <div class="resume-preview locked" id="resume-preview" oncontextmenu="return false;" oncopy="return false;" oncut="return false;" ondragstart="return false;">
       <div class="watermark" id="resume-watermark">
-        <span class="watermark-text wm1">PREVIEW &mdash; Purchase to Download</span>
-        <span class="watermark-text wm2">PREVIEW &mdash; Purchase to Download</span>
-        <span class="watermark-text wm3">PREVIEW &mdash; Purchase to Download</span>
+        <span class="watermark-text wm1">PREVIEW ONLY &mdash; PURCHASE TO DOWNLOAD</span>
+        <span class="watermark-text wm2">PREVIEW ONLY &mdash; PURCHASE TO DOWNLOAD</span>
+        <span class="watermark-text wm3">PREVIEW ONLY &mdash; PURCHASE TO DOWNLOAD</span>
+        <span class="watermark-text wm4">PREVIEW ONLY &mdash; PURCHASE TO DOWNLOAD</span>
+        <span class="watermark-text wm5">PREVIEW ONLY &mdash; PURCHASE TO DOWNLOAD</span>
+        <span class="watermark-text wm6">PREVIEW ONLY &mdash; PURCHASE TO DOWNLOAD</span>
       </div>
-      <div class="blur-overlay" id="blur-overlay"></div>
       <div class="resume-content" id="resume-content"></div>
+      <div class="preview-overlay" id="resume-overlay">
+        <div class="ov-title">Your Resume is Ready</div>
+        <div class="ov-desc">We built a professional resume from your military experience. Purchase to download the full, clean PDF.</div>
+      </div>
     </div>
 
     <!-- Payment Section -->
@@ -2439,14 +2453,13 @@ function checkPaymentAccess() {
 function enableDownload() {
   document.getElementById('payment-section').style.display = 'none';
   document.getElementById('download-ready').classList.add('visible');
-  // Remove watermark and blur
-  var wm = document.getElementById('resume-watermark');
-  var blur = document.getElementById('blur-overlay');
-  if (wm) wm.style.display = 'none';
-  if (blur) blur.style.display = 'none';
-  // Enable text selection
-  document.getElementById('resume-content').style.userSelect = 'text';
-  document.getElementById('resume-content').style.webkitUserSelect = 'text';
+  // Unlock the preview
+  var rp = document.getElementById('resume-preview');
+  rp.classList.remove('locked');
+  rp.classList.add('unlocked');
+  rp.removeAttribute('oncontextmenu');
+  rp.removeAttribute('oncopy');
+  rp.removeAttribute('oncut');
 }
 
 /* ── PDF GENERATION ── */

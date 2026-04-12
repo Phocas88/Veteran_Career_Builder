@@ -113,8 +113,16 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
   outline:none;border-color:rgba(240,192,64,.5);background:rgba(255,255,255,.1);
 }
 .sf-field input::placeholder,.sf-field textarea::placeholder{color:rgba(255,255,255,.25);}
-.sf-field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;}
-.sf-field select option{background:#0d1a2d;color:#fff;}
+.sf-field select{appearance:auto;max-width:100%;overflow:hidden;text-overflow:ellipsis;}
+.sf-field select option{background:#0d1a2d;color:#fff;padding:.3rem .5rem;}
+/* MOS dropdown — needs scroll on desktop */
+.sp-mos-wrap select{max-height:44px;overflow-y:auto;}
+/* Awards and qualifiers checkbox grid */
+.awards-checklist{display:grid;grid-template-columns:1fr 1fr;gap:.15rem;max-height:200px;overflow-y:auto;padding:.5rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;}
+.awards-checklist label{display:flex;align-items:center;gap:.35rem;font-size:.78rem;color:rgba(192,216,240,.75);padding:.25rem .35rem;border-radius:4px;cursor:pointer;transition:background .1s;}
+.awards-checklist label:hover{background:rgba(255,255,255,.06);}
+.awards-checklist input[type="checkbox"]{width:16px;height:16px;accent-color:#f0c040;flex-shrink:0;}
+.awards-group-title{grid-column:1/-1;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f0c040;padding:.35rem 0 .15rem;border-bottom:1px solid rgba(240,192,64,.15);margin-top:.25rem;}
 .sf-field textarea{resize:vertical;min-height:100px;}
 
 .sf-check{display:flex;align-items:center;gap:.5rem;cursor:pointer;}
@@ -491,6 +499,11 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
   .scout-pricing{gap:.75rem;}
   .resume-preview-header{flex-direction:column;align-items:flex-start;}
   .awards-checklist{grid-template-columns:1fr;}
+  /* Fix dropdowns going off screen */
+  .sf-field select,.sf-field input,.sf-field textarea{max-width:100%;width:100%!important;box-sizing:border-box;}
+  .sp-mos-wrap select{font-size:.82rem;}
+  .position-block .sf-grid{grid-template-columns:1fr;}
+  .service-period{margin-left:0;padding-left:.75rem;}
 }
 @media(max-width:480px){
   .scout-hero{padding:1.5rem 3% 1.25rem;}
@@ -1619,16 +1632,8 @@ body.menu-open{overflow:hidden!important;}
           </div>
         </div>
 
-        <!-- Ranks -->
+        <!-- Clearance + Qualifiers (service-period level) -->
         <div class="sf-grid">
-          <div class="sf-field">
-            <label>Entry Rank</label>
-            <select class="sp-rank-entry"><option value="">Select branch first...</option></select>
-          </div>
-          <div class="sf-field">
-            <label>Separation Rank</label>
-            <select class="sp-rank-sep"><option value="">Select branch first...</option></select>
-          </div>
           <div class="sf-field">
             <label>Clearance</label>
             <select class="sp-clearance">
@@ -1644,33 +1649,21 @@ body.menu-open{overflow:hidden!important;}
               <option>Active</option><option>Inactive</option><option>Expired</option>
             </select>
           </div>
-        </div>
-
-        <!-- Special Qualifiers -->
-        <div class="sf-grid">
           <div class="sf-field">
-            <label class="sp-qual-label">Special Qualifiers</label>
-            <div class="sp-quals-wrap">
-              <select class="sp-quals" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">
-                <option value="">Select branch first...</option>
-              </select>
-            </div>
-          </div>
-          <div class="sf-field">
-            <label class="sp-sqi-label">Special Qualification</label>
-            <div class="sp-sqi-wrap">
-              <select class="sp-sqi" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">
-                <option value="">Select branch first...</option>
-              </select>
-            </div>
-          </div>
-          <div class="sf-field">
-            <label>Unit / Command</label>
-            <input type="text" class="sp-unit" placeholder="e.g. 2/75 Ranger Rgt">
+            <label>Separation Rank</label>
+            <select class="sp-rank-sep"><option value="">Select branch first...</option></select>
           </div>
         </div>
 
-        <!-- POSITIONS -->
+        <!-- Special Qualifiers (checkboxes, multiple select) -->
+        <div class="sf-field sf-full" style="margin-bottom:.5rem;">
+          <label class="sp-qual-label">Special Qualifiers (check all that apply)</label>
+          <div class="sp-quals-wrap awards-checklist" style="max-height:160px;overflow-y:auto;">
+            <span style="font-size:.8rem;color:rgba(192,216,240,.4);">Select branch to see options</span>
+          </div>
+        </div>
+
+        <!-- POSITIONS & ASSIGNMENTS -->
         <div class="sp-positions">
           <h4 style="color:#f0c040;font-family:'Bebas Neue',sans-serif;letter-spacing:.06em;margin:.75rem 0 .5rem;">Positions &amp; Assignments</h4>
           <div class="position-blocks">
@@ -1679,9 +1672,19 @@ body.menu-open{overflow:hidden!important;}
                 <span class="pos-num">Position 1</span>
               </div>
               <div class="sf-grid">
-                <div class="sf-field">
+                <div class="sf-field sf-full">
                   <label>Position / Duty Title *</label>
-                  <input type="text" class="pos-title" placeholder="e.g. Team Leader, Platoon Sergeant">
+                  <input type="text" class="pos-title" placeholder="e.g. Team Leader, Platoon Sergeant, Motor Pool NCOIC">
+                </div>
+              </div>
+              <div class="sf-grid">
+                <div class="sf-field">
+                  <label>Rank During This Position</label>
+                  <select class="pos-rank"><option value="">Select branch first...</option></select>
+                </div>
+                <div class="sf-field">
+                  <label>Unit / Command</label>
+                  <input type="text" class="pos-unit" placeholder="e.g. 2/75 Ranger Rgt">
                 </div>
                 <div class="sf-field">
                   <label>Start</label>
@@ -2244,6 +2247,8 @@ function getMilitaryData() {
       });
       positions.push({
         title: pb.querySelector('.pos-title') ? pb.querySelector('.pos-title').value.trim() : '',
+        rank: pb.querySelector('.pos-rank') ? pb.querySelector('.pos-rank').value : '',
+        unit: pb.querySelector('.pos-unit') ? pb.querySelector('.pos-unit').value.trim() : '',
         start: pb.querySelector('.pos-start') ? pb.querySelector('.pos-start').value : '',
         end: pb.querySelector('.pos-end') ? pb.querySelector('.pos-end').value : '',
         dutyAnswers: dutyAnswers
@@ -2259,13 +2264,10 @@ function getMilitaryData() {
       end: sp.querySelector('.sp-end') ? sp.querySelector('.sp-end').value : '',
       mos: mosCode,
       mosTitle: sp.querySelector('.sp-mos-title') ? sp.querySelector('.sp-mos-title').value.trim() : '',
-      rankEntry: sp.querySelector('.sp-rank-entry') ? sp.querySelector('.sp-rank-entry').value : '',
       rankSep: sp.querySelector('.sp-rank-sep') ? sp.querySelector('.sp-rank-sep').value : '',
       clearance: sp.querySelector('.sp-clearance') ? sp.querySelector('.sp-clearance').value : 'None',
       clearanceStatus: sp.querySelector('.sp-clearance-status') ? sp.querySelector('.sp-clearance-status').value : '',
-      quals: sp.querySelector('.sp-quals') ? sp.querySelector('.sp-quals').value.trim() : '',
-      sqi: sp.querySelector('.sp-sqi') ? sp.querySelector('.sp-sqi').value.trim() : '',
-      unit: sp.querySelector('.sp-unit') ? sp.querySelector('.sp-unit').value.trim() : '',
+      quals: (function(){ var q=[]; sp.querySelectorAll('.qual-check:checked').forEach(function(cb){q.push(cb.value);}); return q; })(),
       positions: positions,
       awards: checkedAwards,
       awardsCustom: customAwards,
@@ -2442,11 +2444,18 @@ window.addPosition = function(btn) {
   var div = document.createElement('div');
   div.className = 'position-block';
   div.setAttribute('data-pos', count);
+  // Get rank options from the branch select
+  var branch = sp.querySelector('.sp-branch') ? sp.querySelector('.sp-branch').value : '';
+  var rankOpts = (window.VCP_MIL && branch) ? window.VCP_MIL.buildRankOptions(branch) : '<option value="">Select branch first...</option>';
   div.innerHTML =
     '<div class="pos-header"><span class="pos-num">Position '+(count+1)+'</span>' +
     '<button class="btn-remove-pos" onclick="this.closest(\'.position-block\').remove()">Remove</button></div>' +
     '<div class="sf-grid">' +
-      '<div class="sf-field"><label>Position / Duty Title *</label><input type="text" class="pos-title" placeholder="e.g. Squad Leader, NCOIC"></div>' +
+      '<div class="sf-field sf-full"><label>Position / Duty Title *</label><input type="text" class="pos-title" placeholder="e.g. Squad Leader, NCOIC, Shop Foreman"></div>' +
+    '</div>' +
+    '<div class="sf-grid">' +
+      '<div class="sf-field"><label>Rank</label><select class="pos-rank">'+rankOpts+'</select></div>' +
+      '<div class="sf-field"><label>Unit / Command</label><input type="text" class="pos-unit" placeholder="e.g. 3rd BCT, 101st ABN"></div>' +
       '<div class="sf-field"><label>Start</label><input type="month" class="pos-start"></div>' +
       '<div class="sf-field"><label>End</label><input type="month" class="pos-end"></div>' +
     '</div>' +
@@ -2627,13 +2636,13 @@ window.onSpBranchChange = function(selectEl) {
     sp.querySelector('.sp-mos-title').value = '';
   }
 
-  // 2. Populate rank dropdowns (entry + separation)
+  // 2. Populate rank dropdowns (separation + all position ranks)
   if (window.VCP_MIL) {
     var rankOpts = window.VCP_MIL.buildRankOptions(branch);
-    var entryRank = sp.querySelector('.sp-rank-entry');
     var sepRank = sp.querySelector('.sp-rank-sep');
-    if (entryRank) entryRank.innerHTML = rankOpts;
     if (sepRank) sepRank.innerHTML = rankOpts;
+    // Also populate rank selects inside each position block
+    sp.querySelectorAll('.pos-rank').forEach(function(pr) { pr.innerHTML = rankOpts; });
   }
 
   // 3. Populate awards checklist
@@ -2661,32 +2670,31 @@ window.onSpBranchChange = function(selectEl) {
     awardsContainer.innerHTML = html;
   }
 
-  // 4. Update special qualifiers as <select> dropdowns
+  // 4. Update special qualifiers as checkboxes (check all that apply)
   var quals = window.VCP_MIL && window.VCP_MIL.SPECIAL_QUALS ? window.VCP_MIL.SPECIAL_QUALS[branch] : null;
   var qualWrap = sp.querySelector('.sp-quals-wrap');
-  var sqiWrap = sp.querySelector('.sp-sqi-wrap');
   var qualLabel = sp.querySelector('.sp-qual-label');
-  var sqiLabel = sp.querySelector('.sp-sqi-label');
 
   if (qualWrap) {
-    var qhtml = '<select class="sp-quals" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">';
-    qhtml += '<option value="">None / Not Applicable</option>';
-    if (quals && quals.items) {
-      quals.items.forEach(function(q) { qhtml += '<option value="'+q.code+' - '+q.title+'">'+q.code+' - '+q.title+'</option>'; });
+    if (!quals) {
+      qualWrap.innerHTML = '<span style="font-size:.8rem;color:rgba(192,216,240,.4);">Select branch to see options</span>';
+    } else {
+      var qhtml = '';
+      if (quals.items && quals.items.length) {
+        qhtml += '<div class="awards-group-title">' + (quals.label || 'Qualifiers') + '</div>';
+        quals.items.forEach(function(q) {
+          qhtml += '<label><input type="checkbox" class="qual-check" value="'+q.code+' - '+q.title+'"> '+q.code+' - '+q.title+'</label>';
+        });
+      }
+      if (quals.sqiItems && quals.sqiItems.length) {
+        qhtml += '<div class="awards-group-title">' + (quals.sqiLabel || 'Special Qualifications') + '</div>';
+        quals.sqiItems.forEach(function(q) {
+          qhtml += '<label><input type="checkbox" class="qual-check" value="'+q.code+' - '+q.title+'"> '+q.code+' - '+q.title+'</label>';
+        });
+      }
+      qualWrap.innerHTML = qhtml;
     }
-    qhtml += '</select>';
-    qualWrap.innerHTML = qhtml;
-    if (qualLabel) qualLabel.textContent = quals ? quals.label : 'Special Qualifiers';
-  }
-  if (sqiWrap) {
-    var shtml = '<select class="sp-sqi" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">';
-    shtml += '<option value="">None / Not Applicable</option>';
-    if (quals && quals.sqiItems) {
-      quals.sqiItems.forEach(function(q) { shtml += '<option value="'+q.code+' - '+q.title+'">'+q.code+' - '+q.title+'</option>'; });
-    }
-    shtml += '</select>';
-    sqiWrap.innerHTML = shtml;
-    if (sqiLabel) sqiLabel.textContent = quals ? quals.sqiLabel : 'Special Qualification';
+    if (qualLabel) qualLabel.textContent = quals ? (quals.label + ' & ' + quals.sqiLabel + ' (check all that apply)') : 'Special Qualifiers';
   }
 };
 
@@ -2794,8 +2802,10 @@ function buildReview() {
     if (m.positions && m.positions.length) {
       m.positions.forEach(function(pos, pi) {
         if (pos.title) {
-          html += '<div class="review-item" style="margin-left:.75rem;margin-top:.3rem;"><strong>Position: '+esc(pos.title)+'</strong>';
+          html += '<div class="review-item" style="margin-left:.75rem;margin-top:.3rem;"><strong>'+esc(pos.title)+'</strong>';
+          if (pos.rank) html += ' - ' + esc(pos.rank);
           if (pos.start || pos.end) html += ' ('+esc(pos.start)+' - '+esc(pos.end)+')';
+          if (pos.unit) html += '<br><span style="font-size:.78rem;color:rgba(192,216,240,.5);">Unit: '+esc(pos.unit)+'</span>';
           html += '</div>';
           if (pos.dutyAnswers && Object.keys(pos.dutyAnswers).length) {
             Object.keys(pos.dutyAnswers).forEach(function(key) {
@@ -2993,14 +3003,16 @@ function buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis) {
     prompt += 'Dates: ' + m.start + ' to ' + m.end + '\n';
     if (m.unit) prompt += 'Unit/Command: ' + m.unit + '\n';
     prompt += 'Clearance: ' + m.clearance + (m.clearanceStatus ? ' (' + m.clearanceStatus + ')' : '') + '\n';
-    if (m.quals) prompt += 'Special Qualifiers: ' + m.quals + '\n';
-    if (m.sqi) prompt += 'Skill Qualification Identifier (SQI): ' + m.sqi + '\n';
+    if (Array.isArray(m.quals) && m.quals.length) prompt += 'Special Qualifiers: ' + m.quals.join(', ') + '\n';
+    else if (m.quals && typeof m.quals === 'string') prompt += 'Special Qualifiers: ' + m.quals + '\n';
     // Positions within this service period
     var dutyPrompts = window.VCP_MIL ? window.VCP_MIL.DUTY_PROMPTS : [];
     if (m.positions && m.positions.length) {
       m.positions.forEach(function(pos, pi) {
         if (pos.title) {
           prompt += '\n  Position ' + (pi+1) + ': ' + pos.title + '\n';
+          if (pos.rank) prompt += '  Rank: ' + pos.rank + '\n';
+          if (pos.unit) prompt += '  Unit: ' + pos.unit + '\n';
           if (pos.start || pos.end) prompt += '  Dates: ' + pos.start + ' to ' + pos.end + '\n';
           if (pos.dutyAnswers && Object.keys(pos.dutyAnswers).length) {
             prompt += '  Key Accomplishment Details:\n';

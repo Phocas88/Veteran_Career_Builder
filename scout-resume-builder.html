@@ -1466,11 +1466,26 @@ body.menu-open{overflow:hidden!important;}
             <input type="number" class="mil-years" placeholder="e.g. 6" min="1" max="40">
           </div>
           <div class="sf-field">
+            <label>Service Type</label>
+            <select class="mil-service-type">
+              <option value="">Select...</option>
+              <option>Active Duty</option><option>Reserve</option><option>National Guard</option>
+              <option>Active Guard Reserve</option>
+            </select>
+          </div>
+          <div class="sf-field">
             <label>Clearance Level</label>
             <select class="mil-clearance">
               <option value="None">None</option>
               <option>Confidential</option><option>Secret</option>
               <option>Top Secret</option><option>TS/SCI</option>
+            </select>
+          </div>
+          <div class="sf-field">
+            <label>Clearance Status</label>
+            <select class="mil-clearance-status">
+              <option value="">Select...</option>
+              <option>Active</option><option>Inactive</option><option>Expired</option>
             </select>
           </div>
           <div class="sf-field">
@@ -1481,9 +1496,37 @@ body.menu-open{overflow:hidden!important;}
             <label>Service End Date</label>
             <input type="month" class="mil-end">
           </div>
+          <div class="sf-field">
+            <label>Unit / Command</label>
+            <input type="text" class="mil-unit" placeholder="e.g. 2nd Battalion, 75th Ranger Regiment">
+          </div>
+          <div class="sf-field">
+            <label>Personnel You Supervised</label>
+            <input type="text" class="mil-supervised" placeholder="e.g. 13 soldiers">
+          </div>
+          <div class="sf-field">
+            <label>Unit Size</label>
+            <input type="text" class="mil-unit-size" placeholder="e.g. 120 personnel">
+          </div>
+          <div class="sf-field">
+            <label>Equipment/Asset Value</label>
+            <input type="text" class="mil-equip-value" placeholder="e.g. $4.2 million">
+          </div>
+          <div class="sf-field">
+            <label>Personnel Trained</label>
+            <input type="text" class="mil-trained" placeholder="e.g. 25 service members">
+          </div>
           <div class="sf-field sf-full">
             <label>Key Duties &amp; Accomplishments * (3-5 bullet points)</label>
             <textarea class="mil-duties" rows="5" placeholder="- Managed a team of 12 soldiers in a medical platoon&#10;- Provided emergency trauma care to 200+ patients&#10;- Trained 30 combat lifesavers on updated protocols&#10;- Maintained 100% accountability of $500K+ equipment"></textarea>
+          </div>
+          <div class="sf-field sf-full">
+            <label>Deployments (locations, dates, duration)</label>
+            <textarea class="mil-deployments" rows="3" placeholder="e.g. Afghanistan (Kandahar), Jan 2019 - Sep 2019, 9 months&#10;Iraq (Camp Taji), Mar 2020 - Jan 2021, 10 months"></textarea>
+          </div>
+          <div class="sf-field sf-full">
+            <label>Awards &amp; Decorations (one per line)</label>
+            <textarea class="mil-awards" rows="3" placeholder="Army Commendation Medal (x2)&#10;Army Achievement Medal&#10;Combat Action Badge"></textarea>
           </div>
         </div>
       </div>
@@ -1524,6 +1567,14 @@ body.menu-open{overflow:hidden!important;}
           <option>$110,000 - $130,000</option><option>$130,000 - $150,000</option>
           <option>$150,000+</option>
         </select>
+      </div>
+      <div class="sf-field">
+        <label for="s3-location">Preferred Work Location</label>
+        <input type="text" id="s3-location" placeholder="e.g. Austin TX, Remote, Anywhere">
+      </div>
+      <div class="sf-field sf-full">
+        <label for="s3-keywords">Priorities / Keywords</label>
+        <input type="text" id="s3-keywords" placeholder="e.g. remote work, leadership role, veterans preferred">
       </div>
       <div class="sf-field sf-full">
         <label class="sf-check">
@@ -1910,10 +1961,19 @@ function getMilitaryData() {
       mosTitle: b.querySelector('.mil-mos-title').value.trim(),
       rank: b.querySelector('.mil-rank').value.trim(),
       years: b.querySelector('.mil-years').value,
+      serviceType: b.querySelector('.mil-service-type') ? b.querySelector('.mil-service-type').value : '',
       clearance: b.querySelector('.mil-clearance').value,
+      clearanceStatus: b.querySelector('.mil-clearance-status') ? b.querySelector('.mil-clearance-status').value : '',
       start: b.querySelector('.mil-start').value,
       end: b.querySelector('.mil-end').value,
-      duties: b.querySelector('.mil-duties').value.trim()
+      unit: b.querySelector('.mil-unit') ? b.querySelector('.mil-unit').value.trim() : '',
+      supervised: b.querySelector('.mil-supervised') ? b.querySelector('.mil-supervised').value.trim() : '',
+      unitSize: b.querySelector('.mil-unit-size') ? b.querySelector('.mil-unit-size').value.trim() : '',
+      equipValue: b.querySelector('.mil-equip-value') ? b.querySelector('.mil-equip-value').value.trim() : '',
+      trained: b.querySelector('.mil-trained') ? b.querySelector('.mil-trained').value.trim() : '',
+      duties: b.querySelector('.mil-duties').value.trim(),
+      deployments: b.querySelector('.mil-deployments') ? b.querySelector('.mil-deployments').value.trim() : '',
+      awards: b.querySelector('.mil-awards') ? b.querySelector('.mil-awards').value.trim() : ''
     });
   });
   return arr;
@@ -1924,6 +1984,8 @@ function getTargetData() {
     targetJob: document.getElementById('s3-target').value.trim(),
     industry: document.getElementById('s3-industry').value,
     salary: document.getElementById('s3-salary').value,
+    location: document.getElementById('s3-location') ? document.getElementById('s3-location').value.trim() : '',
+    keywords: document.getElementById('s3-keywords') ? document.getElementById('s3-keywords').value.trim() : '',
     highlightClearance: document.getElementById('s3-clearance-highlight').checked
   };
 }
@@ -2019,10 +2081,19 @@ window.addMilBlock = function() {
       '<div class="sf-field"><label>MOS Title</label><input type="text" class="mil-mos-title" placeholder="e.g. Combat Medic Specialist"></div>' +
       '<div class="sf-field"><label>Rank at Separation</label><input type="text" class="mil-rank" placeholder="e.g. SGT, E-5"></div>' +
       '<div class="sf-field"><label>Years of Service</label><input type="number" class="mil-years" placeholder="e.g. 6" min="1" max="40"></div>' +
+      '<div class="sf-field"><label>Service Type</label><select class="mil-service-type"><option value="">Select...</option><option>Active Duty</option><option>Reserve</option><option>National Guard</option><option>Active Guard Reserve</option></select></div>' +
       '<div class="sf-field"><label>Clearance Level</label><select class="mil-clearance"><option value="None">None</option><option>Confidential</option><option>Secret</option><option>Top Secret</option><option>TS/SCI</option></select></div>' +
+      '<div class="sf-field"><label>Clearance Status</label><select class="mil-clearance-status"><option value="">Select...</option><option>Active</option><option>Inactive</option><option>Expired</option></select></div>' +
       '<div class="sf-field"><label>Service Start Date</label><input type="month" class="mil-start"></div>' +
       '<div class="sf-field"><label>Service End Date</label><input type="month" class="mil-end"></div>' +
+      '<div class="sf-field"><label>Unit / Command</label><input type="text" class="mil-unit" placeholder="e.g. 2nd Battalion, 75th Ranger Regiment"></div>' +
+      '<div class="sf-field"><label>Personnel Supervised</label><input type="text" class="mil-supervised" placeholder="e.g. 13 soldiers"></div>' +
+      '<div class="sf-field"><label>Unit Size</label><input type="text" class="mil-unit-size" placeholder="e.g. 120 personnel"></div>' +
+      '<div class="sf-field"><label>Equipment/Asset Value</label><input type="text" class="mil-equip-value" placeholder="e.g. $4.2 million"></div>' +
+      '<div class="sf-field"><label>Personnel Trained</label><input type="text" class="mil-trained" placeholder="e.g. 25 service members"></div>' +
       '<div class="sf-field sf-full"><label>Key Duties &amp; Accomplishments *</label><textarea class="mil-duties" rows="5" placeholder="- List your key duties and accomplishments"></textarea></div>' +
+      '<div class="sf-field sf-full"><label>Deployments</label><textarea class="mil-deployments" rows="3" placeholder="e.g. Afghanistan (Kandahar), Jan 2019 - Sep 2019"></textarea></div>' +
+      '<div class="sf-field sf-full"><label>Awards &amp; Decorations</label><textarea class="mil-awards" rows="3" placeholder="One per line"></textarea></div>' +
     '</div>';
   container.appendChild(div);
 };
@@ -2273,17 +2344,27 @@ function buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis) {
   mil.forEach(function(m, i) {
     prompt += '\n--- Service #' + (i+1) + ' ---\n';
     prompt += 'Branch: ' + m.branch + '\n';
+    if (m.serviceType) prompt += 'Service Type: ' + m.serviceType + '\n';
     prompt += 'MOS/Rate/AFSC: ' + m.mos + ' (' + m.mosTitle + ')\n';
     prompt += 'Rank: ' + m.rank + '\n';
     prompt += 'Years of Service: ' + m.years + '\n';
     prompt += 'Dates: ' + m.start + ' to ' + m.end + '\n';
-    prompt += 'Clearance: ' + m.clearance + '\n';
+    if (m.unit) prompt += 'Unit/Command: ' + m.unit + '\n';
+    prompt += 'Clearance: ' + m.clearance + (m.clearanceStatus ? ' (' + m.clearanceStatus + ')' : '') + '\n';
+    if (m.supervised) prompt += 'Personnel Supervised: ' + m.supervised + '\n';
+    if (m.unitSize) prompt += 'Unit Size: ' + m.unitSize + '\n';
+    if (m.equipValue) prompt += 'Equipment/Asset Value: ' + m.equipValue + '\n';
+    if (m.trained) prompt += 'Personnel Trained: ' + m.trained + '\n';
     prompt += 'Duties & Accomplishments:\n' + m.duties + '\n';
+    if (m.deployments) prompt += 'Deployments:\n' + m.deployments + '\n';
+    if (m.awards) prompt += 'Awards & Decorations:\n' + m.awards + '\n';
   });
 
   prompt += '\nTARGET CIVILIAN JOB: ' + t.targetJob + '\n';
   prompt += 'Target Industry: ' + t.industry + '\n';
   if (t.salary) prompt += 'Salary Range: ' + t.salary + '\n';
+  if (t.location) prompt += 'Preferred Location: ' + t.location + '\n';
+  if (t.keywords) prompt += 'Priorities/Keywords: ' + t.keywords + '\n';
   if (t.highlightClearance) prompt += 'HIGHLIGHT security clearance prominently.\n';
 
   if (civ.length) {

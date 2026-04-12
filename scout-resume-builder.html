@@ -15,6 +15,7 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 <script src="/vcp-military-data.js"></script>
+<script src="/vcp-mos-data.js"></script>
 <meta property="og:title" content="Scout Resume Builder | AI-Powered Veteran Resume">
 <meta property="og:description" content="Build a professional civilian resume from your military experience in minutes. AI translates your MOS, duties, and achievements into recruiter-ready language.">
 <meta property="og:url" content="https://veterancareerpath.com/scout-resume-builder.html">
@@ -124,6 +125,73 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 .mil-block,.civ-block,.edu-block{
   background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
   border-radius:12px;padding:1.25rem;margin-bottom:1rem;position:relative;
+}
+/* ── SERVICE PERIOD TIMELINE ── */
+.service-period{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;position:relative;
+  border-left:3px solid var(--gold);
+}
+.sp-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;
+}
+.sp-num{
+  font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:var(--gold);
+}
+.btn-remove-sp{
+  background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.25);
+  color:#e74c3c;font-size:.72rem;font-weight:600;padding:.25rem .7rem;
+  border-radius:6px;cursor:pointer;transition:all .15s;
+}
+.btn-remove-sp:hover{background:rgba(192,57,43,.35);}
+.position-block{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;padding:1rem;margin-bottom:.75rem;position:relative;
+  border-left:2px solid rgba(240,192,64,.3);
+}
+.position-block .pos-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;
+}
+.position-block .pos-num{
+  font-family:'Bebas Neue',sans-serif;font-size:.8rem;letter-spacing:.08em;color:rgba(240,192,64,.7);
+}
+.btn-remove-pos{
+  background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.2);
+  color:#e74c3c;font-size:.68rem;font-weight:600;padding:.2rem .5rem;
+  border-radius:5px;cursor:pointer;
+}
+.btn-add-pos,.btn-add-sp{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  color:rgba(192,216,240,.7);font-size:.82rem;font-weight:600;
+  padding:.55rem 1rem;border-radius:8px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:.4rem;transition:all .15s;
+  margin-top:.5rem;
+}
+.btn-add-pos:hover,.btn-add-sp:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(240,192,64,.3);}
+.btn-add-sp{font-size:.88rem;padding:.65rem 1.25rem;margin-top:1rem;}
+.sp-positions h4{margin-bottom:.5rem;}
+.awards-checklist{
+  display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.35rem;max-height:180px;overflow-y:auto;
+  padding:.5rem;background:rgba(0,0,0,.15);border-radius:8px;
+}
+.awards-checklist label{
+  display:flex;align-items:center;gap:.35rem;font-size:.78rem;
+  color:rgba(192,216,240,.7);cursor:pointer;padding:.15rem .4rem;
+  border-radius:4px;transition:background .15s;white-space:nowrap;
+}
+.awards-checklist label:hover{background:rgba(255,255,255,.06);}
+.awards-group-title{
+  width:100%;font-size:.7rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--gold);margin-top:.4rem;margin-bottom:.15rem;
+}
+.duty-prompt-field{margin-bottom:.6rem;}
+.duty-prompt-field label{font-size:.78rem;color:rgba(192,216,240,.55);display:block;margin-bottom:.2rem;}
+.duty-prompt-field input,.duty-prompt-field textarea{
+  width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:6px;padding:.45rem .7rem;font-size:.84rem;color:#fff;font-family:'Inter',sans-serif;
+}
+.duty-prompt-field input:focus,.duty-prompt-field textarea:focus{
+  outline:none;border-color:rgba(240,192,64,.4);
 }
 .block-num{
   font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:.1em;
@@ -1496,55 +1564,71 @@ body.menu-open{overflow:hidden!important;}
     </div>
   </div>
 
-  <!-- ════ STEP 2: Military Experience ════ -->
+  <!-- ════ STEP 2: Military Service Timeline ════ -->
   <div class="scout-card" id="step-2">
-    <h2>Step 2: Military Experience</h2>
-    <p class="step-desc">Tell us about your service. Scout will translate this into civilian language.</p>
-    <div id="mil-blocks">
-      <div class="mil-block" data-idx="0">
-        <div class="block-num">Military Experience #1</div>
+    <h2>Step 2: Military Service Timeline</h2>
+    <p class="step-desc">Build your service history. Each Service Period represents time in one branch/component. Add multiple positions within each period.</p>
+    <div id="sp-container">
+      <div class="service-period" data-sp="0">
+        <div class="sp-header">
+          <span class="sp-num">Service Period 1</span>
+          <button class="btn-remove-sp" onclick="removeServicePeriod(this)">Remove</button>
+        </div>
+
+        <!-- Branch + Service Type + Dates -->
         <div class="sf-grid">
           <div class="sf-field">
             <label>Branch *</label>
-            <select class="mil-branch" onchange="window.onBranchChange(this)">
-              <option value="">Select branch...</option>
+            <select class="sp-branch" onchange="onSpBranchChange(this)">
+              <option value="">Select...</option>
               <option>Army</option><option>Navy</option><option>Marines</option>
               <option>Air Force</option><option>Coast Guard</option><option>Space Force</option>
             </select>
           </div>
           <div class="sf-field">
+            <label>Service Type *</label>
+            <select class="sp-service-type">
+              <option value="">Select...</option>
+              <option>Active Duty</option><option>Reserve</option>
+              <option>National Guard</option><option>Active Guard Reserve</option>
+            </select>
+          </div>
+          <div class="sf-field">
+            <label>Service Start</label>
+            <input type="month" class="sp-start">
+          </div>
+          <div class="sf-field">
+            <label>Service End</label>
+            <input type="month" class="sp-end">
+          </div>
+        </div>
+
+        <!-- MOS with searchable datalist -->
+        <div class="sf-grid">
+          <div class="sf-field">
             <label>MOS / Rate / AFSC *</label>
-            <input type="text" class="mil-mos" placeholder="e.g. 68W, IT2, 3D0X2">
+            <input type="text" class="sp-mos" list="mos-list-0" placeholder="Select branch first..." onchange="onMosChange(this)" oninput="onMosChange(this)">
+            <datalist id="mos-list-0"></datalist>
           </div>
           <div class="sf-field">
             <label>MOS Title</label>
-            <input type="text" class="mil-mos-title" placeholder="e.g. Combat Medic Specialist">
+            <input type="text" class="sp-mos-title" readonly placeholder="Auto-fills when MOS selected">
+          </div>
+        </div>
+
+        <!-- Ranks -->
+        <div class="sf-grid">
+          <div class="sf-field">
+            <label>Entry Rank</label>
+            <select class="sp-rank-entry"><option value="">Select branch first...</option></select>
           </div>
           <div class="sf-field">
-            <label>Rank at Separation *</label>
-            <select class="mil-rank">
-              <option value="">Select branch first...</option>
-            </select>
+            <label>Separation Rank</label>
+            <select class="sp-rank-sep"><option value="">Select branch first...</option></select>
           </div>
           <div class="sf-field">
-            <label>Position / Duty Title</label>
-            <input type="text" class="mil-duty-title" placeholder="e.g. Team Leader, Platoon Sergeant, Motor Pool NCOIC">
-          </div>
-          <div class="sf-field">
-            <label>Years of Service</label>
-            <input type="number" class="mil-years" placeholder="e.g. 6" min="1" max="40">
-          </div>
-          <div class="sf-field">
-            <label>Service Type</label>
-            <select class="mil-service-type">
-              <option value="">Select...</option>
-              <option>Active Duty</option><option>Reserve</option><option>National Guard</option>
-              <option>Active Guard Reserve</option>
-            </select>
-          </div>
-          <div class="sf-field">
-            <label>Clearance Level</label>
-            <select class="mil-clearance">
+            <label>Clearance</label>
+            <select class="sp-clearance">
               <option value="None">None</option>
               <option>Confidential</option><option>Secret</option>
               <option>Top Secret</option><option>TS/SCI</option>
@@ -1552,53 +1636,72 @@ body.menu-open{overflow:hidden!important;}
           </div>
           <div class="sf-field">
             <label>Clearance Status</label>
-            <select class="mil-clearance-status">
+            <select class="sp-clearance-status">
               <option value="">Select...</option>
               <option>Active</option><option>Inactive</option><option>Expired</option>
             </select>
           </div>
+        </div>
+
+        <!-- Special Qualifiers -->
+        <div class="sf-grid">
           <div class="sf-field">
-            <label class="asi-label">Special Qualifiers (select branch first)</label>
-            <input type="text" class="mil-asi" placeholder="Select a branch to see options">
+            <label class="sp-qual-label">Special Qualifiers</label>
+            <input type="text" class="sp-quals" placeholder="Select branch first">
           </div>
           <div class="sf-field">
-            <label class="sqi-label">Special Qualification (select branch first)</label>
-            <input type="text" class="mil-sqi" placeholder="Select a branch to see options">
-          </div>
-          <div class="sf-field">
-            <label>Service Start Date</label>
-            <input type="month" class="mil-start">
-          </div>
-          <div class="sf-field">
-            <label>Service End Date</label>
-            <input type="month" class="mil-end">
+            <label class="sp-sqi-label">Special Qualification</label>
+            <input type="text" class="sp-sqi" placeholder="Select branch first">
           </div>
           <div class="sf-field">
             <label>Unit / Command</label>
-            <input type="text" class="mil-unit" placeholder="e.g. 2nd Battalion, 75th Ranger Regiment">
+            <input type="text" class="sp-unit" placeholder="e.g. 2/75 Ranger Rgt">
           </div>
-          <div class="sf-field sf-full">
-            <label>Guided Duty Questions (answer what applies)</label>
-            <div class="duty-prompts mil-duty-prompts"></div>
+        </div>
+
+        <!-- POSITIONS -->
+        <div class="sp-positions">
+          <h4 style="color:#f0c040;font-family:'Bebas Neue',sans-serif;letter-spacing:.06em;margin:.75rem 0 .5rem;">Positions &amp; Assignments</h4>
+          <div class="position-blocks">
+            <div class="position-block" data-pos="0">
+              <div class="pos-header">
+                <span class="pos-num">Position 1</span>
+              </div>
+              <div class="sf-grid">
+                <div class="sf-field">
+                  <label>Position / Duty Title *</label>
+                  <input type="text" class="pos-title" placeholder="e.g. Team Leader, Platoon Sergeant">
+                </div>
+                <div class="sf-field">
+                  <label>Start</label>
+                  <input type="month" class="pos-start">
+                </div>
+                <div class="sf-field">
+                  <label>End</label>
+                  <input type="month" class="pos-end">
+                </div>
+              </div>
+              <div class="duty-prompts"></div>
+            </div>
           </div>
-          <div class="sf-field sf-full">
-            <label>Additional Duties &amp; Accomplishments</label>
-            <textarea class="mil-duties" rows="4" placeholder="Any other key duties, accomplishments, or details not covered above"></textarea>
-          </div>
-          <div class="sf-field sf-full">
-            <label>Deployments (locations, dates, duration)</label>
-            <textarea class="mil-deployments" rows="3" placeholder="e.g. Afghanistan (Kandahar), Jan 2019 - Sep 2019, 9 months&#10;Iraq (Camp Taji), Mar 2020 - Jan 2021, 10 months"></textarea>
-          </div>
-          <div class="sf-field sf-full">
-            <label>Awards &amp; Decorations</label>
-            <div class="awards-checklist mil-awards-checklist"><span style="font-size:.8rem;color:rgba(192,216,240,.4);">Select a branch to see awards</span></div>
-            <input type="text" class="mil-awards-custom" placeholder="Other awards not listed (comma-separated)" style="margin-top:.4rem;">
-          </div>
+          <button class="btn-add-pos" onclick="addPosition(this)">+ Add Another Position</button>
+        </div>
+
+        <!-- Awards -->
+        <div class="sf-field sf-full" style="margin-top:.75rem;">
+          <label>Awards &amp; Decorations</label>
+          <div class="awards-checklist sp-awards">Select branch to see awards</div>
+          <input type="text" class="sp-awards-custom" placeholder="Other awards not listed..." style="margin-top:.4rem;">
+        </div>
+
+        <!-- Deployments -->
+        <div class="sf-field sf-full">
+          <label>Deployments</label>
+          <textarea class="sp-deployments" rows="2" placeholder="e.g. Afghanistan (Kandahar), Jan 2019 - Sep 2019, 9 months"></textarea>
         </div>
       </div>
     </div>
-    <datalist id="asi-list"></datalist>
-    <button class="btn-add" onclick="addMilBlock()">+ Add Another Military Experience</button>
+    <button class="btn-add-sp" onclick="addServicePeriod()">+ Add Service Period (reclass, branch transfer, commissioning)</button>
     <div class="scout-nav-btns">
       <button class="btn-prev" onclick="goStep(1)">&larr; Back</button>
       <button class="btn-next" onclick="goStep(3)">Next: Target Job &rarr;</button>
@@ -1936,44 +2039,78 @@ function loadProgress() {
       document.getElementById('s1-linkedin').value = saved.personal.linkedin || '';
     }
 
-    // Military
+    // Military (new service period format)
     if (saved.military && saved.military.length) {
       saved.military.forEach(function(m, i) {
-        if (i > 0) addMilBlock();
-        var blocks = document.querySelectorAll('.mil-block');
-        var b = blocks[i];
-        if (!b) return;
-        b.querySelector('.mil-branch').value = m.branch || '';
-        // Trigger branch change to populate rank dropdown and awards
-        if (m.branch) window.onBranchChange(b.querySelector('.mil-branch'));
-        b.querySelector('.mil-mos').value = m.mos || '';
-        b.querySelector('.mil-mos-title').value = m.mosTitle || '';
-        b.querySelector('.mil-rank').value = m.rank || '';
-        if (b.querySelector('.mil-duty-title')) b.querySelector('.mil-duty-title').value = m.dutyTitle || '';
-        b.querySelector('.mil-years').value = m.years || '';
-        if (b.querySelector('.mil-service-type')) b.querySelector('.mil-service-type').value = m.serviceType || '';
-        b.querySelector('.mil-clearance').value = m.clearance || 'None';
-        if (b.querySelector('.mil-clearance-status')) b.querySelector('.mil-clearance-status').value = m.clearanceStatus || '';
-        if (b.querySelector('.mil-asi')) b.querySelector('.mil-asi').value = m.asi || '';
-        if (b.querySelector('.mil-sqi')) b.querySelector('.mil-sqi').value = m.sqi || '';
-        b.querySelector('.mil-start').value = m.start || '';
-        b.querySelector('.mil-end').value = m.end || '';
-        if (b.querySelector('.mil-unit')) b.querySelector('.mil-unit').value = m.unit || '';
-        b.querySelector('.mil-duties').value = m.duties || '';
-        if (b.querySelector('.mil-deployments')) b.querySelector('.mil-deployments').value = m.deployments || '';
-        // Restore duty answers
-        if (m.dutyAnswers) {
-          Object.keys(m.dutyAnswers).forEach(function(key) {
-            var inp = b.querySelector('.duty-prompt-input[data-duty-key="'+key+'"]');
-            if (inp) inp.value = m.dutyAnswers[key];
+        if (i > 0) addServicePeriod();
+        var sps = document.querySelectorAll('.service-period');
+        var sp = sps[i];
+        if (!sp) return;
+        sp.querySelector('.sp-branch').value = m.branch || '';
+        if (m.branch) window.onSpBranchChange(sp.querySelector('.sp-branch'));
+        if (sp.querySelector('.sp-service-type')) sp.querySelector('.sp-service-type').value = m.serviceType || '';
+        if (sp.querySelector('.sp-start')) sp.querySelector('.sp-start').value = m.start || '';
+        if (sp.querySelector('.sp-end')) sp.querySelector('.sp-end').value = m.end || '';
+        // MOS: set code and title
+        var mosInput = sp.querySelector('.sp-mos');
+        if (mosInput) {
+          var mosVal = m.mos || '';
+          if (m.mosTitle) mosVal = mosVal + ' - ' + m.mosTitle;
+          mosInput.value = mosVal;
+        }
+        if (sp.querySelector('.sp-mos-title')) sp.querySelector('.sp-mos-title').value = m.mosTitle || '';
+        // Ranks
+        if (sp.querySelector('.sp-rank-entry')) sp.querySelector('.sp-rank-entry').value = m.rankEntry || '';
+        if (sp.querySelector('.sp-rank-sep')) sp.querySelector('.sp-rank-sep').value = m.rankSep || m.rank || '';
+        if (sp.querySelector('.sp-clearance')) sp.querySelector('.sp-clearance').value = m.clearance || 'None';
+        if (sp.querySelector('.sp-clearance-status')) sp.querySelector('.sp-clearance-status').value = m.clearanceStatus || '';
+        if (sp.querySelector('.sp-quals')) sp.querySelector('.sp-quals').value = m.quals || m.asi || '';
+        if (sp.querySelector('.sp-sqi')) sp.querySelector('.sp-sqi').value = m.sqi || '';
+        if (sp.querySelector('.sp-unit')) sp.querySelector('.sp-unit').value = m.unit || '';
+        if (sp.querySelector('.sp-deployments')) sp.querySelector('.sp-deployments').value = m.deployments || '';
+        // Restore positions
+        if (m.positions && m.positions.length) {
+          m.positions.forEach(function(pos, pi) {
+            if (pi > 0) {
+              var addBtn = sp.querySelector('.btn-add-pos');
+              if (addBtn) window.addPosition(addBtn);
+            }
+            var posBlocks = sp.querySelectorAll('.position-block');
+            var pb = posBlocks[pi];
+            if (!pb) return;
+            if (pb.querySelector('.pos-title')) pb.querySelector('.pos-title').value = pos.title || '';
+            if (pb.querySelector('.pos-start')) pb.querySelector('.pos-start').value = pos.start || '';
+            if (pb.querySelector('.pos-end')) pb.querySelector('.pos-end').value = pos.end || '';
+            if (pos.dutyAnswers) {
+              Object.keys(pos.dutyAnswers).forEach(function(key) {
+                var inp = pb.querySelector('.duty-prompt-input[data-duty-key="'+key+'"]');
+                if (inp) inp.value = pos.dutyAnswers[key];
+              });
+            }
           });
+        } else if (m.dutyTitle || m.dutyAnswers) {
+          // Legacy: single duty title / duty answers on the SP itself
+          var firstPos = sp.querySelector('.position-block');
+          if (firstPos) {
+            if (m.dutyTitle && firstPos.querySelector('.pos-title')) firstPos.querySelector('.pos-title').value = m.dutyTitle;
+            if (m.dutyAnswers) {
+              Object.keys(m.dutyAnswers).forEach(function(key) {
+                var inp = firstPos.querySelector('.duty-prompt-input[data-duty-key="'+key+'"]');
+                if (inp) inp.value = m.dutyAnswers[key];
+              });
+            }
+          }
         }
         // Restore checked awards
-        if (m.awards) {
-          var awardsList = m.awards.split(', ');
-          b.querySelectorAll('.mil-awards-checklist input[type="checkbox"]').forEach(function(cb) {
-            if (awardsList.indexOf(cb.value) !== -1) cb.checked = true;
+        var awardsArr = m.awards;
+        if (typeof awardsArr === 'string') awardsArr = awardsArr.split(', ').filter(function(a){return a;});
+        if (awardsArr && awardsArr.length) {
+          sp.querySelectorAll('.sp-awards input[type="checkbox"]').forEach(function(cb) {
+            if (awardsArr.indexOf(cb.value) !== -1) cb.checked = true;
           });
+        }
+        if (m.awardsCustom && sp.querySelector('.sp-awards-custom')) {
+          sp.querySelector('.sp-awards-custom').value = m.awardsCustom;
         }
       });
     }
@@ -2073,44 +2210,59 @@ function getPersonalData() {
 }
 
 function getMilitaryData() {
-  var blocks = document.querySelectorAll('.mil-block');
+  var sps = document.querySelectorAll('.service-period');
   var arr = [];
-  blocks.forEach(function(b) {
+  sps.forEach(function(sp) {
     // Collect checked awards
     var checkedAwards = [];
-    b.querySelectorAll('.mil-awards-checklist input[type="checkbox"]:checked').forEach(function(cb) {
+    sp.querySelectorAll('.sp-awards input[type="checkbox"]:checked').forEach(function(cb) {
       checkedAwards.push(cb.value);
     });
-    var customAwards = b.querySelector('.mil-awards-custom') ? b.querySelector('.mil-awards-custom').value.trim() : '';
+    var customAwards = sp.querySelector('.sp-awards-custom') ? sp.querySelector('.sp-awards-custom').value.trim() : '';
     if (customAwards) {
       customAwards.split(',').forEach(function(a) { a = a.trim(); if (a) checkedAwards.push(a); });
     }
-    // Collect guided duty answers
-    var dutyAnswers = {};
-    b.querySelectorAll('.duty-prompt-input').forEach(function(inp) {
-      var key = inp.getAttribute('data-duty-key');
-      var val = inp.value.trim();
-      if (key && val) dutyAnswers[key] = val;
+    // Collect positions
+    var positions = [];
+    sp.querySelectorAll('.position-block').forEach(function(pb) {
+      var dutyAnswers = {};
+      pb.querySelectorAll('.duty-prompt-input').forEach(function(inp) {
+        var key = inp.getAttribute('data-duty-key');
+        var val = inp.value.trim();
+        if (key && val) dutyAnswers[key] = val;
+      });
+      positions.push({
+        title: pb.querySelector('.pos-title') ? pb.querySelector('.pos-title').value.trim() : '',
+        start: pb.querySelector('.pos-start') ? pb.querySelector('.pos-start').value : '',
+        end: pb.querySelector('.pos-end') ? pb.querySelector('.pos-end').value : '',
+        dutyAnswers: dutyAnswers
+      });
     });
+    // Extract MOS code from input (may contain "CODE - Title" format from datalist)
+    var mosRaw = sp.querySelector('.sp-mos') ? sp.querySelector('.sp-mos').value.trim() : '';
+    var mosCode = mosRaw.split(' - ')[0].trim();
     arr.push({
-      branch: b.querySelector('.mil-branch').value,
-      mos: b.querySelector('.mil-mos').value.trim(),
-      mosTitle: b.querySelector('.mil-mos-title').value.trim(),
-      rank: b.querySelector('.mil-rank').value,
-      dutyTitle: b.querySelector('.mil-duty-title') ? b.querySelector('.mil-duty-title').value.trim() : '',
-      years: b.querySelector('.mil-years').value,
-      serviceType: b.querySelector('.mil-service-type') ? b.querySelector('.mil-service-type').value : '',
-      clearance: b.querySelector('.mil-clearance').value,
-      clearanceStatus: b.querySelector('.mil-clearance-status') ? b.querySelector('.mil-clearance-status').value : '',
-      asi: b.querySelector('.mil-asi') ? b.querySelector('.mil-asi').value.trim() : '',
-      sqi: b.querySelector('.mil-sqi') ? b.querySelector('.mil-sqi').value.trim() : '',
-      start: b.querySelector('.mil-start').value,
-      end: b.querySelector('.mil-end').value,
-      unit: b.querySelector('.mil-unit') ? b.querySelector('.mil-unit').value.trim() : '',
-      dutyAnswers: dutyAnswers,
-      duties: b.querySelector('.mil-duties').value.trim(),
-      deployments: b.querySelector('.mil-deployments') ? b.querySelector('.mil-deployments').value.trim() : '',
-      awards: checkedAwards.join(', ')
+      branch: sp.querySelector('.sp-branch').value,
+      serviceType: sp.querySelector('.sp-service-type') ? sp.querySelector('.sp-service-type').value : '',
+      start: sp.querySelector('.sp-start') ? sp.querySelector('.sp-start').value : '',
+      end: sp.querySelector('.sp-end') ? sp.querySelector('.sp-end').value : '',
+      mos: mosCode,
+      mosTitle: sp.querySelector('.sp-mos-title') ? sp.querySelector('.sp-mos-title').value.trim() : '',
+      rankEntry: sp.querySelector('.sp-rank-entry') ? sp.querySelector('.sp-rank-entry').value : '',
+      rankSep: sp.querySelector('.sp-rank-sep') ? sp.querySelector('.sp-rank-sep').value : '',
+      clearance: sp.querySelector('.sp-clearance') ? sp.querySelector('.sp-clearance').value : 'None',
+      clearanceStatus: sp.querySelector('.sp-clearance-status') ? sp.querySelector('.sp-clearance-status').value : '',
+      quals: sp.querySelector('.sp-quals') ? sp.querySelector('.sp-quals').value.trim() : '',
+      sqi: sp.querySelector('.sp-sqi') ? sp.querySelector('.sp-sqi').value.trim() : '',
+      unit: sp.querySelector('.sp-unit') ? sp.querySelector('.sp-unit').value.trim() : '',
+      positions: positions,
+      awards: checkedAwards,
+      awardsCustom: customAwards,
+      deployments: sp.querySelector('.sp-deployments') ? sp.querySelector('.sp-deployments').value.trim() : '',
+      // Backward compat fields for prompt/review
+      rank: sp.querySelector('.sp-rank-sep') ? sp.querySelector('.sp-rank-sep').value : '',
+      dutyTitle: positions.length ? positions[0].title : '',
+      dutyAnswers: positions.length ? positions[0].dutyAnswers : {}
     });
   });
   return arr;
@@ -2204,38 +2356,96 @@ window.goStep = function(step) {
 };
 
 /* ── ADD REPEATABLE BLOCKS ── */
-window.addMilBlock = function() {
-  var container = document.getElementById('mil-blocks');
-  var count = container.querySelectorAll('.mil-block').length;
+/* ── SERVICE PERIOD / POSITION FUNCTIONS ── */
+window.addServicePeriod = function() {
+  var container = document.getElementById('sp-container');
+  var count = container.querySelectorAll('.service-period').length;
   var div = document.createElement('div');
-  div.className = 'mil-block';
-  div.setAttribute('data-idx', count);
+  div.className = 'service-period';
+  div.setAttribute('data-sp', count);
   div.innerHTML =
-    '<div class="block-num">Military Experience #'+(count+1)+' <button class="btn-remove" onclick="this.closest(\'.mil-block\').remove()">Remove</button></div>' +
+    '<div class="sp-header"><span class="sp-num">Service Period '+(count+1)+'</span>' +
+    '<button class="btn-remove-sp" onclick="removeServicePeriod(this)">Remove</button></div>' +
     '<div class="sf-grid">' +
-      '<div class="sf-field"><label>Branch *</label><select class="mil-branch" onchange="window.onBranchChange(this)"><option value="">Select branch...</option><option>Army</option><option>Navy</option><option>Marines</option><option>Air Force</option><option>Coast Guard</option><option>Space Force</option></select></div>' +
-      '<div class="sf-field"><label>MOS / Rate / AFSC *</label><input type="text" class="mil-mos" placeholder="e.g. 68W, IT2, 3D0X2"></div>' +
-      '<div class="sf-field"><label>MOS Title</label><input type="text" class="mil-mos-title" placeholder="e.g. Combat Medic Specialist"></div>' +
-      '<div class="sf-field"><label>Rank at Separation *</label><select class="mil-rank"><option value="">Select branch first...</option></select></div>' +
-      '<div class="sf-field"><label>Position / Duty Title</label><input type="text" class="mil-duty-title" placeholder="e.g. Team Leader, Platoon Sergeant, Motor Pool NCOIC"></div>' +
-      '<div class="sf-field"><label>Years of Service</label><input type="number" class="mil-years" placeholder="e.g. 6" min="1" max="40"></div>' +
-      '<div class="sf-field"><label>Service Type</label><select class="mil-service-type"><option value="">Select...</option><option>Active Duty</option><option>Reserve</option><option>National Guard</option><option>Active Guard Reserve</option></select></div>' +
-      '<div class="sf-field"><label>Clearance Level</label><select class="mil-clearance"><option value="None">None</option><option>Confidential</option><option>Secret</option><option>Top Secret</option><option>TS/SCI</option></select></div>' +
-      '<div class="sf-field"><label>Clearance Status</label><select class="mil-clearance-status"><option value="">Select...</option><option>Active</option><option>Inactive</option><option>Expired</option></select></div>' +
-      '<div class="sf-field"><label class="asi-label">Special Qualifiers (select branch)</label><input type="text" class="mil-asi" placeholder="Select a branch to see options"></div>' +
-      '<div class="sf-field"><label class="sqi-label">Special Qualification (select branch)</label><input type="text" class="mil-sqi" placeholder="Select a branch to see options"></div>' +
-      '<div class="sf-field"><label>Service Start Date</label><input type="month" class="mil-start"></div>' +
-      '<div class="sf-field"><label>Service End Date</label><input type="month" class="mil-end"></div>' +
-      '<div class="sf-field"><label>Unit / Command</label><input type="text" class="mil-unit" placeholder="e.g. 2nd Battalion, 75th Ranger Regiment"></div>' +
-      '<div class="sf-field sf-full"><label>Guided Duty Questions (answer what applies)</label><div class="duty-prompts mil-duty-prompts"></div></div>' +
-      '<div class="sf-field sf-full"><label>Additional Duties &amp; Accomplishments</label><textarea class="mil-duties" rows="4" placeholder="Any other key duties, accomplishments, or details not covered above"></textarea></div>' +
-      '<div class="sf-field sf-full"><label>Deployments</label><textarea class="mil-deployments" rows="3" placeholder="e.g. Afghanistan (Kandahar), Jan 2019 - Sep 2019"></textarea></div>' +
-      '<div class="sf-field sf-full"><label>Awards &amp; Decorations</label><div class="awards-checklist mil-awards-checklist"><span style="font-size:.8rem;color:rgba(192,216,240,.4);">Select a branch to see awards</span></div><input type="text" class="mil-awards-custom" placeholder="Other awards not listed (comma-separated)" style="margin-top:.4rem;"></div>' +
-    '</div>';
+      '<div class="sf-field"><label>Branch *</label><select class="sp-branch" onchange="onSpBranchChange(this)"><option value="">Select...</option><option>Army</option><option>Navy</option><option>Marines</option><option>Air Force</option><option>Coast Guard</option><option>Space Force</option></select></div>' +
+      '<div class="sf-field"><label>Service Type *</label><select class="sp-service-type"><option value="">Select...</option><option>Active Duty</option><option>Reserve</option><option>National Guard</option><option>Active Guard Reserve</option></select></div>' +
+      '<div class="sf-field"><label>Service Start</label><input type="month" class="sp-start"></div>' +
+      '<div class="sf-field"><label>Service End</label><input type="month" class="sp-end"></div>' +
+    '</div>' +
+    '<div class="sf-grid">' +
+      '<div class="sf-field"><label>MOS / Rate / AFSC *</label><input type="text" class="sp-mos" list="mos-list-'+count+'" placeholder="Select branch first..." onchange="onMosChange(this)" oninput="onMosChange(this)"><datalist id="mos-list-'+count+'"></datalist></div>' +
+      '<div class="sf-field"><label>MOS Title</label><input type="text" class="sp-mos-title" readonly placeholder="Auto-fills when MOS selected"></div>' +
+    '</div>' +
+    '<div class="sf-grid">' +
+      '<div class="sf-field"><label>Entry Rank</label><select class="sp-rank-entry"><option value="">Select branch first...</option></select></div>' +
+      '<div class="sf-field"><label>Separation Rank</label><select class="sp-rank-sep"><option value="">Select branch first...</option></select></div>' +
+      '<div class="sf-field"><label>Clearance</label><select class="sp-clearance"><option value="None">None</option><option>Confidential</option><option>Secret</option><option>Top Secret</option><option>TS/SCI</option></select></div>' +
+      '<div class="sf-field"><label>Clearance Status</label><select class="sp-clearance-status"><option value="">Select...</option><option>Active</option><option>Inactive</option><option>Expired</option></select></div>' +
+    '</div>' +
+    '<div class="sf-grid">' +
+      '<div class="sf-field"><label class="sp-qual-label">Special Qualifiers</label><input type="text" class="sp-quals" placeholder="Select branch first"></div>' +
+      '<div class="sf-field"><label class="sp-sqi-label">Special Qualification</label><input type="text" class="sp-sqi" placeholder="Select branch first"></div>' +
+      '<div class="sf-field"><label>Unit / Command</label><input type="text" class="sp-unit" placeholder="e.g. 2/75 Ranger Rgt"></div>' +
+    '</div>' +
+    '<div class="sp-positions">' +
+      '<h4 style="color:#f0c040;font-family:\'Bebas Neue\',sans-serif;letter-spacing:.06em;margin:.75rem 0 .5rem;">Positions &amp; Assignments</h4>' +
+      '<div class="position-blocks">' +
+        '<div class="position-block" data-pos="0"><div class="pos-header"><span class="pos-num">Position 1</span></div>' +
+        '<div class="sf-grid">' +
+          '<div class="sf-field"><label>Position / Duty Title *</label><input type="text" class="pos-title" placeholder="e.g. Team Leader, Platoon Sergeant"></div>' +
+          '<div class="sf-field"><label>Start</label><input type="month" class="pos-start"></div>' +
+          '<div class="sf-field"><label>End</label><input type="month" class="pos-end"></div>' +
+        '</div><div class="duty-prompts"></div></div>' +
+      '</div>' +
+      '<button class="btn-add-pos" onclick="addPosition(this)">+ Add Another Position</button>' +
+    '</div>' +
+    '<div class="sf-field sf-full" style="margin-top:.75rem;"><label>Awards &amp; Decorations</label><div class="awards-checklist sp-awards">Select branch to see awards</div><input type="text" class="sp-awards-custom" placeholder="Other awards not listed..." style="margin-top:.4rem;"></div>' +
+    '<div class="sf-field sf-full"><label>Deployments</label><textarea class="sp-deployments" rows="2" placeholder="e.g. Afghanistan (Kandahar), Jan 2019 - Sep 2019, 9 months"></textarea></div>';
   container.appendChild(div);
-  // Populate duty prompts for the new block
-  window.populateDutyPrompts(div.querySelector('.mil-duty-prompts'));
+  // Populate duty prompts for first position
+  window.populateDutyPrompts(div.querySelector('.position-block .duty-prompts'));
+  div.scrollIntoView({behavior:'smooth', block:'start'});
 };
+
+window.removeServicePeriod = function(btn) {
+  var sp = btn.closest('.service-period');
+  if (!sp) return;
+  var container = document.getElementById('sp-container');
+  if (container.querySelectorAll('.service-period').length <= 1) {
+    alert('You need at least one service period.');
+    return;
+  }
+  sp.remove();
+  // Renumber
+  container.querySelectorAll('.service-period').forEach(function(s, i) {
+    s.setAttribute('data-sp', i);
+    s.querySelector('.sp-num').textContent = 'Service Period ' + (i + 1);
+  });
+};
+
+window.addPosition = function(btn) {
+  var sp = btn.closest('.service-period');
+  if (!sp) return;
+  var posBlocks = sp.querySelector('.position-blocks');
+  var count = posBlocks.querySelectorAll('.position-block').length;
+  var div = document.createElement('div');
+  div.className = 'position-block';
+  div.setAttribute('data-pos', count);
+  div.innerHTML =
+    '<div class="pos-header"><span class="pos-num">Position '+(count+1)+'</span>' +
+    '<button class="btn-remove-pos" onclick="this.closest(\'.position-block\').remove()">Remove</button></div>' +
+    '<div class="sf-grid">' +
+      '<div class="sf-field"><label>Position / Duty Title *</label><input type="text" class="pos-title" placeholder="e.g. Squad Leader, NCOIC"></div>' +
+      '<div class="sf-field"><label>Start</label><input type="month" class="pos-start"></div>' +
+      '<div class="sf-field"><label>End</label><input type="month" class="pos-end"></div>' +
+    '</div>' +
+    '<div class="duty-prompts"></div>';
+  posBlocks.appendChild(div);
+  window.populateDutyPrompts(div.querySelector('.duty-prompts'));
+};
+
+// Legacy alias so old code doesn't break
+window.addMilBlock = window.addServicePeriod;
 
 window.addCivBlock = function() {
   var container = document.getElementById('civ-blocks');
@@ -2290,18 +2500,8 @@ document.getElementById('skill-suggestions').addEventListener('click', function(
 (function initMilData() {
   if (!window.VCP_MIL) return;
 
-  // Populate ASI datalist
-  var asiList = document.getElementById('asi-list');
-  if (asiList && window.VCP_MIL.ASI && window.VCP_MIL.ASI.Army) {
-    window.VCP_MIL.ASI.Army.forEach(function(a) {
-      var opt = document.createElement('option');
-      opt.value = a.code + ' - ' + a.title;
-      asiList.appendChild(opt);
-    });
-  }
-
-  // Populate duty prompts for the first mil-block
-  var firstPrompts = document.querySelector('.mil-block .mil-duty-prompts');
+  // Populate duty prompts for the first position block
+  var firstPrompts = document.querySelector('.service-period .position-block .duty-prompts');
   if (firstPrompts) window.populateDutyPrompts(firstPrompts);
 
   // Populate language tags
@@ -2349,7 +2549,6 @@ document.getElementById('skill-suggestions').addEventListener('click', function(
       span.textContent = skill;
       softContainer.appendChild(span);
     });
-    // Use same click handler as main skills
     softContainer.addEventListener('click', function(e) {
       var tag = e.target.closest('.skill-tag');
       if (!tag) return;
@@ -2382,23 +2581,46 @@ window.populateDutyPrompts = function(container) {
   container.innerHTML = html;
 };
 
-// Branch change handler: update rank dropdown and awards checklist
-window.onBranchChange = function(selectEl) {
-  var block = selectEl.closest('.mil-block');
-  if (!block || !window.VCP_MIL) return;
+// Service Period branch change handler
+window.onSpBranchChange = function(selectEl) {
+  var sp = selectEl.closest('.service-period');
+  if (!sp) return;
   var branch = selectEl.value;
 
-  // Update rank dropdown
-  var rankSelect = block.querySelector('.mil-rank');
-  if (rankSelect) {
-    rankSelect.innerHTML = window.VCP_MIL.buildRankOptions(branch);
+  // 1. Populate MOS datalist from VCP_MOS
+  var mosInput = sp.querySelector('.sp-mos');
+  if (mosInput) {
+    var dlId = mosInput.getAttribute('list');
+    var dl = document.getElementById(dlId);
+    if (dl) {
+      dl.innerHTML = '';
+      if (branch && window.VCP_MOS && window.VCP_MOS[branch]) {
+        window.VCP_MOS[branch].forEach(function(m) {
+          var opt = document.createElement('option');
+          opt.value = m.code + ' - ' + m.title;
+          dl.appendChild(opt);
+        });
+      }
+    }
+    mosInput.placeholder = branch ? 'Type MOS code or title...' : 'Select branch first...';
+    mosInput.value = '';
+    sp.querySelector('.sp-mos-title').value = '';
   }
 
-  // Update awards checklist
-  var awardsContainer = block.querySelector('.mil-awards-checklist');
+  // 2. Populate rank dropdowns (entry + separation)
+  if (window.VCP_MIL) {
+    var rankOpts = window.VCP_MIL.buildRankOptions(branch);
+    var entryRank = sp.querySelector('.sp-rank-entry');
+    var sepRank = sp.querySelector('.sp-rank-sep');
+    if (entryRank) entryRank.innerHTML = rankOpts;
+    if (sepRank) sepRank.innerHTML = rankOpts;
+  }
+
+  // 3. Populate awards checklist
+  var awardsContainer = sp.querySelector('.sp-awards');
   if (awardsContainer) {
-    if (!branch) {
-      awardsContainer.innerHTML = '<span style="font-size:.8rem;color:rgba(192,216,240,.4);">Select a branch to see awards</span>';
+    if (!branch || !window.VCP_MIL) {
+      awardsContainer.innerHTML = 'Select branch to see awards';
       return;
     }
     var branchAwards = window.VCP_MIL.AWARDS[branch] || [];
@@ -2419,32 +2641,31 @@ window.onBranchChange = function(selectEl) {
     awardsContainer.innerHTML = html;
   }
 
-  // Update special qualifiers (ASI/NEC/SEI) and SQI based on branch
-  var quals = window.VCP_MIL.SPECIAL_QUALS ? window.VCP_MIL.SPECIAL_QUALS[branch] : null;
-  var asiInput = block.querySelector('.mil-asi');
-  var sqiInput = block.querySelector('.mil-sqi');
-  var asiLabel = block.querySelector('.asi-label');
-  var sqiLabel = block.querySelector('.sqi-label');
+  // 4. Update special qualifiers
+  var quals = window.VCP_MIL && window.VCP_MIL.SPECIAL_QUALS ? window.VCP_MIL.SPECIAL_QUALS[branch] : null;
+  var qualInput = sp.querySelector('.sp-quals');
+  var sqiInput = sp.querySelector('.sp-sqi');
+  var qualLabel = sp.querySelector('.sp-qual-label');
+  var sqiLabel = sp.querySelector('.sp-sqi-label');
 
-  if (quals && asiInput) {
-    // Update ASI/NEC/SEI datalist
-    var dlId = 'asi-list-' + block.getAttribute('data-idx');
+  if (quals && qualInput) {
+    var dlId = 'qual-list-' + sp.getAttribute('data-sp');
     var dl = document.getElementById(dlId);
-    if (!dl) { dl = document.createElement('datalist'); dl.id = dlId; block.appendChild(dl); }
+    if (!dl) { dl = document.createElement('datalist'); dl.id = dlId; sp.appendChild(dl); }
     dl.innerHTML = '';
     quals.items.forEach(function(q) {
       var opt = document.createElement('option');
       opt.value = q.code + ' - ' + q.title;
       dl.appendChild(opt);
     });
-    asiInput.setAttribute('list', dlId);
-    asiInput.placeholder = 'e.g. ' + quals.items[0].code + ' - ' + quals.items[0].title;
-    if (asiLabel) asiLabel.textContent = quals.label || 'Special Qualifiers';
+    qualInput.setAttribute('list', dlId);
+    qualInput.placeholder = 'e.g. ' + quals.items[0].code + ' - ' + quals.items[0].title;
+    if (qualLabel) qualLabel.textContent = quals.label || 'Special Qualifiers';
   }
   if (quals && sqiInput) {
-    var dlId2 = 'sqi-list-' + block.getAttribute('data-idx');
+    var dlId2 = 'sqi-list-' + sp.getAttribute('data-sp');
     var dl2 = document.getElementById(dlId2);
-    if (!dl2) { dl2 = document.createElement('datalist'); dl2.id = dlId2; block.appendChild(dl2); }
+    if (!dl2) { dl2 = document.createElement('datalist'); dl2.id = dlId2; sp.appendChild(dl2); }
     dl2.innerHTML = '';
     (quals.sqiItems || []).forEach(function(q) {
       var opt = document.createElement('option');
@@ -2452,10 +2673,41 @@ window.onBranchChange = function(selectEl) {
       dl2.appendChild(opt);
     });
     sqiInput.setAttribute('list', dlId2);
-    sqiInput.placeholder = 'e.g. ' + (quals.sqiItems && quals.sqiItems[0] ? quals.sqiItems[0].code + ' - ' + quals.sqiItems[0].title : '');
+    sqiInput.placeholder = quals.sqiItems && quals.sqiItems[0] ? 'e.g. ' + quals.sqiItems[0].code + ' - ' + quals.sqiItems[0].title : '';
     if (sqiLabel) sqiLabel.textContent = quals.sqiLabel || 'Special Qualification';
   }
 };
+
+// MOS change handler: auto-fill title
+window.onMosChange = function(inputEl) {
+  var sp = inputEl.closest('.service-period');
+  if (!sp) return;
+  var val = inputEl.value.trim();
+  var titleInput = sp.querySelector('.sp-mos-title');
+  if (!titleInput) return;
+
+  // If user selected from datalist, value is "CODE - Title"
+  if (val.indexOf(' - ') !== -1) {
+    titleInput.value = val.split(' - ').slice(1).join(' - ');
+    return;
+  }
+
+  // Try to look up by code
+  var branch = sp.querySelector('.sp-branch').value;
+  if (branch && window.VCP_MOS && window.VCP_MOS[branch]) {
+    var code = val.toUpperCase();
+    for (var i = 0; i < window.VCP_MOS[branch].length; i++) {
+      if (window.VCP_MOS[branch][i].code === code) {
+        titleInput.value = window.VCP_MOS[branch][i].title;
+        return;
+      }
+    }
+  }
+  // Don't clear - user might be typing a custom MOS
+};
+
+// Legacy alias for backward compat
+window.onBranchChange = window.onSpBranchChange;
 
 // Get selected languages
 window.getSelectedLanguages = function() {
@@ -2511,22 +2763,37 @@ function buildReview() {
   if (p.linkedin) html += '<div class="review-item">'+esc(p.linkedin)+'</div>';
   html += '</div>';
 
-  // Military
-  html += '<div class="review-section"><h3>Military Experience <span class="edit-link" onclick="goStep(2)">Edit</span></h3>';
+  // Military Service Timeline
+  html += '<div class="review-section"><h3>Military Service Timeline <span class="edit-link" onclick="goStep(2)">Edit</span></h3>';
   mil.forEach(function(m, i) {
-    html += '<div class="review-item"><strong>'+esc(m.branch)+'  -  '+esc(m.mos)+' '+esc(m.mosTitle)+'</strong></div>';
-    html += '<div class="review-item">'+esc(m.rank)+(m.dutyTitle ? ' | '+esc(m.dutyTitle) : '')+' | '+esc(m.years)+' years | '+esc(m.clearance)+' clearance</div>';
+    html += '<div class="review-item" style="margin-top:'+(i>0?'.6rem':'0')+'"><strong>Service Period '+(i+1)+': '+esc(m.branch)+' ('+esc(m.serviceType)+')</strong></div>';
+    html += '<div class="review-item">'+esc(m.mos)+' '+esc(m.mosTitle)+'</div>';
+    var rankStr = '';
+    if (m.rankEntry) rankStr += esc(m.rankEntry) + ' to ';
+    rankStr += esc(m.rankSep || m.rank);
+    if (rankStr) html += '<div class="review-item">Rank: '+rankStr+'</div>';
     if (m.start || m.end) html += '<div class="review-item">'+esc(m.start)+' to '+esc(m.end)+'</div>';
     if (m.unit) html += '<div class="review-item">Unit: '+esc(m.unit)+'</div>';
-    if (m.asi) html += '<div class="review-item">ASI: '+esc(m.asi)+'</div>';
+    if (m.clearance && m.clearance !== 'None') html += '<div class="review-item">Clearance: '+esc(m.clearance)+(m.clearanceStatus ? ' ('+esc(m.clearanceStatus)+')' : '')+'</div>';
+    if (m.quals) html += '<div class="review-item">Qualifiers: '+esc(m.quals)+'</div>';
     if (m.sqi) html += '<div class="review-item">SQI: '+esc(m.sqi)+'</div>';
-    if (m.dutyAnswers && Object.keys(m.dutyAnswers).length) {
-      var daKeys = Object.keys(m.dutyAnswers);
-      for (var di = 0; di < daKeys.length; di++) {
-        html += '<div class="review-item" style="font-size:.82rem;color:rgba(192,216,240,.6);">'+esc(daKeys[di])+': '+esc(m.dutyAnswers[daKeys[di]])+'</div>';
-      }
+    // Positions
+    if (m.positions && m.positions.length) {
+      m.positions.forEach(function(pos, pi) {
+        if (pos.title) {
+          html += '<div class="review-item" style="margin-left:.75rem;margin-top:.3rem;"><strong>Position: '+esc(pos.title)+'</strong>';
+          if (pos.start || pos.end) html += ' ('+esc(pos.start)+' - '+esc(pos.end)+')';
+          html += '</div>';
+          if (pos.dutyAnswers && Object.keys(pos.dutyAnswers).length) {
+            Object.keys(pos.dutyAnswers).forEach(function(key) {
+              html += '<div class="review-item" style="margin-left:1.25rem;font-size:.78rem;color:rgba(192,216,240,.5);">'+esc(key)+': '+esc(pos.dutyAnswers[key])+'</div>';
+            });
+          }
+        }
+      });
     }
-    if (m.awards) html += '<div class="review-item">Awards: '+esc(m.awards)+'</div>';
+    var awardsStr = Array.isArray(m.awards) ? m.awards.join(', ') : m.awards;
+    if (awardsStr) html += '<div class="review-item">Awards: '+esc(awardsStr)+'</div>';
     if (m.deployments) html += '<div class="review-item">Deployments: '+esc(m.deployments)+'</div>';
   });
   html += '</div>';
@@ -2704,33 +2971,40 @@ function buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis) {
 
   prompt += '\nMILITARY EXPERIENCE:\n';
   mil.forEach(function(m, i) {
-    prompt += '\n--- Service #' + (i+1) + ' ---\n';
+    prompt += '\n--- Service Period #' + (i+1) + ' ---\n';
     prompt += 'Branch: ' + m.branch + '\n';
     if (m.serviceType) prompt += 'Service Type: ' + m.serviceType + '\n';
     prompt += 'MOS/Rate/AFSC: ' + m.mos + ' (' + m.mosTitle + ')\n';
-    prompt += 'Rank: ' + m.rank + '\n';
-    if (m.dutyTitle) prompt += 'Position/Duty Title: ' + m.dutyTitle + '\n';
-    prompt += 'Years of Service: ' + m.years + '\n';
+    if (m.rankEntry) prompt += 'Entry Rank: ' + m.rankEntry + '\n';
+    prompt += 'Separation Rank: ' + (m.rankSep || m.rank) + '\n';
     prompt += 'Dates: ' + m.start + ' to ' + m.end + '\n';
     if (m.unit) prompt += 'Unit/Command: ' + m.unit + '\n';
     prompt += 'Clearance: ' + m.clearance + (m.clearanceStatus ? ' (' + m.clearanceStatus + ')' : '') + '\n';
-    if (m.asi) prompt += 'Additional Skill Identifier (ASI): ' + m.asi + '\n';
+    if (m.quals) prompt += 'Special Qualifiers: ' + m.quals + '\n';
     if (m.sqi) prompt += 'Skill Qualification Identifier (SQI): ' + m.sqi + '\n';
-    // Guided duty answers
-    if (m.dutyAnswers && Object.keys(m.dutyAnswers).length) {
-      prompt += 'Key Accomplishment Details:\n';
-      var prompts = window.VCP_MIL ? window.VCP_MIL.DUTY_PROMPTS : [];
-      Object.keys(m.dutyAnswers).forEach(function(key) {
-        var label = key;
-        for (var pi = 0; pi < prompts.length; pi++) {
-          if (prompts[pi].key === key) { label = prompts[pi].q; break; }
+    // Positions within this service period
+    var dutyPrompts = window.VCP_MIL ? window.VCP_MIL.DUTY_PROMPTS : [];
+    if (m.positions && m.positions.length) {
+      m.positions.forEach(function(pos, pi) {
+        if (pos.title) {
+          prompt += '\n  Position ' + (pi+1) + ': ' + pos.title + '\n';
+          if (pos.start || pos.end) prompt += '  Dates: ' + pos.start + ' to ' + pos.end + '\n';
+          if (pos.dutyAnswers && Object.keys(pos.dutyAnswers).length) {
+            prompt += '  Key Accomplishment Details:\n';
+            Object.keys(pos.dutyAnswers).forEach(function(key) {
+              var label = key;
+              for (var di = 0; di < dutyPrompts.length; di++) {
+                if (dutyPrompts[di].key === key) { label = dutyPrompts[di].q; break; }
+              }
+              prompt += '    - ' + label + ' ' + pos.dutyAnswers[key] + '\n';
+            });
+          }
         }
-        prompt += '  - ' + label + ' ' + m.dutyAnswers[key] + '\n';
       });
     }
-    if (m.duties) prompt += 'Additional Duties & Accomplishments:\n' + m.duties + '\n';
     if (m.deployments) prompt += 'Deployments:\n' + m.deployments + '\n';
-    if (m.awards) prompt += 'Awards & Decorations: ' + m.awards + '\n';
+    var awardsStr = Array.isArray(m.awards) ? m.awards.join(', ') : m.awards;
+    if (awardsStr) prompt += 'Awards & Decorations: ' + awardsStr + '\n';
   });
 
   // Languages

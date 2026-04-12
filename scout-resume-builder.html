@@ -1558,12 +1558,12 @@ body.menu-open{overflow:hidden!important;}
             </select>
           </div>
           <div class="sf-field">
-            <label>Additional Skill Identifier (ASI)</label>
-            <input type="text" class="mil-asi" list="asi-list" placeholder="e.g. 5P - Master Fitness Trainer">
+            <label class="asi-label">Special Qualifiers (select branch first)</label>
+            <input type="text" class="mil-asi" placeholder="Select a branch to see options">
           </div>
           <div class="sf-field">
-            <label>Skill Qualification Identifier (SQI)</label>
-            <input type="text" class="mil-sqi" placeholder="e.g. P - Parachutist">
+            <label class="sqi-label">Special Qualification (select branch first)</label>
+            <input type="text" class="mil-sqi" placeholder="Select a branch to see options">
           </div>
           <div class="sf-field">
             <label>Service Start Date</label>
@@ -2222,8 +2222,8 @@ window.addMilBlock = function() {
       '<div class="sf-field"><label>Service Type</label><select class="mil-service-type"><option value="">Select...</option><option>Active Duty</option><option>Reserve</option><option>National Guard</option><option>Active Guard Reserve</option></select></div>' +
       '<div class="sf-field"><label>Clearance Level</label><select class="mil-clearance"><option value="None">None</option><option>Confidential</option><option>Secret</option><option>Top Secret</option><option>TS/SCI</option></select></div>' +
       '<div class="sf-field"><label>Clearance Status</label><select class="mil-clearance-status"><option value="">Select...</option><option>Active</option><option>Inactive</option><option>Expired</option></select></div>' +
-      '<div class="sf-field"><label>Additional Skill Identifier (ASI)</label><input type="text" class="mil-asi" list="asi-list" placeholder="e.g. 5P - Master Fitness Trainer"></div>' +
-      '<div class="sf-field"><label>Skill Qualification Identifier (SQI)</label><input type="text" class="mil-sqi" placeholder="e.g. P - Parachutist"></div>' +
+      '<div class="sf-field"><label class="asi-label">Special Qualifiers (select branch)</label><input type="text" class="mil-asi" placeholder="Select a branch to see options"></div>' +
+      '<div class="sf-field"><label class="sqi-label">Special Qualification (select branch)</label><input type="text" class="mil-sqi" placeholder="Select a branch to see options"></div>' +
       '<div class="sf-field"><label>Service Start Date</label><input type="month" class="mil-start"></div>' +
       '<div class="sf-field"><label>Service End Date</label><input type="month" class="mil-end"></div>' +
       '<div class="sf-field"><label>Unit / Command</label><input type="text" class="mil-unit" placeholder="e.g. 2nd Battalion, 75th Ranger Regiment"></div>' +
@@ -2417,6 +2417,43 @@ window.onBranchChange = function(selectEl) {
       });
     }
     awardsContainer.innerHTML = html;
+  }
+
+  // Update special qualifiers (ASI/NEC/SEI) and SQI based on branch
+  var quals = window.VCP_MIL.SPECIAL_QUALS ? window.VCP_MIL.SPECIAL_QUALS[branch] : null;
+  var asiInput = block.querySelector('.mil-asi');
+  var sqiInput = block.querySelector('.mil-sqi');
+  var asiLabel = block.querySelector('.asi-label');
+  var sqiLabel = block.querySelector('.sqi-label');
+
+  if (quals && asiInput) {
+    // Update ASI/NEC/SEI datalist
+    var dlId = 'asi-list-' + block.getAttribute('data-idx');
+    var dl = document.getElementById(dlId);
+    if (!dl) { dl = document.createElement('datalist'); dl.id = dlId; block.appendChild(dl); }
+    dl.innerHTML = '';
+    quals.items.forEach(function(q) {
+      var opt = document.createElement('option');
+      opt.value = q.code + ' - ' + q.title;
+      dl.appendChild(opt);
+    });
+    asiInput.setAttribute('list', dlId);
+    asiInput.placeholder = 'e.g. ' + quals.items[0].code + ' - ' + quals.items[0].title;
+    if (asiLabel) asiLabel.textContent = quals.label || 'Special Qualifiers';
+  }
+  if (quals && sqiInput) {
+    var dlId2 = 'sqi-list-' + block.getAttribute('data-idx');
+    var dl2 = document.getElementById(dlId2);
+    if (!dl2) { dl2 = document.createElement('datalist'); dl2.id = dlId2; block.appendChild(dl2); }
+    dl2.innerHTML = '';
+    (quals.sqiItems || []).forEach(function(q) {
+      var opt = document.createElement('option');
+      opt.value = q.code + ' - ' + q.title;
+      dl2.appendChild(opt);
+    });
+    sqiInput.setAttribute('list', dlId2);
+    sqiInput.placeholder = 'e.g. ' + (quals.sqiItems && quals.sqiItems[0] ? quals.sqiItems[0].code + ' - ' + quals.sqiItems[0].title : '');
+    if (sqiLabel) sqiLabel.textContent = quals.sqiLabel || 'Special Qualification';
   }
 };
 

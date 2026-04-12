@@ -358,40 +358,143 @@ window.VCP_MIL.AWARDS = {
 };
 
 /* ── ADDITIONAL SKILL IDENTIFIERS ── */
-window.VCP_MIL.ASI = {
-  "Army": [
-    {code:"2A",title:"Non-Lethal Weapons"},
-    {code:"2S",title:"Battle Staff"},
-    {code:"3Y",title:"Airborne Ranger"},
-    {code:"4A",title:"ASI for Recruiting"},
-    {code:"4Y",title:"Dual-Status Technician"},
-    {code:"5K",title:"Master Instructor"},
-    {code:"5P",title:"Master Fitness Trainer"},
-    {code:"5W",title:"Pathfinder"},
-    {code:"6B",title:"Army Space Operations Officer"},
-    {code:"7W",title:"Explosive Ordnance Disposal (EOD)"},
-    {code:"8P",title:"Jumpmaster"},
-    {code:"8R",title:"Master Parachutist"},
-    {code:"A6",title:"Foreign Area Officer"},
-    {code:"B4",title:"Sniper"},
-    {code:"C5",title:"Commander, Brigade/Group Combat Team"},
-    {code:"D7",title:"Joint Firepower Observer"},
-    {code:"F5",title:"Reclassified Warrant Officer"},
-    {code:"G3",title:"CBRN Operations"},
-    {code:"H8",title:"Instructor Pilot"},
-    {code:"K4",title:"Instructor"},
-    {code:"K8",title:"Airborne Instructor"},
-    {code:"N4",title:"Network Operations"},
-    {code:"P5",title:"Master Gunner"},
-    {code:"R7",title:"Recruiter (Senior)"},
-    {code:"S7",title:"Master Recruiter"},
-    {code:"T3",title:"Drill Sergeant"},
-    {code:"V5",title:"Rappel Master"},
-    {code:"W1",title:"RANGER Qualified"},
-    {code:"Y6",title:"Special Forces"},
-    {code:"Z5",title:"Sapper"}
-  ]
+/* Special Qualifiers / Additional Identifiers per branch */
+window.VCP_MIL.SPECIAL_QUALS = {
+  "Army": {
+    label: "Additional Skill Identifiers (ASI)",
+    items: [
+      {code:"2A",title:"Non-Lethal Weapons"},{code:"2S",title:"Battle Staff"},{code:"3Y",title:"Airborne Ranger"},
+      {code:"4A",title:"Recruiting"},{code:"4Y",title:"Dual-Status Technician"},{code:"5K",title:"Master Instructor"},
+      {code:"5P",title:"Master Fitness Trainer"},{code:"5W",title:"Pathfinder"},{code:"6B",title:"Space Operations"},
+      {code:"7W",title:"Explosive Ordnance Disposal (EOD)"},{code:"8P",title:"Jumpmaster"},{code:"8R",title:"Master Parachutist"},
+      {code:"A6",title:"Foreign Area Officer"},{code:"B4",title:"Sniper"},{code:"C5",title:"Bde/Group Commander"},
+      {code:"D7",title:"Joint Firepower Observer"},{code:"G3",title:"CBRN Operations"},{code:"H8",title:"Instructor Pilot"},
+      {code:"K4",title:"Instructor"},{code:"K8",title:"Airborne Instructor"},{code:"N4",title:"Network Operations"},
+      {code:"P5",title:"Master Gunner"},{code:"R7",title:"Senior Recruiter"},{code:"S7",title:"Master Recruiter"},
+      {code:"T3",title:"Drill Sergeant"},{code:"V5",title:"Rappel Master"},{code:"W1",title:"Ranger Qualified"},
+      {code:"Y6",title:"Special Forces"},{code:"Z5",title:"Sapper"},{code:"F7",title:"Functional Area Officer"},
+      {code:"2B",title:"Counter-Intel"},{code:"P2",title:"Patriot Master Gunner"},{code:"J3",title:"Joint Operations"}
+    ],
+    sqiLabel: "Skill Qualification Identifier (SQI)",
+    sqiItems: [
+      {code:"G",title:"Recruiter"},{code:"P",title:"Parachutist"},{code:"S",title:"Special Operations"},
+      {code:"V",title:"Ranger"},{code:"W",title:"Diver"},{code:"X",title:"Observer/Controller"},
+      {code:"4",title:"Linguist"},{code:"5",title:"Special Forces"},{code:"6",title:"Strength Manager"},
+      {code:"7",title:"Instructor"},{code:"8",title:"SFAB Advisor"},{code:"M",title:"First Sergeant"}
+    ]
+  },
+  "Navy": {
+    label: "Navy Enlisted Classifications (NEC)",
+    items: [
+      {code:"AWF0",title:"Aviation Warfare Systems Operator"},{code:"AWR0",title:"Aircrewman Helicopter"},
+      {code:"AWV0",title:"Aircrewman Avionics"},{code:"K03A",title:"Master Training Specialist"},
+      {code:"K04A",title:"Command Financial Specialist"},{code:"L01A",title:"Anti-Terrorism Force Protection"},
+      {code:"L02A",title:"Security Reaction Force"},{code:"L11A",title:"Law Enforcement Specialist"},
+      {code:"H08A",title:"Basic Cardiac Life Support"},{code:"B02A",title:"SCUBA Diver First Class"},
+      {code:"B03A",title:"SCUBA Diver Second Class"},{code:"B06A",title:"Deep Sea Diver"},
+      {code:"N01A",title:"Naval Parachutist"},{code:"N13A",title:"Master EOD Technician"},
+      {code:"V02A",title:"Cryptologic Network Warfare"},{code:"W01A",title:"Navy Counselor"},
+      {code:"L35A",title:"Master-at-Arms"},{code:"L14A",title:"Brig Staff"},
+      {code:"815A",title:"Nuclear Power"},{code:"713A",title:"Submarine Warfare"}
+    ],
+    sqiLabel: "Warfare / Qualification Designators",
+    sqiItems: [
+      {code:"SW",title:"Surface Warfare"},{code:"AW",title:"Aviation Warfare"},
+      {code:"FMF",title:"Fleet Marine Force"},{code:"EXW",title:"Expeditionary Warfare"},
+      {code:"IW",title:"Information Dominance"},{code:"SCW",title:"Seabee Combat Warfare"},
+      {code:"SS",title:"Submarine Qualified"},{code:"PJ",title:"Parachutist"},
+      {code:"DV",title:"Diver"},{code:"EOD",title:"Explosive Ordnance Disposal"},
+      {code:"SWCC",title:"Special Warfare Combatant Craft"},{code:"SO",title:"Special Operations (SEAL)"}
+    ]
+  },
+  "Marines": {
+    label: "Additional MOS / Qualifications",
+    items: [
+      {code:"0321",title:"Reconnaissance Man"},{code:"0326",title:"MARSOC Critical Skills Operator"},
+      {code:"8411",title:"Recruiter"},{code:"8412",title:"Career Recruiter"},{code:"8156",title:"MAGTF Planner"},
+      {code:"0211",title:"CI/HUMINT Specialist"},{code:"0231",title:"Intelligence Specialist"},
+      {code:"8071",title:"Quantico Brig Guard"},{code:"8152",title:"Marine Security Guard"},
+      {code:"8654",title:"NCOIC Personnel"},{code:"8014",title:"Drill Instructor"},
+      {code:"8006",title:"Billet Designator"},{code:"0317",title:"Scout Sniper"},
+      {code:"0372",title:"Critical Skills Operator"},{code:"8023",title:"Parachutist"},
+      {code:"8026",title:"Combatant Diver"},{code:"0861",title:"Fire Support Man"}
+    ],
+    sqiLabel: "Special Qualification Designators",
+    sqiItems: [
+      {code:"8001",title:"Basic Parachutist"},{code:"8003",title:"Combatant Diver"},
+      {code:"8006",title:"Designated Marksman"},{code:"8014",title:"Drill Instructor"},
+      {code:"8023",title:"HALO Parachutist"},{code:"8071",title:"Brig Guard"},
+      {code:"8152",title:"MSG Qualified"},{code:"8411",title:"Recruiting Duty"},
+      {code:"SERE",title:"SERE Qualified"},{code:"JTAC",title:"Joint Terminal Attack Controller"}
+    ]
+  },
+  "Air Force": {
+    label: "Special Experience Identifiers (SEI)",
+    items: [
+      {code:"090",title:"Nuclear Weapons"},{code:"098",title:"Survival Instructor"},
+      {code:"100",title:"Instructor"},{code:"112",title:"Combat Arms Instructor"},
+      {code:"209",title:"First Sergeant"},{code:"211",title:"Military Training Instructor (MTI)"},
+      {code:"243",title:"Professional Military Education Instructor"},{code:"269",title:"Recruiter"},
+      {code:"274",title:"SERE Specialist"},{code:"292",title:"Combat Weather"},
+      {code:"318",title:"Pararescue/CRO"},{code:"322",title:"Combat Control"},
+      {code:"334",title:"Tactical Air Control Party (TACP)"},{code:"340",title:"EOD"},
+      {code:"435",title:"Intelligence"},{code:"500",title:"Cyber Operations"},
+      {code:"8B0",title:"Military Training Leader"},{code:"8F0",title:"First Sergeant"},
+      {code:"8G0",title:"USAF Honor Guard"},{code:"8P0",title:"Courier"}
+    ],
+    sqiLabel: "Special Duty Identifiers (SDI)",
+    sqiItems: [
+      {code:"8A2",title:"Enlisted Aide"},{code:"8B0",title:"Military Training Leader"},
+      {code:"8F0",title:"First Sergeant"},{code:"8G0",title:"Honor Guard"},
+      {code:"8H0",title:"Airman Dorm Leader"},{code:"8P0",title:"Courier"},
+      {code:"8R0",title:"Recruiter"},{code:"8S0",title:"Missile Facility Manager"},
+      {code:"8T0",title:"Professional Military Education Instructor"},
+      {code:"9G1",title:"Group Superintendent"},{code:"9E0",title:"AETC Instructor"}
+    ]
+  },
+  "Coast Guard": {
+    label: "Competency / Qualification Codes",
+    items: [
+      {code:"AIRSTA",title:"Air Station Qualified"},{code:"BMSOW",title:"Boat Crew Member"},
+      {code:"COTP",title:"Captain of the Port Staff"},{code:"DOG",title:"Dog Handler"},
+      {code:"DSF",title:"Deployable Specialized Forces"},{code:"EMT",title:"Emergency Medical Technician"},
+      {code:"EPLO",title:"Emergency Preparedness Liaison Officer"},{code:"HITS",title:"High Interest Vessel Boarding"},
+      {code:"ISC",title:"Intelligence Specialist Certified"},{code:"JOOD",title:"Junior Officer of the Deck"},
+      {code:"LEDET",title:"Law Enforcement Detachment"},{code:"MSST",title:"Maritime Security Response Team"},
+      {code:"MSRT",title:"Maritime Security Response Team"},{code:"OOD",title:"Officer of the Deck"},
+      {code:"PSU",title:"Port Security Unit"},{code:"TACLET",title:"Tactical Law Enforcement"},
+      {code:"SRT",title:"Special Response Team"},{code:"SURFQ",title:"Surfman Qualified"}
+    ],
+    sqiLabel: "Warfare / Special Qualifications",
+    sqiItems: [
+      {code:"BOAT",title:"Coxswain"},{code:"AIRCRW",title:"Aviation Crewmember"},
+      {code:"BTM",title:"Boarding Team Member"},{code:"DIVR",title:"Diver"},
+      {code:"HELO",title:"Helicopter Crew"},{code:"IBET",title:"Integrated Border Enforcement"},
+      {code:"MSRT",title:"MSRT Operator"},{code:"RSM",title:"Rescue Swimmer"},
+      {code:"SURF",title:"Surfman"},{code:"TCO",title:"Tactical Coxswain"}
+    ]
+  },
+  "Space Force": {
+    label: "Space Force Specialty Codes",
+    items: [
+      {code:"13S",title:"Space Operations"},{code:"1C6",title:"Space Systems Operations"},
+      {code:"1N",title:"Intelligence"},{code:"3D0",title:"Cyber Operations"},
+      {code:"5C0",title:"Command and Control Battle Management"},{code:"5S0",title:"Space Professional"},
+      {code:"1A6",title:"Orbital Warfare"},{code:"3F1",title:"Services"},
+      {code:"1B4",title:"Cyber Warfare Operations"},{code:"17D",title:"Cyber Officer"},
+      {code:"62E",title:"Space Systems Engineer"},{code:"13N",title:"Nuclear/Missile Operations"}
+    ],
+    sqiLabel: "Special Experience Identifiers",
+    sqiItems: [
+      {code:"OPS",title:"Space Operator"},{code:"ACQ",title:"Acquisitions"},
+      {code:"INT",title:"Intelligence"},{code:"CYB",title:"Cyber Operations"},
+      {code:"ENG",title:"Space Systems Engineering"},{code:"SDA",title:"Space Domain Awareness"},
+      {code:"L&L",title:"Launch & Lift"},{code:"SAT",title:"Satellite Operations"}
+    ]
+  }
 };
+/* Backward compat - keep old ASI reference */
+window.VCP_MIL.ASI = window.VCP_MIL.SPECIAL_QUALS;
 
 /* ── LANGUAGES ── */
 window.VCP_MIL.LANGUAGES = [

@@ -1607,8 +1607,11 @@ body.menu-open{overflow:hidden!important;}
         <div class="sf-grid">
           <div class="sf-field">
             <label>MOS / Rate / AFSC *</label>
-            <input type="text" class="sp-mos" list="mos-list-0" placeholder="Select branch first..." onchange="onMosChange(this)" oninput="onMosChange(this)">
-            <datalist id="mos-list-0"></datalist>
+            <div class="sp-mos-wrap">
+              <select class="sp-mos" onchange="onMosChange(this)" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">
+                <option value="">Select branch first...</option>
+              </select>
+            </div>
           </div>
           <div class="sf-field">
             <label>MOS Title</label>
@@ -2373,7 +2376,7 @@ window.addServicePeriod = function() {
       '<div class="sf-field"><label>Service End</label><input type="month" class="sp-end"></div>' +
     '</div>' +
     '<div class="sf-grid">' +
-      '<div class="sf-field"><label>MOS / Rate / AFSC *</label><input type="text" class="sp-mos" list="mos-list-'+count+'" placeholder="Select branch first..." onchange="onMosChange(this)" oninput="onMosChange(this)"><datalist id="mos-list-'+count+'"></datalist></div>' +
+      '<div class="sf-field"><label>MOS / Rate / AFSC *</label><div class="sp-mos-wrap"><select class="sp-mos" onchange="onMosChange(this)" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;"><option value="">Select branch first...</option></select></div></div>' +
       '<div class="sf-field"><label>MOS Title</label><input type="text" class="sp-mos-title" readonly placeholder="Auto-fills when MOS selected"></div>' +
     '</div>' +
     '<div class="sf-grid">' +
@@ -2584,26 +2587,20 @@ window.populateDutyPrompts = function(container) {
 // Service Period branch change handler
 window.onSpBranchChange = function(selectEl) {
   var sp = selectEl.closest('.service-period');
-  if (!sp) return;
+  if (!sp) { console.warn('Scout: no service-period parent found'); return; }
   var branch = selectEl.value;
 
-  // 1. Populate MOS datalist from VCP_MOS
-  var mosInput = sp.querySelector('.sp-mos');
-  if (mosInput) {
-    var dlId = mosInput.getAttribute('list');
-    var dl = document.getElementById(dlId);
-    if (dl) {
-      dl.innerHTML = '';
-      if (branch && window.VCP_MOS && window.VCP_MOS[branch]) {
-        window.VCP_MOS[branch].forEach(function(m) {
-          var opt = document.createElement('option');
-          opt.value = m.code + ' - ' + m.title;
-          dl.appendChild(opt);
-        });
-      }
-    }
-    mosInput.placeholder = branch ? 'Type MOS code or title...' : 'Select branch first...';
-    mosInput.value = '';
+  // 1. Populate MOS - use <select> for mobile compatibility (datalist is broken on iOS)
+  var mosContainer = sp.querySelector('.sp-mos-wrap');
+  if (mosContainer) {
+    var mosData = (window.VCP_MOS && window.VCP_MOS[branch]) || [];
+    var html = '<select class="sp-mos" onchange="onMosChange(this)" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">';
+    html += '<option value="">' + (branch ? 'Select ' + (branch==='Army'?'MOS':branch==='Navy'||branch==='Coast Guard'?'Rate':branch==='Marines'?'MOS':'AFSC') + '...' : 'Select branch first...') + '</option>';
+    mosData.forEach(function(m) {
+      html += '<option value="' + m.code + '" data-title="' + (m.title||'').replace(/"/g,'&quot;') + '">' + m.code + ' - ' + m.title + '</option>';
+    });
+    html += '</select>';
+    mosContainer.innerHTML = html;
     sp.querySelector('.sp-mos-title').value = '';
   }
 
@@ -2679,20 +2676,21 @@ window.onSpBranchChange = function(selectEl) {
 };
 
 // MOS change handler: auto-fill title
-window.onMosChange = function(inputEl) {
-  var sp = inputEl.closest('.service-period');
+window.onMosChange = function(selectEl) {
+  var sp = selectEl.closest('.service-period');
   if (!sp) return;
-  var val = inputEl.value.trim();
   var titleInput = sp.querySelector('.sp-mos-title');
   if (!titleInput) return;
 
-  // If user selected from datalist, value is "CODE - Title"
-  if (val.indexOf(' - ') !== -1) {
-    titleInput.value = val.split(' - ').slice(1).join(' - ');
+  // Get title from the selected option's data attribute
+  var selected = selectEl.options ? selectEl.options[selectEl.selectedIndex] : null;
+  if (selected && selected.getAttribute('data-title')) {
+    titleInput.value = selected.getAttribute('data-title');
     return;
   }
 
-  // Try to look up by code
+  // Fallback: try to look up by code
+  var val = selectEl.value.trim();
   var branch = sp.querySelector('.sp-branch').value;
   if (branch && window.VCP_MOS && window.VCP_MOS[branch]) {
     var code = val.toUpperCase();

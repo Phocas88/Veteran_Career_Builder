@@ -14,6 +14,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4999040528510137" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+<script src="/vcp-military-data.js"></script>
 <meta property="og:title" content="Scout Resume Builder | AI-Powered Veteran Resume">
 <meta property="og:description" content="Build a professional civilian resume from your military experience in minutes. AI translates your MOS, duties, and achievements into recruiter-ready language.">
 <meta property="og:url" content="https://veterancareerpath.com/scout-resume-builder.html">
@@ -348,6 +349,67 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 }
 .btn-edit-resume:hover{background:rgba(255,255,255,.1);color:#fff;}
 
+/* ── AWARDS CHECKLIST ── */
+.awards-checklist{
+  display:grid;grid-template-columns:1fr 1fr;gap:.3rem .75rem;
+  max-height:220px;overflow-y:auto;padding:.5rem;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;
+  margin-top:.3rem;
+}
+.awards-checklist label{
+  display:flex;align-items:center;gap:.4rem;font-size:.78rem;
+  color:rgba(192,216,240,.75);cursor:pointer;padding:.15rem 0;
+}
+.awards-checklist input[type="checkbox"]{width:15px;height:15px;accent-color:var(--gold);flex-shrink:0;}
+.awards-group-title{
+  grid-column:1/-1;font-size:.68rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--gold);margin-top:.4rem;padding-bottom:.15rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+/* ── GUIDED DUTY QUESTIONS ── */
+.duty-prompts .duty-prompt-field{margin-bottom:.6rem;}
+.duty-prompts .duty-prompt-field label{
+  font-size:.78rem;font-weight:500;color:rgba(192,216,240,.7);margin-bottom:.2rem;display:block;
+}
+.duty-prompts .duty-prompt-field input,
+.duty-prompts .duty-prompt-field textarea{
+  width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);
+  border-radius:8px;padding:.5rem .75rem;font-size:.85rem;font-family:'Inter',sans-serif;
+  color:#fff;transition:border-color .2s;
+}
+.duty-prompts .duty-prompt-field input:focus,
+.duty-prompts .duty-prompt-field textarea:focus{
+  outline:none;border-color:rgba(240,192,64,.5);background:rgba(255,255,255,.1);
+}
+
+/* ── CERT CHECKBOXES ── */
+.cert-group{margin-bottom:.75rem;}
+.cert-group-title{
+  font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--gold);margin-bottom:.3rem;
+}
+.cert-checks{display:flex;flex-wrap:wrap;gap:.35rem;}
+.cert-checks label{
+  display:inline-flex;align-items:center;gap:.3rem;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:6px;padding:.2rem .55rem;font-size:.76rem;color:rgba(192,216,240,.75);
+  cursor:pointer;transition:all .15s;
+}
+.cert-checks label:hover{border-color:rgba(240,192,64,.3);}
+.cert-checks input[type="checkbox"]{width:14px;height:14px;accent-color:var(--gold);}
+
+/* ── LANGUAGE TAGS ── */
+.lang-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.3rem;}
+.lang-tag{
+  display:inline-flex;align-items:center;gap:.3rem;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:.2rem .6rem;font-size:.76rem;color:rgba(192,216,240,.7);
+  cursor:pointer;transition:all .15s;
+}
+.lang-tag:hover{background:rgba(255,255,255,.1);}
+.lang-tag.selected{background:rgba(240,192,64,.15);border-color:rgba(240,192,64,.35);color:#f0c040;}
+
 /* ── RESPONSIVE ── */
 @media(max-width:640px){
   .sf-grid{grid-template-columns:1fr;}
@@ -360,6 +422,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
   .btn-prev,.btn-next{width:100%;text-align:center;}
   .scout-pricing{gap:.75rem;}
   .resume-preview-header{flex-direction:column;align-items:flex-start;}
+  .awards-checklist{grid-template-columns:1fr;}
 }
 @media(max-width:480px){
   .scout-hero{padding:1.5rem 3% 1.25rem;}
@@ -1443,7 +1506,7 @@ body.menu-open{overflow:hidden!important;}
         <div class="sf-grid">
           <div class="sf-field">
             <label>Branch *</label>
-            <select class="mil-branch">
+            <select class="mil-branch" onchange="window.onBranchChange(this)">
               <option value="">Select branch...</option>
               <option>Army</option><option>Navy</option><option>Marines</option>
               <option>Air Force</option><option>Coast Guard</option><option>Space Force</option>
@@ -1458,8 +1521,14 @@ body.menu-open{overflow:hidden!important;}
             <input type="text" class="mil-mos-title" placeholder="e.g. Combat Medic Specialist">
           </div>
           <div class="sf-field">
-            <label>Rank at Separation</label>
-            <input type="text" class="mil-rank" placeholder="e.g. SGT, E-5">
+            <label>Rank at Separation *</label>
+            <select class="mil-rank">
+              <option value="">Select branch first...</option>
+            </select>
+          </div>
+          <div class="sf-field">
+            <label>Position / Duty Title</label>
+            <input type="text" class="mil-duty-title" placeholder="e.g. Team Leader, Platoon Sergeant, Motor Pool NCOIC">
           </div>
           <div class="sf-field">
             <label>Years of Service</label>
@@ -1489,6 +1558,14 @@ body.menu-open{overflow:hidden!important;}
             </select>
           </div>
           <div class="sf-field">
+            <label>Additional Skill Identifier (ASI)</label>
+            <input type="text" class="mil-asi" list="asi-list" placeholder="e.g. 5P - Master Fitness Trainer">
+          </div>
+          <div class="sf-field">
+            <label>Skill Qualification Identifier (SQI)</label>
+            <input type="text" class="mil-sqi" placeholder="e.g. P - Parachutist">
+          </div>
+          <div class="sf-field">
             <label>Service Start Date</label>
             <input type="month" class="mil-start">
           </div>
@@ -1500,37 +1577,27 @@ body.menu-open{overflow:hidden!important;}
             <label>Unit / Command</label>
             <input type="text" class="mil-unit" placeholder="e.g. 2nd Battalion, 75th Ranger Regiment">
           </div>
-          <div class="sf-field">
-            <label>Personnel You Supervised</label>
-            <input type="text" class="mil-supervised" placeholder="e.g. 13 soldiers">
-          </div>
-          <div class="sf-field">
-            <label>Unit Size</label>
-            <input type="text" class="mil-unit-size" placeholder="e.g. 120 personnel">
-          </div>
-          <div class="sf-field">
-            <label>Equipment/Asset Value</label>
-            <input type="text" class="mil-equip-value" placeholder="e.g. $4.2 million">
-          </div>
-          <div class="sf-field">
-            <label>Personnel Trained</label>
-            <input type="text" class="mil-trained" placeholder="e.g. 25 service members">
+          <div class="sf-field sf-full">
+            <label>Guided Duty Questions (answer what applies)</label>
+            <div class="duty-prompts mil-duty-prompts"></div>
           </div>
           <div class="sf-field sf-full">
-            <label>Key Duties &amp; Accomplishments * (3-5 bullet points)</label>
-            <textarea class="mil-duties" rows="5" placeholder="- Managed a team of 12 soldiers in a medical platoon&#10;- Provided emergency trauma care to 200+ patients&#10;- Trained 30 combat lifesavers on updated protocols&#10;- Maintained 100% accountability of $500K+ equipment"></textarea>
+            <label>Additional Duties &amp; Accomplishments</label>
+            <textarea class="mil-duties" rows="4" placeholder="Any other key duties, accomplishments, or details not covered above"></textarea>
           </div>
           <div class="sf-field sf-full">
             <label>Deployments (locations, dates, duration)</label>
             <textarea class="mil-deployments" rows="3" placeholder="e.g. Afghanistan (Kandahar), Jan 2019 - Sep 2019, 9 months&#10;Iraq (Camp Taji), Mar 2020 - Jan 2021, 10 months"></textarea>
           </div>
           <div class="sf-field sf-full">
-            <label>Awards &amp; Decorations (one per line)</label>
-            <textarea class="mil-awards" rows="3" placeholder="Army Commendation Medal (x2)&#10;Army Achievement Medal&#10;Combat Action Badge"></textarea>
+            <label>Awards &amp; Decorations</label>
+            <div class="awards-checklist mil-awards-checklist"><span style="font-size:.8rem;color:rgba(192,216,240,.4);">Select a branch to see awards</span></div>
+            <input type="text" class="mil-awards-custom" placeholder="Other awards not listed (comma-separated)" style="margin-top:.4rem;">
           </div>
         </div>
       </div>
     </div>
+    <datalist id="asi-list"></datalist>
     <button class="btn-add" onclick="addMilBlock()">+ Add Another Military Experience</button>
     <div class="scout-nav-btns">
       <button class="btn-prev" onclick="goStep(1)">&larr; Back</button>
@@ -1669,10 +1736,20 @@ body.menu-open{overflow:hidden!important;}
       </div>
     </div>
     <button class="btn-add" onclick="addEduBlock()">+ Add Education</button>
-    <div class="sf-field sf-full" style="margin-top:1.25rem;">
-      <label for="s5-certs">Certifications (one per line)</label>
-      <textarea id="s5-certs" rows="4" placeholder="CompTIA Security+&#10;PMP - Project Management Professional&#10;EMT-B Certified&#10;Six Sigma Green Belt"></textarea>
+
+    <div class="sf-field sf-full" style="margin-top:1.5rem;">
+      <label>Licenses &amp; Certifications (select common ones or type your own)</label>
+      <div id="cert-checklist"></div>
+      <input type="text" id="s5-certs-custom" placeholder="Other certifications not listed (one per line)" style="margin-top:.5rem;">
+      <textarea id="s5-certs" rows="3" style="margin-top:.4rem;" placeholder="Additional certifications (one per line)&#10;e.g. CompTIA Security+&#10;PMP - Project Management Professional"></textarea>
     </div>
+
+    <div class="sf-field sf-full" style="margin-top:1.25rem;">
+      <label>Languages</label>
+      <div class="lang-tags" id="lang-tags"></div>
+      <input type="text" id="s5-lang-custom" placeholder="Other language not listed" style="margin-top:.4rem;">
+    </div>
+
     <div class="scout-nav-btns">
       <button class="btn-prev" onclick="goStep(4)">&larr; Back</button>
       <button class="btn-next" onclick="goStep(6)">Next: Skills &rarr;</button>
@@ -1707,6 +1784,10 @@ body.menu-open{overflow:hidden!important;}
         <span class="skill-tag" data-skill="Problem Solving">Problem Solving</span>
         <span class="skill-tag" data-skill="Adaptability">Adaptability</span>
       </div>
+    </div>
+    <div class="sf-field sf-full" style="margin-top:1rem;">
+      <label>Leadership &amp; Soft Skills (click to add)</label>
+      <div class="skills-tags" id="soft-skill-suggestions"></div>
     </div>
     <div class="sf-field sf-full" style="margin-top:1rem;">
       <label for="s6-custom-skills">Additional Skills (comma-separated)</label>
@@ -1830,6 +1911,8 @@ function saveProgress() {
       civilian: getCivilianData(),
       education: getEducationData(),
       certs: document.getElementById('s5-certs').value,
+      certChecked: window.getSelectedCerts ? window.getSelectedCerts() : [],
+      languages: window.getSelectedLanguages ? window.getSelectedLanguages() : [],
       skills: selectedSkills,
       customSkills: document.getElementById('s6-custom-skills').value,
       style: document.getElementById('s6-style').value,
@@ -1861,14 +1944,37 @@ function loadProgress() {
         var b = blocks[i];
         if (!b) return;
         b.querySelector('.mil-branch').value = m.branch || '';
+        // Trigger branch change to populate rank dropdown and awards
+        if (m.branch) window.onBranchChange(b.querySelector('.mil-branch'));
         b.querySelector('.mil-mos').value = m.mos || '';
         b.querySelector('.mil-mos-title').value = m.mosTitle || '';
         b.querySelector('.mil-rank').value = m.rank || '';
+        if (b.querySelector('.mil-duty-title')) b.querySelector('.mil-duty-title').value = m.dutyTitle || '';
         b.querySelector('.mil-years').value = m.years || '';
+        if (b.querySelector('.mil-service-type')) b.querySelector('.mil-service-type').value = m.serviceType || '';
         b.querySelector('.mil-clearance').value = m.clearance || 'None';
+        if (b.querySelector('.mil-clearance-status')) b.querySelector('.mil-clearance-status').value = m.clearanceStatus || '';
+        if (b.querySelector('.mil-asi')) b.querySelector('.mil-asi').value = m.asi || '';
+        if (b.querySelector('.mil-sqi')) b.querySelector('.mil-sqi').value = m.sqi || '';
         b.querySelector('.mil-start').value = m.start || '';
         b.querySelector('.mil-end').value = m.end || '';
+        if (b.querySelector('.mil-unit')) b.querySelector('.mil-unit').value = m.unit || '';
         b.querySelector('.mil-duties').value = m.duties || '';
+        if (b.querySelector('.mil-deployments')) b.querySelector('.mil-deployments').value = m.deployments || '';
+        // Restore duty answers
+        if (m.dutyAnswers) {
+          Object.keys(m.dutyAnswers).forEach(function(key) {
+            var inp = b.querySelector('.duty-prompt-input[data-duty-key="'+key+'"]');
+            if (inp) inp.value = m.dutyAnswers[key];
+          });
+        }
+        // Restore checked awards
+        if (m.awards) {
+          var awardsList = m.awards.split(', ');
+          b.querySelectorAll('.mil-awards-checklist input[type="checkbox"]').forEach(function(cb) {
+            if (awardsList.indexOf(cb.value) !== -1) cb.checked = true;
+          });
+        }
       });
     }
 
@@ -1910,6 +2016,21 @@ function loadProgress() {
     }
 
     if (saved.certs) document.getElementById('s5-certs').value = saved.certs;
+
+    // Restore checked certs
+    if (saved.certChecked && saved.certChecked.length) {
+      document.querySelectorAll('#cert-checklist .cert-check').forEach(function(cb) {
+        if (saved.certChecked.indexOf(cb.value) !== -1) cb.checked = true;
+      });
+    }
+
+    // Restore languages
+    if (saved.languages && saved.languages.length) {
+      document.querySelectorAll('#lang-tags .lang-tag').forEach(function(t) {
+        if (saved.languages.indexOf(t.getAttribute('data-lang')) !== -1) t.classList.add('selected');
+      });
+    }
+
     if (saved.customSkills) document.getElementById('s6-custom-skills').value = saved.customSkills;
     if (saved.style) document.getElementById('s6-style').value = saved.style;
     if (saved.emphasis) document.getElementById('s6-emphasis').value = saved.emphasis;
@@ -1955,25 +2076,41 @@ function getMilitaryData() {
   var blocks = document.querySelectorAll('.mil-block');
   var arr = [];
   blocks.forEach(function(b) {
+    // Collect checked awards
+    var checkedAwards = [];
+    b.querySelectorAll('.mil-awards-checklist input[type="checkbox"]:checked').forEach(function(cb) {
+      checkedAwards.push(cb.value);
+    });
+    var customAwards = b.querySelector('.mil-awards-custom') ? b.querySelector('.mil-awards-custom').value.trim() : '';
+    if (customAwards) {
+      customAwards.split(',').forEach(function(a) { a = a.trim(); if (a) checkedAwards.push(a); });
+    }
+    // Collect guided duty answers
+    var dutyAnswers = {};
+    b.querySelectorAll('.duty-prompt-input').forEach(function(inp) {
+      var key = inp.getAttribute('data-duty-key');
+      var val = inp.value.trim();
+      if (key && val) dutyAnswers[key] = val;
+    });
     arr.push({
       branch: b.querySelector('.mil-branch').value,
       mos: b.querySelector('.mil-mos').value.trim(),
       mosTitle: b.querySelector('.mil-mos-title').value.trim(),
-      rank: b.querySelector('.mil-rank').value.trim(),
+      rank: b.querySelector('.mil-rank').value,
+      dutyTitle: b.querySelector('.mil-duty-title') ? b.querySelector('.mil-duty-title').value.trim() : '',
       years: b.querySelector('.mil-years').value,
       serviceType: b.querySelector('.mil-service-type') ? b.querySelector('.mil-service-type').value : '',
       clearance: b.querySelector('.mil-clearance').value,
       clearanceStatus: b.querySelector('.mil-clearance-status') ? b.querySelector('.mil-clearance-status').value : '',
+      asi: b.querySelector('.mil-asi') ? b.querySelector('.mil-asi').value.trim() : '',
+      sqi: b.querySelector('.mil-sqi') ? b.querySelector('.mil-sqi').value.trim() : '',
       start: b.querySelector('.mil-start').value,
       end: b.querySelector('.mil-end').value,
       unit: b.querySelector('.mil-unit') ? b.querySelector('.mil-unit').value.trim() : '',
-      supervised: b.querySelector('.mil-supervised') ? b.querySelector('.mil-supervised').value.trim() : '',
-      unitSize: b.querySelector('.mil-unit-size') ? b.querySelector('.mil-unit-size').value.trim() : '',
-      equipValue: b.querySelector('.mil-equip-value') ? b.querySelector('.mil-equip-value').value.trim() : '',
-      trained: b.querySelector('.mil-trained') ? b.querySelector('.mil-trained').value.trim() : '',
+      dutyAnswers: dutyAnswers,
       duties: b.querySelector('.mil-duties').value.trim(),
       deployments: b.querySelector('.mil-deployments') ? b.querySelector('.mil-deployments').value.trim() : '',
-      awards: b.querySelector('.mil-awards') ? b.querySelector('.mil-awards').value.trim() : ''
+      awards: checkedAwards.join(', ')
     });
   });
   return arr;
@@ -2076,26 +2213,28 @@ window.addMilBlock = function() {
   div.innerHTML =
     '<div class="block-num">Military Experience #'+(count+1)+' <button class="btn-remove" onclick="this.closest(\'.mil-block\').remove()">Remove</button></div>' +
     '<div class="sf-grid">' +
-      '<div class="sf-field"><label>Branch *</label><select class="mil-branch"><option value="">Select branch...</option><option>Army</option><option>Navy</option><option>Marines</option><option>Air Force</option><option>Coast Guard</option><option>Space Force</option></select></div>' +
+      '<div class="sf-field"><label>Branch *</label><select class="mil-branch" onchange="window.onBranchChange(this)"><option value="">Select branch...</option><option>Army</option><option>Navy</option><option>Marines</option><option>Air Force</option><option>Coast Guard</option><option>Space Force</option></select></div>' +
       '<div class="sf-field"><label>MOS / Rate / AFSC *</label><input type="text" class="mil-mos" placeholder="e.g. 68W, IT2, 3D0X2"></div>' +
       '<div class="sf-field"><label>MOS Title</label><input type="text" class="mil-mos-title" placeholder="e.g. Combat Medic Specialist"></div>' +
-      '<div class="sf-field"><label>Rank at Separation</label><input type="text" class="mil-rank" placeholder="e.g. SGT, E-5"></div>' +
+      '<div class="sf-field"><label>Rank at Separation *</label><select class="mil-rank"><option value="">Select branch first...</option></select></div>' +
+      '<div class="sf-field"><label>Position / Duty Title</label><input type="text" class="mil-duty-title" placeholder="e.g. Team Leader, Platoon Sergeant, Motor Pool NCOIC"></div>' +
       '<div class="sf-field"><label>Years of Service</label><input type="number" class="mil-years" placeholder="e.g. 6" min="1" max="40"></div>' +
       '<div class="sf-field"><label>Service Type</label><select class="mil-service-type"><option value="">Select...</option><option>Active Duty</option><option>Reserve</option><option>National Guard</option><option>Active Guard Reserve</option></select></div>' +
       '<div class="sf-field"><label>Clearance Level</label><select class="mil-clearance"><option value="None">None</option><option>Confidential</option><option>Secret</option><option>Top Secret</option><option>TS/SCI</option></select></div>' +
       '<div class="sf-field"><label>Clearance Status</label><select class="mil-clearance-status"><option value="">Select...</option><option>Active</option><option>Inactive</option><option>Expired</option></select></div>' +
+      '<div class="sf-field"><label>Additional Skill Identifier (ASI)</label><input type="text" class="mil-asi" list="asi-list" placeholder="e.g. 5P - Master Fitness Trainer"></div>' +
+      '<div class="sf-field"><label>Skill Qualification Identifier (SQI)</label><input type="text" class="mil-sqi" placeholder="e.g. P - Parachutist"></div>' +
       '<div class="sf-field"><label>Service Start Date</label><input type="month" class="mil-start"></div>' +
       '<div class="sf-field"><label>Service End Date</label><input type="month" class="mil-end"></div>' +
       '<div class="sf-field"><label>Unit / Command</label><input type="text" class="mil-unit" placeholder="e.g. 2nd Battalion, 75th Ranger Regiment"></div>' +
-      '<div class="sf-field"><label>Personnel Supervised</label><input type="text" class="mil-supervised" placeholder="e.g. 13 soldiers"></div>' +
-      '<div class="sf-field"><label>Unit Size</label><input type="text" class="mil-unit-size" placeholder="e.g. 120 personnel"></div>' +
-      '<div class="sf-field"><label>Equipment/Asset Value</label><input type="text" class="mil-equip-value" placeholder="e.g. $4.2 million"></div>' +
-      '<div class="sf-field"><label>Personnel Trained</label><input type="text" class="mil-trained" placeholder="e.g. 25 service members"></div>' +
-      '<div class="sf-field sf-full"><label>Key Duties &amp; Accomplishments *</label><textarea class="mil-duties" rows="5" placeholder="- List your key duties and accomplishments"></textarea></div>' +
+      '<div class="sf-field sf-full"><label>Guided Duty Questions (answer what applies)</label><div class="duty-prompts mil-duty-prompts"></div></div>' +
+      '<div class="sf-field sf-full"><label>Additional Duties &amp; Accomplishments</label><textarea class="mil-duties" rows="4" placeholder="Any other key duties, accomplishments, or details not covered above"></textarea></div>' +
       '<div class="sf-field sf-full"><label>Deployments</label><textarea class="mil-deployments" rows="3" placeholder="e.g. Afghanistan (Kandahar), Jan 2019 - Sep 2019"></textarea></div>' +
-      '<div class="sf-field sf-full"><label>Awards &amp; Decorations</label><textarea class="mil-awards" rows="3" placeholder="One per line"></textarea></div>' +
+      '<div class="sf-field sf-full"><label>Awards &amp; Decorations</label><div class="awards-checklist mil-awards-checklist"><span style="font-size:.8rem;color:rgba(192,216,240,.4);">Select a branch to see awards</span></div><input type="text" class="mil-awards-custom" placeholder="Other awards not listed (comma-separated)" style="margin-top:.4rem;"></div>' +
     '</div>';
   container.appendChild(div);
+  // Populate duty prompts for the new block
+  window.populateDutyPrompts(div.querySelector('.mil-duty-prompts'));
 };
 
 window.addCivBlock = function() {
@@ -2147,6 +2286,172 @@ document.getElementById('skill-suggestions').addEventListener('click', function(
   }
 });
 
+/* ── VCP_MIL DYNAMIC INITIALIZATION ── */
+(function initMilData() {
+  if (!window.VCP_MIL) return;
+
+  // Populate ASI datalist
+  var asiList = document.getElementById('asi-list');
+  if (asiList && window.VCP_MIL.ASI && window.VCP_MIL.ASI.Army) {
+    window.VCP_MIL.ASI.Army.forEach(function(a) {
+      var opt = document.createElement('option');
+      opt.value = a.code + ' - ' + a.title;
+      asiList.appendChild(opt);
+    });
+  }
+
+  // Populate duty prompts for the first mil-block
+  var firstPrompts = document.querySelector('.mil-block .mil-duty-prompts');
+  if (firstPrompts) window.populateDutyPrompts(firstPrompts);
+
+  // Populate language tags
+  var langContainer = document.getElementById('lang-tags');
+  if (langContainer && window.VCP_MIL.LANGUAGES) {
+    window.VCP_MIL.LANGUAGES.forEach(function(lang) {
+      var span = document.createElement('span');
+      span.className = 'lang-tag';
+      span.setAttribute('data-lang', lang);
+      span.textContent = lang;
+      span.addEventListener('click', function() {
+        this.classList.toggle('selected');
+      });
+      langContainer.appendChild(span);
+    });
+  }
+
+  // Populate certification checkboxes
+  var certContainer = document.getElementById('cert-checklist');
+  if (certContainer && window.VCP_MIL.CERTIFICATIONS) {
+    var fields = Object.keys(window.VCP_MIL.CERTIFICATIONS);
+    fields.forEach(function(field) {
+      var group = document.createElement('div');
+      group.className = 'cert-group';
+      group.innerHTML = '<div class="cert-group-title">' + field + '</div>';
+      var checks = document.createElement('div');
+      checks.className = 'cert-checks';
+      window.VCP_MIL.CERTIFICATIONS[field].forEach(function(cert) {
+        var lbl = document.createElement('label');
+        lbl.innerHTML = '<input type="checkbox" class="cert-check" value="' + cert.replace(/"/g,'&quot;') + '"> ' + cert;
+        checks.appendChild(lbl);
+      });
+      group.appendChild(checks);
+      certContainer.appendChild(group);
+    });
+  }
+
+  // Populate soft skills tags
+  var softContainer = document.getElementById('soft-skill-suggestions');
+  if (softContainer && window.VCP_MIL.SOFT_SKILLS) {
+    window.VCP_MIL.SOFT_SKILLS.forEach(function(skill) {
+      var span = document.createElement('span');
+      span.className = 'skill-tag';
+      span.setAttribute('data-skill', skill);
+      span.textContent = skill;
+      softContainer.appendChild(span);
+    });
+    // Use same click handler as main skills
+    softContainer.addEventListener('click', function(e) {
+      var tag = e.target.closest('.skill-tag');
+      if (!tag) return;
+      var skill = tag.getAttribute('data-skill');
+      if (tag.classList.contains('selected')) {
+        tag.classList.remove('selected');
+        selectedSkills = selectedSkills.filter(function(s) { return s !== skill; });
+      } else {
+        tag.classList.add('selected');
+        if (selectedSkills.indexOf(skill) === -1) selectedSkills.push(skill);
+      }
+    });
+  }
+})();
+
+// Populate guided duty prompts into a container
+window.populateDutyPrompts = function(container) {
+  if (!container || !window.VCP_MIL || !window.VCP_MIL.DUTY_PROMPTS) return;
+  var html = '';
+  window.VCP_MIL.DUTY_PROMPTS.forEach(function(dp) {
+    html += '<div class="duty-prompt-field">';
+    html += '<label>' + dp.q + '</label>';
+    if (dp.key === 'operations' || dp.key === 'improvement') {
+      html += '<textarea class="duty-prompt-input" data-duty-key="' + dp.key + '" rows="2" placeholder="' + dp.ph + '"></textarea>';
+    } else {
+      html += '<input type="text" class="duty-prompt-input" data-duty-key="' + dp.key + '" placeholder="' + dp.ph + '">';
+    }
+    html += '</div>';
+  });
+  container.innerHTML = html;
+};
+
+// Branch change handler: update rank dropdown and awards checklist
+window.onBranchChange = function(selectEl) {
+  var block = selectEl.closest('.mil-block');
+  if (!block || !window.VCP_MIL) return;
+  var branch = selectEl.value;
+
+  // Update rank dropdown
+  var rankSelect = block.querySelector('.mil-rank');
+  if (rankSelect) {
+    rankSelect.innerHTML = window.VCP_MIL.buildRankOptions(branch);
+  }
+
+  // Update awards checklist
+  var awardsContainer = block.querySelector('.mil-awards-checklist');
+  if (awardsContainer) {
+    if (!branch) {
+      awardsContainer.innerHTML = '<span style="font-size:.8rem;color:rgba(192,216,240,.4);">Select a branch to see awards</span>';
+      return;
+    }
+    var branchAwards = window.VCP_MIL.AWARDS[branch] || [];
+    var jointAwards = window.VCP_MIL.AWARDS['Joint'] || [];
+    var html = '';
+    if (branchAwards.length) {
+      html += '<div class="awards-group-title">' + branch + ' Awards</div>';
+      branchAwards.forEach(function(a) {
+        html += '<label><input type="checkbox" value="' + a.replace(/"/g,'&quot;') + '"> ' + a + '</label>';
+      });
+    }
+    if (jointAwards.length) {
+      html += '<div class="awards-group-title">Joint Awards</div>';
+      jointAwards.forEach(function(a) {
+        html += '<label><input type="checkbox" value="' + a.replace(/"/g,'&quot;') + '"> ' + a + '</label>';
+      });
+    }
+    awardsContainer.innerHTML = html;
+  }
+};
+
+// Get selected languages
+window.getSelectedLanguages = function() {
+  var langs = [];
+  document.querySelectorAll('#lang-tags .lang-tag.selected').forEach(function(t) {
+    langs.push(t.getAttribute('data-lang'));
+  });
+  var custom = document.getElementById('s5-lang-custom');
+  if (custom && custom.value.trim()) {
+    custom.value.trim().split(',').forEach(function(l) {
+      l = l.trim();
+      if (l && langs.indexOf(l) === -1) langs.push(l);
+    });
+  }
+  return langs;
+};
+
+// Get selected certifications (checked + custom)
+window.getSelectedCerts = function() {
+  var certs = [];
+  document.querySelectorAll('#cert-checklist .cert-check:checked').forEach(function(cb) {
+    certs.push(cb.value);
+  });
+  var textarea = document.getElementById('s5-certs');
+  if (textarea && textarea.value.trim()) {
+    textarea.value.trim().split('\n').forEach(function(c) {
+      c = c.trim();
+      if (c && certs.indexOf(c) === -1) certs.push(c);
+    });
+  }
+  return certs;
+};
+
 /* ── BUILD REVIEW ── */
 function buildReview() {
   var p = getPersonalData();
@@ -2154,7 +2459,8 @@ function buildReview() {
   var t = getTargetData();
   var civ = getCivilianData();
   var edu = getEducationData();
-  var certs = document.getElementById('s5-certs').value.trim();
+  var allCertsReview = window.getSelectedCerts ? window.getSelectedCerts() : [];
+  var certs = allCertsReview.join('\n');
   var skills = getAllSkills();
   var style = document.getElementById('s6-style').value;
   var emphasis = document.getElementById('s6-emphasis').value.trim();
@@ -2172,10 +2478,28 @@ function buildReview() {
   html += '<div class="review-section"><h3>Military Experience <span class="edit-link" onclick="goStep(2)">Edit</span></h3>';
   mil.forEach(function(m, i) {
     html += '<div class="review-item"><strong>'+esc(m.branch)+'  -  '+esc(m.mos)+' '+esc(m.mosTitle)+'</strong></div>';
-    html += '<div class="review-item">'+esc(m.rank)+' | '+esc(m.years)+' years | '+esc(m.clearance)+' clearance</div>';
+    html += '<div class="review-item">'+esc(m.rank)+(m.dutyTitle ? ' | '+esc(m.dutyTitle) : '')+' | '+esc(m.years)+' years | '+esc(m.clearance)+' clearance</div>';
     if (m.start || m.end) html += '<div class="review-item">'+esc(m.start)+' to '+esc(m.end)+'</div>';
+    if (m.unit) html += '<div class="review-item">Unit: '+esc(m.unit)+'</div>';
+    if (m.asi) html += '<div class="review-item">ASI: '+esc(m.asi)+'</div>';
+    if (m.sqi) html += '<div class="review-item">SQI: '+esc(m.sqi)+'</div>';
+    if (m.dutyAnswers && Object.keys(m.dutyAnswers).length) {
+      var daKeys = Object.keys(m.dutyAnswers);
+      for (var di = 0; di < daKeys.length; di++) {
+        html += '<div class="review-item" style="font-size:.82rem;color:rgba(192,216,240,.6);">'+esc(daKeys[di])+': '+esc(m.dutyAnswers[daKeys[di]])+'</div>';
+      }
+    }
+    if (m.awards) html += '<div class="review-item">Awards: '+esc(m.awards)+'</div>';
+    if (m.deployments) html += '<div class="review-item">Deployments: '+esc(m.deployments)+'</div>';
   });
   html += '</div>';
+
+  // Languages
+  var langs = window.getSelectedLanguages ? window.getSelectedLanguages() : [];
+  if (langs.length) {
+    html += '<div class="review-section"><h3>Languages <span class="edit-link" onclick="goStep(5)">Edit</span></h3>';
+    html += '<div class="review-item">'+langs.map(esc).join(', ')+'</div></div>';
+  }
 
   // Target
   html += '<div class="review-section"><h3>Target Job <span class="edit-link" onclick="goStep(3)">Edit</span></h3>';
@@ -2229,7 +2553,8 @@ window.generateResume = function() {
   var t = getTargetData();
   var civ = getCivilianData();
   var edu = getEducationData();
-  var certs = document.getElementById('s5-certs').value.trim();
+  var allCerts = window.getSelectedCerts ? window.getSelectedCerts() : [];
+  var certs = allCerts.join('\n');
   var skills = getAllSkills();
   var style = document.getElementById('s6-style').value;
   var emphasis = document.getElementById('s6-emphasis').value.trim();
@@ -2347,18 +2672,33 @@ function buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis) {
     if (m.serviceType) prompt += 'Service Type: ' + m.serviceType + '\n';
     prompt += 'MOS/Rate/AFSC: ' + m.mos + ' (' + m.mosTitle + ')\n';
     prompt += 'Rank: ' + m.rank + '\n';
+    if (m.dutyTitle) prompt += 'Position/Duty Title: ' + m.dutyTitle + '\n';
     prompt += 'Years of Service: ' + m.years + '\n';
     prompt += 'Dates: ' + m.start + ' to ' + m.end + '\n';
     if (m.unit) prompt += 'Unit/Command: ' + m.unit + '\n';
     prompt += 'Clearance: ' + m.clearance + (m.clearanceStatus ? ' (' + m.clearanceStatus + ')' : '') + '\n';
-    if (m.supervised) prompt += 'Personnel Supervised: ' + m.supervised + '\n';
-    if (m.unitSize) prompt += 'Unit Size: ' + m.unitSize + '\n';
-    if (m.equipValue) prompt += 'Equipment/Asset Value: ' + m.equipValue + '\n';
-    if (m.trained) prompt += 'Personnel Trained: ' + m.trained + '\n';
-    prompt += 'Duties & Accomplishments:\n' + m.duties + '\n';
+    if (m.asi) prompt += 'Additional Skill Identifier (ASI): ' + m.asi + '\n';
+    if (m.sqi) prompt += 'Skill Qualification Identifier (SQI): ' + m.sqi + '\n';
+    // Guided duty answers
+    if (m.dutyAnswers && Object.keys(m.dutyAnswers).length) {
+      prompt += 'Key Accomplishment Details:\n';
+      var prompts = window.VCP_MIL ? window.VCP_MIL.DUTY_PROMPTS : [];
+      Object.keys(m.dutyAnswers).forEach(function(key) {
+        var label = key;
+        for (var pi = 0; pi < prompts.length; pi++) {
+          if (prompts[pi].key === key) { label = prompts[pi].q; break; }
+        }
+        prompt += '  - ' + label + ' ' + m.dutyAnswers[key] + '\n';
+      });
+    }
+    if (m.duties) prompt += 'Additional Duties & Accomplishments:\n' + m.duties + '\n';
     if (m.deployments) prompt += 'Deployments:\n' + m.deployments + '\n';
-    if (m.awards) prompt += 'Awards & Decorations:\n' + m.awards + '\n';
+    if (m.awards) prompt += 'Awards & Decorations: ' + m.awards + '\n';
   });
+
+  // Languages
+  var langs = window.getSelectedLanguages ? window.getSelectedLanguages() : [];
+  if (langs.length) prompt += '\nLANGUAGES: ' + langs.join(', ') + '\n';
 
   prompt += '\nTARGET CIVILIAN JOB: ' + t.targetJob + '\n';
   prompt += 'Target Industry: ' + t.industry + '\n';
@@ -2405,7 +2745,8 @@ function buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis) {
   prompt += '  "experience": [{"title": "Civilian-friendly job title", "organization": "Branch / Unit or Company", "dates": "Mon YYYY - Mon YYYY", "bullets": ["bullet 1", "bullet 2", ...]}],\n';
   prompt += '  "education": [{"degree": "Degree name", "school": "School name", "year": "YYYY"}],\n';
   prompt += '  "skills": ["skill1", "skill2", ...],\n';
-  prompt += '  "certifications": ["cert1", "cert2", ...]\n';
+  prompt += '  "certifications": ["cert1", "cert2", ...],\n';
+  prompt += '  "languages": ["language1", "language2", ...]\n';
   prompt += '}\n';
   prompt += '6. Return ONLY the JSON object, no other text.\n';
 
@@ -2469,6 +2810,12 @@ function showResumePreview(data, personal) {
       html += '<div class="rc-edu-item"><strong>' + esc(c) + '</strong></div>';
     });
     html += '</div>';
+  }
+
+  // Languages
+  if (data.languages && data.languages.length) {
+    html += '<div class="rc-section"><div class="rc-section-title">Languages</div>';
+    html += '<div class="rc-skill-list">' + data.languages.map(esc).join(' &middot; ') + '</div></div>';
   }
 
   document.getElementById('resume-content').innerHTML = html;

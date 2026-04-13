@@ -3490,21 +3490,77 @@ function buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis) {
 
   prompt += '\nINSTRUCTIONS:\n';
   prompt += '1. Translate ALL military jargon, acronyms, and MOS descriptions into civilian language that any recruiter can understand.\n';
-  prompt += '2. Write a compelling professional summary (3-4 sentences) tailored to the target job.\n';
-  prompt += '3. For each experience entry, write 4-6 bullet points using strong action verbs. Include quantified results where possible (numbers, percentages, dollar amounts).\n';
-  prompt += '4. Match skills to the target job and industry.\n';
-  prompt += '4b. NEVER use em dashes ( - ) anywhere in the resume. Use commas, periods, or hyphens instead. Em dashes are a major AI detection flag.\n';
-  prompt += '4c. Avoid semicolons. Use short, direct sentences. Vary sentence starters  -  do not begin consecutive bullets with the same word.\n';
-  prompt += '5. Format the response as valid JSON with this exact structure:\n';
+  prompt += '2. NEVER use em dashes anywhere. Use commas, periods, or hyphens. Avoid semicolons. Vary sentence starters.\n';
+
+  // Format-specific instructions
+  if (selectedFormat === 'ats-chrono') {
+    prompt += '3. FORMAT: ATS CHRONOLOGICAL. List experience in reverse chronological order (newest first). Lead with professional summary. Each job gets 4-6 bullet points with action verbs and quantified results. Skills section at bottom. This is the most common format, optimized for ATS scanning.\n';
+  } else if (selectedFormat === 'ats-functional') {
+    prompt += '3. FORMAT: ATS FUNCTIONAL. Lead with professional summary. Then a prominent CORE COMPETENCIES section grouping skills into 3-4 categories with 3-4 bullets each demonstrating those skills. Work history listed briefly below (title, org, dates only, no bullets). Best for career changers.\n';
+    prompt += 'Add "coreCompetencies" to the JSON: [{"category":"Leadership & Management","bullets":["Led...","Managed..."]},...].\n';
+  } else if (selectedFormat === 'ats-combo') {
+    prompt += '3. FORMAT: ATS COMBINATION. Lead with professional summary. Then a SKILLS HIGHLIGHTS section with 6-8 key accomplishments as bullets (pulling best from all jobs). Then chronological work history with 3-4 bullets each. Blends skills emphasis with traditional timeline.\n';
+    prompt += 'Add "skillHighlights" to the JSON: ["highlight1","highlight2",...].\n';
+  } else if (selectedFormat === 'harvard') {
+    prompt += '3. FORMAT: HARVARD. Clean, professional, understated. Professional summary (called "Profile" not "Summary"). Experience uses STAR format bullets (Situation-Task-Action-Result). Each bullet should show measurable impact. Education section is prominent. No graphics, no columns, pure substance. This is the gold standard for business and executive roles.\n';
+    prompt += 'Use "profile" instead of "summary" in the JSON.\n';
+  } else if (selectedFormat === 'federal-usajobs') {
+    prompt += '3. FORMAT: FEDERAL (USAJobs). This resume MUST follow federal resume conventions:\n';
+    prompt += '   - Each job entry MUST include: title, organization, dates, hours per week (e.g. "40 hours/week"), salary/grade (e.g. "GS-XX" or military pay grade), supervisor name placeholder "[Supervisor Name, Phone]"\n';
+    prompt += '   - Experience bullets should be DETAILED paragraphs (not short bullets). Federal resumes are 3-5 pages, not 1-2.\n';
+    prompt += '   - Include a "ksa" section: Key Knowledge, Skills, and Abilities directly relevant to the target position\n';
+    prompt += '   - Include relevant training, volunteer work, and additional information sections\n';
+    prompt += 'Add to JSON: each experience entry gets "hoursPerWeek":"40","salaryGrade":"[Grade]","supervisor":"[Name, Phone]". Add "ksa":["ksa1","ksa2",...] and "additionalInfo":"..." and "training":["training1",...].\n';
+  }
+
+  // Template-specific visual instructions
+  if (style.indexOf('two-column') >= 0) {
+    prompt += 'LAYOUT NOTE: Two-column layout. Put skills, certifications, and education in a sidebar. Experience in the main column.\n';
+  }
+  if (style.indexOf('one-page') >= 0) {
+    prompt += 'LAYOUT NOTE: One-page only. Keep summary to 2 sentences. Max 3 bullets per job. Only top 8 skills. Be concise.\n';
+  }
+  if (style.indexOf('senior') >= 0 || style.indexOf('executive') >= 0) {
+    prompt += 'LAYOUT NOTE: Executive level. Lead with "Executive Profile" not "Summary". Focus on strategic leadership, P&L responsibility, organizational transformation, and board-level communication.\n';
+  }
+  if (style.indexOf('career-changer') >= 0) {
+    prompt += 'LAYOUT NOTE: Career changer. Focus on transferable skills, not military-specific duties. Frame everything in terms of the target civilian industry. Minimize military jargon.\n';
+  }
+  if (style.indexOf('contractor') >= 0 || style.indexOf('cleared') >= 0) {
+    prompt += 'LAYOUT NOTE: Cleared/contractor resume. Put security clearance prominently near the top. Highlight project-based work, contract experience, and technical certifications.\n';
+  }
+
+  prompt += '4. Format the response as valid JSON with this structure:\n';
   prompt += '{\n';
-  prompt += '  "summary": "Professional summary paragraph",\n';
-  prompt += '  "experience": [{"title": "Civilian-friendly job title", "organization": "Branch / Unit or Company", "dates": "Mon YYYY - Mon YYYY", "bullets": ["bullet 1", "bullet 2", ...]}],\n';
-  prompt += '  "education": [{"degree": "Degree name", "school": "School name", "year": "YYYY"}],\n';
+  if (selectedFormat === 'harvard') {
+    prompt += '  "profile": "Professional profile paragraph",\n';
+  } else {
+    prompt += '  "summary": "Professional summary paragraph",\n';
+  }
+  if (selectedFormat === 'ats-functional') {
+    prompt += '  "coreCompetencies": [{"category": "Category Name", "bullets": ["achievement 1", "achievement 2"]}],\n';
+  }
+  if (selectedFormat === 'ats-combo') {
+    prompt += '  "skillHighlights": ["key accomplishment 1", "key accomplishment 2", ...],\n';
+  }
+  prompt += '  "experience": [{"title": "Civilian job title", "organization": "Org name", "dates": "Mon YYYY - Mon YYYY"';
+  if (selectedFormat === 'federal-usajobs') {
+    prompt += ', "hoursPerWeek": "40", "salaryGrade": "[Grade]", "supervisor": "[Name, Phone]"';
+  }
+  prompt += ', "bullets": ["bullet 1", "bullet 2", ...]}],\n';
+  prompt += '  "education": [{"degree": "Degree", "school": "School", "year": "YYYY"';
+  if (selectedFormat === 'harvard') prompt += ', "honors": "honors if any"';
+  prompt += '}],\n';
   prompt += '  "skills": ["skill1", "skill2", ...],\n';
   prompt += '  "certifications": ["cert1", "cert2", ...],\n';
-  prompt += '  "languages": ["language1", "language2", ...]\n';
-  prompt += '}\n';
-  prompt += '6. Return ONLY the JSON object, no other text.\n';
+  prompt += '  "languages": ["lang1", "lang2", ...]';
+  if (selectedFormat === 'federal-usajobs') {
+    prompt += ',\n  "ksa": ["KSA statement 1", "KSA statement 2", ...],\n';
+    prompt += '  "training": ["training 1", "training 2", ...],\n';
+    prompt += '  "additionalInfo": "Additional relevant information"';
+  }
+  prompt += '\n}\n';
+  prompt += '5. Return ONLY the JSON object, no other text.\n';
 
   return prompt;
 }
@@ -3521,10 +3577,35 @@ function showResumePreview(data, personal) {
   if (personal.linkedin) html += ' | ' + esc(personal.linkedin);
   html += '</div>';
 
-  // Summary
-  if (data.summary) {
-    html += '<div class="rc-section"><div class="rc-section-title">Professional Summary</div>';
-    html += '<div class="rc-summary">' + esc(data.summary) + '</div></div>';
+  // Summary / Profile
+  var summaryText = data.summary || data.profile || '';
+  if (summaryText) {
+    var summaryTitle = data.profile ? 'Profile' : 'Professional Summary';
+    html += '<div class="rc-section"><div class="rc-section-title">' + summaryTitle + '</div>';
+    html += '<div class="rc-summary">' + esc(summaryText) + '</div></div>';
+  }
+
+  // Core Competencies (ATS Functional format)
+  if (data.coreCompetencies && data.coreCompetencies.length) {
+    html += '<div class="rc-section"><div class="rc-section-title">Core Competencies</div>';
+    data.coreCompetencies.forEach(function(cat) {
+      html += '<div class="rc-job"><div class="rc-job-title">' + esc(cat.category) + '</div>';
+      if (cat.bullets && cat.bullets.length) {
+        html += '<ul class="rc-bullets">';
+        cat.bullets.forEach(function(b) { html += '<li>' + esc(b) + '</li>'; });
+        html += '</ul>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Skill Highlights (ATS Combination format)
+  if (data.skillHighlights && data.skillHighlights.length) {
+    html += '<div class="rc-section"><div class="rc-section-title">Key Accomplishments</div>';
+    html += '<ul class="rc-bullets">';
+    data.skillHighlights.forEach(function(h) { html += '<li>' + esc(h) + '</li>'; });
+    html += '</ul></div>';
   }
 
   // Experience
@@ -3533,7 +3614,11 @@ function showResumePreview(data, personal) {
     data.experience.forEach(function(exp) {
       html += '<div class="rc-job">';
       html += '<div class="rc-job-title">' + esc(exp.title) + '</div>';
-      html += '<div class="rc-job-meta">' + esc(exp.organization) + ' | ' + esc(exp.dates) + '</div>';
+      var meta = esc(exp.organization) + ' | ' + esc(exp.dates);
+      if (exp.hoursPerWeek) meta += ' | ' + esc(exp.hoursPerWeek) + ' hrs/wk';
+      if (exp.salaryGrade) meta += ' | ' + esc(exp.salaryGrade);
+      html += '<div class="rc-job-meta">' + meta + '</div>';
+      if (exp.supervisor) html += '<div style="font-size:.75rem;color:#6a7a8a;margin-bottom:.25rem;">Supervisor: ' + esc(exp.supervisor) + '</div>';
       if (exp.bullets && exp.bullets.length) {
         html += '<ul class="rc-bullets">';
         exp.bullets.forEach(function(b) { html += '<li>' + esc(b) + '</li>'; });
@@ -3542,6 +3627,14 @@ function showResumePreview(data, personal) {
       html += '</div>';
     });
     html += '</div>';
+  }
+
+  // KSA (Federal format)
+  if (data.ksa && data.ksa.length) {
+    html += '<div class="rc-section"><div class="rc-section-title">Knowledge, Skills &amp; Abilities</div>';
+    html += '<ul class="rc-bullets">';
+    data.ksa.forEach(function(k) { html += '<li>' + esc(k) + '</li>'; });
+    html += '</ul></div>';
   }
 
   // Education
@@ -3572,6 +3665,19 @@ function showResumePreview(data, personal) {
   if (data.languages && data.languages.length) {
     html += '<div class="rc-section"><div class="rc-section-title">Languages</div>';
     html += '<div class="rc-skill-list">' + data.languages.map(esc).join(' &middot; ') + '</div></div>';
+  }
+
+  // Training (Federal format)
+  if (data.training && data.training.length) {
+    html += '<div class="rc-section"><div class="rc-section-title">Training &amp; Professional Development</div>';
+    data.training.forEach(function(t) { html += '<div class="rc-edu-item">' + esc(t) + '</div>'; });
+    html += '</div>';
+  }
+
+  // Additional Info (Federal format)
+  if (data.additionalInfo) {
+    html += '<div class="rc-section"><div class="rc-section-title">Additional Information</div>';
+    html += '<div class="rc-summary">' + esc(data.additionalInfo) + '</div></div>';
   }
 
   document.getElementById('resume-content').innerHTML = html;

@@ -2952,8 +2952,12 @@ window.generateResume = function() {
     alert('Please complete your personal info (Step 1).');
     goStep(1); return;
   }
-  if (!mil[0] || !mil[0].branch || !mil[0].mos) {
-    alert('Please add at least one military experience with branch and MOS (Step 2).');
+  if (!mil[0] || !mil[0].branch) {
+    alert('Please select your branch of service (Step 2).');
+    goStep(2); return;
+  }
+  if (!mil[0].mos) {
+    alert('Please select your MOS / Rate / AFSC (Step 2). If the dropdown shows "Select branch first", try reselecting your branch.');
     goStep(2); return;
   }
   if (!t.targetJob) {

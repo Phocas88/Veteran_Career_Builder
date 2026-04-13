@@ -3106,7 +3106,7 @@ function App() {
   // ACCESS_CODES, isCodeValid, checkAccess defined at module level (see below component)
   // They are referenced here as module-level vars so useState initializer can call them
   const [hasAccess, setHasAccess] = useState(() => checkAccess());
-  const [showPaywall, setShowPaywall] = useState(() => !checkAccess());
+  const [showPaywall, setShowPaywall] = useState(false);
   const [pwPlan, setPwPlan] = useState("monthly");
   const [pwCode, setPwCode] = useState("");
   const [pwCodeStatus, setPwCodeStatus] = useState("idle");

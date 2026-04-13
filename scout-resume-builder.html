@@ -79,7 +79,8 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 .sp-labels{
   display:flex;justify-content:space-between;margin-bottom:.5rem;
 }
-.sp-labels span{font-size:.6rem;color:rgba(192,216,240,.4);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+.sp-labels span{font-size:.6rem;color:rgba(192,216,240,.4);text-transform:uppercase;letter-spacing:.08em;font-weight:600;cursor:pointer;padding:.2rem .1rem;transition:color .15s;}
+.sp-labels span:hover{color:rgba(192,216,240,.8);}
 .sp-labels span.active{color:var(--gold);}
 .sp-labels span.done{color:#4ade80;}
 
@@ -108,9 +109,18 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
   border-radius:8px;padding:.5rem .7rem;font-size:.85rem;
   font-family:'Inter',sans-serif;color:#fff;transition:border-color .2s;
   min-height:40px;width:100%;max-width:100%;box-sizing:border-box;
+  color-scheme:dark;
 }
-/* Position block uses 4-col grid on desktop */
-.position-block .sf-grid{grid-template-columns:repeat(4,1fr);gap:.5rem;}
+/* Date inputs — force visible text */
+.sf-field input[type="month"],.sf-field input[type="date"]{
+  color:#fff;-webkit-text-fill-color:#fff;opacity:1;
+}
+.sf-field input[type="month"]::-webkit-calendar-picker-indicator,
+.sf-field input[type="date"]::-webkit-calendar-picker-indicator{
+  filter:invert(1);opacity:.7;cursor:pointer;
+}
+/* Position block grid — 2 cols on desktop, stacks on mobile */
+.position-block .sf-grid{grid-template-columns:1fr 1fr;gap:.5rem;}
 .sf-field input:focus,.sf-field select:focus,.sf-field textarea:focus{
   outline:none;border-color:rgba(240,192,64,.5);background:rgba(255,255,255,.1);
 }
@@ -1801,6 +1811,17 @@ body.menu-open{overflow:hidden!important;}
             <input type="text" class="civ-employer" placeholder="e.g. Amazon">
           </div>
           <div class="sf-field">
+            <label>Location</label>
+            <input type="text" class="civ-location" placeholder="e.g. Austin, TX or Remote">
+          </div>
+          <div class="sf-field">
+            <label>Work Type</label>
+            <select class="civ-worktype">
+              <option value="">Select...</option>
+              <option>On-site</option><option>Remote</option><option>Hybrid</option>
+            </select>
+          </div>
+          <div class="sf-field">
             <label>Start Date</label>
             <input type="month" class="civ-start">
           </div>
@@ -1854,7 +1875,15 @@ body.menu-open{overflow:hidden!important;}
           </div>
           <div class="sf-field">
             <label>Degree / Program</label>
-            <input type="text" class="edu-degree" placeholder="e.g. B.S. in Information Technology">
+            <input type="text" class="edu-degree" placeholder="e.g. B.S. Information Technology">
+          </div>
+          <div class="sf-field">
+            <label>Major</label>
+            <input type="text" class="edu-major" placeholder="e.g. Information Technology">
+          </div>
+          <div class="sf-field">
+            <label>Minor (optional)</label>
+            <input type="text" class="edu-minor" placeholder="e.g. Business Administration">
           </div>
           <div class="sf-field">
             <label>Year Completed</label>
@@ -2616,7 +2645,17 @@ window.populateDutyPrompts = function(container) {
   }
 })();
 
-// Event delegation for branch changes — more reliable than inline onchange
+// Clickable progress bar
+document.getElementById('scout-progress').addEventListener('click', function(e) {
+  var step = e.target.closest('.sp-step');
+  if (step) goStep(parseInt(step.getAttribute('data-step')));
+});
+document.getElementById('sp-labels').addEventListener('click', function(e) {
+  var span = e.target.closest('span[data-step]');
+  if (span) goStep(parseInt(span.getAttribute('data-step')));
+});
+
+// Event delegation for branch changes
 document.addEventListener('change', function(e) {
   if (e.target.classList.contains('sp-branch')) {
     window.onSpBranchChange(e.target);
@@ -2775,6 +2814,7 @@ window.getSelectedCerts = function() {
 
 /* ── BUILD REVIEW ── */
 function buildReview() {
+  try {
   var p = getPersonalData();
   var mil = getMilitaryData();
   var t = getTargetData();
@@ -2878,6 +2918,10 @@ function buildReview() {
   }
 
   document.getElementById('review-content').innerHTML = html;
+  } catch(err) {
+    console.error('buildReview error:', err);
+    document.getElementById('review-content').innerHTML = '<div style="padding:1rem;color:#fca5a5;">Error building review: '+err.message+'. You can still generate your resume.</div>';
+  }
 }
 
 function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }

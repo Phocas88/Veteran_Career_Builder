@@ -3028,9 +3028,12 @@ window.generateResume = function() {
   .then(function(r) { return r.json(); })
   .then(function(data) {
     clearInterval(loadingInterval);
+    console.log('API response:', JSON.stringify(data).substring(0, 500));
     var text = '';
     if (data.content && data.content[0]) text = data.content[0].text;
     else if (data.text) text = data.text;
+    else if (data.error) { alert('API Error: ' + (data.error.message || JSON.stringify(data.error))); goStep(7); return; }
+    console.log('Extracted text (first 300):', (text||'').substring(0, 300));
 
     // Parse JSON from response
     var jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -3063,7 +3066,8 @@ window.generateResume = function() {
         goStep(7);
       }
     } else {
-      alert('Could not generate resume. Please try again.');
+      console.error('No JSON found in response. Raw text:', text);
+      alert('Could not generate resume. The AI response did not contain valid data. Please try again.');
       goStep(7);
     }
   })

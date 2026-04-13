@@ -3339,8 +3339,11 @@ function App() {
       await cred.user.updateProfile({ displayName: authForm.name.trim() });
       setAuthOk("Account created! Signing you in...");
       setShowAuth(false);
-      if(window._pendingStripe){var s=window._pendingStripe;delete window._pendingStripe;window.location.href=s;return;}
-      if(!checkAccess()){setShowPaywall(true);}
+      // Check access before redirecting to Stripe
+      if(window._pendingStripe){
+        delete window._pendingStripe;
+        if(!checkAccess()){setShowPaywall(true);}
+      } else if(!checkAccess()){setShowPaywall(true);}
       showToast("Welcome, " + authForm.name.split(" ")[0] + "! ✓");
       setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
     } catch(e) {
@@ -3357,8 +3360,11 @@ function App() {
     try {
       await fbAuth.signInWithEmailAndPassword(authForm.username.trim(), authForm.password);
       setShowAuth(false);
-      if(window._pendingStripe){var s=window._pendingStripe;delete window._pendingStripe;window.location.href=s;return;}
-      if(!checkAccess()){setShowPaywall(true);}
+      // Check access before redirecting to Stripe - prevent double charges
+      if(window._pendingStripe){
+        delete window._pendingStripe;
+        if(!checkAccess()){setShowPaywall(true);}
+      } else if(!checkAccess()){setShowPaywall(true);}
       setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
     } catch(e) {
       if (e.code === "auth/user-not-found" || e.code === "auth/invalid-credential") setAuthErr("No account found. Check your email or create an account.");
@@ -4317,7 +4323,23 @@ Return this exact JSON structure:
                       if(!fbAuth){alert("Firebase not configured.");return;}
                       try{
                         const provider=new firebase.auth.GoogleAuthProvider();
-                        await fbAuth.signInWithPopup(provider);
+                        const result = await fbAuth.signInWithPopup(provider);
+                        // Check if user already has access before sending to Stripe
+                        if(result.user) {
+                          const doc = await fbDb.collection("profiles").doc(result.user.uid).get();
+                          if(doc.exists) {
+                            const d = doc.data();
+                            if((d.stripeSession && d.accessExpiry && d.accessExpiry > Date.now()) || d.accessCode) {
+                              // Already a subscriber - restore access and close paywall
+                              if(d.stripeSession) localStorage.setItem("vcb_access",JSON.stringify({type:"paid",stripeSession:d.stripeSession,expiry:d.accessExpiry,plan:d.plan||"monthly"}));
+                              else localStorage.setItem("vcb_access",JSON.stringify({type:"code",code:d.accessCode}));
+                              setHasAccess(true); setShowPaywall(false);
+                              showToast("Welcome back! Your subscription is active.");
+                              return;
+                            }
+                          }
+                        }
+                        // Not a subscriber - send to Stripe
                         window.location.href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00";
                       }catch(e){alert("Sign-in failed: "+(e.message||"Unknown error"));}
                     }}>
@@ -4325,7 +4347,7 @@ Return this exact JSON structure:
                     Sign in with Google &amp; Subscribe
                   </button>
                 )}
-                <button className="pw-cta" onClick={()=>{
+                <button className="pw-cta" onClick={async()=>{
                   const stripeLink = "https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00";
                   if(!fbAuth||!fbAuth.currentUser){
                     setShowPaywall(false);
@@ -4333,6 +4355,20 @@ Return this exact JSON structure:
                     window._pendingStripe=stripeLink;
                     return;
                   }
+                  // Double-check Firestore before sending to Stripe
+                  try {
+                    const doc = await fbDb.collection("profiles").doc(fbAuth.currentUser.uid).get();
+                    if(doc.exists) {
+                      const d = doc.data();
+                      if((d.stripeSession && d.accessExpiry && d.accessExpiry > Date.now()) || d.accessCode) {
+                        if(d.stripeSession) localStorage.setItem("vcb_access",JSON.stringify({type:"paid",stripeSession:d.stripeSession,expiry:d.accessExpiry,plan:d.plan||"monthly"}));
+                        else localStorage.setItem("vcb_access",JSON.stringify({type:"code",code:d.accessCode}));
+                        setHasAccess(true); setShowPaywall(false);
+                        showToast("Your subscription is already active!");
+                        return;
+                      }
+                    }
+                  } catch(e){}
                   window.location.href = stripeLink;
                 }}>
                   Subscribe Now — $15/mo →
@@ -4422,9 +4458,18 @@ Return this exact JSON structure:
                     if(!fbAuth){setAuthErr("Firebase not configured. Contact the site owner.");return;}
                     try{
                       const provider=new firebase.auth.GoogleAuthProvider();
-                      await fbAuth.signInWithPopup(provider);
+                      const result = await fbAuth.signInWithPopup(provider);
                       setShowAuth(false);
-                      if(window._pendingStripe){var s=window._pendingStripe;delete window._pendingStripe;window.location.href=s;return;}
+                      // Check if already a subscriber before sending to Stripe
+                      if(window._pendingStripe){
+                        delete window._pendingStripe;
+                        try {
+                          const doc = await fbDb.collection("profiles").doc(result.user.uid).get();
+                          if(doc.exists){const d=doc.data();if((d.stripeSession&&d.accessExpiry&&d.accessExpiry>Date.now())||d.accessCode){setHasAccess(true);setShowPaywall(false);showToast("Welcome back! Subscription active.");return;}}
+                        }catch(e){}
+                        if(!checkAccess()){setShowPaywall(true);}
+                        return;
+                      }
                     }catch(e){
                       if(e.code==="auth/popup-closed-by-user") return;
                       if(e.code==="auth/popup-blocked") setAuthErr("Popup blocked — allow popups for this site.");

@@ -3815,213 +3815,275 @@ function showResumePreview(data, personal) {
   previewEl.className = 'resume-content';
   previewEl.style.setProperty('--tpl-accent', accentColor);
 
-  var html = '';
+  // Determine template family for rendering path
+  var tplFamily = 'modern'; // default
+  if (selectedTemplate.indexOf('classic') === 0 || selectedTemplate === 'cols-minimal-line') tplFamily = 'classic';
+  else if (selectedTemplate.indexOf('corporate') === 0 || selectedTemplate.indexOf('tech') === 0 || selectedTemplate === 'healthcare' || selectedTemplate.indexOf('law') === 0 || selectedTemplate.indexOf('trades') === 0 || selectedTemplate === 'cols-boxed-sections' || selectedTemplate === 'cols-top-banner' || selectedTemplate === 'cols-red-header') tplFamily = 'professional';
+  else if (selectedTemplate.indexOf('federal') === 0) tplFamily = 'federal';
+  else if (selectedTemplate === 'modern-two-col' || selectedTemplate === 'cols-left-dark' || selectedTemplate === 'cols-right-accent' || selectedTemplate === 'cols-teal-sidebar') tplFamily = 'twocol';
+  else if (selectedTemplate === 'cols-dark-full') tplFamily = 'dark';
 
-  // Two-column layout: sidebar + main
-  if (tplClass === 'resume-tpl-twocol') {
-    html += '<div class="rc-sidebar">';
-    html += '<div class="rc-name">' + esc(personal.name) + '</div>';
-    html += '<div class="rc-contact">' + esc(personal.email) + '<br>' + esc(personal.phone) + '<br>' + esc(personal.location);
-    if (personal.linkedin) html += '<br>' + esc(personal.linkedin);
+  // Section title helper - returns inline-styled HTML per family
+  function secTitle(title) {
+    if (tplFamily === 'modern' && (selectedTemplate === 'modern-bold')) {
+      return '<div style="background:'+accentColor+';color:#fff;padding:.25rem .6rem;border-radius:3px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;margin-top:.8rem;">'+title+'</div>';
+    } else if (tplFamily === 'classic') {
+      return '<div style="font-family:Georgia,serif;font-size:.88rem;color:#1a1a1a;border-bottom:1px solid #999;text-transform:uppercase;letter-spacing:.12em;padding-bottom:.15rem;margin-bottom:.6rem;margin-top:.8rem;font-weight:700;">'+title+'</div>';
+    } else if (tplFamily === 'professional') {
+      return '<div style="background:'+accentColor+';color:#fff;padding:.3rem .6rem;border-radius:3px;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:.5rem;margin-top:.8rem;">'+title+'</div>';
+    } else if (tplFamily === 'federal') {
+      return '<div style="font-weight:700;color:#000;border-bottom:2px solid #000;font-size:.82rem;text-transform:uppercase;letter-spacing:.1em;padding-bottom:.15rem;margin-bottom:.6rem;margin-top:.8rem;">'+title+'</div>';
+    } else if (tplFamily === 'dark') {
+      return '<div style="color:#e94560;border-bottom:1px solid #e94560;padding-bottom:.2rem;margin-bottom:.6rem;margin-top:.8rem;font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;">'+title+'</div>';
+    } else {
+      return '<div style="color:'+accentColor+';border-bottom:2px solid '+accentColor+';padding-bottom:.2rem;margin-bottom:.6rem;margin-top:.8rem;font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;">'+title+'</div>';
+    }
+  }
+
+  // Inline style helpers per family
+  var bodyFont = (tplFamily === 'classic') ? 'font-family:Georgia,\"Times New Roman\",serif;' : 'font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,sans-serif;';
+  var bulletStyle = 'style="font-size:.78rem;color:#333;margin-bottom:.2rem;line-height:1.45;'+bodyFont+'"';
+  var jobTitleStyle, jobMetaStyle, summaryStyle, eduItemStyle, skillListStyle;
+  if (tplFamily === 'classic') {
+    jobTitleStyle = 'style="font-size:.88rem;font-weight:700;color:#1a1a1a;'+bodyFont+'"';
+    jobMetaStyle = 'style="font-size:.76rem;color:#555;font-style:italic;margin-bottom:.3rem;'+bodyFont+'"';
+    summaryStyle = 'style="font-size:.8rem;color:#333;line-height:1.5;margin-bottom:.5rem;'+bodyFont+'"';
+    eduItemStyle = 'style="font-size:.8rem;color:#333;margin-bottom:.25rem;'+bodyFont+'"';
+    skillListStyle = 'style="font-size:.8rem;color:#333;line-height:1.6;'+bodyFont+'"';
+  } else if (tplFamily === 'federal') {
+    jobTitleStyle = 'style="font-size:.88rem;font-weight:700;color:#000;"';
+    jobMetaStyle = 'style="font-size:.78rem;color:#333;font-weight:600;margin-bottom:.3rem;"';
+    summaryStyle = 'style="font-size:.82rem;color:#222;line-height:1.6;margin-bottom:.5rem;"';
+    eduItemStyle = 'style="font-size:.8rem;color:#222;margin-bottom:.25rem;"';
+    skillListStyle = 'style="font-size:.8rem;color:#222;line-height:1.6;"';
+  } else if (tplFamily === 'dark') {
+    bulletStyle = 'style="font-size:.78rem;color:#ccc;margin-bottom:.2rem;line-height:1.45;"';
+    jobTitleStyle = 'style="font-size:.88rem;font-weight:600;color:#e0e0e0;"';
+    jobMetaStyle = 'style="font-size:.76rem;color:#888;margin-bottom:.3rem;"';
+    summaryStyle = 'style="font-size:.8rem;color:#bbb;line-height:1.5;margin-bottom:.5rem;"';
+    eduItemStyle = 'style="font-size:.8rem;color:#bbb;margin-bottom:.25rem;"';
+    skillListStyle = 'style="font-size:.8rem;color:#bbb;line-height:1.6;"';
+  } else {
+    jobTitleStyle = 'style="font-size:.88rem;font-weight:600;color:#222;"';
+    jobMetaStyle = 'style="font-size:.76rem;color:#6a7a8a;margin-bottom:.3rem;"';
+    summaryStyle = 'style="font-size:.8rem;color:#444;line-height:1.5;margin-bottom:.5rem;"';
+    eduItemStyle = 'style="font-size:.8rem;color:#333;margin-bottom:.25rem;"';
+    skillListStyle = 'style="font-size:.8rem;color:#444;line-height:1.6;"';
+  }
+
+  // Helper: render common body sections (summary, competencies, highlights, experience, ksa, education, skills, certs, languages, training, additional)
+  function renderBodySections(opts) {
+    var h = '';
+    var summaryText = data.summary || data.profile || '';
+    if (summaryText) {
+      var sTitle = data.profile ? 'Profile' : 'Professional Summary';
+      h += secTitle(sTitle);
+      h += '<div '+summaryStyle+'>' + esc(summaryText) + '</div>';
+    }
+    if (data.coreCompetencies && data.coreCompetencies.length) {
+      h += secTitle('Core Competencies');
+      data.coreCompetencies.forEach(function(cat) {
+        h += '<div '+jobTitleStyle+'>' + esc(cat.category) + '</div>';
+        if (cat.bullets && cat.bullets.length) { h += '<ul style="margin:.2rem 0 .5rem 1.2rem;padding:0;">'; cat.bullets.forEach(function(b) { h += '<li '+bulletStyle+'>' + esc(b) + '</li>'; }); h += '</ul>'; }
+      });
+    }
+    if (data.skillHighlights && data.skillHighlights.length) {
+      h += secTitle('Key Accomplishments');
+      h += '<ul style="margin:.2rem 0 .5rem 1.2rem;padding:0;">';
+      data.skillHighlights.forEach(function(s) { h += '<li '+bulletStyle+'>' + esc(s) + '</li>'; });
+      h += '</ul>';
+    }
+    if (data.experience && data.experience.length) {
+      h += secTitle('Professional Experience');
+      data.experience.forEach(function(exp) {
+        h += '<div '+jobTitleStyle+'>' + esc(exp.title) + '</div>';
+        var meta = esc(exp.organization) + ' | ' + esc(exp.dates);
+        if (exp.hoursPerWeek) meta += ' | ' + esc(exp.hoursPerWeek) + ' hrs/wk';
+        if (exp.salaryGrade) meta += ' | ' + esc(exp.salaryGrade);
+        h += '<div '+jobMetaStyle+'>' + meta + '</div>';
+        if (exp.supervisor) h += '<div style="font-size:.75rem;color:'+(tplFamily==='dark'?'#888':'#6a7a8a')+';margin-bottom:.25rem;">Supervisor: ' + esc(exp.supervisor) + '</div>';
+        if (exp.bullets && exp.bullets.length) { h += '<ul style="margin:.2rem 0 .5rem 1.2rem;padding:0;">'; exp.bullets.forEach(function(b) { h += '<li '+bulletStyle+'>' + esc(b) + '</li>'; }); h += '</ul>'; }
+      });
+    }
+    if (data.ksa && data.ksa.length) {
+      h += secTitle('Knowledge, Skills &amp; Abilities');
+      h += '<ul style="margin:.2rem 0 .5rem 1.2rem;padding:0;">';
+      data.ksa.forEach(function(k) { h += '<li '+bulletStyle+'>' + esc(k) + '</li>'; });
+      h += '</ul>';
+    }
+    if (!opts || !opts.skipEducation) {
+      if (data.education && data.education.length) {
+        h += secTitle('Education');
+        data.education.forEach(function(edu) {
+          h += '<div '+eduItemStyle+'><strong>' + esc(edu.degree) + '</strong> - ' + esc(edu.school) + ' (' + esc(edu.year) + ')</div>';
+        });
+      }
+    }
+    if (!opts || !opts.skipSkills) {
+      if (data.skills && data.skills.length) {
+        h += secTitle('Skills');
+        h += '<div '+skillListStyle+'>' + data.skills.map(esc).join(' &middot; ') + '</div>';
+      }
+    }
+    if (!opts || !opts.skipCerts) {
+      if (data.certifications && data.certifications.length) {
+        h += secTitle('Certifications');
+        data.certifications.forEach(function(c) { h += '<div '+eduItemStyle+'><strong>' + esc(c) + '</strong></div>'; });
+      }
+    }
+    if (!opts || !opts.skipLanguages) {
+      if (data.languages && data.languages.length) {
+        h += secTitle('Languages');
+        h += '<div '+skillListStyle+'>' + data.languages.map(esc).join(' &middot; ') + '</div>';
+      }
+    }
+    if (data.training && data.training.length) {
+      h += secTitle('Training &amp; Professional Development');
+      data.training.forEach(function(t) { h += '<div '+eduItemStyle+'>' + esc(t) + '</div>'; });
+    }
+    if (data.additionalInfo) {
+      h += secTitle('Additional Information');
+      h += '<div '+summaryStyle+'>' + esc(data.additionalInfo) + '</div>';
+    }
+    return h;
+  }
+
+  var html = '';
+  var outerDiv = document.getElementById('resume-preview');
+  outerDiv.style.background = ''; // reset dark bg if previously set
+
+  // ─── PATH 1: Modern family ───
+  if (tplFamily === 'modern') {
+    if (selectedTemplate === 'modern-bold') {
+      html += '<div style="background:'+accentColor+';padding:1.2rem 2rem;margin:-1px -1px 0 -1px;">';
+      html += '<div style="font-size:1.8rem;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.02em;">' + esc(personal.name) + '</div>';
+      html += '<div style="color:rgba(255,255,255,.85);font-size:.8rem;">' + esc(personal.email) + ' | ' + esc(personal.phone) + ' | ' + esc(personal.location);
+      if (personal.linkedin) html += ' | ' + esc(personal.linkedin);
+      html += '</div></div>';
+      html += '<div style="padding:0 2rem 2rem;">';
+    } else if (selectedTemplate === 'modern-gradient' || selectedTemplate === 'cols-split-header') {
+      html += '<div style="background:linear-gradient(135deg,'+accentColor+',#2196f3);padding:1.2rem 2rem;margin:-1px -1px 0 -1px;">';
+      html += '<div style="font-size:1.8rem;font-weight:700;color:#fff;">' + esc(personal.name) + '</div>';
+      html += '<div style="color:rgba(255,255,255,.8);font-size:.8rem;">' + esc(personal.email) + ' | ' + esc(personal.phone) + ' | ' + esc(personal.location);
+      if (personal.linkedin) html += ' | ' + esc(personal.linkedin);
+      html += '</div></div>';
+      html += '<div style="padding:0 2rem 2rem;">';
+    } else if (selectedTemplate === 'modern-creative') {
+      html += '<div style="padding:2rem;border-left:5px solid '+accentColor+';">';
+      html += '<div style="font-size:1.7rem;font-weight:300;letter-spacing:.06em;text-transform:uppercase;color:'+accentColor+';">' + esc(personal.name) + '</div>';
+      html += '<div style="font-size:.78rem;color:#5a6a7a;padding-bottom:.5rem;border-bottom:2px solid '+accentColor+';margin-bottom:.5rem;">' + esc(personal.email) + ' | ' + esc(personal.phone) + ' | ' + esc(personal.location);
+      if (personal.linkedin) html += ' | ' + esc(personal.linkedin);
+      html += '</div>';
+    } else {
+      // modern-clean, modern-compact, and other modern defaults
+      html += '<div style="padding:2rem;">';
+      html += '<div style="font-size:1.7rem;font-weight:300;letter-spacing:.06em;text-transform:uppercase;color:'+accentColor+';">' + esc(personal.name) + '</div>';
+      html += '<div style="font-size:.78rem;color:#5a6a7a;padding-bottom:.5rem;border-bottom:2px solid '+accentColor+';margin-bottom:.5rem;">' + esc(personal.email) + ' | ' + esc(personal.phone) + ' | ' + esc(personal.location);
+      if (personal.linkedin) html += ' | ' + esc(personal.linkedin);
+      html += '</div>';
+    }
+    html += renderBodySections();
     html += '</div>';
+
+  // ─── PATH 2: Two-column family ───
+  } else if (tplFamily === 'twocol') {
+    var sidebarBg = accentColor;
+    if (selectedTemplate === 'cols-left-dark') sidebarBg = '#1a1a2e';
+    var isRightSidebar = (selectedTemplate === 'cols-right-accent');
+    var sidebarTextColor = '#fff';
+    var sidebarSubColor = 'rgba(255,255,255,.7)';
+    var sidebarAccentLabel = '#f0c040';
+    if (selectedTemplate === 'cols-teal-sidebar') sidebarAccentLabel = '#ffd700';
+
+    var sidebarHtml = '<div style="background:'+sidebarBg+';color:'+sidebarTextColor+';padding:1.5rem 1rem;min-height:500px;">';
+    sidebarHtml += '<div style="font-size:1.2rem;font-weight:700;color:'+sidebarTextColor+';margin-bottom:.3rem;">' + esc(personal.name) + '</div>';
+    sidebarHtml += '<div style="font-size:.7rem;color:'+sidebarSubColor+';border-bottom:1px solid rgba(255,255,255,.2);padding-bottom:.6rem;margin-bottom:.8rem;">' + esc(personal.email) + '<br>' + esc(personal.phone) + '<br>' + esc(personal.location);
+    if (personal.linkedin) sidebarHtml += '<br>' + esc(personal.linkedin);
+    sidebarHtml += '</div>';
     // Skills in sidebar
     if (data.skills && data.skills.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Skills</div>';
-      data.skills.forEach(function(s) { html += '<div style="font-size:.75rem;padding:.15rem 0;border-bottom:1px solid rgba(255,255,255,.1);">' + esc(s) + '</div>'; });
-      html += '</div>';
+      sidebarHtml += '<div style="font-size:.7rem;font-weight:700;color:'+sidebarAccentLabel+';text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:.2rem;margin-bottom:.4rem;">Skills</div>';
+      data.skills.forEach(function(s) { sidebarHtml += '<div style="font-size:.72rem;padding:.12rem 0;color:rgba(255,255,255,.85);">' + esc(s) + '</div>'; });
     }
     // Education in sidebar
     if (data.education && data.education.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Education</div>';
+      sidebarHtml += '<div style="font-size:.7rem;font-weight:700;color:'+sidebarAccentLabel+';text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:.2rem;margin-bottom:.4rem;margin-top:.8rem;">Education</div>';
       data.education.forEach(function(edu) {
-        html += '<div class="rc-edu-item"><strong>' + esc(edu.degree) + '</strong> <span>' + esc(edu.school) + ' (' + esc(edu.year) + ')</span></div>';
+        sidebarHtml += '<div style="font-size:.72rem;color:rgba(255,255,255,.85);margin-bottom:.3rem;"><strong>' + esc(edu.degree) + '</strong><br><span style="color:rgba(255,255,255,.6);">' + esc(edu.school) + ' (' + esc(edu.year) + ')</span></div>';
       });
-      html += '</div>';
     }
     // Certifications in sidebar
     if (data.certifications && data.certifications.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Certifications</div>';
-      data.certifications.forEach(function(c) { html += '<div style="font-size:.75rem;padding:.1rem 0;">' + esc(c) + '</div>'; });
-      html += '</div>';
+      sidebarHtml += '<div style="font-size:.7rem;font-weight:700;color:'+sidebarAccentLabel+';text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:.2rem;margin-bottom:.4rem;margin-top:.8rem;">Certifications</div>';
+      data.certifications.forEach(function(c) { sidebarHtml += '<div style="font-size:.72rem;padding:.12rem 0;color:rgba(255,255,255,.85);">' + esc(c) + '</div>'; });
     }
     // Languages in sidebar
     if (data.languages && data.languages.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Languages</div>';
-      html += '<div class="rc-skill-list">' + data.languages.map(esc).join(' &middot; ') + '</div></div>';
+      sidebarHtml += '<div style="font-size:.7rem;font-weight:700;color:'+sidebarAccentLabel+';text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:.2rem;margin-bottom:.4rem;margin-top:.8rem;">Languages</div>';
+      sidebarHtml += '<div style="font-size:.72rem;color:rgba(255,255,255,.85);">' + data.languages.map(esc).join(' &middot; ') + '</div>';
     }
-    html += '</div>'; // end sidebar
+    sidebarHtml += '</div>';
 
-    html += '<div class="rc-main">';
-    // Summary in main
-    var summaryText = data.summary || data.profile || '';
-    if (summaryText) {
-      var summaryTitle = data.profile ? 'Profile' : 'Professional Summary';
-      html += '<div class="rc-section"><div class="rc-section-title">' + summaryTitle + '</div>';
-      html += '<div class="rc-summary">' + esc(summaryText) + '</div></div>';
-    }
-    // Core Competencies in main
-    if (data.coreCompetencies && data.coreCompetencies.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Core Competencies</div>';
-      data.coreCompetencies.forEach(function(cat) {
-        html += '<div class="rc-job"><div class="rc-job-title">' + esc(cat.category) + '</div>';
-        if (cat.bullets && cat.bullets.length) { html += '<ul class="rc-bullets">'; cat.bullets.forEach(function(b) { html += '<li>' + esc(b) + '</li>'; }); html += '</ul>'; }
-        html += '</div>';
-      });
-      html += '</div>';
-    }
-    // Skill Highlights in main
-    if (data.skillHighlights && data.skillHighlights.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Key Accomplishments</div>';
-      html += '<ul class="rc-bullets">';
-      data.skillHighlights.forEach(function(h) { html += '<li>' + esc(h) + '</li>'; });
-      html += '</ul></div>';
-    }
-    // Experience in main
-    if (data.experience && data.experience.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Professional Experience</div>';
-      data.experience.forEach(function(exp) {
-        html += '<div class="rc-job">';
-        html += '<div class="rc-job-title">' + esc(exp.title) + '</div>';
-        var meta = esc(exp.organization) + ' | ' + esc(exp.dates);
-        if (exp.hoursPerWeek) meta += ' | ' + esc(exp.hoursPerWeek) + ' hrs/wk';
-        if (exp.salaryGrade) meta += ' | ' + esc(exp.salaryGrade);
-        html += '<div class="rc-job-meta">' + meta + '</div>';
-        if (exp.supervisor) html += '<div style="font-size:.75rem;color:#6a7a8a;margin-bottom:.25rem;">Supervisor: ' + esc(exp.supervisor) + '</div>';
-        if (exp.bullets && exp.bullets.length) { html += '<ul class="rc-bullets">'; exp.bullets.forEach(function(b) { html += '<li>' + esc(b) + '</li>'; }); html += '</ul>'; }
-        html += '</div>';
-      });
-      html += '</div>';
-    }
-    // KSA in main
-    if (data.ksa && data.ksa.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Knowledge, Skills &amp; Abilities</div>';
-      html += '<ul class="rc-bullets">';
-      data.ksa.forEach(function(k) { html += '<li>' + esc(k) + '</li>'; });
-      html += '</ul></div>';
-    }
-    // Training in main
-    if (data.training && data.training.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Training &amp; Professional Development</div>';
-      data.training.forEach(function(t) { html += '<div class="rc-edu-item">' + esc(t) + '</div>'; });
-      html += '</div>';
-    }
-    // Additional Info in main
-    if (data.additionalInfo) {
-      html += '<div class="rc-section"><div class="rc-section-title">Additional Information</div>';
-      html += '<div class="rc-summary">' + esc(data.additionalInfo) + '</div></div>';
-    }
-    html += '</div>'; // end main
+    var mainHtml = '<div style="padding:1.5rem;">';
+    mainHtml += renderBodySections({ skipEducation: true, skipSkills: true, skipCerts: true, skipLanguages: true });
+    mainHtml += '</div>';
 
-  } else {
-    // Standard single-column layout
-    html += '<div class="rc-name">' + esc(personal.name) + '</div>';
-    html += '<div class="rc-contact">';
-    html += esc(personal.email) + ' | ' + esc(personal.phone) + ' | ' + esc(personal.location);
+    if (isRightSidebar) {
+      html += '<div style="display:grid;grid-template-columns:1fr 200px;min-height:500px;">' + mainHtml + sidebarHtml + '</div>';
+    } else {
+      html += '<div style="display:grid;grid-template-columns:200px 1fr;min-height:500px;">' + sidebarHtml + mainHtml + '</div>';
+    }
+
+  // ─── PATH 3: Classic family ───
+  } else if (tplFamily === 'classic') {
+    html += '<div style="padding:2rem;font-family:Georgia,\'Times New Roman\',serif;">';
+    html += '<div style="font-size:1.6rem;text-align:center;color:#1a1a1a;border-bottom:1px solid #333;padding-bottom:.5rem;margin-bottom:.25rem;font-family:Georgia,serif;">' + esc(personal.name) + '</div>';
+    html += '<div style="text-align:center;font-size:.78rem;color:#4a4a4a;margin-bottom:1rem;font-family:Georgia,serif;">' + esc(personal.email) + ' | ' + esc(personal.phone) + ' | ' + esc(personal.location);
     if (personal.linkedin) html += ' | ' + esc(personal.linkedin);
     html += '</div>';
+    html += renderBodySections();
+    html += '</div>';
 
-    // Summary / Profile
-    var summaryText = data.summary || data.profile || '';
-    if (summaryText) {
-      var summaryTitle = data.profile ? 'Profile' : 'Professional Summary';
-      html += '<div class="rc-section"><div class="rc-section-title">' + summaryTitle + '</div>';
-      html += '<div class="rc-summary">' + esc(summaryText) + '</div></div>';
-    }
+  // ─── PATH 4: Professional family ───
+  } else if (tplFamily === 'professional') {
+    html += '<div style="background:'+accentColor+';color:#fff;padding:.7rem 2rem;font-size:1.5rem;font-weight:700;margin:-1px -1px 0 -1px;">' + esc(personal.name) + '</div>';
+    html += '<div style="background:'+accentColor+';color:rgba(255,255,255,.9);padding:.3rem 2rem .5rem;font-size:.78rem;border-bottom:4px solid rgba(0,0,0,.15);margin:-1px -1px 0 -1px;">' + esc(personal.email) + ' | ' + esc(personal.phone) + ' | ' + esc(personal.location);
+    if (personal.linkedin) html += ' | ' + esc(personal.linkedin);
+    html += '</div>';
+    html += '<div style="padding:1rem 2rem 2rem;">';
+    html += renderBodySections();
+    html += '</div>';
 
-    // Core Competencies (ATS Functional format)
-    if (data.coreCompetencies && data.coreCompetencies.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Core Competencies</div>';
-      data.coreCompetencies.forEach(function(cat) {
-        html += '<div class="rc-job"><div class="rc-job-title">' + esc(cat.category) + '</div>';
-        if (cat.bullets && cat.bullets.length) {
-          html += '<ul class="rc-bullets">';
-          cat.bullets.forEach(function(b) { html += '<li>' + esc(b) + '</li>'; });
-          html += '</ul>';
-        }
-        html += '</div>';
-      });
-      html += '</div>';
-    }
+  // ─── PATH 5: Federal family ───
+  } else if (tplFamily === 'federal') {
+    html += '<div style="padding:2rem;">';
+    html += '<div style="font-size:1.3rem;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:.05em;border-bottom:3px solid #000;padding-bottom:.35rem;margin-bottom:.15rem;">' + esc(personal.name) + '</div>';
+    html += '<div style="font-size:.82rem;color:#000;font-weight:600;border-bottom:1px solid #ccc;padding-bottom:.5rem;margin-bottom:.5rem;">' + esc(personal.email) + ' | ' + esc(personal.phone) + ' | ' + esc(personal.location);
+    if (personal.linkedin) html += ' | ' + esc(personal.linkedin);
+    html += '</div>';
+    html += renderBodySections();
+    html += '</div>';
 
-    // Skill Highlights (ATS Combination format)
-    if (data.skillHighlights && data.skillHighlights.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Key Accomplishments</div>';
-      html += '<ul class="rc-bullets">';
-      data.skillHighlights.forEach(function(h) { html += '<li>' + esc(h) + '</li>'; });
-      html += '</ul></div>';
-    }
+  // ─── PATH 6: Dark mode ───
+  } else if (tplFamily === 'dark') {
+    outerDiv.style.background = '#1a1a2e';
+    html += '<div style="padding:2rem;color:#e0e0e0;">';
+    html += '<div style="font-size:1.6rem;font-weight:600;color:#e94560;">' + esc(personal.name) + '</div>';
+    html += '<div style="font-size:.78rem;color:#999;border-bottom:1px solid #e94560;padding-bottom:.4rem;margin-bottom:.5rem;">' + esc(personal.email) + ' | ' + esc(personal.phone) + ' | ' + esc(personal.location);
+    if (personal.linkedin) html += ' | ' + esc(personal.linkedin);
+    html += '</div>';
+    html += renderBodySections();
+    html += '</div>';
 
-    // Experience
-    if (data.experience && data.experience.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Professional Experience</div>';
-      data.experience.forEach(function(exp) {
-        html += '<div class="rc-job">';
-        html += '<div class="rc-job-title">' + esc(exp.title) + '</div>';
-        var meta = esc(exp.organization) + ' | ' + esc(exp.dates);
-        if (exp.hoursPerWeek) meta += ' | ' + esc(exp.hoursPerWeek) + ' hrs/wk';
-        if (exp.salaryGrade) meta += ' | ' + esc(exp.salaryGrade);
-        html += '<div class="rc-job-meta">' + meta + '</div>';
-        if (exp.supervisor) html += '<div style="font-size:.75rem;color:#6a7a8a;margin-bottom:.25rem;">Supervisor: ' + esc(exp.supervisor) + '</div>';
-        if (exp.bullets && exp.bullets.length) {
-          html += '<ul class="rc-bullets">';
-          exp.bullets.forEach(function(b) { html += '<li>' + esc(b) + '</li>'; });
-          html += '</ul>';
-        }
-        html += '</div>';
-      });
-      html += '</div>';
-    }
-
-    // KSA (Federal format)
-    if (data.ksa && data.ksa.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Knowledge, Skills &amp; Abilities</div>';
-      html += '<ul class="rc-bullets">';
-      data.ksa.forEach(function(k) { html += '<li>' + esc(k) + '</li>'; });
-      html += '</ul></div>';
-    }
-
-    // Education
-    if (data.education && data.education.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Education</div>';
-      data.education.forEach(function(edu) {
-        html += '<div class="rc-edu-item"><strong>' + esc(edu.degree) + '</strong> <span> -  ' + esc(edu.school) + ' (' + esc(edu.year) + ')</span></div>';
-      });
-      html += '</div>';
-    }
-
-    // Skills
-    if (data.skills && data.skills.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Skills</div>';
-      html += '<div class="rc-skill-list">' + data.skills.map(esc).join(' &middot; ') + '</div></div>';
-    }
-
-    // Certifications
-    if (data.certifications && data.certifications.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Certifications</div>';
-      data.certifications.forEach(function(c) {
-        html += '<div class="rc-edu-item"><strong>' + esc(c) + '</strong></div>';
-      });
-      html += '</div>';
-    }
-
-    // Languages
-    if (data.languages && data.languages.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Languages</div>';
-      html += '<div class="rc-skill-list">' + data.languages.map(esc).join(' &middot; ') + '</div></div>';
-    }
-
-    // Training (Federal format)
-    if (data.training && data.training.length) {
-      html += '<div class="rc-section"><div class="rc-section-title">Training &amp; Professional Development</div>';
-      data.training.forEach(function(t) { html += '<div class="rc-edu-item">' + esc(t) + '</div>'; });
-      html += '</div>';
-    }
-
-    // Additional Info (Federal format)
-    if (data.additionalInfo) {
-      html += '<div class="rc-section"><div class="rc-section-title">Additional Information</div>';
-      html += '<div class="rc-summary">' + esc(data.additionalInfo) + '</div></div>';
-    }
+  // ─── Fallback: specialty and anything else ───
+  } else {
+    html += '<div style="padding:2rem;">';
+    html += '<div style="font-size:1.7rem;font-weight:300;letter-spacing:.06em;text-transform:uppercase;color:'+accentColor+';">' + esc(personal.name) + '</div>';
+    html += '<div style="font-size:.78rem;color:#5a6a7a;padding-bottom:.5rem;border-bottom:2px solid '+accentColor+';margin-bottom:.5rem;">' + esc(personal.email) + ' | ' + esc(personal.phone) + ' | ' + esc(personal.location);
+    if (personal.linkedin) html += ' | ' + esc(personal.linkedin);
+    html += '</div>';
+    html += renderBodySections();
+    html += '</div>';
   }
 
   document.getElementById('resume-content').innerHTML = html;

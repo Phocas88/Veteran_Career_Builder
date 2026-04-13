@@ -1648,7 +1648,7 @@ body.menu-open{overflow:hidden!important;}
           <div class="sf-field">
             <label>MOS / Rate / AFSC *</label>
             <div class="sp-mos-wrap">
-              <select class="sp-mos" onchange="onMosChange(this)" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">
+              <select class="sp-mos" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">
                 <option value="">Select branch first...</option>
               </select>
             </div>
@@ -2300,9 +2300,15 @@ function getMilitaryData() {
         dutyAnswers: dutyAnswers
       });
     });
-    // Extract MOS code from input (may contain "CODE - Title" format from datalist)
-    var mosRaw = sp.querySelector('.sp-mos') ? sp.querySelector('.sp-mos').value.trim() : '';
+    // Extract MOS code — check select first, then fallback to stored value
+    var mosSelect = sp.querySelector('.sp-mos');
+    var mosRaw = mosSelect ? mosSelect.value.trim() : '';
     var mosCode = mosRaw.split(' - ')[0].trim();
+    // Fallback: if select lost its value (DOM rebuild), use stored selection
+    if (!mosCode) {
+      var spIdx = sp.getAttribute('data-sp') || '0';
+      mosCode = sp.getAttribute('data-selected-mos') || (window._mosSelections && window._mosSelections[spIdx]) || '';
+    }
     arr.push({
       branch: sp.querySelector('.sp-branch').value,
       serviceType: sp.querySelector('.sp-service-type') ? sp.querySelector('.sp-service-type').value : '',
@@ -2432,7 +2438,7 @@ window.addServicePeriod = function() {
       '<div class="sf-field"><label>Service End</label><input type="month" class="sp-end"></div>' +
     '</div>' +
     '<div class="sf-grid">' +
-      '<div class="sf-field"><label>MOS / Rate / AFSC *</label><div class="sp-mos-wrap"><select class="sp-mos" onchange="onMosChange(this)" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;"><option value="">Select branch first...</option></select></div></div>' +
+      '<div class="sf-field"><label>MOS / Rate / AFSC *</label><div class="sp-mos-wrap"><select class="sp-mos" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;"><option value="">Select branch first...</option></select></div></div>' +
       '<div class="sf-field"><label>MOS Title</label><input type="text" class="sp-mos-title" readonly placeholder="Auto-fills when MOS selected"></div>' +
     '</div>' +
     '<div class="sf-grid">' +
@@ -2684,7 +2690,7 @@ window.onSpBranchChange = function(selectEl) {
   if (mosContainer) {
     var mosData = (window.VCP_MOS && window.VCP_MOS[branch]) || [];
     console.log('MOS data for', branch, ':', mosData.length, 'entries');
-    var html = '<select class="sp-mos" onchange="window.onMosChange(this)">';
+    var html = '<select class="sp-mos">';
     html += '<option value="">' + (branch ? 'Select ' + (branch==='Army'?'MOS':branch==='Navy'||branch==='Coast Guard'?'Rate':branch==='Marines'?'MOS':'AFSC') + '...' : 'Select branch first...') + '</option>';
     mosData.forEach(function(m) {
       html += '<option value="' + m.code + '" data-title="' + (m.title||'').replace(/"/g,'&quot;') + '">' + m.code + ' - ' + m.title + '</option>';
@@ -2761,14 +2767,25 @@ window.onSpBranchChange = function(selectEl) {
 };
 
 // MOS change handler: auto-fill title
+// Store MOS selections so they survive dropdown rebuilds
+window._mosSelections = window._mosSelections || {};
+
 window.onMosChange = function(selectEl) {
   var sp = selectEl.closest('.service-period');
   if (!sp) return;
   var titleInput = sp.querySelector('.sp-mos-title');
   if (!titleInput) return;
 
+  // Store the MOS code on the service-period element so it survives DOM rebuilds
+  var spIdx = sp.getAttribute('data-sp') || '0';
+  var mosCode = selectEl.value || '';
+  if (mosCode) {
+    window._mosSelections[spIdx] = mosCode;
+    sp.setAttribute('data-selected-mos', mosCode);
+  }
+
   // Get title from the selected option's data attribute
-  var selected = selectEl.options ? selectEl.options[selectEl.selectedIndex] : null;
+  var selected = selectEl.options && selectEl.selectedIndex >= 0 ? selectEl.options[selectEl.selectedIndex] : null;
   if (selected && selected.getAttribute('data-title')) {
     titleInput.value = selected.getAttribute('data-title');
     return;

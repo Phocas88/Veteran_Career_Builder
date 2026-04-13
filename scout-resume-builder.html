@@ -2853,8 +2853,8 @@ function buildReview() {
     if (m.start || m.end) html += '<div class="review-item">'+esc(m.start)+' to '+esc(m.end)+'</div>';
     if (m.unit) html += '<div class="review-item">Unit: '+esc(m.unit)+'</div>';
     if (m.clearance && m.clearance !== 'None') html += '<div class="review-item">Clearance: '+esc(m.clearance)+(m.clearanceStatus ? ' ('+esc(m.clearanceStatus)+')' : '')+'</div>';
-    if (m.quals) html += '<div class="review-item">Qualifiers: '+esc(m.quals)+'</div>';
-    if (m.sqi) html += '<div class="review-item">SQI: '+esc(m.sqi)+'</div>';
+    var qualsStr = Array.isArray(m.quals) ? m.quals.join(', ') : (m.quals || '');
+    if (qualsStr) html += '<div class="review-item">Qualifiers: '+esc(qualsStr)+'</div>';
     // Positions
     if (m.positions && m.positions.length) {
       m.positions.forEach(function(pos, pi) {
@@ -2930,7 +2930,7 @@ function buildReview() {
   }
 }
 
-function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function esc(s) { if(Array.isArray(s)) s=s.join(', '); return (String(s||'')).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 /* ── AI GENERATION ── */
 window.generateResume = function() {

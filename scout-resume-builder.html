@@ -78,8 +78,11 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 .scout-progress .sp-step.done{background:var(--gr);}
 .sp-labels{
   display:flex;justify-content:space-between;margin-bottom:.5rem;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;gap:.15rem;
+  scrollbar-width:none;-ms-overflow-style:none;
 }
-.sp-labels span{font-size:.6rem;color:rgba(192,216,240,.4);text-transform:uppercase;letter-spacing:.08em;font-weight:600;cursor:pointer;padding:.2rem .1rem;transition:color .15s;}
+.sp-labels::-webkit-scrollbar{display:none;}
+.sp-labels span{font-size:.58rem;color:rgba(192,216,240,.4);text-transform:uppercase;letter-spacing:.05em;font-weight:600;cursor:pointer;padding:.2rem .25rem;transition:color .15s;white-space:nowrap;flex-shrink:0;}
 .sp-labels span:hover{color:rgba(192,216,240,.8);}
 .sp-labels span.active{color:var(--gold);}
 .sp-labels span.done{color:#4ade80;}
@@ -309,8 +312,9 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 .loading-step{font-size:.75rem;color:var(--gold);margin-top:.75rem;font-weight:600;}
 
 /* ── RESUME PREVIEW ── */
-.resume-preview-wrap{display:none;margin-top:2rem;}
-.resume-preview-wrap.visible{display:block;}
+.resume-preview-wrap{margin-top:0;}
+/* Hide progress bar on preview step */
+.scout-progress.hide-on-preview,.sp-labels.hide-on-preview{display:none;}
 .resume-preview-header{
   display:flex;justify-content:space-between;align-items:center;
   margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;
@@ -599,6 +603,12 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
   .scout-hero{padding:2rem 4% 1.5rem;}
   .scout-hero h1{font-size:clamp(1.5rem,6vw,2.2rem);}
   .scout-wrap{padding:1.25rem 4% 3rem;}
+  /* Step tracker: show only active label on mobile */
+  .sp-labels span{display:none;}
+  .sp-labels span.active{display:inline-block;font-size:.7rem;}
+  .sp-labels::after{content:'';} /* Clear any residual */
+  .scout-progress{gap:.2rem;}
+  .scout-progress .sp-step{height:4px;}
   .scout-card{padding:1.25rem;}
   .resume-preview{padding:1.5rem 1.25rem;}
   .scout-nav-btns{flex-direction:column;}
@@ -2194,8 +2204,9 @@ body.menu-open{overflow:hidden!important;}
     <div class="loading-step" id="loading-step">Analyzing your MOS and duties...</div>
   </div>
 
-  <!-- ════ RESUME PREVIEW ════ -->
-  <div class="resume-preview-wrap" id="resume-preview-wrap">
+  <!-- ════ STEP 9: RESUME PREVIEW (hidden until generated) ════ -->
+  <div class="scout-card" id="step-9">
+  <div class="resume-preview-wrap visible" id="resume-preview-wrap">
     <div class="resume-preview-header">
       <h2>Your Resume Preview</h2>
       <div class="preview-actions">
@@ -2245,6 +2256,8 @@ body.menu-open{overflow:hidden!important;}
       <p class="pay-note" style="margin-top:.75rem;">You can re-download for 24 hours.</p>
     </div>
   </div>
+  </div><!-- /resume-preview-wrap -->
+  </div><!-- /step-9 -->
 
 </div><!-- /scout-wrap -->
 
@@ -3663,7 +3676,10 @@ function buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis) {
 /* ── SHOW RESUME PREVIEW ── */
 function showResumePreview(data, personal) {
   document.getElementById('scout-loading').classList.remove('visible');
-  document.getElementById('resume-preview-wrap').classList.add('visible');
+  // Navigate to step 9 (preview) and hide the progress bar
+  goStep(9);
+  document.getElementById('scout-progress').classList.add('hide-on-preview');
+  document.getElementById('sp-labels').classList.add('hide-on-preview');
 
   // Determine template family class
   var tplClass = 'resume-tpl-modern'; // default
@@ -4428,7 +4444,9 @@ window.downloadPDF = function() {
 
 /* ── EDIT MODE ── */
 window.editResume = function() {
-  document.getElementById('resume-preview-wrap').classList.remove('visible');
+  // Restore progress bar and go back to review
+  document.getElementById('scout-progress').classList.remove('hide-on-preview');
+  document.getElementById('sp-labels').classList.remove('hide-on-preview');
   goStep(8);
 };
 

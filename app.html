@@ -3373,7 +3373,7 @@ function App() {
     setSavedResumes([]);
     setHasUnsaved(false);
     // Clear localStorage caches
-    try { localStorage.removeItem("vcb_profile"); localStorage.removeItem("vcb_access"); } catch(e) {}
+    try { localStorage.removeItem("vcb_profile"); localStorage.removeItem("vcb_access"); localStorage.removeItem("vcp_pf_user"); localStorage.removeItem("vcp_pathfinder_result"); localStorage.removeItem("vcb_assessment_result"); localStorage.removeItem("vcp_scout_data"); localStorage.removeItem("vcp_scout_resume"); localStorage.removeItem("vcp_scout_wizard"); } catch(e) {}
     setHasAccess(false); setShowPaywall(false);
     // Reset form fields
     setPersonal({ name:"", email:"", phone:"", location:"", linkedin:"" });

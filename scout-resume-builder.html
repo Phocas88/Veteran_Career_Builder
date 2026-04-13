@@ -565,6 +565,36 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 #tpl-grid::-webkit-scrollbar{width:5px;}
 #tpl-grid::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:3px;}
 #tpl-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px;}
+
+/* ── FORMAT CARDS ── */
+.format-card{
+  background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:.85rem;cursor:pointer;transition:all .15s;position:relative;
+}
+.format-card:hover{border-color:rgba(240,192,64,.3);background:rgba(255,255,255,.08);}
+.format-card.selected{border-color:#f0c040;background:rgba(240,192,64,.08);}
+.format-card.selected::after{content:'Selected';position:absolute;top:.5rem;right:.5rem;font-size:.6rem;font-weight:700;background:#f0c040;color:#0a1628;padding:.1rem .4rem;border-radius:3px;}
+
+/* ── CERT ACCORDION ── */
+.cert-accordion{margin-bottom:.5rem;}
+.cert-acc-header{
+  width:100%;text-align:left;padding:.5rem .75rem;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);border-radius:6px;color:rgba(192,216,240,.7);
+  font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;display:flex;
+  justify-content:space-between;align-items:center;
+}
+.cert-acc-header::after{content:'+';color:rgba(240,192,64,.6);}
+.cert-acc-header.open::after{content:'-';}
+.cert-acc-body{display:none;padding:.5rem .75rem;border:1px solid rgba(255,255,255,.06);border-top:none;border-radius:0 0 6px 6px;background:rgba(255,255,255,.02);}
+.cert-acc-body.open{display:block;}
+.cert-acc-body label{display:block;font-size:.75rem;color:rgba(192,216,240,.65);padding:.2rem 0;cursor:pointer;}
+.cert-acc-body input[type="checkbox"]{width:13px;height:13px;accent-color:#f0c040;margin-right:.35rem;}
+
+/* ── SKILL SCROLL ── */
+.skill-scroll{display:flex;gap:.35rem;overflow-x:auto;padding:.25rem 0;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;}
+.skill-scroll::-webkit-scrollbar{height:4px;}
+.skill-scroll::-webkit-scrollbar-thumb{background:rgba(240,192,64,.2);border-radius:2px;}
+.skill-scroll .skill-tag{flex-shrink:0;}
 </style>
 
 <style id="vcp-nav-css">
@@ -1511,10 +1541,20 @@ body.menu-open{overflow:hidden!important;}
   }
 
   if (si && sr) {
-    si.addEventListener('input', function(){ onInput(si, sr, false); });
+    si.addEventListener('input', function(){
+      // Block autofill triggers: if a wizard input has focus, ignore search
+      var active = document.activeElement;
+      if (active && active !== si && active.closest && active.closest('.scout-card')) return;
+      onInput(si, sr, false);
+    });
     si.addEventListener('keydown', function(e){
       if (e.key === 'Escape') { closeSearch(); this.blur(); }
-      if (e.key === 'Enter') { var f = sr.querySelector('.vcp-sr-item'); if (f) window.location.href = f.href; }
+      if (e.key === 'Enter') {
+        // Block navigation if a wizard input has focus
+        var active = document.activeElement;
+        if (active && active !== si && active.closest && active.closest('.scout-card')) { e.preventDefault(); return; }
+        var f = sr.querySelector('.vcp-sr-item'); if (f) window.location.href = f.href;
+      }
     });
     si.addEventListener('focus', function(){ loadIdx(function(){}); });
   }
@@ -1586,7 +1626,8 @@ body.menu-open{overflow:hidden!important;}
     <span data-step="4">Civilian</span>
     <span data-step="5">Education</span>
     <span data-step="6">Skills</span>
-    <span data-step="7">Review</span>
+    <span data-step="7">Template</span>
+    <span data-step="8">Review</span>
   </div>
   <!-- Progress Bar -->
   <div class="scout-progress" id="scout-progress">
@@ -1597,6 +1638,7 @@ body.menu-open{overflow:hidden!important;}
     <div class="sp-step" data-step="5"></div>
     <div class="sp-step" data-step="6"></div>
     <div class="sp-step" data-step="7"></div>
+    <div class="sp-step" data-step="8"></div>
   </div>
 
   <!-- ════ STEP 1: Personal Info ════ -->
@@ -1606,23 +1648,23 @@ body.menu-open{overflow:hidden!important;}
     <div class="sf-grid">
       <div class="sf-field">
         <label for="s1-name">Full Name *</label>
-        <input type="text" id="s1-name" placeholder="e.g. James Rodriguez" required>
+        <input type="text" id="s1-name" placeholder="e.g. James Rodriguez" required autocomplete="new-password">
       </div>
       <div class="sf-field">
         <label for="s1-email">Email *</label>
-        <input type="email" id="s1-email" placeholder="email@example.com" required>
+        <input type="email" id="s1-email" placeholder="email@example.com" required autocomplete="new-password">
       </div>
       <div class="sf-field">
         <label for="s1-phone">Phone *</label>
-        <input type="tel" id="s1-phone" placeholder="(555) 123-4567" required>
+        <input type="tel" id="s1-phone" placeholder="(555) 123-4567" required autocomplete="new-password">
       </div>
       <div class="sf-field">
         <label for="s1-location">City, State *</label>
-        <input type="text" id="s1-location" placeholder="e.g. San Antonio, TX" required>
+        <input type="text" id="s1-location" placeholder="e.g. San Antonio, TX" required autocomplete="new-password">
       </div>
       <div class="sf-field sf-full">
         <label for="s1-linkedin">LinkedIn URL (optional)</label>
-        <input type="url" id="s1-linkedin" placeholder="https://linkedin.com/in/yourprofile">
+        <input type="url" id="s1-linkedin" placeholder="https://linkedin.com/in/yourprofile" autocomplete="new-password">
       </div>
     </div>
     <div class="scout-nav-btns">
@@ -1788,7 +1830,7 @@ body.menu-open{overflow:hidden!important;}
     <div class="sf-grid">
       <div class="sf-field sf-full">
         <label for="s3-target">What type of civilian job are you targeting? *</label>
-        <input type="text" id="s3-target" placeholder="e.g. Project Manager, IT Systems Admin, Registered Nurse">
+        <input type="text" id="s3-target" placeholder="e.g. Project Manager, IT Systems Admin, Registered Nurse" autocomplete="new-password">
       </div>
       <div class="sf-field">
         <label for="s3-industry">Target Industry</label>
@@ -1813,11 +1855,11 @@ body.menu-open{overflow:hidden!important;}
       </div>
       <div class="sf-field">
         <label for="s3-location">Preferred Work Location</label>
-        <input type="text" id="s3-location" placeholder="e.g. Austin TX, Remote, Anywhere">
+        <input type="text" id="s3-location" placeholder="e.g. Austin TX, Remote, Anywhere" autocomplete="new-password">
       </div>
       <div class="sf-field sf-full">
         <label for="s3-keywords">Priorities / Keywords</label>
-        <input type="text" id="s3-keywords" placeholder="e.g. remote work, leadership role, veterans preferred">
+        <input type="text" id="s3-keywords" placeholder="e.g. remote work, leadership role, veterans preferred" autocomplete="new-password">
       </div>
       <div class="sf-field sf-full">
         <label class="sf-check">
@@ -1842,15 +1884,15 @@ body.menu-open{overflow:hidden!important;}
         <div class="sf-grid">
           <div class="sf-field">
             <label>Job Title</label>
-            <input type="text" class="civ-title" placeholder="e.g. Operations Coordinator">
+            <input type="text" class="civ-title" placeholder="e.g. Operations Coordinator" autocomplete="new-password">
           </div>
           <div class="sf-field">
             <label>Employer</label>
-            <input type="text" class="civ-employer" placeholder="e.g. Amazon">
+            <input type="text" class="civ-employer" placeholder="e.g. Amazon" autocomplete="new-password">
           </div>
           <div class="sf-field">
             <label>Location</label>
-            <input type="text" class="civ-location" placeholder="e.g. Austin, TX or Remote">
+            <input type="text" class="civ-location" placeholder="e.g. Austin, TX or Remote" autocomplete="new-password">
           </div>
           <div class="sf-field">
             <label>Work Type</label>
@@ -1909,19 +1951,19 @@ body.menu-open{overflow:hidden!important;}
           </div>
           <div class="sf-field">
             <label>School Name</label>
-            <input type="text" class="edu-school" placeholder="e.g. University of Maryland">
+            <input type="text" class="edu-school" placeholder="e.g. University of Maryland" autocomplete="new-password">
           </div>
           <div class="sf-field">
             <label>Degree / Program</label>
-            <input type="text" class="edu-degree" placeholder="e.g. B.S. Information Technology">
+            <input type="text" class="edu-degree" placeholder="e.g. B.S. Information Technology" autocomplete="new-password">
           </div>
           <div class="sf-field">
             <label>Major</label>
-            <input type="text" class="edu-major" placeholder="e.g. Information Technology">
+            <input type="text" class="edu-major" placeholder="e.g. Information Technology" autocomplete="new-password">
           </div>
           <div class="sf-field">
             <label>Minor (optional)</label>
-            <input type="text" class="edu-minor" placeholder="e.g. Business Administration">
+            <input type="text" class="edu-minor" placeholder="e.g. Business Administration" autocomplete="new-password">
           </div>
           <div class="sf-field">
             <label>Year Completed</label>
@@ -1932,17 +1974,17 @@ body.menu-open{overflow:hidden!important;}
     </div>
     <button class="btn-add" onclick="addEduBlock()">+ Add Education</button>
 
-    <div class="sf-field sf-full" style="margin-top:1.5rem;">
-      <label>Licenses &amp; Certifications (select common ones or type your own)</label>
+    <div style="border-top:1px solid rgba(255,255,255,.06);margin-top:1.5rem;padding-top:1.25rem;">
+      <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(192,216,240,.6);display:block;margin-bottom:.75rem;">Licenses &amp; Certifications</label>
       <div id="cert-checklist"></div>
-      <input type="text" id="s5-certs-custom" placeholder="Other certifications not listed (one per line)" style="margin-top:.5rem;">
+      <input type="text" id="s5-certs-custom" placeholder="Other certifications not listed (one per line)" style="margin-top:.5rem;" autocomplete="new-password">
       <textarea id="s5-certs" rows="3" style="margin-top:.4rem;" placeholder="Additional certifications (one per line)&#10;e.g. CompTIA Security+&#10;PMP - Project Management Professional"></textarea>
     </div>
 
-    <div class="sf-field sf-full" style="margin-top:1.25rem;">
-      <label>Languages</label>
-      <div class="lang-tags" id="lang-tags"></div>
-      <input type="text" id="s5-lang-custom" placeholder="Other language not listed" style="margin-top:.4rem;">
+    <div style="border-top:1px solid rgba(255,255,255,.06);margin-top:1.25rem;padding-top:1.25rem;">
+      <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(192,216,240,.6);display:block;margin-bottom:.75rem;">Languages</label>
+      <div class="skill-scroll" id="lang-tags"></div>
+      <input type="text" id="s5-lang-custom" placeholder="Other language not listed" style="margin-top:.4rem;" autocomplete="new-password">
     </div>
 
     <div class="scout-nav-btns">
@@ -1951,13 +1993,14 @@ body.menu-open{overflow:hidden!important;}
     </div>
   </div>
 
-  <!-- ════ STEP 6: Skills & Preferences ════ -->
+  <!-- ════ STEP 6: Skills ════ -->
   <div class="scout-card" id="step-6">
-    <h2>Step 6: Skills &amp; Preferences</h2>
-    <p class="step-desc">Select skills and choose your resume style. Click suggested skills or type your own.</p>
-    <div class="sf-field sf-full">
-      <label>Suggested Skills (click to add)</label>
-      <div class="skills-tags" id="skill-suggestions">
+    <h2>Step 6: Skills</h2>
+    <p class="step-desc">Select skills that match your experience. Click suggested skills or type your own.</p>
+
+    <div style="margin-bottom:1.25rem;">
+      <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(192,216,240,.6);display:block;margin-bottom:.5rem;">Technical Skills (click to add)</label>
+      <div class="skill-scroll" id="skill-suggestions">
         <span class="skill-tag" data-skill="Leadership">Leadership</span>
         <span class="skill-tag" data-skill="Project Management">Project Management</span>
         <span class="skill-tag" data-skill="Team Building">Team Building</span>
@@ -1980,19 +2023,44 @@ body.menu-open{overflow:hidden!important;}
         <span class="skill-tag" data-skill="Adaptability">Adaptability</span>
       </div>
     </div>
-    <div class="sf-field sf-full" style="margin-top:1rem;">
-      <label>Leadership &amp; Soft Skills (click to add)</label>
-      <div class="skills-tags" id="soft-skill-suggestions"></div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:1rem;margin-bottom:1.25rem;">
+      <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(192,216,240,.6);display:block;margin-bottom:.5rem;">Leadership &amp; Soft Skills (click to add)</label>
+      <div class="skill-scroll" id="soft-skill-suggestions"></div>
     </div>
-    <div class="sf-field sf-full" style="margin-top:1rem;">
-      <label for="s6-custom-skills">Additional Skills (comma-separated)</label>
-      <input type="text" id="s6-custom-skills" placeholder="e.g. Python, HVAC, CDL Class A, Lean Manufacturing">
+
+    <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:1rem;margin-bottom:1.25rem;">
+      <div class="sf-field sf-full">
+        <label for="s6-custom-skills">Additional Skills (comma-separated)</label>
+        <input type="text" id="s6-custom-skills" placeholder="e.g. Python, HVAC, CDL Class A, Lean Manufacturing" autocomplete="new-password">
+      </div>
     </div>
+
     <!-- Hidden select kept for save/load compatibility -->
     <select id="s6-style" style="display:none;"><option value="modern-clean">Modern Clean</option></select>
 
+    <div class="sf-field sf-full" style="border-top:1px solid rgba(255,255,255,.06);padding-top:1rem;">
+      <label for="s6-emphasis">Anything specific you want emphasized?</label>
+      <textarea id="s6-emphasis" rows="3" placeholder="e.g. I want to highlight my leadership experience and security clearance for defense contractor roles"></textarea>
+    </div>
+    <div class="scout-nav-btns">
+      <button class="btn-prev" onclick="goStep(5)">&larr; Back</button>
+      <button class="btn-next" onclick="goStep(7)">Next: Format &amp; Template &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ════ STEP 7: Format & Template ════ -->
+  <div class="scout-card" id="step-7">
+    <h2>Step 7: Resume Format &amp; Template</h2>
+    <p class="step-desc">First choose your format, then pick a visual template.</p>
+
+    <div style="margin-bottom:1.5rem;">
+      <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(192,216,240,.6);display:block;margin-bottom:.75rem;">Resume Format</label>
+      <div id="format-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem;"></div>
+    </div>
+
     <div style="margin-top:1.25rem;">
-      <label style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(192,216,240,.6);display:block;margin-bottom:.75rem;">Choose Your Template</label>
+      <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(192,216,240,.6);display:block;margin-bottom:.75rem;">Choose Your Template</label>
 
       <!-- Category filter buttons -->
       <div id="tpl-filters" style="display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.75rem;">
@@ -2009,19 +2077,15 @@ body.menu-open{overflow:hidden!important;}
 
       <div id="tpl-selected" style="margin-top:.5rem;font-size:.8rem;color:#f0c040;font-weight:600;"></div>
     </div>
-    <div class="sf-field sf-full" style="margin-top:1rem;">
-      <label for="s6-emphasis">Anything specific you want emphasized?</label>
-      <textarea id="s6-emphasis" rows="3" placeholder="e.g. I want to highlight my leadership experience and security clearance for defense contractor roles"></textarea>
-    </div>
     <div class="scout-nav-btns">
-      <button class="btn-prev" onclick="goStep(5)">&larr; Back</button>
-      <button class="btn-next" onclick="goStep(7)">Next: Review &rarr;</button>
+      <button class="btn-prev" onclick="goStep(6)">&larr; Back</button>
+      <button class="btn-next" onclick="goStep(8)">Next: Review &rarr;</button>
     </div>
   </div>
 
-  <!-- ════ STEP 7: Review & Generate ════ -->
-  <div class="scout-card" id="step-7">
-    <h2>Step 7: Review &amp; Generate</h2>
+  <!-- ════ STEP 8: Review & Generate ════ -->
+  <div class="scout-card" id="step-8">
+    <h2>Step 8: Review &amp; Generate</h2>
     <p class="step-desc">Check your info below. Click "Edit" to fix anything, then generate your resume.</p>
     <div id="review-content"></div>
     <button class="btn-generate" id="btn-generate" onclick="generateResume()">Generate My Resume</button>
@@ -2215,9 +2279,51 @@ function updatePaymentPrice() {
   }
 }
 
+/* ── FORMAT SELECTION ── */
+var selectedFormat = 'ats-chrono';
+var FORMATS = [
+  {id:'ats-chrono',name:'ATS Chronological',desc:'Most common format. Lists experience newest-to-oldest. Best for: consistent career progression, same industry.',isDefault:true},
+  {id:'ats-functional',name:'ATS Functional',desc:'Focuses on skills over job history. Best for: career changers, gaps in employment, transitioning veterans with diverse skills.'},
+  {id:'ats-combo',name:'ATS Combination',desc:'Blends skills summary with chronological history. Best for: experienced veterans with both strong skills and solid work history.'},
+  {id:'harvard',name:'Harvard Format',desc:'The gold standard from Harvard Business School. Clean, professional, widely respected. Best for: business, management, executive roles.'},
+  {id:'federal-usajobs',name:'Federal (USAJobs)',desc:'Detailed format required for federal government applications. Includes hours/week, supervisor info, salary, KSAs. +$5 premium.',premium:true}
+];
+
+function renderFormatCards() {
+  var container = document.getElementById('format-cards');
+  if (!container) return;
+  var html = '';
+  FORMATS.forEach(function(f) {
+    html += '<div class="format-card'+(f.id===selectedFormat?' selected':'')+'" data-format="'+f.id+'" onclick="selectFormat(this)">';
+    html += '<div style="font-weight:700;color:#fff;font-size:.88rem;margin-bottom:.25rem;">'+f.name+(f.premium?' <span style="color:#f0c040;font-size:.72rem;">+$5</span>':'')+'</div>';
+    html += '<div style="font-size:.75rem;color:rgba(192,216,240,.6);line-height:1.5;">'+f.desc+'</div>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+window.selectFormat = function(el) {
+  document.querySelectorAll('.format-card').forEach(function(c){ c.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedFormat = el.getAttribute('data-format');
+  // Auto-filter templates when federal format is selected
+  if (selectedFormat === 'federal-usajobs') {
+    var filters = document.getElementById('tpl-filters');
+    if (filters) {
+      filters.querySelectorAll('.tpl-filter').forEach(function(b){ b.classList.remove('active'); });
+      var fedBtn = filters.querySelector('[data-cat="federal"]');
+      if (fedBtn) fedBtn.classList.add('active');
+    }
+    document.querySelectorAll('.tpl-card').forEach(function(card) {
+      card.style.display = card.getAttribute('data-cat') === 'federal' ? '' : 'none';
+    });
+  }
+};
+
 // Filter clicks
 document.addEventListener('DOMContentLoaded', function() {
   renderTemplateGallery();
+  renderFormatCards();
 
   var filters = document.getElementById('tpl-filters');
   if (filters) {
@@ -2264,6 +2370,7 @@ function saveProgress() {
       skills: selectedSkills,
       customSkills: document.getElementById('s6-custom-skills').value,
       style: selectedTemplate,
+      format: selectedFormat,
       emphasis: document.getElementById('s6-emphasis').value
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -2417,6 +2524,10 @@ function loadProgress() {
     if (saved.style) {
       selectedTemplate = saved.style;
       renderTemplateGallery();
+    }
+    if (saved.format) {
+      selectedFormat = saved.format;
+      renderFormatCards();
     }
     if (saved.emphasis) document.getElementById('s6-emphasis').value = saved.emphasis;
 
@@ -2583,7 +2694,7 @@ function getAllSkills() {
 /* ── STEP NAVIGATION ── */
 window.goStep = function(step) {
   saveProgress();
-  if (step === 7) buildReview();
+  if (step === 8) buildReview();
 
   var cards = document.querySelectorAll('.scout-card');
   cards.forEach(function(c) { c.classList.remove('visible'); });
@@ -2800,23 +2911,36 @@ window.populateDutyPrompts = function(container) {
     });
   }
 
-  // Populate certification checkboxes
+  // Populate certification checkboxes (accordion pattern)
   var certContainer = document.getElementById('cert-checklist');
   if (certContainer && window.VCP_MIL.CERTIFICATIONS) {
     var fields = Object.keys(window.VCP_MIL.CERTIFICATIONS);
     fields.forEach(function(field) {
-      var group = document.createElement('div');
-      group.className = 'cert-group';
-      group.innerHTML = '<div class="cert-group-title">' + field + '</div>';
-      var checks = document.createElement('div');
-      checks.className = 'cert-checks';
+      var accordion = document.createElement('div');
+      accordion.className = 'cert-accordion';
+      var header = document.createElement('button');
+      header.type = 'button';
+      header.className = 'cert-acc-header';
+      header.textContent = field + ' ';
+      var countSpan = document.createElement('span');
+      countSpan.className = 'cert-count';
+      countSpan.style.cssText = 'font-size:.65rem;color:rgba(192,216,240,.4);margin-left:.25rem;';
+      countSpan.textContent = '(' + window.VCP_MIL.CERTIFICATIONS[field].length + ')';
+      header.appendChild(countSpan);
+      header.addEventListener('click', function() {
+        this.classList.toggle('open');
+        this.nextElementSibling.classList.toggle('open');
+      });
+      var body = document.createElement('div');
+      body.className = 'cert-acc-body';
       window.VCP_MIL.CERTIFICATIONS[field].forEach(function(cert) {
         var lbl = document.createElement('label');
         lbl.innerHTML = '<input type="checkbox" class="cert-check" value="' + cert.replace(/"/g,'&quot;') + '"> ' + cert;
-        checks.appendChild(lbl);
+        body.appendChild(lbl);
       });
-      group.appendChild(checks);
-      certContainer.appendChild(group);
+      accordion.appendChild(header);
+      accordion.appendChild(body);
+      certContainer.appendChild(accordion);
     });
   }
 
@@ -3129,12 +3253,19 @@ function buildReview() {
   if (skills.length) {
     html += '<div class="review-section"><h3>Skills <span class="edit-link" onclick="goStep(6)">Edit</span></h3>';
     html += '<div class="review-item">'+skills.map(esc).join(', ')+'</div>';
-    var styleName = style;
-    for (var ti = 0; ti < TEMPLATES.length; ti++) { if (TEMPLATES[ti].id === style) { styleName = TEMPLATES[ti].name; break; } }
-    html += '<div class="review-item">Template: <strong>'+esc(styleName)+'</strong></div>';
     if (emphasis) html += '<div class="review-item">Emphasis: '+esc(emphasis)+'</div>';
     html += '</div>';
   }
+
+  // Format & Template
+  var formatName = selectedFormat;
+  for (var fi = 0; fi < FORMATS.length; fi++) { if (FORMATS[fi].id === selectedFormat) { formatName = FORMATS[fi].name; break; } }
+  var styleName = style;
+  for (var ti = 0; ti < TEMPLATES.length; ti++) { if (TEMPLATES[ti].id === style) { styleName = TEMPLATES[ti].name; break; } }
+  html += '<div class="review-section"><h3>Format &amp; Template <span class="edit-link" onclick="goStep(7)">Edit</span></h3>';
+  html += '<div class="review-item">Format: <strong>'+esc(formatName)+'</strong></div>';
+  html += '<div class="review-item">Template: <strong>'+esc(styleName)+'</strong></div>';
+  html += '</div>';
 
   document.getElementById('review-content').innerHTML = html;
   } catch(err) {
@@ -3177,13 +3308,10 @@ window.generateResume = function() {
     alert('Please select your MOS / Rate / AFSC (Step 2). The dropdown has ' + (debugMos ? debugMos.options.length : 0) + ' options. Selected index: ' + (debugMos ? debugMos.selectedIndex : 'N/A'));
     goStep(2); return;
   }
-  if (!t.targetJob) {
-    alert('Please specify your target civilian job (Step 3).');
-    goStep(3); return;
-  }
+  // Target job is optional — user can skip it
 
   // Show loading
-  document.getElementById('step-7').classList.remove('visible');
+  document.getElementById('step-8').classList.remove('visible');
   document.getElementById('scout-loading').classList.add('visible');
   document.getElementById('resume-preview-wrap').classList.remove('visible');
 
@@ -3222,7 +3350,7 @@ window.generateResume = function() {
     var text = '';
     if (data.content && data.content[0]) text = data.content[0].text;
     else if (data.text) text = data.text;
-    else if (data.error) { alert('API Error: ' + (data.error.message || JSON.stringify(data.error))); goStep(7); return; }
+    else if (data.error) { alert('API Error: ' + (data.error.message || JSON.stringify(data.error))); goStep(8); return; }
     console.log('Extracted text (first 300):', (text||'').substring(0, 300));
 
     // Parse JSON from response
@@ -3253,18 +3381,18 @@ window.generateResume = function() {
         showResumePreview(resumeData, p);
       } catch(e) {
         alert('Error parsing resume data. Please try again.');
-        goStep(7);
+        goStep(8);
       }
     } else {
       console.error('No JSON found in response. Raw text:', text);
       alert('Could not generate resume. The AI response did not contain valid data. Please try again.');
-      goStep(7);
+      goStep(8);
     }
   })
   .catch(function(err) {
     clearInterval(loadingInterval);
     alert('Network error. Please check your connection and try again.');
-    goStep(7);
+    goStep(8);
   });
 };
 
@@ -3351,9 +3479,12 @@ function buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis) {
 
   if (skills.length) prompt += '\nKEY SKILLS: ' + skills.join(', ') + '\n';
 
+  var formatLabel = selectedFormat;
+  for (var fi = 0; fi < FORMATS.length; fi++) { if (FORMATS[fi].id === selectedFormat) { formatLabel = FORMATS[fi].name + ' - ' + FORMATS[fi].desc; break; } }
+  prompt += '\nRESUME FORMAT: ' + formatLabel + '\n';
   var styleLabel = style;
   for (var si = 0; si < TEMPLATES.length; si++) { if (TEMPLATES[si].id === style) { styleLabel = TEMPLATES[si].name + ' (' + TEMPLATES[si].desc + ')'; break; } }
-  prompt += '\nRESUME STYLE/TEMPLATE: ' + styleLabel + '\n';
+  prompt += 'RESUME STYLE/TEMPLATE: ' + styleLabel + '\n';
   if (style.indexOf('federal') === 0) prompt += 'NOTE: This is a FEDERAL resume. Use detailed, narrative-style descriptions. Include hours per week, supervisor info placeholders, and federal resume formatting conventions.\n';
   if (emphasis) prompt += 'SPECIAL EMPHASIS: ' + emphasis + '\n';
 
@@ -3690,7 +3821,7 @@ window.downloadPDF = function() {
 /* ── EDIT MODE ── */
 window.editResume = function() {
   document.getElementById('resume-preview-wrap').classList.remove('visible');
-  goStep(7);
+  goStep(8);
 };
 
 /* ── INIT ── */
@@ -3715,6 +3846,21 @@ if (urlParams.get('resume_paid') === '1') {
       showResumePreview(savedResume, personal);
     }
   } catch(e){}
+}
+
+// Enforce autocomplete=off on all wizard inputs to prevent autofill redirects
+function enforceAutocomplete() {
+  document.querySelectorAll('.scout-wrap input[type="text"], .scout-wrap input[type="email"], .scout-wrap input[type="tel"], .scout-wrap input[type="url"]').forEach(function(inp) {
+    if (!inp.getAttribute('autocomplete') || inp.getAttribute('autocomplete') === 'on') {
+      inp.setAttribute('autocomplete', 'new-password');
+    }
+  });
+}
+enforceAutocomplete();
+// Re-apply when new blocks are added (MutationObserver)
+var wizardWrap = document.querySelector('.scout-wrap');
+if (wizardWrap && window.MutationObserver) {
+  new MutationObserver(function(){ enforceAutocomplete(); }).observe(wizardWrap, {childList:true, subtree:true});
 }
 
 // Auto-save on input changes

@@ -1716,6 +1716,11 @@ function GuidedProfileWizard({ personal, setPersonal, milExperiences, setMilExpe
 
         {/* ════ STEP 4: Duties & Leadership (prompt-by-prompt) ════ */}
         {step===4 && (<>
+          <div style={{background:"rgba(220,38,38,.1)",border:"1.5px solid rgba(220,38,38,.3)",borderLeft:"4px solid #dc2626",borderRadius:"8px",padding:".75rem 1rem",marginBottom:"1rem"}}>
+            <div style={{fontWeight:700,color:"#dc2626",fontSize:".85rem",marginBottom:".3rem"}}>OPSEC WARNING</div>
+            <div style={{fontSize:".78rem",color:"#991b1b",lineHeight:1.6}}>Do not include any identifying information about your unit, personnel, equipment, or operations that is not public knowledge. Be vague with specific details about missions, locations, and capabilities. We want to present you as the asset you are without violating OPSEC or putting other service members at risk.</div>
+            <a href="https://www.dodea.edu/sites/default/files/2023-04/operations-security-opsec.pdf" target="_blank" rel="noopener" style={{display:"inline-block",marginTop:".4rem",fontSize:".72rem",color:"#dc2626",textDecoration:"underline"}}>Review DoD OPSEC Guidelines</a>
+          </div>
           <div style={{marginBottom:"1rem"}}>
             {DUTY_PROMPTS.map((p,i) => (
               <div key={p.key} style={{marginBottom:".75rem",opacity:i<=promptIdx?1:.4,pointerEvents:i<=promptIdx?"auto":"none",transition:"opacity .2s"}}>
@@ -4640,6 +4645,11 @@ Return this exact JSON structure:
                 <span className="ch-sub">All Branches Served</span>
               </div>
               <div className="cb">
+                <div style={{background:"rgba(220,38,38,.08)",border:"1.5px solid rgba(220,38,38,.25)",borderLeft:"4px solid #dc2626",borderRadius:"8px",padding:".65rem .85rem",marginBottom:"1rem"}}>
+                  <div style={{fontWeight:700,color:"#dc2626",fontSize:".8rem",marginBottom:".2rem"}}>OPSEC WARNING</div>
+                  <div style={{fontSize:".75rem",color:"#991b1b",lineHeight:1.55}}>Do not include identifying information about your unit, personnel, equipment, or operations that is not public knowledge. Be vague with specifics. Present yourself as the asset you are without violating OPSEC.</div>
+                  <a href="https://www.dodea.edu/sites/default/files/2023-04/operations-security-opsec.pdf" target="_blank" rel="noopener" style={{fontSize:".68rem",color:"#dc2626",textDecoration:"underline",marginTop:".3rem",display:"inline-block"}}>DoD OPSEC Guidelines</a>
+                </div>
                 {milExperiences.map((exp)=>(
                   <div className="entry" key={exp.id}>
                     <div className="etop">

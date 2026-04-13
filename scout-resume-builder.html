@@ -2958,12 +2958,16 @@ window.generateResume = function() {
     alert('Please complete your personal info (Step 1).');
     goStep(1); return;
   }
+  console.log('Validation - mil data:', JSON.stringify(mil[0] ? {branch:mil[0].branch, mos:mil[0].mos, mosTitle:mil[0].mosTitle} : 'NO MIL DATA'));
+  // Also check the DOM directly
+  var debugMos = document.querySelector('.service-period .sp-mos');
+  console.log('Direct DOM check - sp-mos value:', debugMos ? debugMos.value : 'ELEMENT NOT FOUND', 'selectedIndex:', debugMos ? debugMos.selectedIndex : 'N/A');
   if (!mil[0] || !mil[0].branch) {
     alert('Please select your branch of service (Step 2).');
     goStep(2); return;
   }
   if (!mil[0].mos) {
-    alert('Please select your MOS / Rate / AFSC (Step 2). If the dropdown shows "Select branch first", try reselecting your branch.');
+    alert('Please select your MOS / Rate / AFSC (Step 2). The dropdown has ' + (debugMos ? debugMos.options.length : 0) + ' options. Selected index: ' + (debugMos ? debugMos.selectedIndex : 'N/A'));
     goStep(2); return;
   }
   if (!t.targetJob) {

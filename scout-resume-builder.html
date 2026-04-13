@@ -325,10 +325,11 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 .preview-actions{display:flex;gap:.6rem;flex-wrap:wrap;}
 
 .resume-preview{
-  background:#fff;color:#1a1a1a;border-radius:12px;padding:2.5rem 2rem;
+  background:#fff;color:#1a1a1a;border-radius:12px;padding:0;
   position:relative;overflow:hidden;max-width:700px;margin:0 auto;
   box-shadow:0 8px 40px rgba(0,0,0,.4);
 }
+.resume-content{padding:2.5rem 2rem;}
 .resume-preview.locked *{user-select:none!important;-webkit-user-select:none!important;}
 .resume-preview.locked .resume-content{filter:blur(5px);-webkit-filter:blur(5px);pointer-events:none;}
 .resume-preview.locked .rc-name{filter:blur(2px);}
@@ -403,12 +404,12 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 .resume-tpl-modern .rc-section-title{color:var(--tpl-accent)!important;border-bottom:2px solid var(--tpl-accent)!important;background:transparent!important;padding:.2rem 0!important;border-radius:0!important;}
 
 /* Modern Bold — FILLED HEADER BLOCK + thick section bars */
-.resume-tpl-modern.tpl-bold .rc-name{font-weight:800!important;font-size:2rem!important;color:#fff!important;background:var(--tpl-accent)!important;padding:.6rem 1rem!important;margin:-2.5rem -2rem 0!important;margin-bottom:.75rem!important;letter-spacing:.02em!important;text-transform:uppercase!important;}
-.resume-tpl-modern.tpl-bold .rc-contact{background:var(--tpl-accent)!important;color:rgba(255,255,255,.85)!important;padding:.4rem 1rem!important;margin:-.75rem -2rem 1rem!important;border-bottom:none!important;}
+.resume-tpl-modern.tpl-bold .rc-name{font-weight:800!important;font-size:2rem!important;color:#fff!important;background:var(--tpl-accent)!important;padding:.8rem 2rem!important;margin:-0rem -0rem 0!important;margin-bottom:0!important;letter-spacing:.02em!important;text-transform:uppercase!important;}
+.resume-tpl-modern.tpl-bold .rc-contact{background:var(--tpl-accent)!important;color:rgba(255,255,255,.85)!important;padding:.3rem 2rem .6rem!important;margin:0!important;border-bottom:3px solid rgba(0,0,0,.15)!important;margin-bottom:1rem!important;}
 .resume-tpl-modern.tpl-bold .rc-section-title{background:var(--tpl-accent)!important;color:#fff!important;padding:.3rem .6rem!important;border:none!important;border-radius:3px!important;margin-bottom:.5rem!important;}
 
 /* Modern Gradient — gradient header band */
-.resume-tpl-modern.tpl-gradient .rc-name{background:linear-gradient(135deg,var(--tpl-accent),#2196f3)!important;color:#fff!important;padding:.5rem 1rem!important;margin:-2.5rem -2rem .75rem!important;font-weight:700!important;-webkit-text-fill-color:#fff!important;}
+.resume-tpl-modern.tpl-gradient .rc-name{background:linear-gradient(135deg,var(--tpl-accent),#2196f3)!important;color:#fff!important;padding:.7rem 2rem!important;margin:0 0 .5rem!important;font-weight:700!important;-webkit-text-fill-color:#fff!important;}
 .resume-tpl-modern.tpl-gradient .rc-contact{color:var(--tpl-accent)!important;border-bottom:3px solid transparent!important;border-image:linear-gradient(135deg,var(--tpl-accent),#2196f3) 1!important;padding-bottom:.5rem!important;}
 
 /* Modern Compact — dense, small */
@@ -455,8 +456,8 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 .resume-tpl-classic.tpl-executive .rc-section-title{border-bottom:1px solid #b8860b!important;color:#333!important;}
 
 /* ═══ PROFESSIONAL FAMILY ═══ */
-.resume-tpl-professional .rc-name{font-size:1.5rem!important;font-weight:700!important;color:#fff!important;background:var(--tpl-accent)!important;padding:.5rem 1rem!important;margin:-2.5rem -2rem 0!important;margin-bottom:0!important;text-transform:none!important;}
-.resume-tpl-professional .rc-contact{background:var(--tpl-accent)!important;color:rgba(255,255,255,.9)!important;padding:.3rem 1rem .5rem!important;margin:0 -2rem 1rem!important;font-size:.78rem!important;border-bottom:4px solid rgba(0,0,0,.15)!important;}
+.resume-tpl-professional .rc-name{font-size:1.5rem!important;font-weight:700!important;color:#fff!important;background:var(--tpl-accent)!important;padding:.7rem 2rem!important;margin:0!important;text-transform:none!important;}
+.resume-tpl-professional .rc-contact{background:var(--tpl-accent)!important;color:rgba(255,255,255,.9)!important;padding:.3rem 2rem .5rem!important;margin:0 0 1rem!important;font-size:.78rem!important;border-bottom:4px solid rgba(0,0,0,.15)!important;}
 .resume-tpl-professional .rc-section-title{background:var(--tpl-accent)!important;color:#fff!important;padding:.3rem .6rem!important;border-radius:3px!important;font-size:.72rem!important;letter-spacing:.08em!important;text-transform:uppercase!important;border-bottom:none!important;margin-bottom:.5rem!important;}
 
 /* ═══ FEDERAL FAMILY ═══ */
@@ -515,7 +516,8 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
 .resume-tpl-professional.tpl-boxed .rc-section-title{background:transparent!important;color:var(--tpl-accent)!important;border-bottom:1px solid var(--tpl-accent)!important;border-radius:0!important;margin:-0.75rem -0.75rem .5rem!important;padding:.4rem .75rem!important;}
 
 /* Dark Mode */
-.resume-tpl-specialty.tpl-darkmode{background:#1a1a2e!important;color:#e0e0e0!important;}
+.resume-preview.resume-tpl-specialty.tpl-darkmode{background:#1a1a2e!important;color:#e0e0e0!important;}
+.resume-tpl-specialty.tpl-darkmode .resume-content{color:#e0e0e0!important;}
 .resume-tpl-specialty.tpl-darkmode .rc-name{color:#e94560!important;}
 .resume-tpl-specialty.tpl-darkmode .rc-section-title{color:#e94560!important;border-bottom-color:#e94560!important;}
 .resume-tpl-specialty.tpl-darkmode .rc-summary,.resume-tpl-specialty.tpl-darkmode .rc-bullets li{color:#ccc!important;}
@@ -3805,9 +3807,12 @@ function showResumePreview(data, personal) {
   else if (selectedTemplate === 'cols-boxed-sections') accentColor = '#2c3e50';
   else if (selectedTemplate === 'cols-dark-full') accentColor = '#e94560';
 
-  // Apply class and accent to preview element
+  // Apply class and accent to the OUTER resume-preview (not just content)
+  var outerPreview = document.getElementById('resume-preview');
+  outerPreview.className = 'resume-preview locked ' + tplClass + variantClass;
+  outerPreview.style.setProperty('--tpl-accent', accentColor);
   var previewEl = document.getElementById('resume-content');
-  previewEl.className = 'resume-content ' + tplClass + variantClass;
+  previewEl.className = 'resume-content';
   previewEl.style.setProperty('--tpl-accent', accentColor);
 
   var html = '';

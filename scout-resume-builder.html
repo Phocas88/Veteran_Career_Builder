@@ -2678,18 +2678,24 @@ window.onSpBranchChange = function(selectEl) {
   if (!sp) { console.warn('Scout: no service-period parent found'); return; }
   var branch = selectEl.value;
 
-  // 1. Populate MOS - use <select> for mobile compatibility (datalist is broken on iOS)
+  // 1. Populate MOS - use <select> for mobile compatibility
   var mosContainer = sp.querySelector('.sp-mos-wrap');
+  console.log('MOS container found:', !!mosContainer, 'branch:', branch);
   if (mosContainer) {
     var mosData = (window.VCP_MOS && window.VCP_MOS[branch]) || [];
-    var html = '<select class="sp-mos" onchange="onMosChange(this)" style="width:100%;padding:.6rem .75rem;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:.88rem;font-family:inherit;background:rgba(255,255,255,.06);color:#e8f0f8;outline:none;">';
+    console.log('MOS data for', branch, ':', mosData.length, 'entries');
+    var html = '<select class="sp-mos" onchange="window.onMosChange(this)">';
     html += '<option value="">' + (branch ? 'Select ' + (branch==='Army'?'MOS':branch==='Navy'||branch==='Coast Guard'?'Rate':branch==='Marines'?'MOS':'AFSC') + '...' : 'Select branch first...') + '</option>';
     mosData.forEach(function(m) {
       html += '<option value="' + m.code + '" data-title="' + (m.title||'').replace(/"/g,'&quot;') + '">' + m.code + ' - ' + m.title + '</option>';
     });
     html += '</select>';
     mosContainer.innerHTML = html;
-    sp.querySelector('.sp-mos-title').value = '';
+    console.log('MOS dropdown populated, options:', mosContainer.querySelector('select').options.length);
+    var titleEl = sp.querySelector('.sp-mos-title');
+    if (titleEl) titleEl.value = '';
+  } else {
+    console.warn('sp-mos-wrap NOT found in service period');
   }
 
   // 2. Populate rank dropdowns (separation + all position ranks)

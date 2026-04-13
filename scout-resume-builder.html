@@ -1619,7 +1619,7 @@ body.menu-open{overflow:hidden!important;}
         <div class="sf-grid">
           <div class="sf-field">
             <label>Branch *</label>
-            <select class="sp-branch" onchange="onSpBranchChange(this)">
+            <select class="sp-branch">
               <option value="">Select...</option>
               <option>Army</option><option>Navy</option><option>Marines</option>
               <option>Air Force</option><option>Coast Guard</option><option>Space Force</option>
@@ -2426,7 +2426,7 @@ window.addServicePeriod = function() {
     '<div class="sp-header"><span class="sp-num">Service Period '+(count+1)+'</span>' +
     '<button class="btn-remove-sp" onclick="removeServicePeriod(this)">Remove</button></div>' +
     '<div class="sf-grid">' +
-      '<div class="sf-field"><label>Branch *</label><select class="sp-branch" onchange="onSpBranchChange(this)"><option value="">Select...</option><option>Army</option><option>Navy</option><option>Marines</option><option>Air Force</option><option>Coast Guard</option><option>Space Force</option></select></div>' +
+      '<div class="sf-field"><label>Branch *</label><select class="sp-branch"><option value="">Select...</option><option>Army</option><option>Navy</option><option>Marines</option><option>Air Force</option><option>Coast Guard</option><option>Space Force</option></select></div>' +
       '<div class="sf-field"><label>Service Type *</label><select class="sp-service-type"><option value="">Select...</option><option>Active Duty</option><option>Reserve</option><option>National Guard</option><option>Active Guard Reserve</option></select></div>' +
       '<div class="sf-field"><label>Service Start</label><input type="month" class="sp-start"></div>' +
       '<div class="sf-field"><label>Service End</label><input type="month" class="sp-end"></div>' +
@@ -2661,7 +2661,7 @@ document.getElementById('sp-labels').addEventListener('click', function(e) {
   if (span) goStep(parseInt(span.getAttribute('data-step')));
 });
 
-// Event delegation for branch changes
+// Single event delegation for all dynamic dropdowns — no inline onchange
 document.addEventListener('change', function(e) {
   if (e.target.classList.contains('sp-branch')) {
     window.onSpBranchChange(e.target);

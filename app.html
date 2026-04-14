@@ -5819,15 +5819,67 @@ Return this exact JSON structure:
                           const el=document.getElementById("resume-render");
                           if(el) navigator.clipboard.writeText(el.innerText||"");
                         }}>Copy</button>
-                      <button style={{padding:".28rem .75rem",fontSize:".74rem",background:"#1a3a6b",color:"#fff",border:"none",borderRadius:"3px",cursor:"pointer",fontWeight:600}} onClick={()=>{
+                      <button id="btn-pdf-resume" style={{padding:".28rem .75rem",fontSize:".74rem",background:"#1a3a6b",color:"#fff",border:"none",borderRadius:"3px",cursor:"pointer",fontWeight:600}} onClick={async()=>{
                           const el=document.getElementById("resume-render");
                           if(!el) return;
-                          const name=(resumeData&&resumeData.name)||personal.name||"Veteran";
-                          const w=window.open("","_blank");
-                          const css="html,body{margin:0;padding:0;background:#fff;}body{font-size:10pt;color:#111;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}@page{margin:0;size:letter;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}div,span,p,h1,h2,h3,h4,section,header{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}@media print{html,body{margin:0;padding:0;}@page{margin:0;}}";
-                          const scr="scr"+"ipt";
-                          w.document.write("<html><head><style>"+css+"</style></head><body>"+el.innerHTML+"<"+scr+">window.onload=function(){window.print();}<\/"+scr+"></body></html>");
-                          w.document.close();
+                          const btn=document.getElementById("btn-pdf-resume");
+                          btn.textContent="Generating PDF...";btn.disabled=true;
+                          try {
+                            // Load html2canvas on demand
+                            if(!window.html2canvas){
+                              await new Promise((resolve,reject)=>{
+                                const s=document.createElement("script");
+                                s.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+                                s.onload=resolve;s.onerror=reject;document.head.appendChild(s);
+                              });
+                            }
+                            // Load jsPDF on demand
+                            if(!window.jspdf){
+                              await new Promise((resolve,reject)=>{
+                                const s=document.createElement("script");
+                                s.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+                                s.onload=resolve;s.onerror=reject;document.head.appendChild(s);
+                              });
+                            }
+                            // Find the actual resume content (the white box inside resume-render)
+                            const resumeBox=el.querySelector("div[style*='background']")||el.firstElementChild;
+                            if(!resumeBox){btn.textContent="PDF";btn.disabled=false;return;}
+                            // Temporarily make it full width for clean capture
+                            const origW=resumeBox.style.width;
+                            resumeBox.style.width="760px";
+                            const canvas=await html2canvas(resumeBox,{scale:2,useCORS:true,backgroundColor:"#ffffff",logging:false});
+                            resumeBox.style.width=origW;
+                            // Letter size: 215.9mm x 279.4mm
+                            const pdf=new window.jspdf.jsPDF("p","mm","letter");
+                            const pageW=215.9;const pageH=279.4;
+                            const imgW=canvas.width;const imgH=canvas.height;
+                            const ratio=pageW/imgW;
+                            const scaledH=imgH*ratio;
+                            // If content fits one page
+                            if(scaledH<=pageH){
+                              pdf.addImage(canvas.toDataURL("image/png"),"PNG",0,0,pageW,scaledH);
+                            } else {
+                              // Multi-page: slice the canvas
+                              let yOffset=0;
+                              const sliceH=Math.floor(pageH/ratio);
+                              while(yOffset<imgH){
+                                const pageCanvas=document.createElement("canvas");
+                                pageCanvas.width=imgW;
+                                pageCanvas.height=Math.min(sliceH,imgH-yOffset);
+                                const ctx=pageCanvas.getContext("2d");
+                                ctx.drawImage(canvas,0,-yOffset);
+                                if(yOffset>0) pdf.addPage();
+                                pdf.addImage(pageCanvas.toDataURL("image/png"),"PNG",0,0,pageW,pageCanvas.height*ratio);
+                                yOffset+=sliceH;
+                              }
+                            }
+                            const name=(resumeData&&resumeData.name)||personal.name||"Resume";
+                            pdf.save(name.replace(/\s+/g,"_")+"_Resume.pdf");
+                          } catch(e){
+                            console.error("PDF generation error:",e);
+                            alert("PDF generation failed. Try the Print option instead.");
+                          }
+                          btn.textContent="PDF";btn.disabled=false;
                         }}>PDF</button>
                     </div>
                   </div>

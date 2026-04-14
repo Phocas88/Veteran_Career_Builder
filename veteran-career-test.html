@@ -1168,16 +1168,29 @@ body.menu-open{overflow:hidden!important;}
   }
 
   if (si && sr) {
-    si.addEventListener('input', function(){ onInput(si, sr, false); });
+    si.addEventListener('input', function(){
+      // Don't search if email gate is open (prevents autofill redirect)
+      var gate = document.getElementById('emailGate');
+      if (gate && gate.style.display === 'flex') { si.value = ''; return; }
+      onInput(si, sr, false);
+    });
     si.addEventListener('keydown', function(e){
       if (e.key === 'Escape') { closeSearch(); this.blur(); }
+      var gate = document.getElementById('emailGate');
+      if (gate && gate.style.display === 'flex') return;
       if (e.key === 'Enter') { var f = sr.querySelector('.vcp-sr-item'); if (f) window.location.href = f.href; }
     });
     si.addEventListener('focus', function(){ loadIdx(function(){}); });
   }
   if (msi && msr) {
-    msi.addEventListener('input', function(){ onInput(msi, msr, true); });
+    msi.addEventListener('input', function(){
+      var gate = document.getElementById('emailGate');
+      if (gate && gate.style.display === 'flex') { msi.value = ''; return; }
+      onInput(msi, msr, true);
+    });
     msi.addEventListener('keydown', function(e){
+      var gate = document.getElementById('emailGate');
+      if (gate && gate.style.display === 'flex') return;
       if (e.key === 'Enter') { var f = msr.querySelector('a'); if (f) window.location.href = f.href; }
     });
   }
@@ -1332,11 +1345,11 @@ body.menu-open{overflow:hidden!important;}
     <div style="padding:1.25rem;">
       <div style="margin-bottom:.6rem;">
         <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Full Name</label>
-        <input id="gate-name" type="text" placeholder="First Last" style="width:100%;padding:.6rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;">
+        <input id="gate-name" type="text" placeholder="First Last" autocomplete="new-password" name="vcp-gate-name" style="width:100%;padding:.6rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;">
       </div>
       <div style="margin-bottom:.6rem;">
         <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Email Address</label>
-        <input id="gate-email" type="email" placeholder="you@email.com" style="width:100%;padding:.6rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;">
+        <input id="gate-email" type="email" placeholder="you@email.com" autocomplete="new-password" name="vcp-gate-email" style="width:100%;padding:.6rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem;">
         <div>

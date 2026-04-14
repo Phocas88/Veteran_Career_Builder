@@ -26,8 +26,6 @@
     </marker>
   </defs>
   <style>
-    @keyframes applyForce { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-6deg); } }
-    .wrenchGroup { animation: applyForce 2.5s ease-in-out infinite; transform-origin: 82px 78px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -56,7 +54,7 @@
   </g>
 
   <!-- Wrench assembly (animated) -->
-  <g class="wrenchGroup" filter="url(#ts)">
+  <g filter="url(#ts)">
     <!-- Socket engaging hex bolt -->
     <rect x="76" y="56" width="36" height="28" rx="4" fill="url(#socketG)" stroke="#1a3a6b" stroke-width="1.8"/>
     <!-- Socket inner hex cutout hint -->

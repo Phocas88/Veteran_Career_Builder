@@ -18,23 +18,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes fire1 { 0%,12% { fill: #e8940a; opacity:0.85; } 13%,100% { fill: #e2e6ee; opacity:1; } }
-    @keyframes fire3 { 0%,24% { fill: #e2e6ee; } 25%,37% { fill: #e8940a; opacity:0.85; } 38%,100% { fill: #e2e6ee; opacity:1; } }
-    @keyframes fire4 { 0%,49% { fill: #e2e6ee; } 50%,62% { fill: #e8940a; opacity:0.85; } 63%,100% { fill: #e2e6ee; opacity:1; } }
-    @keyframes fire2 { 0%,74% { fill: #e2e6ee; } 75%,87% { fill: #e8940a; opacity:0.85; } 88%,100% { fill: #e2e6ee; opacity:1; } }
-    @keyframes glow1 { 0%,12% { stroke:#e8940a;stroke-width:2.5; } 13%,100% { stroke:#1a3a6b;stroke-width:1.5; } }
-    @keyframes glow3 { 0%,24% { stroke:#1a3a6b;stroke-width:1.5; } 25%,37% { stroke:#e8940a;stroke-width:2.5; } 38%,100% { stroke:#1a3a6b;stroke-width:1.5; } }
-    @keyframes glow4 { 0%,49% { stroke:#1a3a6b;stroke-width:1.5; } 50%,62% { stroke:#e8940a;stroke-width:2.5; } 63%,100% { stroke:#1a3a6b;stroke-width:1.5; } }
-    @keyframes glow2 { 0%,74% { stroke:#1a3a6b;stroke-width:1.5; } 75%,87% { stroke:#e8940a;stroke-width:2.5; } 88%,100% { stroke:#1a3a6b;stroke-width:1.5; } }
-    @keyframes sparkAnim { 0%,100% { opacity:0.3; } 50% { opacity:1; } }
-    .c1 { animation: fire1 2.8s ease infinite; }
-    .c2 { animation: fire2 2.8s ease infinite; }
-    .c3 { animation: fire3 2.8s ease infinite; }
-    .c4 { animation: fire4 2.8s ease infinite; }
-    .s1 { animation: glow1 2.8s ease infinite; }
-    .s2 { animation: glow2 2.8s ease infinite; }
-    .s3 { animation: glow3 2.8s ease infinite; }
-    .s4 { animation: glow4 2.8s ease infinite; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -62,7 +45,7 @@
 
   <!-- Cylinder 1 -->
   <g>
-    <rect x="56" y="32" width="60" height="78" rx="2" class="c1 s1"/>
+    <rect x="56" y="32" width="60" height="78" rx="2" fill="#e8940a" opacity="0.85" stroke="#e8940a" stroke-width="2.5"/>
     <!-- Cylinder wall thickness -->
     <rect x="58" y="34" width="56" height="74" rx="1" fill="none" stroke="#9aa4b6" stroke-width="0.5"/>
     <!-- Piston -->
@@ -79,7 +62,7 @@
 
   <!-- Cylinder 2 -->
   <g>
-    <rect x="122" y="32" width="60" height="78" rx="2" class="c2 s2"/>
+    <rect x="122" y="32" width="60" height="78" rx="2" fill="#e2e6ee" stroke="#1a3a6b" stroke-width="1.5"/>
     <rect x="124" y="34" width="56" height="74" rx="1" fill="none" stroke="#9aa4b6" stroke-width="0.5"/>
     <rect x="126" y="82" width="48" height="10" rx="2" fill="url(#pistonG)" stroke="#5a6a82" stroke-width="1"/>
     <line x1="150" y1="92" x2="150" y2="108" stroke="#5a6a82" stroke-width="2.5"/>
@@ -92,7 +75,7 @@
 
   <!-- Cylinder 3 -->
   <g>
-    <rect x="188" y="32" width="60" height="78" rx="2" class="c3 s3"/>
+    <rect x="188" y="32" width="60" height="78" rx="2" fill="#e2e6ee" stroke="#1a3a6b" stroke-width="1.5"/>
     <rect x="190" y="34" width="56" height="74" rx="1" fill="none" stroke="#9aa4b6" stroke-width="0.5"/>
     <rect x="192" y="82" width="48" height="10" rx="2" fill="url(#pistonG)" stroke="#5a6a82" stroke-width="1"/>
     <line x1="216" y1="92" x2="216" y2="108" stroke="#5a6a82" stroke-width="2.5"/>
@@ -105,7 +88,7 @@
 
   <!-- Cylinder 4 -->
   <g>
-    <rect x="254" y="32" width="60" height="78" rx="2" class="c4 s4"/>
+    <rect x="254" y="32" width="60" height="78" rx="2" fill="#e2e6ee" stroke="#1a3a6b" stroke-width="1.5"/>
     <rect x="256" y="34" width="56" height="74" rx="1" fill="none" stroke="#9aa4b6" stroke-width="0.5"/>
     <rect x="258" y="82" width="48" height="10" rx="2" fill="url(#pistonG)" stroke="#5a6a82" stroke-width="1"/>
     <line x1="282" y1="92" x2="282" y2="108" stroke="#5a6a82" stroke-width="2.5"/>

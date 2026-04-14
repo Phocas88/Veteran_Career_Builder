@@ -16,8 +16,6 @@
     </marker>
   </defs>
   <style>
-    @keyframes rotateCW { to { transform: rotate(360deg); } }
-    .gear-small { animation: rotateCW 3s linear infinite; transform-origin: 120px 78px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -43,7 +41,7 @@
   <text x="200" y="16" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Gear Ratio -- Find the Speed</text>
 
   <!-- SMALL GEAR: 12 teeth, center 120,78, body radius 32 -->
-  <g class="gear-small" filter="url(#gs)">
+  <g filter="url(#gs)">
     <!-- Teeth as rectangles rotated around center -->
     <rect x="116.5" y="40" width="7" height="10" rx="1" fill="url(#gsF)" stroke="#1a3a6b" stroke-width="1.5" transform="rotate(0,120,78)"/>
     <rect x="116.5" y="40" width="7" height="10" rx="1" fill="url(#gsF)" stroke="#1a3a6b" stroke-width="1.5" transform="rotate(30,120,78)"/>

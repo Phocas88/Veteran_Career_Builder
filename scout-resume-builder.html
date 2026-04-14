@@ -3815,13 +3815,17 @@ function showResumePreview(data, personal) {
   else if (selectedTemplate === 'cols-boxed-sections') accentColor = '#2c3e50';
   else if (selectedTemplate === 'cols-dark-full') accentColor = '#e94560';
 
-  // Apply class and accent to the OUTER resume-preview (not just content)
+  // Apply class to the OUTER resume-preview — no tplClass/variantClass (inline styles handle everything)
   var outerPreview = document.getElementById('resume-preview');
-  outerPreview.className = 'resume-preview locked ' + tplClass + variantClass;
+  outerPreview.className = 'resume-preview locked';
   outerPreview.style.setProperty('--tpl-accent', accentColor);
   var previewEl = document.getElementById('resume-content');
   previewEl.className = 'resume-content';
   previewEl.style.setProperty('--tpl-accent', accentColor);
+  // Remove base padding so inline-styled templates can go edge-to-edge
+  previewEl.style.padding = '0';
+  previewEl.style.fontSize = 'inherit';
+  previewEl.style.lineHeight = 'inherit';
 
   // Determine template family for rendering path
   var tplFamily = 'modern'; // default

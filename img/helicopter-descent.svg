@@ -14,19 +14,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes hover {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-3px); }
-    }
-    @keyframes rotorSpin {
-      0% { transform: scaleX(1); }
-      25% { transform: scaleX(0.15); }
-      50% { transform: scaleX(-1); }
-      75% { transform: scaleX(0.15); }
-      100% { transform: scaleX(1); }
-    }
-    .heli { animation: hover 2s ease-in-out infinite; }
-    .rotor { animation: rotorSpin 0.35s linear infinite; transform-origin: 105px 28px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Sky gradient background -->
@@ -84,7 +71,7 @@
   <line x1="150" y1="42" x2="312" y2="35" stroke="#b0c4de" stroke-width="1" stroke-dasharray="4,4"/>
 
   <!-- Helicopter -->
-  <g class="heli" filter="url(#hdShadow)">
+  <g filter="url(#hdShadow)">
     <!-- Body -->
     <ellipse cx="105" cy="44" rx="38" ry="13" fill="url(#hdBody)"/>
     <!-- Cockpit window -->
@@ -99,7 +86,7 @@
     <!-- Rotor mast -->
     <line x1="105" y1="31" x2="105" y2="24" stroke="#1a3a6b" stroke-width="3"/>
     <!-- Main rotor (animated spin illusion) -->
-    <g class="rotor">
+    <g>
       <line x1="55" y1="28" x2="155" y2="28" stroke="#1a3a6b" stroke-width="3.5" stroke-linecap="round"/>
     </g>
     <!-- Skids -->

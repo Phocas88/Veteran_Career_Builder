@@ -9,11 +9,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes pulseFold {
-      0%, 100% { stroke-opacity: 0.4; stroke-width: 1.5; }
-      50% { stroke-opacity: 1; stroke-width: 2.5; }
-    }
-    .fold-line { animation: pulseFold 2s ease-in-out infinite; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -80,11 +75,11 @@
   </g>
 
   <!-- Fold lines (dashed gold, animated pulsing) -->
-  <line x1="98" y1="70" x2="132" y2="70" class="fold-line" stroke="#c8960a" stroke-dasharray="4,3"/>
-  <line x1="98" y1="104" x2="132" y2="104" class="fold-line" stroke="#c8960a" stroke-dasharray="4,3"/>
-  <line x1="98" y1="70" x2="98" y2="104" class="fold-line" stroke="#c8960a" stroke-dasharray="4,3"/>
-  <line x1="132" y1="70" x2="132" y2="104" class="fold-line" stroke="#c8960a" stroke-dasharray="4,3"/>
-  <line x1="98" y1="138" x2="132" y2="138" class="fold-line" stroke="#c8960a" stroke-dasharray="4,3"/>
+  <line x1="98" y1="70" x2="132" y2="70" stroke="#c8960a" stroke-width="2" stroke-dasharray="4,3"/>
+  <line x1="98" y1="104" x2="132" y2="104" stroke="#c8960a" stroke-width="2" stroke-dasharray="4,3"/>
+  <line x1="98" y1="70" x2="98" y2="104" stroke="#c8960a" stroke-width="2" stroke-dasharray="4,3"/>
+  <line x1="132" y1="70" x2="132" y2="104" stroke="#c8960a" stroke-width="2" stroke-dasharray="4,3"/>
+  <line x1="98" y1="138" x2="132" y2="138" stroke="#c8960a" stroke-width="2" stroke-dasharray="4,3"/>
 
   <!-- Fold labels -->
   <text x="115" y="32" text-anchor="middle" font-size="8" fill="#c8960a" font-weight="600">fold</text>

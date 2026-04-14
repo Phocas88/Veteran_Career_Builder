@@ -16,16 +16,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes arrowPulse {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
-    }
-    @keyframes glowPulse {
-      0%, 100% { opacity: 0.15; }
-      50% { opacity: 0.4; }
-    }
-    .arrow-path { animation: arrowPulse 2s ease-in-out infinite; }
-    .arrow-glow { animation: glowPulse 2s ease-in-out infinite; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -60,13 +50,11 @@
 
   <!-- Curved 90-degree clockwise arrow -->
   <!-- Glow behind arrow -->
-  <path class="arrow-glow" d="M165,58 A48,48 0 0,1 213,106" fill="none" stroke="#c8960a" stroke-width="12" stroke-linecap="round"/>
+  <path d="M165,58 A48,48 0 0,1 213,106" fill="none" stroke="#c8960a" stroke-width="12" stroke-linecap="round"/>
   <!-- Arrow arc -->
-  <path class="arrow-path" d="M165,58 A48,48 0 0,1 213,106" fill="none" stroke="#c8960a" stroke-width="3" stroke-linecap="round"/>
+  <path d="M165,58 A48,48 0 0,1 213,106" fill="none" stroke="#c8960a" stroke-width="3" stroke-linecap="round"/>
   <!-- Arrowhead -->
-  <polygon points="213,94 221,106 208,109" fill="#c8960a">
-    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
-  </polygon>
+  <polygon points="213,94 221,106 208,109" fill="#c8960a"/>
   <!-- Degree label -->
   <rect x="176" y="50" width="38" height="18" rx="4" fill="rgba(200,150,10,0.1)" stroke="#c8960a" stroke-width="0.8"/>
   <text x="195" y="63" text-anchor="middle" font-size="12" font-weight="700" fill="#c8960a">90 deg</text>

@@ -9,12 +9,6 @@
     </linearGradient>
   </defs>
   <style>
-    @keyframes cubeWobble {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(1deg); }
-      75% { transform: rotate(-1deg); }
-    }
-    .cube-wire { animation: cubeWobble 4.5s ease-in-out infinite; transform-origin: 155px 100px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -40,7 +34,7 @@
   <!-- Title -->
   <text x="200" y="18" text-anchor="middle" font-size="11" fill="#5a7090" font-weight="600">Cube Wireframe -- Count the Edges</text>
 
-  <g class="cube-wire" filter="url(#ceShadow)">
+  <g filter="url(#ceShadow)">
     <!-- Isometric cube wireframe -->
     <!-- Front face (visible) - thick navy lines -->
     <line x1="80" y1="150" x2="180" y2="150" stroke="#1a3a6b" stroke-width="3" stroke-linecap="round"/>

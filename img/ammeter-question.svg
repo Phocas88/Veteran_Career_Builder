@@ -14,14 +14,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes needleWobble {
-      0% { transform: rotate(-15deg); }
-      25% { transform: rotate(5deg); }
-      50% { transform: rotate(-8deg); }
-      75% { transform: rotate(2deg); }
-      100% { transform: rotate(-15deg); }
-    }
-    .needle { animation: needleWobble 3s ease-in-out infinite; transform-origin: 200px 78px; }
     .dot { r: 2.5; fill: #c8960a; }
     text { font-family: Arial, sans-serif; }
   </style>
@@ -94,7 +86,7 @@
     <!-- "A" marking -->
     <text x="200" y="100" text-anchor="middle" font-size="16" font-weight="700" fill="#1a3a6b">A</text>
     <!-- Needle (animated wobble) -->
-    <line class="needle" x1="200" y1="78" x2="200" y2="48" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
+    <line x1="200" y1="78" x2="200" y2="48" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
     <!-- Needle pivot -->
     <circle cx="200" cy="78" r="4" fill="#1a3a6b"/>
     <circle cx="200" cy="78" r="2" fill="#5a7090"/>
@@ -106,11 +98,11 @@
   <line x1="242" y1="78" x2="242" y2="48" stroke="#1a3a6b" stroke-width="2"/>
   <line x1="242" y1="48" x2="245" y2="48" stroke="#1a3a6b" stroke-width="2"/>
 
-  <!-- Electron flow dots -->
-  <circle class="dot"><animateMotion dur="4s" repeatCount="indefinite" path="M60,48 L155,48 L158,78 L242,78 L242,48 L340,48 L340,128 L60,128 L60,48" begin="0s"/></circle>
-  <circle class="dot"><animateMotion dur="4s" repeatCount="indefinite" path="M60,48 L155,48 L158,78 L242,78 L242,48 L340,48 L340,128 L60,128 L60,48" begin="-1s"/></circle>
-  <circle class="dot"><animateMotion dur="4s" repeatCount="indefinite" path="M60,48 L155,48 L158,78 L242,78 L242,48 L340,48 L340,128 L60,128 L60,48" begin="-2s"/></circle>
-  <circle class="dot"><animateMotion dur="4s" repeatCount="indefinite" path="M60,48 L155,48 L158,78 L242,78 L242,48 L340,48 L340,128 L60,128 L60,48" begin="-3s"/></circle>
+  <!-- Electron flow dots (static) -->
+  <circle class="dot" cx="110" cy="48"/>
+  <circle class="dot" cx="290" cy="48"/>
+  <circle class="dot" cx="340" cy="88"/>
+  <circle class="dot" cx="200" cy="128"/>
 
   <!-- Labels -->
   <text x="200" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#1a3a6b">Ammeter</text>

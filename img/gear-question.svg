@@ -16,8 +16,6 @@
     </marker>
   </defs>
   <style>
-    @keyframes rotateCW { to { transform: rotate(360deg); } }
-    .gear-a { animation: rotateCW 4s linear infinite; transform-origin: 110px 90px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -44,7 +42,7 @@
   <text x="200" y="18" text-anchor="middle" font-size="11" fill="#5a7090" font-weight="600">Gear Ratio -- Find the Speed</text>
 
   <!-- GEAR A: 20 teeth, center 110,90, body radius 38, animated CW -->
-  <g class="gear-a" filter="url(#gShadow)">
+  <g filter="url(#gShadow)">
     <!-- 20 teeth at 18-degree intervals, tooth size 7x10 -->
     <rect x="106.5" y="45" width="7" height="10" rx="1" fill="url(#gearAFill)" stroke="#1a3a6b" stroke-width="1.5" transform="rotate(0,110,90)"/>
     <rect x="106.5" y="45" width="7" height="10" rx="1" fill="url(#gearAFill)" stroke="#1a3a6b" stroke-width="1.5" transform="rotate(18,110,90)"/>

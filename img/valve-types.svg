@@ -25,26 +25,6 @@
     </marker>
   </defs>
   <style>
-    @keyframes pulseHighlight {
-      0%,20%    { opacity: 0.5; }
-      10%       { opacity: 0; }
-    }
-    @keyframes pulse2 {
-      25%,45%   { opacity: 0.5; }
-      35%       { opacity: 0; }
-    }
-    @keyframes pulse3 {
-      50%,70%   { opacity: 0.5; }
-      60%       { opacity: 0; }
-    }
-    @keyframes pulse4 {
-      75%,95%   { opacity: 0.5; }
-      85%       { opacity: 0; }
-    }
-    .hl1 { animation: pulseHighlight 8s ease-in-out infinite; opacity: 0; }
-    .hl2 { animation: pulse2 8s ease-in-out infinite; opacity: 0; }
-    .hl3 { animation: pulse3 8s ease-in-out infinite; opacity: 0; }
-    .hl4 { animation: pulse4 8s ease-in-out infinite; opacity: 0; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -68,7 +48,6 @@
 
   <!-- Valve 1: Ball Valve -->
   <g filter="url(#vtSh)">
-    <rect x="12" y="24" width="76" height="78" rx="6" fill="#c8960a" class="hl1"/>
     <!-- Pipe sections -->
     <rect x="12" y="50" width="22" height="18" rx="2" fill="url(#vtPipe)" stroke="#1a3a6b" stroke-width="1.5"/>
     <rect x="66" y="50" width="22" height="18" rx="2" fill="url(#vtPipe)" stroke="#1a3a6b" stroke-width="1.5"/>
@@ -88,7 +67,6 @@
 
   <!-- Valve 2: Gate Valve -->
   <g filter="url(#vtSh)">
-    <rect x="102" y="24" width="76" height="78" rx="6" fill="#c8960a" class="hl2"/>
     <rect x="102" y="50" width="22" height="18" rx="2" fill="url(#vtPipe)" stroke="#1a3a6b" stroke-width="1.5"/>
     <rect x="156" y="50" width="22" height="18" rx="2" fill="url(#vtPipe)" stroke="#1a3a6b" stroke-width="1.5"/>
     <!-- Valve body -->
@@ -108,7 +86,6 @@
 
   <!-- Valve 3: Globe Valve -->
   <g filter="url(#vtSh)">
-    <rect x="192" y="24" width="76" height="78" rx="6" fill="#c8960a" class="hl3"/>
     <rect x="192" y="50" width="22" height="18" rx="2" fill="url(#vtPipe)" stroke="#1a3a6b" stroke-width="1.5"/>
     <rect x="246" y="50" width="22" height="18" rx="2" fill="url(#vtPipe)" stroke="#1a3a6b" stroke-width="1.5"/>
     <!-- Globe body (rounded) -->
@@ -130,7 +107,6 @@
 
   <!-- Valve 4: Check Valve -->
   <g filter="url(#vtSh)">
-    <rect x="282" y="24" width="76" height="78" rx="6" fill="#c8960a" class="hl4"/>
     <rect x="282" y="50" width="22" height="18" rx="2" fill="url(#vtPipe)" stroke="#1a3a6b" stroke-width="1.5"/>
     <rect x="336" y="50" width="22" height="18" rx="2" fill="url(#vtPipe)" stroke="#1a3a6b" stroke-width="1.5"/>
     <!-- Valve body -->

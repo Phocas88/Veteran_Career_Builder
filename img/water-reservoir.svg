@@ -26,16 +26,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes rippleL {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-2px); }
-    }
-    @keyframes rippleR {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-1.5px); }
-    }
-    .waveL { animation: rippleL 2s ease-in-out infinite; }
-    .waveR { animation: rippleR 2.2s ease-in-out infinite; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -81,7 +71,7 @@
     <!-- Water inside -->
     <rect x="32" y="68" width="91" height="90" rx="1" fill="url(#wrWaterL)" opacity="0.7"/>
     <!-- Water surface ripple -->
-    <g class="waveL">
+    <g>
       <path d="M34,68 Q55,64 77,68 Q99,72 121,68" fill="none" stroke="#8ac4e8" stroke-width="1.5"/>
       <path d="M34,72 Q55,68 77,72 Q99,76 121,72" fill="none" stroke="#8ac4e8" stroke-width="0.8" opacity="0.5"/>
     </g>
@@ -95,7 +85,7 @@
     <!-- Water inside -->
     <rect x="272" y="118" width="91" height="40" rx="1" fill="url(#wrWaterR)" opacity="0.7"/>
     <!-- Water surface ripple -->
-    <g class="waveR">
+    <g>
       <path d="M274,118 Q295,114 317,118 Q339,122 361,118" fill="none" stroke="#8ac4e8" stroke-width="1.5"/>
       <path d="M274,122 Q295,118 317,122 Q339,126 361,122" fill="none" stroke="#8ac4e8" stroke-width="0.8" opacity="0.5"/>
     </g>

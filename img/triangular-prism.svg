@@ -17,12 +17,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes tilt {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(0.8deg); }
-      75% { transform: rotate(-0.8deg); }
-    }
-    .prism-group { animation: tilt 5s ease-in-out infinite; transform-origin: 165px 100px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -45,7 +39,7 @@
   <!-- Title -->
   <text x="200" y="18" text-anchor="middle" font-size="11" fill="#5a7090" font-weight="600">Triangular Prism -- Count the Faces</text>
 
-  <g class="prism-group" filter="url(#tpShadow)">
+  <g filter="url(#tpShadow)">
     <!-- Front triangular face -->
     <polygon points="95,155 160,45 225,155" fill="url(#tpFront)" stroke="#1a3a6b" stroke-width="2"/>
 

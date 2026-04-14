@@ -25,18 +25,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes pistonUp {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-28px); }
-      100% { transform: translateY(0); }
-    }
-    @keyframes heatPulse {
-      0% { opacity: 0.15; }
-      50% { opacity: 0.55; }
-      100% { opacity: 0.15; }
-    }
-    .piston-group { animation: pistonUp 2.5s ease-in-out infinite; }
-    .heat-glow { animation: heatPulse 2.5s ease-in-out infinite; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -72,7 +60,7 @@
   </g>
 
   <!-- Heat glow in compression chamber -->
-  <rect x="125" y="24" width="80" height="35" fill="url(#dcHeat)" class="heat-glow"/>
+  <rect x="125" y="24" width="80" height="35" fill="url(#dcHeat)"/>
   <!-- Heat wavy lines -->
   <path d="M140,32 Q145,28 150,32 Q155,36 160,32" fill="none" stroke="#c8960a" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
   <path d="M170,38 Q175,34 180,38 Q185,42 190,38" fill="none" stroke="#c8960a" stroke-width="1" opacity="0.4" stroke-dasharray="2,2"/>
@@ -89,7 +77,7 @@
   <line x1="165" y1="32" x2="175" y2="42" stroke="#c8960a" stroke-width="1" stroke-dasharray="2,2"/>
 
   <!-- Piston (animated upward) -->
-  <g class="piston-group">
+  <g>
     <!-- Piston head -->
     <rect x="126" y="62" width="78" height="18" rx="2" fill="url(#dcPiston)" stroke="#1a3a6b" stroke-width="1.8"/>
     <!-- Piston rings -->

@@ -8,15 +8,9 @@
       <stop offset="100%" stop-color="#b0c4de"/>
     </linearGradient>
     <linearGradient id="cmShimmer" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgba(255,255,255,0)">
-        <animate attributeName="stop-color" values="rgba(255,255,255,0);rgba(255,255,255,0.7);rgba(255,255,255,0)" dur="3.5s" repeatCount="indefinite"/>
-      </stop>
-      <stop offset="50%" stop-color="rgba(255,255,255,0.7)">
-        <animate attributeName="stop-color" values="rgba(255,255,255,0.7);rgba(255,255,255,0);rgba(255,255,255,0.7)" dur="3.5s" repeatCount="indefinite"/>
-      </stop>
-      <stop offset="100%" stop-color="rgba(255,255,255,0)">
-        <animate attributeName="stop-color" values="rgba(255,255,255,0);rgba(255,255,255,0.7);rgba(255,255,255,0)" dur="3.5s" repeatCount="indefinite"/>
-      </stop>
+      <stop offset="0%" stop-color="rgba(255,255,255,0)"/>
+      <stop offset="50%" stop-color="rgba(255,255,255,0.7)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
     </linearGradient>
     <linearGradient id="cmClockFace" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#ffffff"/>
@@ -27,11 +21,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes tick {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .second-hand { animation: tick 60s linear infinite; transform-origin: 300px 105px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -123,7 +112,7 @@
     <!-- Minute hand pointing to 12 -->
     <line x1="300" y1="105" x2="300" y2="62" stroke="#1a3a6b" stroke-width="2.8" stroke-linecap="round"/>
     <!-- Second hand (animated) -->
-    <line x1="300" y1="105" x2="300" y2="68" class="second-hand" stroke="#dc2626" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="300" y1="105" x2="300" y2="68" stroke="#dc2626" stroke-width="1.2" stroke-linecap="round"/>
     <!-- Center cap -->
     <circle cx="300" cy="105" r="4" fill="#1a3a6b"/>
     <circle cx="300" cy="105" r="2" fill="#c8960a"/>

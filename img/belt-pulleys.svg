@@ -24,8 +24,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes spinFast { to { transform: rotate(360deg); } }
-    .smallSpin { animation: spinFast 1s linear infinite; transform-origin: 110px 90px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -52,7 +50,7 @@
   <line x1="110" y1="122" x2="290" y2="138" stroke="url(#bpBelt)" stroke-width="5" stroke-linecap="round"/>
 
   <!-- Small pulley (left) - 6" diameter, animated -->
-  <g class="smallSpin" filter="url(#bpSh)">
+  <g filter="url(#bpSh)">
     <!-- Outer rim -->
     <circle cx="110" cy="90" r="34" fill="url(#bpRimS)" stroke="#1a3a6b" stroke-width="2"/>
     <!-- V-groove -->

@@ -13,14 +13,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes needleWobble {
-      0%, 100% { transform: rotate(0deg); }
-      20% { transform: rotate(1.5deg); }
-      40% { transform: rotate(-1deg); }
-      60% { transform: rotate(0.8deg); }
-      80% { transform: rotate(-0.5deg); }
-    }
-    .needle { animation: needleWobble 3s ease-in-out infinite; transform-origin: 120px 108px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -88,7 +80,7 @@
   </g>
 
   <!-- Gold needle pointing North (starting position, wobbling) -->
-  <g class="needle">
+  <g>
     <polygon points="120,62 116,108 124,108" fill="#c8960a" stroke="#8a6000" stroke-width="0.8" opacity="0.85"/>
     <circle cx="120" cy="108" r="5" fill="#c8960a" stroke="#8a6000" stroke-width="1"/>
   </g>

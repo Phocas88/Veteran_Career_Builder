@@ -4761,6 +4761,60 @@ Return this exact JSON structure:
         <div className="steps">{TABS.map((_,i)=><div key={i} className={"sdot "+(tab===i?"on":"")}/>)}</div>
         <div className="wrap">
           {tab===0 && <div className="panel on">
+            {/* ── SCOUT DATA CODE IMPORT ── */}
+            <div style={{background:"linear-gradient(135deg,rgba(240,192,64,.06),rgba(240,192,64,.02))",border:"1px solid rgba(240,192,64,.15)",borderRadius:"10px",padding:".85rem 1rem",marginBottom:"1rem"}}>
+              <details>
+                <summary style={{cursor:"pointer",fontSize:".82rem",fontWeight:600,color:"var(--navy)",display:"flex",alignItems:"center",gap:".4rem"}}>
+                  <span style={{color:"#c8960a"}}>🔑</span> Have a Scout Data Code? Import your profile
+                </summary>
+                <div style={{marginTop:".75rem",paddingTop:".75rem",borderTop:"1px solid rgba(240,192,64,.1)"}}>
+                  <p style={{fontSize:".78rem",color:"var(--dim)",marginBottom:".5rem",lineHeight:1.5}}>If you previously used the Scout Resume Builder or Cover Letter Builder, enter your email and 6-digit data code to automatically import your military experience, skills, and career data into your profile.</p>
+                  <div style={{display:"flex",gap:".5rem",flexWrap:"wrap",alignItems:"flex-end"}}>
+                    <div style={{flex:1,minWidth:"150px"}}>
+                      <label style={{fontSize:".68rem",fontWeight:700,color:"var(--dim)",display:"block",marginBottom:".2rem"}}>Email used with Scout</label>
+                      <input id="scout-import-email" type="email" placeholder="you@email.com" style={{width:"100%",padding:".45rem .65rem",border:"1.5px solid var(--border)",borderRadius:"6px",fontSize:".85rem",fontFamily:"inherit"}}/>
+                    </div>
+                    <div style={{width:"120px"}}>
+                      <label style={{fontSize:".68rem",fontWeight:700,color:"var(--dim)",display:"block",marginBottom:".2rem"}}>Data Code</label>
+                      <input id="scout-import-code" type="text" placeholder="A3X9K2" maxLength="6" style={{width:"100%",padding:".45rem .65rem",border:"1.5px solid var(--border)",borderRadius:"6px",fontSize:".85rem",fontFamily:"inherit",textTransform:"uppercase",letterSpacing:".1em",fontWeight:700}}/>
+                    </div>
+                    <button id="scout-import-btn" style={{padding:".45rem 1rem",background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"6px",color:"#0a1628",fontWeight:700,fontSize:".82rem",cursor:"pointer",whiteSpace:"nowrap"}} onClick={async()=>{
+                      const email=document.getElementById("scout-import-email").value.trim().toLowerCase();
+                      const code=document.getElementById("scout-import-code").value.trim().toUpperCase();
+                      const btn=document.getElementById("scout-import-btn");
+                      const statusEl=document.getElementById("scout-import-status");
+                      if(!email||!code){statusEl.textContent="Enter both email and code.";statusEl.style.color="#dc2626";return;}
+                      btn.textContent="Searching...";btn.disabled=true;
+                      try {
+                        // Try localStorage first
+                        let scoutData=null;
+                        try{const local=JSON.parse(localStorage.getItem("vcp_scout_data")||"null");if(local&&local.email===email&&local.verificationCode===code)scoutData=local;}catch(e){}
+                        // Try Firestore
+                        if(!scoutData&&window.fbDb){
+                          try{const doc=await fbDb.collection("scout_data").doc(email).get();if(doc.exists){const d=doc.data();if(d.verificationCode===code)scoutData=d;}}catch(e){}
+                        }
+                        if(!scoutData){statusEl.textContent="Code not found. Check your email and code.";statusEl.style.color="#dc2626";btn.textContent="Import";btn.disabled=false;return;}
+                        // Check expiry
+                        if(scoutData.expiry&&scoutData.expiry<Date.now()){statusEl.textContent="This code has expired (30-day limit).";statusEl.style.color="#dc2626";btn.textContent="Import";btn.disabled=false;return;}
+                        // Import the data into profile
+                        const wd=scoutData.wizardData||{};
+                        if(wd.name||wd.email){upP("name",wd.name||"");upP("email",wd.email||"");upP("phone",wd.phone||"");upP("location",wd.location||"");upP("linkedin",wd.linkedin||"");}
+                        // Import military experiences if available
+                        if(wd.military&&wd.military.length){
+                          const newMil=wd.military.map(function(m,i){return{id:Date.now()+i,branch:m.branch||"",mos:m.mos||"",mosTitle:m.mosTitle||"",rank:m.rankSep||m.rank||"",serviceType:m.serviceType||"",startDate:m.start||"",endDate:m.end||"",tos:m.years||"",clearanceLevel:m.clearance||"None",duties:m.positions?m.positions.map(function(p){return(p.title||"")+(p.dutyAnswers?": "+Object.values(p.dutyAnswers).join("; "):"");}).join("\n"):"",awards:(m.awards||[]).join("\n")};});
+                          setMilExperiences(newMil);
+                        }
+                        statusEl.textContent="Profile imported successfully! Your data has been loaded.";statusEl.style.color="#1a7a40";
+                        showToast("Scout data imported!");
+                        handleSaveProfile();
+                      }catch(e){statusEl.textContent="Import failed: "+e.message;statusEl.style.color="#dc2626";}
+                      btn.textContent="Import";btn.disabled=false;
+                    }}>Import</button>
+                  </div>
+                  <div id="scout-import-status" style={{fontSize:".78rem",marginTop:".4rem",minHeight:"1rem"}}></div>
+                </div>
+              </details>
+            </div>
             {/* ── GUIDED WIZARD LAUNCH BUTTON ── */}
             {profileMode==="manual"&&<div style={{marginBottom:"1rem"}}>
               <button onClick={()=>setProfileMode("guided")} style={{width:"100%",padding:".7rem 1rem",borderRadius:"8px",border:"1.5px solid var(--navy)",cursor:"pointer",fontWeight:700,fontSize:".85rem",fontFamily:"inherit",background:"linear-gradient(135deg,var(--navy),#2456a0)",color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",gap:".5rem",transition:"all .15s"}}>

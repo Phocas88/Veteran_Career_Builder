@@ -4214,7 +4214,10 @@ Return this exact JSON structure:
               <div style={{padding:"1.25rem 1.5rem"}}>
                 <div style={{marginBottom:"1.2rem"}}>
                   <div style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#7a90a8",marginBottom:".4rem"}}>Account Info</div>
-                  <div style={{fontSize:".92rem",fontWeight:700,color:"#1a3a6b"}}>{personal.name||currentUser.displayName||"Veteran"}</div>
+                  <div style={{fontSize:".92rem",fontWeight:700,color:"#1a3a6b",display:"flex",alignItems:"center",gap:".35rem"}}>
+                    {(()=>{const m=milExperiences&&milExperiences[0];const g=m&&m.rank?(m.rank.match(/[EWO]-\d+/)||[""])[0]:"";return g?React.createElement(RankInsignia,{branch:m.branch,grade:g,color:"#1a3a6b"}):null;})()}
+                    {(()=>{const m=milExperiences&&milExperiences[0];const r=m&&m.rank?m.rank.split(" - ").pop().split(" (")[0]:"";const isRet=m&&(m.serviceType==="Retired"||m.status==="Retired"||(m.endDate&&!m.currently));return (r?r+" ":"")+(personal.name||currentUser.displayName||"Veteran")+(isRet?" (Ret.)":"");})()}
+                  </div>
                   <div style={{fontSize:".82rem",color:"#5a7090",wordBreak:"break-all"}}>{personal.email||currentUser.email||""}</div>
                 </div>
                 <div style={{borderTop:"1px solid #eef0f5",paddingTop:"1rem",marginBottom:"1rem"}}>
@@ -4601,8 +4604,23 @@ Return this exact JSON structure:
         {currentUser?(
           <div className="user-bar">
             <div className="user-bar-left">
-              <div className="user-avatar">{(currentUser&&currentUser.initials)}</div>
-              <span>Signed in as <strong>{currentUser&&currentUser.name}</strong></span>
+              {(()=>{
+                const latestMil = milExperiences && milExperiences[0];
+                const rank = latestMil && latestMil.rank;
+                const grade = rank ? (rank.match(/[EWO]-\d+/)||[""])[0] : "";
+                const branch = latestMil && latestMil.branch;
+                const isRetired = latestMil && (latestMil.serviceType==="Retired" || latestMil.status==="Retired" || (latestMil.endDate && !latestMil.currently));
+                const rankAbbr = rank || "";
+                const displayName = rankAbbr ? (rankAbbr.split(" - ").pop().split(" (")[0] + " " + (personal.name||currentUser.name||"").split(" ").pop()) : (personal.name||currentUser.name||"Veteran");
+                return React.createElement("div",{style:{display:"flex",alignItems:"center",gap:".4rem"}},
+                  grade ? React.createElement(RankInsignia,{branch:branch,grade:grade,color:"#f0c040"}) : React.createElement("div",{className:"user-avatar"},(currentUser&&currentUser.initials)),
+                  React.createElement("span",null,
+                    "Welcome Back, ",
+                    React.createElement("strong",null,displayName),
+                    isRetired ? React.createElement("span",{style:{fontSize:".72rem",color:"rgba(240,192,64,.7)",marginLeft:".25rem",fontStyle:"italic"}},"(Ret.)") : null
+                  )
+                );
+              })()}
               {hasUnsaved&&<span className="unsaved" title="Unsaved changes"/>}
             </div>
             <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>

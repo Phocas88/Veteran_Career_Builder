@@ -1346,8 +1346,10 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
     <div style="max-width:1100px;margin:0 auto;">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
         <div>
-          <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,192,64,.6);margin-bottom:.3rem;">Welcome Back</div>
-          <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:.05em;color:#fff;margin:0;" id="dash-greeting">Welcome Back, Veteran</h1>
+          <div style="display:flex;align-items:center;gap:.65rem;">
+            <svg id="dash-insignia" viewBox="0 0 36 36" width="40" height="40" style="flex-shrink:0;display:none;"></svg>
+            <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:.05em;color:#fff;margin:0;" id="dash-greeting">Welcome Back, Veteran</h1>
+          </div>
         </div>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
           <a href="/app.html" style="display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.82rem;padding:.55rem 1.1rem;border-radius:8px;text-decoration:none;">Open Career Path Tools</a>
@@ -1883,44 +1885,46 @@ function skipWelcome(){
       var p = JSON.parse(localStorage.getItem('vcb_profile') || '{}');
       var isSubscriber = acc && acc.type === 'paid' && acc.stripeSession;
 
-      if(isSubscriber && p) {
-        // Try to get rank title + last name from military experience
-        var mil = p.milExperiences || p.experiences || p.military || [];
-        var lastRank = '';
-        var lastName = '';
-        var RANK_TITLES = {
-          'E-1':'Private','E-2':'Private','E-3':'Private First Class','E-4':'Specialist',
-          'E-5':'Sergeant','E-6':'Staff Sergeant','E-7':'Sergeant First Class',
-          'E-8':'Master Sergeant','E-9':'Sergeant Major',
-          'W-1':'Warrant Officer','W-2':'Chief Warrant Officer','W-3':'Chief Warrant Officer',
-          'W-4':'Chief Warrant Officer','W-5':'Chief Warrant Officer',
-          'O-1':'Lieutenant','O-2':'Lieutenant','O-3':'Captain',
-          'O-4':'Major','O-5':'Lieutenant Colonel','O-6':'Colonel',
-          'O-7':'Brigadier General','O-8':'Major General','O-9':'Lieutenant General','O-10':'General'
-        };
-        if(mil.length > 0) {
-          // Find the most recent service entry by end date
-          var sorted = mil.filter(function(m){return m.rank;}).sort(function(a,b){
-            var da = a.endDate || a.startDate || '0';
-            var db = b.endDate || b.startDate || '0';
-            return db.localeCompare(da); // most recent first
-          });
-          if(sorted.length > 0) lastRank = RANK_TITLES[sorted[0].rank] || sorted[0].rank;
-        }
-        // Get last name from profile name (could be in p.personal.name or p.name)
-        var fullName = (p.personal && p.personal.name) || p.name || p.displayName || '';
-        if(fullName) {
-          var parts = fullName.trim().split(' ');
-          lastName = parts[parts.length - 1];
-        }
-        if(lastRank && lastName) {
-          greeting = lastRank + ' ' + lastName;
-        } else if(lastName) {
-          greeting = lastName;
-        } else if(fullName) {
-          greeting = fullName.split(' ')[0];
+      var mil = [];
+      if(p) mil = p.milExperiences || p.experiences || p.military || [];
+      var lastRankAbbr = '';
+      var lastGrade = '';
+      var lastName = '';
+      var isRetired = false;
+      var RANK_ABBRS = {
+        'E-1':'PVT','E-2':'PV2','E-3':'PFC','E-4':'SPC',
+        'E-5':'SGT','E-6':'SSG','E-7':'SFC',
+        'E-8':'MSG','E-9':'SGM',
+        'W-1':'WO1','W-2':'CW2','W-3':'CW3','W-4':'CW4','W-5':'CW5',
+        'O-1':'2LT','O-2':'1LT','O-3':'CPT',
+        'O-4':'MAJ','O-5':'LTC','O-6':'COL',
+        'O-7':'BG','O-8':'MG','O-9':'LTG','O-10':'GEN'
+      };
+      if(mil.length > 0) {
+        var sorted = mil.filter(function(m){return m.rank;}).sort(function(a,b){
+          return (b.endDate||b.startDate||'0').localeCompare(a.endDate||a.startDate||'0');
+        });
+        if(sorted.length > 0) {
+          var rankVal = sorted[0].rank || '';
+          // Extract grade like E-5 from value like "E-5 - SGT - Sergeant"
+          var gradeMatch = rankVal.match(/[EWO]-\d+/);
+          lastGrade = gradeMatch ? gradeMatch[0] : '';
+          // Use stored abbreviation or lookup
+          var abbrMatch = rankVal.match(/- ([A-Z0-9]{2,5}) -|- ([A-Z0-9]{2,5})$/);
+          lastRankAbbr = abbrMatch ? (abbrMatch[1]||abbrMatch[2]) : RANK_ABBRS[lastGrade] || rankVal;
+          // Check retired status
+          var svcType = (sorted[0].serviceType||sorted[0].status||'').toLowerCase();
+          isRetired = svcType.indexOf('retired') >= 0 || svcType.indexOf('separated') >= 0 || (sorted[0].endDate && !sorted[0].currently);
         }
       }
+      var fullName = (p && p.personal && p.personal.name) || (p && p.name) || (p && p.displayName) || '';
+      if(fullName) {
+        var parts = fullName.trim().split(' ');
+        lastName = parts[parts.length - 1];
+      }
+      if(lastRankAbbr && lastName) greeting = lastRankAbbr + ' ' + lastName + (isRetired ? ' (Ret.)' : '');
+      else if(lastName) greeting = lastName;
+      else if(fullName) greeting = fullName.split(' ')[0];
 
       if(!greeting && p) {
         var pName = (p.personal && p.personal.name) || p.name || p.displayName || '';
@@ -1934,6 +1938,31 @@ function skipWelcome(){
     if(greeting) {
       var g = document.getElementById('dash-greeting');
       if(g) g.textContent = 'Welcome Back, ' + greeting;
+    }
+    // Draw rank insignia SVG
+    if(lastGrade) {
+      var svg = document.getElementById('dash-insignia');
+      if(svg) {
+        svg.style.display = 'block';
+        var gNum = parseInt(lastGrade.slice(2)) || 1;
+        var paths = '';
+        if(lastGrade.startsWith('E-')) {
+          var chevs = Math.min(gNum, 3);
+          for(var ci=0;ci<chevs;ci++) paths += '<path d="M3,'+(28-ci*8)+' L18,'+(18-ci*8)+' L33,'+(28-ci*8)+'" fill="none" stroke="#f0c040" stroke-width="2.5" stroke-linecap="round"/>';
+          if(gNum>=7) for(var ri=0;ri<gNum-6;ri++) paths += '<path d="M3,'+(33+ri*5)+' Q18,'+(38+ri*5)+' 33,'+(33+ri*5)+'" fill="none" stroke="#f0c040" stroke-width="2.5"/>';
+          if(gNum===8) paths += '<polygon points="18,4 23,9 18,14 13,9" fill="#f0c040"/>';
+          if(gNum>=9) paths += '<text x="18" y="12" text-anchor="middle" font-size="10" fill="#f0c040">★</text>';
+        } else if(lastGrade.startsWith('W-')) {
+          for(var bi=0;bi<gNum;bi++) paths += '<rect x="'+(4+bi*7)+'" y="10" width="5" height="14" rx="1" fill="'+(bi%2===0?'#f0c040':'rgba(255,255,255,.3)')+'"/>';
+          paths += '<rect x="2" y="26" width="32" height="4" rx="1" fill="#f0c040"/>';
+        } else if(lastGrade.startsWith('O-')) {
+          if(gNum<=2) paths += '<rect x="6" y="12" width="24" height="10" rx="3" fill="'+(gNum===1?'#f0c040':'#ccc')+'"/>';
+          else if(gNum===3) paths += '<rect x="2" y="12" width="13" height="10" rx="3" fill="#ccc"/><rect x="21" y="12" width="13" height="10" rx="3" fill="#ccc"/>';
+          else if(gNum<=5) paths += '<path d="M18,4 C11,4 5,9 5,15 C5,19 8,21 12,20 L18,24 L24,20 C28,21 31,19 31,15 C31,9 25,4 18,4Z" fill="'+(gNum===4?'#f0c040':'#ccc')+'"/>';
+          else { var sp=[{x:18,y:13}]; if(gNum>=8)sp.push({x:10,y:18},{x:26,y:18}); if(gNum>=9)sp.push({x:8,y:10},{x:28,y:10}); for(var si=0;si<Math.min(gNum-6,5);si++) paths += '<text x="'+sp[si].x+'" y="'+sp[si].y+'" text-anchor="middle" font-size="12" fill="#f0c040">★</text>'; }
+        }
+        svg.innerHTML = paths;
+      }
     }
   } else {
     // New visitor — show welcome popup if not already dismissed

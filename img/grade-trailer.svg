@@ -28,9 +28,10 @@
   </defs>
   <style>
     @keyframes rollWheel { to { transform: rotate(360deg); } }
-    .w1 { animation: rollWheel 1.5s linear infinite; transform-origin: 128px 93px; }
-    .w2 { animation: rollWheel 1.5s linear infinite; transform-origin: 225px 108px; }
-    .w3 { animation: rollWheel 1.5s linear infinite; transform-origin: 295px 116px; }
+    .w1 { animation: rollWheel 1.5s linear infinite; transform-origin: 115px 88px; }
+    .w2 { animation: rollWheel 1.5s linear infinite; transform-origin: 218px 98px; }
+    .w3 { animation: rollWheel 1.5s linear infinite; transform-origin: 278px 104px; }
+    .w4 { animation: rollWheel 1.5s linear infinite; transform-origin: 300px 106px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -52,71 +53,78 @@
     <line x1="380" y1="0" x2="380" y2="180"/>
   </g>
 
-  <!-- Incline surface -->
-  <line x1="20" y1="155" x2="380" y2="78" stroke="#1a3a6b" stroke-width="2.5"/>
+  <!-- Incline surface: from bottom-left going up to the right -->
+  <!-- 10% grade = ~5.7 degrees. Line from (30,140) to (370,106) -->
+  <line x1="30" y1="140" x2="370" y2="106" stroke="#1a3a6b" stroke-width="2.5"/>
   <!-- Horizontal reference -->
-  <line x1="20" y1="155" x2="180" y2="155" stroke="#5a7090" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="30" y1="140" x2="180" y2="140" stroke="#5a7090" stroke-width="1" stroke-dasharray="4,3"/>
   <!-- Angle arc -->
-  <path d="M80,155 A55,55 0 0,0 85,143" fill="none" stroke="#c8960a" stroke-width="1.5"/>
-  <text x="100" y="152" font-size="11" font-weight="700" fill="#c8960a">10%</text>
+  <path d="M100,140 A60,60 0 0,0 103,131" fill="none" stroke="#c8960a" stroke-width="1.5"/>
+  <text x="118" y="139" font-size="11" font-weight="700" fill="#c8960a">10%</text>
 
-  <!-- Truck cab (on slope) -->
-  <g transform="rotate(-5.7, 130, 90)" filter="url(#gtSh)">
-    <!-- Cab body -->
-    <rect x="100" y="62" width="52" height="30" rx="4" fill="url(#gtCab)" stroke="#1a3a6b" stroke-width="1.5"/>
+  <!-- Vehicle group tilted to match slope -->
+  <g transform="rotate(-5.7,200,110)" filter="url(#gtSh)">
+    <!-- Truck cab -->
+    <rect x="85" y="62" width="48" height="26" rx="4" fill="url(#gtCab)" stroke="#1a3a6b" stroke-width="1.5"/>
     <!-- Windshield -->
-    <rect x="140" y="66" width="10" height="18" rx="2" fill="#88b8e8" stroke="#5a7090" stroke-width="0.8" opacity="0.8"/>
+    <rect x="123" y="65" width="8" height="16" rx="2" fill="#88b8e8" stroke="#5a7090" stroke-width="0.8" opacity="0.8"/>
     <!-- Bumper -->
-    <rect x="96" y="82" width="58" height="4" rx="1" fill="#5a7090"/>
-    <!-- Wheel 1 (animated) -->
-    <g class="w1">
-      <circle cx="128" cy="93" r="9" fill="url(#gtTire)" stroke="#333" stroke-width="1.5"/>
-      <circle cx="128" cy="93" r="4.5" fill="url(#gtRim)" stroke="#888" stroke-width="0.8"/>
-      <line x1="128" y1="85" x2="128" y2="101" stroke="#666" stroke-width="0.8"/>
-      <line x1="120" y1="93" x2="136" y2="93" stroke="#666" stroke-width="0.8"/>
-    </g>
-  </g>
+    <rect x="82" y="86" width="52" height="3" rx="1" fill="#5a7090"/>
 
-  <!-- Hitch -->
-  <line x1="155" y1="92" x2="195" y2="99" stroke="#5a7090" stroke-width="2.5"/>
-  <circle cx="175" cy="96" r="2" fill="#1a3a6b"/>
+    <!-- Hitch -->
+    <line x1="134" y1="80" x2="170" y2="80" stroke="#5a7090" stroke-width="2.5"/>
+    <circle cx="152" cy="80" r="2" fill="#1a3a6b"/>
 
-  <!-- Trailer (on slope) -->
-  <g transform="rotate(-5.7, 260, 105)" filter="url(#gtSh)">
     <!-- Trailer body -->
-    <rect x="192" y="78" width="135" height="28" rx="3" fill="url(#gtTrailer)" stroke="#1a3a6b" stroke-width="1.8"/>
-    <!-- Side detail lines -->
-    <line x1="195" y1="88" x2="324" y2="88" stroke="#a0b0c5" stroke-width="0.5"/>
-    <!-- Wheel 2 (animated) -->
-    <g class="w2">
-      <circle cx="225" cy="108" r="8" fill="url(#gtTire)" stroke="#333" stroke-width="1.5"/>
-      <circle cx="225" cy="108" r="4" fill="url(#gtRim)" stroke="#888" stroke-width="0.8"/>
-      <line x1="225" y1="101" x2="225" y2="115" stroke="#666" stroke-width="0.8"/>
-      <line x1="218" y1="108" x2="232" y2="108" stroke="#666" stroke-width="0.8"/>
+    <rect x="168" y="60" width="140" height="26" rx="3" fill="url(#gtTrailer)" stroke="#1a3a6b" stroke-width="1.8"/>
+    <!-- Side detail line -->
+    <line x1="172" y1="73" x2="305" y2="73" stroke="#a0b0c5" stroke-width="0.5"/>
+
+    <!-- Wheel 1 - cab -->
+    <g class="w1">
+      <circle cx="115" cy="92" r="7" fill="url(#gtTire)" stroke="#333" stroke-width="1.5"/>
+      <circle cx="115" cy="92" r="3.5" fill="url(#gtRim)" stroke="#888" stroke-width="0.8"/>
+      <line x1="115" y1="86" x2="115" y2="98" stroke="#666" stroke-width="0.8"/>
+      <line x1="109" y1="92" x2="121" y2="92" stroke="#666" stroke-width="0.8"/>
     </g>
-    <!-- Wheel 3 (animated) -->
+    <!-- Wheel 2 - trailer front -->
+    <g class="w2">
+      <circle cx="218" cy="90" r="7" fill="url(#gtTire)" stroke="#333" stroke-width="1.5"/>
+      <circle cx="218" cy="90" r="3.5" fill="url(#gtRim)" stroke="#888" stroke-width="0.8"/>
+      <line x1="218" y1="84" x2="218" y2="96" stroke="#666" stroke-width="0.8"/>
+      <line x1="212" y1="90" x2="224" y2="90" stroke="#666" stroke-width="0.8"/>
+    </g>
+    <!-- Wheel 3 - trailer rear 1 -->
     <g class="w3">
-      <circle cx="295" cy="108" r="8" fill="url(#gtTire)" stroke="#333" stroke-width="1.5"/>
-      <circle cx="295" cy="108" r="4" fill="url(#gtRim)" stroke="#888" stroke-width="0.8"/>
-      <line x1="295" y1="101" x2="295" y2="115" stroke="#666" stroke-width="0.8"/>
-      <line x1="288" y1="108" x2="302" y2="108" stroke="#666" stroke-width="0.8"/>
+      <circle cx="278" cy="90" r="7" fill="url(#gtTire)" stroke="#333" stroke-width="1.5"/>
+      <circle cx="278" cy="90" r="3.5" fill="url(#gtRim)" stroke="#888" stroke-width="0.8"/>
+      <line x1="278" y1="84" x2="278" y2="96" stroke="#666" stroke-width="0.8"/>
+      <line x1="272" y1="90" x2="284" y2="90" stroke="#666" stroke-width="0.8"/>
+    </g>
+    <!-- Wheel 4 - trailer rear 2 -->
+    <g class="w4">
+      <circle cx="296" cy="90" r="7" fill="url(#gtTire)" stroke="#333" stroke-width="1.5"/>
+      <circle cx="296" cy="90" r="3.5" fill="url(#gtRim)" stroke="#888" stroke-width="0.8"/>
+      <line x1="296" y1="84" x2="296" y2="96" stroke="#666" stroke-width="0.8"/>
+      <line x1="290" y1="90" x2="302" y2="90" stroke="#666" stroke-width="0.8"/>
     </g>
   </g>
 
   <!-- Weight label on trailer -->
-  <text x="260" y="96" text-anchor="middle" font-size="11" font-weight="700" fill="#1a3a6b">3,000 lbs</text>
+  <text x="240" y="78" text-anchor="middle" font-size="11" font-weight="700" fill="#1a3a6b">3,000 lbs</text>
 
-  <!-- Gravity force arrow (straight down) -->
-  <line x1="260" y1="112" x2="260" y2="150" stroke="#1a3a6b" stroke-width="2" marker-end="url(#arrowNavy)"/>
-  <text x="272" y="147" font-size="9" font-weight="700" fill="#1a3a6b">W</text>
+  <!-- Gravity force arrow (straight down from center of trailer) -->
+  <line x1="240" y1="100" x2="240" y2="140" stroke="#1a3a6b" stroke-width="2" marker-end="url(#arrowNavy)"/>
+  <text x="252" y="138" font-size="9" font-weight="700" fill="#1a3a6b">W</text>
 
-  <!-- Grade force component arrow (along slope) -->
-  <line x1="260" y1="112" x2="305" y2="128" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrowRedG)"/>
+  <!-- Grade force component arrow (along slope, pointing downhill) -->
+  <line x1="240" y1="100" x2="195" y2="104.5" stroke="#dc2626" stroke-width="2.5"/>
+  <polygon points="195,101 187,104.8 195,108" fill="#dc2626"/>
 
   <!-- Unknown label -->
-  <text x="355" y="138" text-anchor="middle" font-size="11" font-weight="800" fill="#dc2626">Additional</text>
-  <text x="355" y="152" text-anchor="middle" font-size="11" font-weight="800" fill="#dc2626">Force = ?</text>
+  <text x="345" y="148" text-anchor="middle" font-size="11" font-weight="800" fill="#dc2626">Additional</text>
+  <text x="345" y="162" text-anchor="middle" font-size="11" font-weight="800" fill="#dc2626">Force = ?</text>
 
   <!-- Title -->
-  <text x="150" y="174" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Trailer on 10% Grade -- Find Additional Force</text>
+  <text x="200" y="174" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Trailer on 10% Grade -- Find Additional Force</text>
 </svg>

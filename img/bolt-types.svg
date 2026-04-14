@@ -5,15 +5,6 @@
       <stop offset="40%" stop-color="#e8ecf4"/>
       <stop offset="100%" stop-color="#b0bdd0"/>
     </linearGradient>
-    <linearGradient id="btShaft" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#a0aec2"/>
-      <stop offset="50%" stop-color="#ccd4e2"/>
-      <stop offset="100%" stop-color="#95a5ba"/>
-    </linearGradient>
-    <linearGradient id="btHex" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#c8d0de"/>
-      <stop offset="100%" stop-color="#a0aec4"/>
-    </linearGradient>
     <linearGradient id="btRecess" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#3a5070"/>
       <stop offset="100%" stop-color="#1a3050"/>
@@ -23,11 +14,6 @@
     </filter>
   </defs>
   <style>
-    @keyframes wrenchSpin {
-      0%   { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .wrench-rotate { animation: wrenchSpin 6s linear infinite; transform-origin: 355px 42px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -49,89 +35,68 @@
     <line x1="380" y1="0" x2="380" y2="180"/>
   </g>
 
-  <!-- Bolt 1: Hex Head Bolt -->
-  <g filter="url(#btSh)">
-    <!-- Hex head (top view, slight 3D) -->
-    <polygon points="45,34 62,26 79,34 79,54 62,62 45,54" fill="url(#btHex)" stroke="#1a3a6b" stroke-width="1.8"/>
-    <!-- Top face highlight -->
-    <polygon points="48,36 62,29 76,36 76,42 62,48 48,42" fill="#e0e8f4" opacity="0.4"/>
-    <!-- Shaft -->
-    <rect x="53" y="62" width="18" height="44" rx="1" fill="url(#btShaft)" stroke="#1a3a6b" stroke-width="1.5"/>
-    <!-- Thread lines -->
-    <line x1="53" y1="74" x2="71" y2="74" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="53" y1="81" x2="71" y2="81" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="53" y1="88" x2="71" y2="88" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="53" y1="95" x2="71" y2="95" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="53" y1="102" x2="71" y2="102" stroke="#8a9ab0" stroke-width="0.8"/>
-  </g>
-  <text x="62" y="122" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Hex Head</text>
+  <!-- Title -->
+  <text x="200" y="16" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Bolt Head Types -- Which Uses a Hex Key?</text>
 
-  <!-- Bolt 2: Carriage Bolt -->
+  <!-- Bolt 1: Hex Head (top-down view) - center 55,62 -->
+  <g filter="url(#btSh)">
+    <!-- Hexagon shape -->
+    <polygon points="55,38 76,50 76,74 55,86 34,74 34,50" fill="url(#btMetal)" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Top face highlight -->
+    <polygon points="55,42 72,52 72,72 55,82 38,72 38,52" fill="#e8ecf4" opacity="0.3"/>
+    <!-- Center circle (bolt shaft visible from top) -->
+    <circle cx="55" cy="62" r="10" fill="#c8d0de" stroke="#8a9ab5" stroke-width="1"/>
+    <circle cx="55" cy="62" r="3" fill="#8a9ab5"/>
+  </g>
+  <text x="55" y="108" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Hex Head</text>
+
+  <!-- Bolt 2: Carriage (top-down view) - center 150,62 -->
   <g filter="url(#btSh)">
     <!-- Round dome head -->
-    <ellipse cx="152" cy="36" rx="18" ry="11" fill="url(#btMetal)" stroke="#1a3a6b" stroke-width="1.8"/>
+    <circle cx="150" cy="62" r="24" fill="url(#btMetal)" stroke="#1a3a6b" stroke-width="2"/>
     <!-- Dome highlight -->
-    <ellipse cx="149" cy="33" rx="8" ry="5" fill="#f0f4fa" opacity="0.3"/>
-    <!-- Square neck -->
-    <rect x="143" y="45" width="18" height="12" fill="url(#btShaft)" stroke="#1a3a6b" stroke-width="1.5"/>
-    <!-- Shaft -->
-    <rect x="144" y="57" width="16" height="48" rx="1" fill="url(#btShaft)" stroke="#1a3a6b" stroke-width="1.5"/>
-    <!-- Threads -->
-    <line x1="144" y1="72" x2="160" y2="72" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="144" y1="79" x2="160" y2="79" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="144" y1="86" x2="160" y2="86" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="144" y1="93" x2="160" y2="93" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="144" y1="100" x2="160" y2="100" stroke="#8a9ab0" stroke-width="0.8"/>
+    <ellipse cx="146" cy="56" rx="10" ry="7" fill="#f0f4fa" opacity="0.3"/>
+    <!-- Square shoulder inset -->
+    <rect x="138" y="50" width="24" height="24" rx="1" fill="#c0c8d8" stroke="#8a9ab5" stroke-width="1"/>
+    <!-- Center bolt hole -->
+    <circle cx="150" cy="62" r="4" fill="#8a9ab5"/>
   </g>
-  <text x="152" y="122" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Carriage</text>
+  <text x="150" y="108" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Carriage</text>
 
-  <!-- Bolt 3: Socket Head Cap Screw -->
+  <!-- Bolt 3: Socket Head Cap Screw (top-down view) - center 248,62 -->
   <g filter="url(#btSh)">
-    <!-- Cylindrical head -->
-    <rect x="224" y="26" width="38" height="22" rx="4" fill="url(#btMetal)" stroke="#1a3a6b" stroke-width="1.8"/>
-    <!-- Head highlight -->
-    <rect x="226" y="28" width="34" height="5" rx="2" fill="#f0f4fa" opacity="0.3"/>
-    <!-- Hex recess in head -->
-    <polygon points="238,33 245,30 252,33 252,41 245,44 238,41" fill="url(#btRecess)" stroke="#1a3a6b" stroke-width="1"/>
-    <!-- Shaft -->
-    <rect x="234" y="48" width="18" height="58" rx="1" fill="url(#btShaft)" stroke="#1a3a6b" stroke-width="1.5"/>
-    <!-- Threads -->
-    <line x1="234" y1="64" x2="252" y2="64" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="234" y1="72" x2="252" y2="72" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="234" y1="80" x2="252" y2="80" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="234" y1="88" x2="252" y2="88" stroke="#8a9ab0" stroke-width="0.8"/>
-    <line x1="234" y1="96" x2="252" y2="96" stroke="#8a9ab0" stroke-width="0.8"/>
+    <!-- Cylindrical head (circle from top) -->
+    <circle cx="248" cy="62" r="24" fill="url(#btMetal)" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Knurling ring -->
+    <circle cx="248" cy="62" r="22" fill="none" stroke="#b0bdd0" stroke-width="0.5"/>
+    <!-- Hex recess (small hexagon inside) -->
+    <polygon points="248,49 259,55.5 259,68.5 248,75 237,68.5 237,55.5" fill="url(#btRecess)" stroke="#1a3a6b" stroke-width="1.5"/>
   </g>
-  <text x="243" y="122" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Socket Head</text>
-  <text x="243" y="132" text-anchor="middle" font-size="8" font-weight="600" fill="#1a3a6b">Cap Screw</text>
+  <text x="248" y="104" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Socket Head</text>
+  <text x="248" y="115" text-anchor="middle" font-size="8" font-weight="600" fill="#1a3a6b">Cap Screw</text>
 
-  <!-- Bolt 4: Lag Bolt -->
+  <!-- Allen wrench pointing at Socket Head Cap Screw -->
+  <line x1="248" y1="120" x2="248" y2="138" stroke="#444" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="248" y1="138" x2="270" y2="138" stroke="#444" stroke-width="3.5" stroke-linecap="round"/>
+  <text x="278" y="141" font-size="8" font-weight="600" fill="#5a7090">Hex Key</text>
+
+  <!-- Bolt 4: Lag Bolt (top-down view with pointed tip shown as side detail) - center 345,62 -->
   <g filter="url(#btSh)">
-    <!-- Hex head -->
-    <polygon points="312,34 326,26 340,34 340,54 326,62 312,54" fill="url(#btHex)" stroke="#1a3a6b" stroke-width="1.8"/>
-    <polygon points="314,36 326,29 338,36 338,42 326,48 314,42" fill="#e0e8f4" opacity="0.4"/>
-    <!-- Tapered shaft (wood screw style) -->
-    <polygon points="318,62 334,62 329,106 323,106" fill="url(#btShaft)" stroke="#1a3a6b" stroke-width="1.5"/>
-    <!-- Coarse threads -->
-    <line x1="316" y1="70" x2="336" y2="70" stroke="#8a9ab0" stroke-width="1.2"/>
-    <line x1="317" y1="78" x2="335" y2="78" stroke="#8a9ab0" stroke-width="1.2"/>
-    <line x1="319" y1="86" x2="333" y2="86" stroke="#8a9ab0" stroke-width="1.2"/>
-    <line x1="320" y1="94" x2="332" y2="94" stroke="#8a9ab0" stroke-width="1.2"/>
-    <!-- Point -->
-    <polygon points="323,106 329,106 326,112" fill="url(#btShaft)" stroke="#1a3a6b" stroke-width="1"/>
+    <!-- Hex head from top -->
+    <polygon points="345,38 366,50 366,74 345,86 324,74 324,50" fill="url(#btMetal)" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Top highlight -->
+    <polygon points="345,42 362,52 362,72 345,82 328,72 328,52" fill="#e8ecf4" opacity="0.3"/>
+    <!-- Center with pointed-tip indicator -->
+    <circle cx="345" cy="62" r="10" fill="#c8d0de" stroke="#8a9ab5" stroke-width="1"/>
+    <!-- Point indicator (small triangle) -->
+    <polygon points="342,62 345,55 348,62" fill="#8a9ab5"/>
+    <circle cx="345" cy="62" r="2.5" fill="#8a9ab5"/>
   </g>
-  <text x="326" y="122" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Lag Bolt</text>
-
-  <!-- Allen wrench / hex key (animated spin) -->
-  <g class="wrench-rotate">
-    <line x1="355" y1="42" x2="355" y2="22" stroke="#444" stroke-width="3.5" stroke-linecap="round"/>
-    <line x1="355" y1="42" x2="373" y2="42" stroke="#444" stroke-width="3.5" stroke-linecap="round"/>
-  </g>
-  <text x="364" y="16" text-anchor="middle" font-size="8" font-weight="600" fill="#5a7090">Hex Key</text>
+  <text x="345" y="108" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Lag Bolt</text>
 
   <!-- Question mark -->
-  <text x="364" y="72" text-anchor="middle" font-size="20" font-weight="800" fill="#dc2626">?</text>
+  <text x="248" y="162" text-anchor="middle" font-size="20" font-weight="800" fill="#dc2626">?</text>
 
-  <!-- Title -->
-  <text x="200" y="168" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Bolt Head Types -- Which Uses a Hex Key?</text>
+  <!-- Bottom note -->
+  <text x="200" y="175" text-anchor="middle" font-size="9" fill="#8a9ab5">Top-down views of bolt heads</text>
 </svg>

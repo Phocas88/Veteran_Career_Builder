@@ -19,7 +19,7 @@
   </defs>
   <style>
     @keyframes spinSlow { to { transform: rotate(360deg); } }
-    .pulley-a-spin { animation: spinSlow 6s linear infinite; transform-origin: 115px 95px; }
+    .pulley-a-spin { animation: spinSlow 6s linear infinite; transform-origin: 110px 85px; }
     text { font-family: Arial, sans-serif; }
   </style>
   <!-- Background with grid -->
@@ -46,65 +46,62 @@
   <text x="200" y="18" text-anchor="middle" font-size="11" fill="#5a7090" font-weight="600">Pulley System -- Large Drives Small</text>
 
   <!-- Belt (behind pulleys) -->
-  <!-- Top belt run -->
-  <line x1="115" y1="40" x2="300" y2="68" stroke="url(#beltFill)" stroke-width="6" stroke-linecap="round"/>
-  <line x1="115" y1="40" x2="300" y2="68" stroke="#666" stroke-width="4" stroke-linecap="round"/>
-  <!-- Bottom belt run -->
-  <line x1="115" y1="150" x2="300" y2="122" stroke="url(#beltFill)" stroke-width="6" stroke-linecap="round"/>
-  <line x1="115" y1="150" x2="300" y2="122" stroke="#666" stroke-width="4" stroke-linecap="round"/>
+  <!-- Top belt run: from top of A to top of B -->
+  <line x1="110" y1="35" x2="310" y2="65" stroke="#666" stroke-width="5" stroke-linecap="round"/>
+  <!-- Bottom belt run: from bottom of A to bottom of B -->
+  <line x1="110" y1="135" x2="310" y2="105" stroke="#666" stroke-width="5" stroke-linecap="round"/>
   <!-- Tension marks on belt -->
-  <line x1="180" y1="49" x2="182" y2="45" stroke="#888" stroke-width="0.5"/>
-  <line x1="200" y1="52" x2="202" y2="48" stroke="#888" stroke-width="0.5"/>
-  <line x1="220" y1="55" x2="222" y2="51" stroke="#888" stroke-width="0.5"/>
-  <line x1="240" y1="58" x2="242" y2="54" stroke="#888" stroke-width="0.5"/>
-  <text x="210" y="34" text-anchor="middle" font-size="9" font-weight="600" fill="#555">BELT</text>
+  <line x1="180" y1="44" x2="182" y2="40" stroke="#888" stroke-width="0.5"/>
+  <line x1="210" y1="48" x2="212" y2="44" stroke="#888" stroke-width="0.5"/>
+  <line x1="240" y1="52" x2="242" y2="48" stroke="#888" stroke-width="0.5"/>
+  <text x="210" y="32" text-anchor="middle" font-size="9" font-weight="600" fill="#555">BELT</text>
 
-  <!-- Pulley A: Large (animated) center=115,95, R=55 -->
+  <!-- Pulley A: Large (animated) center=110,85, R=50 -->
   <g class="pulley-a-spin" filter="url(#pShadow)">
     <!-- Outer rim -->
-    <circle cx="115" cy="95" r="55" fill="url(#pAFill)" stroke="#1a3a6b" stroke-width="2.5"/>
+    <circle cx="110" cy="85" r="50" fill="url(#pAFill)" stroke="#1a3a6b" stroke-width="2.5"/>
     <!-- V-groove -->
-    <circle cx="115" cy="95" r="52" fill="none" stroke="#8a9ab5" stroke-width="1.2"/>
-    <circle cx="115" cy="95" r="48" fill="none" stroke="#b0bdd0" stroke-width="0.6"/>
+    <circle cx="110" cy="85" r="47" fill="none" stroke="#8a9ab5" stroke-width="1.2"/>
+    <circle cx="110" cy="85" r="43" fill="none" stroke="#b0bdd0" stroke-width="0.6"/>
     <!-- Spokes -->
-    <line x1="115" y1="45" x2="115" y2="145" stroke="#1a3a6b" stroke-width="1.8" opacity="0.3"/>
-    <line x1="65" y1="95" x2="165" y2="95" stroke="#1a3a6b" stroke-width="1.8" opacity="0.3"/>
-    <line x1="76" y1="56" x2="154" y2="134" stroke="#1a3a6b" stroke-width="1.2" opacity="0.2"/>
-    <line x1="76" y1="134" x2="154" y2="56" stroke="#1a3a6b" stroke-width="1.2" opacity="0.2"/>
+    <line x1="110" y1="40" x2="110" y2="130" stroke="#1a3a6b" stroke-width="1.8" opacity="0.3"/>
+    <line x1="65" y1="85" x2="155" y2="85" stroke="#1a3a6b" stroke-width="1.8" opacity="0.3"/>
+    <line x1="74" y1="49" x2="146" y2="121" stroke="#1a3a6b" stroke-width="1.2" opacity="0.2"/>
+    <line x1="74" y1="121" x2="146" y2="49" stroke="#1a3a6b" stroke-width="1.2" opacity="0.2"/>
     <!-- Hub -->
-    <circle cx="115" cy="95" r="16" fill="#e0e5ee" stroke="#1a3a6b" stroke-width="2"/>
-    <circle cx="115" cy="95" r="5" fill="#1a3a6b"/>
+    <circle cx="110" cy="85" r="14" fill="#e0e5ee" stroke="#1a3a6b" stroke-width="2"/>
+    <circle cx="110" cy="85" r="5" fill="#1a3a6b"/>
     <!-- Rotation marker -->
-    <circle cx="115" cy="44" r="3.5" fill="#c8960a"/>
+    <circle cx="110" cy="39" r="3.5" fill="#c8960a"/>
   </g>
 
   <!-- Axle mount A -->
-  <rect x="108" y="88" width="14" height="14" rx="2" fill="none" stroke="#5a7090" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.5"/>
+  <rect x="103" y="78" width="14" height="14" rx="2" fill="none" stroke="#5a7090" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.5"/>
 
-  <!-- Pulley B: Small (STATIC) center=300,95, R=28 -->
+  <!-- Pulley B: Small (STATIC) center=310,85, R=22 -->
   <g filter="url(#pShadow)">
     <!-- Outer rim -->
-    <circle cx="300" cy="95" r="28" fill="url(#pBFill)" stroke="#1a3a6b" stroke-width="2.5"/>
+    <circle cx="310" cy="85" r="22" fill="url(#pBFill)" stroke="#1a3a6b" stroke-width="2.5"/>
     <!-- V-groove -->
-    <circle cx="300" cy="95" r="25" fill="none" stroke="#8a9ab5" stroke-width="1"/>
-    <circle cx="300" cy="95" r="22" fill="none" stroke="#b0bdd0" stroke-width="0.5"/>
+    <circle cx="310" cy="85" r="19" fill="none" stroke="#8a9ab5" stroke-width="1"/>
+    <circle cx="310" cy="85" r="16" fill="none" stroke="#b0bdd0" stroke-width="0.5"/>
     <!-- Spokes -->
-    <line x1="300" y1="70" x2="300" y2="120" stroke="#1a3a6b" stroke-width="1.5" opacity="0.3"/>
-    <line x1="275" y1="95" x2="325" y2="95" stroke="#1a3a6b" stroke-width="1.5" opacity="0.3"/>
+    <line x1="310" y1="66" x2="310" y2="104" stroke="#1a3a6b" stroke-width="1.5" opacity="0.3"/>
+    <line x1="291" y1="85" x2="329" y2="85" stroke="#1a3a6b" stroke-width="1.5" opacity="0.3"/>
     <!-- Hub -->
-    <circle cx="300" cy="95" r="9" fill="#e0e5ee" stroke="#1a3a6b" stroke-width="2"/>
-    <circle cx="300" cy="95" r="3.5" fill="#1a3a6b"/>
+    <circle cx="310" cy="85" r="7" fill="#e0e5ee" stroke="#1a3a6b" stroke-width="2"/>
+    <circle cx="310" cy="85" r="3" fill="#1a3a6b"/>
     <!-- Rotation marker -->
-    <circle cx="300" cy="70" r="2.5" fill="#c8960a"/>
+    <circle cx="310" cy="66" r="2.5" fill="#c8960a"/>
   </g>
 
-  <!-- Labels -->
-  <text x="115" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a6b">PULLEY A (large)</text>
-  <text x="115" y="180" text-anchor="middle" font-size="10" fill="#c8960a" font-weight="600">Slow rotation</text>
+  <!-- Labels BELOW the pulleys, not overlapping -->
+  <text x="110" y="150" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a6b">PULLEY A (large)</text>
+  <text x="110" y="165" text-anchor="middle" font-size="10" fill="#c8960a" font-weight="600">Slow rotation</text>
 
-  <text x="300" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a6b">PULLEY B (small)</text>
-  <text x="300" y="152" text-anchor="middle" font-size="14" font-weight="700" fill="#dc2626">Speed = ?</text>
+  <text x="310" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a6b">PULLEY B (small)</text>
+  <text x="310" y="138" text-anchor="middle" font-size="14" font-weight="700" fill="#dc2626">Speed = ?</text>
 
   <!-- Bottom note -->
-  <text x="200" y="196" text-anchor="middle" font-size="9" fill="#8a9ab5">Belt connects large pulley to small pulley</text>
+  <text x="200" y="190" text-anchor="middle" font-size="9" fill="#8a9ab5">Belt connects large pulley to small pulley</text>
 </svg>

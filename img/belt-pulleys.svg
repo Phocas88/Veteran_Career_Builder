@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
   <style>
     @keyframes spinFast { to { transform: rotate(360deg); } }
-    @keyframes spinSlow { to { transform: rotate(360deg); } }
     .smallSpin { animation: spinFast 1s linear infinite; transform-origin: 110px 90px; }
     /* Large pulley is STATIC — its RPM is the question */
     text { font-family: Arial, sans-serif; }
@@ -9,33 +8,47 @@
   <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
 
   <!-- Belt (behind pulleys) -->
-  <!-- Top belt -->
-  <line x1="110" y1="58" x2="290" y2="42" stroke="#5a7090" stroke-width="3"/>
-  <!-- Bottom belt -->
-  <line x1="110" y1="122" x2="290" y2="138" stroke="#5a7090" stroke-width="3"/>
+  <!-- Top belt run -->
+  <line x1="110" y1="58" x2="290" y2="42" stroke="#5a7090" stroke-width="4" stroke-linecap="round"/>
+  <!-- Bottom belt run -->
+  <line x1="110" y1="122" x2="290" y2="138" stroke="#5a7090" stroke-width="4" stroke-linecap="round"/>
 
   <!-- Small pulley (left) - 6" diameter = r30 -->
   <g class="smallSpin">
-    <circle cx="110" cy="90" r="32" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2.5"/>
-    <circle cx="110" cy="90" r="8" fill="#fff" stroke="#1a3a6b" stroke-width="2"/>
-    <circle cx="110" cy="90" r="3" fill="#1a3a6b"/>
+    <!-- Outer rim -->
+    <circle cx="110" cy="90" r="34" fill="#c8cdd8" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- V-groove (darker ring inset) -->
+    <circle cx="110" cy="90" r="32" fill="#dce4f0" stroke="#8a9ab0" stroke-width="1"/>
+    <!-- Groove detail - inner wall -->
+    <circle cx="110" cy="90" r="28" fill="#dce4f0" stroke="#b0bcc8" stroke-width="0.75" stroke-dasharray="2,2"/>
+    <!-- Hub -->
+    <circle cx="110" cy="90" r="10" fill="#e8ecf2" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Axle -->
+    <circle cx="110" cy="90" r="3.5" fill="#1a3a6b"/>
     <!-- Spoke lines for visual rotation -->
-    <line x1="110" y1="60" x2="110" y2="120" stroke="#1a3a6b" stroke-width="1" opacity=".3"/>
-    <line x1="80" y1="90" x2="140" y2="90" stroke="#1a3a6b" stroke-width="1" opacity=".3"/>
-    <line x1="88" y1="68" x2="132" y2="112" stroke="#1a3a6b" stroke-width="1" opacity=".3"/>
-    <line x1="132" y1="68" x2="88" y2="112" stroke="#1a3a6b" stroke-width="1" opacity=".3"/>
+    <line x1="110" y1="60" x2="110" y2="120" stroke="#1a3a6b" stroke-width="1" opacity=".25"/>
+    <line x1="80" y1="90" x2="140" y2="90" stroke="#1a3a6b" stroke-width="1" opacity=".25"/>
+    <line x1="88" y1="68" x2="132" y2="112" stroke="#1a3a6b" stroke-width="1" opacity=".25"/>
+    <line x1="132" y1="68" x2="88" y2="112" stroke="#1a3a6b" stroke-width="1" opacity=".25"/>
   </g>
 
   <!-- Large pulley (right) - 12" diameter = r48 -->
   <g>
-    <circle cx="290" cy="90" r="48" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2.5"/>
-    <circle cx="290" cy="90" r="12" fill="#fff" stroke="#1a3a6b" stroke-width="2"/>
-    <circle cx="290" cy="90" r="4" fill="#1a3a6b"/>
+    <!-- Outer rim -->
+    <circle cx="290" cy="90" r="50" fill="#c8cdd8" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- V-groove (darker ring inset) -->
+    <circle cx="290" cy="90" r="48" fill="#dce4f0" stroke="#8a9ab0" stroke-width="1"/>
+    <!-- Groove detail - inner wall -->
+    <circle cx="290" cy="90" r="44" fill="#dce4f0" stroke="#b0bcc8" stroke-width="0.75" stroke-dasharray="2,2"/>
+    <!-- Hub -->
+    <circle cx="290" cy="90" r="14" fill="#e8ecf2" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Axle -->
+    <circle cx="290" cy="90" r="5" fill="#1a3a6b"/>
     <!-- Spoke lines -->
-    <line x1="290" y1="44" x2="290" y2="136" stroke="#1a3a6b" stroke-width="1" opacity=".3"/>
-    <line x1="244" y1="90" x2="336" y2="90" stroke="#1a3a6b" stroke-width="1" opacity=".3"/>
-    <line x1="256" y1="56" x2="324" y2="124" stroke="#1a3a6b" stroke-width="1" opacity=".3"/>
-    <line x1="324" y1="56" x2="256" y2="124" stroke="#1a3a6b" stroke-width="1" opacity=".3"/>
+    <line x1="290" y1="44" x2="290" y2="136" stroke="#1a3a6b" stroke-width="1" opacity=".25"/>
+    <line x1="244" y1="90" x2="336" y2="90" stroke="#1a3a6b" stroke-width="1" opacity=".25"/>
+    <line x1="256" y1="56" x2="324" y2="124" stroke="#1a3a6b" stroke-width="1" opacity=".25"/>
+    <line x1="324" y1="56" x2="256" y2="124" stroke="#1a3a6b" stroke-width="1" opacity=".25"/>
   </g>
 
   <!-- Labels -->

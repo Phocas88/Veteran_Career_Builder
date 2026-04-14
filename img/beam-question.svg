@@ -9,27 +9,31 @@
   <!-- Column A (left, solid) -->
   <rect x="60" y="55" width="18" height="90" fill="#5a7090" stroke="#3a5070" stroke-width="1.5" rx="2"/>
   <rect x="55" y="52" width="28" height="8" fill="#5a7090" rx="2"/>
-  <text x="69" y="155" text-anchor="middle" font-size="10" font-weight="700" fill="#1a3a6b">COL A</text>
+  <text x="69" y="158" text-anchor="middle" font-size="10" font-weight="700" fill="#1a3a6b">COL A</text>
 
   <!-- Column C (center, removed - dashed) -->
   <rect x="191" y="55" width="18" height="90" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="8,4" rx="2"/>
   <line x1="186" y1="55" x2="214" y2="145" stroke="#dc2626" stroke-width="2" opacity=".5"/>
   <line x1="214" y1="55" x2="186" y2="145" stroke="#dc2626" stroke-width="2" opacity=".5"/>
-  <text x="200" y="155" text-anchor="middle" font-size="10" font-weight="800" fill="#dc2626">COL C ✕</text>
+  <text x="200" y="158" text-anchor="middle" font-size="10" font-weight="800" fill="#dc2626">COL C ✕</text>
 
   <!-- Column B (right, solid) -->
   <rect x="322" y="55" width="18" height="90" fill="#5a7090" stroke="#3a5070" stroke-width="1.5" rx="2"/>
   <rect x="317" y="52" width="28" height="8" fill="#5a7090" rx="2"/>
-  <text x="331" y="155" text-anchor="middle" font-size="10" font-weight="700" fill="#1a3a6b">COL B</text>
+  <text x="331" y="158" text-anchor="middle" font-size="10" font-weight="700" fill="#1a3a6b">COL B</text>
 
   <!-- Steel beam -->
-  <rect x="40" y="35" width="320" height="22" fill="#8aa0b8" stroke="#5a7090" stroke-width="2" rx="3"/>
+  <rect x="40" y="35" width="320" height="22" rx="3" fill="#8aa0b8" stroke="#5a7090" stroke-width="2"/>
   <rect x="40" y="38" width="320" height="3" fill="#a0b8d0" opacity=".5"/>
   <text x="200" y="25" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a6b">STEEL I-BEAM</text>
 
   <!-- Load arrow -->
   <line x1="200" y1="57" x2="200" y2="80" stroke="#c8960a" stroke-width="3"/>
   <polygon points="193,75 200,90 207,75" fill="#c8960a"/>
-  <text x="200" y="105" text-anchor="middle" font-size="14" font-weight="800" fill="#c8960a">2,000 lbs</text>
-  <text x="200" y="118" text-anchor="middle" font-size="10" fill="#8a6000">↓ Load applied at center</text>
+
+  <!-- Load label with background for readability over the red X -->
+  <rect x="155" y="93" width="90" height="18" rx="3" fill="#f0f4fa" opacity=".85"/>
+  <text x="200" y="107" text-anchor="middle" font-size="14" font-weight="800" fill="#c8960a">2,000 lbs</text>
+  <rect x="148" y="110" width="104" height="14" rx="3" fill="#f0f4fa" opacity=".85"/>
+  <text x="200" y="121" text-anchor="middle" font-size="10" fill="#8a6000">↓ Load applied at center</text>
 </svg>

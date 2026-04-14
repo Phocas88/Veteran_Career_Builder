@@ -1861,6 +1861,7 @@ function skipWelcome(){
   document.getElementById('vcp-welcome-popup').style.display='none';
 }
 </script>
+<script src="/vcp-rank-insignia.js"></script>
 
 <script>
 // Smart homepage — detect returning users
@@ -1906,9 +1907,27 @@ function skipWelcome(){
         });
         if(sorted.length > 0) {
           var rankVal = sorted[0].rank || '';
-          // Extract grade like E-5 from value like "E-5 - SGT - Sergeant"
-          var gradeMatch = rankVal.match(/[EWO]-\d+/);
+          console.log('VCP Insignia Debug - rank value:', rankVal, 'branch:', sorted[0].branch);
+          // Extract grade like E-5 from value like "E-5 - SGT - Sergeant" or "E5" or "SGT"
+          var gradeMatch = rankVal.match(/[EWO]-?\d+/);
           lastGrade = gradeMatch ? gradeMatch[0] : '';
+          // Normalize: E5 -> E-5, W3 -> W-3, O3 -> O-3
+          if(lastGrade && lastGrade.length <= 3 && lastGrade.indexOf('-') === -1) {
+            lastGrade = lastGrade.charAt(0) + '-' + lastGrade.slice(1);
+          }
+          // If no grade found, try reverse lookup from abbreviation
+          if(!lastGrade) {
+            var ABBR_TO_GRADE = {'PVT':'E-1','PV2':'E-2','PFC':'E-3','SPC':'E-4','CPL':'E-4',
+              'SGT':'E-5','SSG':'E-6','SFC':'E-7','MSG':'E-8','1SG':'E-8','SGM':'E-9','CSM':'E-9',
+              'WO1':'W-1','CW2':'W-2','CW3':'W-3','CW4':'W-4','CW5':'W-5',
+              '2LT':'O-1','1LT':'O-2','CPT':'O-3','MAJ':'O-4','LTC':'O-5','COL':'O-6',
+              'BG':'O-7','MG':'O-8','LTG':'O-9','GEN':'O-10',
+              'SR':'E-1','SA':'E-2','SN':'E-3','PO3':'E-4','PO2':'E-5','PO1':'E-6','CPO':'E-7','SCPO':'E-8','MCPO':'E-9',
+              'AB':'E-1','AMN':'E-2','A1C':'E-3','SRA':'E-4','SSGT':'E-5','TSGT':'E-6','MSGT':'E-7','SMSGT':'E-8','CMSGT':'E-9'};
+            var upperRank = rankVal.toUpperCase().trim();
+            if(ABBR_TO_GRADE[upperRank]) lastGrade = ABBR_TO_GRADE[upperRank];
+          }
+          console.log('VCP Insignia Debug - final grade:', lastGrade);
           // Use stored abbreviation or lookup
           var abbrMatch = rankVal.match(/- ([A-Z0-9]{2,5}) -|- ([A-Z0-9]{2,5})$/);
           lastRankAbbr = abbrMatch ? (abbrMatch[1]||abbrMatch[2]) : RANK_ABBRS[lastGrade] || rankVal;
@@ -1959,7 +1978,6 @@ function skipWelcome(){
   }
 })();
 </script>
-<script src="/vcp-rank-insignia.js"></script>
 <script defer src="/vcp-components.js"></script>
 <script>
 // Scroll reveal

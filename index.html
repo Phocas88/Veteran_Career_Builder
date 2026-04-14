@@ -1963,9 +1963,15 @@ function skipWelcome(){
       var branch = '';
       try { var milArr = p.milExperiences || p.experiences || p.military || []; if(milArr[0]) branch = milArr[0].branch || 'Army'; } catch(e){}
       var insigniaUrl = window.VCP_INSIGNIA.get(branch || 'Army', lastGrade);
+      console.log('VCP Insignia Debug - branch:', branch, 'grade:', lastGrade, 'url:', insigniaUrl);
       if(insigniaUrl) {
         var img = document.getElementById('dash-insignia');
-        if(img) { img.src = insigniaUrl; img.alt = lastGrade + ' insignia'; img.style.display = 'block'; }
+        if(img) {
+          img.onerror = function() { console.error('Insignia image failed to load:', this.src); this.style.display='none'; };
+          img.src = insigniaUrl;
+          img.alt = lastGrade + ' insignia';
+          img.style.display = 'block';
+        }
       }
     }
   } else {

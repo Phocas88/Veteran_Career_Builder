@@ -1,59 +1,116 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
-  <style>
-    @keyframes compress { 0%,100% { transform: translateY(0); } 50% { transform: translateY(20px); } }
-    .piston2 { animation: compress 3s ease-in-out infinite; }
-    text { font-family: Arial, sans-serif; }
-  </style>
-  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
-
-  <!-- LEFT: Normal state cylinder -->
-  <!-- Cylinder walls -->
-  <rect x="40" y="40" width="80" height="100" rx="3" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
-  <!-- Piston at top -->
-  <rect x="38" y="36" width="84" height="10" rx="2" fill="#1a3a6b"/>
-  <!-- Gas dots -->
-  <circle cx="60" cy="75" r="2" fill="#5a7090" opacity=".5"/>
-  <circle cx="80" cy="90" r="2" fill="#5a7090" opacity=".5"/>
-  <circle cx="100" cy="70" r="2" fill="#5a7090" opacity=".5"/>
-  <circle cx="65" cy="110" r="2" fill="#5a7090" opacity=".5"/>
-  <circle cx="95" cy="120" r="2" fill="#5a7090" opacity=".5"/>
-  <circle cx="75" cy="100" r="2" fill="#5a7090" opacity=".5"/>
-  <!-- Labels -->
-  <text x="80" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#1a3a6b">P</text>
-  <text x="80" y="30" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Normal</text>
-
-  <!-- Arrow between -->
-  <line x1="145" y1="90" x2="175" y2="90" stroke="#c8960a" stroke-width="2" marker-end="url(#arrowG)"/>
-  <text x="160" y="82" text-anchor="middle" font-size="9" fill="#c8960a" font-weight="600">compress</text>
-
-  <!-- RIGHT: Compressed state cylinder -->
-  <rect x="200" y="40" width="80" height="100" rx="3" fill="#dce4f0" stroke="#1a3a6b" stroke-width="2"/>
-  <!-- Animated piston pushing down -->
-  <g class="piston2">
-    <rect x="198" y="36" width="84" height="10" rx="2" fill="#1a3a6b"/>
-    <!-- Down arrow on piston -->
-    <line x1="240" y1="20" x2="240" y2="34" stroke="#c8960a" stroke-width="2" marker-end="url(#arrowG)"/>
-  </g>
-  <!-- Compressed gas dots (clustered lower) -->
-  <circle cx="220" cy="115" r="2" fill="#5a7090" opacity=".6"/>
-  <circle cx="235" cy="120" r="2" fill="#5a7090" opacity=".6"/>
-  <circle cx="250" cy="110" r="2" fill="#5a7090" opacity=".6"/>
-  <circle cx="225" cy="128" r="2" fill="#5a7090" opacity=".6"/>
-  <circle cx="255" cy="125" r="2" fill="#5a7090" opacity=".6"/>
-  <circle cx="240" cy="130" r="2" fill="#5a7090" opacity=".6"/>
-  <!-- Labels -->
-  <text x="240" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#1a3a6b">2P</text>
-
-  <!-- Unknown -->
-  <text x="340" y="95" text-anchor="middle" font-size="15" font-weight="700" fill="#dc2626">V = ?</text>
-  <text x="340" y="110" text-anchor="middle" font-size="10" fill="#dc2626">(new volume)</text>
-
   <defs>
+    <linearGradient id="metalWall" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b0bdd0"/>
+      <stop offset="40%" stop-color="#dce4f0"/>
+      <stop offset="100%" stop-color="#a0aec2"/>
+    </linearGradient>
+    <linearGradient id="pistonFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8a9ab5"/>
+      <stop offset="100%" stop-color="#5a7090"/>
+    </linearGradient>
+    <linearGradient id="rodFill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9aacbf"/>
+      <stop offset="50%" stop-color="#c8d4e0"/>
+      <stop offset="100%" stop-color="#8a9ab0"/>
+    </linearGradient>
+    <filter id="dropSh" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-color="#1a3a6b" flood-opacity="0.15"/>
+    </filter>
     <marker id="arrowG" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <path d="M0,0 L10,5 L0,10 Z" fill="#c8960a"/>
     </marker>
+    <marker id="arrowP" viewBox="0 0 10 10" refX="5" refY="10" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L5,10 L10,0 Z" fill="#1a3a6b"/>
+    </marker>
   </defs>
+  <style>
+    @keyframes compress { 0%,100% { transform: translateY(0); } 50% { transform: translateY(22px); } }
+    .piston2 { animation: compress 3s ease-in-out infinite; }
+    text { font-family: Arial, sans-serif; }
+  </style>
+  <!-- Background with grid -->
+  <rect width="400" height="180" rx="10" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+  <g stroke="#d8dfe8" stroke-width="0.3">
+    <line x1="0" y1="20" x2="400" y2="20"/><line x1="0" y1="40" x2="400" y2="40"/>
+    <line x1="0" y1="60" x2="400" y2="60"/><line x1="0" y1="80" x2="400" y2="80"/>
+    <line x1="0" y1="100" x2="400" y2="100"/><line x1="0" y1="120" x2="400" y2="120"/>
+    <line x1="0" y1="140" x2="400" y2="140"/><line x1="0" y1="160" x2="400" y2="160"/>
+    <line x1="20" y1="0" x2="20" y2="180"/><line x1="40" y1="0" x2="40" y2="180"/>
+    <line x1="60" y1="0" x2="60" y2="180"/><line x1="80" y1="0" x2="80" y2="180"/>
+    <line x1="100" y1="0" x2="100" y2="180"/><line x1="120" y1="0" x2="120" y2="180"/>
+    <line x1="140" y1="0" x2="140" y2="180"/><line x1="160" y1="0" x2="160" y2="180"/>
+    <line x1="180" y1="0" x2="180" y2="180"/><line x1="200" y1="0" x2="200" y2="180"/>
+    <line x1="220" y1="0" x2="220" y2="180"/><line x1="240" y1="0" x2="240" y2="180"/>
+    <line x1="260" y1="0" x2="260" y2="180"/><line x1="280" y1="0" x2="280" y2="180"/>
+    <line x1="300" y1="0" x2="300" y2="180"/><line x1="320" y1="0" x2="320" y2="180"/>
+    <line x1="340" y1="0" x2="340" y2="180"/><line x1="360" y1="0" x2="360" y2="180"/>
+    <line x1="380" y1="0" x2="380" y2="180"/>
+  </g>
+
+  <!-- LEFT: Normal state cylinder -->
+  <g filter="url(#dropSh)">
+    <!-- Cylinder outer wall -->
+    <rect x="30" y="35" width="8" height="105" fill="url(#metalWall)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <rect x="112" y="35" width="8" height="105" fill="url(#metalWall)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Cylinder bottom -->
+    <rect x="30" y="132" width="90" height="8" fill="url(#metalWall)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Cylinder interior -->
+    <rect x="38" y="35" width="74" height="97" fill="#e8eef6" opacity="0.6"/>
+    <!-- Piston at top -->
+    <rect x="38" y="32" width="74" height="12" rx="1" fill="url(#pistonFill)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- O-ring detail -->
+    <line x1="38" y1="40" x2="112" y2="40" stroke="#3a5070" stroke-width="1.5"/>
+    <!-- Piston rod -->
+    <rect x="70" y="16" width="10" height="18" fill="url(#rodFill)" stroke="#1a3a6b" stroke-width="1"/>
+  </g>
+  <!-- Gas molecules (spread out) -->
+  <circle cx="52" cy="65" r="3" fill="#5a9acc" opacity="0.6"/><circle cx="72" cy="80" r="3" fill="#5aaa7c" opacity="0.6"/>
+  <circle cx="100" cy="60" r="3" fill="#5a9acc" opacity="0.6"/><circle cx="58" cy="105" r="3" fill="#cc6a5a" opacity="0.6"/>
+  <circle cx="90" cy="95" r="3" fill="#5aaa7c" opacity="0.6"/><circle cx="80" cy="118" r="3" fill="#5a9acc" opacity="0.6"/>
+  <circle cx="46" cy="90" r="3" fill="#cc6a5a" opacity="0.6"/><circle cx="105" cy="120" r="3" fill="#5aaa7c" opacity="0.6"/>
+  <!-- Pressure arrows inside left cylinder -->
+  <line x1="55" y1="50" x2="55" y2="60" stroke="#1a3a6b" stroke-width="1" marker-end="url(#arrowP)"/>
+  <line x1="95" y1="50" x2="95" y2="60" stroke="#1a3a6b" stroke-width="1" marker-end="url(#arrowP)"/>
+  <!-- Labels -->
+  <text x="75" y="154" text-anchor="middle" font-size="14" font-weight="700" fill="#1a3a6b">P</text>
+  <text x="75" y="14" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Normal</text>
+
+  <!-- Arrow between -->
+  <line x1="135" y1="85" x2="165" y2="85" stroke="#c8960a" stroke-width="2.5" marker-end="url(#arrowG)"/>
+  <text x="150" y="78" text-anchor="middle" font-size="9" fill="#c8960a" font-weight="700">compress</text>
+
+  <!-- RIGHT: Compressed state cylinder -->
+  <g filter="url(#dropSh)">
+    <rect x="190" y="35" width="8" height="105" fill="url(#metalWall)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <rect x="272" y="35" width="8" height="105" fill="url(#metalWall)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <rect x="190" y="132" width="90" height="8" fill="url(#metalWall)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <rect x="198" y="35" width="74" height="97" fill="#e8eef6" opacity="0.6"/>
+  </g>
+  <!-- Animated piston pushing down -->
+  <g class="piston2">
+    <rect x="198" y="32" width="74" height="12" rx="1" fill="url(#pistonFill)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="198" y1="40" x2="272" y2="40" stroke="#3a5070" stroke-width="1.5"/>
+    <rect x="230" y="16" width="10" height="18" fill="url(#rodFill)" stroke="#1a3a6b" stroke-width="1"/>
+    <!-- Down arrow on piston rod -->
+    <line x1="235" y1="3" x2="235" y2="15" stroke="#c8960a" stroke-width="2" marker-end="url(#arrowG)"/>
+  </g>
+  <!-- Compressed gas molecules (clustered lower) -->
+  <circle cx="212" cy="118" r="3" fill="#5a9acc" opacity="0.7"/><circle cx="225" cy="125" r="3" fill="#5aaa7c" opacity="0.7"/>
+  <circle cx="240" cy="115" r="3" fill="#cc6a5a" opacity="0.7"/><circle cx="218" cy="128" r="3" fill="#5aaa7c" opacity="0.7"/>
+  <circle cx="255" cy="122" r="3" fill="#5a9acc" opacity="0.7"/><circle cx="235" cy="130" r="3" fill="#cc6a5a" opacity="0.7"/>
+  <circle cx="248" cy="130" r="3" fill="#5aaa7c" opacity="0.7"/><circle cx="260" cy="128" r="3" fill="#5a9acc" opacity="0.7"/>
+  <!-- Pressure arrows inside right cylinder (more, denser) -->
+  <line x1="215" y1="50" x2="215" y2="62" stroke="#1a3a6b" stroke-width="1" marker-end="url(#arrowP)"/>
+  <line x1="235" y1="50" x2="235" y2="62" stroke="#1a3a6b" stroke-width="1" marker-end="url(#arrowP)"/>
+  <line x1="255" y1="50" x2="255" y2="62" stroke="#1a3a6b" stroke-width="1" marker-end="url(#arrowP)"/>
+  <!-- Labels -->
+  <text x="235" y="154" text-anchor="middle" font-size="14" font-weight="700" fill="#1a3a6b">2P</text>
+
+  <!-- Unknown -->
+  <text x="345" y="85" text-anchor="middle" font-size="16" font-weight="800" fill="#dc2626">V = ?</text>
+  <text x="345" y="100" text-anchor="middle" font-size="10" fill="#dc2626">(new volume)</text>
 
   <!-- Title -->
-  <text x="200" y="174" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Gas Law — Pressure Doubles, Find New Volume</text>
+  <text x="200" y="174" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Gas Law -- Pressure Doubles, Find New Volume</text>
 </svg>

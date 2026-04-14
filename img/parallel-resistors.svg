@@ -1,69 +1,103 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+  <defs>
+    <filter id="ps" x="-3%" y="-3%" width="108%" height="108%">
+      <feDropShadow dx="0.5" dy="0.5" stdDeviation="0.8" flood-color="#1a3a6b" flood-opacity="0.1"/>
+    </filter>
+  </defs>
   <style>
     .dot { fill: #c8960a; }
     text { font-family: Arial, sans-serif; }
   </style>
-  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+  <!-- Background with grid -->
+  <rect width="400" height="180" rx="10" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+  <g stroke="#d8dfe8" stroke-width="0.3">
+    <line x1="0" y1="20" x2="400" y2="20"/><line x1="0" y1="40" x2="400" y2="40"/>
+    <line x1="0" y1="60" x2="400" y2="60"/><line x1="0" y1="80" x2="400" y2="80"/>
+    <line x1="0" y1="100" x2="400" y2="100"/><line x1="0" y1="120" x2="400" y2="120"/>
+    <line x1="0" y1="140" x2="400" y2="140"/><line x1="0" y1="160" x2="400" y2="160"/>
+    <line x1="40" y1="0" x2="40" y2="180"/><line x1="80" y1="0" x2="80" y2="180"/>
+    <line x1="120" y1="0" x2="120" y2="180"/><line x1="160" y1="0" x2="160" y2="180"/>
+    <line x1="200" y1="0" x2="200" y2="180"/><line x1="240" y1="0" x2="240" y2="180"/>
+    <line x1="280" y1="0" x2="280" y2="180"/><line x1="320" y1="0" x2="320" y2="180"/>
+    <line x1="360" y1="0" x2="360" y2="180"/>
+  </g>
 
-  <!-- Main wires -->
-  <line x1="60" y1="40" x2="140" y2="40" stroke="#1a3a6b" stroke-width="2.5"/>
-  <line x1="260" y1="40" x2="340" y2="40" stroke="#1a3a6b" stroke-width="2.5"/>
-  <line x1="60" y1="40" x2="60" y2="140" stroke="#1a3a6b" stroke-width="2.5"/>
-  <line x1="60" y1="140" x2="140" y2="140" stroke="#1a3a6b" stroke-width="2.5"/>
-  <line x1="260" y1="140" x2="340" y2="140" stroke="#1a3a6b" stroke-width="2.5"/>
-  <line x1="340" y1="40" x2="340" y2="140" stroke="#1a3a6b" stroke-width="2.5"/>
+  <!-- Main circuit wires -->
+  <!-- Top left horizontal -->
+  <line x1="55" y1="35" x2="140" y2="35" stroke="#1a3a6b" stroke-width="2.5"/>
+  <!-- Top right horizontal -->
+  <line x1="260" y1="35" x2="345" y2="35" stroke="#1a3a6b" stroke-width="2.5"/>
+  <!-- Left vertical -->
+  <line x1="55" y1="35" x2="55" y2="140" stroke="#1a3a6b" stroke-width="2.5"/>
+  <!-- Bottom left horizontal -->
+  <line x1="55" y1="140" x2="140" y2="140" stroke="#1a3a6b" stroke-width="2.5"/>
+  <!-- Bottom right horizontal -->
+  <line x1="260" y1="140" x2="345" y2="140" stroke="#1a3a6b" stroke-width="2.5"/>
+  <!-- Right vertical -->
+  <line x1="345" y1="35" x2="345" y2="140" stroke="#1a3a6b" stroke-width="2.5"/>
 
-  <!-- Split into two branches -->
-  <!-- Top branch -->
-  <line x1="140" y1="40" x2="140" y2="60" stroke="#1a3a6b" stroke-width="2.5"/>
-  <line x1="140" y1="60" x2="160" y2="60" stroke="#1a3a6b" stroke-width="2.5"/>
+  <!-- Battery on left side -->
+  <g filter="url(#ps)">
+    <rect x="42" y="66" width="26" height="42" fill="#f0f4fa"/>
+    <line x1="43" y1="67" x2="67" y2="67" stroke="#1a3a6b" stroke-width="2.8"/>
+    <line x1="48" y1="74" x2="62" y2="74" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="43" y1="81" x2="67" y2="81" stroke="#1a3a6b" stroke-width="2.8"/>
+    <line x1="48" y1="88" x2="62" y2="88" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="43" y1="95" x2="67" y2="95" stroke="#1a3a6b" stroke-width="2.8"/>
+    <line x1="48" y1="102" x2="62" y2="102" stroke="#1a3a6b" stroke-width="1.5"/>
+  </g>
+  <text x="32" y="75" text-anchor="end" font-size="11" font-weight="700" fill="#1a3a6b">+</text>
+  <text x="32" y="102" text-anchor="end" font-size="13" font-weight="700" fill="#1a3a6b">&#x2212;</text>
+
+  <!-- TOP BRANCH: split up from junction -->
+  <line x1="140" y1="35" x2="140" y2="55" stroke="#1a3a6b" stroke-width="2.5"/>
+  <line x1="140" y1="55" x2="155" y2="55" stroke="#1a3a6b" stroke-width="2.5"/>
   <!-- Top resistor zigzag -->
-  <polyline points="160,60 165,52 175,68 185,52 195,68 205,52 215,68 220,60 240,60"
-            fill="none" stroke="#1a3a6b" stroke-width="2.5" stroke-linejoin="round"/>
-  <line x1="240" y1="60" x2="260" y2="60" stroke="#1a3a6b" stroke-width="2.5"/>
-  <line x1="260" y1="60" x2="260" y2="40" stroke="#1a3a6b" stroke-width="2.5"/>
+  <g filter="url(#ps)">
+    <rect x="153" y="43" width="92" height="24" fill="#f0f4fa"/>
+    <polyline points="155,55 162,47 176,63 190,47 204,63 218,47 232,63 240,55 245,55"
+              fill="none" stroke="#1a3a6b" stroke-width="2.5" stroke-linejoin="round"/>
+  </g>
+  <line x1="245" y1="55" x2="260" y2="55" stroke="#1a3a6b" stroke-width="2.5"/>
+  <line x1="260" y1="55" x2="260" y2="35" stroke="#1a3a6b" stroke-width="2.5"/>
   <!-- Top resistor label -->
-  <text x="200" y="48" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a6b">6Ω</text>
+  <text x="200" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a6b">6&#x03A9;</text>
 
-  <!-- Bottom branch -->
+  <!-- BOTTOM BRANCH -->
   <line x1="140" y1="140" x2="140" y2="120" stroke="#1a3a6b" stroke-width="2.5"/>
-  <line x1="140" y1="120" x2="160" y2="120" stroke="#1a3a6b" stroke-width="2.5"/>
+  <line x1="140" y1="120" x2="155" y2="120" stroke="#1a3a6b" stroke-width="2.5"/>
   <!-- Bottom resistor zigzag -->
-  <polyline points="160,120 165,112 175,128 185,112 195,128 205,112 215,128 220,120 240,120"
-            fill="none" stroke="#1a3a6b" stroke-width="2.5" stroke-linejoin="round"/>
-  <line x1="240" y1="120" x2="260" y2="120" stroke="#1a3a6b" stroke-width="2.5"/>
+  <g filter="url(#ps)">
+    <rect x="153" y="108" width="92" height="24" fill="#f0f4fa"/>
+    <polyline points="155,120 162,112 176,128 190,112 204,128 218,112 232,128 240,120 245,120"
+              fill="none" stroke="#1a3a6b" stroke-width="2.5" stroke-linejoin="round"/>
+  </g>
+  <line x1="245" y1="120" x2="260" y2="120" stroke="#1a3a6b" stroke-width="2.5"/>
   <line x1="260" y1="120" x2="260" y2="140" stroke="#1a3a6b" stroke-width="2.5"/>
   <!-- Bottom resistor label -->
-  <text x="200" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a6b">6Ω</text>
+  <text x="200" y="107" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a6b">6&#x03A9;</text>
 
-  <!-- Battery on left -->
-  <line x1="48" y1="75" x2="72" y2="75" stroke="#1a3a6b" stroke-width="3"/>
-  <line x1="54" y1="82" x2="66" y2="82" stroke="#1a3a6b" stroke-width="1.5"/>
-  <line x1="48" y1="89" x2="72" y2="89" stroke="#1a3a6b" stroke-width="3"/>
-  <line x1="54" y1="96" x2="66" y2="96" stroke="#1a3a6b" stroke-width="1.5"/>
-  <text x="38" y="80" text-anchor="end" font-size="10" font-weight="700" fill="#1a3a6b">+</text>
-  <text x="38" y="96" text-anchor="end" font-size="12" font-weight="700" fill="#1a3a6b">−</text>
+  <!-- Junction dots (IEEE style filled) -->
+  <circle cx="140" cy="35" r="3.5" fill="#1a3a6b"/>
+  <circle cx="260" cy="35" r="3.5" fill="#1a3a6b"/>
+  <circle cx="140" cy="140" r="3.5" fill="#1a3a6b"/>
+  <circle cx="260" cy="140" r="3.5" fill="#1a3a6b"/>
 
-  <!-- Junction split indicators -->
-  <circle cx="140" cy="40" r="3" fill="#1a3a6b"/>
-  <circle cx="260" cy="40" r="3" fill="#1a3a6b"/>
-  <circle cx="140" cy="140" r="3" fill="#1a3a6b"/>
-  <circle cx="260" cy="140" r="3" fill="#1a3a6b"/>
-
-  <!-- Animated current dots - main top wire -->
-  <circle class="dot" r="3"><animateMotion dur="2.5s" repeatCount="indefinite" path="M60,40 L140,40" begin="0s"/></circle>
+  <!-- Animated current dots -->
+  <!-- Main top wire -->
+  <circle class="dot" r="3"><animateMotion dur="2.5s" repeatCount="indefinite" path="M55,35 L140,35" begin="0s"/></circle>
   <!-- Top branch -->
-  <circle class="dot" r="3"><animateMotion dur="2s" repeatCount="indefinite" path="M140,40 L140,60 L260,60 L260,40" begin="0s"/></circle>
+  <circle class="dot" r="3"><animateMotion dur="2.2s" repeatCount="indefinite" path="M140,35 L140,55 L260,55 L260,35" begin="0s"/></circle>
   <!-- Bottom branch -->
-  <circle class="dot" r="3"><animateMotion dur="2s" repeatCount="indefinite" path="M140,140 L140,120 L260,120 L260,140" begin="0s"/></circle>
-  <!-- Right side down -->
-  <circle class="dot" r="3"><animateMotion dur="2.5s" repeatCount="indefinite" path="M340,40 L340,140" begin="0s"/></circle>
-  <!-- Bottom wire -->
-  <circle class="dot" r="3"><animateMotion dur="2.5s" repeatCount="indefinite" path="M260,140 L60,140" begin="0s"/></circle>
+  <circle class="dot" r="3"><animateMotion dur="2.2s" repeatCount="indefinite" path="M140,140 L140,120 L260,120 L260,140" begin="0s"/></circle>
+  <!-- Right side -->
+  <circle class="dot" r="3"><animateMotion dur="2.5s" repeatCount="indefinite" path="M345,35 L345,140" begin="0s"/></circle>
+  <!-- Bottom return -->
+  <circle class="dot" r="3"><animateMotion dur="2.5s" repeatCount="indefinite" path="M260,140 L55,140" begin="0s"/></circle>
 
   <!-- Unknown label -->
-  <text x="200" y="90" text-anchor="middle" font-size="15" font-weight="700" fill="#dc2626">Total R = ?</text>
+  <text x="200" y="88" text-anchor="middle" font-size="15" font-weight="700" fill="#dc2626">Total R = ?</text>
 
   <!-- Title -->
-  <text x="200" y="168" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Parallel Resistors — Find Total Resistance</text>
+  <text x="200" y="164" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Parallel Resistors -- Find Total Resistance</text>
 </svg>

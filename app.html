@@ -5824,7 +5824,7 @@ Return this exact JSON structure:
                           if(!el) return;
                           const name=(resumeData&&resumeData.name)||personal.name||"Veteran";
                           const w=window.open("","_blank");
-                          const css="html,body{margin:0;padding:0;background:#fff;}body{font-family:Arial,sans-serif;font-size:10pt;color:#111;padding:1.5cm;}@page{margin:0;size:letter;}@media print{html,body{margin:0;padding:0;}@page{margin:1cm;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}}div[style*=\'box-shadow\']{box-shadow:none!important;}div[style*=\'border\']{border:none!important;}";
+                          const css="html,body{margin:0;padding:0;background:#fff;}body{font-size:10pt;color:#111;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}@page{margin:0;size:letter;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}div,span,p,h1,h2,h3,h4,section,header{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}@media print{html,body{margin:0;padding:0;}@page{margin:0;}}";
                           const scr="scr"+"ipt";
                           w.document.write("<html><head><style>"+css+"</style></head><body>"+el.innerHTML+"<"+scr+">window.onload=function(){window.print();}<\/"+scr+"></body></html>");
                           w.document.close();

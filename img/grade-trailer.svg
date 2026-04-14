@@ -1,35 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
   <defs>
     <linearGradient id="gtCab" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a6fa0"/>
+      <stop offset="100%" stop-color="#1a4a7b"/>
+    </linearGradient>
+    <linearGradient id="gtBed" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#2a5a8b"/>
       <stop offset="100%" stop-color="#1a3a6b"/>
     </linearGradient>
     <linearGradient id="gtTrailer" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#dce4f0"/>
-      <stop offset="100%" stop-color="#b8c8dc"/>
+      <stop offset="0%" stop-color="#e8ecf2"/>
+      <stop offset="100%" stop-color="#c8d0dc"/>
     </linearGradient>
     <linearGradient id="gtTire" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#555"/>
-      <stop offset="100%" stop-color="#333"/>
+      <stop offset="100%" stop-color="#2a2a2a"/>
     </linearGradient>
     <linearGradient id="gtRim" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ccc"/>
-      <stop offset="100%" stop-color="#999"/>
+      <stop offset="0%" stop-color="#ddd"/>
+      <stop offset="100%" stop-color="#aaa"/>
     </linearGradient>
-    <filter id="gtSh" x="-5%" y="-5%" width="115%" height="115%">
-      <feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-color="#1a3a6b" flood-opacity="0.15"/>
+    <filter id="gtSh" x="-3%" y="-3%" width="108%" height="108%">
+      <feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="#1a3a6b" flood-opacity="0.18"/>
     </filter>
-    <marker id="arrowNavy" viewBox="0 0 10 10" refX="5" refY="10" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M0,0 L5,10 L10,0 Z" fill="#1a3a6b"/>
-    </marker>
-    <marker id="arrowRedG" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#dc2626"/>
-    </marker>
   </defs>
-  <style>
-    text { font-family: Arial, sans-serif; }
-  </style>
-  <!-- Background with grid -->
+  <style>text { font-family: Arial, sans-serif; }</style>
+
+  <!-- Background -->
   <rect width="400" height="180" rx="10" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
   <g stroke="#d8dfe8" stroke-width="0.3">
     <line x1="0" y1="20" x2="400" y2="20"/><line x1="0" y1="40" x2="400" y2="40"/>
@@ -48,78 +45,111 @@
     <line x1="380" y1="0" x2="380" y2="180"/>
   </g>
 
-  <!-- Incline surface: from bottom-left going up to the right -->
-  <!-- 10% grade = ~5.7 degrees. Line from (30,140) to (370,106) -->
-  <line x1="30" y1="140" x2="370" y2="106" stroke="#1a3a6b" stroke-width="2.5"/>
-  <!-- Horizontal reference -->
-  <line x1="30" y1="140" x2="180" y2="140" stroke="#5a7090" stroke-width="1" stroke-dasharray="4,3"/>
+  <!-- Road surface on incline: 10% grade -->
+  <polygon points="5,152 395,113 395,180 5,180" fill="#d0d4d8" opacity="0.5"/>
+  <line x1="5" y1="152" x2="395" y2="113" stroke="#888" stroke-width="2"/>
+  <!-- Road center dashes -->
+  <line x1="15" y1="150" x2="385" y2="112" stroke="#f0c040" stroke-width="1.5" stroke-dasharray="12,8"/>
+
+  <!-- Horizontal reference line for grade angle -->
+  <line x1="15" y1="150" x2="120" y2="150" stroke="#5a7090" stroke-width="1" stroke-dasharray="4,3"/>
   <!-- Angle arc -->
-  <path d="M100,140 A60,60 0 0,0 103,131" fill="none" stroke="#c8960a" stroke-width="1.5"/>
-  <text x="118" y="139" font-size="11" font-weight="700" fill="#c8960a">10%</text>
+  <path d="M80,150 A45,45 0 0,0 82,143" fill="none" stroke="#c8960a" stroke-width="1.5"/>
+  <text x="96" y="149" font-size="11" font-weight="700" fill="#c8960a">10%</text>
 
-  <!-- Vehicle group tilted to match slope -->
-  <g transform="rotate(-5.7,200,110)" filter="url(#gtSh)">
-    <!-- Truck cab -->
-    <rect x="85" y="62" width="48" height="26" rx="4" fill="url(#gtCab)" stroke="#1a3a6b" stroke-width="1.5"/>
-    <!-- Windshield -->
-    <rect x="123" y="65" width="8" height="16" rx="2" fill="#88b8e8" stroke="#5a7090" stroke-width="0.8" opacity="0.8"/>
-    <!-- Bumper -->
-    <rect x="82" y="86" width="52" height="3" rx="1" fill="#5a7090"/>
+  <!-- Rise/Run right triangle -->
+  <line x1="15" y1="150" x2="115" y2="150" stroke="#5a7090" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="115" y1="150" x2="115" y2="140" stroke="#5a7090" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <text x="65" y="160" text-anchor="middle" font-size="7" fill="#5a7090">run</text>
+  <text x="122" y="147" font-size="7" fill="#5a7090">rise</text>
 
-    <!-- Hitch -->
-    <line x1="134" y1="80" x2="170" y2="80" stroke="#5a7090" stroke-width="2.5"/>
-    <circle cx="152" cy="80" r="2" fill="#1a3a6b"/>
+  <!-- ═══ VEHICLE + TRAILER (rotated to match slope) ═══ -->
+  <g transform="rotate(-5.7, 240, 118)" filter="url(#gtSh)">
 
-    <!-- Trailer body -->
-    <rect x="168" y="60" width="140" height="26" rx="3" fill="url(#gtTrailer)" stroke="#1a3a6b" stroke-width="1.8"/>
-    <!-- Side detail line -->
-    <line x1="172" y1="73" x2="305" y2="73" stroke="#a0b0c5" stroke-width="0.5"/>
+    <!-- ── BOX TRAILER (left side) ── -->
+    <rect x="42" y="78" width="105" height="34" rx="2" fill="url(#gtTrailer)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Bottom rail -->
+    <rect x="42" y="109" width="105" height="4" rx="1" fill="#a8b0bc" stroke="#1a3a6b" stroke-width="0.8"/>
+    <!-- Vertical ribs -->
+    <line x1="68" y1="80" x2="68" y2="110" stroke="#b0b8c8" stroke-width="0.7"/>
+    <line x1="94" y1="80" x2="94" y2="110" stroke="#b0b8c8" stroke-width="0.7"/>
+    <line x1="120" y1="80" x2="120" y2="110" stroke="#b0b8c8" stroke-width="0.7"/>
+    <!-- Reflectors -->
+    <rect x="44" y="99" width="4" height="4" rx="1" fill="#dc2626" opacity="0.7"/>
+    <rect x="44" y="84" width="4" height="4" rx="1" fill="#dc2626" opacity="0.7"/>
 
-    <!-- Wheel 1 - cab -->
-    <g>
-      <circle cx="115" cy="92" r="7" fill="url(#gtTire)" stroke="#333" stroke-width="1.5"/>
-      <circle cx="115" cy="92" r="3.5" fill="url(#gtRim)" stroke="#888" stroke-width="0.8"/>
-      <line x1="115" y1="86" x2="115" y2="98" stroke="#666" stroke-width="0.8"/>
-      <line x1="109" y1="92" x2="121" y2="92" stroke="#666" stroke-width="0.8"/>
-    </g>
-    <!-- Wheel 2 - trailer front -->
-    <g>
-      <circle cx="218" cy="90" r="7" fill="url(#gtTire)" stroke="#333" stroke-width="1.5"/>
-      <circle cx="218" cy="90" r="3.5" fill="url(#gtRim)" stroke="#888" stroke-width="0.8"/>
-      <line x1="218" y1="84" x2="218" y2="96" stroke="#666" stroke-width="0.8"/>
-      <line x1="212" y1="90" x2="224" y2="90" stroke="#666" stroke-width="0.8"/>
-    </g>
-    <!-- Wheel 3 - trailer rear 1 -->
-    <g>
-      <circle cx="278" cy="90" r="7" fill="url(#gtTire)" stroke="#333" stroke-width="1.5"/>
-      <circle cx="278" cy="90" r="3.5" fill="url(#gtRim)" stroke="#888" stroke-width="0.8"/>
-      <line x1="278" y1="84" x2="278" y2="96" stroke="#666" stroke-width="0.8"/>
-      <line x1="272" y1="90" x2="284" y2="90" stroke="#666" stroke-width="0.8"/>
-    </g>
-    <!-- Wheel 4 - trailer rear 2 -->
-    <g>
-      <circle cx="296" cy="90" r="7" fill="url(#gtTire)" stroke="#333" stroke-width="1.5"/>
-      <circle cx="296" cy="90" r="3.5" fill="url(#gtRim)" stroke="#888" stroke-width="0.8"/>
-      <line x1="296" y1="84" x2="296" y2="96" stroke="#666" stroke-width="0.8"/>
-      <line x1="290" y1="90" x2="302" y2="90" stroke="#666" stroke-width="0.8"/>
-    </g>
+    <!-- Trailer wheel 1 -->
+    <circle cx="82" cy="118" r="8" fill="url(#gtTire)" stroke="#222" stroke-width="1.5"/>
+    <circle cx="82" cy="118" r="4" fill="url(#gtRim)" stroke="#999" stroke-width="0.8"/>
+    <circle cx="82" cy="118" r="1.2" fill="#666"/>
+    <!-- Trailer wheel 2 -->
+    <circle cx="108" cy="118" r="8" fill="url(#gtTire)" stroke="#222" stroke-width="1.5"/>
+    <circle cx="108" cy="118" r="4" fill="url(#gtRim)" stroke="#999" stroke-width="0.8"/>
+    <circle cx="108" cy="118" r="1.2" fill="#666"/>
+
+    <!-- ── TONGUE / A-FRAME HITCH ── -->
+    <line x1="147" y1="106" x2="170" y2="106" stroke="#888" stroke-width="2.5"/>
+    <circle cx="158" cy="106" r="2" fill="#666" stroke="#444" stroke-width="0.8"/>
+
+    <!-- ── PICKUP TRUCK (right side, facing right = uphill) ── -->
+    <!-- Truck bed -->
+    <rect x="168" y="88" width="52" height="20" rx="2" fill="url(#gtBed)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Bed rail -->
+    <rect x="168" y="86" width="52" height="4" rx="1" fill="#2a5a8b" stroke="#1a3a6b" stroke-width="0.8"/>
+
+    <!-- Cab body -->
+    <rect x="218" y="82" width="50" height="26" rx="3" fill="url(#gtCab)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Cab roof -->
+    <path d="M222,82 L222,68 Q222,63 227,63 L260,63 Q265,63 265,68 L265,82" fill="url(#gtCab)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Windshield (front, right side) -->
+    <path d="M258,65 L264,65 L267,78 L258,78 Z" fill="#a0d0f0" stroke="#5a8aa0" stroke-width="0.8" opacity="0.85"/>
+    <!-- Rear window -->
+    <rect x="225" y="66" width="14" height="13" rx="2" fill="#88b8e0" stroke="#6a8aa0" stroke-width="0.6" opacity="0.7"/>
+    <!-- Door line -->
+    <line x1="240" y1="82" x2="240" y2="105" stroke="#15335a" stroke-width="0.8"/>
+    <!-- Door handle -->
+    <rect x="244" y="92" width="6" height="2" rx="0.5" fill="#88a8c0"/>
+    <!-- Hood -->
+    <rect x="265" y="82" width="16" height="18" rx="2" fill="url(#gtCab)" stroke="#1a3a6b" stroke-width="1.2"/>
+    <!-- Grill -->
+    <rect x="279" y="84" width="4" height="14" rx="1" fill="#333" stroke="#1a1a1a" stroke-width="0.5"/>
+    <line x1="280" y1="87" x2="282" y2="87" stroke="#888" stroke-width="0.5"/>
+    <line x1="280" y1="90" x2="282" y2="90" stroke="#888" stroke-width="0.5"/>
+    <line x1="280" y1="93" x2="282" y2="93" stroke="#888" stroke-width="0.5"/>
+    <!-- Headlight -->
+    <rect x="280" y="85" width="3" height="4" rx="1" fill="#f0e070" stroke="#c8a030" stroke-width="0.5"/>
+    <!-- Taillight -->
+    <rect x="168" y="92" width="3" height="5" rx="1" fill="#dc2626" stroke="#a01a1a" stroke-width="0.5"/>
+    <!-- Front bumper -->
+    <rect x="280" y="98" width="4" height="5" rx="1" fill="#888" stroke="#555" stroke-width="0.5"/>
+
+    <!-- Truck front wheel -->
+    <circle cx="270" cy="112" r="9" fill="url(#gtTire)" stroke="#222" stroke-width="1.5"/>
+    <circle cx="270" cy="112" r="4.5" fill="url(#gtRim)" stroke="#999" stroke-width="0.8"/>
+    <circle cx="270" cy="112" r="1.5" fill="#666"/>
+    <!-- Truck rear wheel -->
+    <circle cx="194" cy="112" r="9" fill="url(#gtTire)" stroke="#222" stroke-width="1.5"/>
+    <circle cx="194" cy="112" r="4.5" fill="url(#gtRim)" stroke="#999" stroke-width="0.8"/>
+    <circle cx="194" cy="112" r="1.5" fill="#666"/>
+
+    <!-- Wheel well arches -->
+    <path d="M257,108 Q270,97 283,108" fill="none" stroke="#15335a" stroke-width="1"/>
+    <path d="M181,108 Q194,97 207,108" fill="none" stroke="#15335a" stroke-width="1"/>
   </g>
 
-  <!-- Weight label on trailer -->
-  <text x="240" y="78" text-anchor="middle" font-size="11" font-weight="700" fill="#1a3a6b">3,000 lbs</text>
+  <!-- Weight label -->
+  <text x="100" y="42" text-anchor="middle" font-size="14" font-weight="800" fill="#1a3a6b">3,000 lbs</text>
+  <line x1="100" y1="46" x2="100" y2="68" stroke="#1a3a6b" stroke-width="2"/>
+  <polygon points="96,67 100,75 104,67" fill="#1a3a6b"/>
 
-  <!-- Gravity force arrow (straight down from center of trailer) -->
-  <line x1="240" y1="100" x2="240" y2="140" stroke="#1a3a6b" stroke-width="2" marker-end="url(#arrowNavy)"/>
-  <text x="252" y="138" font-size="9" font-weight="700" fill="#1a3a6b">W</text>
+  <!-- Grade force arrow (red, along slope pointing downhill) -->
+  <line x1="200" y1="100" x2="160" y2="104" stroke="#dc2626" stroke-width="2.5"/>
+  <polygon points="163,101 155,104.5 163,108" fill="#dc2626"/>
 
-  <!-- Grade force component arrow (along slope, pointing downhill) -->
-  <line x1="240" y1="100" x2="195" y2="104.5" stroke="#dc2626" stroke-width="2.5"/>
-  <polygon points="195,101 187,104.8 195,108" fill="#dc2626"/>
-
-  <!-- Unknown label -->
-  <text x="345" y="148" text-anchor="middle" font-size="11" font-weight="800" fill="#dc2626">Additional</text>
-  <text x="345" y="162" text-anchor="middle" font-size="11" font-weight="800" fill="#dc2626">Force = ?</text>
+  <!-- Force label -->
+  <text x="340" y="94" text-anchor="middle" font-size="11" font-weight="700" fill="#dc2626">Additional Force</text>
+  <text x="340" y="106" text-anchor="middle" font-size="11" font-weight="700" fill="#dc2626">= ?</text>
 
   <!-- Title -->
-  <text x="200" y="174" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Trailer on 10% Grade -- Find Additional Force</text>
+  <text x="200" y="174" text-anchor="middle" font-size="11" font-weight="600" fill="#5a7090">Trailer on 10% Grade &#8212; Find Additional Force</text>
 </svg>

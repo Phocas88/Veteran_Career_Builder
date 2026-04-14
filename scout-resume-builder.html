@@ -328,7 +328,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
   background:#fff;color:#1a1a1a;border-radius:4px;padding:0;
   position:relative;overflow:hidden;
   width:100%;max-width:760px;margin:0 auto;
-  aspect-ratio:8.5/11;
+  min-height:600px;
   box-shadow:0 8px 40px rgba(0,0,0,.4);
   overflow-y:auto;
 }
@@ -4173,29 +4173,19 @@ window.downloadPDF = async function() {
   if (!resumeData) { alert('No resume data found. Please generate first.'); return; }
   var personal = getPersonalData();
 
-  // Use html2canvas to capture the styled preview as-is
   var resumeEl = document.getElementById('resume-content');
   if (!resumeEl) { alert('Resume preview not found.'); return; }
 
-  // Show loading state
   var btn = document.querySelector('.btn-download-pdf') || document.querySelector('[onclick*="downloadPDF"]');
   var origText = btn ? btn.textContent : '';
   if (btn) { btn.textContent = 'Generating PDF...'; btn.disabled = true; }
 
   try {
-    // Load html2canvas on demand
-    if (!window.html2canvas) {
+    // Load html2pdf.js (bundles html2canvas + jsPDF with page break support)
+    if (!window.html2pdf) {
       await new Promise(function(resolve, reject) {
         var s = document.createElement('script');
-        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
-      });
-    }
-    // Load jsPDF on demand
-    if (!window.jspdf) {
-      await new Promise(function(resolve, reject) {
-        var s = document.createElement('script');
-        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
         s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
       });
     }
@@ -4205,51 +4195,29 @@ window.downloadPDF = async function() {
     var wasLocked = preview.classList.contains('locked');
     if (wasLocked) { preview.classList.remove('locked'); preview.classList.add('unlocked'); }
 
-    // Set fixed width for consistent PDF
-    var origWidth = resumeEl.style.width;
+    // Remove aspect-ratio constraint temporarily for full render
+    var origAR = preview.style.aspectRatio;
+    var origOverflow = preview.style.overflowY;
+    preview.style.aspectRatio = 'auto';
+    preview.style.overflowY = 'visible';
     resumeEl.style.width = '760px';
 
-    var canvas = await html2canvas(resumeEl, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: null,
-      logging: false
-    });
+    var safeName = personal.name.replace(/[^a-zA-Z0-9]/g, '_');
+
+    await html2pdf().set({
+      margin: 0,
+      filename: safeName + '_Resume.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
+      jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'], before: '.page-break-before', after: '.page-break-after', avoid: ['div', 'h3', 'li', '.rc-job', '.rc-section'] }
+    }).from(resumeEl).save();
 
     // Restore original state
-    resumeEl.style.width = origWidth;
+    resumeEl.style.width = '';
+    preview.style.aspectRatio = origAR || '';
+    preview.style.overflowY = origOverflow || '';
     if (wasLocked) { preview.classList.remove('unlocked'); preview.classList.add('locked'); }
-
-    // Letter size: 215.9mm x 279.4mm
-    var jsPDF = window.jspdf.jsPDF;
-    var doc = new jsPDF('p', 'mm', 'letter');
-    var pageW = 215.9;
-    var pageH = 279.4;
-    var imgW = canvas.width;
-    var imgH = canvas.height;
-    var ratio = pageW / imgW;
-    var scaledH = imgH * ratio;
-
-    if (scaledH <= pageH) {
-      doc.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pageW, scaledH);
-    } else {
-      // Multi-page
-      var sliceH = Math.floor(pageH / ratio);
-      var yOffset = 0;
-      while (yOffset < imgH) {
-        var pageCanvas = document.createElement('canvas');
-        pageCanvas.width = imgW;
-        pageCanvas.height = Math.min(sliceH, imgH - yOffset);
-        var ctx = pageCanvas.getContext('2d');
-        ctx.drawImage(canvas, 0, -yOffset);
-        if (yOffset > 0) doc.addPage();
-        doc.addImage(pageCanvas.toDataURL('image/png'), 'PNG', 0, 0, pageW, pageCanvas.height * ratio);
-        yOffset += sliceH;
-      }
-    }
-
-    var safeName = personal.name.replace(/[^a-zA-Z0-9]/g, '_');
-    doc.save(safeName + '_Resume.pdf');
   } catch(e) {
     console.error('PDF generation error:', e);
     alert('PDF generation failed: ' + e.message);

@@ -5825,59 +5825,30 @@ Return this exact JSON structure:
                           const btn=document.getElementById("btn-pdf-resume");
                           btn.textContent="Generating PDF...";btn.disabled=true;
                           try {
-                            // Load html2canvas on demand
-                            if(!window.html2canvas){
+                            if(!window.html2pdf){
                               await new Promise((resolve,reject)=>{
                                 const s=document.createElement("script");
-                                s.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+                                s.src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
                                 s.onload=resolve;s.onerror=reject;document.head.appendChild(s);
                               });
                             }
-                            // Load jsPDF on demand
-                            if(!window.jspdf){
-                              await new Promise((resolve,reject)=>{
-                                const s=document.createElement("script");
-                                s.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
-                                s.onload=resolve;s.onerror=reject;document.head.appendChild(s);
-                              });
-                            }
-                            // Find the actual resume content (the white box inside resume-render)
                             const resumeBox=el.querySelector("div[style*='background']")||el.firstElementChild;
                             if(!resumeBox){btn.textContent="PDF";btn.disabled=false;return;}
-                            // Temporarily make it full width for clean capture
                             const origW=resumeBox.style.width;
                             resumeBox.style.width="760px";
-                            const canvas=await html2canvas(resumeBox,{scale:2,useCORS:true,backgroundColor:"#ffffff",logging:false});
-                            resumeBox.style.width=origW;
-                            // Letter size: 215.9mm x 279.4mm
-                            const pdf=new window.jspdf.jsPDF("p","mm","letter");
-                            const pageW=215.9;const pageH=279.4;
-                            const imgW=canvas.width;const imgH=canvas.height;
-                            const ratio=pageW/imgW;
-                            const scaledH=imgH*ratio;
-                            // If content fits one page
-                            if(scaledH<=pageH){
-                              pdf.addImage(canvas.toDataURL("image/png"),"PNG",0,0,pageW,scaledH);
-                            } else {
-                              // Multi-page: slice the canvas
-                              let yOffset=0;
-                              const sliceH=Math.floor(pageH/ratio);
-                              while(yOffset<imgH){
-                                const pageCanvas=document.createElement("canvas");
-                                pageCanvas.width=imgW;
-                                pageCanvas.height=Math.min(sliceH,imgH-yOffset);
-                                const ctx=pageCanvas.getContext("2d");
-                                ctx.drawImage(canvas,0,-yOffset);
-                                if(yOffset>0) pdf.addPage();
-                                pdf.addImage(pageCanvas.toDataURL("image/png"),"PNG",0,0,pageW,pageCanvas.height*ratio);
-                                yOffset+=sliceH;
-                              }
-                            }
                             const name=(resumeData&&resumeData.name)||personal.name||"Resume";
-                            pdf.save(name.replace(/\s+/g,"_")+"_Resume.pdf");
+                            await html2pdf().set({
+                              margin:0,
+                              filename:name.replace(/\s+/g,"_")+"_Resume.pdf",
+                              image:{type:"jpeg",quality:0.98},
+                              html2canvas:{scale:2,useCORS:true,letterRendering:true,scrollY:0},
+                              jsPDF:{unit:"mm",format:"letter",orientation:"portrait"},
+                              pagebreak:{mode:["avoid-all","css","legacy"],avoid:["div","h3","li"]}
+                            }).from(resumeBox).save();
+                            resumeBox.style.width=origW;
                           } catch(e){
                             console.error("PDF generation error:",e);
-                            alert("PDF generation failed. Try the Print option instead.");
+                            alert("PDF generation failed: "+e.message);
                           }
                           btn.textContent="PDF";btn.disabled=false;
                         }}>PDF</button>

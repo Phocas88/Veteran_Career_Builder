@@ -4161,9 +4161,95 @@ function enableDownload() {
 }
 
 /* ── PDF GENERATION ── */
-window.downloadPDF = function() {
+window.downloadPDF = async function() {
   if (!resumeData) { alert('No resume data found. Please generate first.'); return; }
   var personal = getPersonalData();
+
+  // Use html2canvas to capture the styled preview as-is
+  var resumeEl = document.getElementById('resume-content');
+  if (!resumeEl) { alert('Resume preview not found.'); return; }
+
+  // Show loading state
+  var btn = document.querySelector('.btn-download-pdf') || document.querySelector('[onclick*="downloadPDF"]');
+  var origText = btn ? btn.textContent : '';
+  if (btn) { btn.textContent = 'Generating PDF...'; btn.disabled = true; }
+
+  try {
+    // Load html2canvas on demand
+    if (!window.html2canvas) {
+      await new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
+      });
+    }
+    // Load jsPDF on demand
+    if (!window.jspdf) {
+      await new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
+      });
+    }
+
+    // Temporarily remove blur/watermark for clean capture
+    var preview = document.getElementById('resume-preview');
+    var wasLocked = preview.classList.contains('locked');
+    if (wasLocked) { preview.classList.remove('locked'); preview.classList.add('unlocked'); }
+
+    // Set fixed width for consistent PDF
+    var origWidth = resumeEl.style.width;
+    resumeEl.style.width = '760px';
+
+    var canvas = await html2canvas(resumeEl, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+      logging: false
+    });
+
+    // Restore original state
+    resumeEl.style.width = origWidth;
+    if (wasLocked) { preview.classList.remove('unlocked'); preview.classList.add('locked'); }
+
+    // Letter size: 215.9mm x 279.4mm
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF('p', 'mm', 'letter');
+    var pageW = 215.9;
+    var pageH = 279.4;
+    var imgW = canvas.width;
+    var imgH = canvas.height;
+    var ratio = pageW / imgW;
+    var scaledH = imgH * ratio;
+
+    if (scaledH <= pageH) {
+      doc.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pageW, scaledH);
+    } else {
+      // Multi-page
+      var sliceH = Math.floor(pageH / ratio);
+      var yOffset = 0;
+      while (yOffset < imgH) {
+        var pageCanvas = document.createElement('canvas');
+        pageCanvas.width = imgW;
+        pageCanvas.height = Math.min(sliceH, imgH - yOffset);
+        var ctx = pageCanvas.getContext('2d');
+        ctx.drawImage(canvas, 0, -yOffset);
+        if (yOffset > 0) doc.addPage();
+        doc.addImage(pageCanvas.toDataURL('image/png'), 'PNG', 0, 0, pageW, pageCanvas.height * ratio);
+        yOffset += sliceH;
+      }
+    }
+
+    var safeName = personal.name.replace(/[^a-zA-Z0-9]/g, '_');
+    doc.save(safeName + '_Resume.pdf');
+  } catch(e) {
+    console.error('PDF generation error:', e);
+    alert('PDF generation failed: ' + e.message);
+  }
+  if (btn) { btn.textContent = origText; btn.disabled = false; }
+  return; // Skip all the old jsPDF text code below
+
+  // ═══ OLD jsPDF TEXT CODE (kept for reference, never reached) ═══
   var jsPDF = window.jspdf.jsPDF;
   var doc = new jsPDF({ unit: 'mm', format: 'a4' });
 

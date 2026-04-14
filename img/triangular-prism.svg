@@ -1,51 +1,101 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <defs>
+    <linearGradient id="tpFront" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(93,141,217,0.45)"/>
+      <stop offset="100%" stop-color="rgba(93,141,217,0.25)"/>
+    </linearGradient>
+    <linearGradient id="tpTop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="rgba(74,126,200,0.4)"/>
+      <stop offset="100%" stop-color="rgba(74,126,200,0.2)"/>
+    </linearGradient>
+    <linearGradient id="tpBottom" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="rgba(61,111,181,0.35)"/>
+      <stop offset="100%" stop-color="rgba(61,111,181,0.15)"/>
+    </linearGradient>
+    <filter id="tpShadow" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#1a3a6b" flood-opacity="0.18"/>
+    </filter>
+  </defs>
   <style>
     @keyframes tilt {
       0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(1deg); }
-      75% { transform: rotate(-1deg); }
+      25% { transform: rotate(0.8deg); }
+      75% { transform: rotate(-0.8deg); }
     }
-    .prism-group { animation: tilt 5s ease-in-out infinite; transform-origin: 170px 100px; }
+    .prism-group { animation: tilt 5s ease-in-out infinite; transform-origin: 165px 100px; }
     text { font-family: Arial, sans-serif; }
   </style>
-  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+  <!-- Background with grid -->
+  <rect width="400" height="200" rx="10" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+  <g stroke="#d8dfe8" stroke-width="0.3">
+    <line x1="0" y1="20" x2="400" y2="20"/><line x1="0" y1="40" x2="400" y2="40"/>
+    <line x1="0" y1="60" x2="400" y2="60"/><line x1="0" y1="80" x2="400" y2="80"/>
+    <line x1="0" y1="100" x2="400" y2="100"/><line x1="0" y1="120" x2="400" y2="120"/>
+    <line x1="0" y1="140" x2="400" y2="140"/><line x1="0" y1="160" x2="400" y2="160"/>
+    <line x1="0" y1="180" x2="400" y2="180"/>
+    <line x1="20" y1="0" x2="20" y2="200"/><line x1="40" y1="0" x2="40" y2="200"/>
+    <line x1="60" y1="0" x2="60" y2="200"/><line x1="80" y1="0" x2="80" y2="200"/>
+    <line x1="100" y1="0" x2="100" y2="200"/><line x1="120" y1="0" x2="120" y2="200"/>
+    <line x1="140" y1="0" x2="140" y2="200"/><line x1="160" y1="0" x2="160" y2="200"/>
+    <line x1="180" y1="0" x2="180" y2="200"/><line x1="200" y1="0" x2="200" y2="200"/>
+    <line x1="220" y1="0" x2="220" y2="200"/><line x1="240" y1="0" x2="240" y2="200"/>
+    <line x1="260" y1="0" x2="260" y2="200"/>
+  </g>
 
   <!-- Title -->
-  <text x="200" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#5a7090" font-weight="600">Triangular Prism — Count the Faces</text>
+  <text x="200" y="18" text-anchor="middle" font-size="11" fill="#5a7090" font-weight="600">Triangular Prism -- Count the Faces</text>
 
-  <g class="prism-group">
-    <!-- Triangular prism in isometric view -->
+  <g class="prism-group" filter="url(#tpShadow)">
     <!-- Front triangular face -->
-    <polygon points="100,145 170,45 240,145" fill="rgba(93,141,217,0.35)" stroke="#1a3a6b" stroke-width="2"/>
+    <polygon points="95,155 160,45 225,155" fill="url(#tpFront)" stroke="#1a3a6b" stroke-width="2"/>
 
-    <!-- Top rectangular face (receding) -->
-    <polygon points="170,45 240,145 330,115 260,15" fill="rgba(74,126,200,0.3)" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Top rectangular face (receding right) -->
+    <polygon points="160,45 225,155 310,125 245,15" fill="url(#tpTop)" stroke="#1a3a6b" stroke-width="2"/>
 
-    <!-- Right rectangular face (bottom, receding) -->
-    <polygon points="240,145 330,115 330,115 240,145" fill="rgba(61,111,181,0.25)" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Bottom rectangular face (receding right) -->
+    <polygon points="95,155 225,155 310,125 180,125" fill="url(#tpBottom)" stroke="#1a3a6b" stroke-width="2"/>
 
-    <!-- Bottom rectangular face -->
-    <polygon points="100,145 240,145 330,115 190,115" fill="rgba(61,111,181,0.25)" stroke="#1a3a6b" stroke-width="2"/>
+    <!-- Hidden edges (dashed) - back triangle and back-bottom edge -->
+    <line x1="95" y1="155" x2="180" y2="125" stroke="#1a3a6b" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.5"/>
+    <line x1="160" y1="45" x2="245" y2="15" stroke="#1a3a6b" stroke-width="1.5" opacity="0.6"/>
+    <!-- Back triangle (partially hidden) -->
+    <polygon points="180,125 245,15 310,125" fill="rgba(93,141,217,0.1)" stroke="#1a3a6b" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.5"/>
 
-    <!-- Back triangular face (partially visible) -->
-    <polygon points="190,115 260,15 330,115" fill="rgba(93,141,217,0.15)" stroke="#1a3a6b" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <!-- Face labels with numbered circles -->
+    <!-- Front face -->
+    <circle cx="160" cy="110" r="11" fill="rgba(255,255,255,0.8)" stroke="#1a3a6b" stroke-width="1"/>
+    <text x="160" y="114" text-anchor="middle" font-size="9" fill="#1a3a6b" font-weight="700">1</text>
 
-    <!-- Hidden edges (dashed) -->
-    <line x1="100" y1="145" x2="190" y2="115" stroke="#1a3a6b" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
-    <line x1="170" y1="45" x2="260" y2="15" stroke="#1a3a6b" stroke-width="1.5" opacity="0.7"/>
+    <!-- Top face -->
+    <circle cx="230" cy="75" r="11" fill="rgba(255,255,255,0.8)" stroke="#1a3a6b" stroke-width="1"/>
+    <text x="230" y="79" text-anchor="middle" font-size="9" fill="#1a3a6b" font-weight="700">2</text>
 
-    <!-- Face labels -->
-    <text x="168" y="110" text-anchor="middle" font-family="Arial" font-size="10" fill="#1a3a6b" font-weight="600">Front</text>
-    <text x="230" y="80" text-anchor="middle" font-family="Arial" font-size="10" fill="#1a3a6b" font-weight="600" transform="rotate(-35,230,80)">Top</text>
-    <text x="215" y="140" text-anchor="middle" font-family="Arial" font-size="10" fill="#1a3a6b" font-weight="600">Bottom</text>
+    <!-- Bottom face -->
+    <circle cx="200" cy="142" r="11" fill="rgba(255,255,255,0.8)" stroke="#1a3a6b" stroke-width="1"/>
+    <text x="200" y="146" text-anchor="middle" font-size="9" fill="#1a3a6b" font-weight="700">3</text>
+
+    <!-- Vertex dots -->
+    <circle cx="95" cy="155" r="3" fill="#c8960a"/>
+    <circle cx="160" cy="45" r="3" fill="#c8960a"/>
+    <circle cx="225" cy="155" r="3" fill="#c8960a"/>
+    <circle cx="245" cy="15" r="3" fill="#c8960a"/>
+    <circle cx="310" cy="125" r="3" fill="#c8960a"/>
+    <circle cx="180" cy="125" r="3" fill="#8a9ab5" opacity="0.6"/>
   </g>
 
   <!-- Question box -->
-  <rect x="310" y="35" width="80" height="45" rx="6" fill="rgba(220,38,38,.08)" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,3"/>
-  <text x="350" y="55" text-anchor="middle" font-family="Arial" font-size="12" fill="#5a7090" font-weight="600">Faces =</text>
-  <text x="350" y="74" text-anchor="middle" font-family="Arial" font-size="24" font-weight="700" fill="#dc2626">?</text>
+  <rect x="310" y="35" width="80" height="50" rx="6" fill="rgba(220,38,38,0.06)" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="350" y="55" text-anchor="middle" font-size="12" fill="#5a7090" font-weight="600">Faces =</text>
+  <text x="350" y="78" text-anchor="middle" font-size="26" font-weight="700" fill="#dc2626">?</text>
+
+  <!-- Info -->
+  <rect x="310" y="100" width="80" height="40" rx="6" fill="rgba(26,58,107,0.04)" stroke="#d0daea" stroke-width="1"/>
+  <text x="350" y="118" text-anchor="middle" font-size="9" fill="#5a7090" font-weight="600">Count all faces</text>
+  <text x="350" y="132" text-anchor="middle" font-size="9" fill="#5a7090">(including hidden)</text>
 
   <!-- Hint -->
-  <text x="350" y="165" text-anchor="middle" font-family="Arial" font-size="9" fill="#c8960a" font-weight="600">Count all faces</text>
-  <text x="350" y="176" text-anchor="middle" font-family="Arial" font-size="9" fill="#c8960a">(including hidden)</text>
+  <text x="350" y="165" text-anchor="middle" font-size="9" fill="#c8960a" font-weight="600">Triangles + rectangles</text>
+
+  <!-- Bottom note -->
+  <text x="200" y="190" text-anchor="middle" font-size="9" fill="#8a9ab5">A triangular prism has triangular ends and rectangular sides</text>
 </svg>

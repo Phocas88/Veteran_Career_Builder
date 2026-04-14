@@ -1,71 +1,121 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <defs>
+    <linearGradient id="hdSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a8d4f0"/>
+      <stop offset="60%" stop-color="#d0e8f8"/>
+      <stop offset="100%" stop-color="#f0f4fa"/>
+    </linearGradient>
+    <linearGradient id="hdBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2a5080"/>
+      <stop offset="100%" stop-color="#1a3a6b"/>
+    </linearGradient>
+    <filter id="hdShadow" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-color="#1a3a6b" flood-opacity="0.15"/>
+    </filter>
+  </defs>
   <style>
     @keyframes hover {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-      100% { transform: translateY(0); }
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
     }
     @keyframes rotorSpin {
       0% { transform: scaleX(1); }
-      25% { transform: scaleX(0.2); }
+      25% { transform: scaleX(0.15); }
       50% { transform: scaleX(-1); }
-      75% { transform: scaleX(0.2); }
+      75% { transform: scaleX(0.15); }
       100% { transform: scaleX(1); }
     }
     .heli { animation: hover 2s ease-in-out infinite; }
-    .rotor { animation: rotorSpin 0.4s linear infinite; transform-origin: 100px 28px; }
+    .rotor { animation: rotorSpin 0.35s linear infinite; transform-origin: 105px 28px; }
     text { font-family: Arial, sans-serif; }
   </style>
-  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
-
-  <!-- Altitude scale on right -->
-  <line x1="320" y1="25" x2="320" y2="145" stroke="#1a3a6b" stroke-width="1.5"/>
-  <!-- Top tick: 4,500 ft -->
-  <line x1="315" y1="30" x2="325" y2="30" stroke="#1a3a6b" stroke-width="2"/>
-  <text x="335" y="34" font-size="10" font-weight="700" fill="#1a3a6b">4,500 ft</text>
-  <!-- Bottom tick: 1,500 ft -->
-  <line x1="315" y1="125" x2="325" y2="125" stroke="#1a3a6b" stroke-width="2"/>
-  <text x="335" y="129" font-size="10" font-weight="700" fill="#1a3a6b">1,500 ft</text>
-  <!-- Ground -->
-  <line x1="280" y1="145" x2="395" y2="145" stroke="#8B7355" stroke-width="2"/>
-  <text x="355" y="157" text-anchor="middle" font-size="9" fill="#8B7355">Ground</text>
-
-  <!-- Descent arrow between altitudes -->
-  <line x1="300" y1="40" x2="300" y2="115" stroke="#c8960a" stroke-width="2" stroke-dasharray="6,4"/>
-  <polygon points="295,115 300,125 305,115" fill="#c8960a"/>
-  <text x="280" y="80" text-anchor="middle" font-size="9" font-weight="600" fill="#c8960a">300 ft/min</text>
-
-  <!-- Helicopter (hovering, NOT descending) -->
-  <g class="heli">
-    <!-- Body -->
-    <ellipse cx="100" cy="42" rx="35" ry="12" fill="#1a3a6b"/>
-    <!-- Cockpit window -->
-    <ellipse cx="125" cy="40" rx="10" ry="7" fill="#a8d8ea" stroke="#1a3a6b" stroke-width="1"/>
-    <!-- Tail boom -->
-    <line x1="65" y1="42" x2="35" y2="35" stroke="#1a3a6b" stroke-width="4"/>
-    <!-- Tail rotor -->
-    <line x1="32" y1="26" x2="38" y2="44" stroke="#1a3a6b" stroke-width="2"/>
-    <!-- Rotor mast -->
-    <line x1="100" y1="30" x2="100" y2="24" stroke="#1a3a6b" stroke-width="2.5"/>
-    <!-- Main rotor (animated spin illusion) -->
-    <g class="rotor">
-      <line x1="55" y1="28" x2="145" y2="28" stroke="#1a3a6b" stroke-width="3" stroke-linecap="round"/>
-    </g>
-    <!-- Skids -->
-    <line x1="80" y1="54" x2="80" y2="60" stroke="#1a3a6b" stroke-width="2"/>
-    <line x1="120" y1="54" x2="120" y2="60" stroke="#1a3a6b" stroke-width="2"/>
-    <line x1="70" y1="60" x2="130" y2="60" stroke="#1a3a6b" stroke-width="2.5"/>
+  <!-- Sky gradient background -->
+  <rect width="400" height="200" rx="10" fill="url(#hdSky)" stroke="#d0daea" stroke-width="2"/>
+  <!-- Faint grid -->
+  <g stroke="#b8d0e4" stroke-width="0.2">
+    <line x1="0" y1="20" x2="400" y2="20"/><line x1="0" y1="40" x2="400" y2="40"/>
+    <line x1="0" y1="60" x2="400" y2="60"/><line x1="0" y1="80" x2="400" y2="80"/>
+    <line x1="0" y1="100" x2="400" y2="100"/><line x1="0" y1="120" x2="400" y2="120"/>
+    <line x1="0" y1="140" x2="400" y2="140"/><line x1="0" y1="160" x2="400" y2="160"/>
+    <line x1="0" y1="180" x2="400" y2="180"/>
+    <line x1="20" y1="0" x2="20" y2="200"/><line x1="40" y1="0" x2="40" y2="200"/>
+    <line x1="60" y1="0" x2="60" y2="200"/><line x1="80" y1="0" x2="80" y2="200"/>
+    <line x1="100" y1="0" x2="100" y2="200"/><line x1="120" y1="0" x2="120" y2="200"/>
+    <line x1="140" y1="0" x2="140" y2="200"/><line x1="160" y1="0" x2="160" y2="200"/>
+    <line x1="180" y1="0" x2="180" y2="200"/><line x1="200" y1="0" x2="200" y2="200"/>
+    <line x1="220" y1="0" x2="220" y2="200"/><line x1="240" y1="0" x2="240" y2="200"/>
+    <line x1="260" y1="0" x2="260" y2="200"/><line x1="280" y1="0" x2="280" y2="200"/>
+    <line x1="300" y1="0" x2="300" y2="200"/><line x1="320" y1="0" x2="320" y2="200"/>
+    <line x1="340" y1="0" x2="340" y2="200"/><line x1="360" y1="0" x2="360" y2="200"/>
+    <line x1="380" y1="0" x2="380" y2="200"/>
   </g>
 
+  <!-- Ground -->
+  <rect x="0" y="170" width="400" height="30" rx="0" fill="#8B7355" opacity="0.2"/>
+  <line x1="0" y1="170" x2="400" y2="170" stroke="#8B7355" stroke-width="1.5"/>
+  <text x="355" y="182" text-anchor="middle" font-size="8" fill="#8B7355" font-weight="600">Ground</text>
+
+  <!-- Altitude scale on right -->
+  <line x1="320" y1="30" x2="320" y2="165" stroke="#1a3a6b" stroke-width="1.8"/>
+  <!-- Arrow caps -->
+  <polygon points="317,33 320,25 323,33" fill="#1a3a6b"/>
+  <polygon points="317,162 320,170 323,162" fill="#1a3a6b"/>
+  <!-- Top tick: 4,500 ft -->
+  <line x1="312" y1="35" x2="328" y2="35" stroke="#1a3a6b" stroke-width="2"/>
+  <text x="340" y="39" font-size="10" font-weight="700" fill="#1a3a6b">4,500 ft</text>
+  <!-- Mid ticks -->
+  <line x1="316" y1="68" x2="324" y2="68" stroke="#1a3a6b" stroke-width="1" opacity="0.4"/>
+  <line x1="316" y1="100" x2="324" y2="100" stroke="#1a3a6b" stroke-width="1" opacity="0.4"/>
+  <!-- Bottom tick: 1,500 ft -->
+  <line x1="312" y1="135" x2="328" y2="135" stroke="#1a3a6b" stroke-width="2"/>
+  <text x="340" y="139" font-size="10" font-weight="700" fill="#1a3a6b">1,500 ft</text>
+  <!-- 0 ft -->
+  <line x1="316" y1="165" x2="324" y2="165" stroke="#1a3a6b" stroke-width="1"/>
+  <text x="340" y="169" font-size="8" fill="#8a9ab5">0 ft</text>
+
+  <!-- Descent arrow (dashed) between altitudes -->
+  <line x1="275" y1="48" x2="275" y2="125" stroke="#c8960a" stroke-width="2" stroke-dasharray="6,4"/>
+  <polygon points="270,122 275,135 280,122" fill="#c8960a"/>
+  <!-- Rate label -->
+  <rect x="230" y="78" width="66" height="18" rx="4" fill="rgba(200,150,10,0.1)" stroke="#c8960a" stroke-width="0.8"/>
+  <text x="263" y="91" text-anchor="middle" font-size="9" font-weight="700" fill="#c8960a">300 ft/min</text>
+
   <!-- Dashed line connecting helicopter to altitude scale -->
-  <line x1="140" y1="42" x2="315" y2="30" stroke="#b0c4de" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="150" y1="42" x2="312" y2="35" stroke="#b0c4de" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Helicopter -->
+  <g class="heli" filter="url(#hdShadow)">
+    <!-- Body -->
+    <ellipse cx="105" cy="44" rx="38" ry="13" fill="url(#hdBody)"/>
+    <!-- Cockpit window -->
+    <ellipse cx="132" cy="42" rx="11" ry="8" fill="#a8d8ea" stroke="#1a3a6b" stroke-width="1"/>
+    <!-- Window shine -->
+    <ellipse cx="135" cy="40" rx="4" ry="3" fill="#fff" opacity="0.3"/>
+    <!-- Tail boom -->
+    <line x1="67" y1="44" x2="32" y2="37" stroke="url(#hdBody)" stroke-width="5"/>
+    <!-- Tail rotor -->
+    <line x1="28" y1="28" x2="36" y2="46" stroke="#1a3a6b" stroke-width="2.5"/>
+    <circle cx="32" cy="37" r="2" fill="#c8960a"/>
+    <!-- Rotor mast -->
+    <line x1="105" y1="31" x2="105" y2="24" stroke="#1a3a6b" stroke-width="3"/>
+    <!-- Main rotor (animated spin illusion) -->
+    <g class="rotor">
+      <line x1="55" y1="28" x2="155" y2="28" stroke="#1a3a6b" stroke-width="3.5" stroke-linecap="round"/>
+    </g>
+    <!-- Skids -->
+    <line x1="82" y1="57" x2="82" y2="64" stroke="#1a3a6b" stroke-width="2"/>
+    <line x1="128" y1="57" x2="128" y2="64" stroke="#1a3a6b" stroke-width="2"/>
+    <line x1="72" y1="64" x2="138" y2="64" stroke="#1a3a6b" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
 
   <!-- Time = ? label -->
-  <text x="100" y="95" text-anchor="middle" font-size="18" font-weight="700" fill="#dc2626">Time = ?</text>
+  <rect x="55" y="90" width="110" height="35" rx="8" fill="rgba(220,38,38,0.06)" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="110" y="113" text-anchor="middle" font-size="18" font-weight="700" fill="#dc2626">Time = ?</text>
 
   <!-- Descent info -->
-  <text x="100" y="115" text-anchor="middle" font-size="10" fill="#5a7090">Distance: 4,500 - 1,500 = 3,000 ft</text>
+  <text x="110" y="138" text-anchor="middle" font-size="9" fill="#5a7090">Distance: 4,500 - 1,500 = 3,000 ft</text>
+  <text x="110" y="150" text-anchor="middle" font-size="9" fill="#5a7090">Rate: 300 ft/min</text>
 
-  <!-- Title -->
-  <text x="200" y="172" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Helicopter Descent — Find the Time</text>
+  <!-- Bottom label -->
+  <text x="200" y="195" text-anchor="middle" font-size="10" fill="#5a7090" font-weight="600">Helicopter Descent -- Find the Time</text>
 </svg>

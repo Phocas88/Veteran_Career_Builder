@@ -1,101 +1,159 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180">
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <defs>
+    <linearGradient id="ctRubber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3a3a3a"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </linearGradient>
+    <linearGradient id="ctGlass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c8e4f4"/>
+      <stop offset="50%" stop-color="#e8f4fc"/>
+      <stop offset="100%" stop-color="#a8d8ea"/>
+    </linearGradient>
+    <linearGradient id="ctCopper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4944a"/>
+      <stop offset="100%" stop-color="#b87333"/>
+    </linearGradient>
+    <linearGradient id="ctWood" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#deb887"/>
+      <stop offset="100%" stop-color="#c49a5c"/>
+    </linearGradient>
+    <filter id="ctShadow" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="0.5" dy="0.5" stdDeviation="1" flood-color="#1a3a6b" flood-opacity="0.12"/>
+    </filter>
+  </defs>
   <style>
     @keyframes electronFlow {
       0% { offset-distance: 0%; }
       100% { offset-distance: 100%; }
     }
-    .dot { r: 2; fill: #c8960a; opacity: 0.7; }
+    .dot { r: 2.2; fill: #c8960a; opacity: 0.75; }
     text { font-family: Arial, sans-serif; }
   </style>
-  <rect width="400" height="180" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
-
-  <!-- Circuit 1: Rubber -->
-  <g transform="translate(20,30)">
-    <!-- Battery -->
-    <line x1="20" y1="10" x2="20" y2="20" stroke="#1a3a6b" stroke-width="2"/>
-    <line x1="13" y1="20" x2="27" y2="20" stroke="#1a3a6b" stroke-width="2.5"/>
-    <line x1="16" y1="25" x2="24" y2="25" stroke="#1a3a6b" stroke-width="1.5"/>
-    <!-- Wires -->
-    <line x1="20" y1="10" x2="60" y2="10" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="60" y1="10" x2="60" y2="35" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="25" x2="20" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="70" x2="60" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="60" y1="55" x2="60" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <!-- Material sample -->
-    <rect x="48" y="35" width="24" height="20" rx="3" fill="#8B4513" stroke="#1a3a6b" stroke-width="1.5"/>
-    <!-- Bulb -->
-    <circle cx="20" cy="50" r="8" fill="none" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="17" y1="55" x2="23" y2="45" stroke="#1a3a6b" stroke-width="1"/>
-    <line x1="20" y1="42" x2="20" y2="35" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="58" x2="20" y2="70" stroke="none"/>
-    <!-- Electron dots -->
-    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M20,10 L60,10 L60,35 L60,55 L60,70 L20,70 L20,25" begin="0s"/></circle>
-    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M20,10 L60,10 L60,35 L60,55 L60,70 L20,70 L20,25" begin="-1.25s"/></circle>
-    <!-- Label -->
-    <text x="40" y="100" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Rubber</text>
+  <!-- Background with grid -->
+  <rect width="400" height="200" rx="10" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+  <g stroke="#d8dfe8" stroke-width="0.3">
+    <line x1="0" y1="20" x2="400" y2="20"/><line x1="0" y1="40" x2="400" y2="40"/>
+    <line x1="0" y1="60" x2="400" y2="60"/><line x1="0" y1="80" x2="400" y2="80"/>
+    <line x1="0" y1="100" x2="400" y2="100"/><line x1="0" y1="120" x2="400" y2="120"/>
+    <line x1="0" y1="140" x2="400" y2="140"/><line x1="0" y1="160" x2="400" y2="160"/>
+    <line x1="0" y1="180" x2="400" y2="180"/>
+    <line x1="20" y1="0" x2="20" y2="200"/><line x1="40" y1="0" x2="40" y2="200"/>
+    <line x1="60" y1="0" x2="60" y2="200"/><line x1="80" y1="0" x2="80" y2="200"/>
+    <line x1="100" y1="0" x2="100" y2="200"/><line x1="120" y1="0" x2="120" y2="200"/>
+    <line x1="140" y1="0" x2="140" y2="200"/><line x1="160" y1="0" x2="160" y2="200"/>
+    <line x1="180" y1="0" x2="180" y2="200"/><line x1="200" y1="0" x2="200" y2="200"/>
+    <line x1="220" y1="0" x2="220" y2="200"/><line x1="240" y1="0" x2="240" y2="200"/>
+    <line x1="260" y1="0" x2="260" y2="200"/><line x1="280" y1="0" x2="280" y2="200"/>
+    <line x1="300" y1="0" x2="300" y2="200"/><line x1="320" y1="0" x2="320" y2="200"/>
+    <line x1="340" y1="0" x2="340" y2="200"/><line x1="360" y1="0" x2="360" y2="200"/>
+    <line x1="380" y1="0" x2="380" y2="200"/>
   </g>
-
-  <!-- Circuit 2: Glass -->
-  <g transform="translate(110,30)">
-    <line x1="20" y1="10" x2="20" y2="20" stroke="#1a3a6b" stroke-width="2"/>
-    <line x1="13" y1="20" x2="27" y2="20" stroke="#1a3a6b" stroke-width="2.5"/>
-    <line x1="16" y1="25" x2="24" y2="25" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="10" x2="60" y2="10" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="60" y1="10" x2="60" y2="35" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="25" x2="20" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="70" x2="60" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="60" y1="55" x2="60" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <rect x="48" y="35" width="24" height="20" rx="3" fill="#a8d8ea" stroke="#1a3a6b" stroke-width="1.5" opacity="0.7"/>
-    <circle cx="20" cy="50" r="8" fill="none" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="17" y1="55" x2="23" y2="45" stroke="#1a3a6b" stroke-width="1"/>
-    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M20,10 L60,10 L60,35 L60,55 L60,70 L20,70 L20,25" begin="-0.3s"/></circle>
-    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M20,10 L60,10 L60,35 L60,55 L60,70 L20,70 L20,25" begin="-1.55s"/></circle>
-    <text x="40" y="100" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Glass</text>
-  </g>
-
-  <!-- Circuit 3: Copper -->
-  <g transform="translate(200,30)">
-    <line x1="20" y1="10" x2="20" y2="20" stroke="#1a3a6b" stroke-width="2"/>
-    <line x1="13" y1="20" x2="27" y2="20" stroke="#1a3a6b" stroke-width="2.5"/>
-    <line x1="16" y1="25" x2="24" y2="25" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="10" x2="60" y2="10" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="60" y1="10" x2="60" y2="35" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="25" x2="20" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="70" x2="60" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="60" y1="55" x2="60" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <rect x="48" y="35" width="24" height="20" rx="3" fill="#b87333" stroke="#1a3a6b" stroke-width="1.5"/>
-    <circle cx="20" cy="50" r="8" fill="none" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="17" y1="55" x2="23" y2="45" stroke="#1a3a6b" stroke-width="1"/>
-    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M20,10 L60,10 L60,35 L60,55 L60,70 L20,70 L20,25" begin="-0.6s"/></circle>
-    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M20,10 L60,10 L60,35 L60,55 L60,70 L20,70 L20,25" begin="-1.85s"/></circle>
-    <text x="40" y="100" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Copper</text>
-  </g>
-
-  <!-- Circuit 4: Wood -->
-  <g transform="translate(290,30)">
-    <line x1="20" y1="10" x2="20" y2="20" stroke="#1a3a6b" stroke-width="2"/>
-    <line x1="13" y1="20" x2="27" y2="20" stroke="#1a3a6b" stroke-width="2.5"/>
-    <line x1="16" y1="25" x2="24" y2="25" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="10" x2="60" y2="10" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="60" y1="10" x2="60" y2="35" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="25" x2="20" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="20" y1="70" x2="60" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="60" y1="55" x2="60" y2="70" stroke="#1a3a6b" stroke-width="1.5"/>
-    <rect x="48" y="35" width="24" height="20" rx="3" fill="#deb887" stroke="#1a3a6b" stroke-width="1.5"/>
-    <!-- Wood grain lines -->
-    <line x1="52" y1="37" x2="52" y2="53" stroke="#a0784c" stroke-width="0.5"/>
-    <line x1="58" y1="37" x2="58" y2="53" stroke="#a0784c" stroke-width="0.5"/>
-    <line x1="64" y1="37" x2="64" y2="53" stroke="#a0784c" stroke-width="0.5"/>
-    <circle cx="20" cy="50" r="8" fill="none" stroke="#1a3a6b" stroke-width="1.5"/>
-    <line x1="17" y1="55" x2="23" y2="45" stroke="#1a3a6b" stroke-width="1"/>
-    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M20,10 L60,10 L60,35 L60,55 L60,70 L20,70 L20,25" begin="-0.9s"/></circle>
-    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M20,10 L60,10 L60,35 L60,55 L60,70 L20,70 L20,25" begin="-2.15s"/></circle>
-    <text x="40" y="100" text-anchor="middle" font-size="9" font-weight="700" fill="#1a3a6b">Wood</text>
-  </g>
-
-  <!-- Question mark -->
-  <text x="200" y="150" text-anchor="middle" font-size="13" font-weight="700" fill="#dc2626">Which conducts best?  ?</text>
 
   <!-- Title -->
-  <text x="200" y="172" text-anchor="middle" font-size="12" font-weight="600" fill="#5a7090">Conductors — Which Material Conducts Best?</text>
+  <text x="200" y="18" text-anchor="middle" font-size="11" fill="#5a7090" font-weight="600">Conductor Test -- Which Material Conducts Best?</text>
+
+  <!-- Circuit 1: Rubber -->
+  <g transform="translate(14,30)" filter="url(#ctShadow)">
+    <!-- Battery -->
+    <line x1="22" y1="12" x2="22" y2="20" stroke="#1a3a6b" stroke-width="2"/>
+    <line x1="15" y1="20" x2="29" y2="20" stroke="#1a3a6b" stroke-width="3"/>
+    <text x="22" y="17" text-anchor="middle" font-size="6" fill="#c8960a" font-weight="700">+</text>
+    <line x1="17" y1="25" x2="27" y2="25" stroke="#1a3a6b" stroke-width="1.8"/>
+    <!-- Wires -->
+    <line x1="22" y1="12" x2="62" y2="12" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="62" y1="12" x2="62" y2="38" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="25" x2="22" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="80" x2="62" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="62" y1="62" x2="62" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Material sample -->
+    <rect x="49" y="38" width="26" height="24" rx="3" fill="url(#ctRubber)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Bulb -->
+    <circle cx="22" cy="54" r="9" fill="#fff8e0" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="19" y1="60" x2="25" y2="48" stroke="#c8960a" stroke-width="0.8"/>
+    <line x1="22" y1="45" x2="22" y2="38" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="63" x2="22" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Electron dots -->
+    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M22,12 L62,12 L62,38 L62,62 L62,80 L22,80 L22,25" begin="0s"/></circle>
+    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M22,12 L62,12 L62,38 L62,62 L62,80 L22,80 L22,25" begin="-1.25s"/></circle>
+  </g>
+  <text x="55" y="142" text-anchor="middle" font-size="10" font-weight="700" fill="#1a3a6b">Rubber</text>
+
+  <!-- Circuit 2: Glass -->
+  <g transform="translate(106,30)" filter="url(#ctShadow)">
+    <line x1="22" y1="12" x2="22" y2="20" stroke="#1a3a6b" stroke-width="2"/>
+    <line x1="15" y1="20" x2="29" y2="20" stroke="#1a3a6b" stroke-width="3"/>
+    <text x="22" y="17" text-anchor="middle" font-size="6" fill="#c8960a" font-weight="700">+</text>
+    <line x1="17" y1="25" x2="27" y2="25" stroke="#1a3a6b" stroke-width="1.8"/>
+    <line x1="22" y1="12" x2="62" y2="12" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="62" y1="12" x2="62" y2="38" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="25" x2="22" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="80" x2="62" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="62" y1="62" x2="62" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <rect x="49" y="38" width="26" height="24" rx="3" fill="url(#ctGlass)" stroke="#1a3a6b" stroke-width="1.5" opacity="0.8"/>
+    <!-- Glass shine -->
+    <line x1="55" y1="40" x2="55" y2="58" stroke="#fff" stroke-width="1" opacity="0.6"/>
+    <circle cx="22" cy="54" r="9" fill="#fff8e0" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="19" y1="60" x2="25" y2="48" stroke="#c8960a" stroke-width="0.8"/>
+    <line x1="22" y1="45" x2="22" y2="38" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="63" x2="22" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M22,12 L62,12 L62,38 L62,62 L62,80 L22,80 L22,25" begin="-0.3s"/></circle>
+    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M22,12 L62,12 L62,38 L62,62 L62,80 L22,80 L22,25" begin="-1.55s"/></circle>
+  </g>
+  <text x="147" y="142" text-anchor="middle" font-size="10" font-weight="700" fill="#1a3a6b">Glass</text>
+
+  <!-- Circuit 3: Copper -->
+  <g transform="translate(198,30)" filter="url(#ctShadow)">
+    <line x1="22" y1="12" x2="22" y2="20" stroke="#1a3a6b" stroke-width="2"/>
+    <line x1="15" y1="20" x2="29" y2="20" stroke="#1a3a6b" stroke-width="3"/>
+    <text x="22" y="17" text-anchor="middle" font-size="6" fill="#c8960a" font-weight="700">+</text>
+    <line x1="17" y1="25" x2="27" y2="25" stroke="#1a3a6b" stroke-width="1.8"/>
+    <line x1="22" y1="12" x2="62" y2="12" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="62" y1="12" x2="62" y2="38" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="25" x2="22" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="80" x2="62" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="62" y1="62" x2="62" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <rect x="49" y="38" width="26" height="24" rx="3" fill="url(#ctCopper)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Copper shine -->
+    <line x1="56" y1="40" x2="56" y2="58" stroke="#e8b870" stroke-width="1" opacity="0.5"/>
+    <circle cx="22" cy="54" r="9" fill="#fff8e0" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="19" y1="60" x2="25" y2="48" stroke="#c8960a" stroke-width="0.8"/>
+    <line x1="22" y1="45" x2="22" y2="38" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="63" x2="22" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M22,12 L62,12 L62,38 L62,62 L62,80 L22,80 L22,25" begin="-0.6s"/></circle>
+    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M22,12 L62,12 L62,38 L62,62 L62,80 L22,80 L22,25" begin="-1.85s"/></circle>
+  </g>
+  <text x="239" y="142" text-anchor="middle" font-size="10" font-weight="700" fill="#1a3a6b">Copper</text>
+
+  <!-- Circuit 4: Wood -->
+  <g transform="translate(290,30)" filter="url(#ctShadow)">
+    <line x1="22" y1="12" x2="22" y2="20" stroke="#1a3a6b" stroke-width="2"/>
+    <line x1="15" y1="20" x2="29" y2="20" stroke="#1a3a6b" stroke-width="3"/>
+    <text x="22" y="17" text-anchor="middle" font-size="6" fill="#c8960a" font-weight="700">+</text>
+    <line x1="17" y1="25" x2="27" y2="25" stroke="#1a3a6b" stroke-width="1.8"/>
+    <line x1="22" y1="12" x2="62" y2="12" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="62" y1="12" x2="62" y2="38" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="25" x2="22" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="80" x2="62" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="62" y1="62" x2="62" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <rect x="49" y="38" width="26" height="24" rx="3" fill="url(#ctWood)" stroke="#1a3a6b" stroke-width="1.5"/>
+    <!-- Wood grain -->
+    <line x1="53" y1="40" x2="53" y2="60" stroke="#a0784c" stroke-width="0.5"/>
+    <line x1="59" y1="40" x2="59" y2="60" stroke="#a0784c" stroke-width="0.5"/>
+    <line x1="65" y1="40" x2="65" y2="60" stroke="#a0784c" stroke-width="0.5"/>
+    <line x1="71" y1="40" x2="71" y2="60" stroke="#a0784c" stroke-width="0.5"/>
+    <circle cx="22" cy="54" r="9" fill="#fff8e0" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="19" y1="60" x2="25" y2="48" stroke="#c8960a" stroke-width="0.8"/>
+    <line x1="22" y1="45" x2="22" y2="38" stroke="#1a3a6b" stroke-width="1.5"/>
+    <line x1="22" y1="63" x2="22" y2="80" stroke="#1a3a6b" stroke-width="1.5"/>
+    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M22,12 L62,12 L62,38 L62,62 L62,80 L22,80 L22,25" begin="-0.9s"/></circle>
+    <circle class="dot"><animateMotion dur="2.5s" repeatCount="indefinite" path="M22,12 L62,12 L62,38 L62,62 L62,80 L22,80 L22,25" begin="-2.15s"/></circle>
+  </g>
+  <text x="331" y="142" text-anchor="middle" font-size="10" font-weight="700" fill="#1a3a6b">Wood</text>
+
+  <!-- Question -->
+  <text x="200" y="164" text-anchor="middle" font-size="14" font-weight="700" fill="#dc2626">Which conducts best?  ?</text>
+
+  <!-- Bottom label -->
+  <text x="200" y="184" text-anchor="middle" font-size="10" fill="#5a7090" font-weight="600">Identical circuits with different materials</text>
+  <text x="200" y="196" text-anchor="middle" font-size="9" fill="#8a9ab5">Electron flow shown equally in all -- one is the real conductor</text>
 </svg>

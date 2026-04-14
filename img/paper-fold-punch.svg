@@ -1,69 +1,109 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <defs>
+    <linearGradient id="pfPaper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f2f5"/>
+    </linearGradient>
+    <filter id="pfShadow" x="-8%" y="-8%" width="120%" height="120%">
+      <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#1a3a6b" flood-opacity="0.15"/>
+    </filter>
+  </defs>
   <style>
-    @keyframes flutter {
-      0%, 100% { transform: skewX(0deg) skewY(0deg); }
-      30% { transform: skewX(0.5deg) skewY(-0.3deg); }
-      70% { transform: skewX(-0.5deg) skewY(0.3deg); }
-    }
-    .paper { animation: flutter 4s ease-in-out infinite; transform-origin: 55px 105px; }
     text { font-family: Arial, sans-serif; }
   </style>
-  <rect width="400" height="200" rx="12" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+  <!-- Background with grid -->
+  <rect width="400" height="200" rx="10" fill="#f0f4fa" stroke="#d0daea" stroke-width="2"/>
+  <g stroke="#d8dfe8" stroke-width="0.3">
+    <line x1="0" y1="20" x2="400" y2="20"/><line x1="0" y1="40" x2="400" y2="40"/>
+    <line x1="0" y1="60" x2="400" y2="60"/><line x1="0" y1="80" x2="400" y2="80"/>
+    <line x1="0" y1="100" x2="400" y2="100"/><line x1="0" y1="120" x2="400" y2="120"/>
+    <line x1="0" y1="140" x2="400" y2="140"/><line x1="0" y1="160" x2="400" y2="160"/>
+    <line x1="0" y1="180" x2="400" y2="180"/>
+    <line x1="20" y1="0" x2="20" y2="200"/><line x1="40" y1="0" x2="40" y2="200"/>
+    <line x1="60" y1="0" x2="60" y2="200"/><line x1="80" y1="0" x2="80" y2="200"/>
+    <line x1="100" y1="0" x2="100" y2="200"/><line x1="120" y1="0" x2="120" y2="200"/>
+    <line x1="140" y1="0" x2="140" y2="200"/><line x1="160" y1="0" x2="160" y2="200"/>
+    <line x1="180" y1="0" x2="180" y2="200"/><line x1="200" y1="0" x2="200" y2="200"/>
+    <line x1="220" y1="0" x2="220" y2="200"/><line x1="240" y1="0" x2="240" y2="200"/>
+    <line x1="260" y1="0" x2="260" y2="200"/><line x1="280" y1="0" x2="280" y2="200"/>
+    <line x1="300" y1="0" x2="300" y2="200"/><line x1="320" y1="0" x2="320" y2="200"/>
+    <line x1="340" y1="0" x2="340" y2="200"/><line x1="360" y1="0" x2="360" y2="200"/>
+    <line x1="380" y1="0" x2="380" y2="200"/>
+  </g>
 
   <!-- Title -->
-  <text x="200" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#5a7090" font-weight="600">Paper Fold &amp; Punch — How Many Holes?</text>
+  <text x="200" y="18" text-anchor="middle" font-size="11" fill="#5a7090" font-weight="600">Paper Fold and Punch -- How Many Holes When Unfolded?</text>
 
   <!-- Step 1: Original square paper -->
-  <g class="paper">
-    <rect x="20" y="38" width="68" height="68" fill="#fff" stroke="#1a3a6b" stroke-width="2" rx="1"/>
-    <text x="54" y="82" text-anchor="middle" font-family="Arial" font-size="9" fill="#5a7090">Paper</text>
+  <g filter="url(#pfShadow)">
+    <rect x="14" y="38" width="62" height="62" fill="url(#pfPaper)" stroke="#1a3a6b" stroke-width="1.8" rx="1"/>
   </g>
-  <text x="54" y="120" text-anchor="middle" font-family="Arial" font-size="9" fill="#1a3a6b" font-weight="600">Step 1</text>
+  <text x="45" y="74" text-anchor="middle" font-size="9" fill="#5a7090">Paper</text>
+  <text x="45" y="115" text-anchor="middle" font-size="9" fill="#1a3a6b" font-weight="700">Step 1</text>
+  <text x="45" y="125" text-anchor="middle" font-size="7" fill="#8a9ab5">Full sheet</text>
 
-  <!-- Arrow -->
-  <text x="97" y="75" font-family="Arial" font-size="16" fill="#c8960a">→</text>
+  <!-- Arrow 1 -->
+  <line x1="82" y1="68" x2="95" y2="68" stroke="#c8960a" stroke-width="1.5"/>
+  <polygon points="93,64 100,68 93,72" fill="#c8960a"/>
 
   <!-- Step 2: Folded in half (rectangle) -->
-  <rect x="112" y="38" width="34" height="68" fill="#fff" stroke="#1a3a6b" stroke-width="2" rx="1"/>
-  <rect x="112" y="38" width="34" height="68" fill="rgba(26,58,107,0.05)" stroke="none"/>
+  <g filter="url(#pfShadow)">
+    <rect x="106" y="38" width="31" height="62" fill="url(#pfPaper)" stroke="#1a3a6b" stroke-width="1.8" rx="1"/>
+    <!-- Slight shadow to show layers -->
+    <rect x="106" y="38" width="31" height="62" fill="rgba(26,58,107,0.04)" rx="1"/>
+  </g>
   <!-- Fold indicator -->
-  <line x1="112" y1="38" x2="112" y2="106" stroke="#c8960a" stroke-width="2" stroke-dasharray="4,2"/>
-  <text x="106" y="75" text-anchor="end" font-family="Arial" font-size="8" fill="#c8960a">fold</text>
-  <text x="129" y="82" text-anchor="middle" font-family="Arial" font-size="8" fill="#5a7090">2 layers</text>
-  <text x="129" y="120" text-anchor="middle" font-family="Arial" font-size="9" fill="#1a3a6b" font-weight="600">Step 2</text>
+  <line x1="106" y1="38" x2="106" y2="100" stroke="#c8960a" stroke-width="2" stroke-dasharray="3,2"/>
+  <text x="100" y="72" text-anchor="end" font-size="7" fill="#c8960a" font-weight="600">fold</text>
+  <text x="121" y="74" text-anchor="middle" font-size="7" fill="#5a7090">2 layers</text>
+  <text x="121" y="115" text-anchor="middle" font-size="9" fill="#1a3a6b" font-weight="700">Step 2</text>
+  <text x="121" y="125" text-anchor="middle" font-size="7" fill="#8a9ab5">Fold in half</text>
 
-  <!-- Arrow -->
-  <text x="155" y="75" font-family="Arial" font-size="16" fill="#c8960a">→</text>
+  <!-- Arrow 2 -->
+  <line x1="143" y1="68" x2="156" y2="68" stroke="#c8960a" stroke-width="1.5"/>
+  <polygon points="154,64 161,68 154,72" fill="#c8960a"/>
 
   <!-- Step 3: Folded again (small square) -->
-  <rect x="170" y="38" width="34" height="34" fill="#fff" stroke="#1a3a6b" stroke-width="2" rx="1"/>
-  <rect x="170" y="38" width="34" height="34" fill="rgba(26,58,107,0.08)" stroke="none"/>
+  <g filter="url(#pfShadow)">
+    <rect x="167" y="38" width="31" height="31" fill="url(#pfPaper)" stroke="#1a3a6b" stroke-width="1.8" rx="1"/>
+    <rect x="167" y="38" width="31" height="31" fill="rgba(26,58,107,0.06)" rx="1"/>
+  </g>
   <!-- Fold indicator -->
-  <line x1="170" y1="72" x2="204" y2="72" stroke="#c8960a" stroke-width="2" stroke-dasharray="4,2"/>
-  <text x="187" y="84" text-anchor="middle" font-family="Arial" font-size="8" fill="#c8960a">fold</text>
-  <text x="187" y="60" text-anchor="middle" font-family="Arial" font-size="8" fill="#5a7090">4 layers</text>
-  <text x="187" y="120" text-anchor="middle" font-family="Arial" font-size="9" fill="#1a3a6b" font-weight="600">Step 3</text>
+  <line x1="167" y1="69" x2="198" y2="69" stroke="#c8960a" stroke-width="2" stroke-dasharray="3,2"/>
+  <text x="183" y="80" text-anchor="middle" font-size="7" fill="#c8960a" font-weight="600">fold</text>
+  <text x="183" y="57" text-anchor="middle" font-size="7" fill="#5a7090">4 layers</text>
+  <text x="183" y="115" text-anchor="middle" font-size="9" fill="#1a3a6b" font-weight="700">Step 3</text>
+  <text x="183" y="125" text-anchor="middle" font-size="7" fill="#8a9ab5">Fold again</text>
 
-  <!-- Arrow -->
-  <text x="213" y="58" font-family="Arial" font-size="16" fill="#c8960a">→</text>
+  <!-- Arrow 3 -->
+  <line x1="204" y1="53" x2="217" y2="53" stroke="#c8960a" stroke-width="1.5"/>
+  <polygon points="215,49 222,53 215,57" fill="#c8960a"/>
 
   <!-- Step 4: Punch hole -->
-  <rect x="228" y="38" width="34" height="34" fill="#fff" stroke="#1a3a6b" stroke-width="2" rx="1"/>
-  <circle cx="245" cy="55" r="5" fill="#1a3a6b" stroke="#1a3a6b" stroke-width="1"/>
-  <text x="245" y="84" text-anchor="middle" font-family="Arial" font-size="8" fill="#5a7090">1 hole</text>
-  <text x="245" y="96" text-anchor="middle" font-family="Arial" font-size="8" fill="#5a7090">punched</text>
-  <text x="245" y="120" text-anchor="middle" font-family="Arial" font-size="9" fill="#1a3a6b" font-weight="600">Step 4</text>
+  <g filter="url(#pfShadow)">
+    <rect x="228" y="38" width="31" height="31" fill="url(#pfPaper)" stroke="#1a3a6b" stroke-width="1.8" rx="1"/>
+    <rect x="228" y="38" width="31" height="31" fill="rgba(26,58,107,0.06)" rx="1"/>
+    <!-- Hole -->
+    <circle cx="244" cy="54" r="5" fill="#1a3a6b"/>
+    <circle cx="244" cy="54" r="4" fill="#2a3a50"/>
+  </g>
+  <text x="244" y="82" text-anchor="middle" font-size="7" fill="#5a7090">1 hole</text>
+  <text x="244" y="90" text-anchor="middle" font-size="7" fill="#5a7090">punched</text>
+  <text x="244" y="115" text-anchor="middle" font-size="9" fill="#1a3a6b" font-weight="700">Step 4</text>
+  <text x="244" y="125" text-anchor="middle" font-size="7" fill="#8a9ab5">Punch</text>
 
-  <!-- Arrow -->
-  <text x="272" y="58" font-family="Arial" font-size="16" fill="#c8960a">→</text>
+  <!-- Arrow 4 -->
+  <line x1="265" y1="53" x2="278" y2="53" stroke="#c8960a" stroke-width="1.5"/>
+  <polygon points="276,49 283,53 276,57" fill="#c8960a"/>
 
   <!-- Step 5: Unfold = ? -->
-  <rect x="290" y="38" width="90" height="90" rx="6" fill="rgba(220,38,38,.08)" stroke="#dc2626" stroke-width="2" stroke-dasharray="6,3"/>
-  <text x="335" y="65" text-anchor="middle" font-family="Arial" font-size="11" fill="#5a7090" font-weight="600">Unfolded:</text>
-  <text x="335" y="100" text-anchor="middle" font-family="Arial" font-size="32" font-weight="700" fill="#dc2626">?</text>
-  <text x="335" y="118" text-anchor="middle" font-family="Arial" font-size="12" fill="#dc2626" font-weight="600">holes</text>
-  <text x="335" y="145" text-anchor="middle" font-family="Arial" font-size="9" fill="#1a3a6b" font-weight="600">Result</text>
+  <rect x="290" y="30" width="95" height="95" rx="8" fill="rgba(220,38,38,0.06)" stroke="#dc2626" stroke-width="2" stroke-dasharray="6,3" filter="url(#pfShadow)"/>
+  <text x="337" y="55" text-anchor="middle" font-size="10" fill="#5a7090" font-weight="600">Unfolded:</text>
+  <text x="337" y="95" text-anchor="middle" font-size="36" font-weight="700" fill="#dc2626">?</text>
+  <text x="337" y="115" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="700">holes</text>
+  <text x="337" y="140" text-anchor="middle" font-size="9" fill="#1a3a6b" font-weight="700">Result</text>
 
   <!-- Bottom note -->
-  <text x="200" y="170" text-anchor="middle" font-family="Arial" font-size="10" fill="#c8960a" font-weight="600">Fold in half twice, punch once — how many holes when unfolded?</text>
+  <text x="200" y="160" text-anchor="middle" font-size="9" fill="#c8960a" font-weight="600">Fold in half twice, punch once -- how many holes when unfolded?</text>
+  <text x="200" y="175" text-anchor="middle" font-size="9" fill="#8a9ab5">DO NOT unfold the paper -- count the holes mentally</text>
 </svg>

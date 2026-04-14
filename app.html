@@ -4612,8 +4612,9 @@ Return this exact JSON structure:
                 const isRetired = latestMil && (latestMil.serviceType==="Retired" || latestMil.status==="Retired" || (latestMil.endDate && !latestMil.currently));
                 const rankAbbr = rank || "";
                 const displayName = rankAbbr ? (rankAbbr.split(" - ").pop().split(" (")[0] + " " + (personal.name||currentUser.name||"").split(" ").pop()) : (personal.name||currentUser.name||"Veteran");
+                const insigniaUrl = (grade && window.VCP_INSIGNIA) ? window.VCP_INSIGNIA.get(branch||"Army",grade) : null;
                 return React.createElement("div",{style:{display:"flex",alignItems:"center",gap:".4rem"}},
-                  grade ? React.createElement(RankInsignia,{branch:branch,grade:grade,color:"#f0c040"}) : React.createElement("div",{className:"user-avatar"},(currentUser&&currentUser.initials)),
+                  insigniaUrl ? React.createElement("img",{src:insigniaUrl,alt:grade+" insignia",style:{height:"28px",width:"auto",flexShrink:0,filter:"drop-shadow(0 1px 2px rgba(0,0,0,.3))"}}) : React.createElement("div",{className:"user-avatar"},(currentUser&&currentUser.initials)),
                   React.createElement("span",null,
                     "Welcome Back, ",
                     React.createElement("strong",null,displayName),
@@ -7417,6 +7418,7 @@ Return this exact JSON structure:
       &copy; 2026 Veteran Career Path &bull; Not affiliated with the U.S. Department of Veterans Affairs or any government agency.<br>
       Built by a Veteran, for Veterans. &bull; <a href="https://veterancareerpath.com/privacy-policy.html" style="color:#5a7090;">Privacy Policy</a> &bull; <a href="https://veterancareerpath.com/terms.html" style="color:#5a7090;">Terms of Service</a>
     </div>
+<script src="/vcp-rank-insignia.js"></script>
 <script src="/vcp-components.js"></script>
 <script defer src="/vcp-scout.js"></script>
 </body>

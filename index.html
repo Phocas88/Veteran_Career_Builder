@@ -1347,7 +1347,7 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
         <div>
           <div style="display:flex;align-items:center;gap:.65rem;">
-            <svg id="dash-insignia" viewBox="0 0 36 36" width="40" height="40" style="flex-shrink:0;display:none;"></svg>
+            <img id="dash-insignia" src="" alt="" style="height:40px;width:auto;flex-shrink:0;display:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4));">
             <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:.05em;color:#fff;margin:0;" id="dash-greeting">Welcome Back, Veteran</h1>
           </div>
         </div>
@@ -1939,29 +1939,14 @@ function skipWelcome(){
       var g = document.getElementById('dash-greeting');
       if(g) g.textContent = 'Welcome Back, ' + greeting;
     }
-    // Draw rank insignia SVG
-    if(lastGrade) {
-      var svg = document.getElementById('dash-insignia');
-      if(svg) {
-        svg.style.display = 'block';
-        var gNum = parseInt(lastGrade.slice(2)) || 1;
-        var paths = '';
-        if(lastGrade.startsWith('E-')) {
-          var chevs = Math.min(gNum, 3);
-          for(var ci=0;ci<chevs;ci++) paths += '<path d="M3,'+(28-ci*8)+' L18,'+(18-ci*8)+' L33,'+(28-ci*8)+'" fill="none" stroke="#f0c040" stroke-width="2.5" stroke-linecap="round"/>';
-          if(gNum>=7) for(var ri=0;ri<gNum-6;ri++) paths += '<path d="M3,'+(33+ri*5)+' Q18,'+(38+ri*5)+' 33,'+(33+ri*5)+'" fill="none" stroke="#f0c040" stroke-width="2.5"/>';
-          if(gNum===8) paths += '<polygon points="18,4 23,9 18,14 13,9" fill="#f0c040"/>';
-          if(gNum>=9) paths += '<text x="18" y="12" text-anchor="middle" font-size="10" fill="#f0c040">★</text>';
-        } else if(lastGrade.startsWith('W-')) {
-          for(var bi=0;bi<gNum;bi++) paths += '<rect x="'+(4+bi*7)+'" y="10" width="5" height="14" rx="1" fill="'+(bi%2===0?'#f0c040':'rgba(255,255,255,.3)')+'"/>';
-          paths += '<rect x="2" y="26" width="32" height="4" rx="1" fill="#f0c040"/>';
-        } else if(lastGrade.startsWith('O-')) {
-          if(gNum<=2) paths += '<rect x="6" y="12" width="24" height="10" rx="3" fill="'+(gNum===1?'#f0c040':'#ccc')+'"/>';
-          else if(gNum===3) paths += '<rect x="2" y="12" width="13" height="10" rx="3" fill="#ccc"/><rect x="21" y="12" width="13" height="10" rx="3" fill="#ccc"/>';
-          else if(gNum<=5) paths += '<path d="M18,4 C11,4 5,9 5,15 C5,19 8,21 12,20 L18,24 L24,20 C28,21 31,19 31,15 C31,9 25,4 18,4Z" fill="'+(gNum===4?'#f0c040':'#ccc')+'"/>';
-          else { var sp=[{x:18,y:13}]; if(gNum>=8)sp.push({x:10,y:18},{x:26,y:18}); if(gNum>=9)sp.push({x:8,y:10},{x:28,y:10}); for(var si=0;si<Math.min(gNum-6,5);si++) paths += '<text x="'+sp[si].x+'" y="'+sp[si].y+'" text-anchor="middle" font-size="12" fill="#f0c040">★</text>'; }
-        }
-        svg.innerHTML = paths;
+    // Show real rank insignia image
+    if(lastGrade && window.VCP_INSIGNIA) {
+      var branch = '';
+      try { var milArr = p.milExperiences || p.experiences || p.military || []; if(milArr[0]) branch = milArr[0].branch || 'Army'; } catch(e){}
+      var insigniaUrl = window.VCP_INSIGNIA.get(branch || 'Army', lastGrade);
+      if(insigniaUrl) {
+        var img = document.getElementById('dash-insignia');
+        if(img) { img.src = insigniaUrl; img.alt = lastGrade + ' insignia'; img.style.display = 'block'; }
       }
     }
   } else {
@@ -1974,6 +1959,7 @@ function skipWelcome(){
   }
 })();
 </script>
+<script src="/vcp-rank-insignia.js"></script>
 <script defer src="/vcp-components.js"></script>
 <script>
 // Scroll reveal

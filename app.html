@@ -2736,11 +2736,42 @@ function MyProfileSaved(props) {
                       +"<div><div style='font-size:7.5pt;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#aaa;margin-bottom:8pt'>Skills</div>"
                       +(d.skills||[]).map(s=>"<div style='font-size:9.5pt;color:#555;margin-bottom:3pt'>— "+s+"</div>").join("")
                       +"</div></div></div>";
+                  } else if (tmpl === "modern") {
+                    // Modern — bold colored header block + accent section bars
+                    body = "<div style='font-family:"+vstyle.font+";font-size:10pt;line-height:1.45'>"
+                      +"<div style='background:"+vstyle.accent+";color:#fff;padding:1.2rem 2cm'>"
+                      +"<div style='font-size:18pt;font-weight:800;text-transform:uppercase;letter-spacing:.03em'>"+d.name+"</div>"
+                      +"<div style='font-size:9pt;color:rgba(255,255,255,.85);margin-top:3pt'>"+d.contact+"</div></div>"
+                      +(d.clearance?"<div style='background:"+vstyle.accent+";color:rgba(255,255,255,.7);font-size:8.5pt;padding:0 2cm .6rem;font-weight:600'>"+d.clearance+"</div>":"")
+                      +"<div style='padding:.8rem 2cm 1.5cm'>"
+                      +"<div style='font-size:9.5pt;margin-bottom:10pt;line-height:1.65'>"+d.summary+"</div>"
+                      +"<div style='background:"+vstyle.accent+";color:#fff;padding:3pt 8pt;border-radius:2px;font-size:8.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:8pt 0 5pt;display:inline-block'>Professional Experience</div>"+exp
+                      +"<div style='background:"+vstyle.accent+";color:#fff;padding:3pt 8pt;border-radius:2px;font-size:8.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:8pt 0 5pt;display:inline-block'>Education</div>"+edu
+                      +((d.skills||[]).length?"<div style='background:"+vstyle.accent+";color:#fff;padding:3pt 8pt;border-radius:2px;font-size:8.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:8pt 0 5pt;display:inline-block'>Core Competencies</div>"
+                        +"<div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:2pt;font-size:9pt;line-height:1.8'>"
+                        +(d.skills||[]).map(s=>"<div>&#9632; "+s+"</div>").join("")+"</div>":"")
+                      +((d.certifications||[]).length?"<div style='background:"+vstyle.accent+";color:#fff;padding:3pt 8pt;border-radius:2px;font-size:8.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:8pt 0 5pt;display:inline-block'>Certifications</div>"
+                        +"<div style='font-size:9pt;line-height:1.8'>"+certs+"</div>":"")
+                      +"</div></div>";
+                  } else if (tmpl === "traditional") {
+                    // Traditional — serif font, centered, conservative
+                    body = "<div style='font-family:Georgia,\"Times New Roman\",serif;font-size:10.5pt;line-height:1.5;padding:1.5cm 2cm'>"
+                      +"<div style='text-align:center;border-bottom:1px solid #333;padding-bottom:8pt;margin-bottom:4pt'>"
+                      +"<div style='font-size:16pt;font-weight:400'>"+d.name+"</div></div>"
+                      +"<div style='text-align:center;font-size:9pt;color:#444;margin-bottom:10pt'>"+d.contact+"</div>"
+                      +(d.clearance?"<div style='text-align:center;font-size:8.5pt;color:#555;margin-bottom:6pt'>"+d.clearance+"</div>":"")
+                      +"<div style='font-size:9.5pt;margin-bottom:10pt;line-height:1.65;font-family:\"Times New Roman\",serif'>"+d.summary+"</div>"
+                      +"<div style='font-family:Georgia,serif;font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:1px solid #999;padding-bottom:2pt;margin:8pt 0 5pt'>Professional Experience</div>"+exp
+                      +"<div style='font-family:Georgia,serif;font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:1px solid #999;padding-bottom:2pt;margin:8pt 0 5pt'>Education</div>"+edu
+                      +((d.skills||[]).length?"<div style='font-family:Georgia,serif;font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:1px solid #999;padding-bottom:2pt;margin:8pt 0 5pt'>Skills</div>"
+                        +"<div style='font-size:9.5pt;line-height:1.8;font-family:\"Times New Roman\",serif'>"+skills+"</div>":"")
+                      +"</div>";
                   } else {
-                    // ATS Chrono, ATS Combo, Modern, Traditional — clean single column
+                    // ATS Chrono, ATS Combo, Functional — clean single column with accent
                     body = "<div style='font-family:"+vstyle.font+";font-size:10pt;line-height:1.45;padding:1.5cm 2cm'>"
                       +"<div style='text-align:center;margin-bottom:10pt'>"
-                      +"<div style='font-size:15pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em'>"+d.name+"</div>"
+                      +"<div style='font-size:15pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:"+vstyle.accent+"'>"+d.name+"</div>"
+                      +"<div style='height:2px;background:"+vstyle.accent+";margin:5pt 0'></div>"
                       +"<div style='font-size:9pt;color:#333;margin-top:3pt'>"+d.contact+"</div></div>"
                       +(d.clearance?"<div style='text-align:center;font-size:9pt;font-weight:700;color:#8a4000;margin-bottom:6pt'>"+d.clearance+"</div>":"")
                       +"<div style='font-size:9.5pt;margin-bottom:10pt;line-height:1.65'>"+d.summary+"</div>"

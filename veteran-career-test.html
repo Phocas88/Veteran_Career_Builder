@@ -2085,6 +2085,19 @@ function _renderResults(){
     html += '<div class="cc-salary">' + c.salary + '</div>';
     html += '<div class="cc-sector">' + c.sector + '</div>';
     html += '<div class="cc-desc">' + c.description + '</div>';
+    // Requirements if available
+    if (c.requirements && c.requirements.length) {
+      html += '<div style="margin-top:.4rem;font-size:.72rem;color:#5a7090;"><strong>Requirements:</strong> ' + c.requirements.slice(0,3).join(', ') + '</div>';
+    }
+    // Transition time if available
+    if (c.timeToTransition) {
+      html += '<div style="font-size:.72rem;color:#c8960a;margin-top:.2rem;">Transition time: ' + c.timeToTransition + '</div>';
+    }
+    // Link to Pro for full details
+    html += '<div style="margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap;">';
+    html += '<a href="/career-assessment-full.html" style="font-size:.7rem;color:#f0c040;text-decoration:none;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.2);border-radius:4px;padding:.2rem .5rem;">Full analysis in Pro</a>';
+    html += '<a href="/scout-resume-builder.html" style="font-size:.7rem;color:#4ade80;text-decoration:none;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.15);border-radius:4px;padding:.2rem .5rem;">Build resume for this role</a>';
+    html += '</div>';
     html += '</div>';
   }
   html += '</div></div>';

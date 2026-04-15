@@ -1994,6 +1994,21 @@ function matchCareers(scores){
       }
     }
 
+    // ── SENIORITY PENALTY ──
+    // PathFinder Lite users are typically fresh out of the military.
+    // Penalize senior/director/executive roles so entry and mid-level roles surface first.
+    if(score > 0) {
+      var t = c.title.toLowerCase();
+      var seniorKeywords = ['director','chief','executive','president','vp ','vice president','superintendent','principal','ciso','cto','cfo','coo','cmo','senior manager','plant manager','general manager','police sergeant','program manager','strategy consultant'];
+      var midKeywords = ['manager','supervisor','lead','coordinator','administrator'];
+      var isSenior = false;
+      var isMid = false;
+      for(var sk=0;sk<seniorKeywords.length;sk++){ if(t.indexOf(seniorKeywords[sk])!==-1){ isSenior=true; break; } }
+      if(!isSenior){ for(var mk=0;mk<midKeywords.length;mk++){ if(t.indexOf(midKeywords[mk])!==-1){ isMid=true; break; } } }
+      if(isSenior) score *= 0.3;   // heavy penalty — these rarely fit fresh veterans
+      else if(isMid) score *= 0.7; // mild penalty — some manager roles are accessible
+    }
+
     if(score > 0) matched.push({career:c, score:score});
   }
 

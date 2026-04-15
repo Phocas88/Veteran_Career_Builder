@@ -17,6 +17,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/vcp-styles.css">
 <script src="/vcp-careers-db.js"></script>
+<script src="/vcp-military-data.js"></script>
+<script src="/vcp-mos-data.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
@@ -426,6 +428,93 @@ a:hover{color:var(--gold);}
     <div style="background:rgba(26,122,64,.06);border:1px solid rgba(26,122,64,.15);border-radius:8px;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.82rem;color:var(--sub);line-height:1.6;">
       <strong style="color:#1a7a40;">📊 Subscriber Advantage:</strong> Subscribers get <strong>profile-weighted results</strong> that factor in your MOS, rank, clearance, and military experience (60% aptitude + 30% experience + 10% interest). Standalone results use 75% aptitude + 25% interest.
     </div>
+    <!-- Military profile for standalone users (hidden if subscription profile exists) -->
+    <div id="intro-mil-profile" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem;text-align:left;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.05em;color:var(--gold);margin-bottom:.15rem;">Your Military Background</div>
+      <div style="font-size:.75rem;color:var(--sub);margin-bottom:.75rem;">This helps us match you with realistic career recommendations based on your rank and experience.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;">
+        <div>
+          <label style="font-size:.72rem;font-weight:600;color:var(--sub);display:block;margin-bottom:.15rem;">Branch</label>
+          <select id="pro-branch" onchange="updateProMOS()" style="width:100%;padding:.5rem .6rem;border:1px solid rgba(255,255,255,.12);border-radius:6px;font-size:.82rem;font-family:inherit;background:rgba(255,255,255,.06);color:var(--text);outline:none;">
+            <option value="">Select branch...</option>
+            <option value="Army">Army</option>
+            <option value="Navy">Navy</option>
+            <option value="Marines">Marines</option>
+            <option value="Air Force">Air Force</option>
+            <option value="Coast Guard">Coast Guard</option>
+            <option value="Space Force">Space Force</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.72rem;font-weight:600;color:var(--sub);display:block;margin-bottom:.15rem;">Component</label>
+          <select id="pro-component" style="width:100%;padding:.5rem .6rem;border:1px solid rgba(255,255,255,.12);border-radius:6px;font-size:.82rem;font-family:inherit;background:rgba(255,255,255,.06);color:var(--text);outline:none;">
+            <option value="">Select...</option>
+            <option value="active">Active Duty</option>
+            <option value="reserve">Reserve</option>
+            <option value="guard">National Guard</option>
+            <option value="retired">Retired</option>
+            <option value="separated">Separated</option>
+            <option value="medically-retired">Medically Retired</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;">
+        <div>
+          <label style="font-size:.72rem;font-weight:600;color:var(--sub);display:block;margin-bottom:.15rem;">Rank</label>
+          <select id="pro-rank" style="width:100%;padding:.5rem .6rem;border:1px solid rgba(255,255,255,.12);border-radius:6px;font-size:.82rem;font-family:inherit;background:rgba(255,255,255,.06);color:var(--text);outline:none;">
+            <option value="">Select rank...</option>
+            <optgroup label="Enlisted"><option>E-1</option><option>E-2</option><option>E-3</option><option>E-4</option><option>E-5</option><option>E-6</option><option>E-7</option><option>E-8</option><option>E-9</option></optgroup>
+            <optgroup label="Warrant Officer"><option>W-1</option><option>W-2</option><option>W-3</option><option>W-4</option><option>W-5</option></optgroup>
+            <optgroup label="Officer"><option>O-1</option><option>O-2</option><option>O-3</option><option>O-4</option><option>O-5</option><option>O-6</option><option>O-7+</option></optgroup>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.72rem;font-weight:600;color:var(--sub);display:block;margin-bottom:.15rem;">Years of Service</label>
+          <select id="pro-tos" style="width:100%;padding:.5rem .6rem;border:1px solid rgba(255,255,255,.12);border-radius:6px;font-size:.82rem;font-family:inherit;background:rgba(255,255,255,.06);color:var(--text);outline:none;">
+            <option value="">Select...</option>
+            <option value="1">Under 2 years</option>
+            <option value="3">2-4 years</option>
+            <option value="6">5-8 years</option>
+            <option value="12">9-14 years</option>
+            <option value="18">15-20 years</option>
+            <option value="22">20+ years</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label style="font-size:.72rem;font-weight:600;color:var(--sub);display:block;margin-bottom:.15rem;">MOS / Rating / AFSC</label>
+        <select id="pro-mos" style="width:100%;padding:.5rem .6rem;border:1px solid rgba(255,255,255,.12);border-radius:6px;font-size:.82rem;font-family:inherit;background:rgba(255,255,255,.06);color:var(--text);outline:none;">
+          <option value="">Select branch first...</option>
+        </select>
+      </div>
+    </div>
+    <script>
+    // Populate MOS when branch changes
+    function updateProMOS(){
+      var branch = document.getElementById('pro-branch').value;
+      var mosSel = document.getElementById('pro-mos');
+      mosSel.innerHTML = '<option value="">Select MOS...</option>';
+      if(!branch || !window.VCP_MOS || !VCP_MOS[branch]) return;
+      var list = VCP_MOS[branch];
+      for(var i=0;i<list.length;i++){
+        var o = document.createElement('option');
+        o.value = list[i].code;
+        o.textContent = list[i].code + ' \u2014 ' + list[i].title;
+        mosSel.appendChild(o);
+      }
+    }
+    // Hide military profile section if user already has a subscription profile
+    (function(){
+      try {
+        var p = JSON.parse(localStorage.getItem('vcb_profile') || 'null');
+        if(p && (p.mos || p.rank || (p.milExperiences && p.milExperiences.length))) {
+          var sec = document.getElementById('intro-mil-profile');
+          if(sec) { sec.style.display = 'none'; }
+        }
+      } catch(e){}
+    })();
+    </script>
+
     <button class="intro-start-btn" onclick="startAssessment()">Begin Assessment</button>
     <div class="intro-time">Estimated time: 55-75 minutes · 10 sections · ~180 questions · Timed</div>
   </div>
@@ -1162,6 +1251,22 @@ window.addEventListener('beforeunload', function(e) {
 });
 
 function startAssessment(fresh) {
+  // Capture military profile from intro form if user doesn't have a subscription profile
+  if(!userProfile || (!userProfile.mos && !userProfile.rank)) {
+    var proBranch = document.getElementById('pro-branch');
+    var proRank = document.getElementById('pro-rank');
+    var proMos = document.getElementById('pro-mos');
+    var proTos = document.getElementById('pro-tos');
+    var proComp = document.getElementById('pro-component');
+    if(proBranch && proRank) {
+      if(!userProfile) userProfile = {};
+      if(proBranch.value) userProfile.branch = proBranch.value;
+      if(proRank.value) userProfile.rank = proRank.value;
+      if(proMos.value) userProfile.mos = proMos.value;
+      if(proTos.value) userProfile.yearsOfService = parseInt(proTos.value) || 0;
+      if(proComp.value) userProfile.component = proComp.value;
+    }
+  }
   if(!fresh) {
     var saved = loadProgress();
     if(saved) {
@@ -2106,6 +2211,39 @@ function matchCareers(scores) {
     if(scores.workstyle && scores.workstyle.has_disability >= 60 && !ph) {
       // Boost non-physical careers for veterans with disabilities
       finalPct = Math.min(95, finalPct + 5);
+    }
+
+    // ── RANK-AWARE SENIORITY ADJUSTMENT ──
+    // An O-5 could be a General Manager; an E-3 cannot.
+    // Use the user's rank + TOS to adjust career level appropriateness.
+    if(userProfile && userProfile.rank) {
+      var _rk = (userProfile.rank || '').toUpperCase();
+      var _tos = parseInt(userProfile.yearsOfService) || 0;
+      var _rkNum = parseInt(_rk.replace(/[^0-9]/g,'')) || 0;
+      var _isOff = _rk.indexOf('O-') === 0;
+      var _isWO = _rk.indexOf('W-') === 0;
+      var _isSrNCO = _rk.indexOf('E-') === 0 && _rkNum >= 7;
+      var _isNCO = _rk.indexOf('E-') === 0 && _rkNum >= 5;
+      var _isJr = _rk.indexOf('E-') === 0 && _rkNum <= 4;
+      var _ct = career.title.toLowerCase();
+      var _senKw = ['director','chief','executive','president','vp ','vice president','superintendent','principal','ciso','cto','cfo','coo','plant manager','strategy consultant'];
+      var _midKw = ['general manager','program manager','operations manager','police sergeant'];
+      var _isSen = false, _isMid = false;
+      for(var _si=0;_si<_senKw.length;_si++){ if(_ct.indexOf(_senKw[_si])!==-1){ _isSen=true; break; } }
+      if(!_isSen){ for(var _mi=0;_mi<_midKw.length;_mi++){ if(_ct.indexOf(_midKw[_mi])!==-1){ _isMid=true; break; } } }
+      if(_isSen) {
+        if(_isOff && _rkNum >= 5) { /* O-5+ can handle senior roles */ }
+        else if(_isOff && _rkNum >= 3) finalPct = Math.round(finalPct * 0.75);
+        else if(_isSrNCO && _tos >= 18) finalPct = Math.round(finalPct * 0.7);
+        else if(_isSrNCO) finalPct = Math.round(finalPct * 0.5);
+        else finalPct = Math.round(finalPct * 0.35);
+      } else if(_isMid) {
+        if(_isOff || _isWO) { /* officers/warrants can handle mid roles */ }
+        else if(_isSrNCO) finalPct = Math.round(finalPct * 0.9);
+        else if(_isNCO && _tos >= 6) finalPct = Math.round(finalPct * 0.75);
+        else finalPct = Math.round(finalPct * 0.45);
+      }
+      finalPct = Math.max(8, finalPct);
     }
 
     results.push({

@@ -13,6 +13,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/vcp-styles.css">
 <script src="/vcp-careers-db.js"></script>
+<script src="/vcp-military-data.js"></script>
+<script src="/vcp-mos-data.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
@@ -1387,16 +1389,19 @@ body.menu-open{overflow:hidden!important;}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem;">
         <div>
-          <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Rank</label>
-          <select id="gate-rank" style="width:100%;padding:.55rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.85rem;font-family:inherit;outline:none;background:#fff;color:#1a2a3a;">
-            <option value="">Select rank...</option>
-            <optgroup label="Enlisted"><option>E-1</option><option>E-2</option><option>E-3</option><option>E-4</option><option>E-5</option><option>E-6</option><option>E-7</option><option>E-8</option><option>E-9</option></optgroup>
-            <optgroup label="Warrant Officer"><option>W-1</option><option>W-2</option><option>W-3</option><option>W-4</option><option>W-5</option></optgroup>
-            <optgroup label="Officer"><option>O-1</option><option>O-2</option><option>O-3</option><option>O-4</option><option>O-5</option><option>O-6</option><option>O-7+</option></optgroup>
+          <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Branch</label>
+          <select id="gate-branch" onchange="updateGateRankMOS()" style="width:100%;padding:.55rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.85rem;font-family:inherit;outline:none;background:#fff;color:#1a2a3a;">
+            <option value="">Select branch...</option>
+            <option value="Army">Army</option>
+            <option value="Navy">Navy</option>
+            <option value="Marines">Marines</option>
+            <option value="Air Force">Air Force</option>
+            <option value="Coast Guard">Coast Guard</option>
+            <option value="Space Force">Space Force</option>
           </select>
         </div>
         <div>
-          <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Current Status</label>
+          <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Component</label>
           <select id="gate-status" style="width:100%;padding:.55rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.85rem;font-family:inherit;outline:none;background:#fff;color:#1a2a3a;">
             <option value="">Select...</option>
             <option value="active">Active Duty</option>
@@ -1407,6 +1412,35 @@ body.menu-open{overflow:hidden!important;}
             <option value="medically-retired">Medically Retired</option>
           </select>
         </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem;">
+        <div>
+          <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Rank</label>
+          <select id="gate-rank" style="width:100%;padding:.55rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.85rem;font-family:inherit;outline:none;background:#fff;color:#1a2a3a;">
+            <option value="">Select rank...</option>
+            <optgroup label="Enlisted"><option>E-1</option><option>E-2</option><option>E-3</option><option>E-4</option><option>E-5</option><option>E-6</option><option>E-7</option><option>E-8</option><option>E-9</option></optgroup>
+            <optgroup label="Warrant Officer"><option>W-1</option><option>W-2</option><option>W-3</option><option>W-4</option><option>W-5</option></optgroup>
+            <optgroup label="Officer"><option>O-1</option><option>O-2</option><option>O-3</option><option>O-4</option><option>O-5</option><option>O-6</option><option>O-7+</option></optgroup>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">Years of Service</label>
+          <select id="gate-tos" style="width:100%;padding:.55rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.85rem;font-family:inherit;outline:none;background:#fff;color:#1a2a3a;">
+            <option value="">Select...</option>
+            <option value="1">Under 2 years</option>
+            <option value="3">2-4 years</option>
+            <option value="6">5-8 years</option>
+            <option value="12">9-14 years</option>
+            <option value="18">15-20 years</option>
+            <option value="22">20+ years</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:.6rem;">
+        <label style="font-size:.78rem;font-weight:600;color:#3a5070;display:block;margin-bottom:.2rem;">MOS / Rating / AFSC</label>
+        <select id="gate-mos" style="width:100%;padding:.55rem .75rem;border:1.5px solid #d0daea;border-radius:8px;font-size:.85rem;font-family:inherit;outline:none;background:#fff;color:#1a2a3a;">
+          <option value="">Select branch first...</option>
+        </select>
       </div>
       <div id="gate-error" style="display:none;font-size:.78rem;color:#dc2626;margin-bottom:.4rem;"></div>
       <button id="gate-submit" onclick="submitEmailGate()" style="width:100%;padding:.7rem;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;letter-spacing:.02em;">View My Career Matches &rarr;</button>
@@ -1994,19 +2028,58 @@ function matchCareers(scores){
       }
     }
 
-    // ── SENIORITY PENALTY ──
-    // PathFinder Lite users are typically fresh out of the military.
-    // Penalize senior/director/executive roles so entry and mid-level roles surface first.
+    // ── RANK-AWARE SENIORITY ADJUSTMENT ──
+    // Use the user's actual rank to determine which career levels are realistic.
+    // An O-5 leaving the Army could be a General Manager; an E-3 could not.
     if(score > 0) {
+      var mp = window._milProfile || {};
+      var rk = (mp.rank || '').toUpperCase();
+      var tos = mp.tos || 0;
+      // Parse rank grade number (E-5 → 5, O-4 → 4, W-3 → 3)
+      var rkNum = parseInt(rk.replace(/[^0-9]/g,'')) || 0;
+      var isOfficer = rk.indexOf('O-') === 0 || rk.indexOf('O-7') === 0;
+      var isWarrant = rk.indexOf('W-') === 0;
+      var isSeniorNCO = rk.indexOf('E-') === 0 && rkNum >= 7; // E-7, E-8, E-9
+      var isNCO = rk.indexOf('E-') === 0 && rkNum >= 5;       // E-5, E-6
+      var isJunior = rk.indexOf('E-') === 0 && rkNum <= 4;    // E-1 through E-4
+
       var t = c.title.toLowerCase();
-      var seniorKeywords = ['director','chief','executive','president','vp ','vice president','superintendent','principal','ciso','cto','cfo','coo','cmo','senior manager','plant manager','general manager','police sergeant','program manager','strategy consultant'];
-      var midKeywords = ['manager','supervisor','lead','coordinator','administrator'];
-      var isSenior = false;
-      var isMid = false;
-      for(var sk=0;sk<seniorKeywords.length;sk++){ if(t.indexOf(seniorKeywords[sk])!==-1){ isSenior=true; break; } }
-      if(!isSenior){ for(var mk=0;mk<midKeywords.length;mk++){ if(t.indexOf(midKeywords[mk])!==-1){ isMid=true; break; } } }
-      if(isSenior) score *= 0.3;   // heavy penalty — these rarely fit fresh veterans
-      else if(isMid) score *= 0.7; // mild penalty — some manager roles are accessible
+      var seniorKeywords = ['director','chief','executive','president','vp ','vice president','superintendent','principal','ciso','cto','cfo','coo','cmo','plant manager','strategy consultant'];
+      var midKeywords = ['general manager','program manager','operations manager','logistics manager','police sergeant','training manager','procurement manager','contracts manager','quality assurance manager'];
+      var supervisorKeywords = ['manager','supervisor','lead','coordinator','administrator'];
+      var isSeniorRole = false, isMidRole = false, isSupervisorRole = false;
+      for(var sk=0;sk<seniorKeywords.length;sk++){ if(t.indexOf(seniorKeywords[sk])!==-1){ isSeniorRole=true; break; } }
+      if(!isSeniorRole){ for(var mk=0;mk<midKeywords.length;mk++){ if(t.indexOf(midKeywords[mk])!==-1){ isMidRole=true; break; } } }
+      if(!isSeniorRole && !isMidRole){ for(var sv=0;sv<supervisorKeywords.length;sv++){ if(t.indexOf(supervisorKeywords[sv])!==-1){ isSupervisorRole=true; break; } } }
+
+      if(isSeniorRole) {
+        // Senior executive roles: only realistic for senior officers (O-5+) or 20+ year NCOs
+        if(isOfficer && rkNum >= 5) score *= 1.0;
+        else if(isOfficer && rkNum >= 3) score *= 0.6;
+        else if(isSeniorNCO && tos >= 18) score *= 0.5;
+        else if(isSeniorNCO) score *= 0.3;
+        else score *= 0.15; // E-1 through E-6, junior officers — very unlikely
+      } else if(isMidRole) {
+        // Mid-level management: realistic for O-3+, senior NCOs, warrant officers
+        if(isOfficer) score *= 1.0;
+        else if(isWarrant) score *= 0.9;
+        else if(isSeniorNCO) score *= 0.85;
+        else if(isNCO && tos >= 6) score *= 0.6;
+        else score *= 0.3; // E-1 through E-4 — not ready for these
+      } else if(isSupervisorRole) {
+        // Supervisor/coordinator: accessible for NCOs with some experience
+        if(isOfficer || isWarrant) score *= 1.0;
+        else if(isSeniorNCO) score *= 1.0;
+        else if(isNCO) score *= 0.8;
+        else if(isJunior && tos >= 3) score *= 0.6;
+        else score *= 0.45; // brand new junior enlisted
+      }
+      // If no rank provided, fall back to conservative default (assume junior)
+      if(!rk && !tos) {
+        if(isSeniorRole) score *= 0.2;
+        else if(isMidRole) score *= 0.4;
+        else if(isSupervisorRole) score *= 0.65;
+      }
     }
 
     if(score > 0) matched.push({career:c, score:score});
@@ -2327,27 +2400,47 @@ try{firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",aut
 var _gateDb = null;
 try{_gateDb = firebase.firestore();}catch(e){}
 
+// Populate MOS dropdown when branch changes
+function updateGateRankMOS(){
+  var branch = document.getElementById("gate-branch").value;
+  var mosSel = document.getElementById("gate-mos");
+  mosSel.innerHTML = '<option value="">Select MOS...</option>';
+  if(!branch || !window.VCP_MOS || !VCP_MOS[branch]) return;
+  var list = VCP_MOS[branch];
+  for(var i=0;i<list.length;i++){
+    var o = document.createElement("option");
+    o.value = list[i].code;
+    o.textContent = list[i].code + " — " + list[i].title;
+    mosSel.appendChild(o);
+  }
+}
+
 function submitEmailGate(){
   var name = document.getElementById("gate-name").value.trim();
   var email = document.getElementById("gate-email").value.trim().toLowerCase();
+  var branch = document.getElementById("gate-branch").value;
   var rank = document.getElementById("gate-rank").value;
   var milStatus = document.getElementById("gate-status").value;
+  var tos = document.getElementById("gate-tos").value;
+  var mos = document.getElementById("gate-mos").value;
   var err = document.getElementById("gate-error");
   if(!name){err.textContent="Please enter your name.";err.style.display="block";return;}
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent="Please enter a valid email address.";err.style.display="block";return;}
   err.style.display="none";
   document.getElementById("gate-submit").textContent="Loading results...";
   document.getElementById("gate-submit").disabled=true;
+  // Store military profile globally for career matching
+  window._milProfile = {branch:branch,rank:rank,mos:mos,tos:parseInt(tos)||0,status:milStatus};
   // Save to Firestore
   if(_gateDb){
     _gateDb.collection("email_subscribers").add({
-      email:email,name:name,rank:rank||null,militaryStatus:milStatus||null,
+      email:email,name:name,branch:branch||null,rank:rank||null,mos:mos||null,tos:tos||null,militaryStatus:milStatus||null,
       source:"pathfinder-lite",
       timestamp:firebase.firestore.FieldValue.serverTimestamp(),status:"active"
     }).catch(function(){});
   }
   // Store locally for profile pairing
-  try{localStorage.setItem("vcp_pf_user",JSON.stringify({name:name,email:email,rank:rank,militaryStatus:milStatus,date:new Date().toISOString()}));}catch(e){}
+  try{localStorage.setItem("vcp_pf_user",JSON.stringify({name:name,email:email,branch:branch,rank:rank,mos:mos,tos:tos,militaryStatus:milStatus,date:new Date().toISOString()}));}catch(e){}
   // Hide gate, show results
   document.getElementById("emailGate").style.display="none";
   _pendingShowResults();

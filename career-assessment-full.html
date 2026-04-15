@@ -298,6 +298,33 @@ a:hover{color:var(--gold);}
 </head>
 <body>
 
+<!-- COMING SOON OVERLAY (blocks all users except admin bypass via ?vcp_admin=pathfinder) -->
+<div id="coming-soon-gate" style="position:fixed;inset:0;background:#0a1628;z-index:99999;display:flex;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:linear-gradient(145deg,#0d1f3c,#132a4a);border:1px solid rgba(240,192,64,.25);border-radius:16px;padding:2.5rem 2rem;text-align:center;max-width:480px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.6);">
+    <img src="https://veterancareerpath.com/logo.png" alt="VCP" style="width:56px;height:56px;object-fit:contain;margin-bottom:1rem;filter:drop-shadow(0 4px 12px rgba(240,192,64,.2));">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.2rem;">VCP PathFinder&trade; Pro</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:rgba(192,216,240,.8);margin-bottom:1rem;">Coming Soon</div>
+    <div style="font-size:.88rem;color:rgba(192,216,240,.6);line-height:1.7;margin-bottom:1.5rem;">We're putting the finishing touches on the most comprehensive military-to-civilian career assessment ever built. <strong style="color:rgba(192,216,240,.9);">186 questions, 10 dimensions, 1,000+ career matches</strong> with AI-powered gap analysis.<br><br>Check back soon — it'll be worth the wait.</div>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;">
+      <a href="/veteran-career-test.html" style="padding:.65rem 1.4rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.88rem;text-decoration:none;">Try PathFinder Lite Free</a>
+      <a href="/" style="padding:.65rem 1.4rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;font-weight:600;font-size:.88rem;text-decoration:none;">Back to Home</a>
+    </div>
+  </div>
+</div>
+<script>
+// Admin bypass: add ?vcp_admin=pathfinder to the URL to access the assessment for testing
+(function(){
+  var p = new URLSearchParams(window.location.search);
+  if(p.get('vcp_admin') === 'pathfinder') {
+    document.getElementById('coming-soon-gate').style.display = 'none';
+    // Persist for this session so navigating within the page still works
+    sessionStorage.setItem('vcp_admin_bypass', '1');
+  } else if(sessionStorage.getItem('vcp_admin_bypass') === '1') {
+    document.getElementById('coming-soon-gate').style.display = 'none';
+  }
+})();
+</script>
+
 <!-- GATE / PAYWALL -->
 <div id="gate">
   <div class="gate-box">

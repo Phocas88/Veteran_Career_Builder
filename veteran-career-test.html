@@ -75,57 +75,87 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
 .q-back:disabled{opacity:.3;cursor:not-allowed}
 
 /* ── Results Screen ── */
-.results-screen{display:none;background:#f4f6fb;min-height:100vh}
-.results-hero{background:linear-gradient(160deg,#0a1628,#1a3a6b 55%,#1a5c9a);padding:3rem 6% 2.5rem;text-align:center;position:relative}
-.results-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(240,192,64,.08),transparent 70%)}
+.results-screen{display:none;background:#0a1628;min-height:100vh}
+.results-hero{background:linear-gradient(160deg,#0a1628 0%,#12284a 40%,#1a4070 100%);padding:3rem 6% 2rem;text-align:center;position:relative;overflow:hidden}
+.results-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(240,192,64,.1),transparent 70%)}
+.results-hero::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(240,192,64,.3),transparent)}
 .results-inner{max-width:800px;margin:0 auto;position:relative;z-index:1}
-.results-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.2);border-radius:20px;padding:.3rem .9rem;font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
-.results-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.05em;color:#fff;margin-bottom:.5rem}
-.profile-type{font-size:1.3rem;color:var(--gold);font-weight:600;margin-bottom:.25rem}
-.profile-desc{font-size:.88rem;color:rgba(255,255,255,.5);max-width:550px;margin:0 auto}
+.results-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(240,192,64,.12);border:1px solid rgba(240,192,64,.25);border-radius:20px;padding:.35rem 1rem;font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#f0c040;margin-bottom:1rem}
+.results-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.06em;color:#fff;margin-bottom:.5rem}
+.profile-type{font-size:1.4rem;color:#f0c040;font-weight:700;margin-bottom:.35rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em}
+.profile-desc{font-size:.88rem;color:rgba(192,216,240,.55);max-width:550px;margin:0 auto}
+
+/* Summary stat boxes in hero */
+.results-stats{display:flex;gap:.75rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+.rs-stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.6rem 1.2rem;min-width:100px;text-align:center}
+.rs-stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:#f0c040;line-height:1.1}
+.rs-stat-label{font-size:.62rem;color:rgba(192,216,240,.45);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
 
 .results-body{max-width:900px;margin:0 auto;padding:2rem 6% 4rem}
 
 /* Dimension Bars */
-.dim-section{background:#fff;border-radius:14px;padding:2rem;margin-bottom:2rem;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-.dim-section h2{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.05em;color:var(--text);margin-bottom:1.5rem}
-.dim-bar{margin-bottom:1.25rem}
+.dim-section{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.75rem;margin-bottom:1.5rem}
+.dim-section h2{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:#fff;margin-bottom:.4rem}
+.dim-section .dim-sub{font-size:.75rem;color:rgba(192,216,240,.4);margin-bottom:1.25rem}
+.dim-bar{margin-bottom:1.1rem}
 .dim-bar:last-child{margin-bottom:0}
-.dim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
-.dim-name{font-size:.82rem;font-weight:600;color:var(--text)}
-.dim-pct{font-size:.82rem;font-weight:700;color:var(--text)}
-.dim-track{height:10px;background:#e8eef6;border-radius:5px;overflow:hidden}
-.dim-fill{height:100%;border-radius:5px;transition:width 1s ease-out;width:0%}
+.dim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem}
+.dim-name{font-size:.8rem;font-weight:600;color:rgba(192,216,240,.8)}
+.dim-pct{font-size:.8rem;font-weight:700;color:#f0c040}
+.dim-track{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.dim-fill{height:100%;border-radius:4px;transition:width 1s ease-out;width:0%}
+
+/* Score level tags */
+.dim-level{font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.1rem .4rem;border-radius:3px;margin-left:.4rem}
+.dim-level.high{background:rgba(74,222,128,.15);color:#4ade80}
+.dim-level.mid{background:rgba(59,130,246,.15);color:#60a5fa}
+.dim-level.low{background:rgba(251,191,36,.15);color:#fbbf24}
 
 /* Low scores notice */
-.low-notice{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:1.5rem;margin-bottom:2rem;display:flex;gap:1rem;align-items:flex-start}
-.low-notice svg{width:24px;height:24px;fill:#d97706;flex-shrink:0;margin-top:2px}
-.low-notice p{font-size:.88rem;color:#92400e;line-height:1.6}
+.low-notice{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;display:flex;gap:1rem;align-items:flex-start}
+.low-notice svg{width:22px;height:22px;fill:#fbbf24;flex-shrink:0;margin-top:2px}
+.low-notice p{font-size:.84rem;color:rgba(192,216,240,.65);line-height:1.6}
 
 /* Career Cards */
-.careers-section h2{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.05em;color:var(--text);margin-bottom:1.25rem}
-.career-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:2rem}
-.career-card{background:#fff;border-radius:12px;padding:1.5rem;border:1px solid var(--border);transition:transform .15s,box-shadow .15s}
-.career-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
-.career-card .cc-match{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold2);margin-bottom:.5rem}
-.career-card h3{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.35rem}
-.career-card .cc-salary{font-size:.8rem;font-weight:600;color:#10b981;margin-bottom:.15rem}
-.career-card .cc-sector{font-size:.72rem;color:var(--muted);margin-bottom:.65rem}
-.career-card .cc-desc{font-size:.82rem;color:#4b5563;line-height:1.55}
+.careers-section{margin-bottom:1.5rem}
+.careers-section h2{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:#fff;margin-bottom:1rem}
+.career-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem;margin-bottom:1.5rem}
+.career-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1.25rem;transition:all .2s;position:relative;overflow:hidden}
+.career-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#f0c040,#e8aa10);opacity:0;transition:opacity .2s}
+.career-card:hover{border-color:rgba(240,192,64,.2);background:rgba(255,255,255,.06);transform:translateY(-2px)}
+.career-card:hover::before{opacity:1}
+.career-card .cc-match-wrap{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem}
+.career-card .cc-match-ring{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0;background:conic-gradient(#f0c040 var(--pct),rgba(255,255,255,.08) 0)}
+.career-card .cc-match-inner{width:28px;height:28px;border-radius:50%;background:#0d1a30;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#f0c040}
+.career-card .cc-match{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#f0c040}
+.career-card h3{font-size:.95rem;font-weight:700;color:rgba(255,255,255,.9);margin-bottom:.3rem}
+.career-card .cc-salary{font-size:.78rem;font-weight:600;color:#4ade80;margin-bottom:.1rem}
+.career-card .cc-sector{font-size:.68rem;color:rgba(192,216,240,.4);margin-bottom:.5rem;display:inline-block;background:rgba(255,255,255,.05);padding:.15rem .5rem;border-radius:4px}
+.career-card .cc-desc{font-size:.78rem;color:rgba(192,216,240,.5);line-height:1.55}
+.career-card .cc-reqs{margin-top:.5rem;font-size:.7rem;color:rgba(192,216,240,.45)}
+.career-card .cc-reqs strong{color:rgba(192,216,240,.6)}
+.career-card .cc-trans{font-size:.68rem;color:#f0c040;margin-top:.25rem}
+.career-card .cc-actions{margin-top:.6rem;display:flex;gap:.4rem;flex-wrap:wrap}
+.career-card .cc-actions a{font-size:.65rem;text-decoration:none;padding:.2rem .5rem;border-radius:4px;font-weight:600;transition:all .15s}
+.career-card .cc-actions .cc-pro{color:#f0c040;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.15)}
+.career-card .cc-actions .cc-pro:hover{background:rgba(240,192,64,.2)}
+.career-card .cc-actions .cc-resume{color:#4ade80;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.12)}
+.career-card .cc-actions .cc-resume:hover{background:rgba(74,222,128,.15)}
 
 /* CTA Section */
-.upgrade-cta{background:linear-gradient(135deg,#0a1628,#1a3a6b);border-radius:14px;padding:2.5rem;text-align:center;margin-bottom:2rem}
-.upgrade-cta h2{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.05em;color:#fff;margin-bottom:.5rem}
-.upgrade-cta p{font-size:.88rem;color:rgba(255,255,255,.55);max-width:550px;margin:0 auto 1.5rem;line-height:1.6}
-.upgrade-cta .cta-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--gold2),var(--accent));color:#0a1628;font-weight:700;font-size:.9rem;padding:.75rem 1.8rem;border-radius:8px;text-decoration:none;transition:transform .15s}
+.upgrade-cta{background:linear-gradient(135deg,rgba(240,192,64,.06),rgba(26,58,107,.3));border:1.5px solid rgba(240,192,64,.2);border-radius:14px;padding:2rem;text-align:center;margin-bottom:2rem}
+.upgrade-cta h2{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.05em;color:#f0c040;margin-bottom:.5rem}
+.upgrade-cta p{font-size:.85rem;color:rgba(192,216,240,.5);max-width:550px;margin:0 auto 1.25rem;line-height:1.6}
+.upgrade-cta .cta-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.9rem;padding:.75rem 1.8rem;border-radius:8px;text-decoration:none;transition:transform .15s}
 .upgrade-cta .cta-btn:hover{transform:translateY(-2px)}
 
 /* Action Buttons */
-.action-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}
-.action-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.4rem;border-radius:8px;font-size:.85rem;font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:all .15s}
-.action-btn.primary{background:linear-gradient(135deg,var(--gold2),var(--accent));color:#0a1628}
-.action-btn.secondary{background:#fff;color:var(--text);border:1px solid var(--border)}
-.action-btn.secondary:hover{border-color:var(--mid)}
+.action-btns{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}
+.action-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.3rem;border-radius:8px;font-size:.82rem;font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:all .15s}
+.action-btn.primary{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628}
+.action-btn.primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(200,150,10,.3)}
+.action-btn.secondary{background:rgba(255,255,255,.06);color:rgba(192,216,240,.7);border:1px solid rgba(255,255,255,.12)}
+.action-btn.secondary:hover{border-color:rgba(240,192,64,.3);color:#f0c040}
 .action-btn svg{width:16px;height:16px}
 
 /* Footer */
@@ -166,7 +196,11 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
   .footer-inner{flex-direction:column;gap:1rem}
   .results-hero{padding:2rem 4% 1.5rem;}
   .results-title{font-size:1.6rem !important;}
-  .results-body{padding:1.5rem 4% 3rem;}
+  .results-body{padding:1.25rem 4% 3rem;}
+  .results-stats{gap:.5rem;}
+  .rs-stat{min-width:80px;padding:.5rem .8rem;}
+  .rs-stat-val{font-size:1.2rem;}
+  .dim-section{padding:1.25rem;}
   .dim-section{padding:1.25rem;}
 }
 @media(max-width:480px){
@@ -1997,7 +2031,7 @@ function showResults(){
 function _renderResults(){
   document.getElementById("emailGate").style.display = "none";
   resultsScreen.style.display = "block";
-  document.body.style.background = "#f4f6fb";
+  document.body.style.background = "#0a1628";
 
   var scores = calcScores();
   var ranked = getRanked(scores);
@@ -2015,12 +2049,23 @@ function _renderResults(){
 
   var html = '';
 
+  // Compute summary stats for hero
+  var avgAptitude = Math.round(aptitudeDims.reduce(function(s,d){return s+d.score;},0) / aptitudeDims.length);
+  var avgPersonality = Math.round(personalityDims.reduce(function(s,d){return s+d.score;},0) / personalityDims.length);
+
   // Results hero
   html += '<div class="results-hero"><div class="results-inner">';
-  html += '<div class="results-badge">Your Results</div>';
-  html += '<div class="results-title">VCP PathFinder&trade; Lite Results</div>';
+  html += '<div class="results-badge">\u2713 Assessment Complete</div>';
+  html += '<div class="results-title">Your Career Intelligence Report</div>';
   html += '<div class="profile-type">' + profileType + '</div>';
-  html += '<div class="profile-desc">Strongest aptitude: ' + DIM_LABELS[aptitudeDims[0].dim] + ' \u00B7 Strongest trait: ' + DIM_LABELS[personalityDims[0].dim] + '</div>';
+  html += '<div class="profile-desc">Strongest aptitude: <strong style="color:rgba(192,216,240,.8)">' + DIM_LABELS[aptitudeDims[0].dim] + '</strong> \u00B7 Strongest trait: <strong style="color:rgba(192,216,240,.8)">' + DIM_LABELS[personalityDims[0].dim] + '</strong></div>';
+  // Summary stat boxes
+  html += '<div class="results-stats">';
+  html += '<div class="rs-stat"><div class="rs-stat-val">' + avgAptitude + '%</div><div class="rs-stat-label">Aptitude Avg</div></div>';
+  html += '<div class="rs-stat"><div class="rs-stat-val">' + avgPersonality + '%</div><div class="rs-stat-label">Personality Avg</div></div>';
+  html += '<div class="rs-stat"><div class="rs-stat-val">' + matches.length + '</div><div class="rs-stat-label">Career Matches</div></div>';
+  html += '<div class="rs-stat"><div class="rs-stat-val">42</div><div class="rs-stat-label">Questions</div></div>';
+  html += '</div>';
   html += '</div></div>';
 
   html += '<div class="results-body">';
@@ -2029,29 +2074,36 @@ function _renderResults(){
   if(isLow){
     html += '<div class="low-notice">';
     html += '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>';
-    html += '<p><strong>Your profile is still developing.</strong> Your responses suggest you may still be exploring your interests, which is completely normal during transition. The careers below are solid starting points. Consider retaking this assessment after more reflection, or try VCP PathFinder Pro for deeper analysis with 180 questions and AI-powered insights.</p>';
+    html += '<p><strong style="color:#fbbf24;">Your profile is still developing.</strong> Your responses suggest you may still be exploring your interests, which is completely normal during transition. The careers below are solid starting points.</p>';
     html += '</div>';
+  }
+
+  // Score level helper
+  function scoreLevel(s) {
+    if (s >= 70) return '<span class="dim-level high">Strong</span>';
+    if (s >= 45) return '<span class="dim-level mid">Average</span>';
+    return '<span class="dim-level low">Developing</span>';
   }
 
   // Aptitude scores
   html += '<div class="dim-section"><h2>Aptitude Scores</h2>';
-  html += '<div style="font-size:.78rem;color:#6b7a8d;margin-bottom:1rem;">Based on your answers to the multiple-choice aptitude questions.</div>';
+  html += '<div class="dim-sub">Based on your answers to the multiple-choice aptitude questions.</div>';
   for(var i=0;i<aptitudeDims.length;i++){
     var d = aptitudeDims[i];
     html += '<div class="dim-bar">';
-    html += '<div class="dim-header"><span class="dim-name">' + DIM_LABELS[d.dim] + '</span><span class="dim-pct">' + d.score + '%</span></div>';
+    html += '<div class="dim-header"><span class="dim-name">' + DIM_LABELS[d.dim] + scoreLevel(d.score) + '</span><span class="dim-pct">' + d.score + '%</span></div>';
     html += '<div class="dim-track"><div class="dim-fill" data-width="' + d.score + '" style="background:' + (DIM_COLORS[d.dim]||'#3b82f6') + ';"></div></div>';
     html += '</div>';
   }
   html += '</div>';
 
   // Personality & work style scores
-  html += '<div class="dim-section"><h2>Personality & Work Style</h2>';
-  html += '<div style="font-size:.78rem;color:#6b7a8d;margin-bottom:1rem;">Based on your self-assessment responses.</div>';
+  html += '<div class="dim-section"><h2>Personality &amp; Work Style</h2>';
+  html += '<div class="dim-sub">Based on your self-assessment responses.</div>';
   for(var i=0;i<personalityDims.length;i++){
     var d = personalityDims[i];
     html += '<div class="dim-bar">';
-    html += '<div class="dim-header"><span class="dim-name">' + DIM_LABELS[d.dim] + '</span><span class="dim-pct">' + d.score + '%</span></div>';
+    html += '<div class="dim-header"><span class="dim-name">' + DIM_LABELS[d.dim] + scoreLevel(d.score) + '</span><span class="dim-pct">' + d.score + '%</span></div>';
     html += '<div class="dim-track"><div class="dim-fill" data-width="' + d.score + '" style="background:' + (DIM_COLORS[d.dim]||'#e8aa10') + ';"></div></div>';
     html += '</div>';
   }
@@ -2063,40 +2115,38 @@ function _renderResults(){
   for(var i=0;i<matches.length;i++){
     var m = matches[i];
     var c = m.career;
-    // Calculate match % with real spread between results
     var topScore = matches[0].score || 1;
     var rawPct = Math.round((m.score / topScore) * 100);
     var avgScore = ranked.reduce(function(s,d){return s+d.score;},0) / ranked.length;
     var ceiling = Math.min(92, Math.round(avgScore + 10));
+    var matchPct;
 
     if(isLow) {
-      // Low scores: top match gets primary*1.2, others descend sharply
       matchPct = Math.round(primary.score * 1.1 * (rawPct / 100));
     } else {
-      // Normal: top match gets ceiling, others descend by relative score
-      // Create real spread: top=ceiling, #2=ceiling-5, #3=ceiling-9, etc.
       var dropoff = i * 4 + Math.round((100 - rawPct) * 0.3);
       matchPct = Math.max(ceiling - dropoff, Math.round(avgScore * 0.5));
     }
     matchPct = Math.max(15, Math.min(ceiling, matchPct));
+    var pctDeg = Math.round((matchPct / 100) * 360);
     html += '<div class="career-card">';
-    html += '<div class="cc-match">' + matchPct + '% Match</div>';
+    html += '<div class="cc-match-wrap">';
+    html += '<div class="cc-match-ring" style="--pct:' + pctDeg + 'deg"><div class="cc-match-inner">' + matchPct + '</div></div>';
+    html += '<div><div class="cc-match">' + matchPct + '% Match</div></div>';
+    html += '</div>';
     html += '<h3>' + c.title + '</h3>';
     html += '<div class="cc-salary">' + c.salary + '</div>';
     html += '<div class="cc-sector">' + c.sector + '</div>';
     html += '<div class="cc-desc">' + c.description + '</div>';
-    // Requirements if available
     if (c.requirements && c.requirements.length) {
-      html += '<div style="margin-top:.4rem;font-size:.72rem;color:#5a7090;"><strong>Requirements:</strong> ' + c.requirements.slice(0,3).join(', ') + '</div>';
+      html += '<div class="cc-reqs"><strong>Requirements:</strong> ' + c.requirements.slice(0,3).join(', ') + '</div>';
     }
-    // Transition time if available
     if (c.timeToTransition) {
-      html += '<div style="font-size:.72rem;color:#c8960a;margin-top:.2rem;">Transition time: ' + c.timeToTransition + '</div>';
+      html += '<div class="cc-trans">\u23F1 Transition time: ' + c.timeToTransition + '</div>';
     }
-    // Link to Pro for full details
-    html += '<div style="margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap;">';
-    html += '<a href="/career-assessment-full.html" style="font-size:.7rem;color:#f0c040;text-decoration:none;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.2);border-radius:4px;padding:.2rem .5rem;">Full analysis in Pro</a>';
-    html += '<a href="/scout-resume-builder.html" style="font-size:.7rem;color:#4ade80;text-decoration:none;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.15);border-radius:4px;padding:.2rem .5rem;">Build resume for this role</a>';
+    html += '<div class="cc-actions">';
+    html += '<a href="/career-assessment-full.html" class="cc-pro">Full analysis in Pro \u2192</a>';
+    html += '<a href="/scout-resume-builder.html" class="cc-resume">Build resume \u2192</a>';
     html += '</div>';
     html += '</div>';
   }
@@ -2105,44 +2155,31 @@ function _renderResults(){
   // Lite results not persisted — only Pro results are saved
 
   // ── UPGRADE CTA — Pro Upsell ──
-  html += '<div class="upgrade-cta" style="background:linear-gradient(135deg,#060f1e,#1a3a6b);border:2px solid rgba(240,192,64,.2);border-radius:16px;padding:2rem;margin:2rem 0;">';
-  html += '<div style="text-align:center;margin-bottom:1.25rem;">';
-  html += '<div style="font-size:1.4rem;margin-bottom:.4rem;">\uD83C\uDFAF</div>';
-  html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:1.5rem;letter-spacing:.06em;color:#f0c040;margin:0 0 .4rem;">Want the Full Picture?</h2>';
-  html += '<p style="color:rgba(192,216,240,.65);font-size:.85rem;max-width:550px;margin:0 auto;line-height:1.6;">PathFinder Lite gave you a snapshot with 42 questions. PathFinder Pro goes 4.5x deeper:</p>';
+  html += '<div class="upgrade-cta">';
+  html += '<h2>Want the Full Picture?</h2>';
+  html += '<p>PathFinder Lite gave you a snapshot with 42 questions. <strong style="color:rgba(192,216,240,.7);">PathFinder Pro goes 4.5x deeper</strong> with visual reasoning, timed challenges, and AI analysis.</p>';
+
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem .8rem;max-width:480px;margin:0 auto 1.25rem;text-align:left;">';
+  var proFeats = ['186 questions across 10 sections','25 mechanical reasoning + visuals','15 spatial reasoning challenges','15 timed processing speed','10 memory & recall challenges','12 personality archetypes','1,000+ career matches ranked','AI-powered gap analysis','Career progression paths','Profile-weighted scoring'];
+  proFeats.forEach(function(f){ html += '<div style="font-size:.72rem;color:rgba(192,216,240,.5);display:flex;align-items:center;gap:.35rem;"><span style="width:5px;height:5px;border-radius:50%;background:#f0c040;flex-shrink:0;"></span>' + f + '</div>'; });
   html += '</div>';
 
-  // What Pro includes (selling points)
-  html += '<div class="pro-feats-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem .8rem;max-width:500px;margin:0 auto 1.25rem;text-align:left;">';
-  var proFeats = ['180 questions (4.5x more depth)','25 mechanical reasoning questions','15 spatial reasoning with visuals','15 timed processing speed','10 memory & recall challenges','Your personality type (12 archetypes)','1,000+ career matches ranked','AI-powered gap analysis & insights','Career progression ladder maps','Profile-weighted scoring (subscribers)'];
-  proFeats.forEach(function(f){ html += '<div style="font-size:.75rem;color:rgba(192,216,240,.6);display:flex;align-items:center;gap:.3rem;"><span style="width:5px;height:5px;border-radius:50%;background:#f0c040;flex-shrink:0;"></span>' + f + '</div>'; });
-  html += '</div>';
-
-  // Two options side by side
-  html += '<div class="pro-pricing-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;max-width:500px;margin:0 auto;">';
-
-  // Option 1: Standalone assessment
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;max-width:480px;margin:0 auto;">';
   html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1rem;text-align:center;">';
-  html += '<div style="font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(192,216,240,.5);margin-bottom:.2rem;">Assessment Only</div>';
-  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:#f0c040;line-height:1;">$9.99</div>';
-  html += '<div style="font-size:.65rem;color:rgba(192,216,240,.35);margin-bottom:.5rem;">one-time · 75% aptitude scoring</div>';
-  html += '<a href="https://buy.stripe.com/9B6dR94Db3GMcuReIvenS02" style="display:block;padding:.65rem;background:rgba(240,192,64,.15);border:1.5px solid rgba(240,192,64,.3);border-radius:8px;color:#f0c040;font-weight:700;font-size:.85rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.background=\'rgba(240,192,64,.25)\'" onmouseout="this.style.background=\'rgba(240,192,64,.15)\'">Buy Assessment \u2192</a>';
+  html += '<div style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(192,216,240,.45);margin-bottom:.2rem;">Assessment Only</div>';
+  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.7rem;color:#f0c040;line-height:1;">$9.99</div>';
+  html += '<div style="font-size:.62rem;color:rgba(192,216,240,.3);margin-bottom:.5rem;">one-time</div>';
+  html += '<a href="https://buy.stripe.com/9B6dR94Db3GMcuReIvenS02" style="display:block;padding:.6rem;background:rgba(240,192,64,.12);border:1.5px solid rgba(240,192,64,.25);border-radius:8px;color:#f0c040;font-weight:700;font-size:.82rem;text-decoration:none;">Buy Assessment \u2192</a>';
   html += '</div>';
-
-  // Option 2: Full subscription (recommended)
-  html += '<div style="background:rgba(240,192,64,.06);border:2px solid rgba(240,192,64,.3);border-radius:10px;padding:1rem;text-align:center;position:relative;">';
-  html += '<div style="position:absolute;top:-.55rem;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;font-size:.55rem;font-weight:800;letter-spacing:.08em;padding:.12rem .55rem;border-radius:100px;text-transform:uppercase;white-space:nowrap;">Best Value</div>';
-  html += '<div style="font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(192,216,240,.5);margin-bottom:.2rem;margin-top:.2rem;">Full AI Toolkit</div>';
-  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:#f0c040;line-height:1;">$15/mo</div>';
-  html += '<div style="font-size:.65rem;color:rgba(192,216,240,.35);margin-bottom:.3rem;">cancel anytime</div>';
-  html += '<div style="font-size:.62rem;color:#4ade80;font-weight:600;margin-bottom:.5rem;">✓ Profile-weighted scoring<br>(60% aptitude + 30% experience + 10% interest)</div>';
-  html += '<div style="font-size:.65rem;color:rgba(192,216,240,.5);margin-bottom:.5rem;">Assessment + 20 AI tools:<br>Resume Builder, MOS Translator, Interview Sim, Salary Coach, LinkedIn Optimizer, VA Claim Builder + more</div>';
-  html += '<a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:block;padding:.6rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.85rem;text-decoration:none;">Subscribe &amp; Unlock All \u2192</a>';
+  html += '<div style="background:rgba(240,192,64,.05);border:2px solid rgba(240,192,64,.25);border-radius:10px;padding:1rem;text-align:center;position:relative;">';
+  html += '<div style="position:absolute;top:-.5rem;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;font-size:.55rem;font-weight:800;letter-spacing:.08em;padding:.1rem .5rem;border-radius:100px;text-transform:uppercase;white-space:nowrap;">Best Value</div>';
+  html += '<div style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(192,216,240,.45);margin-bottom:.2rem;margin-top:.15rem;">Full AI Toolkit</div>';
+  html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.7rem;color:#f0c040;line-height:1;">$15/mo</div>';
+  html += '<div style="font-size:.62rem;color:rgba(192,216,240,.3);margin-bottom:.25rem;">cancel anytime</div>';
+  html += '<div style="font-size:.6rem;color:#4ade80;font-weight:600;margin-bottom:.4rem;">Assessment + 20 AI tools</div>';
+  html += '<a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:block;padding:.6rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.82rem;text-decoration:none;">Subscribe &amp; Unlock All \u2192</a>';
   html += '</div>';
-
-  html += '</div>'; // grid
-
-  html += '<p style="text-align:center;font-size:.72rem;color:rgba(192,216,240,.35);margin-top:1rem;">Your PathFinder Lite results are saved automatically. When you subscribe later, your data will be waiting.</p>';
+  html += '</div>';
   html += '</div>';
 
   // Action buttons

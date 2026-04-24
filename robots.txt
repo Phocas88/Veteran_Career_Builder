@@ -1,34 +1,28 @@
 User-agent: *
 Allow: /
+Crawl-delay: 1
 
 # Block admin and utility pages
 Disallow: /admin.html
 Disallow: /admin/
 Disallow: /sitemap-visual.html
+Disallow: /_REDIRECT_TEMPLATE.html
+Disallow: /_email-signup-snippet.html
+Disallow: /vcp-mega-menu.html
+Disallow: /vcp-mega-nav.html
 
-# Block draft/work-in-progress pages
-Disallow: /0311_rebuilt.html
-Disallow: /0311_seo.html
-Disallow: /11b_rebuilt.html
-Disallow: /11b_seo.html
-Disallow: /1t2x1_rebuilt.html
-Disallow: /25b_rebuilt.html
-Disallow: /25b_seo.html
-Disallow: /35f_rebuilt.html
-Disallow: /3d0x2_rebuilt.html
-Disallow: /3d0x2_seo.html
-Disallow: /68w_rebuilt.html
-Disallow: /68w_seo.html
-Disallow: /68w_seo_fixed.html
-Disallow: /88m_rebuilt.html
-Disallow: /ctn_rebuilt.html
-Disallow: /ctn_seo.html
-Disallow: /hm_rebuilt.html
-Disallow: /hm_seo.html
-Disallow: /so_rebuilt.html
-
-# Block stub redirect pages
+# Block redirect/stub pages (noindex also set in HTML)
+Disallow: /terms-of-service.html
+Disallow: /free-assessment.html
 Disallow: /veteran-career-builder.html
 Disallow: /veteran-career-path-landing.html
+Disallow: /va-disability-benefits-calculator.html
+
+# Block affiliate and internal components
+Disallow: /affiliate/
+Disallow: /training/
+
+# Block backup files
+Disallow: /*.bak$
 
 Sitemap: https://veterancareerpath.com/sitemap.xml

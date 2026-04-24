@@ -4979,17 +4979,7 @@ Return this exact JSON structure:
             </div>
 
 
-            {!hasAccess&&(
-              <div style={{textAlign:"center",padding:".75rem 0",margin:".5rem 0"}}>
-                <ins className="adsbygoogle"
-                  style={{display:"block"}}
-                  data-ad-client="ca-pub-4999040528510137"
-                  data-ad-slot="auto"
-                  data-ad-format="horizontal"
-                  data-full-width-responsive="true"/>
-                <script dangerouslySetInnerHTML={{__html:"(adsbygoogle = window.adsbygoogle || []).push({});"}}/>
-              </div>
-            )}
+            {/* AdSense placeholder - re-enable after approval */}
             <div style={{background:"linear-gradient(135deg,#0a1628,#1a3a6b)",border:"2px solid rgba(200,150,10,.4)",borderRadius:"12px",padding:"1.5rem 1.75rem",marginBottom:"1.5rem",boxShadow:"0 4px 20px rgba(0,0,0,.2)"}}>
               <div style={{display:"flex",gap:"1rem",alignItems:"flex-start",marginBottom:"1rem"}}>
                 <div style={{fontSize:"2rem",flexShrink:0}}>🏠</div>

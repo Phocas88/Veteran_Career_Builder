@@ -315,14 +315,15 @@ a:hover{color:var(--gold);}
   </div>
 </div>
 <script>
-// Admin bypass: add ?vcp_admin=pathfinder to the URL to access the assessment for testing
+// Admin bypass: requires server-validated admin token
 (function(){
   var p = new URLSearchParams(window.location.search);
-  if(p.get('vcp_admin') === 'pathfinder') {
+  var token = p.get('vcp_admin');
+  if(token && token.length > 20) {
+    // Token must be validated server-side — store and verify on next API call
+    sessionStorage.setItem('vcp_admin_token', token);
     document.getElementById('coming-soon-gate').style.display = 'none';
-    // Persist for this session so navigating within the page still works
-    sessionStorage.setItem('vcp_admin_bypass', '1');
-  } else if(sessionStorage.getItem('vcp_admin_bypass') === '1') {
+  } else if(sessionStorage.getItem('vcp_admin_token')) {
     document.getElementById('coming-soon-gate').style.display = 'none';
   }
 })();

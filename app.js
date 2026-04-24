@@ -137,7 +137,13 @@ async function callClaude(prompt, system = "", maxTokens = 2000) {
 
     const endpoint = PROXY_URL ? PROXY_URL : "https://api.anthropic.com/v1/messages";
     const headers = { "Content-Type": "application/json" };
-    if (!PROXY_URL) {
+    if (PROXY_URL) {
+      // Send access token to proxy for server-side validation
+      const acc = JSON.parse(localStorage.getItem("vcb_access") || "{}");
+      if (acc.stripeSession) headers["x-vcb-session"] = acc.stripeSession;
+      if (acc.email) headers["x-vcb-email"] = acc.email;
+      if (acc.code) headers["x-vcb-code"] = acc.code;
+    } else {
       headers["x-api-key"] = getStoredApiKey();
       headers["anthropic-version"] = "2023-06-01";
       headers["anthropic-dangerous-direct-browser-access"] = "true";
@@ -305,41 +311,27 @@ function UniversityInput({ value, onChange, placeholder }) {
 // ── SKILLS LIBRARY ──────────────────────────────────────────────────────────
 
 
-// ── ACCESS CODES — defined at module level so useState initializer can use them ──
-// These must be outside any React component to avoid hoisting issues with const.
-var ACCESS_CODES_MAP = {
-  // Permanent codes (site owner / admin)
-  "OWNER2025":     0,
-  "OWNER2026":     0,
-  // 30-day tester codes
-  "ALPHA30":       Date.UTC(2026, 5, 30),
-  "BRAVO30":       Date.UTC(2026, 5, 30),
-  "CHARLIE30":     Date.UTC(2026, 5, 30),
-  "DELTA30":       Date.UTC(2026, 5, 30),
-  "ECHO30":        Date.UTC(2026, 5, 30),
-  "FOXTROT30":     Date.UTC(2026, 5, 30),
-  "GOLF30":        Date.UTC(2026, 5, 30),
-  "HOTEL30":       Date.UTC(2026, 5, 30),
-  "INDIA30":       Date.UTC(2026, 5, 30),
-  "JULIET30":      Date.UTC(2026, 5, 30),
-  // Named tester codes
-  "VETTEST1":      Date.UTC(2026, 8, 1),
-  "VETTEST2":      Date.UTC(2026, 8, 1),
-  "VETTEST3":      Date.UTC(2026, 8, 1),
-  "VETTEST4":      Date.UTC(2026, 8, 1),
-  "VETTEST5":      Date.UTC(2026, 8, 1),
-  "AMON26":        Date.UTC(2026, 11, 31),
-  "TAP2026":       Date.UTC(2026, 11, 31),
-  "VSO2026":       Date.UTC(2026, 11, 31),
-};
+// ── ACCESS CODES — validated server-side via proxy ──
+// Codes are no longer stored in client JS to prevent bypass.
+// The proxy at VCB_PROXY_URL/validate-code handles validation.
 
-function isCodeValid(code) {
+async function isCodeValid(code) {
   var c = (code||"").trim().toUpperCase();
-  if (!(c in ACCESS_CODES_MAP)) return { valid: false, reason: "invalid" };
-  var expiry = ACCESS_CODES_MAP[c];
-  if (expiry === 0) return { valid: true, reason: "permanent" };
-  if (Date.now() > expiry) return { valid: false, reason: "expired" };
-  return { valid: true, reason: "timed", expiry: expiry };
+  if (!c || c.length < 4) return { valid: false, reason: "invalid" };
+  try {
+    var resp = await fetch((PROXY_URL || "").replace("/claude", "/validate-code"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: c })
+    });
+    if (!resp.ok) return { valid: false, reason: "invalid" };
+    var data = await resp.json();
+    return data;
+  } catch(e) {
+    // Fallback: reject if proxy is unreachable
+    console.error("Code validation failed:", e);
+    return { valid: false, reason: "error" };
+  }
 }
 
 function checkAccess() {
@@ -348,13 +340,19 @@ function checkAccess() {
   try {
     var d = JSON.parse(stored);
     if (d.type === "paid") {
-      if (!d.stripeSession) { localStorage.removeItem("vcb_access"); return false; }
+      // Require a real Stripe session ID (not manual-verify)
+      if (!d.stripeSession || d.stripeSession.startsWith("manual-verify")) {
+        localStorage.removeItem("vcb_access");
+        return false;
+      }
       if (d.expiry > Date.now()) return true;
       localStorage.removeItem("vcb_access"); return false;
     }
-    if (d.type === "code" && d.code) {
-      var check = isCodeValid(d.code);
-      if (!check.valid) { localStorage.removeItem("vcb_access"); return false; }
+    if (d.type === "code" && d.code && d.serverValidated) {
+      // Only trust codes that were validated server-side
+      if (d.expiry && d.expiry > 0 && Date.now() > d.expiry) {
+        localStorage.removeItem("vcb_access"); return false;
+      }
       return true;
     }
     return false;
@@ -1560,11 +1558,16 @@ function App() {
   const [pwCodeStatus, setPwCodeStatus] = useState("idle");
   const [pwCodeMsg, setPwCodeMsg] = useState("");
 
-  const redeemCode = () => {
+  const redeemCode = async () => {
     const code = pwCode.trim().toUpperCase();
-    const check = isCodeValid(code); // calls module-level function
+    setPwCodeMsg("Validating...");
+    setPwCodeStatus("");
+    const check = await isCodeValid(code);
     if (check.valid) {
-      localStorage.setItem("vcb_access", JSON.stringify({ type:"code", code }));
+      localStorage.setItem("vcb_access", JSON.stringify({
+        type:"code", code, serverValidated: true,
+        expiry: check.expiry || 0
+      }));
       const expMsg = check.reason === "permanent"
         ? "✓ Code accepted! You have permanent access."
         : "✓ Code accepted! Access expires " + new Date(check.expiry).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}) + ".";
@@ -1574,15 +1577,18 @@ function App() {
     } else if (check.reason === "expired") {
       setPwCodeStatus("invalid");
       setPwCodeMsg("This code has expired. Please subscribe or contact support for a new code.");
+    } else if (check.reason === "error") {
+      setPwCodeStatus("invalid");
+      setPwCodeMsg("Could not validate code. Please check your connection and try again.");
     } else {
       setPwCodeStatus("invalid");
       setPwCodeMsg("That code isn't valid. Check spelling or contact support.");
     }
   };
 
-  const grantPaidAccess = (planMonths) => {
+  const grantPaidAccess = (planMonths, sessionId) => {
     const expiry = Date.now() + planMonths * 30 * 24 * 60 * 60 * 1000;
-    localStorage.setItem("vcb_access", JSON.stringify({ type:"paid", stripeSession:"direct", expiry, plan: planMonths===1?"monthly":"annual" }));
+    localStorage.setItem("vcb_access", JSON.stringify({ type:"paid", stripeSession: sessionId || ("stripe-"+Date.now()), expiry, plan: planMonths===1?"monthly":"annual", serverValidated: true }));
     setHasAccess(true);
     setShowPaywall(false);
   };
@@ -2554,23 +2560,43 @@ Return this exact JSON structure:
                 </div>
                 <div style={{marginTop:".85rem",textAlign:"center"}}>
                   <button
-                    onClick={()=>{
+                    onClick={async()=>{
                       // Re-check access in case Stripe redirected and localStorage was set
                       if(checkAccess()){
                         setHasAccess(true);
                         setShowPaywall(false);
                         return;
                       }
-                      // Manual grant — ask for Stripe email as light verification
+                      // Verify subscription server-side via email
                       const email = window.prompt("Enter the email you used when subscribing on Stripe:");
                       if(email && email.includes("@")){
-                        const expiry = Date.now() + 365*24*60*60*1000;
-                        localStorage.setItem("vcb_access", JSON.stringify({
-                          type:"paid", stripeSession:"manual-verify-"+Date.now(),
-                          expiry, plan:"monthly", email
-                        }));
-                        setHasAccess(true);
-                        setShowPaywall(false);
+                        try {
+                          const resp = await fetch((PROXY_URL || "").replace("/claude", "/verify-subscription"), {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ email: email.trim().toLowerCase() })
+                          });
+                          if (!resp.ok) {
+                            alert("Could not verify subscription. Please contact support if you believe this is an error.");
+                            return;
+                          }
+                          const data = await resp.json();
+                          if (data.active) {
+                            const expiry = data.expiry || (Date.now() + 30*24*60*60*1000);
+                            localStorage.setItem("vcb_access", JSON.stringify({
+                              type:"paid", stripeSession: data.sessionId || ("verified-"+Date.now()),
+                              expiry, plan: data.plan || "monthly", email: email.trim().toLowerCase(),
+                              serverValidated: true
+                            }));
+                            setHasAccess(true);
+                            setShowPaywall(false);
+                          } else {
+                            alert("No active subscription found for this email. Please subscribe or contact support.");
+                          }
+                        } catch(e) {
+                          console.error("Subscription verification error:", e);
+                          alert("Could not verify subscription. Please try again or contact support.");
+                        }
                       }
                     }}
                     style={{background:"none",border:"none",color:"rgba(100,140,180,.6)",fontSize:".78rem",cursor:"pointer",textDecoration:"underline"}}
@@ -2782,7 +2808,7 @@ Return this exact JSON structure:
               </button>
               {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>⭐ All 8 Tools — $15/mo</button>}
               <button className="btn-danger" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleLogout}>Sign Out</button>
-              {window.location.search.indexOf("admin=1")>-1&&<button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>SETUP</button>}
+              {window.location.search.indexOf("admin=1")>-1&&localStorage.getItem("vcb_admin_verified")==="true"&&<button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>SETUP</button>}
             </div>
           </div>
         ):(

@@ -1804,14 +1804,17 @@ function fetchUSAJobsAPI(p) {
 
   var keyword = encodeURIComponent(p.keyword || 'veteran');
   var location = encodeURIComponent(p.location || '');
-  var vetPref = p.vet ? '1' : '0';
+  var vetOnly = p.vetOnly ? '&WhoMayApply=veterans' : '';
   var remote = p.remote ? '&RemoteIndicator=True' : '';
+  var grade = p.grade ? '&PayGradeHigh=' + encodeURIComponent(p.grade) + '&PayGradeLow=' + encodeURIComponent(p.grade) : '';
 
-  // USAJobs API v2 — public endpoint (CORS-enabled)
+  // USAJobs API v2 — requires free API key from developer.usajobs.gov
+  // Register at: https://developer.usajobs.gov/APIRequest/Index
+  // After registering, replace the Authorization-Key value below with your API key
   var url = 'https://data.usajobs.gov/api/search?Keyword=' + keyword +
     (location ? '&LocationName=' + location : '') +
     '&ResultsPerPage=10' +
-    '&WhoMayApply=veterans' + remote;
+    vetOnly + grade + remote;
 
   fetch(url, {
     headers: {
@@ -1830,7 +1833,7 @@ function fetchUSAJobsAPI(p) {
       document.getElementById('usajobs-list').innerHTML = '<div style="padding:1rem;text-align:center;color:#5a7090;font-size:.85rem;">No federal jobs found for "' + (p.keyword||'veteran') + '". Try different keywords or broaden your search.</div>';
       return;
     }
-    var total = data.SearchResult.SearchResultCount || items.length;
+    var total = (data.SearchResult && data.SearchResult.SearchResultCount) || items.length;
     var html = '<div style="font-size:.82rem;color:#5a7090;margin-bottom:.75rem;">Showing ' + items.length + ' of ' + total + ' federal positions matching "<strong>' + (p.keyword||'veteran') + '</strong>"</div>';
     items.forEach(function(item) {
       var job = item.MatchedObjectDescriptor;

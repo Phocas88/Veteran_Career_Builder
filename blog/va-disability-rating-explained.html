@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VA Disability Ratings Explained: How the VA Calculates Your Rating | VeteranCareerPath</title>
+<meta name="description" content="How the VA actually calculates your combined disability rating using VA math, the bilateral factor, and TDIU. Includes formula examples and real math breakdowns.">
+<link rel="canonical" href="https://veterancareerpath.com/blog/va-disability-rating-explained.html">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"VA Disability Ratings Explained: How the VA Calculates Your Rating","description":"How the VA actually calculates your combined disability rating using VA math, the bilateral factor, and TDIU. Includes formula examples and real math breakdowns.","url":"https://veterancareerpath.com/blog/va-disability-rating-explained.html","datePublished":"April 24, 2026","dateModified":"April 24, 2026","author":{"@type":"Organization","name":"Veteran Career Path"},"publisher":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://veterancareerpath.com/blog/va-disability-rating-explained.html"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why doesn't the VA just add my disability percentages together?","acceptedAnswer":{"@type":"Answer","text":"The VA uses 'combined ratings' math rather than simple addition because each disability is rated against your remaining 'whole person' percentage. A 50% rating means you've lost 50% of your whole-body efficiency. A second 30% rating is applied to the remaining 50%, not the original 100%. So 50% + 30% = 65% combined, not 80%. This is codified in 38 CFR 4.25."}},{"@type":"Question","name":"What is TDIU and how do I qualify?","acceptedAnswer":{"@type":"Answer","text":"Total Disability based on Individual Unemployability (TDIU) pays you at the 100% rate even if your combined rating is less than 100%. To qualify under the schedular criteria, you need one disability rated at 60%+ OR a combined rating of 70%+ with at least one condition at 40%+. You must also demonstrate that your service-connected disabilities prevent you from maintaining substantially gainful employment. Extraschedular TDIU is available if you don't meet these thresholds but can still prove unemployability."}},{"@type":"Question","name":"How does the bilateral factor work in VA disability math?","acceptedAnswer":{"@type":"Answer","text":"The bilateral factor applies when you have disabilities affecting both paired extremities — for example, both knees, both shoulders, or both ankles. The VA combines all bilateral disabilities first, then adds 10% of their combined value as a bonus before combining with your non-bilateral conditions. If your bilateral knee conditions combine to 36%, the bilateral factor adds 3.6% (10% of 36), giving you 39.6% before combining with other ratings."}}]}
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,sans-serif;background:#f4f6fa;color:#1e2e40;line-height:1.7}
+nav.vcp-mini{background:#08111e;padding:.7rem 5%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,.12)}
+nav.vcp-mini a{color:rgba(192,216,240,.7);text-decoration:none;font-size:.8rem}
+nav.vcp-mini a.brand{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040}
+.article-wrap{max-width:760px;margin:0 auto;padding:2rem 1.5rem}
+.article-header{margin-bottom:2rem}
+.article-cat{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#1a5c9a;margin-bottom:.5rem}
+.article-header h1{font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:700;color:#0d1f3c;line-height:1.25;margin-bottom:.75rem}
+.article-meta{font-size:.8rem;color:#5a7090;margin-bottom:1.25rem}
+.article-intro{font-size:1.05rem;color:#2a3a50;line-height:1.75;border-left:3px solid #1a3a6b;padding-left:1rem;margin-bottom:2rem}
+.article-body h2{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.06em;color:#1a3a6b;margin:2rem 0 .75rem}
+.article-body h3{font-size:1rem;font-weight:700;color:#0d1f3c;margin:1.25rem 0 .4rem}
+.article-body p{margin-bottom:1rem;color:#2a3a50}
+.article-body ul,.article-body ol{margin:0 0 1rem 1.5rem;color:#2a3a50}
+.article-body li{margin-bottom:.35rem}
+.article-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.88rem}
+.article-body th{background:#1a3a6b;color:#fff;padding:.6rem .85rem;text-align:left}
+.article-body td{padding:.55rem .85rem;border-bottom:1px solid #d8e4f0;color:#2a3a50}
+.article-body tr:hover td{background:#f0f4fa}
+.callout{background:#e8f0fa;border-left:4px solid #1a3a6b;border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin:1.5rem 0}
+.callout-title{font-weight:700;color:#1a3a6b;font-size:.88rem;margin-bottom:.3rem}
+.callout p{font-size:.88rem;color:#2a3a50;margin:0}
+.cta-inline{background:linear-gradient(135deg,#0d1f3c,#1a3a6b);border-radius:12px;padding:1.5rem;text-align:center;margin:2rem 0;color:#fff}
+.cta-inline h3{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.4rem}
+.cta-inline p{font-size:.85rem;color:rgba(192,216,240,.75);margin-bottom:.85rem}
+.btn-gold{display:inline-block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.88rem;padding:.65rem 1.4rem;border-radius:8px;text-decoration:none}
+.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem;margin-top:1rem}
+.related-card{background:#fff;border:1px solid #d0dcea;border-radius:10px;padding:1rem;text-decoration:none;display:block}
+.related-card-cat{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#1a5c9a;margin-bottom:.3rem}
+.related-card-title{font-size:.85rem;font-weight:700;color:#0d1f3c;line-height:1.35}
+@media(max-width:600px){.article-wrap{padding:1.25rem 1rem}}
+</style>
+<link rel="stylesheet" href="/vcp-styles.css">
+</head>
+<body>
+<style id="vcp-nav-css">
+*{box-sizing:border-box;}
+html,body{overflow-x:hidden;max-width:100%;}
+body.menu-open{overflow:hidden!important;}
+.vcp-nav{background:#08111e;padding:0 4%;display:flex;justify-content:space-between;align-items:stretch;position:sticky;top:0;z-index:2000;border-bottom:1px solid rgba(240,192,64,.15);height:56px;width:100%;}
+.vcp-logo{display:flex;align-items:center;gap:.55rem;text-decoration:none;flex-shrink:0;}
+.vcp-logo img{width:28px;height:28px;object-fit:contain;}
+.vcp-logo-text{font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.12em;color:#f0c040;}
+.vcp-desk{display:flex;align-items:stretch;gap:0;flex:1;padding-left:.5rem;min-width:0;overflow:hidden;}
+.vcp-desk>a{display:flex;align-items:center;padding:0 .6rem;color:rgba(192,216,240,.65);text-decoration:none;font-size:.73rem;font-weight:500;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;flex-shrink:0;}
+.vcp-desk>a:hover{color:#fff;border-bottom-color:rgba(240,192,64,.4);}
+.vcp-menu-btn{display:flex;align-items:center;gap:.35rem;padding:0 .75rem;color:rgba(192,216,240,.75);font-size:.73rem;font-weight:600;white-space:nowrap;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;margin:auto .5rem auto .5rem;height:32px;transition:all .15s;flex-shrink:0;}
+.vcp-menu-btn:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(240,192,64,.3);}
+.vcp-menu-btn.active{background:rgba(240,192,64,.12);border-color:rgba(240,192,64,.4);color:#f0c040;}
+.vcp-menu-btn svg{transition:transform .2s;}
+.vcp-menu-btn.active svg{transform:rotate(180deg);}
+.vcp-cta-link{background:linear-gradient(135deg,#c8960a,#e8aa10)!important;color:#0a1628!important;font-weight:700!important;border-radius:6px;margin:auto 0 auto .25rem;padding:.3rem .75rem!important;height:auto!important;border-bottom:none!important;white-space:nowrap;flex-shrink:0;font-size:.72rem!important;text-decoration:none;display:flex;align-items:center;}
+.vcp-cta-link:hover{opacity:.9;}
+.vcp-search-wrap{display:flex;align-items:center;margin:auto .5rem auto auto;position:relative;flex-shrink:0;}
+.vcp-search-input{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:.28rem .8rem .28rem 1.9rem;color:#fff;font-size:.75rem;font-family:'Inter',sans-serif;width:145px;transition:width .25s,border-color .2s;outline:none;}
+.vcp-search-input:focus{width:200px;border-color:rgba(240,192,64,.4);background:rgba(255,255,255,.1);}
+.vcp-search-input::placeholder{color:rgba(255,255,255,.28);}
+.vcp-search-icon{position:absolute;left:.6rem;color:rgba(255,255,255,.3);font-size:.75rem;pointer-events:none;}
+.vcp-search-results{position:fixed;top:56px;right:1rem;background:#0d1a2d;border:1px solid rgba(240,192,64,.2);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.6);width:340px;max-width:calc(100vw - 2rem);max-height:420px;overflow-y:auto;z-index:3000;display:none;}
+.vcp-search-results.open{display:block;}
+.vcp-sr-header{padding:.5rem .9rem;font-size:.62rem;color:rgba(240,192,64,.5);font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.07);}
+.vcp-sr-item{display:block;padding:.55rem .9rem;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;}
+.vcp-sr-item:hover{background:rgba(255,255,255,.06);}
+.vcp-sr-title{font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.12rem;}
+.vcp-sr-snippet{font-size:.72rem;color:rgba(192,216,240,.5);line-height:1.4;}
+.vcp-sr-snippet em{color:rgba(240,192,64,.8);font-style:normal;font-weight:600;}
+.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.4);font-size:.82rem;text-align:center;}
+.vcp-ham{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:.4rem;flex-shrink:0;align-self:center;margin-left:.25rem;}
+.vcp-ham span{display:block;width:20px;height:2px;background:#c0d8f0;border-radius:2px;transition:.25s;}
+.vcp-ham.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
+.vcp-ham.open span:nth-child(2){opacity:0;}
+.vcp-ham.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);}
+.vcp-mega{display:none;position:fixed;top:56px;left:0;right:0;background:#08111e;border-bottom:2px solid rgba(240,192,64,.15);box-shadow:0 12px 48px rgba(0,0,0,.7);z-index:1999;max-height:calc(100vh - 56px);overflow-y:auto;}
+.vcp-mega.open{display:block;}
+.vcp-mega-inner{display:grid;grid-template-columns:repeat(5,1fr);gap:0;max-width:1200px;margin:0 auto;padding:1.5rem 2rem;}
+.vcp-mega-col{padding:0 1rem;border-right:1px solid rgba(255,255,255,.05);}
+.vcp-mega-col:first-child{padding-left:0;}
+.vcp-mega-col:last-child{border-right:none;padding-right:0;}
+.vcp-mega-col-title{font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(240,192,64,.6);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:1px solid rgba(240,192,64,.15);display:flex;align-items:center;gap:.4rem;}
+.vcp-mega-section{margin-bottom:1rem;}
+.vcp-mega-section-label{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(192,216,240,.3);margin-bottom:.35rem;margin-top:.6rem;}
+.vcp-mega-section-label:first-child{margin-top:0;}
+.vcp-mega-col a{display:block;color:rgba(192,216,240,.65);text-decoration:none;font-size:.76rem;font-weight:400;padding:.22rem 0;transition:color .1s;line-height:1.4;}
+.vcp-mega-col a:hover{color:#fff;}
+.vcp-mega-col a.featured{color:#f0c040;font-weight:600;}
+.vcp-mega-col a.featured:hover{color:#fff;}
+.vcp-mega-col a.new::after{content:'NEW';font-size:.52rem;font-weight:700;letter-spacing:.08em;background:rgba(74,222,128,.2);color:#4ade80;border-radius:3px;padding:.05rem .3rem;margin-left:.35rem;vertical-align:middle;}
+.vcp-mega-col a.hot::after{content:'🔥';font-size:.65rem;margin-left:.3rem;}
+.vcp-mega-footer{background:rgba(240,192,64,.06);border-top:1px solid rgba(240,192,64,.12);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.vcp-mega-footer-left{font-size:.75rem;color:rgba(192,216,240,.5);}
+.vcp-mega-footer-left strong{color:#f0c040;}
+.vcp-mega-footer a.btn-subscribe{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e!important;font-weight:700;font-size:.78rem;padding:.4rem 1rem;border-radius:6px;text-decoration:none;}
+.vcp-mob{display:none;position:fixed;top:56px;left:0;right:0;background:#08111e;z-index:1999;flex-direction:column;border-top:1px solid rgba(240,192,64,.1);max-height:82vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);width:100%;}
+.vcp-mob.open{display:flex;}
+.vcp-mob-cta{background:linear-gradient(135deg,#c8960a,#e8aa10)!important;color:#08111e!important;font-weight:700!important;text-align:center;margin:.65rem 1.25rem;border-radius:8px;padding:.65rem!important;border:none!important;text-decoration:none;display:block;font-size:.88rem;}
+.vcp-mob-sect{font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(240,192,64,.5);padding:.6rem 5% .2rem;border-bottom:none!important;pointer-events:none;background:rgba(240,192,64,.04);border-top:1px solid rgba(240,192,64,.1);margin-top:.25rem;}
+.vcp-mob a{color:rgba(255,255,255,.75);text-decoration:none;font-size:.85rem;font-weight:400;padding:.5rem 5%;border-bottom:1px solid rgba(255,255,255,.04);display:block;}
+.vcp-mob a:hover{background:rgba(255,255,255,.04);color:#fff;}
+.vcp-mob-search{padding:.65rem 5%;border-bottom:1px solid rgba(255,255,255,.07);}
+.vcp-mob-search input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:.45rem 1rem;color:#fff;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;}
+.vcp-mob-search input::placeholder{color:rgba(255,255,255,.3);}
+.vcp-mob-sr{padding:0 5% .5rem;display:none;}
+.vcp-mob-sr.open{display:block;}
+.vcp-mob-sr a{display:block;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;}
+.vcp-mob-sr-title{font-size:.85rem;font-weight:600;color:#fff;}
+.vcp-mob-sr-snip{font-size:.73rem;color:rgba(192,216,240,.5);margin-top:.1rem;line-height:1.4;}
+.vcp-mob-sr-snip em{color:rgba(240,192,64,.8);font-style:normal;}
+@media(max-width:1080px){.vcp-mega-inner{grid-template-columns:repeat(3,1fr);}.vcp-mega-col:nth-child(4),.vcp-mega-col:nth-child(5){grid-column:span 1;}}
+@media(max-width:960px){.vcp-desk{display:none!important;}.vcp-search-wrap{display:none!important;}.vcp-menu-btn{display:none!important;}.vcp-ham{display:flex;min-width:44px;min-height:44px;align-items:center;justify-content:center;}.vcp-mega{display:none!important;}.vcp-mob a{min-height:44px;display:flex;align-items:center;padding:.6rem 5%;font-size:.88rem;}.vcp-mob-cta{min-height:48px;display:flex;align-items:center;justify-content:center;font-size:.9rem;}.vcp-mob-sect{min-height:36px;display:flex;align-items:center;padding:.5rem 5% .25rem;}.vcp-mob{max-height:calc(100vh - 56px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:2rem;}.vcp-mob-search{padding:.75rem 5%;}.vcp-mob-search input{min-height:44px;padding:.55rem 1rem;font-size:.9rem;}}
+@media(max-width:640px){.vcp-mega-inner{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.vcp-nav{padding:0 3%;}.vcp-logo-text{font-size:.8rem;}.vcp-mob a{font-size:.85rem;padding:.55rem 4%;}.vcp-mob-search{padding:.65rem 4%;}}
+</style>
+
+<!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
+<nav class="vcp-nav">
+  <a href="https://veterancareerpath.com" class="vcp-logo">
+    <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28">
+    <span class="vcp-logo-text">Veteran Career Path</span>
+  </a>
+  <div class="vcp-desk">
+    <a href="https://veterancareerpath.com/military-transition-guide.html">Transition</a>
+    <a href="https://veterancareerpath.com/army-mos-careers.html">MOS Guides</a>
+    <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">VA Benefits</a>
+    <a href="https://veterancareerpath.com/military-special-qualifications-civilian-guide.html">ASI/ASQ Guide</a>
+    <a href="https://veterancareerpath.com/state-veteran-benefits.html">State Benefits</a>
+    <button class="vcp-menu-btn" id="vcp-menu-btn" aria-expanded="false" aria-haspopup="true">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><line x1="2" y1="4" x2="14" y2="4"/><line x1="2" y1="8" x2="14" y2="8"/><line x1="2" y1="12" x2="14" y2="12"/></svg>
+      All Pages
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2,3 5,7 8,3"/></svg>
+    </button>
+    <a href="https://veterancareerpath.com/app.html" class="vcp-cta-link">AI Tools — $15/mo</a>
+    <a href="https://veterancareerpath.com/app.html#profile" class="vcp-account-link" style="display:flex;align-items:center;gap:.3rem;padding:0 .5rem;color:rgba(192,216,240,.6);text-decoration:none;font-size:.72rem;font-weight:500;white-space:nowrap;flex-shrink:0;">👤 My Account</a>
+  </div>
+  <div class="vcp-search-wrap" id="vcp-search-wrap">
+    <span class="vcp-search-icon">⌕</span>
+    <input class="vcp-search-input" id="vcp-si" type="text" placeholder="Search all pages…" autocomplete="off" aria-label="Search">
+    <div class="vcp-search-results" id="vcp-sr"></div>
+  </div>
+  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ══ MEGA DROPDOWN ════════════════════════════════════════════════════════ -->
+<div class="vcp-mega" id="vcp-mega" role="navigation" aria-label="Site navigation">
+  <div class="vcp-mega-inner">
+    <div class="vcp-mega-col">
+      <div class="vcp-mega-col-title">Career Tools</div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Subscriber AI Tools — $15/mo</div>
+        <a href="https://veterancareerpath.com/app.html" class="featured">Career Path Tools</a>
+        <a href="https://veterancareerpath.com/va-claim-builder.html" class="featured new">VA Claim Builder</a>
+        <a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
+        <a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume Builder</a>
+        <a href="https://veterancareerpath.com/tools-interview-simulator.html">Interview Simulator</a>
+        <a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Optimizer</a>
+        <a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Negotiator</a>
+        <a href="https://veterancareerpath.com/tools-cert-advisor.html">Certification Advisor</a>
+        <a href="https://veterancareerpath.com/dd214-decoder.html">DD-214 Decoder</a>
+        <a href="https://veterancareerpath.com/clearance-job-match.html">Clearance Job Match</a>
+        <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
+        <a href="https://veterancareerpath.com/linkedin-profile-rewriter.html">LinkedIn Rewriter</a>
+        <a href="https://veterancareerpath.com/federal-resume-builder-ai.html">Federal Resume AI</a>
+        <a href="https://veterancareerpath.com/salary-negotiation-roleplay.html">Salary Roleplay</a>
+        <a href="https://veterancareerpath.com/transition-timeline-planner.html">Transition Planner</a>
+        <a href="https://veterancareerpath.com/va-home-loan-analyzer.html">VA Loan Analyzer</a>
+        <a href="https://veterancareerpath.com/veteran-business-funding.html">Business Funding</a>
+        <a href="https://veterancareerpath.com/tools-job-tracker.html">Job Tracker</a>
+        <a href="https://veterancareerpath.com/tools-newsletter.html">Newsletter Generator</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Free Tools</div>
+        <a href="https://veterancareerpath.com/free-assessment.html">PathFinder Lite (Free)</a>
+        <a href="https://veterancareerpath.com/career-assessment-full.html"class="featured">VCP PathFinder™ Pro</a>
+        <a href="https://veterancareerpath.com/federal-jobs-search.html">Job Search Hub</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Resume &amp; Profile</div>
+        <a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume Builder</a>
+        <a href="https://veterancareerpath.com/federal-resume-builder-ai.html">Federal Resume AI</a>
+        <a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Optimizer</a>
+        <a href="https://veterancareerpath.com/linkedin-profile-rewriter.html">LinkedIn Rewriter</a>
+        <a href="https://veterancareerpath.com/scout-resume-builder.html" class="featured new">Scout Resume Builder</a>
+        <a href="https://veterancareerpath.com/scout-cover-letter.html" class="new">Scout Cover Letter</a>
+        <a href="https://veterancareerpath.com/military-civilian-resume.html">Military Resume Guide</a>
+        <a href="https://veterancareerpath.com/veteran-resume-examples.html">Resume Examples</a>
+        <a href="https://veterancareerpath.com/veteran-cover-letter-examples.html">Cover Letter Examples</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Job Search Tools</div>
+        <a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
+        <a href="https://veterancareerpath.com/tools-job-tracker.html">Job Application Tracker</a>
+        <a href="https://veterancareerpath.com/federal-jobs-search.html" class="featured">🔴 Live Federal Jobs</a>
+        <a href="https://veterancareerpath.com/clearance-job-match.html">Clearance Job Match</a>
+        <a href="https://veterancareerpath.com/dd214-decoder.html">DD-214 Decoder</a>
+        <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Interview &amp; Salary</div>
+        <a href="https://veterancareerpath.com/tools-interview-simulator.html">Interview Simulator</a>
+        <a href="https://veterancareerpath.com/salary-negotiation-roleplay.html">Salary Negotiation Roleplay</a>
+        <a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Negotiator</a>
+        <a href="https://veterancareerpath.com/tools-cert-advisor.html">Certification Advisor</a>
+        <a href="https://veterancareerpath.com/career-assessment-full.html">Full Career Assessment</a>
+        <a href="https://veterancareerpath.com/transition-timeline-planner.html">Transition Planner</a>
+        <a href="https://veterancareerpath.com/va-home-loan-analyzer.html">VA Loan Analyzer</a>
+        <a href="https://veterancareerpath.com/veteran-business-funding.html">Business Funding</a>
+      </div>
+    </div>
+    <div class="vcp-mega-col">
+      <div class="vcp-mega-col-title">🎖️ MOS &amp; Branch Guides</div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Find Your Branch</div>
+        <a href="https://veterancareerpath.com/army-mos-careers.html" class="featured">Army MOS Careers</a>
+        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" class="featured">Marine Corps MOS Careers</a>
+        <a href="https://veterancareerpath.com/navy-rate-careers.html" class="featured">Navy Rate Careers</a>
+        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" class="featured">Air Force AFSC Careers</a>
+        <a href="https://veterancareerpath.com/coast-guard-rating-careers.html" class="featured">Coast Guard Rating Careers</a>
+        <a href="https://veterancareerpath.com/space-force-afsc-careers.html" class="featured">Space Force AFSC Careers</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Career Pathways</div>
+        <a href="https://veterancareerpath.com/veteran-cybersecurity-careers.html">Cybersecurity</a>
+        <a href="https://veterancareerpath.com/veteran-healthcare-careers.html">Healthcare</a>
+        <a href="https://veterancareerpath.com/veteran-law-enforcement-careers.html">Law Enforcement</a>
+        <a href="https://veterancareerpath.com/veteran-government-contractor-careers.html">Gov Contracting</a>
+        <a href="https://veterancareerpath.com/veteran-project-management-careers.html">Project Management</a>
+        <a href="https://veterancareerpath.com/veteran-teaching-careers.html">Teaching</a>
+        <a href="https://veterancareerpath.com/veteran-trucking-careers.html">Trucking / CDL</a>
+        <a href="https://veterancareerpath.com/veteran-real-estate-careers.html">Real Estate</a>
+        <a href="https://veterancareerpath.com/veteran-entrepreneurship.html">Entrepreneurship</a>
+        <a href="https://veterancareerpath.com/veteran-freelancing-remote-guide.html">Freelancing &amp; Remote</a>
+        <a href="https://veterancareerpath.com/veteran-trade-school-guide.html">Trade Schools</a>
+        <a href="https://veterancareerpath.com/veteran-apprenticeship-guide.html">Apprenticeships</a>
+        <a href="https://veterancareerpath.com/remote-careers-disabled-veterans.html">Remote / Disabled</a>
+        <a href="https://veterancareerpath.com/clearance-jobs-guide.html">Cleared Jobs</a>
+        <a href="https://veterancareerpath.com/veteran-intelligence-careers.html">Intelligence Careers</a>
+        <a href="https://veterancareerpath.com/veteran-data-analytics-careers.html">Data Analytics</a>
+        <a href="https://veterancareerpath.com/veteran-aviation-careers.html">Aviation</a>
+        <a href="https://veterancareerpath.com/veteran-construction-management-careers.html">Construction Mgmt</a>
+        <a href="https://veterancareerpath.com/veteran-emergency-management-careers.html">Emergency Mgmt</a>
+        <a href="https://veterancareerpath.com/veteran-energy-careers.html">Energy</a>
+        <a href="https://veterancareerpath.com/veteran-financial-services-careers.html">Financial Services</a>
+        <a href="https://veterancareerpath.com/veteran-human-resources-careers.html">Human Resources</a>
+        <a href="https://veterancareerpath.com/veteran-manufacturing-careers.html">Manufacturing</a>
+        <a href="https://veterancareerpath.com/veteran-supply-chain-careers.html">Supply Chain</a>
+      </div>
+    </div>
+    <div class="vcp-mega-col">
+      <div class="vcp-mega-col-title">🏛️ Transition &amp; Federal</div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Transition Guides</div>
+        <a href="https://veterancareerpath.com/military-transition-guide.html" class="featured">Military Transition Guide</a>
+        <a href="https://veterancareerpath.com/veteran-first-90-days-guide.html" class="featured new">First 90 Days Guide</a>
+        <a href="https://veterancareerpath.com/tap-transition-guide.html">TAP Program Guide</a>
+        <a href="https://veterancareerpath.com/tap-resource-pack.html">TAP Counselor Pack</a>
+        <a href="https://veterancareerpath.com/ets-transition-checklist.html">ETS Checklist</a>
+        <a href="https://veterancareerpath.com/skillbridge-program-guide.html">SkillBridge Guide</a>
+        <a href="https://veterancareerpath.com/military-civilian-culture-guide.html">Civilian Culture Guide</a>
+        <a href="https://veterancareerpath.com/should-i-reenlist-calculator.html">Reenlist vs Separate</a>
+        <a href="https://veterancareerpath.com/veteran-career-test.html">Career Assessment Test</a>
+        <a href="https://veterancareerpath.com/military-special-qualifications-civilian-guide.html">ASI/ASQ/NEC Guide</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Federal Jobs</div>
+        <a href="https://veterancareerpath.com/federal-jobs-search.html" class="featured">🔴 Live Job Search</a>
+        <a href="https://veterancareerpath.com/usajobs-guide.html">USAJobs Guide</a>
+        <a href="https://veterancareerpath.com/veterans-preference-guide.html">Veterans' Preference</a>
+        <a href="https://veterancareerpath.com/schedule-a-federal-hiring.html">Schedule A Hiring</a>
+        <a href="https://veterancareerpath.com/military-to-federal-pay-chart.html">Military → GS Pay Chart</a>
+        <a href="https://veterancareerpath.com/federal-gs-grade-estimator.html">GS Grade Estimator</a>
+        <a href="https://veterancareerpath.com/gs-military-equivalent.html" class="new">GS Military Equivalent</a>
+        <a href="https://veterancareerpath.com/userra-employment-rights.html">USERRA Rights</a>
+        <a href="https://veterancareerpath.com/veteran-ada-accommodations.html">ADA Accommodations</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Job Search Skills</div>
+        <a href="https://veterancareerpath.com/veteran-action-verbs.html">Action Verbs List</a>
+        <a href="https://veterancareerpath.com/military-acronyms-civilian-guide.html">Acronyms Guide</a>
+        <a href="https://veterancareerpath.com/veteran-interview-questions.html">Interview Questions</a>
+        <a href="https://veterancareerpath.com/veteran-salary-negotiation-scripts.html">Salary Scripts</a>
+        <a href="https://veterancareerpath.com/veteran-linkedin-guide.html">LinkedIn for Veterans</a>
+        <a href="https://veterancareerpath.com/veteran-networking-guide.html">Networking Guide</a>
+        <a href="https://veterancareerpath.com/veteran-job-fair-guide.html">Job Fair Guide</a>
+        <a href="https://veterancareerpath.com/veteran-soft-skills.html">Soft Skills Guide</a>
+        <a href="https://veterancareerpath.com/veteran-discounts.html">Veteran Discounts</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Top Employers</div>
+        <a href="https://veterancareerpath.com/veteran-hiring-companies.html">Top 50 Employers</a>
+        <a href="https://veterancareerpath.com/top-companies-hiring-veterans-2025.html">Top 100 Companies</a>
+        <a href="https://veterancareerpath.com/veteran-friendly-cities.html">Best Cities for Vets</a>
+        <a href="https://veterancareerpath.com/military-civilian-salary.html">Salary Comparison</a>
+        <a href="https://veterancareerpath.com/security-clearance-salary.html">Clearance Salary Guide</a>
+        <a href="https://veterancareerpath.com/veteran-salary-data.html">Salary Data by MOS</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Calculators</div>
+        <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html">PCS / DITY Calculator</a>
+        <a href="https://veterancareerpath.com/military-retirement-pay-calculator.html">Retirement Pay</a>
+        <a href="https://veterancareerpath.com/gi-bill-bah-maximizer.html">GI Bill BAH</a>
+        <a href="https://veterancareerpath.com/gi-bill-vs-vre-calculator.html">GI Bill vs VR&amp;E</a>
+        <a href="https://veterancareerpath.com/gi-bill-school-comparison.html">GI Bill School Compare</a>
+      </div>
+    </div>
+    <div class="vcp-mega-col">
+      <div class="vcp-mega-col-title">🏥 VA Benefits &amp; Finance</div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">VA Disability</div>
+        <a href="https://veterancareerpath.com/va-disability-rating-schedule.html" class="featured">Disability Rating Schedule</a>
+        <a href="https://veterancareerpath.com/va-disability-rating-guide.html">Disability Rating Guide</a>
+        <a href="https://veterancareerpath.com/va-disability-claim-checklist.html">Claim Checklist</a>
+        <a href="https://veterancareerpath.com/va-disability-benefits-calculator.html">Disability Calculator</a>
+        <a href="https://veterancareerpath.com/va-benefits-checklist.html">VA Benefits Checklist</a>
+        <a href="https://veterancareerpath.com/character-discharge-upgrade.html">Discharge Upgrade</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">VA Claims &amp; Appeals</div>
+        <a href="https://veterancareerpath.com/va-claims-appeal-guide.html" class="featured">Claims Appeal Guide</a>
+        <a href="https://veterancareerpath.com/va-cp-exam-guide.html">C&amp;P Exam Guide</a>
+        <a href="https://veterancareerpath.com/va-presumptive-conditions-pact-act.html">PACT Act / Presumptive</a>
+        <a href="https://veterancareerpath.com/va-secondary-conditions-guide.html">Secondary Conditions</a>
+        <a href="https://veterancareerpath.com/va-aid-attendance-guide.html">Aid &amp; Attendance</a>
+        <a href="https://veterancareerpath.com/va-debt-overpayment-guide.html">VA Debt &amp; Overpayment</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Healthcare</div>
+        <a href="https://veterancareerpath.com/va-community-care-guide.html" class="featured">Community Care (MISSION Act)</a>
+        <a href="https://veterancareerpath.com/va-home-loan-guide.html">VA Home Loan Guide</a>
+        <a href="https://veterancareerpath.com/champva-guide.html">CHAMPVA Guide</a>
+        <a href="https://veterancareerpath.com/tricare-after-separation.html">TRICARE After Separation</a>
+        <a href="https://veterancareerpath.com/vre-chapter31-guide.html">VR&amp;E Chapter 31</a>
+        <a href="https://veterancareerpath.com/veteran-mental-health-resources.html">Mental Health Resources</a>
+        <a href="https://veterancareerpath.com/veteran-caregiver-support-guide.html">Caregiver Support</a>
+        <a href="https://veterancareerpath.com/veteran-substance-abuse-resources.html">Substance Abuse Resources</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Pay, Tax &amp; Finance</div>
+        <a href="https://veterancareerpath.com/veteran-tax-guide.html">Veteran Tax Guide</a>
+        <a href="https://veterancareerpath.com/blended-retirement-system-guide.html">Blended Retirement</a>
+        <a href="https://veterancareerpath.com/tsp-guide-for-veterans.html">TSP Guide</a>
+        <a href="https://veterancareerpath.com/sgli-vgli-guide.html">SGLI → VGLI</a>
+        <a href="https://veterancareerpath.com/survivor-benefit-plan-guide.html">Survivor Benefit Plan</a>
+        <a href="https://veterancareerpath.com/veteran-burial-benefits-guide.html">Burial &amp; Death Benefits</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Legal &amp; Records</div>
+        <a href="https://veterancareerpath.com/scra-guide-for-veterans.html">SCRA Guide</a>
+        <a href="https://veterancareerpath.com/military-divorce-guide.html">Military Divorce</a>
+        <a href="https://veterancareerpath.com/military-recall-policies.html">Recall Policies</a>
+        <a href="https://veterancareerpath.com/military-spouse-resources.html">Spouse Resources</a>
+        <a href="https://veterancareerpath.com/veteran-records-guide.html">Military Records Guide</a>
+        <a href="https://veterancareerpath.com/veteran-emergency-assistance.html">Emergency Assistance</a>
+        <a href="https://veterancareerpath.com/veteran-homeless-assistance.html" class="new">Homeless Assistance</a>
+        <a href="https://veterancareerpath.com/veteran-forms-directory.html" class="new">Forms Directory</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Education &amp; Training</div>
+        <a href="https://veterancareerpath.com/veteran-certification-roadmap.html">Certification Roadmap</a>
+        <a href="https://veterancareerpath.com/veteran-apprenticeship-guide.html">Apprenticeship Guide</a>
+        <a href="https://veterancareerpath.com/veteran-trade-school-guide.html">Trade School Guide</a>
+        <a href="https://veterancareerpath.com/training.html">Training Library</a>
+        <a href="https://veterancareerpath.com/vet-resources.html">Resources Directory</a>
+        <a href="https://veterancareerpath.com/veteran-success-stories.html">Success Stories</a>
+      </div>
+    </div>
+    <div class="vcp-mega-col">
+      <div class="vcp-mega-col-title">🗺️ States &amp; Blog</div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">State Veteran Benefits</div>
+        <a href="https://veterancareerpath.com/state-veteran-benefits.html" class="featured">All 50 States Guide</a>
+        <a href="https://veterancareerpath.com/alabama-veteran-benefits.html">Alabama</a><a href="https://veterancareerpath.com/alaska-veteran-benefits.html">Alaska</a><a href="https://veterancareerpath.com/arizona-veteran-benefits.html">Arizona</a><a href="https://veterancareerpath.com/arkansas-veteran-benefits.html">Arkansas</a><a href="https://veterancareerpath.com/california-veteran-benefits.html">California</a><a href="https://veterancareerpath.com/colorado-veteran-benefits.html">Colorado</a><a href="https://veterancareerpath.com/connecticut-veteran-benefits.html">Connecticut</a><a href="https://veterancareerpath.com/delaware-veteran-benefits.html">Delaware</a><a href="https://veterancareerpath.com/florida-veteran-benefits.html">Florida</a><a href="https://veterancareerpath.com/georgia-veteran-benefits.html">Georgia</a><a href="https://veterancareerpath.com/hawaii-veteran-benefits.html">Hawaii</a><a href="https://veterancareerpath.com/idaho-veteran-benefits.html">Idaho</a><a href="https://veterancareerpath.com/illinois-veteran-benefits.html">Illinois</a><a href="https://veterancareerpath.com/indiana-veteran-benefits.html">Indiana</a><a href="https://veterancareerpath.com/iowa-veteran-benefits.html">Iowa</a><a href="https://veterancareerpath.com/kansas-veteran-benefits.html">Kansas</a><a href="https://veterancareerpath.com/kentucky-veteran-benefits.html">Kentucky</a><a href="https://veterancareerpath.com/louisiana-veteran-benefits.html">Louisiana</a><a href="https://veterancareerpath.com/maine-veteran-benefits.html">Maine</a><a href="https://veterancareerpath.com/maryland-veteran-benefits.html">Maryland</a><a href="https://veterancareerpath.com/massachusetts-veteran-benefits.html">Massachusetts</a><a href="https://veterancareerpath.com/michigan-veteran-benefits.html">Michigan</a><a href="https://veterancareerpath.com/minnesota-veteran-benefits.html">Minnesota</a><a href="https://veterancareerpath.com/mississippi-veteran-benefits.html">Mississippi</a><a href="https://veterancareerpath.com/missouri-veteran-benefits.html">Missouri</a><a href="https://veterancareerpath.com/montana-veteran-benefits.html">Montana</a><a href="https://veterancareerpath.com/nebraska-veteran-benefits.html">Nebraska</a><a href="https://veterancareerpath.com/nevada-veteran-benefits.html">Nevada</a><a href="https://veterancareerpath.com/new-hampshire-veteran-benefits.html">New Hampshire</a><a href="https://veterancareerpath.com/new-jersey-veteran-benefits.html">New Jersey</a><a href="https://veterancareerpath.com/new-mexico-veteran-benefits.html">New Mexico</a><a href="https://veterancareerpath.com/new-york-veteran-benefits.html">New York</a><a href="https://veterancareerpath.com/north-carolina-veteran-benefits.html">North Carolina</a><a href="https://veterancareerpath.com/north-dakota-veteran-benefits.html">North Dakota</a><a href="https://veterancareerpath.com/ohio-veteran-benefits.html">Ohio</a><a href="https://veterancareerpath.com/oklahoma-veteran-benefits.html">Oklahoma</a><a href="https://veterancareerpath.com/oregon-veteran-benefits.html">Oregon</a><a href="https://veterancareerpath.com/pennsylvania-veteran-benefits.html">Pennsylvania</a><a href="https://veterancareerpath.com/rhode-island-veteran-benefits.html">Rhode Island</a><a href="https://veterancareerpath.com/south-carolina-veteran-benefits.html">South Carolina</a><a href="https://veterancareerpath.com/south-dakota-veteran-benefits.html">South Dakota</a><a href="https://veterancareerpath.com/tennessee-veteran-benefits.html">Tennessee</a><a href="https://veterancareerpath.com/texas-veteran-benefits.html">Texas</a><a href="https://veterancareerpath.com/utah-veteran-benefits.html">Utah</a><a href="https://veterancareerpath.com/vermont-veteran-benefits.html">Vermont</a><a href="https://veterancareerpath.com/virginia-veteran-benefits.html">Virginia</a><a href="https://veterancareerpath.com/washington-veteran-benefits.html">Washington</a><a href="https://veterancareerpath.com/washington-dc-veteran-benefits.html">Washington DC</a><a href="https://veterancareerpath.com/west-virginia-veteran-benefits.html">West Virginia</a><a href="https://veterancareerpath.com/wisconsin-veteran-benefits.html">Wisconsin</a><a href="https://veterancareerpath.com/wyoming-veteran-benefits.html">Wyoming</a>
+      </div>
+      <div class="vcp-mega-section">
+        <div class="vcp-mega-section-label">Blog &amp; Guides</div>
+        <a href="https://veterancareerpath.com/blog/" class="featured new">Blog — New!</a>
+        <a href="https://veterancareerpath.com/blog/what-jobs-can-a-68w-get.html">68W Civilian Careers</a>
+        <a href="https://veterancareerpath.com/blog/what-jobs-can-a-11b-get.html">11B Civilian Careers</a>
+        <a href="https://veterancareerpath.com/blog/military-resume-mistakes.html">7 Resume Mistakes</a>
+        <a href="https://veterancareerpath.com/blog/gs-grade-for-e5.html">GS Grade for E-5</a>
+        <a href="https://veterancareerpath.com/blog/va-disability-and-working.html">Work + VA Disability</a>
+        <a href="https://veterancareerpath.com/blog/security-clearance-salary-boost.html">Clearance Salary Data</a>
+        <a href="https://veterancareerpath.com/blog/skillbridge-best-programs.html">Best SkillBridge 2026</a>
+      </div>
+    </div>
+  </div>
+  <div class="vcp-mega-footer">
+    <div class="vcp-mega-footer-left"><strong>150+ pages</strong> of free veteran career resources · Built by a medically retired Army Sergeant</div>
+    <a href="https://veterancareerpath.com/app.html" class="btn-subscribe">Unlock AI Tools — $15/mo →</a>
+  </div>
+</div>
+
+<!-- ══ MOBILE MENU ══════════════════════════════════════════════════════════ -->
+<div class="vcp-mob" id="vcp-mob">
+  <div class="vcp-mob-search"><input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off"></div>
+  <div class="vcp-mob-sr" id="vcp-mob-sr"></div>
+  <a href="https://veterancareerpath.com/app.html" class="vcp-mob-cta">Career Path Tools — $15/mo</a>
+  <a href="https://veterancareerpath.com/app.html#profile" class="vcp-account-link vcp-mob-account" style="background:rgba(240,192,64,.06);border-bottom:1px solid rgba(240,192,64,.1);font-weight:600;color:#f0c040;">My Account / Login</a>
+  <span class="vcp-mob-sect">Career Tools</span>
+  <a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a><a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume Builder</a><a href="https://veterancareerpath.com/tools-interview-simulator.html">Interview Simulator</a><a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Optimizer</a><a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Negotiator</a><a href="https://veterancareerpath.com/tools-cert-advisor.html">Certification Advisor</a><a href="https://veterancareerpath.com/dd214-decoder.html">DD-214 Decoder</a><a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a><a href="https://veterancareerpath.com/federal-jobs-search.html">🔴 Live Federal Jobs</a><a href="https://veterancareerpath.com/career-assessment-full.html">Full Career Assessment</a><a href="https://veterancareerpath.com/transition-timeline-planner.html">Transition Planner</a><a href="https://veterancareerpath.com/free-assessment.html">PathFinder Lite (Free)</a>
+  <span class="vcp-mob-sect">🎖️ MOS &amp; Branch Guides</span>
+  <a href="https://veterancareerpath.com/army-mos-careers.html">Army MOS Careers</a><a href="https://veterancareerpath.com/marine-corps-mos-careers.html">Marine Corps MOS</a><a href="https://veterancareerpath.com/navy-rate-careers.html">Navy Rate Careers</a><a href="https://veterancareerpath.com/air-force-afsc-careers.html">Air Force AFSC</a><a href="https://veterancareerpath.com/coast-guard-rating-careers.html">Coast Guard</a><a href="https://veterancareerpath.com/space-force-afsc-careers.html">Space Force</a>
+  <span class="vcp-mob-sect">🏛️ Transition &amp; Federal</span>
+  <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a><a href="https://veterancareerpath.com/veteran-first-90-days-guide.html">First 90 Days Guide</a><a href="https://veterancareerpath.com/military-civilian-culture-guide.html">Civilian Culture Guide</a><a href="https://veterancareerpath.com/tap-transition-guide.html">TAP Guide</a><a href="https://veterancareerpath.com/ets-transition-checklist.html">ETS Checklist</a><a href="https://veterancareerpath.com/skillbridge-program-guide.html">SkillBridge</a><a href="https://veterancareerpath.com/usajobs-guide.html">USAJobs Guide</a><a href="https://veterancareerpath.com/veterans-preference-guide.html">Veterans' Preference</a><a href="https://veterancareerpath.com/military-to-federal-pay-chart.html">Military → GS Pay</a><a href="https://veterancareerpath.com/federal-gs-grade-estimator.html">GS Grade Estimator</a><a href="https://veterancareerpath.com/veteran-hiring-companies.html">Top 100 Employers</a>
+  <span class="vcp-mob-sect">🏥 VA Benefits &amp; Claims</span>
+  <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">Disability Rating Schedule</a><a href="https://veterancareerpath.com/va-disability-rating-guide.html">Disability Guide</a><a href="https://veterancareerpath.com/va-claims-appeal-guide.html">Claims Appeal Guide</a><a href="https://veterancareerpath.com/va-cp-exam-guide.html">C&amp;P Exam Guide</a><a href="https://veterancareerpath.com/va-presumptive-conditions-pact-act.html">PACT Act / Presumptive</a><a href="https://veterancareerpath.com/va-secondary-conditions-guide.html">Secondary Conditions</a><a href="https://veterancareerpath.com/va-community-care-guide.html">Community Care (MISSION Act)</a><a href="https://veterancareerpath.com/va-home-loan-guide.html">VA Home Loan</a><a href="https://veterancareerpath.com/veteran-tax-guide.html">Veteran Tax Guide</a>
+  <span class="vcp-mob-sect">📝 Blog &amp; Resources</span>
+  <a href="https://veterancareerpath.com/blog/">Blog — All Articles</a><a href="https://veterancareerpath.com/vet-resources.html">Resources Directory</a><a href="https://veterancareerpath.com/veteran-success-stories.html">Success Stories</a><a href="https://veterancareerpath.com/contact.html">Contact</a>
+  <span class="vcp-mob-sect">🗺️ State Benefits</span>
+  <a href="https://veterancareerpath.com/state-veteran-benefits.html">All 50 States Guide</a>
+</div>
+
+<script id="vcp-nav-js">
+(function(){var menuBtn=document.getElementById('vcp-menu-btn');var mega=document.getElementById('vcp-mega');var ham=document.getElementById('vcp-ham');var mob=document.getElementById('vcp-mob');var si=document.getElementById('vcp-si');var sr=document.getElementById('vcp-sr');var msi=document.getElementById('vcp-mob-si');var msr=document.getElementById('vcp-mob-sr');function closeAll(){mega&&mega.classList.remove('open');menuBtn&&menuBtn.classList.remove('active');menuBtn&&menuBtn.setAttribute('aria-expanded','false');ham&&ham.classList.remove('open');mob&&mob.classList.remove('open');document.body.classList.remove('menu-open');}function closeSearch(){sr&&sr.classList.remove('open');msr&&msr.classList.remove('open');}if(menuBtn&&mega){menuBtn.addEventListener('click',function(e){e.stopPropagation();var isOpen=mega.classList.contains('open');closeAll();if(!isOpen){mega.classList.add('open');menuBtn.classList.add('active');menuBtn.setAttribute('aria-expanded','true');document.body.classList.add('menu-open');}});mega.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeAll);});}if(ham&&mob){ham.addEventListener('click',function(e){e.stopPropagation();var isOpen=mob.classList.contains('open');closeAll();if(!isOpen){mob.classList.add('open');ham.classList.add('open');document.body.classList.add('menu-open');}});}document.addEventListener('click',function(e){var inside=false;[menuBtn,mega,ham,mob,si,sr,msi,msr].forEach(function(n){if(n&&n.contains(e.target))inside=true;});if(!inside){closeAll();closeSearch();}});document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeAll();closeSearch();}});var IDX=null,IDX_LOADING=false,IDX_CBS=[];var SIDX='https://veterancareerpath.com/search_index.json';function loadIdx(cb){if(IDX){cb(IDX);return;}IDX_CBS.push(cb);if(IDX_LOADING)return;IDX_LOADING=true;fetch(SIDX).then(function(r){return r.json();}).then(function(d){IDX=d;IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];}).catch(function(){IDX=[];IDX_CBS.forEach(function(f){f(IDX);});IDX_CBS=[];});}function doSearch(idx,q){var terms=q.toLowerCase().replace(/[^a-z0-9 ]/g,' ').trim().split(' ').filter(function(t){return t.length>1;});if(!terms.length)return[];var out=[];for(var i=0;i<idx.length;i++){var p=idx[i];var kw=(p.keywords||'').toLowerCase();var haystack=(p.title+' '+p.desc+' '+kw+' '+p.text).toLowerCase();var score=0,miss=false;for(var j=0;j<terms.length;j++){var t=terms[j],tc=0,pos=0;while((pos=haystack.indexOf(t,pos))>=0){tc++;pos++;}if(!tc){miss=true;break;}var ttc=0,tpos=0,tl=p.title.toLowerCase();while((tpos=tl.indexOf(t,tpos))>=0){ttc++;tpos++;}score+=ttc*20+tc*1;}if(miss||!score)continue;var snip='',body=p.text||'',fp=body.toLowerCase().indexOf(terms[0]);if(fp>=0){var s=Math.max(0,fp-50),e=Math.min(body.length,fp+terms[0].length+80);snip=(s>0?'…':'')+body.slice(s,e).replace(/[<>]/g,'')+(e<body.length?'…':'');}else{snip=(p.desc||'').slice(0,120);}for(var k=0;k<terms.length;k++){snip=snip.replace(new RegExp('('+terms[k]+')','gi'),'<em>$1</em>');}out.push({url:p.url,title:p.title,snip:snip,score:score});}out.sort(function(a,b){return b.score-a.score;});return out.slice(0,12);}function renderSR(results,q,container,isMob){if(!results.length){container.innerHTML='<div class="vcp-sr-none">No results for "'+q+'"</div>';container.classList.add('open');return;}var h='<div class="vcp-sr-header">'+results.length+' results for "'+q+'"</div>';h+=results.map(function(r){if(isMob)return'<a href="'+r.url+'"><div class="vcp-mob-sr-title">'+r.title+'</div><div class="vcp-mob-sr-snip">'+r.snip+'</div></a>';return'<a class="vcp-sr-item" href="'+r.url+'"><div class="vcp-sr-title">'+r.title+'</div><div class="vcp-sr-snippet">'+r.snip+'</div></a>';}).join('');container.innerHTML=h;container.classList.add('open');}var dt=null;function onInput(input,container,isMob){clearTimeout(dt);var q=input.value.trim();if(q.length<2){container.classList.remove('open');container.innerHTML='';return;}container.innerHTML='<div class="vcp-sr-loading">Searching…</div>';container.classList.add('open');dt=setTimeout(function(){loadIdx(function(idx){renderSR(doSearch(idx,q),q,container,isMob);});},220);}if(si&&sr){si.addEventListener('input',function(){onInput(si,sr,false);});si.addEventListener('keydown',function(e){if(e.key==='Escape'){closeSearch();this.blur();}if(e.key==='Enter'){var f=sr.querySelector('.vcp-sr-item');if(f)window.location.href=f.href;}});si.addEventListener('focus',function(){loadIdx(function(){});});}if(msi&&msr){msi.addEventListener('input',function(){onInput(msi,msr,true);});msi.addEventListener('keydown',function(e){if(e.key==='Enter'){var f=msr.querySelector('a');if(f)window.location.href=f.href;}});}if(menuBtn)menuBtn.addEventListener('mouseenter',function(){loadIdx(function(){});});if(ham)ham.addEventListener('mouseenter',function(){loadIdx(function(){});});try{var acc=JSON.parse(localStorage.getItem("vcb_access")||"{}");var isSub=(acc.type==="paid"&&acc.stripeSession&&acc.expiry>Date.now())||(acc.type==="code"&&acc.code);if(isSub){var cta=document.querySelector('.vcp-cta-link');if(cta)cta.textContent='AI Tools';var megaFootBtn=document.querySelector('.btn-subscribe');if(megaFootBtn)megaFootBtn.textContent='Open AI Tools →';}}catch(e){}try{var _acc=JSON.parse(localStorage.getItem('vcb_access')||'{}');var _isSub=(_acc.type==='paid'&&_acc.stripeSession&&_acc.expiry>Date.now())||(_acc.type==='code'&&_acc.code);if(_isSub){document.querySelectorAll('.vcp-cta-link').forEach(function(el){el.textContent='AI Tools';el.style.background='linear-gradient(135deg,#1a7a40,#22c55e)';});document.querySelectorAll('.btn-subscribe').forEach(function(el){el.textContent='Open AI Tools \u2192';});document.querySelectorAll('.vcp-mob-cta').forEach(function(el){el.textContent='Career Path Tools';});}var _user=null;try{_user=JSON.parse(localStorage.getItem('vcb_profile')||'null');}catch(ee){}if(!_user)try{_user=JSON.parse(localStorage.getItem('vcp_pf_user')||'null');}catch(ee){}document.querySelectorAll('.vcp-account-link').forEach(function(el){if(_user&&_user.name){el.textContent=_user.name.split(' ')[0];el.style.color='#f0c040';}else if(_isSub){el.style.color='#f0c040';}});}catch(e){}})();
+</script>
+
+<div class="article-wrap">
+  <div class="article-header">
+    <div class="article-cat">VA Benefits · Guide</div>
+    <h1>VA Disability Ratings Explained: How the VA Calculates Your Rating</h1>
+    <div class="article-meta">By Veteran Career Path · April 24, 2026 · 14 min read</div>
+    <p class="article-intro">The VA doesn't add your disability percentages like normal math. A 50% and a 30% rating doesn't give you 80%. It gives you 65%. Welcome to "VA math" — the combined ratings system that confuses nearly every veteran who deals with it. This guide breaks down exactly how it works, with real examples, the bilateral factor, TDIU, and what each rating level means for your monthly compensation.</p>
+  </div>
+
+  <!-- AdSense -->
+
+  <div class="article-body">
+    <h2>Why VA Math Exists (and Why It's Not a Scam)</h2>
+<p>Before you get angry at the math, understand the logic. The VA's combined rating system is based on the idea that each disability reduces your remaining "whole person" efficiency. If you've already lost 50% of your body's function to one condition, the next condition can only affect the remaining 50%. This is codified in 38 CFR 4.25 and has been the standard since 1945.</p>
+<p>Is it fair? That's debatable. But understanding how it works is critical because it determines whether you're getting $171.23/month (10%) or $3,737.85/month (100%) in 2026 compensation rates. The difference between a 90% combined rating and 100% is over $1,500/month. That's $18,000+ per year — enough to change your entire financial situation.</p>
+
+<h2>The Combined Ratings Formula: Step by Step</h2>
+<p>Here's the actual formula the VA uses. No shortcuts, no tricks — just the math.</p>
+<ol>
+<li><strong>Start with your highest-rated disability.</strong> This is your base.</li>
+<li><strong>Apply each subsequent disability to the REMAINING percentage.</strong> Not to the original 100%.</li>
+<li><strong>Round the final combined value to the nearest 10%.</strong> This is your official rating.</li>
+</ol>
+
+<h3>Example: Two Disabilities (50% + 30%)</h3>
+<p>Start at 100% whole person. Apply the 50% disability first: 100 - 50 = 50% remaining efficiency. Now apply the 30% disability to the remaining 50%: 50 x 0.30 = 15. So 50 - 15 = 35% remaining. Your combined disability is 100 - 35 = 65%. Rounded to the nearest 10% = <strong>70% official rating</strong>.</p>
+
+<h3>Example: Three Disabilities (50% + 30% + 20%)</h3>
+<p>Start at 100%. Apply 50%: remaining = 50%. Apply 30% to remaining 50%: 50 x 0.30 = 15, remaining = 35%. Apply 20% to remaining 35%: 35 x 0.20 = 7, remaining = 28%. Combined = 100 - 28 = 72%. Rounded = <strong>70% official rating</strong>.</p>
+
+<h3>Example: Four Disabilities (40% + 30% + 20% + 10%)</h3>
+<p>Start at 100%. Apply 40%: remaining = 60%. Apply 30%: 60 x 0.30 = 18, remaining = 42%. Apply 20%: 42 x 0.20 = 8.4, remaining = 33.6%. Apply 10%: 33.6 x 0.10 = 3.36, remaining = 30.24%. Combined = 100 - 30.24 = 69.76%. Rounded = <strong>70% official rating</strong>.</p>
+
+<div class="callout">
+<div class="callout-title">The Rounding Rule That Can Make or Break You</div>
+<p>The VA rounds your combined value to the nearest 10%. That means 65% rounds up to 70%, but 64% rounds DOWN to 60%. This is why veterans obsess over getting that one extra condition rated — a 10% rating added to your existing conditions can push you across a rounding threshold worth hundreds of dollars per month.</p>
+</div>
+
+<h2>2026 VA Disability Compensation Rates (Veteran Alone, No Dependents)</h2>
+
+<table>
+<thead><tr><th>Combined Rating</th><th>Monthly Payment</th><th>Annual Payment</th><th>Key Benefits Unlocked</th></tr></thead>
+<tbody>
+<tr><td>10%</td><td>$171.23</td><td>$2,054.76</td><td>VA healthcare Priority Group 1-6</td></tr>
+<tr><td>20%</td><td>$338.49</td><td>$4,061.88</td><td>Same as 10%</td></tr>
+<tr><td>30%</td><td>$524.31</td><td>$6,291.72</td><td>+ Dependent allowances begin</td></tr>
+<tr><td>40%</td><td>$755.28</td><td>$9,063.36</td><td>+ Higher dependent rates</td></tr>
+<tr><td>50%</td><td>$1,075.16</td><td>$12,901.92</td><td>+ CHAMPVA for dependents</td></tr>
+<tr><td>60%</td><td>$1,361.88</td><td>$16,342.56</td><td>+ Additional dependent rates</td></tr>
+<tr><td>70%</td><td>$1,716.28</td><td>$20,595.36</td><td>+ Property tax exemptions (many states)</td></tr>
+<tr><td>80%</td><td>$1,995.01</td><td>$23,940.12</td><td>+ Many state benefits unlock</td></tr>
+<tr><td>90%</td><td>$2,241.91</td><td>$26,902.92</td><td>+ Most state exemptions</td></tr>
+<tr><td>100%</td><td>$3,737.85</td><td>$44,854.20</td><td>+ Full property tax exempt (most states), CHAMPVA, Ch. 35 DEA</td></tr>
+</tbody>
+</table>
+
+<p>Notice the massive jump from 90% to 100% — it's nearly $1,500/month more. This is because 100% P&T (Permanent and Total) unlocks a separate tier of benefits including Chapter 35 Dependents Educational Assistance ($1,298/month for dependents), CHAMPVA healthcare for your spouse and kids, and full property tax exemptions in most states. That 100% rating isn't just about the monthly check — it's about the total benefit package worth $60,000–$80,000+ annually when you factor in healthcare, education, and tax benefits.</p>
+
+<h2>The Bilateral Factor: Your Secret Weapon</h2>
+<p>The bilateral factor is one of the most underutilized aspects of VA disability math, and it can bump your rating by 1-3 percentage points — which might be enough to cross a rounding threshold.</p>
+<p>Here's how it works: when you have disabilities affecting both paired extremities (both knees, both shoulders, both ankles, both wrists, etc.), the VA first combines all the bilateral conditions, then adds 10% of that combined value as a bonus.</p>
+
+<h3>Bilateral Factor Example</h3>
+<p>Right knee: 20%. Left knee: 10%. Right ankle: 10%. Combined bilateral value: Start with 20%, apply 10% to remaining 80% = 8%, remaining 72%. Apply 10% to 72% = 7.2%, remaining 64.8%. Bilateral combined = 35.2%. Now add the bilateral factor: 35.2 x 0.10 = 3.52. Bilateral total = 35.2 + 3.52 = 38.72%. This 38.72% is then combined with your non-bilateral conditions using the standard formula.</p>
+<p>Without the bilateral factor, those three conditions would combine to 35.2%. With it, they combine to 38.72%. That 3.52% bonus could be the difference between rounding to 80% versus 90% when combined with your other rated conditions.</p>
+
+<h2>TDIU: Getting Paid at 100% Without a 100% Rating</h2>
+<p>Total Disability based on Individual Unemployability (TDIU) is the path to 100% pay rates when your combined rating is less than 100%. There are two types:</p>
+
+<h3>Schedular TDIU (38 CFR 4.16a)</h3>
+<p>You qualify if you have one service-connected disability rated at 60% or more, OR a combined rating of 70% or more with at least one condition rated at 40% or higher. You must also be unable to secure or maintain "substantially gainful employment" due to your service-connected disabilities. "Substantially gainful" is generally defined as earning above the poverty threshold — in 2026, that's roughly $15,060 per year.</p>
+<p>TDIU pays you at the 100% rate ($3,737.85/month in 2026), and you're eligible for most benefits that 100% schedular veterans receive. However, TDIU alone does not automatically grant Chapter 35 DEA benefits for dependents — you need to be rated P&T (permanent and total) for that, which your VSO or attorney can request.</p>
+
+<h3>Extraschedular TDIU (38 CFR 4.16b)</h3>
+<p>If you don't meet the schedular threshold but can still prove your service-connected conditions prevent you from working, you can apply for extraschedular TDIU. These claims are referred to the VA's Director of Compensation Service for review. They're harder to win but not impossible. A veteran with a single 40% PTSD rating who can document that their symptoms prevent them from maintaining employment can potentially get extraschedular TDIU.</p>
+
+<h2>Common Mistakes Veterans Make With Their Ratings</h2>
+
+<h3>Not Filing for Secondary Conditions</h3>
+<p>A secondary condition is a disability caused or aggravated by an already service-connected condition. If your service-connected knee injury caused you to develop a limp, which then caused hip problems, that hip condition is a secondary claim. Common secondary conditions include: sleep apnea secondary to PTSD, radiculopathy secondary to back conditions, GERD secondary to medications for service-connected conditions, and depression secondary to chronic pain. Each secondary condition adds to your combined rating.</p>
+
+<h3>Not Understanding the Rounding Threshold</h3>
+<p>If your combined value before rounding is 74.5%, you round to 70%. If it's 75.0%, you round to 80%. Adding a single 10% condition can push you over. Before filing a new claim, calculate your current combined value (before rounding) using the VA's combined ratings table or our <a href="https://veterancareerpath.com/va-disability-benefits-calculator.html">VA Disability Calculator</a> to see if adding a condition would actually change your official rating.</p>
+
+<h3>Accepting the First Rating Without Appeal</h3>
+<p>The VA denies or underrates initial claims frequently. You have one year from your rating decision to file a Supplemental Claim, Higher-Level Review, or Board Appeal. The Higher-Level Review is often the fastest — a senior rater reviews your file without requiring new evidence and can correct clear errors. Average processing time for HLR in 2026 is 125 days vs. 175+ for Supplemental Claims.</p>
+
+<h3>Not Getting an Independent Medical Opinion</h3>
+<p>If your C&P exam resulted in a lower rating than you believe is accurate, an Independent Medical Opinion (IMO) from a private doctor who specializes in VA disability evaluations can provide the nexus evidence or severity documentation the VA needs. IMOs typically cost $1,500–$3,000 but can be worth tens of thousands in increased monthly compensation over your lifetime.</p>
+
+<h2>Permanent and Total (P&T) vs. Standard 100%</h2>
+<p>Not all 100% ratings are created equal. A "static" 100% rating means the VA doesn't expect your conditions to improve and won't schedule future re-evaluations. A 100% rating that isn't marked as static may require periodic C&P re-exams, and the VA could reduce your rating if they determine your conditions have improved.</p>
+<p>P&T status unlocks the full slate of benefits: Chapter 35 DEA for dependents ($1,298/month in 2026), CHAMPVA healthcare for your family, property tax exemptions in nearly every state, free or reduced hunting/fishing licenses, commissary and exchange privileges, and Space-A travel. Check your rating decision letter or eBenefits/VA.gov to see if your rating includes "permanent" designation.</p>
+
+<h2>How to Check and Challenge Your Combined Rating</h2>
+<p>Log into VA.gov and check your rating decision letter. It will list each service-connected condition, its individual rating, and your combined rating. Run the combined ratings math yourself using the formula above or our calculator. If the VA's math doesn't match, you may have grounds for a clear and unmistakable error (CUE) claim.</p>
+<p>If you believe specific conditions are rated too low, gather evidence: medical records showing worsening symptoms, buddy statements from fellow veterans or family members who can document your limitations, and records of any ER visits or hospitalizations related to your conditions. Then file for an increase. You can file for a rating increase at any time — there's no limit on how many times you can claim your condition has worsened.</p>
+
+<h2>Bottom Line: Know Your Math, Know Your Benefits</h2>
+<p>Understanding VA math isn't just an academic exercise. It directly determines how much money you receive every month for the rest of your life. A veteran who understands the combined ratings formula, the bilateral factor, secondary conditions, and TDIU is in a vastly better position to advocate for the rating they deserve.</p>
+<p>If you're filing a claim or considering an appeal, use our <a href="https://veterancareerpath.com/va-claim-builder.html">VA Claim Builder</a> to organize your evidence and build a stronger case. And never file without talking to an accredited VSO (Veterans Service Organization) — they're free, and they've seen thousands of cases like yours.</p>
+  </div>
+
+  <!-- Mid-article AdSense -->
+
+  <div class="cta-inline">
+    <h3>Calculate Your VA Rating</h3>
+    <p>Use our VA Disability Calculator to see your combined rating and monthly compensation estimate.</p>
+    <a href="https://veterancareerpath.com/va-disability-benefits-calculator.html" class="btn-gold">Open VA Disability Calculator →</a>
+  </div>
+
+  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:#1a3a6b;margin:1.5rem 0 .75rem">Related Articles</h2>
+  <div class="related-grid">
+    <a class="related-card" href="https://veterancareerpath.com/va-disability-rating-schedule.html">
+      <div class="related-card-cat">VA Benefits</div>
+      <div class="related-card-title">VA Disability Rating Schedule</div>
+    </a>
+    <a class="related-card" href="https://veterancareerpath.com/va-claims-appeal-guide.html">
+      <div class="related-card-cat">VA Claims</div>
+      <div class="related-card-title">VA Claims Appeal Guide</div>
+    </a>
+    <a class="related-card" href="https://veterancareerpath.com/va-presumptive-conditions-pact-act.html">
+      <div class="related-card-cat">PACT Act</div>
+      <div class="related-card-title">PACT Act Presumptive Conditions</div>
+    </a>
+  </div>
+</div>
+<script src="/vcp-components.js"></script>
+<script defer src="/vcp-scout.js"></script>
+</body>
+</html>

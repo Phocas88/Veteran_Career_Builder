@@ -1,8 +1,14 @@
 # VCP Proxy Server-Side Security Setup
 
 ## Overview
-The paywall has been hardened on the client side. To complete the security fix,
-you need to deploy two new API endpoints to your Vercel proxy (`vcp-proxy`).
+The paywall has been hardened with rate limiting, input validation, and
+proper CORS. Deploy these endpoints to your Vercel proxy (`vcp-proxy`).
+
+## Security Features (Added 2026-05-11)
+- **Rate limiting**: 5 req/min for code validation, 3 req/min for subscriptions
+- **Input validation**: Code format enforcement (alphanumeric, 4-30 chars)
+- **CORS**: Scoped to veterancareerpath.com and www.veterancareerpath.com
+- **Expiry fix**: One-time charge access calculated from charge date, not verification time
 
 ## Files to Deploy
 Copy these files to your `vcp-proxy` Vercel project's `api/` directory:

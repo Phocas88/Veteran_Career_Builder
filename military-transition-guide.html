@@ -10,7 +10,7 @@
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
-<style>
+<style>.vcp-skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;z-index:99999;text-decoration:none;transition:top .2s;}.vcp-skip-link:focus{top:0;}
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--navy:#1a3a6b;--gold:#f0c040;--dark:#0a1628;--light:#f0f4fa;}
 body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#fff;line-height:1.7;}
@@ -409,7 +409,8 @@ body.menu-open{overflow:hidden!important;}
 </style>
 
 <!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
-<nav class="vcp-nav">
+<a href="#main-content" class="vcp-skip-link">Skip to main content</a>
+<nav class="vcp-nav" aria-label="Main navigation">
   <a href="https://veterancareerpath.com" class="vcp-logo">
     <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28">
     <span class="vcp-logo-text">Veteran Career Path</span>
@@ -1158,7 +1159,7 @@ body.menu-open{overflow:hidden!important;}
   <a href="#guide" class="btn-ghost">Read the Guide</a>
 </section>
 
-<div class="content" id="guide">
+<div id="main-content" class="content" id="guide">
   <h2>The Military to Civilian Transition Timeline</h2>
   <p>The biggest mistake veterans make is starting too late. Career transition is not a two-week process. It is a 12 to 18 month process that requires action on multiple fronts simultaneously. Here is what the ideal timeline looks like.</p>
 
@@ -1307,5 +1308,6 @@ body.menu-open{overflow:hidden!important;}
 </footer>
 <script src="/vcp-components.js"></script>
 <script defer src="/vcp-scout.js"></script>
+<script defer src="/vcp-errors.js"></script>
 </body>
 </html>

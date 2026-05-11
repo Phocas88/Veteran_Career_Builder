@@ -25,7 +25,7 @@
     });
     window.db = firebase.firestore();
   }catch(e){ window.db = null; console.warn('Firebase not configured'); }
-</script><style id="vcp-nav-css">
+</script><style id="vcp-nav-css">.vcp-skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;z-index:99999;text-decoration:none;transition:top .2s;}.vcp-skip-link:focus{top:0;}
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
 body.menu-open{overflow:hidden!important;}
@@ -304,7 +304,8 @@ body.menu-open{overflow:hidden!important;}
 </style>
 
 <!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
-<nav class="vcp-nav">
+<a href="#main-content" class="vcp-skip-link">Skip to main content</a>
+<nav class="vcp-nav" aria-label="Main navigation">
   <a href="https://veterancareerpath.com" class="vcp-logo">
     <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28">
     <span class="vcp-logo-text">Veteran Career Path</span>
@@ -1092,7 +1093,7 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
 </script>
 </head>
 <body>
-<div class="hero">
+<div id="main-content" class="hero">
   <div class="hero-badge">💰 Crowdsourced · Anonymous · Real Veterans</div>
   <h1>Veteran Salary Data<br><em>by MOS & Career Field</em></h1>
   <p>What do veterans with your MOS actually earn in the civilian world? Real data submitted anonymously by veterans — not BLS averages that ignore clearance premiums or military-specific skills.</p>
@@ -1458,5 +1459,6 @@ submitSalary = function() {
 </script>
 <script src="/vcp-components.js"></script>
 <script defer src="/vcp-scout.js"></script>
+<script defer src="/vcp-errors.js"></script>
 </body>
 </html>

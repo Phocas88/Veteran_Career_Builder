@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
-<style id="vcp-nav-css">
+<style id="vcp-nav-css">.vcp-skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;z-index:99999;text-decoration:none;transition:top .2s;}.vcp-skip-link:focus{top:0;}
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
 body.menu-open{overflow:hidden!important;}
@@ -290,7 +290,8 @@ body.menu-open{overflow:hidden!important;}
 </style>
 
 <!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
-<nav class="vcp-nav">
+<a href="#main-content" class="vcp-skip-link">Skip to main content</a>
+<nav class="vcp-nav" aria-label="Main navigation">
   <a href="https://veterancareerpath.com" class="vcp-logo">
     <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28">
     <span class="vcp-logo-text">Veteran Career Path</span>
@@ -1195,7 +1196,7 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
 </script>
 </head>
 <body>
-<div class="hero">
+<div id="main-content" class="hero">
   <div class="hero-badge">Veteran Job Search Hub -- 5 Platforms, One Search</div>
   <h1>Veteran Job<br><em>Search Hub</em></h1>
   <p>Search federal, defense, and civilian jobs across multiple platforms at once. All filters pre-applied for veteran hiring preference. Paste any job URL for an AI-powered match analysis.</p>
@@ -2071,5 +2072,6 @@ document.addEventListener("DOMContentLoaded", function(){
 </script>
 <script src="/vcp-components.js"></script>
 <script defer src="/vcp-scout.js"></script>
+<script defer src="/vcp-errors.js"></script>
 </body>
 </html>

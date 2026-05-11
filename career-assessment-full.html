@@ -56,7 +56,7 @@ try{
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
-<style>
+<style>.vcp-skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;z-index:99999;text-decoration:none;transition:top .2s;}.vcp-skip-link:focus{top:0;}
 /* ── RESET & VARIABLES ───────────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -383,7 +383,8 @@ a:hover{color:var(--gold);}
 </div>
 
 <!-- TOPBAR -->
-<nav class="topbar no-print" style="background:#08111e;padding:0 4%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:2000;border-bottom:1px solid rgba(240,192,64,.15);height:56px;gap:.5rem;">
+<a href="#main-content" class="vcp-skip-link">Skip to main content</a>
+<nav class="topbar no-print" style="background:#08111e;padding:0 4%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:2000;border-bottom:1px solid rgba(240,192,64,.15);height:56px;gap:.5rem;" aria-label="Main navigation">
   <a href="https://veterancareerpath.com" style="display:flex;align-items:center;gap:.55rem;text-decoration:none;flex-shrink:0;">
     <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28" style="object-fit:contain;">
     <span style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.12em;color:#f0c040;">Veteran Career Path</span>
@@ -3187,5 +3188,6 @@ function loadSharedResult(resultId) {
 </script>
 <script src="/vcp-components.js"></script>
 <script defer src="/vcp-scout.js"></script>
+<script defer src="/vcp-errors.js"></script>
 </body>
 </html>

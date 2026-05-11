@@ -33,6 +33,16 @@
 <style id="vcp-nav-css">
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
+
+/* ── SKIP LINK (Accessibility) ── */
+.vcp-skip-link{
+  position:absolute;top:-100%;left:50%;transform:translateX(-50%);
+  background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;
+  font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;
+  z-index:99999;text-decoration:none;
+  transition:top .2s;
+}
+.vcp-skip-link:focus{top:0;}
 body.menu-open{overflow:hidden!important;}
 
 /* ── NAV BAR ── */
@@ -308,10 +318,13 @@ body.menu-open{overflow:hidden!important;}
 }
 </style>
 
+<!-- ══ SKIP NAV (Accessibility) ════════════════════════════════════════════ -->
+<a href="#main-content" class="vcp-skip-link">Skip to main content</a>
+
 <!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
-<nav class="vcp-nav">
+<nav class="vcp-nav" aria-label="Main navigation">
   <a href="https://veterancareerpath.com" class="vcp-logo">
-    <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28">
+    <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28" fetchpriority="high">
     <span class="vcp-logo-text">Veteran Career Path</span>
   </a>
 
@@ -1310,11 +1323,11 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
 <body>
 
 <!-- ═══ NEW VISITOR WELCOME POPUP ═══════════════════════════════════════════ -->
-<div id="vcp-welcome-popup" style="display:none;position:fixed;inset:0;background:rgba(8,16,32,.85);backdrop-filter:blur(6px);z-index:10000;display:none;align-items:center;justify-content:center;padding:1rem;">
+<div id="vcp-welcome-popup" role="dialog" aria-modal="true" aria-labelledby="wp-title" style="display:none;position:fixed;inset:0;background:rgba(8,16,32,.85);backdrop-filter:blur(6px);z-index:10000;display:none;align-items:center;justify-content:center;padding:1rem;">
   <div style="background:#fff;border-radius:16px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;">
     <div style="background:linear-gradient(135deg,#0d1f3c,#1a3a6b);padding:1.5rem;text-align:center;">
       <img src="https://veterancareerpath.com/logo.png" alt="VCP" width="48" height="48" loading="lazy" style="margin-bottom:.5rem;object-fit:contain;">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#f0c040;">Welcome to Veteran Career Path</div>
+      <div id="wp-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#f0c040;">Welcome to Veteran Career Path</div>
       <div style="font-size:.82rem;color:rgba(192,216,240,.65);margin-top:.25rem;">800+ free resources built for veterans like you</div>
     </div>
     <div style="padding:1.25rem;">
@@ -1410,6 +1423,7 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
 <div id="vcp-landing">
 
 <!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
+<main id="main-content">
 <section class="hero">
   <div class="hero-content">
     <div class="hero-badge">🎖 Built by a Retired Army Sergeant · For Every Veteran</div>
@@ -1768,7 +1782,8 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
 
 </div><!-- /vcp-landing -->
 
-<!-- ═══ FOOTER ════════════════════════════════════════════════════════════════ -->
+</main>
+<!-- ═══ FOOTER ══════════════════��═════════════════════════════════════════════ -->
 <footer>
   <div class="footer-grid">
     <div>
@@ -2020,5 +2035,6 @@ function vcp_subscribeEmail(emailInputId,msgId){
 }
 </script>
 <script defer src="/vcp-scout.js"></script>
+<script defer src="/vcp-errors.js"></script>
 </body>
 </html>

@@ -1,22 +1,46 @@
 {
   "name": "Veteran Career Path",
   "short_name": "VetCareerPath",
-  "description": "The complete platform for veterans and transitioning service members",
+  "description": "The most comprehensive free platform for veterans. MOS translators, VA disability calculators, career assessments, resume builders, and state-by-state benefits.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#060d1a",
+  "background_color": "#050d18",
   "theme_color": "#0a1628",
   "orientation": "portrait-primary",
   "icons": [
-    { "src": "/logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/logo.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "Career Assessment", "url": "/veteran-career-test.html", "description": "Free career assessment" },
-    { "name": "VA Disability Calc", "url": "/va-disability-rating-schedule.html", "description": "VA disability calculator" },
-    { "name": "MOS Translator", "url": "/mos-career-translator.html", "description": "Translate your MOS" },
-    { "name": "AI Career Builder", "url": "/app.html", "description": "AI-powered career tools" }
+    {
+      "name": "Career Assessment",
+      "short_name": "Assessment",
+      "url": "/veteran-career-test.html",
+      "description": "Discover your ideal post-military career path",
+      "icons": [{ "src": "/logo.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "MOS Translator",
+      "short_name": "MOS",
+      "url": "/mos-career-translator.html",
+      "description": "Translate your military job code to civilian careers"
+    },
+    {
+      "name": "VA Disability Calculator",
+      "short_name": "VA Calc",
+      "url": "/va-disability-rating-schedule.html",
+      "description": "Calculate your combined VA disability rating"
+    },
+    {
+      "name": "AI Career Builder",
+      "short_name": "AI Tools",
+      "url": "/app.html",
+      "description": "AI-powered resume builder, interview prep, and career matching"
+    }
   ],
-  "categories": ["education", "utilities"],
-  "lang": "en-US"
+  "categories": ["education", "productivity", "utilities"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false
 }

@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
-<style>
+<style>.vcp-skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;z-index:99999;text-decoration:none;transition:top .2s;}.vcp-skip-link:focus{top:0;}
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--navy:#0d1f3c;--navy2:#1a3a6b;--gold:#f0c040;--gold2:#c8960a;--dim:#6a8090;--light:#f0f4fa;}
 body{font-family:'DM Sans',sans-serif;color:#e8e4de;background:#050d18;line-height:1.8;}
@@ -322,7 +322,8 @@ body.menu-open{overflow:hidden!important;}
 </style>
 
 <!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
-<nav class="vcp-nav">
+<a href="#main-content" class="vcp-skip-link">Skip to main content</a>
+<nav class="vcp-nav" aria-label="Main navigation">
   <a href="https://veterancareerpath.com" class="vcp-logo">
     <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28">
     <span class="vcp-logo-text">Veteran Career Path</span>
@@ -1056,7 +1057,7 @@ body.menu-open{overflow:hidden!important;}
 })();
 </script>
 
-<section class="hero">
+<section id="main-content" class="hero">
   <h1>About <span>Veteran Career Path</span></h1>
   <p class="hero-sub">A veteran-founded platform built to close the gap between military service and civilian success — because TAP alone is not enough.</p>
 </section>
@@ -1173,5 +1174,6 @@ body.menu-open{overflow:hidden!important;}
 
 <script src="/vcp-components.js"></script>
 <script defer src="/vcp-scout.js"></script>
+<script defer src="/vcp-errors.js"></script>
 </body>
 </html>

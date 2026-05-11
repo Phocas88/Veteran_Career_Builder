@@ -10,7 +10,7 @@
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
-<style>
+<style>.vcp-skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;z-index:99999;text-decoration:none;transition:top .2s;}.vcp-skip-link:focus{top:0;}
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--navy:#1a3a6b;--gold:#f0c040;--dark:#0a1628;--light:#f0f4fa;}
 body{font-family:'Inter',sans-serif;color:#1a2a3a;background:#fff;line-height:1.7;}
@@ -365,7 +365,8 @@ body.menu-open{overflow:hidden!important;}
 </style>
 
 <!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
-<nav class="vcp-nav">
+<a href="#main-content" class="vcp-skip-link">Skip to main content</a>
+<nav class="vcp-nav" aria-label="Main navigation">
   <a href="https://veterancareerpath.com" class="vcp-logo">
     <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28">
     <span class="vcp-logo-text">Veteran Career Path</span>
@@ -1114,7 +1115,7 @@ body.menu-open{overflow:hidden!important;}
   <a href="#templates" class="btn-ghost">See Templates</a>
 </section>
 
-<div class="content" id="templates">
+<div id="main-content" class="content" id="templates">
   <h2>Why Military Resumes Fail and How to Fix Them</h2>
   <p>There are three reasons most veteran resumes get rejected before a human ever sees them.</p>
   <p>First: military jargon. Terms like NCO, NCOIC, OIC, MOS, AFSC, TDY, and PCS mean nothing to a civilian Applicant Tracking System. The ATS filters your resume out before it reaches a recruiter.</p>
@@ -1211,6 +1212,7 @@ body.menu-open{overflow:hidden!important;}
 </div>
 </footer><script src="/vcp-components.js"></script>
 <script defer src="/vcp-scout.js"></script>
+<script defer src="/vcp-errors.js"></script>
 </body>
 </html>
 <script>(function(){var btn=document.getElementById("hamburger-btn");var menu=document.getElementById("mobile-menu");if(!btn||!menu)return;btn.addEventListener("click",function(){btn.classList.toggle("open");menu.classList.toggle("open");});menu.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){btn.classList.remove("open");menu.classList.remove("open");});});document.addEventListener("click",function(e){if(!btn.contains(e.target)&&!menu.contains(e.target)){btn.classList.remove("open");menu.classList.remove("open");}});})();</script>

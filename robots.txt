@@ -22,7 +22,31 @@ Disallow: /va-disability-benefits-calculator.html
 Disallow: /affiliate/
 Disallow: /training/
 
+# Block data files and utility scripts
+Disallow: /search_index.json
+Disallow: /app-data.js
+Disallow: /vcp-careers-db.js
+Disallow: /vcp-military-data.js
+Disallow: /vcp-mos-data.js
+Disallow: /image-brief.csv
+
 # Block backup files
 Disallow: /*.bak$
+
+# Specific bot rules (AI scrapers)
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
 
 Sitemap: https://veterancareerpath.com/sitemap.xml

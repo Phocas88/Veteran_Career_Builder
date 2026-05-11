@@ -24,7 +24,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebPage","name":"TAP Counselor Resource Pack 2026","description":"Complete TAP counselor toolkit with printable checklists, benefits cards, and transition tools.","url":"https://veterancareerpath.com/tap-resource-pack.html","publisher":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://veterancareerpath.com"},{"@type":"ListItem","position":2,"name":"TAP Counselor Resource Pack"}]}}
 </script>
-<style id="vcp-nav-css">
+<style id="vcp-nav-css">.vcp-skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;z-index:99999;text-decoration:none;transition:top .2s;}.vcp-skip-link:focus{top:0;}
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
 body.menu-open{overflow:hidden!important;}
@@ -303,7 +303,8 @@ body.menu-open{overflow:hidden!important;}
 </style>
 
 <!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
-<nav class="vcp-nav">
+<a href="#main-content" class="vcp-skip-link">Skip to main content</a>
+<nav class="vcp-nav" aria-label="Main navigation">
   <a href="https://veterancareerpath.com" class="vcp-logo">
     <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path" width="28" height="28">
     <span class="vcp-logo-text">Veteran Career Path</span>
@@ -1048,7 +1049,7 @@ body.menu-open{overflow:hidden!important;}
 </div>
 
 <!-- ══ HERO (screen only) ══ -->
-<div class="hero">
+<div id="main-content" class="hero">
   <div class="hero-badge">&#127894; TAP Counselors &middot; VSOs &middot; Installation Offices</div>
   <h1>TAP Counselor<br><em>Resource Pack</em></h1>
   <p>The complete printable toolkit for TAP counselors and VSOs. ETS checklists, benefits eligibility cards, VA claim guides, GI Bill comparisons, resume translation sheets, salary data, certifications, crisis resources, and links to every VCP tool &mdash; organized by TAP class session.</p>
@@ -1501,5 +1502,6 @@ VeteranCareerPath.com &mdash; Built by a veteran, for veterans &mdash; Not affil
 </footer>
 <script src="/vcp-components.js"></script>
 <script defer src="/vcp-scout.js"></script>
+<script defer src="/vcp-errors.js"></script>
 </body>
 </html>

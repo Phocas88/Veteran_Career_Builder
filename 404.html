@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Page Not Found | Veteran Career Path</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="https://veterancareerpath.com/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'DM Sans',system-ui,sans-serif;
+  background:#050d18;color:rgba(245,240,232,.92);
+  min-height:100vh;display:flex;flex-direction:column;
+}
+.nav-bar{
+  background:#08111e;padding:.85rem 4%;display:flex;align-items:center;gap:.75rem;
+  border-bottom:1px solid rgba(240,192,64,.15);
+}
+.nav-bar a{text-decoration:none;display:flex;align-items:center;gap:.55rem;}
+.nav-bar img{width:28px;height:28px;}
+.nav-bar span{font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.12em;color:#f0c040;}
+.content{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem;}
+.inner{text-align:center;max-width:600px;}
+.code{font-family:'Bebas Neue',sans-serif;font-size:8rem;letter-spacing:.05em;
+  background:linear-gradient(135deg,#f0c040,#c8960a);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.5rem;}
+h1{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:#fff;letter-spacing:.04em;margin-bottom:1rem;}
+p{color:rgba(192,216,240,.7);line-height:1.7;margin-bottom:2rem;font-size:1rem;}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem;margin-bottom:2.5rem;}
+.link-card{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:1rem;text-decoration:none;
+  transition:border-color .15s,background .15s;
+}
+.link-card:hover{background:rgba(255,255,255,.08);border-color:rgba(240,192,64,.3);}
+.link-card h3{font-size:.85rem;color:#f0c040;margin-bottom:.3rem;font-weight:700;}
+.link-card p{font-size:.78rem;color:rgba(192,216,240,.6);margin:0;line-height:1.5;}
+.home-btn{
+  display:inline-block;padding:.75rem 2rem;
+  background:linear-gradient(135deg,#c8960a,#e8aa10);
+  color:#0a1628;font-weight:700;font-size:.9rem;
+  border-radius:8px;text-decoration:none;
+}
+.home-btn:hover{opacity:.9;}
+.search-box{margin-top:1.5rem;}
+.search-box input{
+  width:100%;max-width:360px;padding:.7rem 1.2rem;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+  border-radius:8px;color:#fff;font-size:.9rem;font-family:inherit;outline:none;
+}
+.search-box input:focus{border-color:rgba(240,192,64,.4);}
+.search-box input::placeholder{color:rgba(255,255,255,.3);}
+</style>
+</head>
+<body>
+<nav class="nav-bar">
+  <a href="/">
+    <img src="https://veterancareerpath.com/logo.png" alt="Veteran Career Path">
+    <span>Veteran Career Path</span>
+  </a>
+</nav>
+<div class="content">
+  <div class="inner">
+    <div class="code">404</div>
+    <h1>Mission Not Found</h1>
+    <p>The page you're looking for has been redeployed or doesn't exist. Let's get you back on track, soldier.</p>
+
+    <div class="links">
+      <a class="link-card" href="/army-mos-careers.html">
+        <h3>MOS Translator</h3>
+        <p>Find civilian careers for your military job code</p>
+      </a>
+      <a class="link-card" href="/veteran-career-test.html">
+        <h3>Career Assessment</h3>
+        <p>Discover your ideal post-military career path</p>
+      </a>
+      <a class="link-card" href="/state-veteran-benefits.html">
+        <h3>State Benefits</h3>
+        <p>Find benefits available in your state</p>
+      </a>
+      <a class="link-card" href="/military-transition-guide.html">
+        <h3>Transition Guide</h3>
+        <p>Step-by-step military to civilian playbook</p>
+      </a>
+    </div>
+
+    <a href="/" class="home-btn">Return to Home Base</a>
+
+    <div class="search-box">
+      <input type="text" placeholder="Search 800+ resources..." id="search404" onkeydown="if(event.key==='Enter')window.location='/?q='+encodeURIComponent(this.value)">
+    </div>
+  </div>
+</div>
+</body>
+</html>

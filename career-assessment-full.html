@@ -1416,11 +1416,9 @@ function renderMCQuestions(sec, container) {
     }
     if(isMemory) {
       html += '</div>'; // close memory content wrapper
-      // Hide options until timer completes
-      html += '<div class="mc-options" id="opts_' + key + '" style="display:none;">';
-    } else {
-      html += '<div class="mc-options">';
     }
+    // Options container — hidden until timer completes in memory mode
+    html += '<div class="mc-options"' + (isMemory ? ' id="opts_' + key + '" style="display:none;"' : '') + '>';
     q.opts.forEach(function(opt, oi) {
       var selClass = selected === oi ? ' selected' : '';
       html += '<div class="mc-opt' + selClass + '" onclick="selectMC(\'' + key + '\',' + oi + ')">';

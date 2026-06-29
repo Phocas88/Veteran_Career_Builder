@@ -1013,6 +1013,7 @@ body.menu-open{overflow:hidden!important;}
   }
 
   function renderSR(results, q, container, isMob) {
+    q = q.replace(/[<>"']/g, "");
     if (!results.length) {
       container.innerHTML = '<div class="vcp-sr-none">No results for "'+q+'"</div>';
       container.classList.add('open'); return;

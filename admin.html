@@ -334,12 +334,20 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 <div id="toast"></div>
 
 <script>
-var ADMIN_PIN = '1988';
+// PIN stored as SHA-256 hash — not readable in source
+var ADMIN_PIN_HASH = '8266498d969081c29737b8daeb5b51d60e56d008fff243a39d16c3032d42f6cf';
 var authed = false;
 
-function doLogin() {
+async function hashPin(pin) {
+  var data = new TextEncoder().encode(pin);
+  var buf = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+}
+
+async function doLogin() {
   var pin = document.getElementById('pin-input').value;
-  if(pin === ADMIN_PIN) {
+  var pinHash = await hashPin(pin);
+  if(pinHash === ADMIN_PIN_HASH) {
     authed = true;
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';

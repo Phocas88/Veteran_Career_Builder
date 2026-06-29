@@ -1093,6 +1093,7 @@ body.menu-open{overflow:hidden!important;}
   }
 
   function renderSR(results, q, container, isMob) {
+    q = q.replace(/[<>"']/g, "");
     if (!results.length) {
       container.innerHTML = '<div class="vcp-sr-none">No results for "'+q+'"</div>';
       container.classList.add('open'); return;
@@ -1938,7 +1939,7 @@ document.getElementById('zip-input').addEventListener('keydown', function(e) {
   <p style="margin-top:.5rem;">If you know a veteran who is homeless or at risk, share this page. Every resource listed here has been verified as of 2026.</p>
   <p style="margin-top:.5rem;font-size:.72rem;opacity:.7;">This page is for informational purposes only and does not constitute legal or medical advice. Contact the VA or a veteran service organization for personalized assistance.</p>
   <p style="margin-top:.75rem;font-size:.7rem;opacity:.5;">
-    <a href="/privacy.html">Privacy</a> &middot; <a href="/terms.html">Terms</a> &middot; <a href="/contact.html">Contact</a>
+    <a href="/privacy-policy.html">Privacy</a> &middot; <a href="/terms.html">Terms</a> &middot; <a href="/contact.html">Contact</a>
   </p>
 </div>
 

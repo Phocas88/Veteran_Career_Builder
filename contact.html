@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Google AdSense -->
 <title>Contact Us - Veteran Career Path</title>
+<link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>.vcp-skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;z-index:99999;text-decoration:none;transition:top .2s;}.vcp-skip-link:focus{top:0;}
@@ -1415,7 +1416,20 @@ function handleSubmit() {
     'Name: ' + fname + ' ' + lname + '\n' +
     'Email: ' + email + '\n' +
     'Topic: ' + (topic || 'General') + '\n\n' +
-    'Message:\n
+    'Message:\n' + message
+  );
+
+  const mailto = 'mailto:?subject=' + subject + '&body=' + body;
+  window.location.href = mailto;
+
+  // Show confirmation
+  document.getElementById('contact-form').style.display = 'none';
+  var conf = document.createElement('div');
+  conf.style.cssText = 'text-align:center;padding:3rem 1.5rem;';
+  conf.innerHTML = '<div style="font-size:2.5rem;margin-bottom:1rem;">&#9989;</div><h2 style="color:#1a3a6b;margin-bottom:.75rem;">Message Ready</h2><p style="color:#3a5070;">Your email app should open with the message pre-filled. If it didn\'t open, please try again or reach out through our social channels.</p>';
+  document.getElementById('contact-form').parentNode.appendChild(conf);
+}
+</script>
 <script>(function(){var btn=document.getElementById("hamburger-btn");var menu=document.getElementById("mobile-menu");if(!btn||!menu)return;btn.addEventListener("click",function(){btn.classList.toggle("open");menu.classList.toggle("open");});menu.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){btn.classList.remove("open");menu.classList.remove("open");});});document.addEventListener("click",function(e){if(!btn.contains(e.target)&&!menu.contains(e.target)){btn.classList.remove("open");menu.classList.remove("open");}});})();</script>
 <script src="/vcp-components.js"></script>
 <script defer src="/vcp-scout.js"></script>

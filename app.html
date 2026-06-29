@@ -1499,7 +1499,7 @@ function closeToolsDrawer() {
 }
 function newMilExp() {
   return { 
-    id:Date.now(), type:"Military Service", branch:"Army", rank:"", mos:"", mosTitle:"", serviceType:"Active Duty",
+    id:Date.now(), type:"Military Service", branch:"", rank:"", mos:"", mosTitle:"", serviceType:"Active Duty",
     unit:"", startDate:"", endDate:"", current:false, tos:"", duties:"",
     mosRoles:[], // sub-roles held within this MOS
     deployments:"", awards:[], customAward:"",
@@ -1530,7 +1530,7 @@ function GuidedProfileWizard({ personal, setPersonal, milExperiences, setMilExpe
 
   const exp = milExperiences[svcIdx] || milExperiences[0] || {};
   const uid = exp.id;
-  const mosList = React.useMemo(() => getMosByBranch(exp.branch || "Army"), [exp.branch]);
+  const mosList = React.useMemo(() => exp.branch ? getMosByBranch(exp.branch) : [], [exp.branch]);
   const svcLabel = (exp.branch||"") + (exp.mos?" · "+exp.mos:"") + (exp.mosTitle?" ("+exp.mosTitle+")":"");
   const svcDates = (exp.startDate||"") + (exp.endDate?" – "+exp.endDate:"");
 
@@ -1645,6 +1645,7 @@ function GuidedProfileWizard({ personal, setPersonal, milExperiences, setMilExpe
           <div style={{...fieldWrap,...row2}}>
             <div><label style={label}>Branch of Service *</label>
               <select style={select} value={exp.branch} onChange={e=>{upMilExp(uid,"branch",e.target.value);upMilExp(uid,"mos","");upMilExp(uid,"mosTitle","");}}>
+                <option value="" disabled>Select Branch</option>
                 {BRANCHES.map(b=><option key={b}>{b}</option>)}
               </select>
             </div>
@@ -1665,13 +1666,13 @@ function GuidedProfileWizard({ personal, setPersonal, milExperiences, setMilExpe
               <select style={select} value={exp.rank} onChange={e=>upMilExp(uid,"rank",e.target.value)}>
                 <option value="">Select Rank</option>
                 <optgroup label="Enlisted">
-                  {(RANKS[exp.branch]||RANKS["Army"]).enlisted.map(r=>(<option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>))}
+                  {(RANKS[exp.branch]||{enlisted:[],warrant:[],officer:[]}).enlisted.map(r=>(<option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>))}
                 </optgroup>
                 <optgroup label="Warrant Officer">
-                  {(RANKS[exp.branch]||RANKS["Army"]).warrant.map(r=>(<option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>))}
+                  {(RANKS[exp.branch]||{enlisted:[],warrant:[],officer:[]}).warrant.map(r=>(<option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>))}
                 </optgroup>
                 <optgroup label="Officer">
-                  {(RANKS[exp.branch]||RANKS["Army"]).officer.map(r=>(<option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>))}
+                  {(RANKS[exp.branch]||{enlisted:[],warrant:[],officer:[]}).officer.map(r=>(<option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>))}
                 </optgroup>
               </select>
             </div>
@@ -2549,7 +2550,7 @@ function MyProfileHero(props) {
     <div style={{fontSize:".7rem",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",color:"#9bb5d0",marginBottom:".5rem"}}>Service Record</div>
     <div style={{display:"flex",flexWrap:"wrap",gap:".75rem"}}>
       {milExperiences.filter(e=>e.branch).map((exp,ri)=>{
-        const bRanks = RANKS[exp.branch]||RANKS["Army"];
+        const bRanks = RANKS[exp.branch]||{enlisted:[],warrant:[],officer:[]};
         const allR = [...(bRanks.enlisted||[]),...(bRanks.warrant||[]),...(bRanks.officer||[])];
         const rankObj = allR.find(r=>r.abbr===exp.rank)||null;
         const bColor = BRANCH_COLORS[exp.branch]||BRANCH_COLORS["Army"];
@@ -3081,7 +3082,7 @@ function App() {
   const [collapsed, setCollapsed] = useState({});
   const [mosOut, setMosOut] = useState("");
   const [careers, setCareers] = useState(null);
-  const [serviceRecords, setServiceRecords] = useState([{ id:1, branch:"Army", rank:"", status:"Veteran" }]);
+  const [serviceRecords, setServiceRecords] = useState([{ id:1, branch:"", rank:"", status:"Veteran" }]);
   const [coverLetter, setCoverLetter] = useState("");
   const [coverLetterJob, setCoverLetterJob] = useState({ title:"", company:"", description:"" });
   const [resumeScore, setResumeScore] = useState(null);
@@ -3733,7 +3734,7 @@ function App() {
     if (!isApiKeySet()) { setShowAdminSetup(true); return; }
     setApiError(""); setCareerError(""); setL("careers",true); setCareers(null); setSelectedCareer(null); setCareerDetail(null);
     const summary = buildExpSummary();
-    const branch = (milExperiences[0]||{}).branch||"Army";
+    const branch = (milExperiences[0]||{}).branch||"";
     const mos = (milExperiences[0]||{}).mos||"";
     const rank = (milExperiences[0]||{}).rank||"";
     const tos = (milExperiences[0]||{}).tos||"";
@@ -4710,7 +4711,7 @@ Return this exact JSON structure:
                 const isRetired = latestMil && (latestMil.serviceType==="Retired" || latestMil.status==="Retired" || (latestMil.endDate && !latestMil.currently));
                 const rankAbbr = rank || "";
                 const displayName = rankAbbr ? (rankAbbr.split(" - ").pop().split(" (")[0] + " " + (personal.name||currentUser.name||"").split(" ").pop()) : (personal.name||currentUser.name||"Veteran");
-                const insigniaUrl = (grade && window.VCP_INSIGNIA) ? window.VCP_INSIGNIA.get(branch||"Army",grade) : null;
+                const insigniaUrl = (grade && window.VCP_INSIGNIA) ? window.VCP_INSIGNIA.get(branch||"",grade) : null;
                 return React.createElement("div",{style:{display:"flex",alignItems:"center",gap:".4rem"}},
                   insigniaUrl ? React.createElement("img",{src:insigniaUrl,alt:grade+" insignia",style:{height:"28px",width:"auto",flexShrink:0,filter:"drop-shadow(0 1px 2px rgba(0,0,0,.3))"}}) : React.createElement("div",{className:"user-avatar"},(currentUser&&currentUser.initials)),
                   React.createElement("span",null,
@@ -4877,6 +4878,7 @@ Return this exact JSON structure:
                       <div className="field">
                         <label>Branch of Service</label>
                         <select value={exp.branch} onChange={e=>upMilExp(exp.id,"branch",e.target.value)}>
+                          <option value="" disabled>Select Branch</option>
                           {BRANCHES.map(b=><option key={b}>{b}</option>)}
                         </select>
                       </div>
@@ -4885,19 +4887,19 @@ Return this exact JSON structure:
                         <select value={exp.rank} onChange={e=>upMilExp(exp.id,"rank",e.target.value)}>
                           <option value="">Select Rank</option>
                           <optgroup label="Enlisted">
-                            {(RANKS[exp.branch]||RANKS["Army"]).enlisted.map(r=>(
+                            {(RANKS[exp.branch]||{enlisted:[],warrant:[],officer:[]}).enlisted.map(r=>(
                               <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
                             ))}
                           </optgroup>
-                          {((RANKS[exp.branch]||RANKS["Army"]).warrant||[]).length>0&&(
+                          {((RANKS[exp.branch]||{enlisted:[],warrant:[],officer:[]}).warrant||[]).length>0&&(
                             <optgroup label="Warrant Officers">
-                              {(RANKS[exp.branch]||RANKS["Army"]).warrant.map(r=>(
+                              {(RANKS[exp.branch]||{enlisted:[],warrant:[],officer:[]}).warrant.map(r=>(
                                 <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
                               ))}
                             </optgroup>
                           )}
                           <optgroup label="Officers">
-                            {(RANKS[exp.branch]||RANKS["Army"]).officer.map(r=>(
+                            {(RANKS[exp.branch]||{enlisted:[],warrant:[],officer:[]}).officer.map(r=>(
                               <option key={r.abbr+r.grade} value={r.abbr}>{r.grade} {r.title} ({r.abbr})</option>
                             ))}
                           </optgroup>

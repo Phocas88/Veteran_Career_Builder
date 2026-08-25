@@ -6,8 +6,8 @@
 <title>Veteran Career Path | 800+ Free Resources for Military to Civilian Transition</title>
 <meta name="description" content="The most comprehensive free platform for veterans. MOS translators, VA disability calculators, career assessments, resume builders, and state-by-state benefits. Built by a veteran.">
 <link rel="canonical" href="https://veterancareerpath.com/">
-<link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/logo.png">
-<link rel="apple-touch-icon" href="https://veterancareerpath.com/logo.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/img/optimized/logo-96.png">
+<link rel="apple-touch-icon" href="/img/optimized/logo-192.png">
 <link rel="manifest" href="/manifest.json">
 <meta property="og:title" content="Veteran Career Path | 800+ Free Resources for Military to Civilian Transition">
 <meta property="og:description" content="The most comprehensive free platform for veterans. MOS translators, VA disability calculators, career assessments, resume builders, and state-by-state benefits. Built by a veteran.">
@@ -17,15 +17,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="preload" href="/vcp-styles.css" as="style">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="/vcp-styles.css" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="/vcp-styles.css"></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/vcp-styles.css">
 <script>
 window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
 window.addEventListener("load",function(){
+  if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) return;
   var s=document.createElement("script");
   s.async=true;
   s.src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J";
@@ -1848,12 +1846,29 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3re
   </div>
 </footer>
 
-<script defer src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script defer src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <script>
-try{firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"veteran-career-builder.firebaseapp.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}catch(e){}
 var _wpDb = null;
-try{_wpDb = firebase.firestore();}catch(e){}
+var _firebaseLoadPromise = null;
+function loadVcpFirebase(){
+  if (_wpDb) return Promise.resolve(_wpDb);
+  if (_firebaseLoadPromise) return _firebaseLoadPromise;
+  function loadScript(src){
+    return new Promise(function(resolve,reject){
+      var s=document.createElement('script');
+      s.src=src;s.async=true;
+      s.onload=resolve;s.onerror=reject;
+      document.head.appendChild(s);
+    });
+  }
+  _firebaseLoadPromise = loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js')
+    .then(function(){return loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js');})
+    .then(function(){
+      try{firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"veteran-career-builder.firebaseapp.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}catch(e){}
+      _wpDb=firebase.firestore();
+      return _wpDb;
+    });
+  return _firebaseLoadPromise;
+}
 
 // Welcome popup for new visitors
 function submitWelcome(){
@@ -1870,11 +1885,11 @@ function submitWelcome(){
   localStorage.setItem('vcp_pf_user',JSON.stringify({name:name,email:email,optin:optin,date:new Date().toISOString()}));
   localStorage.setItem('vcp_welcome_done','1');
   // Save to Firestore if opted in
-  if(optin && _wpDb){
-    _wpDb.collection('email_subscribers').add({
+  if(optin){
+    loadVcpFirebase().then(function(db){return db.collection('email_subscribers').add({
       email:email,name:name,source:'welcome-popup',optin:true,
       timestamp:firebase.firestore.FieldValue.serverTimestamp(),status:'active'
-    }).catch(function(){});
+    });}).catch(function(){});
   }
   // Close popup
   setTimeout(function(){
@@ -1886,8 +1901,6 @@ function skipWelcome(){
   document.getElementById('vcp-welcome-popup').style.display='none';
 }
 </script>
-<script defer src="/vcp-rank-insignia.js"></script>
-
 <script>
 // Smart homepage, detect returning users
 window.addEventListener("load",function(){
@@ -2009,7 +2022,6 @@ window.addEventListener("load",function(){
   }
 });
 </script>
-<script defer src="/vcp-components.js"></script>
 <script>
 // Scroll reveal
 var els = document.querySelectorAll('.reveal');
@@ -2037,16 +2049,27 @@ function vcp_subscribeEmail(emailInputId,msgId){
     msg.textContent='Please enter a valid email address.';msg.style.color='#ff6b6b';msg.style.display='block';return;
   }
   msg.textContent='Subscribing...';msg.style.color='rgba(192,216,240,.6)';msg.style.display='block';
-  var db=firebase.firestore();
-  db.collection('email_subscribers').where('email','==',email).get().then(function(snap){
+  loadVcpFirebase().then(function(db){return db.collection('email_subscribers').where('email','==',email).get().then(function(snap){
     if(!snap.empty){msg.textContent="You're already subscribed!";msg.style.color='#f0c040';input.value='';return;}
     return db.collection('email_subscribers').add({email:email,source:window.location.href,timestamp:firebase.firestore.FieldValue.serverTimestamp(),status:'active'}).then(function(){
       msg.innerHTML="You're in! Check your inbox.";msg.style.color='#4ade80';input.value='';
     });
-  }).catch(function(err){console.error('Subscribe error:',err);msg.textContent='Something went wrong. Please try again.';msg.style.color='#ff6b6b';});
+  });}).catch(function(err){console.error('Subscribe error:',err);msg.textContent='Something went wrong. Please try again.';msg.style.color='#ff6b6b';});
 }
 </script>
-<script defer src="/vcp-scout.js"></script>
-<script defer src="/vcp-errors.js"></script>
+<script>
+(function(){
+  var scripts = ["/vcp-rank-insignia.js", "/vcp-components.js", "/vcp-scout.js", "/vcp-errors.js"];
+  function loadDeferredWidgets(){
+    scripts.forEach(function(src){
+      var script=document.createElement("script");
+      script.src=src;
+      script.defer=true;
+      document.body.appendChild(script);
+    });
+  }
+  window.addEventListener("load",function(){ setTimeout(loadDeferredWidgets, 8000); });
+})();
+</script>
 </body>
 </html>

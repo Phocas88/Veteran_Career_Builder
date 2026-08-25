@@ -1268,11 +1268,7 @@ document.addEventListener('DOMContentLoaded', function(){ initSearch(); var ct=d
       document.body.appendChild(script);
     });
   }
-  if ("requestIdleCallback" in window) {
-    window.addEventListener("load", function(){ requestIdleCallback(loadDeferredWidgets, { timeout: 3500 }); });
-  } else {
-    window.addEventListener("load", function(){ setTimeout(loadDeferredWidgets, 2500); });
-  }
+  window.addEventListener("load", function(){ setTimeout(loadDeferredWidgets, 8000); });
 })();
 </script>
 </body>

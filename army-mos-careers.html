@@ -1261,6 +1261,8 @@ document.addEventListener('DOMContentLoaded', function(){ initSearch(); var ct=d
 (function(){
   var scripts = ["/vcp-scout.js", "/vcp-errors.js"];
   function loadDeferredWidgets(){
+    if (loadDeferredWidgets.loaded) return;
+    loadDeferredWidgets.loaded = true;
     scripts.forEach(function(src){
       var script = document.createElement("script");
       script.src = src;
@@ -1268,7 +1270,9 @@ document.addEventListener('DOMContentLoaded', function(){ initSearch(); var ct=d
       document.body.appendChild(script);
     });
   }
-  window.addEventListener("load", function(){ setTimeout(loadDeferredWidgets, 8000); });
+  ["pointerdown","keydown","scroll"].forEach(function(eventName){
+    window.addEventListener(eventName, loadDeferredWidgets, { once: true, passive: true });
+  });
 })();
 </script>
 </body>

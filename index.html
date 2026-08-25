@@ -20,9 +20,20 @@
 <link rel="preload" href="/vcp-styles.css" as="style">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="/vcp-styles.css">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
+<link rel="stylesheet" href="/vcp-styles.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="/vcp-styles.css"></noscript>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+window.addEventListener("load",function(){
+  var s=document.createElement("script");
+  s.async=true;
+  s.src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J";
+  document.head.appendChild(s);
+  gtag("js",new Date());
+  gtag("config","G-CMFKLT321J");
+});
+</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Veteran Career Path","url":"https://veterancareerpath.com","description":"The most comprehensive free platform for veterans and transitioning service members. 800+ resource pages, MOS career guides, VA disability calculators, and AI-powered career tools.","potentialAction":{"@type":"SearchAction","target":"https://veterancareerpath.com/?q={search_term_string}","query-input":"required name=search_term_string"}}
 </script>

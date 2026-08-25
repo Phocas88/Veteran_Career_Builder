@@ -1,48 +1,48 @@
 # VCP Proxy Server-Side Security Setup
 
-## Overview
-The paywall has been hardened with rate limiting, input validation, and
-proper CORS. Deploy these endpoints to your Vercel proxy (`vcp-proxy`).
+## Required Vercel environment variables
 
-## Security Features (Added 2026-05-11)
-- **Rate limiting**: 5 req/min for code validation, 3 req/min for subscriptions
-- **Input validation**: Code format enforcement (alphanumeric, 4-30 chars)
-- **CORS**: Scoped to veterancareerpath.com and www.veterancareerpath.com
-- **Expiry fix**: One-time charge access calculated from charge date, not verification time
+Set these on the `Phocas88/vcp-proxy` Vercel project for Production and Preview:
 
-## Files to Deploy
-Copy these files to your `vcp-proxy` Vercel project's `api/` directory:
+- `ANTHROPIC_API_KEY`
+- `STRIPE_SECRET_KEY`
+- `ACCESS_CODES`
+- `VCB_SESSION_SECRET`
 
-1. `validate-code.js` — Server-side access code validation
-2. `verify-subscription.js` — Stripe subscription verification
+`VCB_SESSION_SECRET` must be a random secret of at least 32 characters. A 64-byte random value is recommended.
 
-## Environment Variables Required
-Set these in your Vercel project settings (Settings > Environment Variables):
+Optional:
 
-### ACCESS_CODES
-JSON string containing your access codes. Example:
-```
-{"OWNER2025":0,"OWNER2026":0,"ALPHA30":1751241600000,"BRAVO30":1751241600000,"TAP2026":1767139200000,"VSO2026":1767139200000}
-```
-- `0` = permanent access
-- Timestamp = expiry in milliseconds (use Date.UTC() to calculate)
+- `VCB_SESSION_TTL_SECONDS` defaults to 7200 seconds and is capped at 24 hours.
+- `ONE_TIME_EXPIRY_DAYS` defaults to 365 days.
+- `ANTHROPIC_ALLOWED_MODELS` is a comma-separated model allowlist. If omitted, only `claude-haiku-4-5-20251001` is allowed.
 
-### STRIPE_SECRET_KEY
-Your Stripe secret key (starts with `sk_live_` or `sk_test_`).
-Get it from: https://dashboard.stripe.com/apikeys
+## Important
 
-## What Changed Client-Side (app.js)
-1. Access codes removed from client JavaScript — now validated via `/api/validate-code`
-2. "Already subscribed" email bypass now verifies against Stripe via `/api/verify-subscription`
-3. `checkAccess()` now rejects `manual-verify` tokens (the old bypass method)
-4. `callClaude()` now sends session/email/code headers to proxy for server-side validation
-5. Admin panel requires `vcb_admin_verified` in localStorage (not just URL param)
-6. PathFinder Pro admin bypass requires a long token (not the hardcoded word "pathfinder")
+`PROXY_API_KEY` is no longer used as a browser-shared secret. Do not place a Vercel proxy secret, Anthropic key, or Stripe secret in `app.js`, `app.html`, localStorage, sessionStorage, cookies, or Firebase-hosted files.
 
-## Testing
-After deploying the proxy endpoints:
-1. Clear localStorage in browser DevTools
-2. Try using AI tools without paying — should be blocked
-3. Try entering a code — should validate against server
-4. Try "Already subscribed" — should check Stripe
-5. Subscribe via Stripe — should grant access with server-validated token
+## Authentication flow
+
+1. `/api/validate-code` validates an access code server-side.
+2. `/api/verify-subscription` validates a Stripe checkout session or subscriber email server-side.
+3. Either endpoint returns a short-lived HMAC-signed VCP session token after entitlement is verified.
+4. The browser stores only that short-lived token in `sessionStorage`.
+5. `/api/claude` requires and validates the signed token before it sends any request to Anthropic.
+6. `/api/claude` restricts models and caps `max_tokens`.
+
+## Deployment order
+
+Deploy `vcp-proxy` first. Then deploy `Veteran_Career_Builder`.
+
+If the main site is deployed first, AI requests will fail securely until the proxy supports signed sessions.
+
+## Verification
+
+After deployment:
+
+1. Clear `vcb_access`, `vcb_server_session`, and any old `vcb_admin_key` browser storage.
+2. Confirm `/api/claude` returns HTTP 401 without a VCP signed session.
+3. Validate a real access code and confirm a token is returned.
+4. Complete a Stripe test checkout and confirm the checkout session is verified server-side.
+5. Confirm AI works only after one of those entitlement checks.
+6. Confirm entering a fake `stripe_success=1&session_id=...` URL does not grant access.

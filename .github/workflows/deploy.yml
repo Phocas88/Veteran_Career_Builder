@@ -1,14 +1,23 @@
-name: Deploy to Firebase Hosting
+name: Validate and Deploy Firebase Hosting
 
 on:
+  pull_request:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
-  deploy:
+  quality:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -18,6 +27,64 @@ jobs:
       - name: Regenerate sitemap
         run: python generate-sitemap.py
 
+      - name: Validate JavaScript
+        run: |
+          node --check assets/js/vcb-secure-api.js
+          node --check scripts/build-hosting.mjs
+          node --check scripts/apply-security-refactor.mjs
+          npx --yes esbuild app.js --loader:.js=jsx --outfile=/tmp/app-check.js
+
+      - name: Build Firebase hosting directory
+        run: node scripts/build-hosting.mjs
+
+      - name: Start local site
+        run: |
+          npx --yes http-server .firebase-public -p 8080 -c-1 > /tmp/vcp-http.log 2>&1 &
+          for i in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8080/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/vcp-http.log
+          exit 1
+
+      - name: Lighthouse CI before production
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://127.0.0.1:8080/
+            http://127.0.0.1:8080/army-mos-careers.html
+            http://127.0.0.1:8080/military-transition-guide.html
+          budgetPath: .github/lighthouse-budget.json
+          uploadArtifacts: true
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: quality
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Regenerate sitemap
+        run: python generate-sitemap.py
+
+      - name: Build Firebase hosting directory
+        run: node scripts/build-hosting.mjs
+
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -26,19 +93,3 @@ jobs:
           channelId: live
           projectId: veteran-career-builder
           force: true
-
-  lighthouse:
-    runs-on: ubuntu-latest
-    needs: deploy
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v12
-        with:
-          urls: |
-            https://veterancareerpath.com/
-            https://veterancareerpath.com/army-mos-careers.html
-            https://veterancareerpath.com/military-transition-guide.html
-          budgetPath: .github/lighthouse-budget.json
-          uploadArtifacts: true

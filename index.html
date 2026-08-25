@@ -20,9 +20,20 @@
 <link rel="preload" href="/vcp-styles.css" as="style">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="/vcp-styles.css">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CMFKLT321J');</script>
+<link rel="stylesheet" href="/vcp-styles.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="/vcp-styles.css"></noscript>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+window.addEventListener("load",function(){
+  var s=document.createElement("script");
+  s.async=true;
+  s.src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J";
+  document.head.appendChild(s);
+  gtag("js",new Date());
+  gtag("config","G-CMFKLT321J");
+});
+</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Veteran Career Path","url":"https://veterancareerpath.com","description":"The most comprehensive free platform for veterans and transitioning service members. 800+ resource pages, MOS career guides, VA disability calculators, and AI-powered career tools.","potentialAction":{"@type":"SearchAction","target":"https://veterancareerpath.com/?q={search_term_string}","query-input":"required name=search_term_string"}}
 </script>
@@ -1045,7 +1056,7 @@ img{max-width:100%;}
 }
 
 /* ── REUSABLE ──────────────────────────────────────────────────────────────── */
-.section{padding:2.5rem 5%;}
+.section{padding:2.5rem 5%;content-visibility:auto;contain-intrinsic-size:760px;}
 .section-inner{max-width:1140px;margin:0 auto;}
 .eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);margin-bottom:.6rem;}
 .section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.9rem,4vw,2.9rem);letter-spacing:.05em;color:#fff;line-height:1.05;margin-bottom:.85rem;}
@@ -1200,7 +1211,7 @@ img{max-width:100%;}
 .pc-btn.paid-btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(200,150,10,.35);}
 
 /* ── FOOTER ────────────────────────────────────────────────────────────────── */
-footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3rem 5% 1.75rem;}
+footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3rem 5% 1.75rem;content-visibility:auto;contain-intrinsic-size:560px;}
 .footer-grid{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem;}
 .footer-brand-name{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:var(--gold);margin-bottom:.4rem;}
 .footer-brand-desc{font-size:.75rem;color:rgba(192,216,240,.3);line-height:1.65;max-width:200px;}
@@ -1875,11 +1886,11 @@ function skipWelcome(){
   document.getElementById('vcp-welcome-popup').style.display='none';
 }
 </script>
-<script src="/vcp-rank-insignia.js"></script>
+<script defer src="/vcp-rank-insignia.js"></script>
 
 <script>
 // Smart homepage — detect returning users
-(function(){
+window.addEventListener("load",function(){
   var isReturning = false;
   try {
     var acc = JSON.parse(localStorage.getItem('vcb_access') || '{}');
@@ -1996,7 +2007,7 @@ function skipWelcome(){
       if(popup) popup.style.display = 'flex';
     }
   }
-})();
+});
 </script>
 <script defer src="/vcp-components.js"></script>
 <script>

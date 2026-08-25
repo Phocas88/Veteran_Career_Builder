@@ -91,90 +91,23 @@ function getClearanceBadge(lvl) {
   return "cl-badge cl-c";
 }
 
-// ── API KEY CHECK ───────────────────────────────────────────────────────────
-// ── PROXY CONFIG ──
-// Set this to your Vercel proxy URL after deploying
+// ── SECURE AI API ───────────────────────────────────────────────────────────
 const PROXY_URL = window.VCB_PROXY_URL || "";
 
 function isApiKeySet() {
-  // Works if proxy URL is configured OR if a local key exists (fallback)
-  return PROXY_URL.length > 10 || (localStorage.getItem("vcb_admin_key") || "").length > 20;
+  return Boolean(window.VCBSecureApi && window.VCBSecureApi.isConfigured());
 }
 
 function getStoredApiKey() {
-  return localStorage.getItem("vcb_admin_key") || (typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key")) || (document.cookie.match(/vcb_ak=([^;]+)/)||[])[1]||"";
+  // Browser-side Anthropic keys are intentionally disabled.
+  return "";
 }
 
-
-
-
-
-
-
 async function callClaude(prompt, system = "", maxTokens = 2000) {
-  // Hard paywall gate — never call API without valid subscription
-  try {
-    const acc = JSON.parse(localStorage.getItem("vcb_access") || "{}");
-    const hasValidAccess = (
-      (acc.type === "paid" && acc.stripeSession && acc.expiry > Date.now()) ||
-      (acc.type === "code" && acc.code)
-    );
-    if (!hasValidAccess) {
-      throw new Error("PAYWALL: Subscription required. Please subscribe to use AI tools.");
-    }
-  } catch(e) {
-    if (e.message && e.message.startsWith("PAYWALL:")) throw e;
-    // JSON parse error = no access stored
-    throw new Error("PAYWALL: Subscription required.");
+  if (!window.VCBSecureApi) {
+    throw new Error("AI security module failed to load.");
   }
-  try {
-    const body = {
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: maxTokens,
-      messages: [{ role: "user", content: prompt }]
-    };
-    if (system) body.system = system;
-
-    const endpoint = PROXY_URL ? PROXY_URL : "https://api.anthropic.com/v1/messages";
-    const headers = { "Content-Type": "application/json" };
-    if (PROXY_URL) {
-      // Send access token to proxy for server-side validation
-      const acc = JSON.parse(localStorage.getItem("vcb_access") || "{}");
-      if (acc.stripeSession) headers["x-vcb-session"] = acc.stripeSession;
-      if (acc.email) headers["x-vcb-email"] = acc.email;
-      if (acc.code) headers["x-vcb-code"] = acc.code;
-    } else {
-      headers["x-api-key"] = getStoredApiKey();
-      headers["anthropic-version"] = "2023-06-01";
-      headers["anthropic-dangerous-direct-browser-access"] = "true";
-    }
-    // Retry up to 2 times on network failure
-    let lastErr;
-    for (let attempt = 0; attempt < 2; attempt++) {
-      try {
-        const r = await fetch(endpoint, {
-          method: "POST",
-          headers,
-          body: JSON.stringify(body)
-        });
-
-        if (!r.ok) {
-          const err = await r.json();
-          console.error("Anthropic API error:", err);
-          throw new Error((err && err.error && err.error.message) || "API request failed with status " + r.status);
-        }
-        const d = await r.json();
-        return d.content ? d.content.map(b => b.text || "").join("") : "";
-      } catch(fetchErr) {
-        lastErr = fetchErr;
-        if (attempt < 1) await new Promise(res => setTimeout(res, 1000));
-      }
-    }
-    throw lastErr;
-  } catch(e) {
-    console.error("callClaude error:", e);
-    throw e;
-  }
+  return window.VCBSecureApi.callClaude(prompt, system, maxTokens);
 }
 // ── DATE PICKER COMPONENT ─────────────────────────────────────────────────────
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -316,22 +249,10 @@ function UniversityInput({ value, onChange, placeholder }) {
 // The proxy at VCB_PROXY_URL/validate-code handles validation.
 
 async function isCodeValid(code) {
-  var c = (code||"").trim().toUpperCase();
-  if (!c || c.length < 4) return { valid: false, reason: "invalid" };
-  try {
-    var resp = await fetch((PROXY_URL || "").replace("/claude", "/validate-code"), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code: c })
-    });
-    if (!resp.ok) return { valid: false, reason: "invalid" };
-    var data = await resp.json();
-    return data;
-  } catch(e) {
-    // Fallback: reject if proxy is unreachable
-    console.error("Code validation failed:", e);
+  if (!window.VCBSecureApi) {
     return { valid: false, reason: "error" };
   }
+  return window.VCBSecureApi.validateCode(code);
 }
 
 function checkAccess() {
@@ -340,8 +261,8 @@ function checkAccess() {
   try {
     var d = JSON.parse(stored);
     if (d.type === "paid") {
-      // Require a real Stripe session ID (not manual-verify)
-      if (!d.stripeSession || d.stripeSession.startsWith("manual-verify")) {
+      const stripeId = String(d.stripeSession || d.session || "");
+      if (d.serverValidated !== true || !/^(cs_(test_|live_)?|sub_|ch_)[A-Za-z0-9_]+$/.test(stripeId)) {
         localStorage.removeItem("vcb_access");
         return false;
       }
@@ -1515,13 +1436,6 @@ function App() {
   const [translationData, setTranslationData] = useState(null);
   const [loading, setLoading] = useState({ translate:false, careers:false, resume:false, careerDetail:false });
   const [apiError, setApiError] = useState("");
-  const [showAdminSetup, setShowAdminSetup] = useState(false);
-  const [adminKeyInput, setAdminKeyInput] = useState("");
-  const [adminKeySet, setAdminKeySet] = useState(() => {
-    if (PROXY_URL && PROXY_URL.length > 10) return true;
-    const k = localStorage.getItem("vcb_admin_key")||(typeof sessionStorage!=="undefined"&&sessionStorage.getItem("vcb_admin_key"))||"";
-    return k.length > 20;
-  });
   const [careerError, setCareerError] = useState("");
   const [resumeData, setResumeData] = useState(null);
   const [resumeTemplate, setResumeTemplate] = useState("ats_chrono");
@@ -1584,13 +1498,6 @@ function App() {
       setPwCodeStatus("invalid");
       setPwCodeMsg("That code isn't valid. Check spelling or contact support.");
     }
-  };
-
-  const grantPaidAccess = (planMonths, sessionId) => {
-    const expiry = Date.now() + planMonths * 30 * 24 * 60 * 60 * 1000;
-    localStorage.setItem("vcb_access", JSON.stringify({ type:"paid", stripeSession: sessionId || ("stripe-"+Date.now()), expiry, plan: planMonths===1?"monthly":"annual", serverValidated: true }));
-    setHasAccess(true);
-    setShowPaywall(false);
   };
 
   // Access validation handled in checkAccess()
@@ -1982,7 +1889,7 @@ function App() {
   // ── TRANSLATE ──────────────────────────────────────────────────────────────
   const translateMOS = async () => {
     if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!isApiKeySet()) { setApiError("AI service is not configured. Please try again later."); return; }
     if (!milExperiences.length) return;
     setApiError("");
     setTranslationData(null);
@@ -2038,7 +1945,7 @@ function App() {
 
     } catch(err) {
       console.error("translateMOS error:", err);
-      setMosOut("Translation failed: " + (err.message || "Unknown error. Check your API key and try again."));
+      setMosOut("Translation failed: " + (err.message || "Unknown error. Please try again later."));
     }
     setL("translate", false);
   };
@@ -2046,7 +1953,7 @@ function App() {
   // ── CAREERS ───────────────────────────────────────────────────────────────
   const findCareers = async () => {
     if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!isApiKeySet()) { setApiError("AI service is not configured. Please try again later."); return; }
     setApiError(""); setCareerError(""); setL("careers",true); setCareers(null); setSelectedCareer(null); setCareerDetail(null);
     const summary = buildExpSummary();
     const branch = (milExperiences[0]||{}).branch||"Army";
@@ -2206,7 +2113,7 @@ Use this exact structure:
   // ── RESUME ─────────────────────────────────────────────────────────────────
   const genResume = async () => {
     if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!isApiKeySet()) { setApiError("AI service is not configured. Please try again later."); return; }
     setApiError("");
     setL("resume",true);
     setResume("");
@@ -2308,7 +2215,7 @@ Use this exact structure:
       setL("resume",false);
     } catch(e) {
       console.error("Resume generation failed:", e);
-      setResume("Error generating resume: " + (e.message || "Please check your API key and try again."));
+      setResume("Error generating resume: " + (e.message || "Please try again later."));
       setL("resume",false);
     }
   };
@@ -2317,7 +2224,7 @@ Use this exact structure:
   // ── COVER LETTER GENERATOR ────────────────────────────────────────────────
   const genCoverLetter = async () => {
     if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!isApiKeySet()) { setApiError("AI service is not configured. Please try again later."); return; }
     if (!resume && !resumeData && !uploadedResumeText) { alert("Please upload a resume file or generate one on the Build Resume tab."); return; }
     setCoverLetterLoading(true);
     setCoverLetter("");
@@ -2359,7 +2266,7 @@ Return ONLY the cover letter text, no subject line, no extra commentary.`;
   // ── INTERVIEW PREP GENERATOR ──────────────────────────────────────────────
   const genInterviewPrep = async () => {
     if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!isApiKeySet()) { setApiError("AI service is not configured. Please try again later."); return; }
     setPrepLoading(true); setPrepQuestions([]);
     const milSummary = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")+" MOS "+(e.mos||"")+" ("+(e.tos||"")+")").join("; ");
     const prompt = `You are an elite interview coach for military veterans transitioning to civilian careers.
@@ -2399,7 +2306,7 @@ Make answers specific to their MOS and rank. Use the STAR method. Translate all 
   // ── FOLLOW-UP EMAIL GENERATOR ─────────────────────────────────────────────
   const genFollowupEmail = async () => {
     if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!isApiKeySet()) { setApiError("AI service is not configured. Please try again later."); return; }
     setFollowupLoading(true); setFollowupEmail("");
     const milSum = milExperiences.map(e=>(e.branch)+" "+(e.rank||"")).join(", ");
     const emailTypes = {
@@ -2435,7 +2342,7 @@ Return ONLY the email text including the subject line. No extra commentary.`;
   // ── RESUME REVIEW / SCORE ─────────────────────────────────────────────────
   const runResumeReview = async () => {
     if (!hasAccess) { setShowPaywall(true); return; }
-    if (!isApiKeySet()) { setShowAdminSetup(true); return; }
+    if (!isApiKeySet()) { setApiError("AI service is not configured. Please try again later."); return; }
     if (!resume && !resumeData && !uploadedResumeText) { alert("Please upload a resume file or generate one first."); return; }
     setReviewLoading(true);
     setResumeScore(null);
@@ -2571,20 +2478,15 @@ Return this exact JSON structure:
                       const email = window.prompt("Enter the email you used when subscribing on Stripe:");
                       if(email && email.includes("@")){
                         try {
-                          const resp = await fetch((PROXY_URL || "").replace("/claude", "/verify-subscription"), {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ email: email.trim().toLowerCase() })
-                          });
-                          if (!resp.ok) {
+                          if (!window.VCBSecureApi) {
                             alert("Could not verify subscription. Please contact support if you believe this is an error.");
                             return;
                           }
-                          const data = await resp.json();
-                          if (data.active) {
+                          const data = await window.VCBSecureApi.verifySubscription({ email: email.trim().toLowerCase() });
+                          if (data.active && /^(cs_(test_|live_)?|sub_|ch_)[A-Za-z0-9_]+$/.test(String(data.sessionId || ""))) {
                             const expiry = data.expiry || (Date.now() + 30*24*60*60*1000);
                             localStorage.setItem("vcb_access", JSON.stringify({
-                              type:"paid", stripeSession: data.sessionId || ("verified-"+Date.now()),
+                              type:"paid", stripeSession: data.sessionId,
                               expiry, plan: data.plan || "monthly", email: email.trim().toLowerCase(),
                               serverValidated: true
                             }));
@@ -2724,74 +2626,6 @@ Return this exact JSON structure:
 
 
 
-        {showAdminSetup&&(
-          <div style={{position:"fixed",inset:0,background:"rgba(8,12,24,.97)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}}>
-            <div style={{background:"linear-gradient(160deg,#243560,#1e3530)",border:"1px solid rgba(201,168,76,.35)",borderRadius:"6px",width:"100%",maxWidth:"460px",overflow:"hidden"}}>
-              <div style={{background:"rgba(201,168,76,.12)",borderBottom:"1px solid rgba(201,168,76,.22)",padding:"1.2rem 1.4rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <div>
-                  <div style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".12em",fontSize:"1.2rem",color:"var(--gold-light)"}}>⚙ Site Owner Setup</div>
-                  <div style={{fontSize:".76rem",color:"var(--slate)",marginTop:".2rem"}}>This panel is only for the site owner — not visible to users</div>
-                </div>
-                <button onClick={()=>setShowAdminSetup(false)} style={{background:"transparent",border:"none",color:"var(--slate)",fontSize:"1.2rem",cursor:"pointer"}}>✕</button>
-              </div>
-              <div style={{padding:"1.5rem"}}>
-                {adminKeySet?(
-                  <div style={{background:"rgba(76,175,130,.1)",border:"1px solid rgba(76,175,130,.3)",borderRadius:"3px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".88rem",color:"var(--green)"}}>
-                    ✓ API key is configured — AI features are enabled
-                  </div>
-                ):(
-                  <div style={{background:"rgba(201,168,76,.08)",border:"1px solid rgba(201,168,76,.25)",borderRadius:"3px",padding:".85rem 1rem",marginBottom:"1rem",fontSize:".85rem",color:"var(--slate)",lineHeight:"1.6"}}>
-                  AI features are enabled via the Vercel proxy. If you need to override with a direct API key, enter it below.
-                  </div>
-                )}
-                <div style={{marginBottom:"1rem"}}>
-                  <label style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,display:"block",marginBottom:".4rem"}}>Anthropic API Key</label>
-                  <input
-                    type="password"
-                    placeholder="https://your-proxy.vercel.app/api/claude"
-                    value={adminKeyInput}
-                    onChange={e=>setAdminKeyInput(e.target.value)}
-                    style={{width:"100%",background:"rgba(255,255,255,.92)",border:"1.5px solid rgba(201,168,76,.5)",borderRadius:"3px",color:"#1a1a2e",padding:".65rem .85rem",fontFamily:"monospace",fontSize:".9rem"}}
-                  />
-                </div>
-                <button
-                  style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,var(--gold),var(--gold-light))",border:"none",borderRadius:"3px",color:"var(--navy)",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".12em",fontSize:"1rem",cursor:"pointer"}}
-                  onClick={()=>{
-                    const k = adminKeyInput.trim();
-                    if(k.length < 20){ alert("That doesn't look like a valid API key."); return; }
-                    if (k.startsWith("https://")) {
-                      // It's a proxy URL — store separately and reload
-                      localStorage.setItem("vcb_proxy_url", k);
-                      alert("Proxy URL saved! AI features are now enabled.");
-                      window.location.reload();
-                    } else {
-                      localStorage.setItem("vcb_admin_key", k);
-                    } try{sessionStorage.setItem("vcb_admin_key", k);}catch(e){} document.cookie="vcb_ak="+k+";max-age=31536000;path=/;SameSite=Strict";
-                    setAdminKeySet(true);
-                    setAdminKeyInput("");
-                    setShowAdminSetup(false);
-                    alert("API key saved! AI features are now enabled.");
-                  }}>
-                  Save API Key
-                </button>
-                {adminKeySet&&(
-                  <button
-                    style={{width:"100%",marginTop:".6rem",padding:".5rem",background:"transparent",border:"1px solid rgba(224,85,85,.3)",borderRadius:"3px",color:"#cc5555",fontFamily:"'Crimson Pro',serif",fontSize:".82rem",cursor:"pointer"}}
-                    onClick={()=>{
-                      if(window.confirm("Remove the API key? AI features will stop working.")){
-                        localStorage.removeItem("vcb_admin_key");
-                        setAdminKeySet(false);
-                      }
-                    }}>
-                    Remove API Key
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-
         {currentUser?(
           <div className="user-bar">
             <div className="user-bar-left">
@@ -2808,7 +2642,6 @@ Return this exact JSON structure:
               </button>
               {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>⭐ All 8 Tools — $15/mo</button>}
               <button className="btn-danger" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleLogout}>Sign Out</button>
-              {window.location.search.indexOf("admin=1")>-1&&localStorage.getItem("vcb_admin_verified")==="true"&&<button title="Site Owner Setup" style={{background:"transparent",border:"1px solid rgba(201,168,76,.3)",color:"var(--gold)",padding:".3rem .6rem",borderRadius:"3px",cursor:"pointer",fontSize:".72rem",fontWeight:"bold",letterSpacing:".04em"}} onClick={()=>setShowAdminSetup(true)}>SETUP</button>}
             </div>
           </div>
         ):(
@@ -3620,7 +3453,7 @@ Return this exact JSON structure:
               <div style={{background:"rgba(224,85,85,.12)",border:"1px solid rgba(224,85,85,.35)",borderRadius:"4px",padding:"1rem 1.2rem",marginTop:"1rem",fontSize:".88rem",color:"#f0a0a0",lineHeight:"1.6"}}>
                 <strong style={{display:"block",marginBottom:".3rem"}}>⚠ Could not complete translation</strong>
                 {mosOut}
-                <div style={{marginTop:".5rem",fontSize:".8rem",opacity:.8}}>Make sure your API key is set correctly and try again.</div>
+                <div style={{marginTop:".5rem",fontSize:".8rem",opacity:.8}}>Please try again later or contact support if the problem continues.</div>
               </div>
             )}
             {translationData&&!loading.translate&&(

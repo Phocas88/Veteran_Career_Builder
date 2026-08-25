@@ -82,7 +82,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 .btn-view{background:rgba(255,255,255,.07);color:rgba(192,216,240,.7);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.35rem .85rem;font-size:.78rem;cursor:pointer;}
 .btn-view:hover{background:rgba(255,255,255,.12);}
 
-/* FORM — Add Entry */
+/* FORM, Add Entry */
 .add-form{background:#0d1f3c;border:1px solid rgba(240,192,64,.15);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem;}
 .add-form h3{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.85rem;}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.65rem;margin-bottom:.65rem;}
@@ -163,12 +163,12 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
   <!-- Stats -->
   <div class="stats-row" id="stats-row">
-    <div class="stat-card"><div class="stat-n" id="stat-email-total">—</div><div class="stat-l">Email Subscribers</div><div class="stat-sub">Newsletter signups</div></div>
-    <div class="stat-card"><div class="stat-n" id="stat-user-total">—</div><div class="stat-l">Registered Users</div><div class="stat-sub">Firebase profiles</div></div>
-    <div class="stat-card"><div class="stat-n" id="stat-salary-pending">—</div><div class="stat-l">Salary Submissions</div><div class="stat-sub">Pending approval</div></div>
-    <div class="stat-card"><div class="stat-n" id="stat-story-pending">—</div><div class="stat-l">Success Stories</div><div class="stat-sub">Pending approval</div></div>
-    <div class="stat-card"><div class="stat-n" id="stat-salary-total">—</div><div class="stat-l">Total Salary Entries</div><div class="stat-sub">Live on site</div></div>
-    <div class="stat-card"><div class="stat-n" id="stat-story-total">—</div><div class="stat-l">Total Stories</div><div class="stat-sub">Live on site</div></div>
+    <div class="stat-card"><div class="stat-n" id="stat-email-total">,</div><div class="stat-l">Email Subscribers</div><div class="stat-sub">Newsletter signups</div></div>
+    <div class="stat-card"><div class="stat-n" id="stat-user-total">,</div><div class="stat-l">Registered Users</div><div class="stat-sub">Firebase profiles</div></div>
+    <div class="stat-card"><div class="stat-n" id="stat-salary-pending">,</div><div class="stat-l">Salary Submissions</div><div class="stat-sub">Pending approval</div></div>
+    <div class="stat-card"><div class="stat-n" id="stat-story-pending">,</div><div class="stat-l">Success Stories</div><div class="stat-sub">Pending approval</div></div>
+    <div class="stat-card"><div class="stat-n" id="stat-salary-total">,</div><div class="stat-l">Total Salary Entries</div><div class="stat-sub">Live on site</div></div>
+    <div class="stat-card"><div class="stat-n" id="stat-story-total">,</div><div class="stat-l">Total Stories</div><div class="stat-sub">Live on site</div></div>
   </div>
 
   <!-- Tabs -->
@@ -229,7 +229,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
         <div class="field"><label>Years Since Separation</label>
           <select id="as-since"><option>Less than 1 year</option><option>1-2 years</option><option>3-5 years</option><option>5+ years</option></select></div>
       </div>
-      <button class="add-btn" onclick="addSalary()">➕ Add Entry — Publish Immediately</button>
+      <button class="add-btn" onclick="addSalary()">➕ Add Entry, Publish Immediately</button>
     </div>
   </div>
 
@@ -237,7 +237,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <div class="panel" id="panel-analytics">
     <div class="ga-setup" id="ga-setup">
       <h3>Connect Google Analytics 4</h3>
-      <p>View your site traffic, top pages, visitor locations, and more — pulled directly from GA4.<br>
+      <p>View your site traffic, top pages, visitor locations, and more, pulled directly from GA4.<br>
       <strong style="color:rgba(240,192,64,.7);">One-time setup:</strong> You need a Google Cloud project with the GA4 Data API enabled and an OAuth Client ID.
       <a href="https://console.cloud.google.com/apis/library/analyticsdata.googleapis.com" target="_blank" style="color:#4285f4;">Enable API</a> ·
       <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:#4285f4;">Create OAuth ID</a>
@@ -262,15 +262,15 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
     <div class="ga-widgets" id="ga-widgets">
       <div class="ga-stat-row">
-        <div class="ga-stat"><div class="ga-stat-n" id="ga-today">—</div><div class="ga-stat-l">Today</div></div>
-        <div class="ga-stat"><div class="ga-stat-n" id="ga-7d">—</div><div class="ga-stat-l">Last 7 Days</div></div>
-        <div class="ga-stat"><div class="ga-stat-n" id="ga-30d">—</div><div class="ga-stat-l">Last 30 Days</div></div>
-        <div class="ga-stat"><div class="ga-stat-n" id="ga-users-30d">—</div><div class="ga-stat-l">Unique Users (30d)</div></div>
+        <div class="ga-stat"><div class="ga-stat-n" id="ga-today">,</div><div class="ga-stat-l">Today</div></div>
+        <div class="ga-stat"><div class="ga-stat-n" id="ga-7d">,</div><div class="ga-stat-l">Last 7 Days</div></div>
+        <div class="ga-stat"><div class="ga-stat-n" id="ga-30d">,</div><div class="ga-stat-l">Last 30 Days</div></div>
+        <div class="ga-stat"><div class="ga-stat-n" id="ga-users-30d">,</div><div class="ga-stat-l">Unique Users (30d)</div></div>
       </div>
 
       <div style="margin-bottom:1.25rem;">
         <div class="ga-card">
-          <div class="ga-card-title">Daily Sessions — Last 30 Days</div>
+          <div class="ga-card-title">Daily Sessions, Last 30 Days</div>
           <div id="ga-chart" style="display:flex;align-items:flex-end;gap:2px;height:100px;padding-top:.5rem;"></div>
         </div>
       </div>
@@ -325,7 +325,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
       </div>
       <div class="field" style="margin-bottom:.65rem;"><label>Story / What Helped Most</label>
         <textarea id="ss-story" placeholder="What did you do to land the job? What would you tell the next veteran with your MOS?"></textarea></div>
-      <button class="add-btn" onclick="addStory()">➕ Add Story — Publish Immediately</button>
+      <button class="add-btn" onclick="addStory()">➕ Add Story, Publish Immediately</button>
     </div>
   </div>
 
@@ -334,7 +334,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 <div id="toast"></div>
 
 <script>
-// PIN stored as SHA-256 hash — not readable in source
+// PIN stored as SHA-256 hash, not readable in source
 var ADMIN_PIN_HASH = '8266498d969081c29737b8daeb5b51d60e56d008fff243a39d16c3032d42f6cf';
 var authed = false;
 
@@ -399,7 +399,7 @@ function loadAll() {
     document.getElementById('salary-pending-list').innerHTML = '<div class="empty"><h3>Firebase Not Connected</h3>Add your Firebase config to see submissions.</div>';
     document.getElementById('story-pending-list').innerHTML = '<div class="empty"><h3>Firebase Not Connected</h3>Add your Firebase config to see submissions.</div>';
     ['stat-email-total','stat-salary-pending','stat-story-pending','stat-salary-total','stat-story-total'].forEach(function(id){
-      document.getElementById(id).textContent = '—';
+      document.getElementById(id).textContent = ',';
     });
     return;
   }
@@ -429,21 +429,21 @@ function loadUsers() {
     html += '</tr></thead><tbody>';
     snap.forEach(function(doc){
       var d = doc.data();
-      var name = d.name || d.displayName || '—';
-      var branch = '—'; var rank = '—'; var mos = '—';
+      var name = d.name || d.displayName || ',';
+      var branch = ','; var rank = ','; var mos = ',';
       if(d.milExperiences && d.milExperiences[0]){
         var m = d.milExperiences[0];
-        branch = m.branch || '—';
-        rank = m.rank || '—';
-        mos = m.mos || '—';
+        branch = m.branch || ',';
+        rank = m.rank || ',';
+        mos = m.mos || ',';
       } else if(d.experiences && d.experiences[0]){
         var m2 = d.experiences[0];
-        branch = m2.branch || '—';
-        rank = m2.rank || '—';
-        mos = m2.mos || '—';
+        branch = m2.branch || ',';
+        rank = m2.rank || ',';
+        mos = m2.mos || ',';
       }
       var hasSub = d.stripeSession ? '<span style="color:#4ade80;font-weight:600;">Active</span>' : '<span style="color:rgba(192,216,240,.3);">Free</span>';
-      var lastActive = d.updatedAt ? new Date(d.updatedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+      var lastActive = d.updatedAt ? new Date(d.updatedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ',';
       html += '<tr style="border-bottom:1px solid rgba(255,255,255,.05);">';
       html += '<td style="padding:.55rem .75rem;color:#e8f0f8;font-weight:500;">'+name+'</td>';
       html += '<td style="padding:.55rem .75rem;color:rgba(192,216,240,.6);font-size:.78rem;">'+branch+'</td>';
@@ -481,9 +481,9 @@ function loadEmailSubscribers() {
     snap.forEach(function(doc){
       var d = doc.data();
       allEmails.push(d.email);
-      var date = d.timestamp ? new Date(d.timestamp.seconds ? d.timestamp.seconds*1000 : d.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
-      var source = (d.source||'').replace('https://veterancareerpath.com/','').replace('https://veterancareerpath.com','Home') || '—';
-      if(source.length > 30) source = source.substring(0,30) + '…';
+      var date = d.timestamp ? new Date(d.timestamp.seconds ? d.timestamp.seconds*1000 : d.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ',';
+      var source = (d.source||'').replace('https://veterancareerpath.com/','').replace('https://veterancareerpath.com','Home') || ',';
+      if(source.length > 30) source = source.substring(0, 30) + '…';
       var status = d.status || 'active';
       var statusColor = status === 'active' ? '#4ade80' : '#ff8080';
       html += '<tr style="border-bottom:1px solid rgba(255,255,255,.05);">';
@@ -551,14 +551,14 @@ function renderSalaryPending(snap) {
     div.id = 'sal-' + doc.id;
     div.innerHTML =
       '<div class="item-header">' +
-        '<div class="item-title">' + d.mos + ' — ' + d.title + '</div>' +
+        '<div class="item-title">' + d.mos + ', ' + d.title + '</div>' +
         '<span class="item-badge badge-pending">Pending</span>' +
       '</div>' +
       '<div class="item-meta">' + d.branch + ' · ' + d.rank + ' · ' + d.yos + ' · ' + d.sector + '<br>' +
         '<strong style="color:#4ade80">$' + (d.salary||0).toLocaleString() + '/yr</strong>' +
         (d.clearance && d.clearance!=='none' ? ' · 🔐 ' + d.clearance.toUpperCase() : '') +
         ' · ' + (d.state||'') +
-        '<br><span style="color:rgba(192,216,240,.3)">Submitted: ' + (d.submittedAt||'').slice(0,10) + '</span>' +
+        '<br><span style="color:rgba(192,216,240,.3)">Submitted: ' + (d.submittedAt||'').slice(0, 10) + '</span>' +
       '</div>' +
       '<div class="item-actions">' +
         '<button class="btn-approve" data-id="' + doc.id + '" onclick="approveSalary(this)">✓ Approve</button>' +
@@ -640,15 +640,15 @@ function renderStoryPending(snap) {
     div.id = 'str-' + doc.id;
     div.innerHTML =
       '<div class="item-header">' +
-        '<div class="item-title">' + (d.name||'Anonymous') + ' — ' + (d.role||'') + '</div>' +
+        '<div class="item-title">' + (d.name||'Anonymous') + ', ' + (d.role||'') + '</div>' +
         '<span class="item-badge badge-pending">Pending</span>' +
       '</div>' +
       '<div class="item-meta">' + (d.branch||'') + ' ' + (d.mos||'') + ' · ' + (d.rank||'') + ' · ' + (d.yos||'') +
         (d.salary && d.salary!=='Prefer not to say' ? ' · <strong style="color:#4ade80">'+d.salary+'</strong>' : '') +
         ' · Found job: ' + (d.time||'') +
-        '<br><span style="color:rgba(192,216,240,.3)">Submitted: ' + (d.submittedAt||'').slice(0,10) + '</span>' +
+        '<br><span style="color:rgba(192,216,240,.3)">Submitted: ' + (d.submittedAt||'').slice(0, 10) + '</span>' +
       '</div>' +
-      '<div class="item-body">' + (d.story||'').slice(0,300).replace(/[<>]/g,'') + (d.story && d.story.length>300?'...':'') + '</div>' +
+      '<div class="item-body">' + (d.story||'').slice(0, 300).replace(/[<>]/g,'') + (d.story && d.story.length>300?'...':'') + '</div>' +
       '<div class="item-actions">' +
         '<button class="btn-approve" data-id="' + doc.id + '" onclick="approveStory(this)">✓ Approve</button>' +
         '<button class="btn-reject" data-id="' + doc.id + '" onclick="deleteStory(this)">✕ Delete</button>' +
@@ -693,7 +693,7 @@ function addStory() {
     role: role, salary: document.getElementById('ss-salary').value,
     time: document.getElementById('ss-time').value,
     story: story, approved: true,
-    submittedAt: new Date().toISOString(), date: new Date().toISOString().slice(0,7)
+    submittedAt: new Date().toISOString(), date: new Date().toISOString().slice(0, 7)
   };
   window.db.collection('successStories').add(data)
     .then(function(){
@@ -817,7 +817,7 @@ function gaFetchAll() {
       var v = parseInt(r.metricValues[0].value)||0;
       var pct = Math.max(2, (v/maxVal)*100);
       var d = r.dimensionValues[0].value;
-      var label = d.substring(4,6)+'/'+d.substring(6,8);
+      var label = d.substring(4, 6)+'/'+d.substring(6, 8);
       return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;" title="'+label+': '+v+' sessions">' +
         '<div style="width:100%;background:linear-gradient(180deg,rgba(240,192,64,.8),rgba(240,192,64,.3));border-radius:2px 2px 0 0;height:'+pct+'%;min-height:2px;"></div>' +
         '</div>';
@@ -835,7 +835,7 @@ function gaFetchAll() {
     var rows = data.rows || [];
     document.getElementById('ga-pages').innerHTML = rows.map(function(r) {
       var page = r.dimensionValues[0].value;
-      if(page.length > 40) page = page.substring(0,40) + '…';
+      if(page.length > 40) page = page.substring(0, 40) + '…';
       return '<tr><td style="font-size:.75rem;">'+page+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
     }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.3);">No data</td></tr>';
   }).catch(function(e) { console.error('Pages error:', e); });

@@ -147,6 +147,7 @@ body{font-family:'Inter',sans-serif;background:#060e1a;color:#e8f0f8;font-size:1
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Article","name":"Scout Cover Letter Builder | AI-Powered Veteran Cover Letter | $5","description":"Generate a personalized cover letter from your resume and job description. AI matches your military experience to the specific position. $5 per cover letter.","url":"https://veterancareerpath.com/scout-cover-letter.html","datePublished":"2026-03-15","dateModified":"2026-04-24","author":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com"},"publisher":{"@type":"Organization","name":"Veteran Career Path","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}}}
 </script>
+  <script src="/assets/js/vcb-secure-api.js"></script>
 </head>
 <body>
 
@@ -479,7 +480,7 @@ body.menu-open{overflow:hidden!important;}
       <div class="vcp-mega-section">
         <div class="vcp-mega-section-label">Subscriber AI Tools  -  $15/mo</div>
         <a href="https://veterancareerpath.com/app.html" class="featured">Career Path Tools</a>
-        <a href="https://veterancareerpath.com/va-claim-builder.html" class="featured new">VA Claim Builder</a>
+        <a href="https://veterancareerpath.com/va-claim-builder.html" class="featured new">VA Claim Education Center</a>
         <a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
         <a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume Builder</a>
         <a href="https://veterancareerpath.com/tools-interview-simulator.html">Interview Simulator</a>
@@ -489,9 +490,9 @@ body.menu-open{overflow:hidden!important;}
         <a href="https://veterancareerpath.com/dd214-decoder.html">DD-214 Decoder</a>
         <a href="https://veterancareerpath.com/clearance-job-match.html">Clearance Job Match</a>
         <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
-        <a href="https://veterancareerpath.com/linkedin-profile-rewriter.html">LinkedIn Rewriter</a>
-        <a href="https://veterancareerpath.com/federal-resume-builder-ai.html">Federal Resume AI</a>
-        <a href="https://veterancareerpath.com/salary-negotiation-roleplay.html">Salary Roleplay</a>
+        <a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Rewriter</a>
+        <a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume AI</a>
+        <a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Roleplay</a>
         <a href="https://veterancareerpath.com/transition-timeline-planner.html">Transition Planner</a>
         <a href="https://veterancareerpath.com/va-home-loan-analyzer.html">VA Loan Analyzer</a>
         <a href="https://veterancareerpath.com/veteran-business-funding.html">Business Funding</a>
@@ -509,9 +510,9 @@ body.menu-open{overflow:hidden!important;}
       <div class="vcp-mega-section">
         <div class="vcp-mega-section-label">Resume &amp; Profile</div>
         <a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume Builder</a>
-        <a href="https://veterancareerpath.com/federal-resume-builder-ai.html">Federal Resume AI</a>
+        <a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume AI</a>
         <a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Optimizer</a>
-        <a href="https://veterancareerpath.com/linkedin-profile-rewriter.html">LinkedIn Rewriter</a>
+        <a href="https://veterancareerpath.com/tools-linkedin-builder.html">LinkedIn Rewriter</a>
         <a href="https://veterancareerpath.com/scout-resume-builder.html" class="featured new">Scout Resume Builder</a>
         <a href="https://veterancareerpath.com/scout-cover-letter.html" class="featured new">Scout Cover Letter Builder</a>
         <a href="https://veterancareerpath.com/military-civilian-resume.html">Military Resume Guide</a>
@@ -532,7 +533,7 @@ body.menu-open{overflow:hidden!important;}
       <div class="vcp-mega-section">
         <div class="vcp-mega-section-label">Interview &amp; Salary</div>
         <a href="https://veterancareerpath.com/tools-interview-simulator.html">Interview Simulator</a>
-        <a href="https://veterancareerpath.com/salary-negotiation-roleplay.html">Salary Negotiation Roleplay</a>
+        <a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Negotiation Roleplay</a>
         <a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Negotiator</a>
         <a href="https://veterancareerpath.com/tools-cert-advisor.html">Certification Advisor</a>
         <a href="https://veterancareerpath.com/career-assessment-full.html">Full Career Assessment</a>
@@ -1631,27 +1632,13 @@ body.menu-open{overflow:hidden!important;}
       'Return ONLY valid JSON in this exact format (no markdown, no code fences):\n' +
       '{"greeting":"Dear [Hiring Manager/specific name if known],...","body":"Full cover letter body text with paragraph breaks as \\n\\n","closing":"Sincerely,","name":"[candidate name extracted from resume]"}';
 
-    fetch('https://vcp-proxy.vercel.app/api/claude', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2000,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userPrompt }]
-      })
-    })
-    .then(function(r){
-      if (!r.ok) throw new Error('API error: ' + r.status);
-      return r.json();
-    })
-    .then(function(data){
-      var text = '';
-      if (data.content && data.content[0] && data.content[0].text) {
-        text = data.content[0].text.trim();
-      } else if (data.text) {
-        text = data.text.trim();
-      }
+    if (!window.VCBSecureApi) {
+      throw new Error('Secure AI client unavailable.');
+    }
+
+    window.VCBSecureApi.callClaude(userPrompt, systemPrompt, 2000)
+    .then(function(text){
+      text = String(text || '').trim();
 
       // Strip markdown code fences if present
       text = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
@@ -1717,7 +1704,7 @@ body.menu-open{overflow:hidden!important;}
   // ── Save data for retention ──
   function saveData(resume, company, jobTitle, letter){
     var email = extractEmail(resume);
-    var code = Math.random().toString(36).substr(2,6).toUpperCase();
+    var code = Math.random().toString(36).substr(2, 6).toUpperCase();
 
     var existing = {};
     try { existing = JSON.parse(localStorage.getItem('vcp_scout_data')||'{}'); } catch(e){}
@@ -1774,21 +1761,21 @@ body.menu-open{overflow:hidden!important;}
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.setTextColor(90, 90, 90);
+    doc.setTextColor(90,90,90);
     doc.text(dateStr, margin, y);
     y += 0.45;
 
     // Greeting
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(12);
-    doc.setTextColor(30, 30, 30);
+    doc.setTextColor(30,30,30);
     doc.text(generatedLetter.greeting || 'Dear Hiring Manager,', margin, y);
     y += 0.35;
 
     // Body paragraphs
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.setTextColor(40, 40, 40);
+    doc.setTextColor(40,40,40);
 
     var bodyText = (generatedLetter.body || '').replace(/\\n\\n/g, '\n\n').replace(/\\n/g, '\n');
     var paragraphs = bodyText.split(/\n\n+/);
@@ -1814,7 +1801,7 @@ body.menu-open{overflow:hidden!important;}
     if (y > 9.5) { doc.addPage(); y = margin; }
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.setTextColor(30, 30, 30);
+    doc.setTextColor(30,30,30);
     doc.text(generatedLetter.closing || 'Sincerely,', margin, y);
     y += 0.35;
 

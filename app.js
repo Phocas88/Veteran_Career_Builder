@@ -26,7 +26,7 @@ const BRANCH_EMBLEMS = {
   "Coast Guard": "⚓"
 };
 
-// Professional SVG insignia — used wherever branch logos are displayed
+// Professional SVG insignia, used wherever branch logos are displayed
 window.BRANCH_LOGOS = {
   "Army":         "https://veterancareerpath.com/army.png",
   "Navy":         "https://veterancareerpath.com/navy.png",
@@ -244,7 +244,7 @@ function UniversityInput({ value, onChange, placeholder }) {
 // ── SKILLS LIBRARY ──────────────────────────────────────────────────────────
 
 
-// ── ACCESS CODES — validated server-side via proxy ──
+// ── ACCESS CODES, validated server-side via proxy ──
 // Codes are no longer stored in client JS to prevent bypass.
 // The proxy at VCB_PROXY_URL/validate-code handles validation.
 
@@ -332,7 +332,7 @@ function CareerListView(props) {
 
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:".5rem"}}>
     <span style={{fontSize:".78rem",color:"var(--dim)"}}>{filterCareers(careers,careerFilter).length} matches</span>
-    <button style={{padding:".3rem .8rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".78rem",cursor:"pointer"}} onClick={()=>{if(!currentUser){setShowAuth(true);return;}const v=filterCareers(careers,careerFilter);const e=v.map(c=>({id:Date.now()+c.title,title:c.title,sector:c.sector,industry:c.industry,salary:c.salaryRange,match:c.match,date:new Date().toLocaleDateString()}));const p=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");localStorage.setItem("vcb_saved_paths",JSON.stringify([...e,...p.filter(x=>!e.find(y=>y.title===x.title))].slice(0,50)));showToast("✓ Saved "+e.length+" paths");}}>💾 Save All</button>
+    <button style={{padding:".3rem .8rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".78rem",cursor:"pointer"}} onClick={()=>{if(!currentUser){setShowAuth(true);return;}const v=filterCareers(careers,careerFilter);const e=v.map(c=>({id:Date.now()+c.title,title:c.title,sector:c.sector,industry:c.industry,salary:c.salaryRange,match:c.match,date:new Date().toLocaleDateString()}));const p=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");localStorage.setItem("vcb_saved_paths",JSON.stringify([...e,...p.filter(x=>!e.find(y=>y.title===x.title))].slice(0, 50)));showToast("✓ Saved "+e.length+" paths");}}>💾 Save All</button>
   </div>
   <div style={{display:"flex",flexDirection:"column",gap:".55rem"}}>
     {careers
@@ -544,7 +544,7 @@ function CareerDetailBody({careerDetail,selectedCareer,currentUser,setShowAuth,s
       </div>
 
       <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",marginBottom:".75rem"}}>
-        <div style={{fontWeight:700,fontSize:".75rem",color:"#1a5c9a",textTransform:"uppercase",letterSpacing:".08em",marginBottom:".4rem"}}>SkillBridge — Train While Still Serving</div>
+        <div style={{fontWeight:700,fontSize:".75rem",color:"#1a5c9a",textTransform:"uppercase",letterSpacing:".08em",marginBottom:".4rem"}}>SkillBridge, Train While Still Serving</div>
         <div style={{fontSize:".82rem",color:"#3a5070",marginBottom:".5rem",lineHeight:1.6}}>Active duty? SkillBridge lets you work with civilian employers during your last 180 days while keeping full military pay and benefits.</div>
         <div style={{display:"flex",flexWrap:"wrap",gap:".4rem"}}>
           {[
@@ -560,7 +560,7 @@ function CareerDetailBody({careerDetail,selectedCareer,currentUser,setShowAuth,s
       </div>
 
       <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",marginBottom:".75rem"}}>
-        <div style={{fontWeight:700,fontSize:".75rem",color:"#1a7a40",textTransform:"uppercase",letterSpacing:".08em",marginBottom:".4rem"}}>GI Bill — Education Programs</div>
+        <div style={{fontWeight:700,fontSize:".75rem",color:"#1a7a40",textTransform:"uppercase",letterSpacing:".08em",marginBottom:".4rem"}}>GI Bill, Education Programs</div>
         <div style={{fontSize:".82rem",color:"#3a5070",marginBottom:".5rem",lineHeight:1.6}}>Use your GI Bill benefits to get certified or degreed for this career field.</div>
         <div style={{display:"flex",flexWrap:"wrap",gap:".4rem"}}>
           {[
@@ -576,7 +576,7 @@ function CareerDetailBody({careerDetail,selectedCareer,currentUser,setShowAuth,s
       </div>
       <div style={{borderTop:"1px solid #e0e8f0",paddingTop:".75rem",display:"flex",gap:".5rem",flexWrap:"wrap",justifyContent:"flex-end"}}>
         <button style={{padding:".4rem .9rem",background:"transparent",border:"1px solid #d0daea",borderRadius:"4px",color:"#3a5070",fontSize:".8rem",cursor:"pointer"}} onClick={()=>{const win=window.open("","_blank");const c=selectedCareer;const cd=careerDetail;win.document.write("<html><head><style>body{font-family:Arial,sans-serif;padding:2rem;max-width:800px;margin:0 auto;}h1,h2{color:#1a3a6b;}</style></head><body><h1>"+c.title+"</h1><p><b>Sector:</b> "+(c.sector||"")+" | <b>Industry:</b> "+(c.industry||"")+" | <b>Salary:</b> "+(c.salaryRange||"")+"</p>"+(cd&&cd.about?"<h2>About</h2><p>"+cd.about+"</p>":"")+"<p style='margin-top:2rem;font-size:8pt;color:#aaa'>Generated by VeteranCareerPath.com</p><scr"+"ipt>window.onload=function(){window.print()}<\/scr"+"ipt></body></html>");win.document.close();}}>🖨 Print</button>
-        <button style={{padding:".4rem .9rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".8rem",cursor:"pointer",fontWeight:600}} onClick={()=>{if(!currentUser){setShowAuth(true);return;}const e={id:Date.now().toString(),title:selectedCareer.title,sector:selectedCareer.sector,industry:selectedCareer.industry,salary:selectedCareer.salaryRange,match:selectedCareer.match,date:new Date().toLocaleDateString()};const p=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");localStorage.setItem("vcb_saved_paths",JSON.stringify([e,...p.filter(x=>x.title!==e.title)].slice(0,20)));showToast("✓ "+selectedCareer.title+" saved");}}>💾 Save Path</button>
+        <button style={{padding:".4rem .9rem",background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".8rem",cursor:"pointer",fontWeight:600}} onClick={()=>{if(!currentUser){setShowAuth(true);return;}const e={id:Date.now().toString(),title:selectedCareer.title,sector:selectedCareer.sector,industry:selectedCareer.industry,salary:selectedCareer.salaryRange,match:selectedCareer.match,date:new Date().toLocaleDateString()};const p=JSON.parse(localStorage.getItem("vcb_saved_paths")||"[]");localStorage.setItem("vcb_saved_paths",JSON.stringify([e,...p.filter(x=>x.title!==e.title)].slice(0, 20)));showToast("✓ "+selectedCareer.title+" saved");}}>💾 Save Path</button>
       </div>
   </div>
   </div>);
@@ -625,7 +625,7 @@ function CareerTab(props) {
   return (<div className={"panel "+(tab===1?"on":"")}>
 
         <div className="intro">
-          <strong>Your Civilian Qualifications Profile.</strong> Before finding your career matches, review what your service actually unlocks in the civilian world. Every MOS, clearance, ASI, SQI, and additional duty is an asset — here's what each one means to a civilian employer.
+          <strong>Your Civilian Qualifications Profile.</strong> Before finding your career matches, review what your service actually unlocks in the civilian world. Every MOS, clearance, ASI, SQI, and additional duty is an asset, here's what each one means to a civilian employer.
         </div>
       
 
@@ -637,7 +637,7 @@ function CareerTab(props) {
                 ? React.createElement("img",{src:window.BRANCH_LOGOS[exp.branch],alt:exp.branch,width:32,height:32,style:{borderRadius:"50%",flexShrink:0},onError:function(e){e.target.style.display="none";}})
                 : "🎖️"
               }
-              {exp.branch} {exp.rank ? "— "+exp.rank : ""}
+              {exp.branch} {exp.rank ? ", "+exp.rank : ""}
               </h3>
               <span className="ch-sub">{exp.serviceType}{exp.tos ? " · "+exp.tos : ""}</span>
             </div>
@@ -646,7 +646,7 @@ function CareerTab(props) {
 
               <div style={{marginBottom:"1rem"}}>
                 <div style={{display:"flex",alignItems:"center",gap:".75rem",flexWrap:"wrap",marginBottom:".5rem"}}>
-                  <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".08em",color:"var(--gold-light)"}}>{exp.mos||"—"}</span>
+                  <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.5rem",letterSpacing:".08em",color:"var(--gold-light)"}}>{exp.mos||","}</span>
                   {exp.mosTitle&&<span style={{fontSize:"1rem",color:"var(--text)"}}>{exp.mosTitle}</span>}
                   {exp.unit&&<span style={{fontSize:".8rem",color:"var(--dim)"}}>· {exp.unit}</span>}
                 </div>
@@ -668,7 +668,7 @@ function CareerTab(props) {
               <div style={{marginBottom:"1rem"}}>
                 <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>🔐 Security Clearance</div>
                 {exp.clearanceLevel==="None"
-                  ? <div style={{fontSize:".85rem",color:"var(--dim)"}}>No clearance listed. Many civilian roles don't require one — your skills still transfer.</div>
+                  ? <div style={{fontSize:".85rem",color:"var(--dim)"}}>No clearance listed. Many civilian roles don't require one, your skills still transfer.</div>
                   : <div style={{display:"flex",flexDirection:"column",gap:".4rem"}}>
                       <div style={{display:"flex",gap:".5rem",flexWrap:"wrap",alignItems:"center"}}>
                         <span className={getClearanceBadge(exp.clearanceLevel)}>{exp.clearanceLevel}</span>
@@ -679,7 +679,7 @@ function CareerTab(props) {
                         {exp.clearanceLevel.includes("SCI")||exp.clearanceLevel.includes("Poly")
                           ? "🏆 Premium Asset: TS/SCI clearances unlock high-paying roles in intelligence agencies (CIA, NSA, DIA), defense contractors (Booz Allen, SAIC, Leidos), and federal IT. Cleared professionals command 10–30% salary premiums. Your clearance alone can be worth $20,000–$50,000 more per year."
                           : exp.clearanceLevel==="Top Secret"
-                          ? "⭐ High Value: Top Secret clearance opens doors to defense contracting, federal law enforcement, DHS, and government IT roles. Actively sought by employers — investigation costs $50,000+ to initiate."
+                          ? "⭐ High Value: Top Secret clearance opens doors to defense contracting, federal law enforcement, DHS, and government IT roles. Actively sought by employers, investigation costs $50,000+ to initiate."
                           : exp.clearanceLevel==="Secret"
                           ? "✅ Solid Asset: Secret clearance qualifies you for thousands of defense, federal, and contractor positions. Most DoD contractor roles require this as a baseline."
                           : "✅ Clearance noted. Even Confidential/Public Trust clearances help with federal and contractor employment."}
@@ -692,7 +692,7 @@ function CareerTab(props) {
               {exp.asi.length>0&&(<>
                 <hr className="sdiv"/>
                 <div style={{marginBottom:"1rem"}}>
-                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Skill Identifiers (ASI) — What They Unlock</div>
+                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Skill Identifiers (ASI), What They Unlock</div>
                   <div style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
                     {exp.asi.map(a=>(
                       <div key={a.code} style={{display:"flex",gap:".75rem",alignItems:"flex-start",background:"rgba(91,155,213,.06)",border:"1px solid rgba(91,155,213,.18)",borderRadius:"3px",padding:".6rem .85rem"}}>
@@ -704,10 +704,10 @@ function CareerTab(props) {
                              a.code==="8A" ? "Airborne qualification demonstrates ability to operate in austere environments and adapt to rapidly changing conditions. Valued in emergency management, aviation, and special operations support roles." :
                              a.code==="B3" ? "Linguist qualification is a premium asset in intelligence, federal law enforcement (FBI/CIA/DEA), international business, diplomacy, and translation services." :
                              a.code==="P1" ? "Master Parachutist with 65+ jumps signals elite special operations background, exceptional risk management, and advanced military training. Top-tier for SOF support, government contracting, and security consulting." :
-                             a.code==="X3" ? "Military Instructor qualification translates directly to corporate training, learning & development roles, academic instruction, and leadership coaching — all high-demand civilian fields." :
+                             a.code==="X3" ? "Military Instructor qualification translates directly to corporate training, learning & development roles, academic instruction, and leadership coaching, all high-demand civilian fields." :
                              a.code==="G4" ? "Combatives instructor certification demonstrates advanced physical training expertise. Directly applicable to law enforcement training, personal protection, and defense sector roles." :
                              a.code==="V5" ? "Battle Staff qualification means you've planned and coordinated complex multi-element operations. This maps directly to senior project management, operations director, and strategic planning roles." :
-                             a.code==="W1" ? "SERE training signals resilience, high-stress decision-making, and classified operations knowledge — valuable in intelligence, security, and government contracting." :
+                             a.code==="W1" ? "SERE training signals resilience, high-stress decision-making, and classified operations knowledge, valuable in intelligence, security, and government contracting." :
                              (a.desc)+" represents specialized military training that differentiates you from typical civilian applicants. Highlight this on your resume and in interviews."}
                           </div>
                         </div>
@@ -721,7 +721,7 @@ function CareerTab(props) {
               {exp.sqi.length>0&&(<>
                 <hr className="sdiv"/>
                 <div style={{marginBottom:"1rem"}}>
-                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Skill Qualification Identifiers (SQI) — What They Unlock</div>
+                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Skill Qualification Identifiers (SQI), What They Unlock</div>
                   <div style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
                     {exp.sqi.map(s=>(
                       <div key={s.code} style={{display:"flex",gap:".75rem",alignItems:"flex-start",background:"rgba(160,124,214,.07)",border:"1px solid rgba(160,124,214,.2)",borderRadius:"3px",padding:".6rem .85rem"}}>
@@ -731,7 +731,7 @@ function CareerTab(props) {
                           <div style={{fontSize:".78rem",color:"var(--dim)",marginTop:".2rem",lineHeight:"1.5"}}>
                             {s.code==="F"||s.code==="Q" ? "Special Forces background is among the most valued military credentials in civilian employment. Opens doors to intelligence agencies, Tier 1 defense contractors, private military consulting, federal law enforcement leadership, and executive protection. Salary premiums of 20–40% are common." :
                              s.code==="R" ? "Ranger-tabbed service members are highly sought in law enforcement, federal agencies, and security consulting for their demonstrated leadership, physical toughness, and tactical expertise." :
-                             s.code==="P" ? "Parachutist qualification demonstrates willingness to operate in high-risk environments and comfort with complex technical procedures — valued in aviation, emergency services, and government contracting." :
+                             s.code==="P" ? "Parachutist qualification demonstrates willingness to operate in high-risk environments and comfort with complex technical procedures, valued in aviation, emergency services, and government contracting." :
                              s.code==="X" ? "Instructor/Faculty SQI means you've been certified to teach and develop others in the military's most rigorous training environment. This maps directly to corporate L&D, technical training, academic instruction, and coaching careers." :
                              s.code==="V" ? "Aviation background unlocks commercial aviation, drone operations, air traffic control, aviation management, and aerospace industry roles." :
                              s.code==="S" ? "Special Operations support experience is premium in defense contracting, intelligence support, and government program management." :
@@ -748,7 +748,7 @@ function CareerTab(props) {
               {exp.additionalDuties.length>0&&(<>
                 <hr className="sdiv"/>
                 <div>
-                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Duty Qualifications — Civilian Value</div>
+                  <div style={{fontSize:".68rem",letterSpacing:".13em",textTransform:"uppercase",color:"var(--slate)",fontWeight:600,marginBottom:".5rem"}}>Additional Duty Qualifications, Civilian Value</div>
                   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:".45rem"}}>
                     {exp.additionalDuties.map(d=>(
                       <div key={d} style={{background:"rgba(76,175,130,.06)",border:"1px solid rgba(76,175,130,.18)",borderRadius:"3px",padding:".55rem .75rem"}}>
@@ -806,12 +806,12 @@ function CareerTab(props) {
             <div className="cb" style={{display:"flex",flexDirection:"column",gap:".5rem"}}>
               <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
                 {exp.startDate&&<span className="tos-badge">📅 {exp.startDate} – {exp.current?"Present":exp.endDate||"?"}</span>}
-                {exp.clearanceLevel!=="None"&&<span className={getClearanceBadge(exp.clearanceLevel)}>{exp.clearanceLevel} — {exp.clearanceStatus}</span>}
+                {exp.clearanceLevel!=="None"&&<span className={getClearanceBadge(exp.clearanceLevel)}>{exp.clearanceLevel}, {exp.clearanceStatus}</span>}
               </div>
-              {exp.duties&&<div style={{fontSize:".85rem",color:"var(--dim)",lineHeight:"1.6",fontStyle:"italic"}}>"{exp.duties.slice(0,180)}{exp.duties.length>180?"...":""}"</div>}
+              {exp.duties&&<div style={{fontSize:".85rem",color:"var(--dim)",lineHeight:"1.6",fontStyle:"italic"}}>"{exp.duties.slice(0, 180)}{exp.duties.length>180?"...":""}"</div>}
               {exp.type===RG&&
                 <div style={{background:"rgba(230,160,60,.07)",border:"1px solid rgba(230,160,60,.22)",borderRadius:"3px",padding:".6rem .85rem",fontSize:".8rem",color:"#e8b84b"}}>
-                  ⭐ Dual-career advantage: Simultaneously maintaining civilian employment and military service demonstrates exceptional time management, discipline, and commitment — a top-tier signal to civilian employers.
+                  ⭐ Dual-career advantage: Simultaneously maintaining civilian employment and military service demonstrates exceptional time management, discipline, and commitment, a top-tier signal to civilian employers.
                 </div>}
             </div>
           </div>
@@ -842,7 +842,7 @@ function CareerTab(props) {
               </div>
               <div className="field"><label>Interests & Hobbies</label>
                 <input placeholder="e.g. technology, coaching youth sports, woodworking, motorcycles, hunting, cooking, fitness..." value={target.interests||""} onChange={e=>upT("interests",e.target.value)}/>
-                <span className="hint">Help us find careers matching your passions — not just your MOS</span>
+                <span className="hint">Help us find careers matching your passions, not just your MOS</span>
               </div>
               <div className="field"><label>Open To Exploring</label>
                 <div style={{display:"flex",flexWrap:"wrap",gap:".4rem",marginTop:".3rem"}}>
@@ -850,7 +850,7 @@ function CareerTab(props) {
                     <button key={opt} onClick={()=>{const cur=(target.openTo||"").split(",").map(s=>s.trim()).filter(Boolean);const upd=cur.includes(opt)?cur.filter(x=>x!==opt):[...cur,opt];upT("openTo",upd.join(", "));}} style={{padding:".28rem .7rem",borderRadius:"20px",border:"1.5px solid",cursor:"pointer",background:(target.openTo||"").includes(opt)?"#1a3a6b":"transparent",color:(target.openTo||"").includes(opt)?"#ffffff":"#3a5070",borderColor:(target.openTo||"").includes(opt)?"#1a3a6b":"#b0c4d8"}}>{opt}</button>
                   ))}
                 </div>
-                <span className="hint" style={{marginTop:".4rem",display:"block"}}>Click to select — expands career matches beyond your MOS</span>
+                <span className="hint" style={{marginTop:".4rem",display:"block"}}>Click to select, expands career matches beyond your MOS</span>
               </div>
             </div>
           </div>
@@ -861,7 +861,7 @@ function CareerTab(props) {
             {loading.careers?"Analyzing Your Full Qualifications Profile...":"🔍  Find My Best Career Matches"}
           </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools, $15/mo</button>
                 )}
       
         {loading.careers&&<div className="loading"><div className="spin"/><span>Analyzing your qualifications and finding career matches...</span></div>}
@@ -961,10 +961,10 @@ function MyProfileHero(props) {
               {exp.branch}
             </div>
             <div style={{fontSize:".76rem",color:"rgba(255,255,255,.9)",marginBottom:".22rem"}}>
-              <span style={{opacity:.65,marginRight:".3rem"}}>Status:</span>{exp.serviceType||"—"}
+              <span style={{opacity:.65,marginRight:".3rem"}}>Status:</span>{exp.serviceType||","}
             </div>
             {exp.rank&&<div style={{fontSize:".76rem",color:"rgba(255,255,255,.9)",marginBottom:".22rem"}}>
-              <span style={{opacity:.65,marginRight:".3rem"}}>Rank:</span>{exp.rank}{rankObj?" — "+rankObj.title:""}
+              <span style={{opacity:.65,marginRight:".3rem"}}>Rank:</span>{exp.rank}{rankObj?", "+rankObj.title:""}
             </div>}
             {(exp.startDate||exp.endDate)&&<div style={{fontSize:".72rem",color:"rgba(255,255,255,.75)",marginTop:".15rem"}}>
               <span style={{opacity:.65,marginRight:".3rem"}}>Served:</span>{exp.startDate||"?"} – {exp.currently?"Present":(exp.endDate||"?")}
@@ -1059,7 +1059,7 @@ function MyProfileSaved(props) {
                     +"</div>"
                   ).join("");
                   const edu = (d.education||[]).map(e =>
-                    "<div style='font-size:9.5pt;margin-bottom:4pt'><strong>"+e.degree+"</strong> — "+e.school+(e.year?" ("+e.year+")":"")+"</div>"
+                    "<div style='font-size:9.5pt;margin-bottom:4pt'><strong>"+e.degree+"</strong>, "+e.school+(e.year?" ("+e.year+")":"")+"</div>"
                   ).join("");
                   const skills = (d.skills||[]).join(" &bull; ");
                   const certs = (d.certifications||[]).join(" &bull; ");
@@ -1130,10 +1130,10 @@ function MyProfileSaved(props) {
                       +"<div style='display:grid;grid-template-columns:1fr 1fr;gap:2rem;padding-top:1rem;border-top:1px solid #e8e8e8'>"
                       +"<div><div style='font-size:7.5pt;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#aaa;margin-bottom:8pt'>Education</div>"+edu+"</div>"
                       +"<div><div style='font-size:7.5pt;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#aaa;margin-bottom:8pt'>Skills</div>"
-                      +(d.skills||[]).map(s=>"<div style='font-size:9.5pt;color:#555;margin-bottom:3pt'>— "+s+"</div>").join("")
+                      +(d.skills||[]).map(s=>"<div style='font-size:9.5pt;color:#555;margin-bottom:3pt'>, "+s+"</div>").join("")
                       +"</div></div></div>";
                   } else {
-                    // ATS Chrono, ATS Combo, Modern, Traditional — clean single column
+                    // ATS Chrono, ATS Combo, Modern, Traditional, clean single column
                     body = "<div style='font-family:Arial,sans-serif;font-size:10pt;line-height:1.45;padding:1.5cm 2cm'>"
                       +"<div style='text-align:center;margin-bottom:10pt'>"
                       +"<div style='font-size:15pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em'>"+d.name+"</div>"
@@ -1160,7 +1160,7 @@ function MyProfileSaved(props) {
                       +"<div style='font-size:9pt;color:#333'>"+dd.contact+"</div></div>"
                       +"<div style='margin-bottom:8pt;font-size:9.5pt;line-height:1.65'>"+dd.summary+"</div>"
                       +(dd.experience||[]).map(j=>"<div style='margin-bottom:8pt'><div style='display:flex;justify-content:space-between'><strong>"+j.title+"</strong><span style='font-size:9pt;color:#555'>"+j.dates+"</span></div><div style='font-style:italic;font-size:9pt;margin-bottom:2pt'>"+j.employer+"</div>"+(j.bullets||[]).map(b=>"<div style='padding-left:12pt;font-size:9.5pt;margin-bottom:1pt'>&#8226; "+b+"</div>").join("")+"</div>").join("")
-                      +(dd.education||[]).map(e=>"<div style='font-size:9.5pt;margin-bottom:4pt'><strong>"+e.degree+"</strong> — "+e.school+" "+(e.year||"")+"</div>").join("")
+                      +(dd.education||[]).map(e=>"<div style='font-size:9.5pt;margin-bottom:4pt'><strong>"+e.degree+"</strong>, "+e.school+" "+(e.year||"")+"</div>").join("")
                       +"</div>";
                   } catch(ex) {
                     body = "<div style='font-family:Arial,sans-serif;padding:2cm;color:#555;font-size:11pt'>Unable to render this resume. Please regenerate it on the Build Resume tab.</div>";
@@ -1258,7 +1258,7 @@ function MyProfileSaved(props) {
             <button className="btn-sec" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{
                 const w=window.open("","_blank");
                 const grades = Object.values(r.grades||{}).map(g=>"<div style='margin:.4rem 0'><b>"+g.label+":</b> "+g.score+"/100</div>").join("");
-                w.document.write("<html><head><style>body{font-family:Arial,sans-serif;margin:2cm;font-size:11pt;line-height:1.7;max-width:700px;}h1{color:#1a3a6b;}h2{color:#1a3a6b;margin-top:1.5rem;}</style></head><body><h1>Resume Score Report</h1><p><b>Date:</b> "+r.date+"</p><h2>Overall Score: "+r.score+"/100 — "+r.label+"</h2>"+grades+"<h2>Summary</h2><p>"+r.summary+"</p></body></html>");
+                w.document.write("<html><head><style>body{font-family:Arial,sans-serif;margin:2cm;font-size:11pt;line-height:1.7;max-width:700px;}h1{color:#1a3a6b;}h2{color:#1a3a6b;margin-top:1.5rem;}</style></head><body><h1>Resume Score Report</h1><p><b>Date:</b> "+r.date+"</p><h2>Overall Score: "+r.score+"/100, "+r.label+"</h2>"+grades+"<h2>Summary</h2><p>"+r.summary+"</p></body></html>");
                 w.document.close();
               }}>👁 View</button>
               <button className="btn-danger" style={{fontSize:".7rem",padding:".25rem .55rem"}} onClick={()=>{if(window.confirm("Delete this score report?"))handleDeleteSaved("sc",r.id);}}>🗑</button>
@@ -1282,7 +1282,7 @@ function MyProfileSaved(props) {
         </div>
       ):(
         <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>
-          ⭐ Subscribe — $15/mo · All 16 AI Tools
+          ⭐ Subscribe, $15/mo · All 16 AI Tools
         </button>
       )}
       <button className="btn-sec" onClick={handleSaveProfile}>💾 Save All Progress</button>
@@ -1556,7 +1556,7 @@ function App() {
       const link = decodeURIComponent(params.get("link")||"");
       if (title || company) {
         const entry = {id:Date.now(), title, company, link,
-          date: new Date().toISOString().slice(0,10),
+          date: new Date().toISOString().slice(0, 10),
           status:"Applied", notes:"", source:"Bookmarklet"};
         setJobApps(prev => {
           const updated = [entry, ...prev];
@@ -1565,7 +1565,7 @@ function App() {
         });
         setTab(4);
         setRetentionTab("tracker");
-        showToast("Job saved to tracker ✓ — "+(title||company));
+        showToast("Job saved to tracker ✓, "+(title||company));
         window.history.replaceState({}, "", window.location.pathname);
       }
     }
@@ -1710,7 +1710,7 @@ function App() {
       } catch(e) {}
       showToast("Profile saved ✓");
       setHasUnsaved(false);
-    } catch(e) { showToast("Save failed — check connection"); }
+    } catch(e) { showToast("Save failed, check connection"); }
   };
 
   const handleSaveResume = async () => {
@@ -1735,7 +1735,7 @@ function App() {
         .collection("resumes").doc(id).set(entry);
       setSavedResumes(prev => [entry, ...prev].slice(0, 20));
       showToast("Resume saved to your profile ✓");
-    } catch(e) { showToast("Save failed — check connection"); }
+    } catch(e) { showToast("Save failed, check connection"); }
   };
 
   const handleDeleteResume = async (id) => {
@@ -1751,14 +1751,14 @@ function App() {
   const saveCoverLetter = async () => {
     const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
       job:coverLetterJob.title||"Cover Letter", company:coverLetterJob.company||"", content:coverLetter};
-    setSavedCoverLetters(prev=>[entry,...prev].slice(0,20));
+    setSavedCoverLetters(prev=>[entry,...prev].slice(0, 20));
     if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection("coverLetters").doc(entry.id.toString()).set(entry);}catch(e){}}
     showToast("Cover letter saved to My Profile ✓");
   };
   const saveEmail = async () => {
     const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
       type:followupType||"Follow-Up Email", content:followupEmail};
-    setSavedEmails(prev=>[entry,...prev].slice(0,20));
+    setSavedEmails(prev=>[entry,...prev].slice(0, 20));
     if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection("emails").doc(entry.id.toString()).set(entry);}catch(e){}}
     showToast("Email saved to My Profile ✓");
   };
@@ -1766,7 +1766,7 @@ function App() {
     const entry = {id:Date.now(), date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
       score:resumeScore, label:resumeScore>=85?"Excellent":resumeScore>=75?"Strong":resumeScore>=65?"Good":"Needs Work",
       summary:resumeReview.summary||"", grades:resumeReview.grades||{}};
-    setSavedScores(prev=>[entry,...prev].slice(0,10));
+    setSavedScores(prev=>[entry,...prev].slice(0, 10));
     if(currentUser&&fbDb){try{await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).collection("scores").doc(entry.id.toString()).set(entry);}catch(e){}}
     showToast("Score report saved to My Profile ✓");
   };
@@ -1922,7 +1922,7 @@ function App() {
 
       const raw = await callClaude(
         prompt,
-        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
+        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
         2000
       );
 
@@ -1930,7 +1930,7 @@ function App() {
       const start = raw.indexOf("{");
       const end = raw.lastIndexOf("}");
       if (start === -1 || end === -1) {
-        throw new Error("Response did not contain valid JSON. Raw: " + raw.slice(0,200));
+        throw new Error("Response did not contain valid JSON. Raw: " + raw.slice(0, 200));
       }
       const parsed = JSON.parse(raw.slice(start, end + 1));
       
@@ -1965,10 +1965,10 @@ function App() {
     const system = "You are the world's best military-to-civilian career counselor. You know EVERY civilian job sector including skilled trades, retail management, transportation, agriculture, maritime, aviation, hospitality, fitness, education, social work, nonprofits, entrepreneurship, real estate, financial services, and more. Return ONLY valid minified JSON. No markdown, no backticks, no line breaks inside strings, no trailing commas. The JSON must parse with JSON.parse() on the first try.";
     const mosDetail = milExperiences.map(e=>(e.mos||(e.branch+' service'))+(e.mosTitle?' ('+e.mosTitle+')':'')+', '+e.branch+(e.rank?' '+e.rank:'')+', '+(e.tos||'unknown TIS')+' TIS').join('; ');
     const civDetail = civExperiences.filter(e=>e.jobTitle).map(e=>e.jobTitle+(e.employer?' at '+e.employer:'')).join(', ');
-    const awardsDetail = milExperiences.flatMap(e=>e.awards||[]).slice(0,6).join(', ');
-    const asiDetail = milExperiences.flatMap(e=>(e.asi||[]).map(a=>a.code+': '+a.desc)).slice(0,4).join('; ');
+    const awardsDetail = milExperiences.flatMap(e=>e.awards||[]).slice(0, 6).join(', ');
+    const asiDetail = milExperiences.flatMap(e=>(e.asi||[]).map(a=>a.code+': '+a.desc)).slice(0, 4).join('; ');
     const clearances = milExperiences.map(e=>e.clearanceLevel).filter(c=>c&&c!=='None').join(', ');
-    const dutiesDetail = milExperiences.flatMap(e=>e.duties?[e.duties.slice(0,100)]:[]).join(' | ').slice(0,300);
+    const dutiesDetail = milExperiences.flatMap(e=>e.duties?[e.duties.slice(0, 100)]:[]).join(' | ').slice(0, 300);
     const eduDetail = education.map(e=>e.degree+' '+e.field).filter(Boolean).join(', ');
     const prompt = `You are an expert military transition counselor. Generate 12 PERSONALIZED career paths for this specific veteran.
 
@@ -1985,14 +1985,14 @@ Interests & Hobbies: ${target.interests||'not specified'}
 Open To: ${target.openTo||'flexible'}
 Location: ${targetLocation||'flexible'}
 
-RULES — follow strictly:
+RULES, follow strictly:
 1. Top 8 paths must directly match their MOS/rate and civilian work history
 2. Use their interests/hobbies to find 3-4 meaningful career connections
-3. Clearances unlock intel, defense contractor, and federal roles — include them
+3. Clearances unlock intel, defense contractor, and federal roles, include them
 4. ASI/SQI specialties must appear directly in titles and whyFit
 5. Include entry-level ($40k-$60k) AND senior paths ($80k+)
 6. NO generic roles unless directly tied to their specific background
-7. whyFit MUST cite something specific from their profile — not generic veteran praise
+7. whyFit MUST cite something specific from their profile, not generic veteran praise
 8. salaryRange format: '$XX,000-$XX,000' only, no special chars
 9. Return ONLY minified JSON, no markdown
 
@@ -2023,7 +2023,7 @@ RULES — follow strictly:
         {title:"Electrician Apprentice",sector:"Civilian",industry:"Skilled Trades / Construction",salaryRange:"$48,000-$95,000",match:"Excellent",outlook:"High Growth",why:"High demand, strong union wages, GI Bill covers apprenticeship programs.",clearanceBonus:false,entryPath:"Register with IBEW or IEC apprenticeship program",education:"4-year apprenticeship"},
         {title:"Firefighter",sector:"Government",industry:"Fire & Emergency Services",salaryRange:"$52,000-$80,000",match:"Excellent",outlook:"Stable",why:"Military teamwork, physical fitness, and emergency response experience are exactly what fire departments seek.",clearanceBonus:false,entryPath:"Apply to local fire department, use veterans preference points",education:"Fire Academy + EMT cert"},
         {title:"Federal Law Enforcement Officer",sector:"Government",industry:"Federal Agency",salaryRange:"$60,000-$100,000",match:"Strong",outlook:"Stable",why:"FBI, DEA, CBP, Secret Service all actively recruit veterans with military police or combat experience.",clearanceBonus:true,entryPath:"Apply via USAJobs.gov with veterans preference",education:"Agency-specific training"},
-        {title:"Operations Manager",sector:"Civilian",industry:"Logistics / Manufacturing",salaryRange:"$65,000-$100,000",match:"Strong",outlook:"Stable",why:"Military NCOs and officers run complex operations daily — this is the same skill set.",clearanceBonus:false,entryPath:"Translate leadership experience on resume, target Walmart, Amazon, FedEx hiring programs",education:"PMP cert helpful"},
+        {title:"Operations Manager",sector:"Civilian",industry:"Logistics / Manufacturing",salaryRange:"$65,000-$100,000",match:"Strong",outlook:"Stable",why:"Military NCOs and officers run complex operations daily, this is the same skill set.",clearanceBonus:false,entryPath:"Translate leadership experience on resume, target Walmart, Amazon, FedEx hiring programs",education:"PMP cert helpful"},
         {title:"HVAC Technician",sector:"Civilian",industry:"Skilled Trades",salaryRange:"$50,000-$85,000",match:"Strong",outlook:"High Growth",why:"Strong demand, excellent wages, military mechanical experience is valued.",clearanceBonus:false,entryPath:"Enroll in HVAC program via GI Bill, apprenticeship or trade school",education:"EPA 608 Cert"},
         {title:"Cybersecurity Analyst",sector:"Civilian",industry:"Technology / Defense",salaryRange:"$70,000-$115,000",match:"Strong",outlook:"High Growth",why:"DOD cybersecurity experience and clearances are extremely valuable in the private sector.",clearanceBonus:true,entryPath:"CompTIA Security+ certification (study 2-3 months), apply to defense contractors",education:"Security+ / CEH cert"},
         {title:"Government Contractor (DoD)",sector:"Defense/Intel",industry:"Defense Contracting",salaryRange:"$75,000-$130,000",match:"Excellent",outlook:"Stable",why:"Your military experience and clearance make you immediately valuable to Booz Allen, SAIC, Leidos, and others.",clearanceBonus:true,entryPath:"Apply directly to major defense contractors on LinkedIn or ClearanceJobs.com",education:"Clearance required"},
@@ -2065,7 +2065,7 @@ Use this exact structure:
     try {
       const raw = await callClaude(prompt, "You are a military career transition expert. Return ONLY valid JSON starting with { and ending with }. Never include markdown, backticks, or explanatory text outside the JSON.");
 
-      // Robust JSON extraction — find first { to last }
+      // Robust JSON extraction, find first { to last }
       const start = raw.indexOf("{");
       const end = raw.lastIndexOf("}");
       if (start === -1 || end === -1) throw new Error("No JSON found");
@@ -2131,16 +2131,16 @@ Use this exact structure:
       " Deployments:" + (e.deployments||"none") +
       " Duties:" + (e.duties||"not described")
     ).join(" | ");
-    const eduText = education.map(e=>(e.degree)+" in "+(e.field||"")+" — "+(e.institution||"")+" ("+(e.year||"")+")").join("; ");
+    const eduText = education.map(e=>(e.degree)+" in "+(e.field||"")+", "+(e.institution||"")+" ("+(e.year||"")+")").join("; ");
     try {
       const formatInstructions = {
         ats_chrono: "ATS CHRONOLOGICAL FORMAT: Simple clean layout. Standard section headers (Summary, Experience, Education, Skills, Certifications). Reverse chronological work history. No tables, no text boxes, no columns. Keyword-rich. ATS-safe fonts and structure.",
         ats_combo: "ATS COMBINATION FORMAT: Open with a Skills Summary section listing 8-10 core competencies as keywords. Then reverse-chronological experience. Then education. ATS-optimized throughout with no tables or columns.",
-        functional: "FUNCTIONAL (SKILLS-FIRST) FORMAT: Section order: 1) Professional Profile (3 sentences), 2) Core Competencies (10-12 keywords), 3) Functional Skill Groups — create 2-3 sections named after skill categories (Leadership & Management, Technical Operations, Medical/Healthcare, etc.) with 3-4 bullets each, 4) Employment History (brief: title, org, dates only — no bullets), 5) Education. This format de-emphasizes employment gaps and career pivots by leading with what the veteran CAN DO.",
+        functional: "FUNCTIONAL (SKILLS-FIRST) FORMAT: Section order: 1) Professional Profile (3 sentences), 2) Core Competencies (10-12 keywords), 3) Functional Skill Groups, create 2-3 sections named after skill categories (Leadership & Management, Technical Operations, Medical/Healthcare, etc.) with 3-4 bullets each, 4) Employment History (brief: title, org, dates only, no bullets), 5) Education. This format de-emphasizes employment gaps and career pivots by leading with what the veteran CAN DO.",
         traditional: "TRADITIONAL FORMAT: Conservative black and white. Clean serif-style formatting. Standard sections. No color, no design elements. Appropriate for government, legal, and formal industries.",
-        modern: "MODERN PROFESSIONAL FORMAT: Clean contemporary layout. Use subtle section dividers (——). Bold role titles. Clean hierarchy. Professional but polished. Suitable for corporate and private sector.",
+        modern: "MODERN PROFESSIONAL FORMAT: Clean contemporary layout. Use subtle section dividers. Bold role titles. Clean hierarchy. Professional but polished. Suitable for corporate and private sector.",
         executive: "EXECUTIVE FORMAT: Open with a strong executive profile paragraph. Follow with Core Competencies as two columns of keywords. Then Career Highlights with 3-4 major achievements with metrics. Then abbreviated experience. Emphasize leadership scope, P&L, team size, and strategic impact.",
-        federal: "FEDERAL/USAJOBS FORMAT: Extremely detailed. Include GS pay scale equivalent where applicable. List all positions with full addresses of employers, hours per week, supervisor names. Include detailed KSAs. Often 3-5 pages. List all training, awards, and certifications in full.",
+        federal: "FEDERAL/USAJOBS FORMAT: Follow current USAJOBS two-page resume guidance. Prioritize announcement-specific specialized experience, dates by month/year, hours per week, employer/unit, location, and verified accomplishments. Do not include SSN, classified information, protected health information, date of birth, age, religion, marital status, or unnecessary protected personal information. Never fabricate dates, hours, series, grade, clearance, awards, education, certifications, veterans preference, disability status, salary, metrics, or supervisor details.",
         harvard: "HARVARD STYLE: Single column, clean conservative layout. Name and contact centered at top with a line beneath. Section headers in small caps or bold with a line rule. Clean consistent formatting with strong use of white space.",
         wharton: "WHARTON/MBA STYLE: Name bold and prominent. One-line title/brand statement. Experience entries lead with company and bold achievement metrics. Emphasis on quantified results, revenue impact, team sizes, and scope. Sharp and results-focused.",
         minimalist: "MINIMALIST FORMAT: Maximum white space. Simple clean typography. Minimal use of dividers. Let content breathe. Easy to scan. Clean hierarchy with role, company, dates on one line.",
@@ -2161,9 +2161,9 @@ Use this exact structure:
         (target.interests ? "INTERESTS/HOBBIES: " + target.interests + "\n" : "") +
         "TARGET ROLE: " + (target.title||"open") + " | Industry: " + (target.industry||"any") + "\n\n" +
         "CONTACT: " + contact + "\n\n" +
-        "CRITICAL RULES — ZERO MILITARY JARGON ALLOWED:\n" +
+        "CRITICAL RULES, ZERO MILITARY JARGON ALLOWED:\n" +
         "ABSOLUTE RULE: The resume must read as if written by a civilian professional. A civilian hiring manager should not be able to tell this person was in the military unless they choose to mention it. Every single military term MUST be replaced with civilian language.\n" +
-        "BANNED WORDS — never use these: NCO, NCOIC, OIC, MOS, AFSC, NEC, SGT, SSG, SFC, MSG, CSM, PFC, SPC, CPL, E-4, E-5, O-3, Soldier, Airman, Marine, Sailor, Guardian, Troop, Unit, Battalion, Brigade, Company, Platoon, Squad, TOC, SITREP, AAR, OPORD, TDY, PCS, ETS, TAD, SHARP (spell it out), Armorer (say Weapons Inventory Manager), Retention NCO (say Talent Acquisition Specialist), Drill Sergeant (say Training Instructor/Leadership Development Specialist), Airborne (say Parachute Operations Certified), MRE, Battle Rhythm, Hooah, Oorah, Hard Charger.\n" +
+        "BANNED WORDS, never use these: NCO, NCOIC, OIC, MOS, AFSC, NEC, SGT, SSG, SFC, MSG, CSM, PFC, SPC, CPL, E-4, E-5, O-3, Soldier, Airman, Marine, Sailor, Guardian, Troop, Unit, Battalion, Brigade, Company, Platoon, Squad, TOC, SITREP, AAR, OPORD, TDY, PCS, ETS, TAD, SHARP (spell it out), Armorer (say Weapons Inventory Manager), Retention NCO (say Talent Acquisition Specialist), Drill Sergeant (say Training Instructor/Leadership Development Specialist), Airborne (say Parachute Operations Certified), MRE, Battle Rhythm, Hooah, Oorah, Hard Charger.\n" +
         "TRANSLATION RULES:\n" +
         "- NCO / Sergeant / Staff Sergeant = Team Leader / Operations Supervisor\n" +
         "- NCOIC = Operations Lead / Team Supervisor\n" +
@@ -2181,12 +2181,12 @@ Use this exact structure:
         "- SITREP = Status Report\n" +
         "- AAR = After-Action Review / Post-Project Debrief\n" +
         "- COR = Contract Oversight Manager\n" +
-        "- Secret clearance = Active Secret Security Clearance (keep this — it is valuable)\n" +
-        "- TS/SCI = Active Top Secret/SCI Security Clearance (keep this — premium asset)\n" +
+        "- Secret clearance = Active Secret Security Clearance (include only if the user selected it)\n" +
+        "- TS/SCI = Active Top Secret/SCI Security Clearance (include only if the user selected it)\n" +
         "1. Write every bullet point as a civilian achievement: Led [X people], managed [$X budget], reduced [X%], improved [outcome].\n" +
-        "2. Quantify ONLY using numbers the veteran explicitly provided. NEVER invent or fabricate metrics. If they gave no numbers for a task, write the bullet without numbers — an honest bullet beats a fabricated one.\n" +
+        "2. Quantify ONLY using numbers the veteran explicitly provided. NEVER invent or fabricate metrics. If they gave no numbers for a task, write the bullet without numbers, an honest bullet beats a fabricated one.\n" +
         "3. Start every bullet with a strong civilian action verb: Led, Managed, Coordinated, Developed, Implemented, Reduced, Increased, Trained, Oversaw, Delivered.\n" +
-        "4. Security clearances are the ONE military term to keep — they are premium salary assets.\n" +
+        "4. Security clearances may be included only if the veteran chose to include them and the role makes them relevant.\n" +
         "5. ATS keywords for: " + (target.title||"operations management, leadership, logistics") + "\n\n" +
         "Return ONLY valid JSON, no markdown, starting with { ending with }.\n" +
         "Keys: name, contact (string), summary (2-3 sentence professional paragraph), " +
@@ -2198,7 +2198,7 @@ Use this exact structure:
         "awards (array of strings)";
       const raw = await callClaude(
         prompt,
-        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
+        "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
         3500
       );
       const rStart = raw.indexOf("{");
@@ -2242,7 +2242,7 @@ TARGET JOB:
 - Job Description: ${coverLetterJob.description||"Not provided"}
 
 RESUME SUMMARY:
-${resumeText.slice(0,1500)}
+${resumeText.slice(0, 1500)}
 
 Write a professional, warm, and compelling 3-paragraph cover letter that:
 1. Opens with a strong hook connecting military service to the role
@@ -2254,7 +2254,7 @@ Write a professional, warm, and compelling 3-paragraph cover letter that:
 
 Return ONLY the cover letter text, no subject line, no extra commentary.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 1500);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 1500);
       setCoverLetter(raw);
     } catch(e) {
       setCoverLetter("Error generating cover letter. Please try again.");
@@ -2286,7 +2286,7 @@ Generate 8 interview questions they will likely be asked, with a tailored answer
 
 Make answers specific to their MOS and rank. Use the STAR method. Translate all military jargon.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 3000);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 3000);
       const clean = raw.replace(/```json|```/g,"").trim();
       const s = clean.indexOf("["); const e = clean.lastIndexOf("]");
       if(s===-1||e===-1) throw new Error("No array");
@@ -2331,7 +2331,7 @@ Write a genuine, professional email that:
 
 Return ONLY the email text including the subject line. No extra commentary.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon — translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force — keep exactly as written. 3) UNIT NAME: Never translate unit names — keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided — never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 800);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 800);
       setFollowupEmail(raw.trim());
     } catch(err) {
       setFollowupEmail("Subject: Thank You - " + (followupCtx.role||"Position") + " Interview\n\nDear " + (followupCtx.interviewerName||"Hiring Manager") + ",\n\nThank you for taking the time to meet with me regarding the " + (followupCtx.role||"position") + " role at " + (followupCtx.company||"your organization") + ". I enjoyed learning more about the team and am excited about the opportunity to bring my military leadership experience to your organization.\n\nPlease let me know if you need any additional information.\n\nBest regards,\n" + (personal.name||"[Your Name]"));
@@ -2351,7 +2351,7 @@ Return ONLY the email text including the subject line. No extra commentary.`;
     const prompt = `You are an expert resume reviewer for military-to-civilian career transitions. Analyze this resume and return ONLY valid JSON.
 
 RESUME:
-${resumeText.slice(0,2000)}
+${resumeText.slice(0, 2000)}
 
 TARGET JOB: ${target.title||"General civilian role"}
 
@@ -2418,7 +2418,7 @@ Return this exact JSON structure:
                   <div style={{textAlign:"center",marginBottom:".4rem"}}>
                     <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"3rem",color:"#1a3a6b",lineHeight:1}}>$15</div>
                     <div style={{fontSize:".85rem",fontWeight:700,color:"#1a3a6b",marginTop:".2rem"}}>Monthly Subscription</div>
-                    <div style={{fontSize:".78rem",color:"#5a7090",marginTop:".15rem"}}>$15/month — 16 AI tools</div>
+                    <div style={{fontSize:".78rem",color:"#5a7090",marginTop:".15rem"}}>$15/month, 16 AI tools</div>
                   </div>
 
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".3rem .8rem",textAlign:"left",fontSize:".78rem",color:"#2a4a6a"}}>
@@ -2460,7 +2460,7 @@ Return this exact JSON structure:
                   const stripeLink = "https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00";
                   window.location.href = stripeLink;
                 }}>
-                  Subscribe Now — $15/mo →
+                  Subscribe Now, $15/mo →
                 </button>
                 <div style={{textAlign:"center",fontSize:".72rem",color:"#8aa0b8",margin:"-.1rem 0 .2rem"}}>
                   $15/month · 16 AI tools · cancel anytime
@@ -2530,7 +2530,7 @@ Return this exact JSON structure:
                 <button onClick={()=>setShowAuth(false)} style={{position:"absolute",top:".8rem",right:".8rem",background:"transparent",border:"none",color:"rgba(255,255,255,.7)",fontSize:"1.4rem",cursor:"pointer",lineHeight:1}}>✕</button>
                 <div style={{fontSize:"2rem",marginBottom:".4rem"}}>🎖</div>
                 <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.4rem",letterSpacing:".1em",color:"#f0c040"}}>Veteran Career Path</div>
-                <div style={{fontSize:".82rem",color:"#b8d0f0",marginTop:".3rem"}}>Free account — save your profile and resumes</div>
+                <div style={{fontSize:".82rem",color:"#b8d0f0",marginTop:".3rem"}}>Free account, save your profile and resumes</div>
               </div>
 
               <div style={{display:"flex",borderBottom:"2px solid #e8edf5",background:"#f8fafc"}}>
@@ -2558,7 +2558,7 @@ Return this exact JSON structure:
                       setShowAuth(false);
                     }catch(e){
                       if(e.code==="auth/popup-closed-by-user") return;
-                      if(e.code==="auth/popup-blocked") setAuthErr("Popup blocked — allow popups for this site.");
+                      if(e.code==="auth/popup-blocked") setAuthErr("Popup blocked, allow popups for this site.");
                       else setAuthErr("Google sign-in failed: "+(e.message||"Unknown error"));
                     }
                   }}>
@@ -2607,7 +2607,7 @@ Return this exact JSON structure:
                         if(!fbAuth||!authForm.username.trim()){setAuthErr("Enter your email first.");return;}
                         try{
                           await fbAuth.sendPasswordResetEmail(authForm.username.trim());
-                          setAuthOk("Reset email sent — check your inbox.");
+                          setAuthOk("Reset email sent, check your inbox.");
                         }catch(e){setAuthErr("Could not send reset email.");}
                       }}>Forgot password?</button>
                   </div>
@@ -2640,14 +2640,14 @@ Return this exact JSON structure:
               <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={()=>setTab(3)}>
                 My Resumes ({savedResumes.length})
               </button>
-              {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>⭐ All 8 Tools — $15/mo</button>}
+              {!hasAccess&&<button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".3rem .75rem",fontSize:".72rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}} onClick={()=>setShowPaywall(true)}>⭐ All 8 Tools, $15/mo</button>}
               <button className="btn-danger" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleLogout}>Sign Out</button>
             </div>
           </div>
         ):(
           <div style={{background:"#1a3a6b",borderBottom:"1px solid #2456a0",padding:".45rem 1.2rem",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
             <span style={{fontSize:".78rem",color:"#90b8e0",letterSpacing:".02em"}}>
-              Not signed in — <span style={{color:"#b8d0f0"}}>your progress won't be saved</span>
+              Not signed in, <span style={{color:"#b8d0f0"}}>your progress won't be saved</span>
             </span>
             <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".32rem .9rem",fontSize:".78rem",fontWeight:700,cursor:"pointer",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em"}}
               onClick={()=>setShowAuth(true)}>
@@ -2682,7 +2682,7 @@ Return this exact JSON structure:
 
           <div className={"panel "+(tab===0?"on":"")}>
             <div className="intro">
-              <strong>Your service matters.</strong> Fill in your background below — your military experience, civilian work, education, and skills. The more you add, the better your career matches and resume will be. Take your time and be as detailed as you like.
+              <strong>Your service matters.</strong> Fill in your background below, your military experience, civilian work, education, and skills. The more you add, the better your career matches and resume will be. Take your time and be as detailed as you like.
             </div>
 
 
@@ -2777,7 +2777,7 @@ Return this exact JSON structure:
                           )}
                         </div>
                         <span className="hint">
-                          Type your code above — it auto-fills the title. Or browse by branch:
+                          Type your code above, it auto-fills the title. Or browse by branch:
                         </span>
                         <details style={{marginTop:".35rem",border:"1px solid #d0dae8",borderRadius:"6px",background:"#fafcff"}}>
                           <summary style={{padding:".4rem .75rem",cursor:"pointer",fontSize:".82rem",fontWeight:600,color:"#1a3a6b",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -2818,7 +2818,7 @@ Return this exact JSON structure:
                                     textAlign:"left"
                                   }}>
                                   <strong>{m.code}</strong>
-                                  <span style={{color:exp.mos===m.code?"rgba(255,255,255,.8)":"#5a7090",fontSize:".7rem"}}>{m.title.slice(0,28)}{m.title.length>28?"...":""}</span>
+                                  <span style={{color:exp.mos===m.code?"rgba(255,255,255,.8)":"#5a7090",fontSize:".7rem"}}>{m.title.slice(0, 28)}{m.title.length>28?"...":""}</span>
                                 </button>
                               ))}
                             </div>
@@ -2861,7 +2861,7 @@ Return this exact JSON structure:
                     <div className="qual-section">
                       <span className="qual-label">Roles Held Under This MOS</span>
                       <div className="hint" style={{marginBottom:".5rem"}}>
-                        Add each official position you held under this MOS — even within the same contract. Example: 88M as Operator (E-4, 2020-2022) → Dispatcher (E-5, 2022-2024) → Platoon Sergeant (E-6, 2024-2026). This shows career progression, not just time served.
+                        Add each official position you held under this MOS, even within the same contract. Example: 88M as Operator (E-4 to 2020-2022) → Dispatcher (E-5 to 2022-2024) → Platoon Sergeant (E-6 to 2024-2026). This shows career progression, not just time served.
                       </div>
                       {(exp.mosRoles||[]).map((role,ri)=>(
                         <div key={ri} style={{marginBottom:".65rem",background:"rgba(255,255,255,.04)",border:"1px solid rgba(201,168,76,.22)",borderRadius:"8px",padding:".85rem .9rem",position:"relative"}}>
@@ -2978,7 +2978,7 @@ Return this exact JSON structure:
                             <button key={a.code}
                               style={{background:(exp.asi||[]).find(x=>x.code===a.code)?"#1a3a6b":"#e8edf5",color:(exp.asi||[]).find(x=>x.code===a.code)?"#fff":"#1a3a6b",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".22rem .6rem",fontSize:".78rem",cursor:"pointer"}}
                               onClick={()=>{ if(!(exp.asi||[]).find(x=>x.code===a.code)) upMilExp(exp.id,"asi",[...(exp.asi||[]),a]); }}>
-                              <strong>{a.code}</strong> — {a.desc}
+                              <strong>{a.code}</strong>, {a.desc}
                             </button>
                           ))}
                         </div>
@@ -3026,7 +3026,7 @@ Return this exact JSON structure:
                             <button key={s.code}
                               style={{background:(exp.sqi||[]).find(x=>x.code===s.code)?"#1a3a6b":"#e8edf5",color:(exp.sqi||[]).find(x=>x.code===s.code)?"#fff":"#1a3a6b",border:"1px solid #c0d0e4",borderRadius:"3px",padding:".22rem .6rem",fontSize:".78rem",cursor:"pointer"}}
                               onClick={()=>{ if(!(exp.sqi||[]).find(x=>x.code===s.code)) upMilExp(exp.id,"sqi",[...(exp.sqi||[]),s]); }}>
-                              <strong>{s.code}</strong> — {s.desc}
+                              <strong>{s.code}</strong>, {s.desc}
                             </button>
                           ))}
                         </div>
@@ -3163,7 +3163,7 @@ Return this exact JSON structure:
                     <div className="field">
                       <label>General Duties & Responsibilities</label>
                       <textarea style={{minHeight:"140px"}}
-                        placeholder="Include YOUR ACTUAL NUMBERS — the AI will not guess.&#10;&#10;Example: Supervised 12 soldiers. Managed $2.4M in equipment. Conducted vehicle maintenance for 18 wheeled vehicles, maintaining 95% readiness rate. Trained 40 personnel on weapons qualification, achieving 100% pass rate. Coordinated logistics for 3-week field exercise supporting 200 personnel."
+                        placeholder="Include YOUR ACTUAL NUMBERS, the AI will not guess.&#10;&#10;Example: Supervised 12 soldiers. Managed $2.4M in equipment. Conducted vehicle maintenance for 18 wheeled vehicles, maintaining 95% readiness rate. Trained 40 personnel on weapons qualification, achieving 100% pass rate. Coordinated logistics for 3-week field exercise supporting 200 personnel."
                         value={exp.duties||""} onChange={e=>upMilExp(exp.id,"duties",e.target.value)}/>
                       <span className="hint">💡 <strong>The more specific your numbers, the stronger your resume.</strong> How many people did you supervise? What was your equipment/budget value? What percentage or rate did you achieve? How many people did you train or support?</span>
                     </div>
@@ -3259,7 +3259,7 @@ Return this exact JSON structure:
                     </div>
                     <div className="field">
                       <label>Key Duties & Achievements</label>
-                      <textarea placeholder="Include YOUR ACTUAL NUMBERS — the AI will not guess.&#10;&#10;Example: Managed team of 8 employees. Oversaw $500K annual budget. Reduced processing time by 30%. Handled customer accounts totaling $1.2M annually."
+                      <textarea placeholder="Include YOUR ACTUAL NUMBERS, the AI will not guess.&#10;&#10;Example: Managed team of 8 employees. Oversaw $500K annual budget. Reduced processing time by 30%. Handled customer accounts totaling $1.2M annually."
                         value={exp.duties||""} onChange={e=>upCivExp(exp.id,"duties",e.target.value)} style={{minHeight:"120px"}}/>
                       <span className="hint">💡 <strong>Numbers make your resume stand out.</strong> Team size? Budget managed? Percentage improvements? Revenue impacted? Customers served?</span>
                     </div>
@@ -3459,7 +3459,7 @@ Return this exact JSON structure:
             {translationData&&!loading.translate&&(
               <div>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:".5rem",marginBottom:".75rem",marginTop:"1rem"}}>
-                  <h3 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",color:"var(--gold-light)",fontSize:"1.05rem"}}>Your Military Experience — Translated</h3>
+                  <h3 style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".1em",color:"var(--gold-light)",fontSize:"1.05rem"}}>Your Military Experience, Translated</h3>
                   <div style={{display:"flex",gap:".4rem"}}>
                     <button className="btn-sec" onClick={()=>{
                       const text = [
@@ -3467,7 +3467,7 @@ Return this exact JSON structure:
                         translationData.summary||"",
                         "",
                         ...(translationData.roles||[]).flatMap(r=>[
-                          (r.mos)+" — "+(r.title||""),
+                          (r.mos)+", "+(r.title||""),
                           r.whatYouDid||"",
                           "Transferable Skills: " + (r.transferableSkills||[]).join(", "),
                           "Resume Bullets:",
@@ -3475,7 +3475,7 @@ Return this exact JSON structure:
                           ""
                         ]),
                         ...(translationData.qualifications||[]).flatMap(q=>[
-                          (q.code)+" — "+(q.name||"")+": "+(q.civilianMeaning||""),
+                          (q.code)+", "+(q.name||"")+": "+(q.civilianMeaning||""),
                           "Opens doors to: "+(q.unlocks),""
                         ]),
                       ].join("\n");
@@ -3497,13 +3497,13 @@ Return this exact JSON structure:
                           doc.text(lines, 20, y);
                           y += lines.length * (size*0.4+2);
                         };
-                        addLine("MILITARY EXPERIENCE — CIVILIAN TRANSLATION", 14, true);
+                        addLine("MILITARY EXPERIENCE, CIVILIAN TRANSLATION", 14, true);
                         addLine("Generated by VeteranCareerPath.com", 9);
                         y+=4;
                         addLine("PROFESSIONAL SUMMARY", 11, true); y+=2;
                         addLine(translationData.summary||""); y+=4;
                         (translationData.roles||[]).forEach(r=>{
-                          addLine((r.mos)+" — "+(r.title||""), 11, true); y+=1;
+                          addLine((r.mos)+", "+(r.title||""), 11, true); y+=1;
                           addLine(r.whatYouDid||""); y+=2;
                           addLine("TRANSFERABLE SKILLS", 9, true);
                           addLine((r.transferableSkills||[]).join(" • ")); y+=2;
@@ -3513,7 +3513,7 @@ Return this exact JSON structure:
                         if((translationData.qualifications||[]).length){
                           addLine("QUALIFICATIONS & WHAT THEY UNLOCK", 11, true); y+=2;
                           (translationData.qualifications||[]).forEach(q=>{
-                            addLine((q.code)+" — "+(q.name||""), 10, true);
+                            addLine((q.code)+", "+(q.name||""), 10, true);
                             addLine(q.civilianMeaning||"");
                             addLine("Opens: "+(q.unlocks||"")); y+=2;
                           });
@@ -3633,7 +3633,7 @@ Return this exact JSON structure:
 
           <div className={"panel "+(tab===2?"on":"")}>
             <div className="intro">
-              <strong>Generate Your Resume.</strong> Your complete military profile — MOS, ASIs, SQIs, additional duties, clearances, service history, and all experience — will be translated into a polished, ATS-optimized civilian resume.
+              <strong>Generate Your Resume.</strong> Your complete military profile, MOS, ASIs, SQIs, additional duties, clearances, service history, and all experience, will be translated into a polished, ATS-optimized civilian resume.
             </div>
             <div className="card">
               <div className="ch"><h3>Target This Resume To</h3></div>
@@ -3680,9 +3680,9 @@ Return this exact JSON structure:
                 {loading.resume?"Crafting Your Resume...":`📄  Generate My ${(RESUME_FORMATS.find(f=>f.id===resumeFormat) ? RESUME_FORMATS.find(f=>f.id===resumeFormat).label : "Professional")||"Professional"} Resume`}
               </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools, $15/mo</button>
                 )}
-            {loading.resume&&<div className="loading"><div className="spin"/><span>Generating your resume — this may take 15-30 seconds...</span></div>}
+            {loading.resume&&<div className="loading"><div className="spin"/><span>Generating your resume, this may take 15-30 seconds...</span></div>}
             {resume&&!loading.resume&&(
               <div style={{marginTop:"1rem"}}>
                 <div className="resume-out">
@@ -3691,7 +3691,7 @@ Return this exact JSON structure:
                   <div style={{background:"#f0f2f8",borderBottom:"1px solid #d0d8e8",padding:".65rem 1rem",display:"flex",gap:".4rem",flexWrap:"wrap",alignItems:"center"}}>
                     <div style={{marginRight:".4rem"}}>
                       <span style={{fontSize:".7rem",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:"#3a5070"}}>Visual Style:</span>
-                      <span style={{fontSize:".65rem",color:"#8aa0b8",marginLeft:".3rem",fontStyle:"italic"}}>changes appearance only — re-generate to change content format</span>
+                      <span style={{fontSize:".65rem",color:"#8aa0b8",marginLeft:".3rem",fontStyle:"italic"}}>changes appearance only, re-generate to change content format</span>
                     </div>
                     {[{id:"ats_chrono",l:"ATS Chrono"},{id:"ats_combo",l:"ATS Combo"},{id:"functional",l:"Functional"},{id:"traditional",l:"Traditional"},{id:"modern",l:"Modern"},{id:"classic",l:"Classic"},{id:"executive",l:"Executive"},{id:"federal",l:"Federal"},{id:"harvard",l:"Harvard"},{id:"wharton",l:"Wharton"},{id:"minimalist",l:"Minimalist"}].map(t=>(
                       <button key={t.id} onClick={()=>setResumeTemplate(t.id)}
@@ -3778,7 +3778,7 @@ Return this exact JSON structure:
                             <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",marginBottom:".5rem"}}>Experience</div>
                             {(resumeData.experience||[]).map((job,i)=>(<div key={i} style={{marginBottom:".8rem"}}><div style={{display:"flex",justifyContent:"space-between"}}><span style={{fontWeight:700,fontSize:"10pt"}}>{job.title}</span><span style={{fontSize:"8.5pt",color:"#555",fontStyle:"italic"}}>{job.dates}</span></div><div style={{fontStyle:"italic",color:"#444",fontSize:"9pt",marginBottom:".25rem"}}>{job.employer}</div>{(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",lineHeight:1.55,paddingLeft:".9rem",marginBottom:".1rem"}}>&#8226; {b}</div>))}</div>))}
                             <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",margin:".8rem 0 .4rem"}}>Education</div>
-                            {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:".3rem"}}><strong>{e.degree}</strong> &#8212; {e.school} {e.year&&"("+e.year+")"}</div>))}
+                            {(resumeData.education||[]).map((e,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:".3rem"}}><strong>{e.degree}</strong>, {e.school} {e.year&&"("+e.year+")"}</div>))}
                             <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",margin:".8rem 0 .4rem"}}>Skills</div>
                             <div style={{fontSize:"9pt",lineHeight:1.7}}>{(resumeData.skills||[]).concat(resumeData.certifications||[]).join(" \u2022 ")}</div>
                             {(resumeData.awards||[]).length>0&&(<div><div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",borderBottom:"1px solid #888",paddingBottom:"2pt",margin:".8rem 0 .4rem"}}>Awards</div>{(resumeData.awards||[]).map((a,i)=>(<div key={i} style={{fontSize:"9pt"}}>&#8226; {a}</div>))}</div>)}
@@ -3873,7 +3873,7 @@ Return this exact JSON structure:
                               <div style={{fontSize:"8pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",textAlign:"center"}}>Education</div>
                             </div>
                             {(resumeData.education||[]).map((e,i)=>(
-                              <div key={i} style={{fontSize:"9pt",marginBottom:"4pt"}}><strong>{e.degree}</strong> — {e.school} {e.year&&"("+e.year+")"}</div>
+                              <div key={i} style={{fontSize:"9pt",marginBottom:"4pt"}}><strong>{e.degree}</strong>, {e.school} {e.year&&"("+e.year+")"}</div>
                             ))}
                             {(resumeData.certifications||[]).length>0&&<>
                               <div style={{borderTop:"2px solid #000",borderBottom:"1px solid #000",padding:"3pt 0",marginBottom:"6pt",marginTop:"6pt"}}>
@@ -3973,7 +3973,7 @@ Return this exact JSON structure:
                             <div style={{fontWeight:700,fontSize:"8.5pt",textTransform:"uppercase",letterSpacing:".1em",marginBottom:"4pt"}}>Education</div>
                             {(resumeData.education||[]).map((e,i)=>(
                               <div key={i} style={{display:"flex",justifyContent:"space-between",marginBottom:"3pt"}}>
-                                <div><strong style={{fontSize:"10pt"}}>{e.school}</strong> <span style={{fontSize:"9.5pt"}}>— {e.degree}</span></div>
+                                <div><strong style={{fontSize:"10pt"}}>{e.school}</strong> <span style={{fontSize:"9.5pt"}}>, {e.degree}</span></div>
                                 <div style={{fontSize:"9pt",color:"#555",whiteSpace:"nowrap"}}>{e.year}</div>
                               </div>
                             ))}
@@ -4025,7 +4025,7 @@ Return this exact JSON structure:
                             <div style={{fontWeight:700,fontSize:"10pt",textTransform:"uppercase",letterSpacing:".08em",textAlign:"center",borderTop:"1.5px solid #000",borderBottom:"1.5px solid #000",padding:"2pt 0",margin:"8pt 0 6pt"}}>Education</div>
                             {(resumeData.education||[]).map((e,i)=>(
                               <div key={i} style={{display:"flex",justifyContent:"space-between",marginBottom:"5pt",fontSize:"10.5pt"}}>
-                                <div><strong>{e.degree}</strong> — {e.school}</div>
+                                <div><strong>{e.degree}</strong>, {e.school}</div>
                                 <div>{e.year}</div>
                               </div>
                             ))}
@@ -4071,7 +4071,7 @@ Return this exact JSON structure:
                               </div>
                               <div>
                                 <div style={{fontSize:"7.5pt",fontWeight:600,letterSpacing:".2em",textTransform:"uppercase",color:"#aaa",marginBottom:"8pt"}}>Skills</div>
-                                {(resumeData.skills||[]).map((s,i)=>(<div key={i} style={{fontSize:"9.5pt",color:"#555",marginBottom:"3pt"}}>— {s}</div>))}
+                                {(resumeData.skills||[]).map((s,i)=>(<div key={i} style={{fontSize:"9.5pt",color:"#555",marginBottom:"3pt"}}>, {s}</div>))}
                               </div>
                             </div>
                           </div>
@@ -4211,7 +4211,7 @@ Return this exact JSON structure:
                     {coverLetterLoading?"✍ Writing your cover letter...":"✉ Generate Cover Letter"}
                   </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools, $15/mo</button>
                 )}
                 {coverLetter&&(
                   <>
@@ -4244,7 +4244,7 @@ Return this exact JSON structure:
               <div className="ch"><h3>📊 Resume Score & Review</h3></div>
               <div className="cb">
                 <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>
-                  Get an AI-powered score and actionable feedback on your resume — just like a recruiter would see it. Use your generated resume below, or upload an existing one.
+                  Get an AI-powered score and actionable feedback on your resume, just like a recruiter would see it. Use your generated resume below, or upload an existing one.
                 </p>
 
 
@@ -4271,9 +4271,9 @@ Return this exact JSON structure:
                               // Extract readable text runs from PDF binary stream
                               const runs = (raw.match(/[\x20-\x7E\n\r\t]{6,}/g)||[])
                                 .filter(s=>{ const t=s.trim(); return t.length>5 && t.split(" ").length>1 && !/^[\d\.\s\-\/\(\)]+$/.test(t) && !/^[A-Z0-9]{15,}/.test(t); })
-                                .join(" ").replace(/\s+/g," ").trim().slice(0,6000);
+                                .join(" ").replace(/\s+/g," ").trim().slice(0, 6000);
                               finalize(runs.length>120 ? runs : "[PDF text could not be auto-extracted. Please COPY all text from your PDF (Ctrl+A, Ctrl+C) and paste it into the text box below for scoring.]");
-                            } catch(e) { finalize("[Could not read PDF — please paste your resume text in the box below.]"); }
+                            } catch(e) { finalize("[Could not read PDF, please paste your resume text in the box below.]"); }
                           };
                           reader.readAsArrayBuffer(file);
                         } else if(file.name.endsWith(".docx")||file.name.endsWith(".doc")) {
@@ -4283,21 +4283,21 @@ Return this exact JSON structure:
                               if(typeof mammoth!=="undefined") {
                                 const result = await mammoth.extractRawText({arrayBuffer:ev.target.result});
                                 const txt = (result.value||"").replace(/\s+/g," ").trim();
-                                finalize(txt.length>80 ? txt.slice(0,6000) : "[Word doc appears empty or is heavily formatted. Try File > Save As > Plain Text (.txt) in Word, then upload that.]");
+                                finalize(txt.length>80 ? txt.slice(0, 6000) : "[Word doc appears empty or is heavily formatted. Try File > Save As > Plain Text (.txt) in Word, then upload that.]");
                               } else {
                                 // Fallback without mammoth
                                 const arr = new Uint8Array(ev.target.result);
                                 const raw = new TextDecoder("utf-8","ignore").decode(arr);
-                                const runs = (raw.match(/[a-zA-Z][a-zA-Z ,\.]{8,}/g)||[]).filter(t=>t.split(" ").length>2).join(" ").slice(0,4000);
+                                const runs = (raw.match(/[a-zA-Z][a-zA-Z ,\.]{8,}/g)||[]).filter(t=>t.split(" ").length>2).join(" ").slice(0, 4000);
                                 finalize(runs.length>80 ? runs : "[Could not extract Word doc text. Please paste your resume in the text box below.]");
                               }
-                            } catch(e) { finalize("[Could not read Word doc — paste your resume text below.]"); }
+                            } catch(e) { finalize("[Could not read Word doc, paste your resume text below.]"); }
                           };
                           reader.readAsArrayBuffer(file);
                         } else {
                           finalize(await file.text());
                         }
-                      } catch(err) { finalize("[Could not read file — paste your resume text below.]"); }
+                      } catch(err) { finalize("[Could not read file, paste your resume text below.]"); }
                     }}
                   />
                   <div style={{display:"flex",gap:".5rem",alignItems:"center",flexWrap:"wrap"}}>
@@ -4315,7 +4315,7 @@ Return this exact JSON structure:
                   </div>
                   {uploadedResumeText&&(
                     <div style={{marginTop:".6rem",background:"#fff",border:"1px solid #d0daea",borderRadius:"4px",padding:".5rem .7rem",fontSize:".75rem",color:"#3a5070",maxHeight:"80px",overflowY:"auto",lineHeight:1.5}}>
-                      <strong style={{color:"#1a3a6b"}}>Preview</strong> <span style={{color:"var(--dim)",fontSize:".7rem"}}>({uploadedResumeText.length} chars extracted)</span><br/>{uploadedResumeText.slice(0,300)}...
+                      <strong style={{color:"#1a3a6b"}}>Preview</strong> <span style={{color:"var(--dim)",fontSize:".7rem"}}>({uploadedResumeText.length} chars extracted)</span><br/>{uploadedResumeText.slice(0, 300)}...
                     </div>
                   )}
 
@@ -4340,7 +4340,7 @@ Return this exact JSON structure:
                     {reviewLoading?"🔍 Analyzing your resume...":"📊 Score My Resume"}
                   </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools, $15/mo</button>
                 )}
 
                 {resumeReview&&resumeReview.error&&(
@@ -4356,7 +4356,7 @@ Return this exact JSON structure:
                         <div className="score-lbl">out of 100</div>
                       </div>
                       <div style={{fontWeight:700,fontSize:"1rem",color:"#1a3a6b",marginBottom:".2rem"}}>
-                        {resumeScore>=85?"Excellent Resume 🏆":resumeScore>=75?"Strong Resume ✅":resumeScore>=65?"Good — Needs Polish ⚡":"Needs Work 🔧"}
+                        {resumeScore>=85?"Excellent Resume 🏆":resumeScore>=75?"Strong Resume ✅":resumeScore>=65?"Good, Needs Polish ⚡":"Needs Work 🔧"}
                       </div>
                       <div style={{fontSize:".82rem",color:"var(--dim)",maxWidth:"400px",margin:"0 auto"}}>{resumeReview.verdict}</div>
                     </div>
@@ -4460,7 +4460,7 @@ Return this exact JSON structure:
                     <div style={{fontWeight:700,fontSize:".88rem",color:"#1a3a6b",marginBottom:".2rem"}}>🔖 Save Jobs From Any Job Board</div>
                     <div style={{fontSize:".78rem",color:"#5a7090",lineHeight:1.5}}>Drag the button to your browser bookmarks bar. Then click it on any Indeed, LinkedIn, ZipRecruiter, or USAJobs listing to instantly save it here.</div>
                   </div>
-                  <a href="javascript:(function(){var t=document.title||'';var u=window.location.href;var co='';var ti='';if(t.match(/jobs[,\s]|employment\s*[\|,]/i)&&!t.match(/\bat\b/i)){alert('Please open a specific job listing first, then click the bookmarklet. You appear to be on a search results page.');return;}var m1=t.match(/^(.+?)\s*[-\u2013]\s*(.+?)\s*[-\u2013|]/);if(m1){ti=m1[1].trim();co=m1[2].trim();}var m2=t.match(/^(.+?)\s+at\s+(.+?)\s*(\||$)/i);if(m2){ti=m2[1].trim();co=m2[2].split('|')[0].trim();}var m3=t.match(/^(.+?)\s*\|\s*USAJOBS/i);if(m3){ti=m3[1].trim();co='U.S. Government';}if(!ti){var m4=t.match(/^(.+?)\s*\|/);if(m4)ti=m4[1].trim();else ti=t.slice(0,80);}co=co.replace(/\s*(indeed|linkedin|glassdoor|ziprecruiter|usajobs)\s*/ig,'').replace(/[-|].*$/,'').trim();var base='https://veterancareerpath.com';var p='?addjob=1&title='+encodeURIComponent(ti)+'&company='+encodeURIComponent(co)+'&link='+encodeURIComponent(u);window.open(base+'/app.html'+p,'_blank');})()"
+                  <a href="javascript:(function(){var t=document.title||'';var u=window.location.href;var co='';var ti='';if(t.match(/jobs[,\s]|employment\s*[\|,]/i)&&!t.match(/\bat\b/i)){alert('Please open a specific job listing first, then click the bookmarklet. You appear to be on a search results page.');return;}var m1=t.match(/^(.+?)\s*[-\u2013]\s*(.+?)\s*[-\u2013|]/);if(m1){ti=m1[1].trim();co=m1[2].trim();}var m2=t.match(/^(.+?)\s+at\s+(.+?)\s*(\||$)/i);if(m2){ti=m2[1].trim();co=m2[2].split('|')[0].trim();}var m3=t.match(/^(.+?)\s*\|\s*USAJOBS/i);if(m3){ti=m3[1].trim();co='U.S. Government';}if(!ti){var m4=t.match(/^(.+?)\s*\|/);if(m4)ti=m4[1].trim();else ti=t.slice(0, 80);}co=co.replace(/\s*(indeed|linkedin|glassdoor|ziprecruiter|usajobs)\s*/ig,'').replace(/[-|].*$/,'').trim();var base='https://veterancareerpath.com';var p='?addjob=1&title='+encodeURIComponent(ti)+'&company='+encodeURIComponent(co)+'&link='+encodeURIComponent(u);window.open(base+'/app.html'+p,'_blank');})()"
                     onClick={e=>e.preventDefault()}
                     draggable="true"
                     style={{display:"inline-block",background:"linear-gradient(135deg,#1a3a6b,#1e4a8a)",color:"#f0c040",fontWeight:700,fontSize:".82rem",padding:".5rem 1rem",borderRadius:"6px",textDecoration:"none",whiteSpace:"nowrap",cursor:"grab",border:"2px dashed #f0c040",flexShrink:0}}
@@ -4519,7 +4519,7 @@ Return this exact JSON structure:
                     </div>
                     <button className="btn-primary" style={{width:"auto"}} onClick={()=>{
                       if(!newJob.company||!newJob.title) return;
-                      saveJobs([...jobApps,{...newJob,id:Date.now(),date:newJob.date||new Date().toISOString().slice(0,10)}]);
+                      saveJobs([...jobApps,{...newJob,id:Date.now(),date:newJob.date||new Date().toISOString().slice(0, 10)}]);
                       setNewJob({company:"",title:"",date:"",status:"Applied",notes:"",link:""});
                       setShowAddJob(false);
                     }}>Save Application</button>
@@ -4615,7 +4615,7 @@ Return this exact JSON structure:
                     {prepLoading?"🎤 Preparing your questions...":"🎤 Generate Interview Questions"}
                   </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools, $15/mo</button>
                 )}
                 {prepQuestions.length>0&&(
                   <>
@@ -4645,7 +4645,7 @@ Return this exact JSON structure:
             {retentionTab==="followup"&&(
               <div>
                 <h3 style={{color:"#1a3a6b",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".08em",fontSize:"1.2rem",marginTop:0}}>Follow-Up Email Generator</h3>
-                <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>Professional emails for every stage of the hiring process — thank-you, check-in, negotiation, or withdrawal.</p>
+                <p style={{fontSize:".88rem",color:"var(--dim)",margin:"0 0 1rem"}}>Professional emails for every stage of the hiring process, thank-you, check-in, negotiation, or withdrawal.</p>
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".6rem",marginBottom:".6rem"}}>
                   <div className="field" style={{marginBottom:0}}><label>Company</label>
                     <input placeholder="e.g. Lockheed Martin" value={followupCtx.company} onChange={e=>setFollowupCtx(f=>({...f,company:e.target.value}))}/>
@@ -4673,7 +4673,7 @@ Return this exact JSON structure:
                     {followupLoading?"✍ Writing your email...":"📧 Generate Email"}
                   </button>
                 ):(
-                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools — $15/mo</button>
+                <button onClick={()=>setShowPaywall(true)} style={{width:"100%",padding:".75rem",background:"linear-gradient(135deg,#f0c040,#e0a820)",border:"none",borderRadius:"6px",color:"#0d1f3c",fontWeight:700,fontSize:".95rem",cursor:"pointer",letterSpacing:".03em"}}>🔒 Unlock AI Tools, $15/mo</button>
                 )}
                 {followupEmail&&(
                   <>
@@ -4702,24 +4702,24 @@ Return this exact JSON structure:
                   {phase:"6-12 Months Before ETS",color:"#c0392b",items:[
                     {id:"tap",label:"Complete TAP (Transition Assistance Program)",desc:"Mandatory 5-day program. Must complete at least 90 days before ETS. Includes resume, job search, VA benefits, and financial planning modules.me writing, VA benefits, job search basics"},
                     {id:"dd214",label:"Request DD-214 and service records",desc:"You will need these for VA claims, hiring preferences, and education benefits"},
-                    {id:"varating",label:"File VA disability claim",desc:"Start early — the process takes 3-6 months on average"},
+                    {id:"varating",label:"File VA disability claim",desc:"Start early, the process takes 3-6 months on average"},
                     {id:"gibill",label:"Apply for GI Bill (Chapter 33 or 30)",desc:"Covers tuition, housing allowance, and books for school or certifications"},
                   ]},
                   {phase:"3-6 Months Before ETS",color:"#e67e22",items:[
                     {id:"linkedin",label:"Create or update LinkedIn profile",desc:"Connect with veteran hiring programs and recruiters proactively"},
                     {id:"resume",label:"Build your civilian resume",desc:"Use this tool to generate and refine your resume"},
-                    {id:"network",label:"Start networking — veteran groups, LinkedIn, base programs",desc:"80% of jobs are filled through connections, not job postings"},
-                    {id:"skillbridge",label:"Apply for SkillBridge or DoD Internship",desc:"Work at a civilian company while still in uniform — paid by DoD"},
+                    {id:"network",label:"Start networking, veteran groups, LinkedIn, base programs",desc:"80% of jobs are filled through connections, not job postings"},
+                    {id:"skillbridge",label:"Apply for SkillBridge or DoD Internship",desc:"Work at a civilian company while still in uniform, paid by DoD"},
                     {id:"clearance",label:"Document your security clearance",desc:"Get a clearance verification letter from your security manager"},
                   ]},
                   {phase:"1-3 Months Before ETS",color:"#1a3a6b",items:[
                     {id:"applying",label:"Apply to 5+ jobs per week",desc:"Use USAJobs for government roles, LinkedIn and Indeed for civilian"},
                     {id:"benefits",label:"Sign up for TRICARE and other transitioning benefits",desc:"Healthcare coverage continues for a period after separation"},
-                    {id:"housing",label:"Confirm housing plan post-separation",desc:"BAH ends at separation — plan ahead for rent/mortgage"},
+                    {id:"housing",label:"Confirm housing plan post-separation",desc:"BAH ends at separation, plan ahead for rent/mortgage"},
                     {id:"references",label:"Line up 3 professional references",desc:"Officers, NCOs, or civilians who can speak to your leadership"},
                   ]},
                   {phase:"After ETS",color:"#1a7a40",items:[
-                    {id:"unemployment",label:"File for unemployment if needed",desc:"You may qualify — visit your state workforce agency"},
+                    {id:"unemployment",label:"File for unemployment if needed",desc:"You may qualify, visit your state workforce agency"},
                     {id:"voc_rehab",label:"Explore Vocational Rehabilitation (Chapter 31)",desc:"If you have a service-connected disability, VR&E can fund your education or training"},
                     {id:"interview_ready",label:"Use Interview Prep for every callback",desc:"Prepare specifically for each company and role"},
                     {id:"hired",label:"Accept your offer and celebrate 🎖",desc:"You earned this. The skills you built will serve you for life."},
@@ -4826,8 +4826,8 @@ Return this exact JSON structure:
             <div className="crisis-banner">
               <div style={{fontSize:"2rem",flexShrink:0}}>🆘</div>
               <div style={{flex:1}}>
-                <h3>If You Are in Crisis — You Are Not Alone</h3>
-                <p>The transition out of service is one of the hardest things a veteran faces. If you are struggling — mentally, emotionally, or financially — real help is available right now, 24/7, from people who understand military service.</p>
+                <h3>If You Are in Crisis, You Are Not Alone</h3>
+                <p>The transition out of service is one of the hardest things a veteran faces. If you are struggling, mentally, emotionally, or financially, real help is available right now, 24/7, from people who understand military service.</p>
                 <div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}>
                   <a href="tel:988" className="res-contact red">📞 Call or Text 988 (Veterans Press 1)</a>
                   <a href="https://www.veteranscrisisline.net/get-help-now/chat/" target="_blank" className="res-contact red">💬 Chat Online</a>
@@ -4846,7 +4846,7 @@ Return this exact JSON structure:
                   <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.3rem",letterSpacing:".1em",color:"#f0c040",marginBottom:".3rem"}}>Are You a Veteran Experiencing Homelessness?</div>
                   <p style={{color:"#c0d8f0",fontSize:".88rem",lineHeight:1.7,margin:0}}>
                     There is <strong style={{color:"#f0c040"}}>absolutely no shame</strong> in reaching out for help.
-                    You answered the call when your country needed you — now let us answer yours.
+                    You answered the call when your country needed you, now let us answer yours.
                     Fill out the form below and the Veteran Career Path team will personally reach out
                     to help you build a resume, create an action plan, and connect you with resources
                     in your area. <strong style={{color:"#f0c040"}}>Your service matters and so do you.</strong>
@@ -4857,7 +4857,7 @@ Return this exact JSON structure:
               {!showHomelessForm&&!homelessSubmitted&&(
                 <button onClick={()=>setShowHomelessForm(true)}
                   style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"8px",color:"#0a1628",fontWeight:700,fontSize:".95rem",padding:".7rem 1.5rem",cursor:"pointer"}}>
-                  🤝 Request Help — We've Got You
+                  🤝 Request Help, We've Got You
                 </button>
               )}
 
@@ -4866,7 +4866,7 @@ Return this exact JSON structure:
                   <div style={{fontWeight:700,fontSize:"1rem",color:"#90e8b0",marginBottom:".4rem"}}>✓ Message received. You are not alone.</div>
                   <div style={{fontSize:".86rem",color:"#c0f0d0",lineHeight:1.7}}>
                     We will reach out within 24–48 hours with local resources and next steps.
-                    In the meantime, start filling out your profile in the app — we will have a
+                    In the meantime, start filling out your profile in the app, we will have a
                     resume ready for you when we connect.
                   </div>
                 </div>
@@ -4889,7 +4889,7 @@ Return this exact JSON structure:
                     </div>
                     <div className="field" style={{marginBottom:0}}>
                       <label style={{color:"#a0c0e0"}}>Your Current Location <span style={{color:"#f0c040"}}>*</span></label>
-                      <input placeholder="City, State — e.g. Newport News, VA" value={homelessForm.location}
+                      <input placeholder="City, State, e.g. Newport News, VA" value={homelessForm.location}
                         onChange={e=>setHomelessForm(f=>({...f,location:e.target.value}))}
                         style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff"}}/>
                       <span style={{fontSize:".72rem",color:"#80a8d0",marginTop:".25rem",display:"block"}}>We use your location to find nearby VA offices, shelters, and employment resources</span>
@@ -4902,7 +4902,7 @@ Return this exact JSON structure:
                     </div>
                   </div>
                   <div className="field" style={{marginBottom:"1rem"}}>
-                    <label style={{color:"#a0c0e0"}}>Tell us about your situation (optional — share only what you are comfortable with)</label>
+                    <label style={{color:"#a0c0e0"}}>Tell us about your situation (optional, share only what you are comfortable with)</label>
                     <textarea placeholder="Current living situation, what kind of work you are looking for, any urgent needs we should know about..." value={homelessForm.situation}
                       onChange={e=>setHomelessForm(f=>({...f,situation:e.target.value}))}
                       style={{background:"rgba(255,255,255,.08)",border:"1px solid rgba(255,255,255,.2)",color:"#fff",minHeight:"80px"}}/>
@@ -4915,7 +4915,7 @@ Return this exact JSON structure:
                             method:"POST",
                             headers:{"Content-Type":"application/json"},
                             body:JSON.stringify({
-                              subject:"HOMELESS VETERAN OUTREACH — "+homelessForm.location,
+                              subject:"HOMELESS VETERAN OUTREACH, "+homelessForm.location,
                               name:homelessForm.name||"(not provided)",
                               branch:homelessForm.branch||"(not provided)",
                               location:homelessForm.location,
@@ -4928,7 +4928,7 @@ Return this exact JSON structure:
                         setShowHomelessForm(false);
                       }}
                       style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"8px",color:"#0a1628",fontWeight:700,fontSize:".9rem",padding:".65rem 1.5rem",cursor:"pointer"}}>
-                      ✓ Send — We Will Reach Out Within 24–48 Hours
+                      ✓ Send, We Will Reach Out Within 24–48 Hours
                     </button>
                     <button onClick={()=>setShowHomelessForm(false)}
                       style={{background:"transparent",border:"1px solid rgba(255,255,255,.2)",borderRadius:"8px",color:"#a0c0e0",fontSize:".85rem",padding:".65rem 1rem",cursor:"pointer"}}>
@@ -4938,10 +4938,10 @@ Return this exact JSON structure:
                   <div style={{padding:".85rem 1rem",background:"rgba(192,57,43,.15)",border:"1px solid rgba(192,57,43,.3)",borderRadius:"8px"}}>
                     <div style={{fontWeight:700,color:"#f08080",fontSize:".82rem",marginBottom:".4rem"}}>🆘 Need immediate help right now?</div>
                     <div style={{fontSize:".8rem",color:"#c0b0b0",lineHeight:1.8}}>
-                      <strong style={{color:"#fff"}}>VA Homeless Veterans Hotline: 1-877-4AID-VET (1-877-424-3838)</strong> — 24/7<br/>
-                      <strong style={{color:"#fff"}}>HUD-VASH Program</strong> — Contact your local VA medical center for housing vouchers<br/>
-                      <strong style={{color:"#fff"}}>211</strong> — Dial 211 for local shelter, food, and emergency services<br/>
-                      <strong style={{color:"#fff"}}>SSVF (Supportive Services for Veteran Families)</strong> — google.com/search?q=SSVF+near+me
+                      <strong style={{color:"#fff"}}>VA Homeless Veterans Hotline: 1-877-4AID-VET (1-877-424-3838)</strong>, 24/7<br/>
+                      <strong style={{color:"#fff"}}>HUD-VASH Program</strong>, Contact your local VA medical center for housing vouchers<br/>
+                      <strong style={{color:"#fff"}}>211</strong>, Dial 211 for local shelter, food, and emergency services<br/>
+                      <strong style={{color:"#fff"}}>SSVF (Supportive Services for Veteran Families)</strong>, google.com/search?q=SSVF+near+me
                     </div>
                   </div>
                 </div>
@@ -4973,11 +4973,11 @@ Return this exact JSON structure:
                 tag:"Benefits & VA",
                 icon:"🏛",
                 resources:[
-                  {name:"VA.gov — Benefits Hub",desc:"Official hub for all VA benefits: disability compensation, pension, education (GI Bill), home loans, life insurance, health care enrollment, and more.",contact:"va.gov",href:"https://www.va.gov",color:"green",tags:["Benefits & VA"]},
+                  {name:"VA.gov, Benefits Hub",desc:"Official hub for all VA benefits: disability compensation, pension, education (GI Bill), home loans, life insurance, health care enrollment, and more.",contact:"va.gov",href:"https://www.va.gov",color:"green",tags:["Benefits & VA"]},
                   {name:"Disabled American Veterans (DAV)",desc:"Free VSO (Veterans Service Organization) that helps veterans file and appeal VA disability claims. A DAV accredited claims agent can significantly increase your rating and get back pay you are owed.",contact:"dav.org",href:"https://www.dav.org",color:"green",tags:["Benefits & VA"]},
                   {name:"VFW Veterans Benefits Center",desc:"Free VSO with accredited claims agents nationwide. They have helped veterans recover billions in retroactive disability pay. No cost ever.",contact:"vfw.org/assistance",href:"https://www.vfw.org/assistance/va-claims-separation-benefits",color:"green",tags:["Benefits & VA"]},
                   {name:"VA Vocational Rehabilitation (VR&E / Chapter 31)",desc:"If you have a service-connected disability, VA may pay 100% of education or job training costs, provide job placement assistance, and a monthly subsistence allowance while you train.",contact:"va.gov/careers-employment/vocational-rehabilitation",href:"https://www.va.gov/careers-employment/vocational-rehabilitation/",color:"green",tags:["Benefits & VA","Education","Employment"]},
-                  {name:"Benefits.gov — Federal Benefits Finder",desc:"Search all federal benefits you may be eligible for based on your situation — veterans, family, low income, disability, housing and more.",contact:"benefits.gov",href:"https://www.benefits.gov",color:"green",tags:["Benefits & VA"]},
+                  {name:"Benefits.gov, Federal Benefits Finder",desc:"Search all federal benefits you may be eligible for based on your situation, veterans, family, low income, disability, housing and more.",contact:"benefits.gov",href:"https://www.benefits.gov",color:"green",tags:["Benefits & VA"]},
                 ]
               },
               {
@@ -4985,9 +4985,9 @@ Return this exact JSON structure:
                 tag:"Financial",
                 icon:"💰",
                 resources:[
-                  {name:"Operation Homefront — Emergency Assistance",desc:"Provides emergency financial assistance to active duty, Guard, Reserve, and veterans. Helps with rent, utilities, food, auto repair, and more. No repayment required.",contact:"operationhomefront.org",href:"https://www.operationhomefront.org/get-help/programs/",color:"gold",tags:["Financial"]},
+                  {name:"Operation Homefront, Emergency Assistance",desc:"Provides emergency financial assistance to active duty, Guard, Reserve, and veterans. Helps with rent, utilities, food, auto repair, and more. No repayment required.",contact:"operationhomefront.org",href:"https://www.operationhomefront.org/get-help/programs/",color:"gold",tags:["Financial"]},
                   {name:"USA Cares",desc:"Emergency financial assistance for post-9/11 veterans and military families facing hardship. Helps with rent, mortgage, utilities, and basic needs.",contact:"usacares.org",href:"https://usacares.org",color:"gold",tags:["Financial"]},
-                  {name:"VA Pension — Low Income Veterans",desc:"If you served during wartime and have limited income, you may qualify for VA Pension — a monthly payment regardless of disability rating.",contact:"va.gov/pension",href:"https://www.va.gov/pension/",color:"green",tags:["Financial","Benefits & VA"]},
+                  {name:"VA Pension, Low Income Veterans",desc:"If you served during wartime and have limited income, you may qualify for VA Pension, a monthly payment regardless of disability rating.",contact:"va.gov/pension",href:"https://www.va.gov/pension/",color:"green",tags:["Financial","Benefits & VA"]},
                   {name:"SNAP (Food Assistance)",desc:"Veterans facing food insecurity may qualify for SNAP benefits. Many veterans are surprised to learn they qualify. Apply through your state's social services agency.",contact:"fns.usda.gov/snap",href:"https://www.fns.usda.gov/snap/recipient/eligibility",color:"gold",tags:["Financial"]},
                   {name:"VFW Emergency Loans & Grants",desc:"VFW offers interest-free emergency loans and unrepayable grants to veterans in financial crisis through their National Veterans Service program.",contact:"vfw.org",href:"https://www.vfw.org",color:"green",tags:["Financial"]},
                 ]
@@ -4999,9 +4999,9 @@ Return this exact JSON structure:
                 resources:[
                   {name:"GI Bill (Chapter 33 / Post-9/11)",desc:"Covers tuition, housing allowance (BAH at E-5 rate), and $1,000/year for books. Use it for college, trade school, flight training, on-the-job training, and more. Transfer to dependents is possible.",contact:"va.gov/education/about-gi-bill-benefits",href:"https://www.va.gov/education/about-gi-bill-benefits/",color:"green",tags:["Education","Benefits & VA"]},
                   {name:"DoD SkillBridge",desc:"Work at a civilian company for up to 180 days before ETS while still receiving military pay and benefits. Over 10,000 partner companies including Amazon, Microsoft, and hundreds of trades programs.",contact:"skillbridge.defense.gov",href:"https://skillbridge.osd.mil",color:"green",tags:["Education","Employment"]},
-                  {name:"Helmets to Hardhats",desc:"Connects veterans to registered apprenticeships in the construction trades — electrical, plumbing, pipefitting, ironwork, and more. Union wages, free training, lifetime career.",contact:"helmetstohardhats.org",href:"https://www.helmetstohardhats.org",color:"gold",tags:["Education","Employment"]},
+                  {name:"Helmets to Hardhats",desc:"Connects veterans to registered apprenticeships in the construction trades, electrical, plumbing, pipefitting, ironwork, and more. Union wages, free training, lifetime career.",contact:"helmetstohardhats.org",href:"https://www.helmetstohardhats.org",color:"gold",tags:["Education","Employment"]},
                   {name:"MyCAA Scholarship (Military Spouses)",desc:"Up to $4,000 in scholarships for military spouses pursuing portable career training, licenses, or degrees.",contact:"mycaa.com",href:"https://mycaa.com",color:"green",tags:["Education"]},
-                  {name:"Troops to Teachers",desc:"Helps veterans and transitioning service members become certified teachers — covering certification fees and offering bonuses in high-need schools.",contact:"proudtoserveagain.com",href:"https://www.proudtoserveagain.com",color:"green",tags:["Education","Employment"]},
+                  {name:"Troops to Teachers",desc:"Helps veterans and transitioning service members become certified teachers, covering certification fees and offering bonuses in high-need schools.",contact:"proudtoserveagain.com",href:"https://www.proudtoserveagain.com",color:"green",tags:["Education","Employment"]},
                 ]
               },
               {
@@ -5010,9 +5010,9 @@ Return this exact JSON structure:
                 icon:"💼",
                 resources:[
                   {name:"Hire Heroes USA",desc:"Free career coaching, resume writing, and job placement services for veterans and military spouses. Their coaches are veterans themselves. Average salary for placed veterans: $62,000+.",contact:"hireheroesusa.org",href:"https://www.hireheroesusa.org",color:"green",tags:["Employment"]},
-                  {name:"USAJobs.gov — Federal Employment",desc:"All federal government jobs. Veterans get 5-10 point preference. Many roles are set aside exclusively for veterans. Create a profile and upload your resume.",contact:"usajobs.gov",href:"https://www.usajobs.gov",color:"green",tags:["Employment"]},
-                  {name:"RecruitMilitary",desc:"Job fairs and online job board specifically for veterans. Top employers attend specifically to hire veterans — Walmart, Home Depot, defense contractors, law enforcement agencies.",contact:"recruitmilitary.com",href:"https://recruitmilitary.com",color:"green",tags:["Employment"]},
-                  {name:"ClearanceJobs",desc:"Job board for cleared professionals. If you hold or held a security clearance, your value in the defense contractor market is significant — often $80K-$150K+ roles.",contact:"clearancejobs.com",href:"https://www.clearancejobs.com",color:"gold",tags:["Employment"]},
+                  {name:"USAJobs.gov, Federal Employment",desc:"All federal government jobs. Veterans get 5-10 point preference. Many roles are set aside exclusively for veterans. Create a profile and upload your resume.",contact:"usajobs.gov",href:"https://www.usajobs.gov",color:"green",tags:["Employment"]},
+                  {name:"RecruitMilitary",desc:"Job fairs and online job board specifically for veterans. Top employers attend specifically to hire veterans, Walmart, Home Depot, defense contractors, law enforcement agencies.",contact:"recruitmilitary.com",href:"https://recruitmilitary.com",color:"green",tags:["Employment"]},
+                  {name:"ClearanceJobs",desc:"Job board for cleared professionals. If you hold or held a security clearance, your value in the defense contractor market is significant, often $80K-$150K+ roles.",contact:"clearancejobs.com",href:"https://www.clearancejobs.com",color:"gold",tags:["Employment"]},
                   {name:"American Corporate Partners (ACP)",desc:"Free one-on-one mentorship pairing veterans with executives from major corporations. Get career advice, networking, and guidance from senior leaders.",contact:"acp-usa.org",href:"https://www.acp-usa.org",color:"green",tags:["Employment"]},
                 ]
               },
@@ -5024,7 +5024,7 @@ Return this exact JSON structure:
                   {name:"VA Home Loan",desc:"No down payment required, no private mortgage insurance, competitive interest rates. One of the most powerful benefits earned through service. Available for purchase, refinance, or adapted housing.",contact:"va.gov/housing-assistance/home-loans",href:"https://www.va.gov/housing-assistance/home-loans/",color:"green",tags:["Housing","Benefits & VA"]},
                   {name:"HUD-VASH (Veteran Housing Vouchers)",desc:"If you are homeless or at risk of homelessness, HUD-VASH provides housing vouchers and VA case management. Call your local VA or 988 (Press 1) to access.",contact:"va.gov/homeless",href:"https://www.va.gov/homeless/hud-vash.asp",color:"red",tags:["Housing"]},
                   {name:"National Call Center for Homeless Veterans",desc:"24/7 hotline connecting homeless or at-risk veterans to housing services, case management, and emergency assistance.",contact:"Call 877-4AID-VET",href:"tel:18774243838",color:"red",tags:["Housing"]},
-                  {name:"Operation Homefront — Housing",desc:"Transitional and permanent housing programs for veterans and military families in need.",contact:"operationhomefront.org",href:"https://www.operationhomefront.org",color:"gold",tags:["Housing","Financial"]},
+                  {name:"Operation Homefront, Housing",desc:"Transitional and permanent housing programs for veterans and military families in need.",contact:"operationhomefront.org",href:"https://www.operationhomefront.org",color:"gold",tags:["Housing","Financial"]},
                 ]
               },
               {
@@ -5043,8 +5043,8 @@ Return this exact JSON structure:
                 icon:"👨‍👩‍👧",
                 resources:[
                   {name:"VA Caregiver Support Program",desc:"If you care for a veteran with a serious injury or illness, you may qualify for a monthly stipend, health insurance, and mental health services through the Program of Comprehensive Assistance for Family Caregivers (PCAFC).",contact:"va.gov/family-member-benefits/comprehensive-assistance-for-family-caregivers",href:"https://www.va.gov/family-member-benefits/comprehensive-assistance-for-family-caregivers/",color:"green",tags:["Family","Benefits & VA"]},
-                  {name:"Military OneSource",desc:"Free 24/7 support for service members and their families — counseling, financial coaching, tax prep, legal services, relocation assistance, and more. Available up to 365 days after separation.",contact:"militaryonesource.mil",href:"https://www.militaryonesource.mil",color:"green",tags:["Family"]},
-                  {name:"TAPS — Tragedy Assistance Program for Survivors",desc:"Support for families who have lost a loved one in military service. Grief counseling, peer mentors, and survivor benefits guidance.",contact:"taps.org",href:"https://www.taps.org",color:"red",tags:["Family","Mental Health"]},
+                  {name:"Military OneSource",desc:"Free 24/7 support for service members and their families, counseling, financial coaching, tax prep, legal services, relocation assistance, and more. Available up to 365 days after separation.",contact:"militaryonesource.mil",href:"https://www.militaryonesource.mil",color:"green",tags:["Family"]},
+                  {name:"TAPS, Tragedy Assistance Program for Survivors",desc:"Support for families who have lost a loved one in military service. Grief counseling, peer mentors, and survivor benefits guidance.",contact:"taps.org",href:"https://www.taps.org",color:"red",tags:["Family","Mental Health"]},
                 ]
               },
               {
@@ -5078,7 +5078,7 @@ Return this exact JSON structure:
             ))}
 
             <div style={{background:"#f0f4ff",border:"1px solid #c0d0e4",borderRadius:"8px",padding:"1rem 1.2rem",marginTop:"1rem",fontSize:".82rem",color:"#3a5070",lineHeight:1.7}}>
-              <strong style={{color:"#1a3a6b"}}>📌 A note from Veteran Career Path:</strong> This resource page exists because we know the transition is more than just a job search. You served. You sacrificed. And you deserve support in every area of your life — not just your career. If you know a veteran who needs help, please share these resources with them.
+              <strong style={{color:"#1a3a6b"}}>📌 A note from Veteran Career Path:</strong> This resource page exists because we know the transition is more than just a job search. You served. You sacrificed. And you deserve support in every area of your life, not just your career. If you know a veteran who needs help, please share these resources with them.
             </div>
 
             <div className="nav-row" style={{marginTop:"1.5rem"}}>
@@ -5162,7 +5162,7 @@ Return this exact JSON structure:
             <span className="tdl-badge">AI</span>
           </a>
 
-          <div className="tools-drawer-section">More AI Tools — $15/mo</div>
+          <div className="tools-drawer-section">More AI Tools, $15/mo</div>
           <a className="tools-drawer-link" href="https://veterancareerpath.com/career-assessment-full.html" target="_blank">
             <span className="tdl-icon">🧠</span>
             <span className="tdl-text"><span className="tdl-name">Full Career Assessment</span><span className="tdl-sub">60-question RIASEC + AI profile blend</span></span>
@@ -5175,25 +5175,25 @@ Return this exact JSON structure:
           </a>
           <a className="tools-drawer-link" href="https://veterancareerpath.com/dd214-decoder.html" target="_blank">
             <span className="tdl-icon">📋</span>
-            <span className="tdl-text"><span className="tdl-name">DD-214 Decoder</span><span className="tdl-sub">Every benefit your discharge unlocks</span></span>
+            <span className="tdl-text"><span className="tdl-name">DD-214 Decoder</span><span className="tdl-sub">Benefit paths to review from selected fields</span></span>
             <span className="tdl-badge">AI</span>
           </a>
           <a className="tools-drawer-link" href="https://veterancareerpath.com/clearance-job-match.html" target="_blank">
             <span className="tdl-icon">🔐</span>
-            <span className="tdl-text"><span className="tdl-name">Clearance Job Match</span><span className="tdl-sub">Cleared roles + real salary data</span></span>
+            <span className="tdl-text"><span className="tdl-name">Clearance Job Match</span><span className="tdl-sub">Cleared roles + compensation context</span></span>
             <span className="tdl-badge">AI</span>
           </a>
-          <a className="tools-drawer-link" href="https://veterancareerpath.com/linkedin-profile-rewriter.html" target="_blank">
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-linkedin-builder.html" target="_blank">
             <span className="tdl-icon">🔵</span>
             <span className="tdl-text"><span className="tdl-name">LinkedIn Profile Rewriter</span><span className="tdl-sub">Full civilian rewrite, ready to paste</span></span>
             <span className="tdl-badge">AI</span>
           </a>
-          <a className="tools-drawer-link" href="https://veterancareerpath.com/federal-resume-builder-ai.html" target="_blank">
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-federal-resume.html" target="_blank">
             <span className="tdl-icon">🏛</span>
             <span className="tdl-text"><span className="tdl-name">Federal Resume AI Builder</span><span className="tdl-sub">OPM-format, USAJobs-ready</span></span>
             <span className="tdl-badge">AI</span>
           </a>
-          <a className="tools-drawer-link" href="https://veterancareerpath.com/salary-negotiation-roleplay.html" target="_blank">
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-salary-negotiator.html" target="_blank">
             <span className="tdl-icon">🎯</span>
             <span className="tdl-text"><span className="tdl-name">Salary Negotiation Role-Play</span><span className="tdl-sub">Practice with AI hiring manager</span></span>
             <span className="tdl-badge">AI</span>
@@ -5205,7 +5205,7 @@ Return this exact JSON structure:
           </a>
           <a className="tools-drawer-link" href="https://veterancareerpath.com/veteran-business-funding.html" target="_blank">
             <span className="tdl-icon">💼</span>
-            <span className="tdl-text"><span className="tdl-name">Veteran Business Funding</span><span className="tdl-sub">SBA + grants you actually qualify for</span></span>
+            <span className="tdl-text"><span className="tdl-name">Veteran Business Funding</span><span className="tdl-sub">Funding leads to verify with official sources</span></span>
             <span className="tdl-badge">AI</span>
           </a>
           <a className="tools-drawer-link" href="https://veterancareerpath.com/va-home-loan-analyzer.html" target="_blank">
@@ -5234,7 +5234,7 @@ Return this exact JSON structure:
       {!hasAccess&&<div style={{position:"fixed",bottom:0,left:0,right:0,background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",color:"#fff",zIndex:99999,boxShadow:"0 -2px 16px rgba(0,0,0,.4)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".5rem 1rem .3rem",flexWrap:"wrap",gap:".4rem"}}>
           <div style={{fontSize:".72rem",color:"#f0c040",fontWeight:700,letterSpacing:".06em",textTransform:"uppercase"}}>🔒 $15/mo · 16 AI Tools</div>
-          <button onClick={()=>setShowPaywall(true)} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"6px",color:"#0a1628",fontWeight:700,fontSize:".82rem",padding:".4rem 1rem",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Subscribe — $15/month →</button>
+          <button onClick={()=>setShowPaywall(true)} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"6px",color:"#0a1628",fontWeight:700,fontSize:".82rem",padding:".4rem 1rem",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Subscribe, $15/month →</button>
         </div>
         <div style={{display:"flex",overflowX:"auto",gap:".4rem",padding:".2rem 1rem .5rem",scrollbarWidth:"none"}}>
           {[
@@ -5254,7 +5254,7 @@ Return this exact JSON structure:
           ))}
         </div>
       </div>}
-{/* No trial — $15/month subscription only */}
+{/* No trial, $15/month subscription only */}
       {saveToast&&<div className="save-toast">{saveToast}</div>}
 
       {showClipboardModal&&(
@@ -5291,12 +5291,12 @@ Return this exact JSON structure:
               }
               const entry = {
                 id:Date.now(), title:clipboardParsed.title, company:clipboardParsed.company,
-                link:clipboardParsed.link, date:new Date().toISOString().slice(0,10),
+                link:clipboardParsed.link, date:new Date().toISOString().slice(0, 10),
                 status:"Applied", notes:"", source:"Mobile"
               };
               saveJobs([entry,...jobApps]);
               setShowClipboardModal(false);
-              showToast("✓ Job saved to tracker — "+( clipboardParsed.title||clipboardParsed.company));
+              showToast("✓ Job saved to tracker, "+( clipboardParsed.title||clipboardParsed.company));
               setClipboardParsed({title:"",company:"",link:""});
             }}>
               ✓ Save to Job Tracker
@@ -5318,7 +5318,7 @@ Return this exact JSON structure:
             display:"flex",alignItems:"center",justifyContent:"center",
             transition:"transform .2s,box-shadow .2s"
           }}
-          title="Tap to add a job — reads your clipboard automatically"
+          title="Tap to add a job, reads your clipboard automatically"
           onMouseEnter={e=>e.currentTarget.style.transform="scale(1.1)"}
           onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}
         >

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   VCP COMPONENTS v1.0 — Veteran Career Path
+   VCP COMPONENTS v1.0, Veteran Career Path
    Shared JavaScript for animations, scroll reveals, and interactive features
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -282,7 +282,7 @@
     });
   }
 
-  /* ── SYNC MEGA MENU — replace ALL mega menus with canonical version ── */
+  /* ── SYNC MEGA MENU, replace ALL mega menus with canonical version ── */
   function initSyncMegaMenu() {
     if (window.location.pathname.indexOf('app.html') > -1) return;
     var existingMega = document.getElementById('vcp-mega');
@@ -366,7 +366,7 @@
     }).catch(function(){});
   }
 
-  /* ── UNIFORM NAV — upgrade old navs to consistent style ─────────────── */
+  /* ── UNIFORM NAV, upgrade old navs to consistent style ─────────────── */
   function initUniformNav() {
     // Skip app.html (has its own nav) and pages with the full mega menu
     if (window.location.pathname.indexOf('app.html') > -1) return;
@@ -391,7 +391,7 @@
       + '<a href="/federal-jobs-search.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Job Search</a>'
       + '<a href="/veteran-discounts.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Discounts</a>'
       + '<a href="/va-disability-rating-schedule.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">VA Calculator</a>'
-      + '<a href="/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.72rem;padding:.3rem .7rem;border-radius:6px;text-decoration:none;white-space:nowrap;flex-shrink:0;">AI Tools — $15/mo</a>'
+      + '<a href="/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.72rem;padding:.3rem .7rem;border-radius:6px;text-decoration:none;white-space:nowrap;flex-shrink:0;">AI Tools, $15/mo</a>'
       + '</div>';
 
     // Add mobile CSS
@@ -452,7 +452,7 @@
       while (i < allChildren.length) {
         var el = allChildren[i];
         if (el.classList && el.classList.contains('vcp-mob-sect')) {
-          // This is a category header — collect links until next category
+          // This is a category header, collect links until next category
           var catLinks = [];
           var j = i + 1;
           while (j < allChildren.length && allChildren[j].classList && !allChildren[j].classList.contains('vcp-mob-sect') && !allChildren[j].classList.contains('vcp-mob-cta') && !allChildren[j].classList.contains('vcp-mob-search')) {

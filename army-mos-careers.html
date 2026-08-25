@@ -1257,8 +1257,23 @@ document.addEventListener('DOMContentLoaded', function(){ initSearch(); var ct=d
 
 
 
-<script defer src="/vcp-components.js"></script>
-<script defer src="/vcp-scout.js"></script>
-<script defer src="/vcp-errors.js"></script>
+<script>
+(function(){
+  var scripts = ["/vcp-components.js", "/vcp-scout.js", "/vcp-errors.js"];
+  function loadDeferredWidgets(){
+    scripts.forEach(function(src){
+      var script = document.createElement("script");
+      script.src = src;
+      script.defer = true;
+      document.body.appendChild(script);
+    });
+  }
+  if ("requestIdleCallback" in window) {
+    window.addEventListener("load", function(){ requestIdleCallback(loadDeferredWidgets, { timeout: 3500 }); });
+  } else {
+    window.addEventListener("load", function(){ setTimeout(loadDeferredWidgets, 2500); });
+  }
+})();
+</script>
 </body>
 </html>

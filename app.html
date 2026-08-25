@@ -1072,12 +1072,8 @@ body.menu-open{overflow:hidden!important;}
       document.querySelectorAll('.vcp-mob-cta').forEach(function(el){el.textContent='Career Path Tools';});
     }
   
-    var _user=null;
-    try{_user=JSON.parse(localStorage.getItem('vcb_profile')||'null');}catch(ee){}
-    if(!_user)try{_user=JSON.parse(localStorage.getItem('vcp_pf_user')||'null');}catch(ee){}
     document.querySelectorAll('.vcp-account-link').forEach(function(el){
-      if(_user&&_user.name){el.textContent=_user.name.split(' ')[0];el.style.color='#f0c040';}
-      else if(_isSub){el.style.color='#f0c040';}
+      if(_isSub){el.style.color='#f0c040';}
     });
   }catch(e){}
 })();

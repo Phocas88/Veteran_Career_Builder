@@ -1020,12 +1020,8 @@ body.menu-open{overflow:hidden!important;}
       document.querySelectorAll('.vcp-mob-cta').forEach(function(el){el.textContent='Career Path Tools';});
     }
   
-    var _user=null;
-    try{_user=JSON.parse(localStorage.getItem('vcb_profile')||'null');}catch(ee){}
-    if(!_user)try{_user=JSON.parse(localStorage.getItem('vcp_pf_user')||'null');}catch(ee){}
     document.querySelectorAll('.vcp-account-link').forEach(function(el){
-      if(_user&&_user.name){el.textContent=_user.name.split(' ')[0];el.style.color='#f0c040';}
-      else if(_isSub){el.style.color='#f0c040';}
+      if(_isSub){el.style.color='#f0c040';}
     });
   }catch(e){}
 })();
@@ -1907,9 +1903,7 @@ window.addEventListener("load",function(){
   var isReturning = false;
   try {
     var acc = JSON.parse(localStorage.getItem('vcb_access') || '{}');
-    var profile = JSON.parse(localStorage.getItem('vcb_profile') || 'null');
-    var pfUser = JSON.parse(localStorage.getItem('vcp_pf_user') || 'null');
-    isReturning = !!(acc.type || profile || pfUser);
+    isReturning = !!(acc.type && acc.serverValidated === true);
   } catch(e) {}
 
   if(isReturning) {
@@ -1983,13 +1977,9 @@ window.addEventListener("load",function(){
       else if(lastName) greeting = lastName;
       else if(fullName) greeting = fullName.split(' ')[0];
 
-      if(!greeting && p) {
+      if(!greeting && p && p.uid) {
         var pName = (p.personal && p.personal.name) || p.name || p.displayName || '';
         if(pName) greeting = pName.split(' ')[0];
-      }
-      if(!greeting) {
-        var u = JSON.parse(localStorage.getItem('vcp_pf_user') || '{}');
-        if(u && u.name) greeting = u.name.split(' ')[0];
       }
     } catch(e) {}
     if(greeting) {

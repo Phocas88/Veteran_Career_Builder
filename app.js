@@ -1601,7 +1601,7 @@ function App() {
             if (data.target) setTarget(data.target);
             // Cache profile to localStorage so standalone tool pages can read it
             // without needing their own Firebase init
-            try { localStorage.setItem("vcb_profile", JSON.stringify(data)); } catch(e) {}
+            try { localStorage.setItem("vcb_profile", JSON.stringify({...data, uid: firebaseUser.uid})); } catch(e) {}
           }
           // Load saved resumes
           const resumesSnap = await fbDb.collection("profiles").doc(firebaseUser.uid)
@@ -1619,6 +1619,7 @@ function App() {
         setSavedResumes([]);
         setJobApps([]); setTlChecks({});
         setSavedCoverLetters([]); setSavedEmails([]); setSavedScores([]);
+        try { localStorage.removeItem("vcb_profile"); } catch(e) {}
       }
     });
     return () => unsubscribe();
@@ -1697,7 +1698,7 @@ function App() {
     if (!currentUser) { setShowAuth(true); return; }
     try {
       const profileData = {
-        personal, milExperiences, civExperiences, education, skills, target,
+        uid: currentUser.uid, personal, milExperiences, civExperiences, education, skills, target,
         updatedAt: new Date().toISOString()
       };
       await fbDb.collection("profiles").doc((currentUser&&currentUser.uid)).set(

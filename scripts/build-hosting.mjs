@@ -89,7 +89,7 @@ fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
 copyTree(root, output);
 
-const required = ['index.html', 'app.html', 'app.js', '404.html'];
+const required = ['index.html', 'app.html', 'app.js', 'app.bundle.js', '404.html'];
 for (const file of required) {
   if (!fs.existsSync(path.join(output, file))) {
     throw new Error(`Hosting build is missing required file: ${file}`);

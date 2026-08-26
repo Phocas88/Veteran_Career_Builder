@@ -1313,7 +1313,7 @@ function MyProfileSaved(props) {
               <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1rem",letterSpacing:".08em",color:"var(--navy)",marginBottom:".25rem"}}>{p.title}</div>
               {p.sector&&<div style={{fontSize:".72rem",color:"var(--slate)",marginBottom:".3rem"}}>{p.sector}{p.industry?" · "+p.industry:""}</div>}
               {p.salaryRange&&<div style={{fontSize:".78rem",fontWeight:600,color:"var(--green)",marginBottom:".3rem"}}>{p.salaryRange}</div>}
-              {p.match&&<span style={{display:"inline-block",background:p.match==="Excellent"?"rgba(26,122,64,.1)":"rgba(26,58,107,.1)",border:"1px solid",borderColor:p.match==="Excellent"?"rgba(26,122,64,.3)":"rgba(26,58,107,.3)",borderRadius:"20px",padding:".1rem .5rem",fontSize:".7rem",fontWeight:700,color:p.match==="Excellent"?"var(--green)":"var(--navy)",marginBottom:".4rem",display:"inline-block"}}>{p.match} Match</span>}
+              {p.match&&<span style={{display:"inline-block",background:p.match==="Excellent"?"rgba(26,122,64,.1)":"rgba(26,58,107,.1)",border:"1px solid",borderColor:p.match==="Excellent"?"rgba(26,122,64,.3)":"rgba(26,58,107,.3)",borderRadius:"20px",padding:".1rem .5rem",fontSize:".7rem",fontWeight:700,color:p.match==="Excellent"?"var(--green)":"var(--navy)",marginBottom:".4rem"}}>{p.match} Match</span>}
               {p.whyFit&&<div style={{fontSize:".78rem",color:"var(--slate)",lineHeight:1.55,margin:".4rem 0 .5rem"}}>{p.whyFit}</div>}
               <div style={{display:"flex",justifyContent:"space-between",marginTop:".5rem"}}>
                 <button onClick={()=>setTab(1)} style={{fontSize:".72rem",color:"var(--navy)",background:"transparent",border:"1px solid var(--navy)",borderRadius:"4px",padding:".2rem .5rem",cursor:"pointer"}}>View Pathways →</button>
@@ -1500,6 +1500,61 @@ function App() {
     }
   };
 
+  const restorePaidAccessFromProfile = async (profileData) => {
+    if (!profileData || checkAccess() || !window.VCBSecureApi) return;
+
+    const stripeId = String(
+      profileData.stripeSession ||
+      profileData.session ||
+      profileData.sessionId ||
+      profileData.subscriptionId ||
+      profileData.stripeSubscription ||
+      profileData.chargeId ||
+      profileData.stripeCharge ||
+      ""
+    ).trim();
+
+    if (!/^(cs_(test_|live_)?|sub_|ch_)[A-Za-z0-9_]+$/.test(stripeId)) return;
+
+    try {
+      const result = await window.VCBSecureApi.verifySubscription({ sessionId: stripeId });
+      if (!result.active) return;
+
+      const verifiedId = String(result.sessionId || stripeId);
+      if (!/^(cs_(test_|live_)?|sub_|ch_)[A-Za-z0-9_]+$/.test(verifiedId)) return;
+
+      localStorage.setItem("vcb_access", JSON.stringify({
+        type: "paid",
+        stripeSession: verifiedId,
+        session: verifiedId,
+        expiry: result.expiry || profileData.accessExpiry || (Date.now() + 30*24*60*60*1000),
+        plan: result.plan || profileData.plan || "monthly",
+        serverValidated: true
+      }));
+      setHasAccess(true);
+      setShowPaywall(false);
+    } catch (error) {
+      console.warn("Could not restore paid access from saved profile:", error);
+    }
+  };
+
+  useEffect(() => {
+    const syncAccessState = () => {
+      const active = checkAccess();
+      setHasAccess(active);
+      if (active) setShowPaywall(false);
+    };
+    syncAccessState();
+    window.addEventListener("storage", syncAccessState);
+    window.addEventListener("focus", syncAccessState);
+    document.addEventListener("visibilitychange", syncAccessState);
+    return () => {
+      window.removeEventListener("storage", syncAccessState);
+      window.removeEventListener("focus", syncAccessState);
+      document.removeEventListener("visibilitychange", syncAccessState);
+    };
+  }, []);
+
   // Access validation handled in checkAccess()
 
 
@@ -1619,6 +1674,7 @@ function App() {
             // Cache profile to localStorage so standalone tool pages can read it
             // without needing their own Firebase init
             try { localStorage.setItem("vcb_profile", JSON.stringify({...data, uid: firebaseUser.uid})); } catch(e) {}
+            await restorePaidAccessFromProfile(data);
           }
           // Load saved resumes
           const resumesSnap = await fbDb.collection("profiles").doc(firebaseUser.uid)
@@ -3720,7 +3776,6 @@ Return this exact JSON structure:
                           background:resumeTemplate===t.id?"#1a3a6b":"#fff",
                           color:resumeTemplate===t.id?"#fff":"#3a5070",
                           borderColor:resumeTemplate===t.id?"#1a3a6b":"#c0d0e4",
-                          fontWeight:resumeTemplate===t.id?700:400,
                           boxShadow:resumeTemplate===t.id?"0 0 0 2px #4a7aef":"none"}}>
                         {t.l}
                       </button>

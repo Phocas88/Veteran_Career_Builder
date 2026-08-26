@@ -685,17 +685,50 @@
         setPwCodeMsg("That code isn't valid. Check spelling or contact support.");
       }
     };
-    const restorePaidAccessFromProfile = async (profileData) => {
+    const ensureAuthPersistence = async () => {
+      var _a, _b, _c;
+      if (!fbAuth || !window.firebase || !((_c = (_b = (_a = firebase.auth) == null ? void 0 : _a.Auth) == null ? void 0 : _b.Persistence) == null ? void 0 : _c.LOCAL)) return;
+      try {
+        await fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      } catch (error) {
+        console.warn("Could not confirm local auth persistence:", error);
+      }
+    };
+    const restorePaidAccessFromProfile = async (profileData, authEmail, firebaseUid) => {
       if (!profileData || checkAccess() || !window.VCBSecureApi) return;
-      const stripeId = String(
+      let stripeId = String(
         profileData.stripeSession || profileData.session || profileData.sessionId || profileData.subscriptionId || profileData.stripeSubscription || profileData.chargeId || profileData.stripeCharge || ""
       ).trim();
-      if (!/^(cs_(test_|live_)?|sub_|ch_)[A-Za-z0-9_]+$/.test(stripeId)) return;
+      const normalizedEmail = String(authEmail || "").trim().toLowerCase();
+      const emailKey = normalizedEmail ? "vcb_subscription_check:" + normalizedEmail : "";
+      if (!/^(cs_(test_|live_)?|sub_|ch_)[A-Za-z0-9_]+$/.test(stripeId)) {
+        if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return;
+        try {
+          const lastMiss = Number(localStorage.getItem(emailKey) || 0);
+          if (lastMiss && Date.now() - lastMiss < 10 * 60 * 1e3) return;
+        } catch (e) {
+        }
+      }
       try {
-        const result = await window.VCBSecureApi.verifySubscription({ sessionId: stripeId });
-        if (!result.active) return;
+        const lookup = /^(cs_(test_|live_)?|sub_|ch_)[A-Za-z0-9_]+$/.test(stripeId) ? { sessionId: stripeId } : { email: normalizedEmail };
+        const result = await window.VCBSecureApi.verifySubscription(lookup);
+        if (!result.active) {
+          if (emailKey) {
+            try {
+              localStorage.setItem(emailKey, String(Date.now()));
+            } catch (e) {
+            }
+          }
+          return;
+        }
         const verifiedId = String(result.sessionId || stripeId);
         if (!/^(cs_(test_|live_)?|sub_|ch_)[A-Za-z0-9_]+$/.test(verifiedId)) return;
+        if (emailKey) {
+          try {
+            localStorage.removeItem(emailKey);
+          } catch (e) {
+          }
+        }
         localStorage.setItem("vcb_access", JSON.stringify({
           type: "paid",
           stripeSession: verifiedId,
@@ -706,6 +739,18 @@
         }));
         setHasAccess(true);
         setShowPaywall(false);
+        if (fbDb && firebaseUid) {
+          try {
+            await fbDb.collection("profiles").doc(firebaseUid).set({
+              stripeSession: verifiedId,
+              accessExpiry: result.expiry || profileData.accessExpiry || Date.now() + 30 * 24 * 60 * 60 * 1e3,
+              plan: result.plan || profileData.plan || "monthly",
+              updatedAt: Date.now()
+            }, { merge: true });
+          } catch (error) {
+            console.warn("Could not persist restored Stripe access:", error);
+          }
+        }
       } catch (error) {
         console.warn("Could not restore paid access from saved profile:", error);
       }
@@ -839,7 +884,9 @@
                 localStorage.setItem("vcb_profile", JSON.stringify({ ...data, uid: firebaseUser.uid }));
               } catch (e) {
               }
-              await restorePaidAccessFromProfile(data);
+              await restorePaidAccessFromProfile(data, firebaseUser.email, firebaseUser.uid);
+            } else {
+              await restorePaidAccessFromProfile({}, firebaseUser.email, firebaseUser.uid);
             }
             const resumesSnap = await fbDb.collection("profiles").doc(firebaseUser.uid).collection("resumes").orderBy("createdAt", "desc").limit(20).get();
             setSavedResumes(resumesSnap.docs.map((d) => d.data()));
@@ -901,6 +948,7 @@
       if (authForm.password.length < 6) return setAuthErr("Password must be at least 6 characters.");
       if (authForm.password !== authForm.confirmPassword) return setAuthErr("Passwords do not match.");
       try {
+        await ensureAuthPersistence();
         const cred = await fbAuth.createUserWithEmailAndPassword(authForm.username.trim(), authForm.password);
         await cred.user.updateProfile({ displayName: authForm.name.trim() });
         setAuthOk("Account created! Signing you in...");
@@ -929,6 +977,7 @@
         return;
       }
       try {
+        await ensureAuthPersistence();
         const cred = await fbAuth.signInWithEmailAndPassword(authForm.username.trim(), authForm.password);
         setShowAuth(false);
         showToast("Signed in as " + (cred.user && (cred.user.displayName || cred.user.email) || authForm.username).split("@")[0] + " \u2713");

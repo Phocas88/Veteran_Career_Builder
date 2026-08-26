@@ -1652,7 +1652,7 @@ function App() {
       const cred = await fbAuth.createUserWithEmailAndPassword(authForm.username.trim(), authForm.password);
       await cred.user.updateProfile({ displayName: authForm.name.trim() });
       setAuthOk("Account created! Signing you in...");
-      setShowAuth(false); if(!checkAccess()){setShowPaywall(true);}
+      setShowAuth(false);
       showToast("Welcome, " + authForm.name.split(" ")[0] + "! ✓");
       setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
     } catch(e) {
@@ -1668,8 +1668,9 @@ function App() {
     if (!authForm.username.trim()) { setAuthErr("Please enter your email address."); return; }
     if (!authForm.password) { setAuthErr("Please enter your password."); return; }
     try {
-      await fbAuth.signInWithEmailAndPassword(authForm.username.trim(), authForm.password);
-      setShowAuth(false); if(!checkAccess()){setShowPaywall(true);}
+      const cred = await fbAuth.signInWithEmailAndPassword(authForm.username.trim(), authForm.password);
+      setShowAuth(false);
+      showToast("Signed in as " + ((cred.user && (cred.user.displayName || cred.user.email)) || authForm.username).split("@")[0] + " ✓");
       setAuthForm({ username:"", password:"", confirmPassword:"", name:"" });
     } catch(e) {
       if (e.code === "auth/user-not-found" || e.code === "auth/invalid-credential") setAuthErr("No account found. Check your email or create an account.");
@@ -2555,8 +2556,9 @@ Return this exact JSON structure:
                     if(!fbAuth){setAuthErr("Firebase not configured. Contact the site owner.");return;}
                     try{
                       const provider=new firebase.auth.GoogleAuthProvider();
-                      await fbAuth.signInWithPopup(provider);
+                      const cred=await fbAuth.signInWithPopup(provider);
                       setShowAuth(false);
+                      showToast("Signed in as " + ((cred.user && (cred.user.displayName || cred.user.email)) || "your account").split("@")[0] + " ✓");
                     }catch(e){
                       if(e.code==="auth/popup-closed-by-user") return;
                       if(e.code==="auth/popup-blocked") setAuthErr("Popup blocked, allow popups for this site.");

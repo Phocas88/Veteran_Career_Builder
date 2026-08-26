@@ -1145,6 +1145,12 @@ body.menu-open{overflow:hidden!important;}
 
     function hideLoading() {
       const el = document.getElementById("loading");
+      const skeleton = document.getElementById("app-skeleton");
+      if (skeleton) {
+        skeleton.style.opacity = "0";
+        skeleton.style.transition = "opacity 0.2s";
+        setTimeout(function() { skeleton.remove(); }, 220);
+      }
       if (el) {
         el.style.opacity = "0";
         el.style.transition = "opacity 0.4s";
@@ -1153,8 +1159,12 @@ body.menu-open{overflow:hidden!important;}
     }
 
     window.onerror = function(msg, src, line) {
+      const skeleton = document.getElementById("app-skeleton");
+      if (skeleton) skeleton.remove();
       const el = document.getElementById("loading");
       if (el) {
+        el.style.display = "flex";
+        el.style.opacity = "1";
         el.innerHTML = '<div style="padding:2rem;max-width:560px;"><h2 style="color:#f0c040;font-family:Georgia,serif;margin-bottom:.75rem;">App Error</h2><div style="background:rgba(255,100,100,.15);border:1px solid rgba(255,100,100,.4);border-radius:4px;padding:.85rem;color:#ffc0c0;font-size:.85rem;font-family:monospace;word-break:break-all;">' + msg + ' (line ' + line + ')</div></div>';
       }
     };

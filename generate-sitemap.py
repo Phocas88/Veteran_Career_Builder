@@ -25,7 +25,9 @@ EXCLUDE = {
     "_email-signup-snippet.html", "vcp-mega-menu.html", "vcp-mega-nav.html",
     "terms-of-service.html", "free-assessment.html", "veteran-career-builder.html",
     "veteran-career-path-landing.html", "va-disability-benefits-calculator.html",
-    "offline.html",
+    "offline.html", "federal-resume-builder-ai.html", "linkedin-profile-rewriter.html",
+    "salary-negotiation-roleplay.html", "1a0x1-afsc.html", "1a1x1-afsc.html",
+    "army-35e-mos.html", "army-35y-mos.html", "tools-newsletter.html",
 }
 
 EXCLUDE_DIRS = {"affiliate", "training", ".firebase", ".claude", ".git", "api", "img"}

@@ -38,7 +38,7 @@
   window.addEventListener('unhandledrejection', function(e) {
     var reason = e.reason;
     var message = reason instanceof Error ? reason.message : String(reason || 'Unknown');
-    reportError('promise', message, '', 0, 0);
+    reportError('promise', message, '', 0,0);
   });
 
   // Track critical resource failures (CSS, JS that fail to load)

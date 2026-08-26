@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'vcp-v2';
+const CACHE_VERSION = 'vcp-v3';
 const STATIC_CACHE = CACHE_VERSION + '-static';
 const DYNAMIC_CACHE = CACHE_VERSION + '-dynamic';
 const MAX_DYNAMIC_CACHE = 80;
@@ -79,7 +79,23 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets: cache-first
+  // App shell code must revalidate first so users do not keep a broken bundle.
+  if (isFreshAsset(url.pathname)) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.status === 200) {
+            const clone = response.clone();
+            caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // Static media/fonts: cache-first
   if (isStaticAsset(url.pathname)) {
     event.respondWith(
       caches.match(request).then((cached) => {
@@ -112,7 +128,11 @@ self.addEventListener('fetch', (event) => {
 });
 
 function isStaticAsset(pathname) {
-  return /\.(css|js|png|jpg|jpeg|webp|svg|woff2?|ttf|ico)$/i.test(pathname);
+  return /\.(png|jpg|jpeg|webp|svg|woff2?|ttf|ico)$/i.test(pathname);
+}
+
+function isFreshAsset(pathname) {
+  return /\.(css|js)$/i.test(pathname);
 }
 
 function trimCache(cacheName, maxItems) {

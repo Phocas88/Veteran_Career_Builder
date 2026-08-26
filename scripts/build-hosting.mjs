@@ -11,6 +11,7 @@ const excludedDirs = new Set([
   '.firebase',
   '.firebase-public',
   'api',
+  'reports',
   'scripts',
   'node_modules',
 ]);

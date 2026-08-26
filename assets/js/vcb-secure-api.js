@@ -6,7 +6,7 @@
 
   function proxyBase() {
     const configured = String(window.VCB_PROXY_URL || '').trim().replace(/\/+$/, '');
-    if (!configured) return '';
+    if (!configured) return 'https://vcp-proxy.vercel.app';
     return configured
       .replace(/\/api\/claude$/i, '')
       .replace(/\/claude$/i, '');

@@ -55,7 +55,7 @@ if not os.path.exists(nav_path):
 with open(nav_path, "r", encoding="utf-8") as f:
     raw_nav = f.read()
 
-# Strip the leading comment block — use only from <style id="vcp-nav-css"> onwards
+# Strip the leading comment block, use only from <style id="vcp-nav-css"> onwards
 nav_start_idx = raw_nav.find(NAV_START_TAG)
 if nav_start_idx == -1:
     print(f"❌  ERROR: {NAV_FILE} doesn't contain '{NAV_START_TAG}'")
@@ -103,7 +103,7 @@ def find_nav_block(content):
     while True:
         script_close = content.find("</script>", search_from)
         if script_close == -1:
-            return None, None  # malformed — skip
+            return None, None  # malformed, skip
 
         # Check if vcp-nav-js appeared between start and this </script>
         chunk = content[start:script_close]
@@ -111,7 +111,7 @@ def find_nav_block(content):
             end = script_close + len("</script>")
             return start, end
 
-        # Not found yet — keep searching
+        # Not found yet, keep searching
         search_from = script_close + 1
 
         # Safety: don't search more than 200KB past start

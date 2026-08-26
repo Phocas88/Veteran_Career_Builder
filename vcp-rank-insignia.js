@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   VCP Rank Insignia — Official military insignia from Wikimedia Commons
+   VCP Rank Insignia, Official military insignia from Wikimedia Commons
    Public domain images from US Government sources
    ═══════════════════════════════════════════════════════════════ */
 window.VCP_INSIGNIA = {

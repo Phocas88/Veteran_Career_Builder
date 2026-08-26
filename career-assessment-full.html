@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>VCP PathFinder™ Pro | Military Career Intelligence Assessment</title>
 <link rel="canonical" href="https://veterancareerpath.com/career-assessment-full.html">
-<meta name="description" content="VCP PathFinder™ Pro — the most comprehensive military-to-civilian career intelligence assessment. 180 questions across 10 sections: mechanical reasoning, verbal, numerical, spatial reasoning, processing speed, memory recall, work style, career interests, leadership, and soft skills. 1,000+ career matches with salary data, career progression paths, and gap analysis.">
+<meta name="description" content="VCP PathFinder™ Pro, the most comprehensive military-to-civilian career intelligence assessment. 180 questions across 10 sections: mechanical reasoning, verbal, numerical, spatial reasoning, processing speed, memory recall, work style, career interests, leadership, and soft skills. 1,000+ career matches with salary data, career progression paths, and gap analysis.">
 <meta name="keywords" content="veteran career assessment, military career test, ASVAB career match, military to civilian jobs, veteran job matching, career intelligence assessment">
 <meta property="og:title" content="VCP PathFinder™ Pro | Military Career Intelligence Assessment">
 <meta property="og:description" content="The most comprehensive career assessment built for service members and veterans. 180 questions, 10 sections, 1,000+ career matches, career progression paths, and AI-powered gap analysis.">
@@ -18,6 +18,7 @@
 <script src="/vcp-careers-db.js"></script>
 <script src="/vcp-military-data.js"></script>
 <script src="/vcp-mos-data.js"></script>
+<script src="/assets/js/vcb-secure-api.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
@@ -296,8 +297,9 @@ a:hover{color:var(--gold);}
 }
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","name":"VCP PathFinder™ Pro | Military Career Intelligence Assessment","description":"VCP PathFinder™ Pro — the most comprehensive military-to-civilian career intelligence assessment. 180 questions across 10 sections: mechanical reasoning, verbal, numerical, spatial reasoning, processing speed, memory recall, work style, career interests, leadership, and soft skills. 1,000+ career matches with salary data, career progression paths, and gap analysis.","url":"https://veterancareerpath.com/career-assessment-full.html","datePublished":"2026-03-15","dateModified":"2026-04-24","author":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com"},"publisher":{"@type":"Organization","name":"Veteran Career Path","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}}}
+{"@context":"https://schema.org","@type":"Article","name":"VCP PathFinder™ Pro | Military Career Intelligence Assessment","description":"VCP PathFinder™ Pro, the most comprehensive military-to-civilian career intelligence assessment. 180 questions across 10 sections: mechanical reasoning, verbal, numerical, spatial reasoning, processing speed, memory recall, work style, career interests, leadership, and soft skills. 1,000+ career matches with salary data, career progression paths, and gap analysis.","url":"https://veterancareerpath.com/career-assessment-full.html","datePublished":"2026-03-15","dateModified":"2026-04-24","author":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com"},"publisher":{"@type":"Organization","name":"Veteran Career Path","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}}}
 </script>
+  <link rel="stylesheet" href="/assets/css/ai-tools.css">
 </head>
 <body>
 
@@ -307,7 +309,7 @@ a:hover{color:var(--gold);}
     <img src="https://veterancareerpath.com/logo.png" alt="VCP" style="width:56px;height:56px;object-fit:contain;margin-bottom:1rem;filter:drop-shadow(0 4px 12px rgba(240,192,64,.2));">
     <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.2rem;">VCP PathFinder&trade; Pro</div>
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:rgba(192,216,240,.8);margin-bottom:1rem;">Coming Soon</div>
-    <div style="font-size:.88rem;color:rgba(192,216,240,.6);line-height:1.7;margin-bottom:1.5rem;">We're putting the finishing touches on the most comprehensive military-to-civilian career assessment ever built. <strong style="color:rgba(192,216,240,.9);">186 questions, 10 dimensions, 1,000+ career matches</strong> with AI-powered gap analysis.<br><br>Check back soon — it'll be worth the wait.</div>
+    <div style="font-size:.88rem;color:rgba(192,216,240,.6);line-height:1.7;margin-bottom:1.5rem;">We're putting the finishing touches on the most comprehensive military-to-civilian career assessment ever built. <strong style="color:rgba(192,216,240,.9);">186 questions, 10 dimensions, 1,000+ career matches</strong> with AI-powered gap analysis.<br><br>Check back soon, it'll be worth the wait.</div>
     <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;">
       <a href="/veteran-career-test.html" style="padding:.65rem 1.4rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.88rem;text-decoration:none;">Try PathFinder Lite Free</a>
       <a href="/" style="padding:.65rem 1.4rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;font-weight:600;font-size:.88rem;text-decoration:none;">Back to Home</a>
@@ -320,7 +322,7 @@ a:hover{color:var(--gold);}
   var p = new URLSearchParams(window.location.search);
   var token = p.get('vcp_admin');
   if(token && token.length > 20) {
-    // Token must be validated server-side — store and verify on next API call
+    // Token must be validated server-side, store and verify on next API call
     sessionStorage.setItem('vcp_admin_token', token);
     document.getElementById('coming-soon-gate').style.display = 'none';
   } else if(sessionStorage.getItem('vcp_admin_token')) {
@@ -372,7 +374,7 @@ a:hover{color:var(--gold);}
     </div>
 
     <div style="font-size:.7rem;color:var(--sub);text-align:center;line-height:1.5;margin-bottom:.5rem;">
-      <strong style="color:var(--text);">Subscription includes:</strong> PathFinder Pro + AI Resume Builder + MOS Translator + Job Match Analyzer + Federal Resume + Interview Simulator + Salary Coach + LinkedIn Optimizer + VA Claim Builder + DD-214 Decoder + 10 more AI tools
+      <strong style="color:var(--text);">Subscription includes:</strong> PathFinder Pro + AI Resume Builder + MOS Translator + Job Match Analyzer + Federal Resume + Interview Simulator + Salary Coach + LinkedIn Optimizer + VA Claim Education Center + DD-214 Decoder + 10 more AI tools
     </div>
 
     <div style="text-align:center;">
@@ -396,19 +398,19 @@ a:hover{color:var(--gold);}
     <a href="https://veterancareerpath.com/va-disability-rating-schedule.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">VA Benefits</a>
     <a href="https://veterancareerpath.com/veteran-discounts.html" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Discounts</a>
     <a href="https://veterancareerpath.com/blog/" style="color:rgba(192,216,240,.55);text-decoration:none;font-size:.72rem;white-space:nowrap;">Blog</a>
-    <a href="https://veterancareerpath.com/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.72rem;padding:.3rem .7rem;border-radius:6px;text-decoration:none;white-space:nowrap;flex-shrink:0;">AI Tools — $15/mo</a>
+    <a href="https://veterancareerpath.com/app.html" style="background:linear-gradient(135deg,#c8960a,#e8aa10);color:#0a1628;font-weight:700;font-size:.72rem;padding:.3rem .7rem;border-radius:6px;text-decoration:none;white-space:nowrap;flex-shrink:0;">AI Tools, $15/mo</a>
   </div>
 </nav>
 <style>.assess-nav-links a{transition:color .15s;}.assess-nav-links a:hover{color:rgba(192,216,240,.9)!important;}@media(max-width:768px){.assess-nav-links a:not(:last-child){display:none!important;}.assess-nav-links{gap:.5rem!important;}}</style>
 
 <section style="max-width:800px;margin:2rem auto;padding:0 1.5rem;color:#c0d8f0;">
-  <h2 style="color:#f0c040;font-size:1.3rem;margin-bottom:1rem;">Why Most Career Assessments Fail Veterans — And What to Do Instead</h2>
-  <p>Standard career assessments were built for civilian job seekers navigating a career ladder they have always been on. Veterans arrive at the civilian workforce from an entirely different direction — with leadership experience, technical training, security clearances, and operational discipline that almost no off-the-shelf assessment is designed to measure or translate. A quiz that asks whether you prefer "working alone or in teams" cannot capture what it means to have led a 12-person team through a year-long deployment, managed a multi-million-dollar equipment account, or held a Top Secret/SCI clearance in a high-stakes intelligence role. Generic tools not only fail to surface these strengths — they actively misrepresent them, often pushing veterans toward entry-level roles that undervalue their real-world capabilities.</p>
-  <p>The veteran hiring landscape adds further complexity. Federal agencies, defense contractors, and a growing number of private employers offer veterans' preference, dedicated hiring programs, and clearance-friendly roles that simply do not appear in the standard career matching databases most assessments use. Without accounting for these pathways, a veteran with an active clearance — one of the most valuable credentials in the federal job market — may receive results pointing to careers that ignore their single biggest competitive advantage.</p>
+  <h2 style="color:#f0c040;font-size:1.3rem;margin-bottom:1rem;">Why Most Career Assessments Fail Veterans, And What to Do Instead</h2>
+  <p>Standard career assessments were built for civilian job seekers navigating a career ladder they have always been on. Veterans arrive at the civilian workforce from an entirely different direction, with leadership experience, technical training, security clearances, and operational discipline that almost no off-the-shelf assessment is designed to measure or translate. A quiz that asks whether you prefer "working alone or in teams" cannot capture what it means to have led a 12-person team through a year-long deployment, managed a multi-million-dollar equipment account, or held a Top Secret/SCI clearance in a high-stakes intelligence role. Generic tools not only fail to surface these strengths, they actively misrepresent them, often pushing veterans toward entry-level roles that undervalue their real-world capabilities.</p>
+  <p>The veteran hiring landscape adds further complexity. Federal agencies, defense contractors, and a growing number of private employers offer veterans' preference, dedicated hiring programs, and clearance-friendly roles that simply do not appear in the standard career matching databases most assessments use. Without accounting for these pathways, a veteran with an active clearance, one of the most valuable credentials in the federal job market, may receive results pointing to careers that ignore their single biggest competitive advantage.</p>
   <h3 style="color:#e0e8f0;font-size:1.05rem;margin-top:1.5rem;">What the PathFinder Pro Assessment Actually Measures</h3>
-  <p>The VCP PathFinder Pro assessment was designed from the ground up for service members and veterans. It spans 180 questions across 10 scientifically-structured dimensions: mechanical and technical reasoning, verbal communication, numerical analysis, spatial reasoning, problem-solving approach, work style preferences, leadership orientation, stress tolerance, interpersonal dynamics, and values alignment. This is not a 10-question personality quiz that slots you into one of four archetypes. Each dimension is evaluated independently and in combination, producing a profile detailed enough to distinguish between someone who would thrive as a logistics analyst versus a program manager versus a field service engineer — roles that might look similar on the surface but draw on very different cognitive and behavioral strengths.</p>
-  <p>Those results are then mapped against a database of more than 1,000 civilian careers, each tagged with current Bureau of Labor Statistics salary ranges, 10-year growth projections, and veteran-specific hiring advantages — including which roles qualify for veterans' preference, which employers have active military hiring programs, and which career paths benefit most from existing military occupational specialties or security clearances. The goal is not to hand you a list of job titles. It is to show you where your documented strengths intersect with real labor market demand and a realistic path to getting hired.</p>
-  <p>Self-assessment matters in military transition more than most veterans expect. Research and anecdotal experience from transition programs consistently show that veterans cluster at two failure modes: undervaluing transferable skills by framing military experience only in military terms, or misaligning their search by chasing prestige titles without understanding which civilian roles actually match how they work best. A structured, multi-dimensional assessment addresses both problems. Once you have your results, the practical next steps are straightforward — use your top career matches to focus your job search rather than applying broadly, use your dimension scores to identify skills gaps that targeted certifications can close, and use the salary and growth data to make informed decisions about whether additional education has a realistic return on investment for the specific field you are entering.</p>
+  <p>The VCP PathFinder Pro assessment was designed from the ground up for service members and veterans. It spans 180 questions across 10 scientifically-structured dimensions: mechanical and technical reasoning, verbal communication, numerical analysis, spatial reasoning, problem-solving approach, work style preferences, leadership orientation, stress tolerance, interpersonal dynamics, and values alignment. This is not a 10-question personality quiz that slots you into one of four archetypes. Each dimension is evaluated independently and in combination, producing a profile detailed enough to distinguish between someone who would thrive as a logistics analyst versus a program manager versus a field service engineer, roles that might look similar on the surface but draw on very different cognitive and behavioral strengths.</p>
+  <p>Those results are then mapped against a database of more than 1,000 civilian careers, each tagged with current Bureau of Labor Statistics salary ranges, 10-year growth projections, and veteran-specific hiring advantages, including which roles qualify for veterans' preference, which employers have active military hiring programs, and which career paths benefit most from existing military occupational specialties or security clearances. The goal is not to hand you a list of job titles. It is to show you where your documented strengths intersect with real labor market demand and a realistic path to getting hired.</p>
+  <p>Self-assessment matters in military transition more than most veterans expect. Research and anecdotal experience from transition programs consistently show that veterans cluster at two failure modes: undervaluing transferable skills by framing military experience only in military terms, or misaligning their search by chasing prestige titles without understanding which civilian roles actually match how they work best. A structured, multi-dimensional assessment addresses both problems. Once you have your results, the practical next steps are straightforward, use your top career matches to focus your job search rather than applying broadly, use your dimension scores to identify skills gaps that targeted certifications can close, and use the salary and growth data to make informed decisions about whether additional education has a realistic return on investment for the specific field you are entering.</p>
 </section>
 
 <!-- INTRO SCREEN -->
@@ -424,19 +426,19 @@ a:hover{color:var(--gold);}
       <div class="intro-stat"><div class="intro-stat-num">30</div><div class="intro-stat-label">Top Recommendations</div></div>
     </div>
     <div class="intro-sections">
-      <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(26,92,154,.2);color:#3b82f6;">1</div><div class="intro-sec-info"><h4>Mechanical &amp; Technical Reasoning</h4><p>25 ASVAB-style questions with visual diagrams — gears, circuits, levers, pressure</p></div></div>
+      <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(26,92,154,.2);color:#3b82f6;">1</div><div class="intro-sec-info"><h4>Mechanical &amp; Technical Reasoning</h4><p>25 ASVAB-style questions with visual diagrams, gears, circuits, levers, pressure</p></div></div>
       <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(168,85,247,.2);color:#a855f7;">2</div><div class="intro-sec-info"><h4>Verbal &amp; Communication</h4><p>15 questions on comprehension, vocabulary, writing</p></div></div>
       <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(34,197,94,.2);color:#22c55e;">3</div><div class="intro-sec-info"><h4>Numerical &amp; Analytical</h4><p>15 math and data interpretation problems</p></div></div>
       <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(251,146,60,.2);color:#fb923c;">4</div><div class="intro-sec-info"><h4>Work Style &amp; Environment</h4><p>25 questions on your ideal work preferences</p></div></div>
       <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(236,72,153,.2);color:#ec4899;">5</div><div class="intro-sec-info"><h4>Career Interest Domains</h4><p>25 questions mapping your professional interests</p></div></div>
       <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(240,192,64,.2);color:var(--gold);">6</div><div class="intro-sec-info"><h4>Leadership &amp; Interpersonal</h4><p>20 questions assessing leadership and teamwork</p></div></div>
       <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(220,38,38,.2);color:#dc2626;">7</div><div class="intro-sec-info"><h4>Soft Skills &amp; Civilian Workplace</h4><p>15 questions on civilian workplace adaptability</p></div></div>
-      <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(59,130,246,.2);color:#3b82f6;">8</div><div class="intro-sec-info"><h4>Spatial Reasoning &amp; Patterns</h4><p>15 questions — 3D visualization, pattern recognition, spatial logic</p></div></div>
-      <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(245,158,11,.2);color:#f59e0b;">9</div><div class="intro-sec-info"><h4>Processing Speed &amp; Accuracy</h4><p>15 questions — aggressively timed, measures how fast you think</p></div></div>
-      <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(168,85,247,.2);color:#a855f7;">10</div><div class="intro-sec-info"><h4>Memory &amp; Recall</h4><p>10 questions — study info briefly, then answer from memory</p></div></div>
+      <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(59,130,246,.2);color:#3b82f6;">8</div><div class="intro-sec-info"><h4>Spatial Reasoning &amp; Patterns</h4><p>15 questions, 3D visualization, pattern recognition, spatial logic</p></div></div>
+      <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(245,158,11,.2);color:#f59e0b;">9</div><div class="intro-sec-info"><h4>Processing Speed &amp; Accuracy</h4><p>15 questions, aggressively timed, measures how fast you think</p></div></div>
+      <div class="intro-sec"><div class="intro-sec-icon" style="background:rgba(168,85,247,.2);color:#a855f7;">10</div><div class="intro-sec-info"><h4>Memory &amp; Recall</h4><p>10 questions, study info briefly, then answer from memory</p></div></div>
     </div>
     <div style="background:rgba(240,192,64,.06);border:1px solid rgba(240,192,64,.15);border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:.82rem;color:var(--sub);line-height:1.6;">
-      <strong style="color:var(--gold);">⏱ Timed Assessment:</strong> Each section has a countdown timer. Processing Speed is timed aggressively (25s per question). You can take breaks between sections — progress saves automatically.
+      <strong style="color:var(--gold);">⏱ Timed Assessment:</strong> Each section has a countdown timer. Processing Speed is timed aggressively (25s per question). You can take breaks between sections, progress saves automatically.
     </div>
     <div style="background:rgba(26,122,64,.06);border:1px solid rgba(26,122,64,.15);border-radius:8px;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.82rem;color:var(--sub);line-height:1.6;">
       <strong style="color:#1a7a40;">📊 Subscriber Advantage:</strong> Subscribers get <strong>profile-weighted results</strong> that factor in your MOS, rank, clearance, and military experience (60% aptitude + 30% experience + 10% interest). Standalone results use 75% aptitude + 25% interest.
@@ -512,7 +514,7 @@ a:hover{color:var(--gold);}
       for(var i=0;i<list.length;i++){
         var o = document.createElement('option');
         o.value = list[i].code;
-        o.textContent = list[i].code + ' \u2014 ' + list[i].title;
+        o.textContent = list[i].code + ' - ' + list[i].title;
         mosSel.appendChild(o);
       }
     }
@@ -594,8 +596,8 @@ a:hover{color:var(--gold);}
 
 <script>
 // ══════════════════════════════════════════════════════════════════════════════
-// VCP PATHFINDER PRO — MILITARY CAREER INTELLIGENCE ASSESSMENT
-// Pure JS scoring — NO AI API calls
+// VCP PATHFINDER PRO, MILITARY CAREER INTELLIGENCE ASSESSMENT
+// Pure JS scoring, NO AI API calls
 // ══════════════════════════════════════════════════════════════════════════════
 
 // ── ACCESS CHECK ────────────────────────────────────────────────────────────
@@ -614,7 +616,7 @@ a:hover{color:var(--gold);}
       _displaySavedResult(savedResult);
       return;
     }
-    // Not in localStorage — try Firestore (different device)
+    // Not in localStorage, try Firestore (different device)
     document.getElementById('results-content').innerHTML = '<div style="text-align:center;padding:3rem;"><div style="width:40px;height:40px;border:3px solid rgba(255,255,255,.1);border-top-color:#f0c040;border-radius:50%;animation:aispin 1s linear infinite;margin:0 auto 1rem;"></div><p style="color:var(--sub);">Loading your saved results...</p></div>';
     showScreen('scr-results');
     try {
@@ -749,7 +751,7 @@ var SECTIONS = [
        opts:['Cylinder 1','Cylinder 2','Cylinder 4','Cylinder 3 fires again'], correct:2},
       {q:'<div style="text-align:center;margin:.75rem 0;"><img src="/img/bolt-types.svg" alt="Four bolt head types - hex head, carriage, socket head cap screw, lag bolt" style="max-width:100%;border-radius:12px;"></div>What type of bolt head requires a hex key (Allen wrench) to tighten?',
        opts:['Hex head bolt','Carriage bolt','Socket head cap screw','Lag bolt'], correct:2},
-      {q:'<div style="text-align:center;margin:.75rem 0;"><img src="/img/belt-pulleys.svg" alt="Two pulleys connected by belt - small 6 inch at 1200 RPM, large 12 inch unknown" style="max-width:100%;border-radius:12px;"></div>A belt connects two pulleys — one <strong>6 inches</strong> and one <strong>12 inches</strong> in diameter. The small pulley turns at <strong>1200 RPM</strong>. How fast does the large pulley turn?',
+      {q:'<div style="text-align:center;margin:.75rem 0;"><img src="/img/belt-pulleys.svg" alt="Two pulleys connected by belt - small 6 inch at 1200 RPM, large 12 inch unknown" style="max-width:100%;border-radius:12px;"></div>A belt connects two pulleys, one <strong>6 inches</strong> and one <strong>12 inches</strong> in diameter. The small pulley turns at <strong>1200 RPM</strong>. How fast does the large pulley turn?',
        opts:['2400 RPM','600 RPM','1200 RPM','300 RPM'], correct:1},
       {q:'<div style="text-align:center;margin:.75rem 0;"><img src="/img/diesel-compression.svg" alt="Diesel engine cylinder with piston compression stroke" style="max-width:100%;border-radius:12px;"></div>In a diesel engine, what ignites the fuel?',
        opts:['Spark plug','Glow plug ignites it directly','Compression heat','Electric arc'], correct:2},
@@ -774,7 +776,7 @@ var SECTIONS = [
       {q:'<div style="text-align:center;margin:.75rem 0;"><img src="/img/lever-question.svg" alt="Lever with 50kg weight at 2m from fulcrum, unknown force at 6m" style="max-width:100%;border-radius:12px;"></div>A <strong>50 kg weight</strong> sits <strong>2 meters</strong> from the fulcrum. How much force is needed <strong>6 meters</strong> from the fulcrum on the other side to balance the beam?',
        opts:['150 kg','25 kg','16.7 kg','100 kg'], correct:2},
       {q:'<div style="text-align:center;margin:.75rem 0;"><img src="/img/pressure-question.svg" alt="Two pressure tanks connected by pipe with open valve - Tank A at 100 PSI, Tank B at 30 PSI" style="max-width:100%;border-radius:12px;"></div>Tank A is pressurized to <strong>100 PSI</strong> and Tank B to <strong>30 PSI</strong>. When the valve between them opens, what happens?',
-       opts:['Air flows from B to A','Air flows from A to B until pressure equalizes','Both tanks drop to 0 PSI','Nothing — the valve prevents flow'], correct:1},
+       opts:['Air flows from B to A','Air flows from A to B until pressure equalizes','Both tanks drop to 0 PSI','Nothing, the valve prevents flow'], correct:1},
       {q:'<div style="text-align:center;margin:.75rem 0;"><img src="/img/beam-question.svg" alt="Steel beam supported by three columns, center column C removed, 2000 lb load" style="max-width:100%;border-radius:12px;"></div>A steel beam is supported by three columns (A, C, B). If center column C is <strong>removed</strong>, what happens to the <strong>2,000 lb load</strong> on the remaining columns A and B?',
        opts:['Each carries 1000 lbs','Each carries more than 1000 lbs due to increased span stress','The beam collapses immediately','The load shifts entirely to column A'], correct:0},
       {q:'<div style="text-align:center;margin:.75rem 0;"><img src="/img/pulley-question.svg" alt="Two pulleys connected by belt - large Pulley A rotating slowly, small Pulley B with unknown speed" style="max-width:100%;border-radius:12px;"></div>A belt connects <strong>large Pulley A</strong> to <strong>small Pulley B</strong>. Pulley A rotates slowly. How does Pulley B compare?',
@@ -865,12 +867,12 @@ var SECTIONS = [
   {
     id: 'workstyle',
     name: 'Work Style & Environment Preferences',
-    desc: 'Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree). There are no right or wrong answers — be honest about your preferences.',
+    desc: 'Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree). There are no right or wrong answers, be honest about your preferences.',
     type: 'likert',
     questions: [
       {q:'I function best in a structured environment with clear SOPs and chain of command.', dim:'structure'},
       {q:'I prefer working autonomously, like an independent duty assignment, rather than in a large unit.', dim:'autonomy'},
-      {q:'I thrive under pressure — the higher the stakes, the sharper I perform.', dim:'stress'},
+      {q:'I thrive under pressure, the higher the stakes, the sharper I perform.', dim:'stress'},
       {q:'I would rather work a predictable 9-to-5 schedule than a dynamic job with irregular hours.', dim:'predictability'},
       {q:'I want a career where I can continue to serve my community, even out of uniform.', dim:'purpose'},
       {q:'I prefer outdoor or physically active work over sitting at a desk all day.', dim:'physical'},
@@ -878,7 +880,7 @@ var SECTIONS = [
       {q:'Earning the highest possible salary is more important to me than loving what I do.', dim:'salary'},
       {q:'I prefer a job with steady advancement on a clear timeline, similar to military promotions.', dim:'advancement'},
       {q:'I like being part of a close-knit team where we rely on each other daily.', dim:'team'},
-      {q:'I want a job where every day is different — routine bores me.', dim:'variety'},
+      {q:'I want a job where every day is different, routine bores me.', dim:'variety'},
       {q:'I enjoy explaining complex ideas and teaching others new skills.', dim:'teaching'},
       {q:'I prefer to work with data, systems, and technology rather than people.', dim:'technical'},
       {q:'Having a corner office or prestigious title matters to me.', dim:'prestige'},
@@ -893,8 +895,8 @@ var SECTIONS = [
       {q:'I enjoy solving problems that have no clear right answer.', dim:'ambiguity'},
       {q:'I am comfortable in competitive environments where performance is publicly measured.', dim:'competition'},
       {q:'I would prefer to start my own business rather than work for someone else.', dim:'entrepreneur'},
-      // Physical capability questions — used to filter careers with physical requirements
-      {q:'I am comfortable working at significant heights — towers, rooftops, scaffolding, or elevated platforms.', dim:'heights_ok'},
+      // Physical capability questions, used to filter careers with physical requirements
+      {q:'I am comfortable working at significant heights, towers, rooftops, scaffolding, or elevated platforms.', dim:'heights_ok'},
       {q:'I can regularly lift and carry 50 pounds or more as part of my daily work.', dim:'heavy_lift_ok'},
       {q:'I can stand or walk for 8 or more hours per day without significant difficulty.', dim:'standing_ok'},
       {q:'I have no physical disabilities or conditions that limit the type of work I can perform.', dim:'no_physical_limits'},
@@ -909,30 +911,30 @@ var SECTIONS = [
     desc: 'Rate how strongly each statement resonates with you, from 1 (Strongly Disagree) to 5 (Strongly Agree).',
     type: 'likert',
     questions: [
-      {q:'I am drawn to cybersecurity — the idea of defending networks the way I defended my sector.', dim:'cyber'},
-      {q:'I could see myself in healthcare — I have always been the one checking on others.', dim:'healthcare'},
+      {q:'I am drawn to cybersecurity, the idea of defending networks the way I defended my sector.', dim:'cyber'},
+      {q:'I could see myself in healthcare, I have always been the one checking on others.', dim:'healthcare'},
       {q:'Working with my hands in a trade like welding, HVAC, or electrical work appeals to me.', dim:'trades'},
-      {q:'I am interested in law enforcement — keeping people safe is in my DNA.', dim:'lawenforcement'},
-      {q:'I am interested in the business side — managing budgets, running operations, driving revenue.', dim:'business'},
-      {q:'I want to work in education — shaping the next generation or training professionals.', dim:'education'},
-      {q:'Finance and accounting interest me — I like working with numbers and money.', dim:'finance'},
-      {q:'I am drawn to engineering — designing solutions to real-world problems.', dim:'engineering'},
-      {q:'Logistics and supply chain management appeal to me — I like keeping operations running smoothly.', dim:'logistics'},
+      {q:'I am interested in law enforcement, keeping people safe is in my DNA.', dim:'lawenforcement'},
+      {q:'I am interested in the business side, managing budgets, running operations, driving revenue.', dim:'business'},
+      {q:'I want to work in education, shaping the next generation or training professionals.', dim:'education'},
+      {q:'Finance and accounting interest me, I like working with numbers and money.', dim:'finance'},
+      {q:'I am drawn to engineering, designing solutions to real-world problems.', dim:'engineering'},
+      {q:'Logistics and supply chain management appeal to me, I like keeping operations running smoothly.', dim:'logistics'},
       {q:'Working in government policy or intelligence analysis interests me.', dim:'government'},
-      {q:'I have a creative side — design, writing, media production, or UX design appeals to me.', dim:'creative'},
+      {q:'I have a creative side, design, writing, media production, or UX design appeals to me.', dim:'creative'},
       {q:'Scientific research or laboratory work fascinates me.', dim:'science'},
-      {q:'I am interested in IT infrastructure — servers, networks, cloud systems.', dim:'it'},
-      {q:'Project management is a natural fit — I have been coordinating complex operations for years.', dim:'projectmgmt'},
-      {q:'I want to work in construction — building things that people will use for decades.', dim:'construction'},
+      {q:'I am interested in IT infrastructure, servers, networks, cloud systems.', dim:'it'},
+      {q:'Project management is a natural fit, I have been coordinating complex operations for years.', dim:'projectmgmt'},
+      {q:'I want to work in construction, building things that people will use for decades.', dim:'construction'},
       {q:'Emergency services (EMT, firefighting, disaster response) align with my sense of duty.', dim:'emergency'},
-      {q:'I am interested in human resources — helping organizations manage their most valuable asset: people.', dim:'hr'},
+      {q:'I am interested in human resources, helping organizations manage their most valuable asset: people.', dim:'hr'},
       {q:'I want to work in renewable energy or environmental protection.', dim:'environmental'},
-      {q:'I am drawn to the intelligence community — analysis, security, and national defense.', dim:'intelligence'},
+      {q:'I am drawn to the intelligence community, analysis, security, and national defense.', dim:'intelligence'},
       {q:'Real estate or property management appeals to me as a career.', dim:'realestate'},
-      {q:'I am interested in data analytics — turning raw data into actionable intelligence.', dim:'data'},
-      {q:'I could see myself in sales — I know how to read people and close.', dim:'sales'},
-      {q:'I want to work in aerospace or aviation — the sky has always called to me.', dim:'aerospace'},
-      {q:'I am interested in social work or counseling — helping people through difficult transitions.', dim:'socialwork'},
+      {q:'I am interested in data analytics, turning raw data into actionable intelligence.', dim:'data'},
+      {q:'I could see myself in sales, I know how to read people and close.', dim:'sales'},
+      {q:'I want to work in aerospace or aviation, the sky has always called to me.', dim:'aerospace'},
+      {q:'I am interested in social work or counseling, helping people through difficult transitions.', dim:'socialwork'},
       {q:'I want a career in telecommunications or network infrastructure.', dim:'telecom'}
     ]
   },
@@ -943,9 +945,9 @@ var SECTIONS = [
     desc: 'Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree). Reflect on your actual behavior, not aspirations.',
     type: 'likert',
     questions: [
-      {q:'When I disagree with a plan, I speak up — respectfully but firmly.', dim:'assertive'},
+      {q:'When I disagree with a plan, I speak up, respectfully but firmly.', dim:'assertive'},
       {q:'I have been responsible for the welfare and performance of others, and I took that seriously.', dim:'responsibility'},
-      {q:'I prefer to lead from the front — if I would not do it, I would not ask my team to do it.', dim:'leadbyexample'},
+      {q:'I prefer to lead from the front, if I would not do it, I would not ask my team to do it.', dim:'leadbyexample'},
       {q:'I am comfortable briefing senior leaders or presenting to large groups.', dim:'presentation'},
       {q:'I handle conflict directly rather than avoiding it.', dim:'conflict'},
       {q:'I naturally take charge in group situations, even when not formally in charge.', dim:'initiative'},
@@ -968,18 +970,18 @@ var SECTIONS = [
   {
     id: 'softskills',
     name: 'Soft Skills & Civilian Workplace',
-    desc: 'Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree). Be honest — this section identifies areas where many veterans need development.',
+    desc: 'Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree). Be honest, this section identifies areas where many veterans need development.',
     type: 'likert',
     questions: [
       {q:'I can accept constructive criticism from someone younger or less experienced than me without getting defensive.', dim:'humility'},
-      {q:'I am comfortable with ambiguity — not every task has a clear SOP or directive.', dim:'ambiguity'},
+      {q:'I am comfortable with ambiguity, not every task has a clear SOP or directive.', dim:'ambiguity'},
       {q:'I can disagree with a coworker without making it personal or escalating the situation.', dim:'conflict'},
       {q:'I understand that civilian workplaces move slower than the military, and I can be patient with the pace.', dim:'patience'},
       {q:'I am comfortable making small talk and building relationships with people who have no military background.', dim:'social'},
       {q:'I can receive feedback from a civilian manager who has never served without dismissing their perspective.', dim:'respect'},
       {q:'I understand that "because I said so" is not an effective leadership style in most civilian workplaces.', dim:'adaptability'},
       {q:'I am comfortable expressing my emotions and asking for help when I need it.', dim:'vulnerability'},
-      {q:'I can adjust my communication style — I don\'t default to military directness in every situation.', dim:'communication'},
+      {q:'I can adjust my communication style, I don\'t default to military directness in every situation.', dim:'communication'},
       {q:'I recognize that my military experience, while valuable, does not automatically make me more qualified than civilian colleagues.', dim:'humility2'},
       {q:'I am comfortable working in environments where not everyone shares my work ethic or sense of urgency.', dim:'tolerance'},
       {q:'I can handle workplace politics and navigate office dynamics without becoming frustrated or withdrawn.', dim:'politics'},
@@ -1012,11 +1014,11 @@ var SECTIONS = [
       {q:'A shadow of a sphere is always what shape?', opts:['Sphere','Circle','Oval (depends on angle)','Square'], correct:1}
     ]
   },
-  // ═══ SECTION 9: PROCESSING SPEED (15 MC — aggressively timed) ═══
+  // ═══ SECTION 9: PROCESSING SPEED (15 MC, aggressively timed) ═══
   {
     id: 'speed',
     name: 'Processing Speed & Accuracy',
-    desc: 'Answer as quickly AND accurately as possible. This section has a shorter timer — it measures how fast you can process information correctly. Speed matters here.',
+    desc: 'Answer as quickly AND accurately as possible. This section has a shorter timer, it measures how fast you can process information correctly. Speed matters here.',
     type: 'mc',
     timerOverride: 25, // 25 seconds per question instead of 60
     questions: [
@@ -1025,13 +1027,13 @@ var SECTIONS = [
       {q:'Count the number of times "15" appears: 15 51 15 25 15 51 55 15 11 15', opts:['3','4','5','6'], correct:2},
       {q:'What is 17 + 24 + 9?', opts:['49','50','51','48'], correct:1},
       {q:'Which word is spelled INCORRECTLY?<br>A) Necessary B) Accommodate C) Occurence D) Definitely', opts:['A','B','C','D'], correct:2},
-      {q:'In the sequence 2, 6, 18, 54, ___ — what comes next?', opts:['108','162','72','216'], correct:1},
+      {q:'In the sequence 2 to 6, 18 to 54, ___, what comes next?', opts:['108','162','72','216'], correct:1},
       {q:'How many squares are in a 3×3 grid? (Count all sizes)', opts:['9','13','14','10'], correct:2},
-      {q:'Which number does NOT belong: 2, 3, 5, 7, 9, 11, 13?', opts:['2','9','3','7'], correct:1},
+      {q:'Which number does NOT belong: 2 to 3, 5 to 7, 9 to 11 to 13?', opts:['2','9','3','7'], correct:1},
       {q:'If today is Wednesday, what day is it 100 days from now?', opts:['Friday','Saturday','Thursday','Sunday'], correct:0},
       {q:'What is 15% of 80?', opts:['8','10','12','15'], correct:2},
-      {q:'Rearrange these letters to form a word: R-A-G-O-N — What is it?', opts:['GROAN','ORGAN','ARGON','GROAN and ORGAN are both valid'], correct:3},
-      {q:'Which fraction is largest: 3/4, 5/8, 7/10, 2/3?', opts:['3/4','5/8','7/10','2/3'], correct:0},
+      {q:'Rearrange these letters to form a word: R-A-G-O-N, What is it?', opts:['GROAN','ORGAN','ARGON','GROAN and ORGAN are both valid'], correct:3},
+      {q:'Which fraction is largest: 3/4 to 5/8 to 7/10 to 2/3?', opts:['3/4','5/8','7/10','2/3'], correct:0},
       {q:'In a deck of 52 cards, what is the probability of drawing a heart?', opts:['1/2','1/3','1/4','1/13'], correct:2},
       {q:'If a = 3 and b = 4, what is a² + b²?', opts:['7','12','25','49'], correct:2},
       {q:'How many minutes are in 3.5 hours?', opts:['180','200','210','350'], correct:2}
@@ -1048,7 +1050,7 @@ var SECTIONS = [
       {q:'Memorize this sequence: <strong style="font-size:1.3rem;color:#1a3a6b;letter-spacing:.15em;">7 - 3 - 9 - 1 - 5 - 8</strong><br><br>(Remember it, then select the correct sequence below)', opts:['7-3-9-1-5-8','7-3-1-9-5-8','7-9-3-1-5-8','7-3-9-5-1-8'], correct:0},
       {q:'A briefing states: "Alpha Company will move at 0600 to Grid Reference 384927. Bravo Company provides overwatch from Hill 247. Charlie Company is in reserve at FOB Wilson."<br><br>What is Alpha Company\'s grid reference?', opts:['384927','384972','348927','389427'], correct:0},
       {q:'Study this list for 10 seconds: <strong>Wrench, Radio, Compass, Canteen, Poncho, Bayonet, Map, NVGs</strong><br><br>Which item was NOT in the list?', opts:['Compass','Canteen','Binoculars','Poncho'], correct:2},
-      {q:'The supply sergeant tells you: "We have 42 cases of 5.56, 18 cases of 7.62, 7 AT-4s, and 3 claymores."<br><br>How many cases of 7.62 are there?', opts:['42','18','7','12'], correct:1},
+      {q:'The supply sergeant tells you: "We have 42 cases of 5.56 to 18 cases of 7.62 to 7 AT-4s, and 3 claymores."<br><br>How many cases of 7.62 are there?', opts:['42','18','7','12'], correct:1},
       {q:'A phone number is read to you: <strong>(555) 382-7194</strong><br><br>What are the last 4 digits?', opts:['7914','7194','7149','7491'], correct:1},
       {q:'Recall the briefing from question 2. Which company is providing overwatch?', opts:['Alpha','Bravo','Charlie','Delta'], correct:1},
       {q:'You are told: "The code for the north gate is BLUE-7-TANGO. The code for the south gate is RED-3-FOXTROT. The code for the east gate is GREEN-9-WHISKEY."<br><br>What is the code for the south gate?', opts:['BLUE-7-TANGO','RED-3-FOXTROT','GREEN-9-WHISKEY','RED-3-TANGO'], correct:1},
@@ -1059,7 +1061,7 @@ var SECTIONS = [
   }
 ];
 
-// ── CAREER DATABASE — loaded from external vcp-careers-db.js (750+ careers) + inline fallback ──
+// ── CAREER DATABASE, loaded from external vcp-careers-db.js (750+ careers) + inline fallback ──
 var CAREERS = (window.VCP_CAREERS || []).map(function(c){
   return {title:c.t,salary:c.s,sector:c.sec,clearancePremium:!!c.cp,education:c.ed||"",description:c.d||"",requirements:c.r||[],matchWeights:c.mw||{},mosMatch:c.mm||[],timeToTransition:c.tt||"Varies"};
 });
@@ -1361,7 +1363,7 @@ function renderSection() {
   });
   var pct = Math.round((answeredQ / totalQ) * 100);
   document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-text').textContent = 'Section ' + (currentSection+1) + ' of ' + SECTIONS.length + ' — ' + pct + '% complete';
+  document.getElementById('progress-text').textContent = 'Section ' + (currentSection+1) + ' of ' + SECTIONS.length + ', ' + pct + '% complete';
 
   // Section tabs with completion status
   var tabsHtml = '';
@@ -1427,7 +1429,7 @@ function renderMCQuestions(sec, container) {
     if(isMemory) {
       html += '</div>'; // close memory content wrapper
     }
-    // Options container — hidden until timer completes in memory mode
+    // Options container, hidden until timer completes in memory mode
     html += '<div class="mc-options"' + (isMemory ? ' id="opts_' + key + '" style="display:none;"' : '') + '>';
     q.opts.forEach(function(opt, oi) {
       var selClass = selected === oi ? ' selected' : '';
@@ -1460,7 +1462,7 @@ function renderLikertQuestions(sec, container) {
   });
 }
 
-// Memory study timer — shows content for 10 seconds then hides
+// Memory study timer, shows content for 10 seconds then hides
 function startMemoryTimer(memId) {
   var cover = document.getElementById(memId + '_cover');
   var content = document.getElementById(memId + '_content');
@@ -1489,9 +1491,9 @@ function startMemoryTimer(memId) {
       content.style.display = 'none';
       cover.style.background = '#fef2f2';
       cover.style.borderColor = '#fca5a5';
-      btn.textContent = '🔒 Time\'s up — answer from memory';
+      btn.textContent = '🔒 Time\'s up, answer from memory';
       btn.style.background = '#888';
-      timerEl.textContent = 'Content hidden — select your answer below';
+      timerEl.textContent = 'Content hidden, select your answer below';
       timerEl.style.color = '#dc2626';
       timerEl.style.fontSize = '.85rem';
       // Now reveal the answer options
@@ -1564,7 +1566,7 @@ function updateNavState() {
   }
   if(remaining > 0) {
     warnBanner.style.display = 'block';
-    warnBanner.innerHTML = '⚠️ ' + remaining + ' unanswered question' + (remaining > 1 ? 's' : '') + ' — please answer all questions before continuing';
+    warnBanner.innerHTML = '⚠️ ' + remaining + ' unanswered question' + (remaining > 1 ? 's' : '') + ', please answer all questions before continuing';
   } else {
     warnBanner.style.display = 'none';
   }
@@ -1577,7 +1579,7 @@ function updateNavState() {
   });
   var pct = Math.round((answeredQ / totalQ) * 100);
   document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-text').textContent = 'Section ' + (currentSection+1) + ' of ' + SECTIONS.length + ' — ' + pct + '% complete';
+  document.getElementById('progress-text').textContent = 'Section ' + (currentSection+1) + ' of ' + SECTIONS.length + ', ' + pct + '% complete';
 }
 
 function nextSection() {
@@ -1598,7 +1600,7 @@ function nextSection() {
     });
     if(incomplete.length > 0) {
       var msg = 'You have unanswered questions in:\n\n';
-      incomplete.forEach(function(s){ msg += '• ' + s.name + ' — ' + s.count + ' unanswered\n'; });
+      incomplete.forEach(function(s){ msg += '• ' + s.name + ', ' + s.count + ' unanswered\n'; });
       msg += '\nYou must answer all questions to get accurate results. Going back to the first incomplete section.';
       alert(msg);
       currentSection = incomplete[0].index;
@@ -1664,14 +1666,14 @@ function showBreakPrompt() {
     '<div style="font-size:.82rem;color:var(--sub);margin-bottom:1.5rem;">' + (SECTIONS[currentSection]?SECTIONS[currentSection].questions.length:'') + ' questions</div>' +
     '<div style="display:flex;flex-direction:column;gap:.6rem;max-width:300px;margin:0 auto;">' +
       '<button onclick="renderSection()" style="padding:.75rem 1.5rem;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:inherit;">Continue to Next Section →</button>' +
-      '<button onclick="saveAndExit()" style="padding:.6rem 1rem;background:transparent;border:1.5px solid var(--card-border);border-radius:8px;color:var(--sub);font-size:.85rem;cursor:pointer;font-family:inherit;">Take a Break — Progress Saved</button>' +
+      '<button onclick="saveAndExit()" style="padding:.6rem 1rem;background:transparent;border:1.5px solid var(--card-border);border-radius:8px;color:var(--sub);font-size:.85rem;cursor:pointer;font-family:inherit;">Take a Break, Progress Saved</button>' +
     '</div>' +
     '<div style="font-size:.72rem;color:var(--sub2);margin-top:1rem;">Your answers are automatically saved. You can return anytime to continue.</div>' +
   '</div>';
 
   // Update header
   document.getElementById('section-name').textContent = 'Break';
-  document.getElementById('section-desc').textContent = 'Take your time — this is a comprehensive assessment.';
+  document.getElementById('section-desc').textContent = 'Take your time, this is a comprehensive assessment.';
   document.getElementById('section-counter').textContent = completed + ' of ' + total + ' sections complete';
   var timerEl = document.getElementById('section-timer');
   if(timerEl) timerEl.textContent = '⏸ Paused';
@@ -1786,7 +1788,7 @@ function calculateResults() {
   // ── AI Enhancement ──
   // Race the AI call against a 30-second timeout (Claude needs time for 10 career insights)
   var aiTimeout = new Promise(function(_, reject) {
-    setTimeout(function() { reject(new Error('AI timeout — showing results without AI')); }, 30000);
+    setTimeout(function() { reject(new Error('AI timeout, showing results without AI')); }, 30000);
   });
 
   Promise.race([enhanceWithAI(scores, rankedCareers), aiTimeout]).then(function(aiData) {
@@ -1816,11 +1818,9 @@ function calculateResults() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// AI ENHANCEMENT — Claude API enriches top career matches
+// AI ENHANCEMENT, Claude API enriches top career matches
 // ══════════════════════════════════════════════════════════════════════════════
 async function enhanceWithAI(scores, rankedCareers) {
-  var PROXY_URL = "https://vcp-proxy.vercel.app/api/claude";
-
   // Check subscription OR standalone
   var acc = {};
   try { acc = JSON.parse(localStorage.getItem('vcb_access') || '{}'); } catch(e) {}
@@ -1885,8 +1885,8 @@ async function enhanceWithAI(scores, rankedCareers) {
     "- Mechanical & Technical: " + scores.mechanical.pct + "%\n" +
     "- Verbal & Communication: " + scores.verbal.pct + "%\n" +
     "- Numerical & Analytical: " + scores.numerical.pct + "%\n" +
-    "- Work Style highlights: " + Object.entries(scores.workstyle).sort(function(a,b){return b[1]-a[1];}).slice(0,5).map(function(e){return e[0]+": "+e[1]+"%";}).join(", ") + "\n" +
-    "- Top career interests: " + Object.entries(scores.interests).sort(function(a,b){return b[1]-a[1];}).slice(0,5).map(function(e){return e[0]+": "+e[1]+"%";}).join(", ") + "\n" +
+    "- Work Style highlights: " + Object.entries(scores.workstyle).sort(function(a,b){return b[1]-a[1];}).slice(0, 5).map(function(e){return e[0]+": "+e[1]+"%";}).join(", ") + "\n" +
+    "- Top career interests: " + Object.entries(scores.interests).sort(function(a,b){return b[1]-a[1];}).slice(0, 5).map(function(e){return e[0]+": "+e[1]+"%";}).join(", ") + "\n" +
     "- Leadership overall: " + scores.leadershipOverall + "%\n\n" +
     (profileInfo ? "VETERAN PROFILE (Military + Civilian Experience):\n" + profileInfo + "\n\n" : "") +
     "TOP 15 JS-MATCHED CAREERS:\n" + top15.join("\n") + "\n\n" +
@@ -1896,24 +1896,16 @@ async function enhanceWithAI(scores, rankedCareers) {
     '],"overallSummary":"3-4 sentence personalized career summary for this veteran","strengthsTranslation":"2-3 sentences translating their military strengths to civilian value","immediateActions":["action 1","action 2","action 3"]}' +
     "\n\nProvide insights for the top 10 career matches. Be specific, realistic, and current with 2026 market data. " +
     "If they have a clearance, emphasize cleared roles and salary premiums. " +
-    "If they have civilian work experience, factor it into your analysis — relevant civilian experience can accelerate transitions and boost competitiveness. " +
-    "If their technical scores are low, be honest — suggest roles that match their actual aptitude.";
-
-  var response = await fetch(PROXY_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 3000,
-      system: 'You are a career counselor specializing in military-to-civilian transitions. Return ONLY valid JSON. No markdown, no backticks, no explanation outside the JSON object.',
-      messages: [{ role: 'user', content: prompt }]
-    })
-  });
+    "If they have civilian work experience, factor it into your analysis, relevant civilian experience can accelerate transitions and boost competitiveness. " +
+    "If their technical scores are low, be honest, suggest roles that match their actual aptitude.";
 
   if(window._vcpStatusTimer) clearInterval(window._vcpStatusTimer);
-  if (!response.ok) throw new Error("API call failed: " + response.status);
-  var data = await response.json();
-  var text = (data.content && data.content[0] && data.content[0].text) || "";
+  if (!window.VCBSecureApi) throw new Error("Secure AI client unavailable");
+  var text = await window.VCBSecureApi.callClaude(
+    prompt,
+    'You are a career counselor specializing in military-to-civilian transitions. Return ONLY valid JSON. No markdown, no backticks, no explanation outside the JSON object.',
+    3000
+  );
   // Extract JSON from response
   var jsonStart = text.indexOf('{');
   var jsonEnd = text.lastIndexOf('}');
@@ -2039,7 +2031,7 @@ function matchCareers(scores) {
         var careerTitle = career.title.toLowerCase();
         var careerDesc = (career.desc || '').toLowerCase();
 
-        // Direct title match — strongest signal (e.g., "Project Manager" matching "Project Manager" career)
+        // Direct title match, strongest signal (e.g., "Project Manager" matching "Project Manager" career)
         if(careerTitle.indexOf(civTitle) !== -1 || civTitle.indexOf(careerTitle) !== -1) {
           profileScore += 25;
         } else {
@@ -2055,7 +2047,7 @@ function matchCareers(scores) {
           else if(matches >= 1) profileScore += 8;
         }
 
-        // Sector match — civilian employer/role in same sector
+        // Sector match, civilian employer/role in same sector
         if(civ.employer) {
           var emp = civ.employer.toLowerCase();
           var sec = (career.sector || '').toLowerCase();
@@ -2103,7 +2095,7 @@ function matchCareers(scores) {
       basePct = Math.round(aptPct * 0.75 + intPct * 0.25);
     }
 
-    // ── Career-specific ceiling — based on how well user's aptitude matches THIS career's requirements ──
+    // ── Career-specific ceiling, based on how well user's aptitude matches THIS career's requirements ──
     // Instead of a flat global ceiling, weight the ceiling by each career's own weight profile
     var ceilNum = 0, ceilDen = 0;
     var aptScores = {
@@ -2119,7 +2111,7 @@ function matchCareers(scores) {
       var wt = w[dim] || 0;
       if(wt > 0) { ceilNum += aptScores[dim] * wt; ceilDen += wt; }
     });
-    // Weighted aptitude for THIS career — how well your skills match what it needs
+    // Weighted aptitude for THIS career, how well your skills match what it needs
     var careerAptitude = ceilDen > 0 ? ceilNum / ceilDen : 50;
     // Ceiling = your weighted aptitude for this career + stretch room (careers you're close to)
     var aptitudeCeiling = Math.min(95, Math.round(careerAptitude + 15));
@@ -2127,7 +2119,7 @@ function matchCareers(scores) {
     basePct = Math.min(basePct, aptitudeCeiling);
 
     // ── Profile weighting ──
-    // Profile bonuses are SMALLER and capped — they can't rescue a bad assessment
+    // Profile bonuses are SMALLER and capped, they can't rescue a bad assessment
     var profileBonus = 0;
     var maxProfileBonus = Math.round(careerAptitude * 0.15); // Max bonus = 15% of career aptitude
     if(userProfile) {
@@ -2181,7 +2173,7 @@ function matchCareers(scores) {
       });
     }
 
-    // Cap profile bonus — can't rescue a bad assessment
+    // Cap profile bonus, can't rescue a bad assessment
     profileBonus = Math.min(profileBonus, maxProfileBonus);
 
     var finalPct = Math.min(aptitudeCeiling, Math.max(8, basePct + profileBonus));
@@ -2191,9 +2183,9 @@ function matchCareers(scores) {
     var ph = career.physicalReqs || career.ph;
     if(ph && scores.workstyle) {
       var physPenalty = 0;
-      // Heights — Likert 1-5, convert to 0-100. Score < 40 means uncomfortable with heights
+      // Heights, Likert 1-5, convert to 0-100. Score < 40 means uncomfortable with heights
       if(ph.h && scores.workstyle.heights_ok !== undefined && scores.workstyle.heights_ok < 40) {
-        physPenalty += 25; // Major penalty — can't do the core job
+        physPenalty += 25; // Major penalty, can't do the core job
       }
       // Heavy lifting
       if(ph.l && scores.workstyle.heavy_lift_ok !== undefined && scores.workstyle.heavy_lift_ok < 40) {
@@ -2278,7 +2270,7 @@ function renderResults(scores, rankedCareers, aiData) {
   var output = document.getElementById('results-content');
   try {
   var userName = (userProfile && userProfile.name) ? userProfile.name : ((userProfile && userProfile.personal && userProfile.personal.name) ? userProfile.personal.name : 'Service Member');
-  var assessmentId = 'PF-' + Math.random().toString(36).substr(2,8).toUpperCase();
+  var assessmentId = 'PF-' + Math.random().toString(36).substr(2, 8).toUpperCase();
   var today = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
 
   var html = '';
@@ -2287,23 +2279,23 @@ function renderResults(scores, rankedCareers, aiData) {
   html += '<div class="report-header">';
   html += '<img src="https://veterancareerpath.com/logo.png" alt="VCP" class="report-logo no-print">';
   html += '<div class="report-title">VCP PathFinder&trade; Pro</div>';
-  html += '<div class="report-subtitle">Military Career Intelligence Assessment &mdash; Results Report</div>';
+  html += '<div class="report-subtitle">Military Career Intelligence Assessment, Results Report</div>';
   html += '<div class="report-meta"><strong>' + userName + '</strong><span>|</span>' + today + '<span>|</span>ID: ' + assessmentId + '</div>';
 
   // Scoring method badge
   var hasProfile = userProfile && (userProfile.milExperiences || userProfile.experiences);
   if(hasProfile) {
-    html += '<div style="display:inline-block;margin-top:.75rem;padding:.35rem .85rem;background:rgba(26,122,64,.1);border:1px solid rgba(26,122,64,.25);border-radius:100px;font-size:.75rem;font-weight:700;color:#1a7a40;">✓ Profile-Weighted Results — 60% Aptitude · 30% Experience · 10% Interest</div>';
+    html += '<div style="display:inline-block;margin-top:.75rem;padding:.35rem .85rem;background:rgba(26,122,64,.1);border:1px solid rgba(26,122,64,.25);border-radius:100px;font-size:.75rem;font-weight:700;color:#1a7a40;">✓ Profile-Weighted Results, 60% Aptitude · 30% Experience · 10% Interest</div>';
   } else {
-    html += '<div style="display:inline-block;margin-top:.75rem;padding:.35rem .85rem;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.25);border-radius:100px;font-size:.75rem;font-weight:600;color:#8a6000;">Assessment Only — 75% Aptitude · 25% Interest</div>';
+    html += '<div style="display:inline-block;margin-top:.75rem;padding:.35rem .85rem;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.25);border-radius:100px;font-size:.75rem;font-weight:600;color:#8a6000;">Assessment Only, 75% Aptitude · 25% Interest</div>';
     html += '<div style="font-size:.78rem;color:var(--sub);margin-top:.35rem;">📈 Subscribe for profile-weighted results that factor in your MOS, rank, clearance, and military experience.</div>';
   }
   html += '</div>';
 
   // ── Section Scores (10 sections) ──
-  html += '<h2 style="font-family:\'Bebas Neue\',sans-serif;font-size:1.4rem;letter-spacing:.06em;color:var(--gold);margin:2rem 0 1rem;">Assessment Scores — ' + SECTIONS.length + ' Sections</h2>';
+  html += '<h2 style="font-family:\'Bebas Neue\',sans-serif;font-size:1.4rem;letter-spacing:.06em;color:var(--gold);margin:2rem 0 1rem;">Assessment Scores, ' + SECTIONS.length + ' Sections</h2>';
 
-  // All section results — defensive rendering with error output
+  // All section results, defensive rendering with error output
   var sectionDefs = [
     {name:'Mechanical & Technical Reasoning', pct:scores.mechanical?scores.mechanical.pct:0, desc:'Tests practical aptitude.', detail:scores.mechanical?(scores.mechanical.raw+'/'+scores.mechanical.total+' correct'):'N/A', type:'technical', id:'mechanical'},
     {name:'Verbal & Communication', pct:scores.verbal?scores.verbal.pct:0, desc:'Reading comprehension and vocabulary.', detail:scores.verbal?(scores.verbal.raw+'/'+scores.verbal.total+' correct'):'N/A', type:'verbal', id:'verbal'},
@@ -2353,7 +2345,7 @@ function renderResults(scores, rankedCareers, aiData) {
   if(matchedCareers.length < 5) matchedCareers = rankedCareers.slice(0, 10); // fallback: show top 10 if few above 50%
   var topCareers = matchedCareers.slice(0, 30); // cap at 30
 
-  html += '<div class="careers-header">Career Matches (' + topCareers.length + ' results at 50%+ match)' + (aiData ? ' <span style="font-size:.65rem;color:#5a7090;font-family:Inter,sans-serif;font-weight:400;letter-spacing:0;">— Enhanced with AI analysis</span>' : '') + '</div>';
+  html += '<div class="careers-header">Career Matches (' + topCareers.length + ' results at 50%+ match)' + (aiData ? ' <span style="font-size:.65rem;color:#5a7090;font-family:Inter,sans-serif;font-weight:400;letter-spacing:0;">, Enhanced with AI analysis</span>' : '') + '</div>';
 
   // Sort/Filter controls
   html += '<div class="no-print" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center;">';
@@ -2405,8 +2397,8 @@ function renderResults(scores, rankedCareers, aiData) {
   if(!window._hasSubscription && window._hasStandalone) {
     html += '<div class="no-print" style="background:linear-gradient(135deg,#060f1e,#1a3a6b);border:2px solid rgba(240,192,64,.2);border-radius:14px;padding:2rem;margin:1.5rem 0;text-align:center;">';
     html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.3rem;color:#f0c040;letter-spacing:.06em;margin-bottom:.5rem;">Get Even More from Your Results</div>';
-    html += '<p style="color:rgba(192,216,240,.65);font-size:.85rem;max-width:500px;margin:0 auto .8rem;line-height:1.6;">Subscribe to unlock 20+ AI career tools that use your PathFinder results: AI Resume Builder, Job Match Analyzer, Interview Simulator, Salary Coach, and more. Your assessment data is already saved — just fill out your profile.</p>';
-    html += '<a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:inline-block;padding:.7rem 1.8rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.9rem;text-decoration:none;">Subscribe — $15/mo &rarr;</a>';
+    html += '<p style="color:rgba(192,216,240,.65);font-size:.85rem;max-width:500px;margin:0 auto .8rem;line-height:1.6;">Subscribe to unlock 20+ AI career tools that use your PathFinder results: AI Resume Builder, Job Match Analyzer, Interview Simulator, Salary Coach, and more. Your assessment data is already saved, just fill out your profile.</p>';
+    html += '<a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:inline-block;padding:.7rem 1.8rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.9rem;text-decoration:none;">Subscribe, $15/mo &rarr;</a>';
     html += '</div>';
   }
 
@@ -2430,7 +2422,7 @@ function renderSectionResult(name, pct, desc, detail, percentile, secId, scores)
   html += '<div class="section-result-score">' + pct + '%</div>';
   html += '</div>';
   html += '<div class="score-bar"><div class="score-bar-fill" style="width:' + pct + '%;background:' + barColor + ';"></div></div>';
-  html += '<div class="section-result-detail">' + desc + ' &mdash; ' + detail + ' &mdash; Estimated ' + percentile + ' percentile among veteran test-takers</div>';
+  html += '<div class="section-result-detail">' + desc + ', ' + detail + ', Estimated ' + percentile + ' percentile among veteran test-takers</div>';
   html += '<button class="review-toggle" onclick="toggleReview(\'' + secId + '\')">Click to review your answers</button>';
   html += '<div class="section-review" id="review_' + secId + '">';
   html += renderReviewContent(secId, scores);
@@ -2452,21 +2444,21 @@ function renderReviewContent(secId, scores) {
       html += '<div class="review-item">';
       // Strip HTML tags from question text for review display
       var qText = q.q.replace(/<[^>]*>/g, '').trim();
-      html += '<div class="review-q">' + (j+1) + '. ' + qText.substring(0,150) + (qText.length > 150 ? '...' : '') + '</div>';
+      html += '<div class="review-q">' + (j+1) + '. ' + qText.substring(0, 150) + (qText.length > 150 ? '...' : '') + '</div>';
       html += '<div class="review-a ' + (isCorrect ? 'correct' : 'incorrect') + '">';
       html += isCorrect ? 'Correct' : 'Your answer: ' + (userAns !== undefined ? letters[userAns] + '. ' + q.opts[userAns] : 'Skipped');
       if(!isCorrect) html += ' | Correct: ' + letters[q.correct] + '. ' + q.opts[q.correct];
       html += '</div></div>';
     });
   } else {
-    // Likert — show dimension scores
+    // Likert, show dimension scores
     var dimScores = scores[secId] || {};
     sec.questions.forEach(function(q, j) {
       var val = answers[secId + '_' + j] || 0;
       html += '<div class="review-item">';
       var lqText = (q.q||'').replace(/<[^>]*>/g, '').trim();
       html += '<div class="review-q">' + (j+1) + '. ' + lqText + '</div>';
-      html += '<div class="review-a neutral">Your rating: ' + val + '/5 &mdash; Dimension: ' + q.dim + ' (' + (dimScores[q.dim] || 0) + '%)</div>';
+      html += '<div class="review-a neutral">Your rating: ' + val + '/5, Dimension: ' + q.dim + ' (' + (dimScores[q.dim] || 0) + '%)</div>';
       html += '</div>';
     });
   }
@@ -2534,21 +2526,21 @@ function renderPersonalityProfile(scores) {
   // Personality archetypes based on top 2 dimensions
   var archetypes = {
     'technical-analytical': {name:'The Engineer', icon:'⚙️', desc:'You think in systems and solve problems through logic and precision. You understand how things work at a fundamental level and enjoy optimizing processes. In the military, you were likely the person everyone came to when equipment broke or when a plan needed technical validation.', strengths:'Technical problem-solving, systematic thinking, attention to detail, data-driven decisions', workStyle:'Prefers structured environments with clear objectives and measurable outcomes.', careers:'Engineering, IT/Cyber, Data Analysis, Quality Control, Technical Project Management'},
-    'technical-people': {name:'The Field Commander', icon:'🎖️', desc:'You combine hands-on technical capability with natural leadership. You lead by example — you would never ask someone to do something you could not do yourself. You bridge the gap between the technical team and management, translating complex problems into actionable plans.', strengths:'Leading technical teams, field operations, training and mentoring, hands-on problem solving', workStyle:'Prefers action-oriented roles where leadership is demonstrated through competence.', careers:'Operations Management, Construction Management, Technical Team Lead, First Responder Leadership, Maintenance Supervisor'},
-    'technical-creative': {name:'The Innovator', icon:'💡', desc:'You have a rare combination of technical skill and creative thinking. You do not just fix problems — you reimagine them. You are drawn to building new things, improving existing systems, and finding unconventional solutions to conventional problems.', strengths:'Innovation, design thinking, prototype development, creative problem-solving', workStyle:'Thrives in environments that value experimentation and tolerate calculated risk.', careers:'Product Development, UX/UI Design, Technical Writing, Architecture, Robotics'},
+    'technical-people': {name:'The Field Commander', icon:'🎖️', desc:'You combine hands-on technical capability with natural leadership. You lead by example, you would never ask someone to do something you could not do yourself. You bridge the gap between the technical team and management, translating complex problems into actionable plans.', strengths:'Leading technical teams, field operations, training and mentoring, hands-on problem solving', workStyle:'Prefers action-oriented roles where leadership is demonstrated through competence.', careers:'Operations Management, Construction Management, Technical Team Lead, First Responder Leadership, Maintenance Supervisor'},
+    'technical-creative': {name:'The Innovator', icon:'💡', desc:'You have a rare combination of technical skill and creative thinking. You do not just fix problems, you reimagine them. You are drawn to building new things, improving existing systems, and finding unconventional solutions to conventional problems.', strengths:'Innovation, design thinking, prototype development, creative problem-solving', workStyle:'Thrives in environments that value experimentation and tolerate calculated risk.', careers:'Product Development, UX/UI Design, Technical Writing, Architecture, Robotics'},
     'analytical-technical': {name:'The Strategist', icon:'🧠', desc:'You are a systems thinker who sees patterns others miss. Your analytical mind combined with technical understanding makes you exceptional at planning, forecasting, and risk assessment. In the military, you likely excelled in intelligence, operations planning, or logistics.', strengths:'Strategic planning, pattern recognition, risk assessment, data analysis, complex problem-solving', workStyle:'Prefers roles with autonomy to analyze and recommend before acting.', careers:'Intelligence Analysis, Cybersecurity, Business Analysis, Supply Chain, Financial Analysis'},
-    'analytical-people': {name:'The Counselor', icon:'🤝', desc:'You combine sharp analytical skills with genuine care for people. You listen carefully, ask the right questions, and help others see their situation clearly. You are equally comfortable with data and with emotions — a rare and valuable combination.', strengths:'Empathetic analysis, counseling, conflict mediation, talent assessment, program evaluation', workStyle:'Prefers roles where analysis serves human outcomes — not just spreadsheets.', careers:'HR Management, Counseling/Social Work, Healthcare Administration, Training & Development, Recruiting'},
+    'analytical-people': {name:'The Counselor', icon:'🤝', desc:'You combine sharp analytical skills with genuine care for people. You listen carefully, ask the right questions, and help others see their situation clearly. You are equally comfortable with data and with emotions, a rare and valuable combination.', strengths:'Empathetic analysis, counseling, conflict mediation, talent assessment, program evaluation', workStyle:'Prefers roles where analysis serves human outcomes, not just spreadsheets.', careers:'HR Management, Counseling/Social Work, Healthcare Administration, Training & Development, Recruiting'},
     'analytical-creative': {name:'The Architect', icon:'📐', desc:'You are a visionary problem-solver who combines analytical rigor with creative insight. You see both the big picture and the fine details. You are drawn to designing systems, processes, and solutions that are both elegant and effective.', strengths:'System design, research, strategic communication, content creation, data visualization', workStyle:'Prefers complex problems with room for original thinking and structured analysis.', careers:'UX Research, Data Science, Technical Architecture, Marketing Analytics, Policy Analysis'},
-    'people-technical': {name:'The Operator', icon:'🛡', desc:'You are a hands-on leader who earns respect through competence and character. You understand that the best leadership comes from being in the trenches with your team. People trust you because you know the work as well as they do — and you genuinely care about their success.', strengths:'Team building, operational leadership, technical training, mission execution', workStyle:'Prefers leading from the front in high-stakes, team-oriented environments.', careers:'Law Enforcement, Security Management, Emergency Services, Military Contracting, Facility Management'},
-    'people-analytical': {name:'The Advisor', icon:'📋', desc:'You are a trusted guide who helps others navigate complex decisions. Your combination of people skills and analytical thinking makes you the person everyone turns to for advice — not because you have all the answers, but because you ask the right questions and listen with genuine intent.', strengths:'Mentoring, advisory, stakeholder management, program management, executive communication', workStyle:'Prefers roles where influence comes through trust and expertise, not authority.', careers:'Management Consulting, Executive Coaching, Program Management, VSO/Veteran Services, Career Counseling'},
+    'people-technical': {name:'The Operator', icon:'🛡', desc:'You are a hands-on leader who earns respect through competence and character. You understand that the best leadership comes from being in the trenches with your team. People trust you because you know the work as well as they do, and you genuinely care about their success.', strengths:'Team building, operational leadership, technical training, mission execution', workStyle:'Prefers leading from the front in high-stakes, team-oriented environments.', careers:'Law Enforcement, Security Management, Emergency Services, Military Contracting, Facility Management'},
+    'people-analytical': {name:'The Advisor', icon:'📋', desc:'You are a trusted guide who helps others navigate complex decisions. Your combination of people skills and analytical thinking makes you the person everyone turns to for advice, not because you have all the answers, but because you ask the right questions and listen with genuine intent.', strengths:'Mentoring, advisory, stakeholder management, program management, executive communication', workStyle:'Prefers roles where influence comes through trust and expertise, not authority.', careers:'Management Consulting, Executive Coaching, Program Management, VSO/Veteran Services, Career Counseling'},
     'people-creative': {name:'The Communicator', icon:'📢', desc:'You connect with people through stories, ideas, and shared experiences. You have a gift for making complex things simple and making dry topics compelling. Whether in person or in writing, you know how to reach people and move them to action.', strengths:'Public speaking, writing, team motivation, brand building, community engagement', workStyle:'Prefers roles with high human interaction and creative freedom.', careers:'Public Affairs, Communications, Sales, Training, Nonprofit Leadership, Event Management'},
-    'creative-technical': {name:'The Builder', icon:'🔨', desc:'You bring ideas to life. Where others see concepts, you see blueprints. Your creativity is not abstract — it is practical, tangible, and results-oriented. You are happiest when creating something real that people can use, see, or interact with.', strengths:'Prototyping, design-build, creative engineering, visual communication', workStyle:'Prefers maker environments where thinking and doing are integrated.', careers:'Web Development, Graphic Design, Video Production, Industrial Design, Fabrication'},
+    'creative-technical': {name:'The Builder', icon:'🔨', desc:'You bring ideas to life. Where others see concepts, you see blueprints. Your creativity is not abstract, it is practical, tangible, and results-oriented. You are happiest when creating something real that people can use, see, or interact with.', strengths:'Prototyping, design-build, creative engineering, visual communication', workStyle:'Prefers maker environments where thinking and doing are integrated.', careers:'Web Development, Graphic Design, Video Production, Industrial Design, Fabrication'},
     'creative-analytical': {name:'The Detective', icon:'🔍', desc:'You see the world differently. Your creative instincts lead you to ask questions others overlook, and your analytical skills help you find answers others cannot. You are drawn to investigation, research, and uncovering hidden truths.', strengths:'Investigation, research, creative analysis, unconventional problem-solving', workStyle:'Prefers roles that reward curiosity, persistence, and original thinking.', careers:'Forensic Analysis, Investigative Journalism, Research, Competitive Intelligence, Fraud Detection'},
-    'creative-people': {name:'The Inspirer', icon:'✨', desc:'You see potential in people and ideas that others miss. Your creativity combined with your people skills makes you a natural motivator, storyteller, and culture builder. You do not just lead teams — you inspire movements.', strengths:'Team culture, creative leadership, storytelling, vision casting, community building', workStyle:'Prefers collaborative environments where innovation and people development intersect.', careers:'Creative Direction, Nonprofit Leadership, Education, HR Culture & Engagement, Marketing'}
+    'creative-people': {name:'The Inspirer', icon:'✨', desc:'You see potential in people and ideas that others miss. Your creativity combined with your people skills makes you a natural motivator, storyteller, and culture builder. You do not just lead teams, you inspire movements.', strengths:'Team culture, creative leadership, storytelling, vision casting, community building', workStyle:'Prefers collaborative environments where innovation and people development intersect.', careers:'Creative Direction, Nonprofit Leadership, Education, HR Culture & Engagement, Marketing'}
   };
 
   var key = p + '-' + s;
-  var profile = archetypes[key] || archetypes[s + '-' + p] || {name:'The Versatile Professional', icon:'🎯', desc:'Your assessment shows a balanced profile across multiple dimensions. You are adaptable and capable in diverse environments. This versatility is a significant asset — focus on roles that value multi-skilled professionals.', strengths:'Adaptability, broad capability, cross-functional thinking', workStyle:'Flexible — thrives in varied environments.', careers:'Project Management, Operations, Consulting, Business Analysis'};
+  var profile = archetypes[key] || archetypes[s + '-' + p] || {name:'The Versatile Professional', icon:'🎯', desc:'Your assessment shows a balanced profile across multiple dimensions. You are adaptable and capable in diverse environments. This versatility is a significant asset, focus on roles that value multi-skilled professionals.', strengths:'Adaptability, broad capability, cross-functional thinking', workStyle:'Flexible, thrives in varied environments.', careers:'Project Management, Operations, Consulting, Business Analysis'};
 
   var html = '<div style="background:linear-gradient(135deg,#0a1628,#1a3a6b);border-radius:14px;padding:2rem;margin-bottom:2rem;border:1px solid rgba(240,192,64,.2);">';
   html += '<div style="text-align:center;margin-bottom:1.25rem;">';
@@ -2576,7 +2568,7 @@ function renderPersonalityProfile(scores) {
 }
 
 function renderStrengths(scores) {
-  // Only show APTITUDE strengths (not interest-only) — must score 50%+ to be a "strength"
+  // Only show APTITUDE strengths (not interest-only), must score 50%+ to be a "strength"
   var aptitudes = [];
   if(scores.mechanical && scores.mechanical.pct >= 50) aptitudes.push({name:'Mechanical & Technical Aptitude', pct:scores.mechanical.pct, civilian:'Your hands-on technical skills translate to trades, engineering, maintenance, and technical roles where practical problem-solving is valued.'});
   if(scores.verbal && scores.verbal.pct >= 50) aptitudes.push({name:'Verbal & Communication Skills', pct:scores.verbal.pct, civilian:'Strong communication skills are essential in management, consulting, sales, and any client-facing role. Your ability to convey complex ideas clearly is a premium asset.'});
@@ -2595,7 +2587,7 @@ function renderStrengths(scores) {
 
   // If no aptitudes scored 50%+, show the highest ones with honest messaging
   if(aptitudes.length === 0) {
-    aptitudes.push({name:'Military Discipline & Accountability', pct:null, civilian:'Your military service demonstrates reliability, accountability, and the ability to follow through on commitments — qualities every employer values.'});
+    aptitudes.push({name:'Military Discipline & Accountability', pct:null, civilian:'Your military service demonstrates reliability, accountability, and the ability to follow through on commitments, qualities every employer values.'});
     aptitudes.push({name:'Adaptability & Resilience', pct:null, civilian:'Veterans consistently demonstrate the ability to learn new skills quickly and adapt to changing environments. Focus on entry-level roles where you can build domain expertise.'});
   }
 
@@ -2612,7 +2604,7 @@ function renderStrengths(scores) {
 
   var html = '<div class="strengths-section">';
   html += '<div class="strengths-title">Your Top Strengths</div>';
-  html += '<p style="font-size:.85rem;color:var(--sub);margin-bottom:1rem;">Based on your assessment scores — these are demonstrated abilities, not just interests:</p>';
+  html += '<p style="font-size:.85rem;color:var(--sub);margin-bottom:1rem;">Based on your assessment scores, these are demonstrated abilities, not just interests:</p>';
   top3.forEach(function(s){
     html += '<div class="strength-item">';
     html += '<div class="strength-name">' + s.name + (s.pct !== null ? ' (' + s.pct + '%)' : '') + '</div>';
@@ -2624,9 +2616,9 @@ function renderStrengths(scores) {
   if(topInterests.length > 0) {
     html += '<div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--border);">';
     html += '<div class="strengths-title" style="font-size:.95rem;">Top Career Interests</div>';
-    html += '<p style="font-size:.82rem;color:var(--sub);margin-bottom:.6rem;">Sectors you expressed strong interest in (interest ≠ aptitude — consider whether you have or can build the skills for these fields):</p>';
+    html += '<p style="font-size:.82rem;color:var(--sub);margin-bottom:.6rem;">Sectors you expressed strong interest in (interest ≠ aptitude, consider whether you have or can build the skills for these fields):</p>';
     html += '<div style="display:flex;flex-wrap:wrap;gap:.4rem;">';
-    topInterests.slice(0,5).forEach(function(i){
+    topInterests.slice(0, 5).forEach(function(i){
       html += '<span style="padding:.25rem .7rem;border-radius:100px;font-size:.75rem;font-weight:600;background:rgba(240,192,64,.1);color:var(--gold);border:1px solid rgba(240,192,64,.2);">' + i.name + ' ' + i.pct + '%</span>';
     });
     html += '</div></div>';
@@ -2635,12 +2627,12 @@ function renderStrengths(scores) {
   // Soft skills score check
   if(scores.softSkills !== undefined && scores.softSkills < 75) {
     html += '<div style="margin-top:1.2rem;padding:1rem;background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.2);border-radius:8px;">';
-    html += '<div style="font-weight:700;color:#dc2626;font-size:.88rem;margin-bottom:.3rem;">⚠️ Soft Skills — Area for Growth (' + scores.softSkills + '%)</div>';
-    html += '<p style="font-size:.82rem;color:var(--text);margin-bottom:.5rem;">Many veterans struggle with soft skills in civilian workplaces — communication styles, conflict resolution, and workplace culture differ significantly from military environments. This is completely normal and trainable.</p>';
+    html += '<div style="font-weight:700;color:#dc2626;font-size:.88rem;margin-bottom:.3rem;">⚠️ Soft Skills, Area for Growth (' + scores.softSkills + '%)</div>';
+    html += '<p style="font-size:.82rem;color:var(--text);margin-bottom:.5rem;">Many veterans struggle with soft skills in civilian workplaces, communication styles, conflict resolution, and workplace culture differ significantly from military environments. This is completely normal and trainable.</p>';
     html += '<a href="/veteran-soft-skills.html" style="display:inline-block;padding:.5rem 1rem;background:#dc2626;color:#fff;border-radius:6px;font-weight:700;font-size:.82rem;text-decoration:none;">🎓 Take Free Soft Skills Training →</a>';
     html += '</div>';
   } else if(scores.softSkills !== undefined) {
-    html += '<div style="margin-top:.75rem;"><a href="/veteran-soft-skills.html" style="display:inline-block;padding:.4rem .85rem;background:rgba(26,122,64,.1);border:1px solid rgba(26,122,64,.2);color:#1a7a40;border-radius:6px;font-weight:600;font-size:.78rem;text-decoration:none;">✅ Soft Skills: Strong (' + scores.softSkills + '%) — Review Tips →</a></div>';
+    html += '<div style="margin-top:.75rem;"><a href="/veteran-soft-skills.html" style="display:inline-block;padding:.4rem .85rem;background:rgba(26,122,64,.1);border:1px solid rgba(26,122,64,.2);color:#1a7a40;border-radius:6px;font-weight:600;font-size:.78rem;text-decoration:none;">✅ Soft Skills: Strong (' + scores.softSkills + '%), Review Tips →</a></div>';
   }
 
   html += '</div>';
@@ -2710,7 +2702,7 @@ function generateWhyFits(r, scores) {
   if(w.numerical > 0.5 && scores.numerical.pct >= 70) reasons.push('solid analytical reasoning');
   if(w.leadership > 0.5 && scores.leadershipOverall >= 70) reasons.push('proven leadership ability');
 
-  // Interest alignment — find the TOP matching interest, only add once
+  // Interest alignment, find the TOP matching interest, only add once
   var topInterest = '';
   var topInterestScore = 0;
   var interestLabels = {cyber:'cybersecurity',healthcare:'healthcare',trades:'skilled trades',lawenforcement:'law enforcement',business:'business',education:'education',finance:'finance',engineering:'engineering',logistics:'logistics',government:'government',creative:'creative fields',science:'science',it:'IT',intelligence:'intelligence'};
@@ -2730,10 +2722,10 @@ function generateWhyFits(r, scores) {
 
   if(reasons.length === 0) reasons.push('well-rounded assessment scores');
 
-  return 'This career fits you because of your ' + reasons.slice(0,3).join(', ') + '.';
+  return 'This career fits you because of your ' + reasons.slice(0, 3).join(', ') + '.';
 }
 
-// Career progression ladders — maps senior titles to realistic entry → growth paths
+// Career progression ladders, maps senior titles to realistic entry → growth paths
 var CAREER_LADDERS = {
   // Emergency Services
   "Fire Captain":[{title:"Firefighter/EMT",salary:"$38,000–$55,000",time:"6-12 months (academy)",reqs:["Fire academy","EMT-B certification","Physical fitness test"]},{title:"Firefighter",salary:"$42,000–$65,000",time:"2-4 years",reqs:["Fire academy graduate","EMT-B","Probationary period"]},{title:"Fire Engineer",salary:"$55,000–$75,000",time:"4-6 years",reqs:["Apparatus operator certification","3+ years experience"]},{title:"Fire Captain",salary:"$65,000–$95,000",time:"8-12 years",reqs:["Fire officer certification","Leadership experience","Fire science degree preferred"]}],
@@ -2786,7 +2778,7 @@ function buildGenericLadder(career) {
   var midTitle = title.replace(/Senior |Chief |Head |VP /gi,'').replace(/ Director/,' Manager').trim();
   if(midTitle === title) midTitle = 'Senior ' + entryTitle;
   return [
-    {title:entryTitle,salary:"Entry-level salary",time:"Immediate–6 months",reqs:career.requirements.slice(0,2)},
+    {title:entryTitle,salary:"Entry-level salary",time:"Immediate–6 months",reqs:career.requirements.slice(0, 2)},
     {title:midTitle,salary:"Mid-career salary",time:"3-7 years experience",reqs:["Experience in role","Relevant certifications"]},
     {title:title,salary:sal,time:"7-15+ years total",reqs:career.requirements}
   ];
@@ -2884,9 +2876,9 @@ function renderCareerDetails(r, scores) {
   html += '<li><strong>Army/Navy COOL:</strong> Funds industry certifications while still serving</li>';
   html += '<li><strong>Vet Tec:</strong> Covers high-tech training programs (IT, coding, cyber)</li>';
   c.requirements.forEach(function(req){
-    if(req.toLowerCase().indexOf('pmp') !== -1) html += '<li><strong>PMP:</strong> PMI.org — 35 hours training + exam ($555, GI Bill eligible)</li>';
-    if(req.toLowerCase().indexOf('security+') !== -1) html += '<li><strong>Security+:</strong> CompTIA.org — Study 4-8 weeks, exam $404 (COOL eligible)</li>';
-    if(req.toLowerCase().indexOf('cissp') !== -1) html += '<li><strong>CISSP:</strong> ISC2.org — 5 years experience required, exam $749</li>';
+    if(req.toLowerCase().indexOf('pmp') !== -1) html += '<li><strong>PMP:</strong> PMI.org, 35 hours training + exam ($555, GI Bill eligible)</li>';
+    if(req.toLowerCase().indexOf('security+') !== -1) html += '<li><strong>Security+:</strong> CompTIA.org, Study 4-8 weeks, exam $404 (COOL eligible)</li>';
+    if(req.toLowerCase().indexOf('cissp') !== -1) html += '<li><strong>CISSP:</strong> ISC2.org, 5 years experience required, exam $749</li>';
   });
   html += '</ul></div>';
   html += '</div>';
@@ -2949,11 +2941,11 @@ function printReport() {
   function addPage() { doc.addPage(); y = 10; }
   function checkPage(n) { if(y + n > H - 12) addPage(); }
 
-  // ═══ HEADER (compact — single line) ═══
+  // ═══ HEADER (compact, single line) ═══
   doc.setFillColor(navy[0],navy[1],navy[2]); doc.rect(0,0,W,18,'F');
   doc.setFillColor(gold[0],gold[1],gold[2]); doc.rect(0,18,W,0.8,'F');
   doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(255,255,255);
-  doc.text('VCP PathFinder\u2122 Pro \u2014 Results Report', M, 8);
+  doc.text('VCP PathFinder\u2122 Pro - Results Report', M, 8);
   doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(192,216,240);
   doc.text(r.userName + '  |  ' + r.date + '  |  ' + r.assessmentId, M, 14);
   var hasProfile = scores._hasProfile;
@@ -2961,7 +2953,7 @@ function printReport() {
   doc.text(method, W-M, 14, {align:'right'});
   y = 24;
 
-  // ═══ SCORES — compact two-column grid ═══
+  // ═══ SCORES, compact two-column grid ═══
   doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(gold[0],gold[1],gold[2]);
   doc.text('ASSESSMENT SCORES', M, y); y += 5;
 
@@ -2979,11 +2971,11 @@ function printReport() {
     var xOff = M + col * (colW + 4);
     if(col === 0 && i > 0) y += 7;
     // Bar bg
-    doc.setFillColor(235,238,245); doc.roundedRect(xOff, y, colW, 5.5, 1, 1, 'F');
+    doc.setFillColor(235,238,245); doc.roundedRect(xOff, y, colW, 5.5,1, 1, 'F');
     // Bar fill
     var bW = Math.max(1, (s.p/100) * colW);
     var bc = s.p >= 80 ? [34,197,94] : s.p >= 60 ? [240,192,64] : s.p >= 40 ? [251,146,60] : [248,113,113];
-    doc.setFillColor(bc[0],bc[1],bc[2]); doc.roundedRect(xOff, y, bW, 5.5, 1, 1, 'F');
+    doc.setFillColor(bc[0],bc[1],bc[2]); doc.roundedRect(xOff, y, bW, 5.5,1, 1, 'F');
     // Label + score
     doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(dk[0],dk[1],dk[2]);
     doc.text(s.n, xOff+2, y+3.8);
@@ -2995,12 +2987,12 @@ function printReport() {
   // ═══ AI SUMMARY (compact) ═══
   if(aiData && aiData.overallSummary) {
     checkPage(20);
-    doc.setFillColor(10,22,40); doc.roundedRect(M, y, CW, 18, 2, 2, 'F');
+    doc.setFillColor(10,22,40); doc.roundedRect(M, y, CW, 18,2, 2, 'F');
     doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(240,192,64);
     doc.text('AI CAREER INTELLIGENCE', M+4, y+5);
     doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(192,216,240);
     var sl = doc.splitTextToSize(aiData.overallSummary, CW-8);
-    doc.text(sl.slice(0,3), M+4, y+9);
+    doc.text(sl.slice(0, 3), M+4, y+9);
     y += 21;
   }
 
@@ -3019,8 +3011,8 @@ function printReport() {
   doc.text('Sector', W-M-18, y+3.5);
   y += 6;
 
-  var topCareers = careers.filter(function(c){return c.matchPct >= 50;}).slice(0,25);
-  if(topCareers.length < 5) topCareers = careers.slice(0,10);
+  var topCareers = careers.filter(function(c){return c.matchPct >= 50;}).slice(0, 25);
+  if(topCareers.length < 5) topCareers = careers.slice(0, 10);
 
   var aiMap = {};
   if(aiData && aiData.insights) aiData.insights.forEach(function(i){ aiMap[i.career] = i; });
@@ -3043,17 +3035,17 @@ function printReport() {
     doc.text(cr.matchPct+'%', M+7, y+3.5);
 
     doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(dk[0],dk[1],dk[2]);
-    doc.text(cr.career.title.substring(0,40), M+22, y+3.5);
+    doc.text(cr.career.title.substring(0, 40), M+22, y+3.5);
 
     doc.setFont('helvetica','normal'); doc.setFontSize(6); doc.setTextColor(sub[0],sub[1],sub[2]);
-    doc.text((cr.career.salary||'').substring(0,18), W-M-40, y+3.5);
-    doc.text((cr.career.sector||'').substring(0,14), W-M-18, y+3.5);
+    doc.text((cr.career.salary||'').substring(0, 18), W-M-40, y+3.5);
+    doc.text((cr.career.sector||'').substring(0, 14), W-M-18, y+3.5);
 
     // AI one-liner if available
     if(ai && ai.whyYouFit) {
       doc.setFont('helvetica','italic'); doc.setFontSize(5.5); doc.setTextColor(90,112,144);
       var fitLine = doc.splitTextToSize(ai.whyYouFit, CW-26);
-      doc.text(fitLine.slice(0,1), M+22, y+7.5);
+      doc.text(fitLine.slice(0, 1), M+22, y+7.5);
       if(ai.timeframe) {
         doc.setFont('helvetica','bold'); doc.setFontSize(5.5); doc.setTextColor(gold[0],gold[1],gold[2]);
         doc.text('Timeline: ' + ai.timeframe, M+22, y+10);
@@ -3075,7 +3067,7 @@ function printReport() {
       checkPage(6);
       doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(dk[0],dk[1],dk[2]);
       var lines = doc.splitTextToSize((i+1)+'. '+a, CW-4);
-      doc.text(lines.slice(0,2), M+2, y);
+      doc.text(lines.slice(0, 2), M+2, y);
       y += lines.length * 3.2 + 1.5;
     });
   }
@@ -3097,7 +3089,7 @@ function printReport() {
 function saveResults() {
   if(!window._pfResults) return;
   try {
-    var topCareers = window._pfResults.careers.slice(0,15).map(function(r){
+    var topCareers = window._pfResults.careers.slice(0, 15).map(function(r){
       return { title: r.career.title, name: r.career.title, match: r.matchPct, matchPct: r.matchPct, salary: r.career.salary, sector: r.career.sector };
     });
     var data = {
@@ -3106,7 +3098,7 @@ function saveResults() {
       date: Date.now(),
       userName: window._pfResults.userName,
       scores: window._pfResults.scores,
-      careers: window._pfResults.careers ? window._pfResults.careers.slice(0,30).map(function(r){ return {career:r.career, matchPct:r.matchPct}; }) : [],
+      careers: window._pfResults.careers ? window._pfResults.careers.slice(0, 30).map(function(r){ return {career:r.career, matchPct:r.matchPct}; }) : [],
       aiData: window._pfResults.aiData || null,
       topCareers: topCareers,
       results: topCareers,

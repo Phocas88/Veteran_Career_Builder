@@ -1,5 +1,5 @@
-/* VCP App Data v1.0 — Extracted from app.html for maintainability */
-/* VCP Data Constants — loaded before Babel transforms */
+/* VCP App Data v1.0, Extracted from app.html for maintainability */
+/* VCP Data Constants, loaded before Babel transforms */
 var MIL_JARGON = {
   "NCOIC":"Team Supervisor / Operations Lead",
   "OIC":"Department Manager / Program Lead",
@@ -494,21 +494,21 @@ var BRANCH_QUALS = {
     label: "Space Force Specialty Codes (SFSC)",
     items: [
       // Space Operations
-      { code:"1C6X1", desc:"Space Systems Operations — Missile Warning" },
-      { code:"1C6X2", desc:"Space Systems Operations — Space Control" },
-      { code:"1C6X3", desc:"Space Systems Operations — Satellite" },
-      { code:"1C6X4", desc:"Space Systems Operations — Space Electronic Warfare" },
-      { code:"13SXA", desc:"Space Operations Officer — Orbital Warfare" },
-      { code:"13SXB", desc:"Space Operations Officer — Space Domain Awareness" },
-      { code:"13SXC", desc:"Space Operations Officer — Missile Warning" },
-      { code:"13SXD", desc:"Space Operations Officer — Command & Control" },
+      { code:"1C6X1", desc:"Space Systems Operations, Missile Warning" },
+      { code:"1C6X2", desc:"Space Systems Operations, Space Control" },
+      { code:"1C6X3", desc:"Space Systems Operations, Satellite" },
+      { code:"1C6X4", desc:"Space Systems Operations, Space Electronic Warfare" },
+      { code:"13SXA", desc:"Space Operations Officer, Orbital Warfare" },
+      { code:"13SXB", desc:"Space Operations Officer, Space Domain Awareness" },
+      { code:"13SXC", desc:"Space Operations Officer, Missile Warning" },
+      { code:"13SXD", desc:"Space Operations Officer, Command & Control" },
       // Cyber & Intelligence
       { code:"17SX", desc:"Cyberspace Officer" },
       { code:"14NX", desc:"Intelligence Officer" },
       { code:"1N0XX", desc:"Operations Intelligence Analyst" },
       { code:"1N4XX", desc:"Fusion Analyst" },
       // Engineering & Systems
-      { code:"61AX", desc:"Science and Engineering — Research Scientist" },
+      { code:"61AX", desc:"Science and Engineering, Research Scientist" },
       { code:"62EX", desc:"Developmental Engineer" },
       { code:"63AX", desc:"Acquisition Manager" },
       { code:"21AX", desc:"Test and Evaluation" },
@@ -532,7 +532,7 @@ var BRANCH_QUALS = {
     items: [
       // Law Enforcement & Security
       { code:"ME", desc:"Maritime Enforcement Specialist" },
-      { code:"MEI", desc:"Maritime Enforcement Specialist — Investigator" },
+      { code:"MEI", desc:"Maritime Enforcement Specialist, Investigator" },
       { code:"PS", desc:"Port Security Specialist" },
       { code:"BT-M", desc:"Boarding Team Member" },
       { code:"BTO", desc:"Boarding Team Officer" },
@@ -625,16 +625,16 @@ var UNIVERSITIES = [
 ];
 var RESUME_FORMATS = [
   {id:"ats_chrono",label:"ATS Chronological",badge:"Most Common",desc:"Reverse-order work history, keyword-optimized for applicant tracking systems. Best for most online applications. Recommended for 90% of veteran transitions."},
-  {id:"ats_combo",label:"ATS Combination",badge:"Veterans Recommended",desc:"Opens with a skills summary block, then reverse-chronological experience. Ideal for veterans with diverse roles or pivoting careers — shows what you can do before where you did it."},
+  {id:"ats_combo",label:"ATS Combination",badge:"Veterans Recommended",desc:"Opens with a skills summary block, then reverse-chronological experience. Ideal for veterans with diverse roles or pivoting careers, shows what you can do before where you did it."},
   {id:"functional",label:"Functional (Skills-First)",badge:"Career Changers",desc:"Groups experience by skill category rather than timeline. Best if you have an employment gap, significant career pivot (e.g. infantry → healthcare), or want to downplay time between jobs."},
-  {id:"federal",label:"Federal / USAJobs",badge:"Gov Jobs",desc:"Detailed OPM-compliant format required for federal government jobs on USAJOBS. Much longer than a standard resume — includes hours/week, supervisor info, and detailed KSAs. Required for GS positions."},
+  {id:"federal",label:"Federal / USAJobs",badge:"Gov Jobs",desc:"Detailed OPM-compliant format required for federal government jobs on USAJOBS. Much longer than a standard resume, includes hours/week, supervisor info, and detailed KSAs. Required for GS positions."},
   {id:"executive",label:"Executive",badge:"O-5+ & Senior NCOs",desc:"Leadership-focused. Opens with an executive summary, core competencies grid, and career highlights. Best for O-5+ and senior NCOs targeting management and director-level civilian roles."},
   {id:"traditional",label:"Traditional",badge:"Conservative Industries",desc:"Clean, conservative single-column. Best for law enforcement, government, legal, finance, and formal industries where simple clarity signals professionalism."},
   {id:"modern",label:"Modern Professional",badge:"Corporate & Tech",desc:"Clean contemporary layout with subtle visual hierarchy. Great for corporate, tech, and private-sector roles where first impressions matter."},
-  {id:"harvard",label:"Harvard Style",badge:"Academic & Professional",desc:"Single-column, clean, highly credible. Conservative and polished — the same format used by Harvard MBA graduates. Strong for consulting, law, policy, and professional roles."},
+  {id:"harvard",label:"Harvard Style",badge:"Academic & Professional",desc:"Single-column, clean, highly credible. Conservative and polished, the same format used by Harvard MBA graduates. Strong for consulting, law, policy, and professional roles."},
   {id:"wharton",label:"Wharton / MBA Style",badge:"Business Leadership",desc:"Achievement-heavy, results-driven with sharp formatting. Education listed first. Ideal for MBA programs, business leadership, and corporate strategy roles."},
   {id:"minimalist",label:"Minimalist",badge:"Standout Clarity",desc:"Maximum white space, simple typography. Easy to scan in under 10 seconds. Great when you want your content to speak without competition from formatting."},
-  {id:"creative",label:"Creative",badge:"Design & Media",desc:"Visual layout for design, media, branding, and creative industries. Not recommended for most veteran-to-civilian transitions — choose ATS formats for most corporate roles."},
+  {id:"creative",label:"Creative",badge:"Design & Media",desc:"Visual layout for design, media, branding, and creative industries. Not recommended for most veteran-to-civilian transitions, choose ATS formats for most corporate roles."},
 ];
 var MOS_DATA = {
   // ── ARMY ──────────────────────────────────────────────────────────────────

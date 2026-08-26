@@ -1466,7 +1466,7 @@ function App() {
   // ACCESS_CODES, isCodeValid, checkAccess defined at module level (see below component)
   // They are referenced here as module-level vars so useState initializer can call them
   const [hasAccess, setHasAccess] = useState(() => checkAccess());
-  const [showPaywall, setShowPaywall] = useState(() => !checkAccess());
+  const [showPaywall, setShowPaywall] = useState(false);
   const [pwPlan, setPwPlan] = useState("monthly");
   const [pwCode, setPwCode] = useState("");
   const [pwCodeStatus, setPwCodeStatus] = useState("idle");
@@ -1570,6 +1570,23 @@ function App() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    const openAccountRoute = () => {
+      const hash = (window.location.hash || "").toLowerCase();
+      if (hash !== "#profile" && hash !== "#account" && hash !== "#login") return;
+      setShowPaywall(false);
+      setAuthMode("login");
+      if (currentUser) {
+        setTab(5);
+      } else {
+        setShowAuth(true);
+      }
+    };
+    openAccountRoute();
+    window.addEventListener("hashchange", openAccountRoute);
+    return () => window.removeEventListener("hashchange", openAccountRoute);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!fbAuth) return;

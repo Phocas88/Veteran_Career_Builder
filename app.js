@@ -1690,7 +1690,8 @@ function App() {
     try { localStorage.removeItem("vcb_profile"); localStorage.removeItem("vcb_access"); } catch(e) {}
     // Reset form fields
     setPersonal({ name:"", email:"", phone:"", location:"", linkedin:"" });
-    setExperiences([newMilExp()]);
+    setMilExperiences([newMilExp()]);
+    setCivExperiences([]);
     setEducation([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
     setSkills({ technical:"", leadership:"", languages:"", certs:"" });
   };
@@ -5331,5 +5332,18 @@ Return this exact JSON structure:
     </>
   );
 }
-    ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
-    hideLoading();
+try {
+  const rootEl = document.getElementById("root");
+  if (!rootEl) throw new Error("App root element is missing.");
+  if (!window.React || !window.ReactDOM || !ReactDOM.createRoot) {
+    throw new Error("Required React runtime did not load.");
+  }
+  ReactDOM.createRoot(rootEl).render(React.createElement(App));
+  hideLoading();
+} catch (error) {
+  console.error("Veteran Career Path app failed to start:", error);
+  const loadingEl = document.getElementById("loading");
+  if (loadingEl) {
+    loadingEl.innerHTML = '<div style="padding:2rem;max-width:640px;text-align:left;"><h2 style="color:#f0c040;font-family:Georgia,serif;margin:0 0 .75rem;">App failed to load</h2><p style="color:#fff;line-height:1.6;margin:.25rem 0 1rem;">Refresh the page. If this message stays, contact support and include the error below.</p><div style="background:rgba(255,100,100,.15);border:1px solid rgba(255,100,100,.4);border-radius:4px;padding:.85rem;color:#ffc0c0;font-size:.85rem;font-family:monospace;word-break:break-word;">' + (error && error.message ? error.message : String(error)) + '</div></div>';
+  }
+}

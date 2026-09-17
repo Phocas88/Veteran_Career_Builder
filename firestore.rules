@@ -1,0 +1,44 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Admin is identified by a custom claim set via the Admin SDK.
+    // See scripts/set-admin-claim.mjs to grant it.
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    // User profiles + all subcollections (resumes, coverLetters, emails, scores).
+    // Only the authenticated owner can read/write their own data.
+    match /profiles/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /{subcollection}/{docId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Email capture / lead gen. Anonymous visitors may submit (the signup gate runs
+    // before login), but only an admin may read, edit, or delete the subscriber list.
+    match /email_subscribers/{doc} {
+      allow create: if request.resource.data.email is string
+                    && request.resource.data.email.size() > 0
+                    && request.resource.data.email.size() <= 254;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Legacy community collections. Currently unused by the app; previously they were
+    // world-readable AND world-writable (create: if true), which allowed anonymous
+    // stored-content injection and cost abuse. Locked to admin only. If a public
+    // submission feature is built later, loosen deliberately with an ownerId model:
+    //   allow create: if request.auth != null
+    //                 && request.resource.data.ownerId == request.auth.uid && <field validation>;
+    //   allow update, delete: if isAdmin()
+    //                 || (request.auth != null && resource.data.ownerId == request.auth.uid);
+    match /stories/{docId}        { allow read, write: if isAdmin(); }
+    match /successStories/{docId} { allow read, write: if isAdmin(); }
+    match /salaries/{docId}       { allow read, write: if isAdmin(); }
+    match /salaryData/{docId}     { allow read, write: if isAdmin(); }
+  }
+}

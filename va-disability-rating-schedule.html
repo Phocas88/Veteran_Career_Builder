@@ -1367,7 +1367,7 @@ body.menu-open{overflow:hidden!important;}
     <div class="calc-body">
       <div class="alert aw" style="margin-top:0">
         <strong>2026 VA Compensation Rates</strong>
-        Based on the actual VA pay tables effective December 1, 2025. Includes all dependent categories per 38 CFR 3.4. Uses VA combined rating math (whole-person theory).
+        Based on VA pay tables effective December 1, 2024. A 2025 (Dec 1, 2025) refresh is pending — verify the current amount for your situation at va.gov. Includes all dependent categories per 38 CFR 3.4. Uses VA combined rating math (whole-person theory).
       </div>
 
       <p style="font-size:.84rem;color:var(--sl);margin-bottom:1rem;">Add your service-connected conditions with ratings, then enter dependent information for an accurate monthly compensation estimate.</p>
@@ -2660,7 +2660,7 @@ function toggleSec(btn) {
     <div class="calc-hd"><h2>💰 2026 Monthly Compensation Rates</h2></div>
     <div class="calc-body">
       <div class="alert ai" style="margin-top:0">
-        <strong>2026 COLA, Effective December 1, 2025</strong>
+        <strong>Amounts effective December 1, 2024 — verify current rates at va.gov</strong>
         Rates increased 2.5%. Rates at 10–20% are the same regardless of dependents. Dependent rates begin at 30%.
       </div>
       <div class="tbl-wrap"><table class="pay-tbl">
@@ -2864,7 +2864,9 @@ function calcComp() {
   });
   var exactCombined = 100 - remaining;
   var combined = Math.round(exactCombined);
-  var rounded = Math.round(combined / 10) * 10;
+  // VA rounds the EXACT combined value to the nearest 10% in a single step.
+  // (Rounding to an integer first, then to 10s, double-rounds, e.g. 64.5 -> 65 -> 70 instead of 60.)
+  var rounded = Math.round(exactCombined / 10) * 10;
   var capped = Math.min(rounded, 100);
 
   // Dependents
@@ -3086,7 +3088,7 @@ function exportPDF() {
   depDetails.forEach(function(d) { html += '<li>' + d + '</li>'; });
   html += '</ul>';
 
-  html += '<div class="disclaimer"><strong>Disclaimer:</strong> This is an estimate only. Official ratings are determined by the VA. Compensation amounts are based on 2026 VA pay tables (effective Dec 1, 2025). Does not include SMC, TDIU, or ancillary benefits. Consult a VSO or accredited claims agent for your specific situation.</div>';
+  html += '<div class="disclaimer"><strong>Disclaimer:</strong> This is an estimate only. Official ratings are determined by the VA. Compensation amounts are based on VA pay tables effective Dec 1, 2024 (a Dec 1, 2025 refresh is pending); verify current amounts at va.gov. Does not include SMC, TDIU, or ancillary benefits. Consult a VSO or accredited claims agent for your specific situation.</div>';
   html += '<div class="footer">Veteran Career Path | veterancareerpath.com</div>';
   html += '<scr' + 'ipt defer src="/vcp-scout.js"><\/scr' + 'ipt>\n<scr' + 'ipt defer src="/vcp-errors.js"><\/scr' + 'ipt>\n</body></html>';
 

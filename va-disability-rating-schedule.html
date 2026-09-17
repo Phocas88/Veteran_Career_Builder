@@ -1367,7 +1367,7 @@ body.menu-open{overflow:hidden!important;}
     <div class="calc-body">
       <div class="alert aw" style="margin-top:0">
         <strong>2026 VA Compensation Rates</strong>
-        Based on VA pay tables effective December 1, 2024. A 2025 (Dec 1, 2025) refresh is pending — verify the current amount for your situation at va.gov. Includes all dependent categories per 38 CFR 3.4. Uses VA combined rating math (whole-person theory).
+        Based on the actual VA pay tables effective December 1, 2025 (2026 COLA). Includes all dependent categories per 38 CFR 3.4. Verify your specific amount at va.gov. Includes all dependent categories per 38 CFR 3.4. Uses VA combined rating math (whole-person theory).
       </div>
 
       <p style="font-size:.84rem;color:var(--sl);margin-bottom:1rem;">Add your service-connected conditions with ratings, then enter dependent information for an accurate monthly compensation estimate.</p>
@@ -2660,7 +2660,7 @@ function toggleSec(btn) {
     <div class="calc-hd"><h2>💰 2026 Monthly Compensation Rates</h2></div>
     <div class="calc-body">
       <div class="alert ai" style="margin-top:0">
-        <strong>Amounts effective December 1, 2024 — verify current rates at va.gov</strong>
+        <strong>2026 COLA, Effective December 1, 2025</strong>
         Rates increased 2.5%. Rates at 10–20% are the same regardless of dependents. Dependent rates begin at 30%.
       </div>
       <div class="tbl-wrap"><table class="pay-tbl">
@@ -2837,10 +2837,10 @@ document.getElementById('dMarital').addEventListener('change', function(){
 });
 
 // 2026 RATE TABLES
-var RATES = {"10": {"alone": 175.51, "spouse": 175.51, "child": 175.51, "spouse_child": 175.51, "spouse_aa": 175.51, "spouse_aa_child": 175.51}, "20": {"alone": 346.95, "spouse": 346.95, "child": 346.95, "spouse_child": 346.95, "spouse_aa": 346.95, "spouse_aa_child": 346.95}, "30": {"alone": 537.42, "spouse": 601.74, "child": 571.57, "spouse_child": 638.46, "spouse_aa": 663.28, "spouse_aa_child": 700.0}, "40": {"alone": 774.16, "spouse": 856.5, "child": 814.92, "spouse_child": 905.72, "spouse_aa": 942.1, "spouse_aa_child": 991.32}, "50": {"alone": 1102.04, "spouse": 1214.03, "child": 1154.19, "spouse_child": 1277.96, "spouse_aa": 1331.37, "spouse_aa_child": 1395.3}, "60": {"alone": 1395.93, "spouse": 1530.23, "child": 1451.91, "spouse_child": 1607.66, "spouse_aa": 1686.0, "spouse_aa_child": 1763.52}, "70": {"alone": 1759.19, "spouse": 1924.0, "child": 1820.31, "spouse_child": 2015.93, "spouse_aa": 2080.68, "spouse_aa_child": 2172.62}, "80": {"alone": 2044.89, "spouse": 2230.7, "child": 2110.33, "spouse_child": 2336.13, "spouse_aa": 2406.98, "spouse_aa_child": 2512.41}, "90": {"alone": 2297.96, "spouse": 2504.77, "child": 2366.97, "spouse_child": 2623.7, "spouse_aa": 2703.71, "spouse_aa_child": 2822.44}, "100": {"alone": 3831.3, "spouse": 4046.25, "child": 3992.96, "spouse_child": 4186.35, "spouse_aa": 4290.8, "spouse_aa_child": 4430.9}};
-var CHILD_U18 = 32.51;
-var CHILD_SCH  = 105.33;
-var PARENT_ADD = {"10": 0, "20": 0, "30": 35.96, "40": 47.93, "50": 60.78, "60": 73.64, "70": 86.5, "80": 99.35, "90": 112.21, "100": 124.87};
+var RATES = {"10": {"alone": 180.42, "spouse": 180.42, "child": 180.42, "spouse_child": 180.42, "spouse_aa": 180.42, "spouse_aa_child": 180.42}, "20": {"alone": 356.66, "spouse": 356.66, "child": 356.66, "spouse_child": 356.66, "spouse_aa": 356.66, "spouse_aa_child": 356.66}, "30": {"alone": 552.47, "spouse": 618.59, "child": 587.57, "spouse_child": 656.34, "spouse_aa": 681.85, "spouse_aa_child": 719.6}, "40": {"alone": 795.84, "spouse": 880.48, "child": 837.74, "spouse_child": 931.08, "spouse_aa": 968.48, "spouse_aa_child": 1019.08}, "50": {"alone": 1132.9, "spouse": 1248.02, "child": 1186.51, "spouse_child": 1313.74, "spouse_aa": 1368.65, "spouse_aa_child": 1434.37}, "60": {"alone": 1435.02, "spouse": 1573.08, "child": 1492.56, "spouse_child": 1652.67, "spouse_aa": 1733.21, "spouse_aa_child": 1812.9}, "70": {"alone": 1808.45, "spouse": 1977.87, "child": 1871.28, "spouse_child": 2072.38, "spouse_aa": 2138.94, "spouse_aa_child": 2233.45}, "80": {"alone": 2102.15, "spouse": 2293.16, "child": 2169.42, "spouse_child": 2401.54, "spouse_aa": 2474.38, "spouse_aa_child": 2582.76}, "90": {"alone": 2362.3, "spouse": 2574.9, "child": 2433.25, "spouse_child": 2697.16, "spouse_aa": 2779.41, "spouse_aa_child": 2901.47}, "100": {"alone": 3938.58, "spouse": 4159.55, "child": 4104.76, "spouse_child": 4303.57, "spouse_aa": 4410.94, "spouse_aa_child": 4554.97}};
+var CHILD_U18 = 33.42;
+var CHILD_SCH  = 108.28;
+var PARENT_ADD = {"10": 0.0, "20": 0.0, "30": 36.97, "40": 49.27, "50": 62.48, "60": 75.7, "70": 88.92, "80": 102.13, "90": 115.35, "100": 128.37};
 
 function calcComp() {
   if (conditionsList.length === 0) { alert('Add at least one condition.'); return; }
@@ -3088,7 +3088,7 @@ function exportPDF() {
   depDetails.forEach(function(d) { html += '<li>' + d + '</li>'; });
   html += '</ul>';
 
-  html += '<div class="disclaimer"><strong>Disclaimer:</strong> This is an estimate only. Official ratings are determined by the VA. Compensation amounts are based on VA pay tables effective Dec 1, 2024 (a Dec 1, 2025 refresh is pending); verify current amounts at va.gov. Does not include SMC, TDIU, or ancillary benefits. Consult a VSO or accredited claims agent for your specific situation.</div>';
+  html += '<div class="disclaimer"><strong>Disclaimer:</strong> This is an estimate only. Official ratings are determined by the VA. Compensation amounts are based on 2026 VA pay tables (effective Dec 1, 2025); verify current amounts at va.gov. Does not include SMC, TDIU, or ancillary benefits. Consult a VSO or accredited claims agent for your specific situation.</div>';
   html += '<div class="footer">Veteran Career Path | veterancareerpath.com</div>';
   html += '<scr' + 'ipt defer src="/vcp-scout.js"><\/scr' + 'ipt>\n<scr' + 'ipt defer src="/vcp-errors.js"><\/scr' + 'ipt>\n</body></html>';
 

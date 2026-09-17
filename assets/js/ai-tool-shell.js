@@ -5,6 +5,14 @@
 
   var state = { authorized: false, initializing: false };
 
+  var AI_DISCLAIMER = '<div style="margin-top:1.1rem;padding:.65rem .85rem;font-size:.72rem;line-height:1.55;' +
+    'color:#8aa0b8;border-top:1px solid rgba(255,255,255,.12);">' +
+    '<strong style="color:#c9a84c;">AI-generated — verify before you rely on it.</strong> ' +
+    'This output was produced by AI and may be incomplete or inaccurate. Confirm any names, dates, ' +
+    'salary figures, benefit amounts, eligibility rules, and deadlines against official sources ' +
+    '(VA.gov, USAJOBS/OPM, the employer, or a qualified professional). It is not legal, financial, ' +
+    'medical, or tax advice.</div>';
+
   function escapeHtml(value) {
     return String(value || '')
       .replace(/&/g, '&amp;')
@@ -207,7 +215,9 @@
     var out = opts.result ? document.getElementById(opts.result) : null;
     var target = out && out.querySelector ? (out.querySelector('.result-text') || out) : out;
     var label = opts.btnLabel || (btn ? btn.innerHTML : '');
-    var maxTokens = opts.maxTokens || 1800;
+    // Proxy hard-caps max_tokens at 3000; cap here too so tools never request more
+    // than they can receive (avoids silently truncated / broken output).
+    var maxTokens = Math.min(opts.maxTokens || 1800, 3000);
 
     if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Generating...'; }
     if (out) out.style.display = 'block';
@@ -216,7 +226,7 @@
     try {
       var text = await window.VCBSecureApi.callClaude(prompt, system, maxTokens);
       if (!text) throw new Error('Empty response from AI service.');
-      if (target) target.innerHTML = renderMarkdown(text);
+      if (target) target.innerHTML = renderMarkdown(text) + AI_DISCLAIMER;
       return text;
     } catch (error) {
       renderError(target, error && error.message);

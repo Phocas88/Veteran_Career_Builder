@@ -1934,6 +1934,13 @@ async function analyzeJob() {
   if (!input) { alert('Please paste a job URL or job description.'); return; }
   if (!checkAccess()) { alert('This feature requires a subscription.'); return; }
 
+  // The AI cannot open URLs. If the user pasted only a link, ask for the text
+  // so we never fabricate an analysis of a posting we can't see.
+  if (/^https?:\/\/\S+$/i.test(input)) {
+    alert('This analyzer can\'t open links. Please open the job posting, copy the full job description text, and paste it here so the analysis is based on the real posting.');
+    return;
+  }
+
   var btn = document.getElementById('analyze-btn');
   var loading = document.getElementById('analyze-loading');
   var result = document.getElementById('analyze-result');
@@ -1950,9 +1957,9 @@ async function analyzeJob() {
     "=== JOB POSTING (URL or Description) ===\n" + input + "\n\n" +
     "Provide your analysis in this exact format:\n\n" +
     "### Job Summary\n" +
-    "- **Job Title:** [extract or infer]\n" +
-    "- **Company/Agency:** [extract or infer]\n" +
-    "- **Location:** [extract or infer]\n\n" +
+    "- **Job Title:** [extract from the description; if not stated, write 'not specified' — do not guess]\n" +
+    "- **Company/Agency:** [extract from the description; if not stated, write 'not specified' — do not guess]\n" +
+    "- **Location:** [extract from the description; if not stated, write 'not specified' — do not guess]\n\n" +
     "### Match Score: [0-100]/100\n" +
     "[One sentence explaining the score]\n\n" +
     "### Strengths (Why You're a Good Fit)\n" +
@@ -1968,7 +1975,7 @@ async function analyzeJob() {
     "3. [specific action]\n\n" +
     "### Resume Keywords to Include\n" +
     "- [keyword 1], [keyword 2], [keyword 3], etc.\n\n" +
-    "If you only received a URL and cannot access it, analyze based on the URL pattern (company, role type) and provide general guidance. Be specific and actionable.";
+    "IMPORTANT: Base your analysis ONLY on the job description text provided above. If the text is missing, too short, or is just a URL/link, DO NOT invent a job, company, score, or analysis. Instead reply only with: 'I can only analyze a job from its description text. Please paste the full posting body.' Never fabricate details. Be specific and actionable when real text is provided.";
 
   try {
     var text = await window.VCBSecureApi.callClaude(prompt, "", 1500);
@@ -1983,7 +1990,8 @@ async function analyzeJob() {
         '<div><div style="font-weight:700;font-size:1rem;color:#0d1f3c;">Match Score: ' + score + '/100</div>' +
         '<div style="font-size:.78rem;color:#5a6a7a;">' + (score >= 70 ? 'Strong match. Apply if the required qualifications fit.' : score >= 40 ? 'Moderate match. Address the gaps below.' : 'Low match. Significant gaps to address.') + '</div></div></div>';
     }
-    result.innerHTML = scoreHtml + '<div class="md-output">' + renderMarkdown(text) + '</div>';
+    result.innerHTML = scoreHtml + '<div class="md-output">' + renderMarkdown(text) + '</div>' +
+      '<div style="margin-top:1rem;padding:.6rem .8rem;font-size:.72rem;line-height:1.5;color:#5a6a7a;border-top:1px solid #dde3ec;"><strong>AI-generated — verify before relying on it.</strong> The match score and analysis are AI estimates based only on the text you pasted. Confirm the job\'s requirements, qualifications, and deadlines on the official posting before applying. Not legal, financial, or career-outcome advice.</div>';
     result.style.display = 'block';
   } catch (err) {
     result.innerHTML = '<div style="color:#c33;font-size:.85rem;padding:.75rem;">Error: ' + (err.message || 'AI request failed') + '. Please try again.</div>';

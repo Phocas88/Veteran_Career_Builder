@@ -3562,7 +3562,7 @@ window.generateResume = function() {
   // Build prompt
   var prompt = buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis);
 
-  window.VCBSecureApi.callClaude(prompt, '', 4000)
+  window.VCBSecureApi.callClaude(prompt, '', 3000)
   .then(function(text) { return { content: [{ text: text || '' }] }; })
   .then(function(data) {
     clearInterval(loadingInterval);
@@ -3618,6 +3618,7 @@ window.generateResume = function() {
 
 function buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis) {
   var prompt = 'You are an expert resume writer specializing in military-to-civilian career transitions. Generate a professional, ATS-friendly resume based on the following information.\n\n';
+  prompt += 'CRITICAL: Use ONLY the facts, roles, dates, and achievements the candidate provided. Never invent employers, job titles, dates, certifications, or quantified metrics (numbers, percentages, dollar amounts). Rephrase and translate military experience into civilian terms, but do not fabricate accomplishments. If a metric was not provided, describe the achievement without a made-up number.\n\n';
 
   prompt += 'PERSONAL INFO:\n';
   prompt += 'Name: ' + p.name + '\n';

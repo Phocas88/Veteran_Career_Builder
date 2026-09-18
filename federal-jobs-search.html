@@ -1638,10 +1638,12 @@ function getSearchParams(){
   };
 }
 
+function clearanceKW(p){ return p.clearance==='ts' ? 'top secret clearance' : (p.clearance==='secret' ? 'security clearance' : ''); }
 function buildUSAJobsURL(p) {
   var base = 'https://www.usajobs.gov/Search/Results';
   var params = [];
   var kw = p.keyword || '';
+  var cl = clearanceKW(p); if(cl) kw = (kw ? kw + ' ' : '') + cl;
   if(p.grade) kw = (kw ? kw + ' ' : '') + 'GS-' + p.grade;
   if(kw) params.push('k=' + encodeURIComponent(kw));
   if(p.location) params.push('l=' + encodeURIComponent(p.location));
@@ -1651,7 +1653,7 @@ function buildUSAJobsURL(p) {
 }
 
 function buildIndeedURL(p) {
-  var q = (p.keyword ? p.keyword + ' ' : '') + 'veteran';
+  var q = (p.keyword ? p.keyword + ' ' : '') + (clearanceKW(p) ? clearanceKW(p) + ' ' : '') + 'veteran';
   var base = 'https://www.indeed.com/jobs';
   var params = ['q=' + encodeURIComponent(q)];
   if(p.location) params.push('l=' + encodeURIComponent(p.location));
@@ -1661,7 +1663,7 @@ function buildIndeedURL(p) {
 }
 
 function buildLinkedInURL(p) {
-  var q = (p.keyword ? p.keyword + ' ' : '') + 'veteran';
+  var q = (p.keyword ? p.keyword + ' ' : '') + (clearanceKW(p) ? clearanceKW(p) + ' ' : '') + 'veteran';
   var base = 'https://www.linkedin.com/jobs/search/';
   var params = ['keywords=' + encodeURIComponent(q)];
   if(p.location) params.push('location=' + encodeURIComponent(p.location));
@@ -1681,7 +1683,7 @@ function buildClearanceJobsURL(p) {
 }
 
 function buildGoogleJobsURL(p) {
-  var q = (p.keyword ? p.keyword + ' ' : '') + 'veteran jobs';
+  var q = (p.keyword ? p.keyword + ' ' : '') + (clearanceKW(p) ? clearanceKW(p) + ' ' : '') + 'veteran jobs';
   if(p.location) q += ' ' + p.location;
   if(p.remote) q += ' remote';
   return 'https://www.google.com/search?q=' + encodeURIComponent(q) + '&ibp=htl;jobs';

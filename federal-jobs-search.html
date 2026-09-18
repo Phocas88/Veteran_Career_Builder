@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Federal Jobs for Veterans 2026 | Search USAJobs by MOS</title>
-<meta name="description" content="Search federal job openings matched to your military background. Filter by MOS, location, clearance, and veterans preference. Live USAJobs listings.">
+<meta name="description" content="Search federal job openings matched to your military background. Filter by MOS, location, clearance, and veterans preference.">
 <link rel="canonical" href="https://veterancareerpath.com/federal-jobs-search.html">
 <link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/logo.png">
 <link rel="manifest" href="/manifest.json">
@@ -1193,7 +1193,7 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
 </style>
 <link rel="stylesheet" href="/vcp-styles.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","name":"Federal Jobs for Veterans 2026 | Search USAJobs by MOS","description":"Search federal job openings matched to your military background. Filter by MOS, location, clearance, and veterans preference. Live USAJobs listings.","url":"https://veterancareerpath.com/federal-jobs-search.html","datePublished":"2026-03-15","dateModified":"2026-04-24","author":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com"},"publisher":{"@type":"Organization","name":"Veteran Career Path","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}}}
+{"@context":"https://schema.org","@type":"Article","name":"Federal Jobs for Veterans 2026 | Search USAJobs by MOS","description":"Search federal job openings matched to your military background. Filter by MOS, location, clearance, and veterans preference.","url":"https://veterancareerpath.com/federal-jobs-search.html","datePublished":"2026-03-15","dateModified":"2026-04-24","author":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com"},"publisher":{"@type":"Organization","name":"Veteran Career Path","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/logo.png"}}}
 </script>
   <link rel="stylesheet" href="/assets/css/ai-tools.css">
 </head>
@@ -1261,8 +1261,8 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
     </div>
     <div class="search-grid">
       <div class="field">
-        <label>Job Title / Keywords</label>
-        <input type="text" id="s-keyword" placeholder="e.g. logistics, intelligence analyst, nurse, IT">
+        <label>Your MOS or Job Title / Keywords</label>
+        <input type="text" id="s-keyword" placeholder="e.g. 11B, 68W, 3D0X2, or a title like logistics or nurse">
       </div>
       <div class="field">
         <label>Location / State</label>
@@ -1298,7 +1298,7 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
       </label>
     </div>
 
-    <button onclick="var p=getSearchParams();fetchLiveResults(p);fetchUSAJobsAPI(p);" style="width:100%;padding:.75rem;background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;margin-bottom:1rem;letter-spacing:.02em;">🔍 Search All 6 Platforms + Live Federal Jobs</button>
+    <button onclick="var p=getSearchParams();fetchLiveResults(p);" style="width:100%;padding:.75rem;background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;margin-bottom:1rem;letter-spacing:.02em;">🔍 Search All 6 Platforms</button>
 
     <div class="platform-grid" id="platform-buttons">
       <!-- USAJobs -->
@@ -1360,7 +1360,7 @@ html,body{overflow-x:hidden;font-family:'Inter',sans-serif;background:#f0f4fa;co
 
     <!-- ── LIVE RESULTS FEED ── -->
     <div id="live-results" style="display:none;margin-top:1.5rem;">
-      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.05em;color:#1a3a6b;margin-bottom:.75rem;">📋 Live Job Listings</h3>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.05em;color:#1a3a6b;margin-bottom:.75rem;">🔎 Search These Job Boards</h3>
       <div id="live-results-list"></div>
     </div>
   </div>
@@ -1612,9 +1612,24 @@ function initAnalyzer(){
 /* ══════════════════════════════════════════════════════════════════════════
    MULTI-PLATFORM SEARCH URLS
 ══════════════════════════════════════════════════════════════════════════ */
+var MOS_KEYWORDS = {
+  "11A":"operations manager security team leader","11B":"security operations logistics team leader","11C":"operations coordinator logistics","13B":"operations logistics coordinator","15T":"aircraft mechanic aviation maintenance","15U":"aviation maintenance helicopter mechanic","25B":"IT support network administrator systems","25U":"communications technician IT support","27D":"paralegal legal assistant","31B":"police officer security law enforcement","35F":"intelligence analyst security analyst","35N":"signals intelligence analyst cyber","42A":"human resources administrative HR specialist","68C":"licensed practical nurse LPN healthcare","68W":"EMT paramedic medical technician healthcare","74D":"safety environmental health specialist","88M":"truck driver CDL logistics fleet","88N":"logistics transportation coordinator dispatcher","91B":"diesel mechanic automotive technician maintenance","91C":"utilities technician plumber HVAC","92A":"supply chain logistics inventory warehouse","92F":"fuel operations logistics","92Y":"supply chain warehouse inventory logistics","94E":"electronics technician repair","12B":"construction project engineer heavy equipment","12N":"heavy equipment operator construction","12P":"electrician power plant operations",
+  "0311":"security operations team leader","0331":"security operations","0341":"operations coordinator logistics","0621":"communications technician IT","0651":"IT cybersecurity network administrator","1371":"construction combat engineer heavy equipment","3043":"supply chain logistics inventory","3531":"truck driver CDL logistics","5811":"law enforcement security police officer","6042":"aviation maintenance aircraft mechanic",
+  "1N0X1":"intelligence analyst","1N4X1":"cyber intelligence analyst","2A3X3":"aircraft mechanic aviation maintenance","2T1X1":"transportation logistics dispatcher","3D0X2":"cybersecurity network administrator IT","3D1X1":"IT support network technician","3E0X1":"electrician electrical technician","3E1X1":"HVAC technician facilities","3E7X1":"firefighter emergency services","3P0X1":"security law enforcement police officer","4N0X1":"medical technician EMT healthcare","2S0X1":"supply chain logistics inventory"
+};
+function translateMOS(kw){
+  if(!kw) return null;
+  var code = kw.toUpperCase().replace(/\s+/g,'');
+  if(!/^[0-9][0-9A-Z]{1,5}$/.test(code)) return null;
+  if(MOS_KEYWORDS[code]) return { keywords: MOS_KEYWORDS[code], code: code };
+  return null;
+}
 function getSearchParams(){
+  var raw = (document.getElementById('s-keyword').value||'').trim();
+  var mos = translateMOS(raw);
   return {
-    keyword: (document.getElementById('s-keyword').value||'').trim(),
+    keyword: mos ? mos.keywords : raw,
+    mosNote: mos ? mos.code : '',
     location: (document.getElementById('s-location').value||'').trim(),
     grade: document.getElementById('s-grade').value,
     clearance: document.getElementById('s-clear').value,
@@ -1626,12 +1641,10 @@ function getSearchParams(){
 function buildUSAJobsURL(p) {
   var base = 'https://www.usajobs.gov/Search/Results';
   var params = [];
-  if(p.keyword) params.push('k=' + encodeURIComponent(p.keyword));
+  var kw = p.keyword || '';
+  if(p.grade) kw = (kw ? kw + ' ' : '') + 'GS-' + p.grade;
+  if(kw) params.push('k=' + encodeURIComponent(kw));
   if(p.location) params.push('l=' + encodeURIComponent(p.location));
-  if(p.grade) {
-    var gradeMap = {'1':'1 to 2,3 to 4','5':'5 to 6,7','9':'9 to 10 to 11','12':'12 to 13','14':'14 to 15'};
-    if(gradeMap[p.grade]) params.push('gs=' + gradeMap[p.grade]);
-  }
   if(p.vetOnly) params.push('hp=veterans');
   if(p.remote) params.push('remoteIndicator=True');
   return base + (params.length ? '?' + params.join('&') : '');
@@ -1686,9 +1699,7 @@ function openPlatform(platform) {
     case 'google': url = buildGoogleJobsURL(p); break;
   }
   if(url) window.open(url, '_blank');
-  // Also fetch live results + USAJobs API
   fetchLiveResults(p);
-  fetchUSAJobsAPI(p);
   return false;
 }
 
@@ -1705,8 +1716,9 @@ function fetchLiveResults(p) {
   container.style.display = 'block';
   list.innerHTML = '<div style="text-align:center;padding:1.5rem;color:#5a7090;">Searching across platforms...</div>';
 
-  var keyword = p.keyword || 'veteran';
-  var location = p.location || '';
+  var esc = function(x){return String(x||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  var keyword = esc(p.keyword || 'veteran');
+  var location = esc(p.location || '');
 
   // Build results from all platform links
   var results = [];
@@ -1755,7 +1767,9 @@ function fetchLiveResults(p) {
     desc: 'Aggregated listings from thousands of sources'
   });
 
-  var html = '<div style="font-size:.82rem;color:#5a7090;margin-bottom:.75rem;">Your search for <strong>"' + keyword + '"</strong>' + (location ? ' near <strong>' + location + '</strong>' : '') + ', click any result to view on that platform:</div>';
+  var html = '';
+  if(p.mosNote) html += '<div style="background:#eaf3ff;border:1px solid #b8d4f0;border-radius:8px;padding:.6rem .85rem;margin-bottom:.75rem;font-size:.82rem;color:#1a3a6b;">\u{1F396}\uFE0F Interpreted <strong>' + esc(p.mosNote) + '</strong> as a military occupation, searching civilian roles: <strong>' + keyword + '</strong>. <a href="/mos-career-translator.html" style="color:#1a3a6b;text-decoration:underline;">Full MOS translator \u2192</a></div>';
+  html += '<div style="font-size:.82rem;color:#5a7090;margin-bottom:.75rem;">Your search for <strong>"' + keyword + '"</strong>' + (location ? ' near <strong>' + location + '</strong>' : '') + ', click any result to view on that platform:</div>';
   html += '<div style="display:grid;gap:.5rem;">';
   results.forEach(function(r) {
     html += '<a href="' + r.url + '" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.75rem;background:#fff;border:1.5px solid #dde3ec;border-radius:10px;padding:.75rem 1rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor=\'#1a3a6b\';this.style.boxShadow=\'0 2px 8px rgba(0,0,0,.08)\'" onmouseout="this.style.borderColor=\'#dde3ec\';this.style.boxShadow=\'none\'">';
@@ -1864,14 +1878,8 @@ function searchCategory(label, keywords) {
   document.getElementById('s-keyword').value = keywords;
   document.getElementById('s-keyword').scrollIntoView({behavior:'smooth',block:'center'});
 
-  // open all platforms with the category search after a brief delay
-  setTimeout(function(){
-    var p = getSearchParams();
-    p.keyword = keywords;
-    window.open(buildUSAJobsURL(p), '_blank');
-    window.open(buildIndeedURL(p), '_blank');
-    window.open(buildLinkedInURL(p), '_blank');
-  }, 300);
+  // Show the cross-platform search links instead of opening 3 tabs (popup-blocked)
+  fetchLiveResults(getSearchParams());
 }
 
 /* ══════════════════════════════════════════════════════════════════════════

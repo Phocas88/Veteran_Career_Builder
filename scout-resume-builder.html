@@ -81,7 +81,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);font-
   scrollbar-width:none;-ms-overflow-style:none;
 }
 .sp-labels::-webkit-scrollbar{display:none;}
-.sp-labels span{font-size:.58rem;color:rgba(192,216,240,.4);text-transform:uppercase;letter-spacing:.05em;font-weight:600;cursor:pointer;padding:.2rem .25rem;transition:color .15s;white-space:nowrap;flex-shrink:0;}
+.sp-labels span{font-size:.58rem;color:rgba(192,216,240,.62);text-transform:uppercase;letter-spacing:.05em;font-weight:600;cursor:pointer;padding:.2rem .25rem;transition:color .15s;white-space:nowrap;flex-shrink:0;}
 .sp-labels span:hover{color:rgba(192,216,240,.8);}
 .sp-labels span.active{color:var(--gold);}
 .sp-labels span.done{color:#4ade80;}
@@ -843,7 +843,7 @@ body.menu-open{overflow:hidden!important;}
   width:145px;transition:width .25s,border-color .2s;outline:none;
 }
 .vcp-search-input:focus{width:200px;border-color:rgba(240,192,64,.4);background:rgba(255,255,255,.1);}
-.vcp-search-input::placeholder{color:rgba(255,255,255,.28);}
+.vcp-search-input::placeholder{color:rgba(255,255,255,.55);}
 .vcp-search-icon{position:absolute;left:.6rem;color:rgba(255,255,255,.3);font-size:.75rem;pointer-events:none;}
 .vcp-search-results{
   position:fixed;top:56px;right:1rem;
@@ -859,7 +859,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-sr-title{font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.12rem;}
 .vcp-sr-snippet{font-size:.72rem;color:rgba(192,216,240,.5);line-height:1.4;}
 .vcp-sr-snippet em{color:rgba(240,192,64,.8);font-style:normal;font-weight:600;}
-.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.4);font-size:.82rem;text-align:center;}
+.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.62);font-size:.82rem;text-align:center;}
 
 /* ── HAMBURGER ── */
 .vcp-ham{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:.4rem;flex-shrink:0;align-self:center;margin-left:.25rem;}
@@ -908,7 +908,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-mega-section{margin-bottom:1rem;}
 .vcp-mega-section-label{
   font-size:.58rem;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:rgba(192,216,240,.3);
+  text-transform:uppercase;color:rgba(192,216,240,.6);
   margin-bottom:.35rem;margin-top:.6rem;
 }
 .vcp-mega-section-label:first-child{margin-top:0;}
@@ -1088,7 +1088,7 @@ body.menu-open{overflow:hidden!important;}
     <div class="vcp-search-results" id="vcp-sr"></div>
   </div>
 
-  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu">
+  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -1965,7 +1965,7 @@ body.menu-open{overflow:hidden!important;}
         <div class="sf-field sf-full" style="margin-bottom:.5rem;">
           <label class="sp-qual-label">Special Qualifiers (check all that apply)</label>
           <div class="sp-quals-wrap awards-checklist" style="max-height:160px;overflow-y:auto;">
-            <span style="font-size:.8rem;color:rgba(192,216,240,.4);">Select branch to see options</span>
+            <span style="font-size:.8rem;color:rgba(192,216,240,.62);">Select branch to see options</span>
           </div>
         </div>
 
@@ -2342,7 +2342,7 @@ body.menu-open{overflow:hidden!important;}
       <div id="verify-code-box" style="display:none;background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:8px;padding:.85rem 1rem;margin-top:.75rem;text-align:center;">
         <div style="font-size:.78rem;color:rgba(192,216,240,.6);margin-bottom:.25rem;">Your data is saved for 30 days. Subscribe later and your profile will auto-populate.</div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.15em;color:#f0c040;">Your Data Code: <span id="verify-code"></span></div>
-        <div style="font-size:.72rem;color:rgba(192,216,240,.4);margin-top:.2rem;">Save this code  -  enter it when you subscribe to restore your data.</div>
+        <div style="font-size:.72rem;color:rgba(192,216,240,.62);margin-top:.2rem;">Save this code  -  enter it when you subscribe to restore your data.</div>
       </div>
       <div style="text-align:center;margin-top:.65rem;">
         <a href="/scout-cover-letter.html" style="display:inline-block;padding:.5rem 1.2rem;background:rgba(26,58,107,.4);border:1px solid rgba(26,58,107,.3);border-radius:8px;color:rgba(192,216,240,.85);text-decoration:none;font-size:.82rem;font-weight:600;">Need a cover letter too? Scout Cover Letter  -  $5 →</a>
@@ -3153,7 +3153,7 @@ window.populateDutyPrompts = function(container) {
       header.textContent = field + ' ';
       var countSpan = document.createElement('span');
       countSpan.className = 'cert-count';
-      countSpan.style.cssText = 'font-size:.65rem;color:rgba(192,216,240,.4);margin-left:.25rem;';
+      countSpan.style.cssText = 'font-size:.65rem;color:rgba(192,216,240,.62);margin-left:.25rem;';
       countSpan.textContent = '(' + window.VCP_MIL.CERTIFICATIONS[field].length + ')';
       header.appendChild(countSpan);
       header.addEventListener('click', function() {
@@ -3286,7 +3286,7 @@ window.onSpBranchChange = function(selectEl) {
 
   if (qualWrap) {
     if (!quals) {
-      qualWrap.innerHTML = '<span style="font-size:.8rem;color:rgba(192,216,240,.4);">Select branch to see options</span>';
+      qualWrap.innerHTML = '<span style="font-size:.8rem;color:rgba(192,216,240,.62);">Select branch to see options</span>';
     } else {
       var qhtml = '';
       if (quals.items && quals.items.length) {

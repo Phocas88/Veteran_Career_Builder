@@ -133,7 +133,7 @@ body.menu-open{overflow:hidden!important;}
   width:145px;transition:width .25s,border-color .2s;outline:none;
 }
 .vcp-search-input:focus{width:200px;border-color:rgba(240,192,64,.4);background:rgba(255,255,255,.1);}
-.vcp-search-input::placeholder{color:rgba(255,255,255,.28);}
+.vcp-search-input::placeholder{color:rgba(255,255,255,.55);}
 .vcp-search-icon{position:absolute;left:.6rem;color:rgba(255,255,255,.3);font-size:.75rem;pointer-events:none;}
 .vcp-search-results{
   position:fixed;top:56px;right:1rem;
@@ -149,7 +149,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-sr-title{font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.12rem;}
 .vcp-sr-snippet{font-size:.72rem;color:rgba(192,216,240,.5);line-height:1.4;}
 .vcp-sr-snippet em{color:rgba(240,192,64,.8);font-style:normal;font-weight:600;}
-.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.4);font-size:.82rem;text-align:center;}
+.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.62);font-size:.82rem;text-align:center;}
 
 /* ── HAMBURGER ── */
 .vcp-ham{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:.4rem;flex-shrink:0;align-self:center;margin-left:.25rem;}
@@ -200,7 +200,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-mega-section{margin-bottom:1rem;}
 .vcp-mega-section-label{
   font-size:.58rem;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:rgba(192,216,240,.3);
+  text-transform:uppercase;color:rgba(192,216,240,.6);
   margin-bottom:.35rem;margin-top:.6rem;
 }
 .vcp-mega-section-label:first-child{margin-top:0;}
@@ -367,7 +367,7 @@ body.menu-open{overflow:hidden!important;}
     <div class="vcp-search-results" id="vcp-sr"></div>
   </div>
 
-  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu">
+  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -672,7 +672,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- ══ MOBILE MENU ══════════════════════════════════════════════════════════ -->
 <div class="vcp-mob" id="vcp-mob">
   <div class="vcp-mob-search">
-    <input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off">
+    <input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off" aria-label="Search all pages">
   </div>
   <div class="vcp-mob-sr" id="vcp-mob-sr"></div>
 
@@ -1192,11 +1192,11 @@ img{max-width:100%;}
 .pc-title{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.1em;color:#fff;margin-bottom:.15rem;margin-top:.5rem;}
 .pc-price{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--gold);line-height:1;margin:.6rem 0 .15rem;}
 .pc-price span{font-size:1.1rem;color:rgba(255,255,255,.35);}
-.pc-sub{font-size:.75rem;color:rgba(192,216,240,.4);margin-bottom:1.1rem;}
+.pc-sub{font-size:.75rem;color:rgba(192,216,240,.62);margin-bottom:1.1rem;}
 .pc-features{list-style:none;margin-bottom:1.35rem;}
 .pc-features li{font-size:.8rem;color:rgba(192,216,240,.7);padding:.32rem 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:.45rem;}
 .pc-features li::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0;font-size:.8rem;}
-.pc-features li.dim{color:rgba(192,216,240,.3);}
+.pc-features li.dim{color:rgba(192,216,240,.6);}
 .pc-features li.dim::before{color:rgba(255,255,255,.18);}
 .pc-btn{display:block;text-align:center;padding:.78rem;border-radius:9px;font-weight:700;font-size:.88rem;}
 .pc-btn.free-btn{background:rgba(255,255,255,.06);color:#fff;border:1.5px solid rgba(255,255,255,.1);}
@@ -1208,7 +1208,7 @@ img{max-width:100%;}
 footer{background:#030810;border-top:1px solid rgba(255,255,255,.05);padding:3rem 5% 1.75rem;content-visibility:auto;contain-intrinsic-size:560px;}
 .footer-grid{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem;}
 .footer-brand-name{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:var(--gold);margin-bottom:.4rem;}
-.footer-brand-desc{font-size:.75rem;color:rgba(192,216,240,.3);line-height:1.65;max-width:200px;}
+.footer-brand-desc{font-size:.75rem;color:rgba(192,216,240,.6);line-height:1.65;max-width:200px;}
 .footer-col-title{font-family:'Bebas Neue',sans-serif;font-size:.82rem;letter-spacing:.1em;color:var(--gold);margin-bottom:.65rem;}
 .footer-col a{display:block;font-size:.76rem;color:rgba(192,216,240,.36);margin-bottom:.38rem;transition:color .12s;}
 .footer-col a:hover{color:rgba(192,216,240,.8);}

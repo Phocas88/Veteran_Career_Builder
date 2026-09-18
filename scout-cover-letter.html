@@ -39,10 +39,10 @@ body{font-family:'Inter',sans-serif;background:#060e1a;color:#e8f0f8;font-size:1
 
 /* ── FORM ELEMENTS ── */
 .cl-label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(192,216,240,.6);margin-bottom:.4rem;}
-.cl-label-hint{font-weight:400;text-transform:none;letter-spacing:normal;color:rgba(192,216,240,.4);font-size:.7rem;}
+.cl-label-hint{font-weight:400;text-transform:none;letter-spacing:normal;color:rgba(192,216,240,.62);font-size:.7rem;}
 .cl-input,.cl-textarea,.cl-select{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:.7rem 1rem;font-size:.9rem;font-family:'Inter',sans-serif;color:#e8f0f8;outline:none;transition:border-color .2s;}
 .cl-input:focus,.cl-textarea:focus,.cl-select:focus{border-color:rgba(240,192,64,.5);background:rgba(255,255,255,.08);}
-.cl-input::placeholder,.cl-textarea::placeholder{color:rgba(192,216,240,.3);}
+.cl-input::placeholder,.cl-textarea::placeholder{color:rgba(192,216,240,.6);}
 .cl-textarea{resize:vertical;min-height:140px;line-height:1.6;}
 .cl-textarea.tall{min-height:220px;}
 .cl-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23c0d8f0' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;}
@@ -126,7 +126,7 @@ body{font-family:'Inter',sans-serif;background:#060e1a;color:#e8f0f8;font-size:1
 .cl-data-code.show{display:block;}
 .cl-data-code-label{font-size:.72rem;color:rgba(240,192,64,.6);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.3rem;}
 .cl-data-code-value{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.2em;color:#f0c040;}
-.cl-data-code-hint{font-size:.72rem;color:rgba(192,216,240,.4);margin-top:.3rem;}
+.cl-data-code-hint{font-size:.72rem;color:rgba(192,216,240,.62);margin-top:.3rem;}
 
 /* ── RESPONSIVE ── */
 @media(max-width:640px){
@@ -237,7 +237,7 @@ body.menu-open{overflow:hidden!important;}
   width:145px;transition:width .25s,border-color .2s;outline:none;
 }
 .vcp-search-input:focus{width:200px;border-color:rgba(240,192,64,.4);background:rgba(255,255,255,.1);}
-.vcp-search-input::placeholder{color:rgba(255,255,255,.28);}
+.vcp-search-input::placeholder{color:rgba(255,255,255,.55);}
 .vcp-search-icon{position:absolute;left:.6rem;color:rgba(255,255,255,.3);font-size:.75rem;pointer-events:none;}
 .vcp-search-results{
   position:fixed;top:56px;right:1rem;
@@ -253,7 +253,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-sr-title{font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.12rem;}
 .vcp-sr-snippet{font-size:.72rem;color:rgba(192,216,240,.5);line-height:1.4;}
 .vcp-sr-snippet em{color:rgba(240,192,64,.8);font-style:normal;font-weight:600;}
-.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.4);font-size:.82rem;text-align:center;}
+.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.62);font-size:.82rem;text-align:center;}
 
 /* ── HAMBURGER ── */
 .vcp-ham{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:.4rem;flex-shrink:0;align-self:center;margin-left:.25rem;}
@@ -304,7 +304,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-mega-section{margin-bottom:1rem;}
 .vcp-mega-section-label{
   font-size:.58rem;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:rgba(192,216,240,.3);
+  text-transform:uppercase;color:rgba(192,216,240,.6);
   margin-bottom:.35rem;margin-top:.6rem;
 }
 .vcp-mega-section-label:first-child{margin-top:0;}
@@ -466,7 +466,7 @@ body.menu-open{overflow:hidden!important;}
     <div class="vcp-search-results" id="vcp-sr"></div>
   </div>
 
-  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu">
+  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -809,7 +809,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- ══ MOBILE MENU ══════════════════════════════════════════════════════════ -->
 <div class="vcp-mob" id="vcp-mob">
   <div class="vcp-mob-search">
-    <input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off">
+    <input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off" aria-label="Search all pages">
   </div>
   <div class="vcp-mob-sr" id="vcp-mob-sr"></div>
 
@@ -1214,7 +1214,7 @@ body.menu-open{overflow:hidden!important;}
       <strong style="color:#f0c040;">"Use My Scout Resume"</strong> only works if you built your resume on this same device. If you built it on another device, download the PDF from there and use <strong>"Upload PDF / Word"</strong> instead.<br>
       You can also upload any resume  -  Scout Resumes just produce the best cover letters because your military experience is already translated.
     </div>
-    <div style="font-size:.72rem;color:rgba(192,216,240,.3);margin-top:.25rem;">Don't have a resume yet? <a href="/scout-resume-builder.html" style="color:#f0c040;text-decoration:underline;">Build one with Scout Resume Builder ($10)</a></div>
+    <div style="font-size:.72rem;color:rgba(192,216,240,.6);margin-top:.25rem;">Don't have a resume yet? <a href="/scout-resume-builder.html" style="color:#f0c040;text-decoration:underline;">Build one with Scout Resume Builder ($10)</a></div>
   </div>
 
   <!-- STEP 2: JOB DETAILS -->

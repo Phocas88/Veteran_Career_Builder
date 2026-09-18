@@ -45,15 +45,15 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 .dashboard{display:none;padding:1.5rem 5%;max-width:1200px;margin:0 auto;}
 .dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem;}
 .dash-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.1em;color:#f0c040;}
-.dash-user{font-size:.8rem;color:rgba(192,216,240,.4);}
+.dash-user{font-size:.8rem;color:rgba(192,216,240,.62);}
 .logout-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(192,216,240,.6);padding:.4rem .9rem;border-radius:7px;font-size:.78rem;cursor:pointer;}
 
 /* STAT CARDS */
 .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.85rem;margin-bottom:1.5rem;}
 .stat-card{background:#0d1f3c;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1rem 1.1rem;}
 .stat-n{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:#f0c040;line-height:1;}
-.stat-l{font-size:.72rem;color:rgba(192,216,240,.4);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem;}
-.stat-sub{font-size:.75rem;color:rgba(192,216,240,.3);margin-top:.15rem;}
+.stat-l{font-size:.72rem;color:rgba(192,216,240,.62);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem;}
+.stat-sub{font-size:.75rem;color:rgba(192,216,240,.6);margin-top:.15rem;}
 
 /* TABS */
 .tabs{display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap;}
@@ -124,7 +124,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 .ga-card{background:#0d1f3c;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1rem 1.1rem;}
 .ga-card-title{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.75rem;padding-bottom:.35rem;border-bottom:1px solid rgba(240,192,64,.12);}
 .ga-table{width:100%;border-collapse:collapse;font-size:.8rem;}
-.ga-table th{text-align:left;padding:.45rem .65rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(192,216,240,.4);border-bottom:1px solid rgba(255,255,255,.08);}
+.ga-table th{text-align:left;padding:.45rem .65rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(192,216,240,.62);border-bottom:1px solid rgba(255,255,255,.08);}
 .ga-table td{padding:.4rem .65rem;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(192,216,240,.75);}
 .ga-table td:last-child{text-align:right;font-weight:600;color:#f0c040;}
 .ga-table tr:hover td{background:rgba(255,255,255,.03);}
@@ -444,7 +444,7 @@ function loadUsers() {
         rank = m2.rank || ',';
         mos = m2.mos || ',';
       }
-      var hasSub = d.stripeSession ? '<span style="color:#4ade80;font-weight:600;">Active</span>' : '<span style="color:rgba(192,216,240,.3);">Free</span>';
+      var hasSub = d.stripeSession ? '<span style="color:#4ade80;font-weight:600;">Active</span>' : '<span style="color:rgba(192,216,240,.6);">Free</span>';
       var lastActive = d.updatedAt ? new Date(d.updatedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ',';
       html += '<tr style="border-bottom:1px solid rgba(255,255,255,.05);">';
       html += '<td style="padding:.55rem .75rem;color:#e8f0f8;font-weight:500;">'+name+'</td>';
@@ -560,7 +560,7 @@ function renderSalaryPending(snap) {
         '<strong style="color:#4ade80">$' + (d.salary||0).toLocaleString() + '/yr</strong>' +
         (d.clearance && d.clearance!=='none' ? ' · 🔐 ' + d.clearance.toUpperCase() : '') +
         ' · ' + (d.state||'') +
-        '<br><span style="color:rgba(192,216,240,.3)">Submitted: ' + (d.submittedAt||'').slice(0, 10) + '</span>' +
+        '<br><span style="color:rgba(192,216,240,.6)">Submitted: ' + (d.submittedAt||'').slice(0, 10) + '</span>' +
       '</div>' +
       '<div class="item-actions">' +
         '<button class="btn-approve" data-id="' + doc.id + '" onclick="approveSalary(this)">✓ Approve</button>' +
@@ -648,7 +648,7 @@ function renderStoryPending(snap) {
       '<div class="item-meta">' + (d.branch||'') + ' ' + (d.mos||'') + ' · ' + (d.rank||'') + ' · ' + (d.yos||'') +
         (d.salary && d.salary!=='Prefer not to say' ? ' · <strong style="color:#4ade80">'+d.salary+'</strong>' : '') +
         ' · Found job: ' + (d.time||'') +
-        '<br><span style="color:rgba(192,216,240,.3)">Submitted: ' + (d.submittedAt||'').slice(0, 10) + '</span>' +
+        '<br><span style="color:rgba(192,216,240,.6)">Submitted: ' + (d.submittedAt||'').slice(0, 10) + '</span>' +
       '</div>' +
       '<div class="item-body">' + (d.story||'').slice(0, 300).replace(/[<>]/g,'') + (d.story && d.story.length>300?'...':'') + '</div>' +
       '<div class="item-actions">' +
@@ -839,7 +839,7 @@ function gaFetchAll() {
       var page = r.dimensionValues[0].value;
       if(page.length > 40) page = page.substring(0, 40) + '…';
       return '<tr><td style="font-size:.75rem;">'+page+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
-    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.3);">No data</td></tr>';
+    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.6);">No data</td></tr>';
   }).catch(function(e) { console.error('Pages error:', e); });
 
   // 4. Traffic sources
@@ -853,7 +853,7 @@ function gaFetchAll() {
     var rows = data.rows || [];
     document.getElementById('ga-sources').innerHTML = rows.map(function(r) {
       return '<tr><td>'+r.dimensionValues[0].value+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
-    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.3);">No data</td></tr>';
+    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.6);">No data</td></tr>';
   }).catch(function(e) { console.error('Sources error:', e); });
 
   // 5. Countries & cities
@@ -870,7 +870,7 @@ function gaFetchAll() {
       var country = r.dimensionValues[0].value;
       var loc = (city && city !== '(not set)') ? city + ', ' + country : country;
       return '<tr><td>'+loc+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
-    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.3);">No data</td></tr>';
+    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.6);">No data</td></tr>';
   }).catch(function(e) { console.error('Geo error:', e); });
 
   // 6. Devices
@@ -885,7 +885,7 @@ function gaFetchAll() {
       var device = r.dimensionValues[0].value;
       device = device.charAt(0).toUpperCase() + device.slice(1);
       return '<tr><td>'+device+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
-    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.3);">No data</td></tr>';
+    }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.6);">No data</td></tr>';
   }).catch(function(e) { console.error('Devices error:', e); });
 }
 

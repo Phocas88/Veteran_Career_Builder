@@ -508,6 +508,20 @@
     initActiveNav();
     initAccountLink();
     initToolsDrawer();
+    initHamburgerA11y();
+  }
+
+  // Keep the mobile hamburger's aria-expanded in sync (WCAG 4.1.2). The inline
+  // nav handler toggles the "open" class; we mirror it to aria-expanded.
+  function initHamburgerA11y() {
+    var ham = document.getElementById('vcp-ham');
+    if (!ham) return;
+    if (!ham.hasAttribute('aria-expanded')) ham.setAttribute('aria-expanded', 'false');
+    ham.addEventListener('click', function () {
+      setTimeout(function () {
+        ham.setAttribute('aria-expanded', ham.classList.contains('open') ? 'true' : 'false');
+      }, 0);
+    });
   }
 
   // Run when DOM is ready

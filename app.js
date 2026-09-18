@@ -4191,7 +4191,7 @@ Return this exact JSON structure:
                               </div>
                               <div>
                                 <div style={{fontSize:"7.5pt",fontWeight:600,letterSpacing:".2em",textTransform:"uppercase",color:"#aaa",marginBottom:"8pt"}}>Skills</div>
-                                {(resumeData.skills||[]).map((s,i)=>(<div key={i} style={{fontSize:"9.5pt",color:"#555",marginBottom:"3pt"}}>, {s}</div>))}
+                                {(resumeData.skills||[]).map((s,i)=>(<div key={i} style={{fontSize:"9.5pt",color:"#555",marginBottom:"3pt"}}>{s}</div>))}
                               </div>
                             </div>
                           </div>

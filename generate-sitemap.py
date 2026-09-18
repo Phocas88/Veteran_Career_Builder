@@ -30,7 +30,7 @@ EXCLUDE = {
     "army-35e-mos.html", "army-35y-mos.html", "tools-newsletter.html",
 }
 
-EXCLUDE_DIRS = {"affiliate", "training", ".firebase", ".claude", ".git", "api", "img"}
+EXCLUDE_DIRS = {"affiliate", "training", ".firebase", ".claude", ".git", "api", "img", "mos"}
 
 
 def get_priority(filepath):

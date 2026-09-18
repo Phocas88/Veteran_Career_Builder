@@ -1827,7 +1827,8 @@ function fetchUSAJobsAPI(p) {
     }
     var total = (data.SearchResult && data.SearchResult.SearchResultCount) || items.length;
     var html = '<div style="font-size:.82rem;color:#5a7090;margin-bottom:.75rem;">Showing ' + items.length + ' of ' + total + ' federal positions matching "<strong>' + (p.keyword||'veteran') + '</strong>"</div>';
-    items.forEach(function(item) {
+    window._vcpFeedJobs = [];
+    items.forEach(function(item, idx) {
       var job = item.MatchedObjectDescriptor;
       var title = job.PositionTitle || 'Untitled';
       var org = job.OrganizationName || job.DepartmentName || '';
@@ -1839,10 +1840,13 @@ function fetchUSAJobsAPI(p) {
       var closeDate = job.PositionEndDate ? new Date(job.PositionEndDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
       var url = job.PositionURI || job.ApplyURI && job.ApplyURI[0] || '#';
       var schedule = job.PositionSchedule && job.PositionSchedule[0] ? job.PositionSchedule[0].Name : '';
+      var det = (job.UserArea && job.UserArea.Details) || {};
+      var duties = det.MajorDuties && det.MajorDuties.join ? det.MajorDuties.join(' ') : '';
+      window._vcpFeedJobs[idx] = title + ' at ' + (org || 'a federal agency') + '. Location: ' + locations + '. ' + (grade ? 'Pay grade: ' + grade + '. ' : '') + (salary ? 'Salary: ' + salary + '. ' : '') + 'Job summary: ' + (det.JobSummary || '') + ' Major duties: ' + duties + ' Qualifications required: ' + (job.QualificationSummary || '');
 
-      html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:block;background:#fff;border:1.5px solid #dde3ec;border-radius:10px;padding:1rem 1.25rem;margin-bottom:.5rem;text-decoration:none;transition:all .15s;" onmouseover="this.style.borderColor=\'#1a3a6b\';this.style.boxShadow=\'0 2px 10px rgba(0,0,0,.08)\'" onmouseout="this.style.borderColor=\'#dde3ec\';this.style.boxShadow=\'none\'">';
+      html += '<div style="background:#fff;border:1.5px solid #dde3ec;border-radius:10px;padding:1rem 1.25rem;margin-bottom:.5rem;">';
       html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.3rem;margin-bottom:.3rem;">';
-      html += '<div style="font-weight:700;color:#1a3a6b;font-size:.92rem;">' + title + '</div>';
+      html += '<a href="' + url + '" target="_blank" rel="noopener" style="font-weight:700;color:#1a3a6b;font-size:.92rem;text-decoration:none;">' + title + '</a>';
       if(grade) html += '<span style="font-size:.7rem;background:#003366;color:#fff;padding:.15rem .5rem;border-radius:100px;font-weight:600;">' + grade + '</span>';
       html += '</div>';
       html += '<div style="font-size:.82rem;color:#3a5070;margin-bottom:.2rem;">' + org + '</div>';
@@ -1852,8 +1856,11 @@ function fetchUSAJobsAPI(p) {
       if(schedule) html += '<span>⏰ ' + schedule + '</span>';
       if(closeDate) html += '<span style="color:#dc2626;">📅 Closes ' + closeDate + '</span>';
       html += '</div>';
-      html += '<div style="margin-top:.4rem;font-size:.75rem;color:#1a3a6b;font-weight:600;">View on USAJobs →</div>';
-      html += '</a>';
+      html += '<div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.65rem;">';
+      html += '<button type="button" onclick="analyzeFeedJob(' + idx + ')" style="background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff;border:none;border-radius:6px;padding:.4rem .85rem;font-size:.78rem;font-weight:700;cursor:pointer;">🎯 Analyze my fit</button>';
+      html += '<a href="' + url + '" target="_blank" rel="noopener" style="font-size:.78rem;color:#1a3a6b;font-weight:600;text-decoration:none;">View on USAJobs →</a>';
+      html += '</div>';
+      html += '</div>';
     });
     html += '<a href="' + buildUSAJobsURL(p) + '" target="_blank" rel="noopener" style="display:block;text-align:center;padding:.75rem;background:#003366;color:#fff;border-radius:8px;font-weight:700;font-size:.88rem;text-decoration:none;margin-top:.5rem;">View All ' + total + ' Federal Jobs on USAJobs.gov →</a>';
     document.getElementById('usajobs-list').innerHTML = html;
@@ -1930,6 +1937,14 @@ function renderMarkdown(text) {
   return html;
 }
 
+function analyzeFeedJob(i){
+  var t = (window._vcpFeedJobs || [])[i];
+  var ta = document.getElementById('analyze-input');
+  if(!t || !ta) return;
+  ta.value = t;
+  ta.scrollIntoView({behavior:'smooth', block:'center'});
+  analyzeJob();
+}
 async function analyzeJob() {
   var input = (document.getElementById('analyze-input').value||'').trim();
   if (!input) { alert('Please paste a job URL or job description.'); return; }
@@ -1956,30 +1971,32 @@ async function analyzeJob() {
   var prompt = "You are a veteran career advisor. Analyze this job posting against the veteran's military profile.\n\n" +
     "=== VETERAN PROFILE ===\n" + ctx + "\n\n" +
     "=== JOB POSTING (URL or Description) ===\n" + input + "\n\n" +
-    "Provide your analysis in this exact format:\n\n" +
+    "Provide your analysis in this exact Markdown format:\n\n" +
     "### Job Summary\n" +
-    "- **Job Title:** [extract from the description; if not stated, write 'not specified' — do not guess]\n" +
-    "- **Company/Agency:** [extract from the description; if not stated, write 'not specified' — do not guess]\n" +
-    "- **Location:** [extract from the description; if not stated, write 'not specified' — do not guess]\n\n" +
+    "- **Job Title:** [extract; if not stated, 'not specified' — do not guess]\n" +
+    "- **Company/Agency:** [extract; if not stated, 'not specified']\n" +
+    "- **Location:** [extract; if not stated, 'not specified']\n\n" +
+    "### Verdict: [APPLY / STRETCH — worth a shot / SKIP]\n" +
+    "[one sentence explaining the recommendation]\n\n" +
     "### Match Score: [0-100]/100\n" +
-    "[One sentence explaining the score]\n\n" +
+    "[one sentence explaining the score]\n\n" +
     "### Strengths (Why You're a Good Fit)\n" +
-    "- [strength 1]\n" +
-    "- [strength 2]\n" +
-    "- [strength 3]\n\n" +
-    "### Gaps to Address\n" +
-    "- [gap 1]\n" +
-    "- [gap 2]\n\n" +
-    "### Action Items\n" +
-    "1. [specific action]\n" +
-    "2. [specific action]\n" +
-    "3. [specific action]\n\n" +
+    "- [strength grounded in the veteran's real background]\n" +
+    "- [strength]\n" +
+    "- [strength]\n\n" +
+    "### Gaps & How to Close Them\n" +
+    "- [gap] -> [a specific way to address or offset it]\n" +
+    "- [gap] -> [how to address it]\n\n" +
+    "### Tailored Resume Bullets\n" +
+    "[Rewrite 2-3 of the veteran's ACTUAL experiences as civilian, results-oriented resume bullets aimed at THIS job. Use only real experience from the profile above; never invent metrics, employers, or duties.]\n\n" +
+    "### Cover Letter Hook\n" +
+    "[One strong opening angle connecting the veteran's background to this specific role.]\n\n" +
     "### Resume Keywords to Include\n" +
-    "- [keyword 1], [keyword 2], [keyword 3], etc.\n\n" +
-    "IMPORTANT: Base your analysis ONLY on the job description text provided above. If the text is missing, too short, or is just a URL/link, DO NOT invent a job, company, score, or analysis. Instead reply only with: 'I can only analyze a job from its description text. Please paste the full posting body.' Never fabricate details. Be specific and actionable when real text is provided.";
+    "- [keyword], [keyword], [keyword], etc.\n\n" +
+    "IMPORTANT: Base your analysis ONLY on the job text and veteran profile above. If the job text is missing, too short, or is just a URL/link, DO NOT invent a job, company, score, or analysis — reply only with: 'I can only analyze a job from its description text. Please paste the full posting body.' Never fabricate the veteran's experience/metrics or the job's details. Be specific and actionable.";
 
   try {
-    var text = await window.VCBSecureApi.callClaude(prompt, "", 1500);
+    var text = await window.VCBSecureApi.callClaude(prompt, "", 2800);
     if (!text) text = 'No analysis returned. Please try again.';
     var scoreMatch = text.match(/Match Score[:\s]*(\d+)/i);
     var score = scoreMatch ? parseInt(scoreMatch[1]) : null;

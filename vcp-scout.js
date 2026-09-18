@@ -13,9 +13,11 @@
   var isLoading = false;
 
   function init() {
-    var btn = document.createElement('div');
+    var btn = document.createElement('button');
     btn.id = 'scout-btn';
-    btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Open Scout, the site assistant');
+    btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
     btn.title = 'Ask Scout to find anything on this site';
     btn.onclick = toggleChat;
     document.body.appendChild(btn);
@@ -47,7 +49,7 @@
 
     var style = document.createElement('style');
     style.textContent =
-      '#scout-btn{position:fixed;bottom:20px;right:20px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#f0c040,#e8aa10);box-shadow:0 4px 16px rgba(0,0,0,.25);cursor:pointer;z-index:9990;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;}' +
+      '#scout-btn{position:fixed;bottom:20px;right:20px;width:52px;height:52px;border:none;padding:0;border-radius:50%;background:linear-gradient(135deg,#f0c040,#e8aa10);box-shadow:0 4px 16px rgba(0,0,0,.25);cursor:pointer;z-index:9990;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;}' +
       '#scout-btn:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(0,0,0,.35);}' +
       '#scout-btn.hide{display:none;}' +
       '#scout-panel{position:fixed;bottom:80px;right:20px;width:360px;max-width:calc(100vw - 32px);height:480px;max-height:calc(100vh - 120px);background:#0d1a2d;border:1px solid rgba(240,192,64,.2);border-radius:14px;box-shadow:0 12px 48px rgba(0,0,0,.5);z-index:9991;display:flex;flex-direction:column;overflow:hidden;opacity:0;pointer-events:none;transform:translateY(16px) scale(.95);transition:opacity .2s,transform .2s;}' +

@@ -100,7 +100,7 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
 /* Dimension Bars */
 .dim-section{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.75rem;margin-bottom:1.5rem}
 .dim-section h2{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:#fff;margin-bottom:.4rem}
-.dim-section .dim-sub{font-size:.75rem;color:rgba(192,216,240,.4);margin-bottom:1.25rem}
+.dim-section .dim-sub{font-size:.75rem;color:rgba(192,216,240,.62);margin-bottom:1.25rem}
 .dim-bar{margin-bottom:1.1rem}
 .dim-bar:last-child{margin-bottom:0}
 .dim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem}
@@ -134,7 +134,7 @@ body{font-family:'DM Sans',Inter,sans-serif;color:#e8f0f8;background:var(--bg-in
 .career-card .cc-match{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#f0c040}
 .career-card h3{font-size:.95rem;font-weight:700;color:rgba(255,255,255,.9);margin-bottom:.3rem}
 .career-card .cc-salary{font-size:.78rem;font-weight:600;color:#4ade80;margin-bottom:.1rem}
-.career-card .cc-sector{font-size:.68rem;color:rgba(192,216,240,.4);margin-bottom:.5rem;display:inline-block;background:rgba(255,255,255,.05);padding:.15rem .5rem;border-radius:4px}
+.career-card .cc-sector{font-size:.68rem;color:rgba(192,216,240,.62);margin-bottom:.5rem;display:inline-block;background:rgba(255,255,255,.05);padding:.15rem .5rem;border-radius:4px}
 .career-card .cc-desc{font-size:.78rem;color:rgba(192,216,240,.5);line-height:1.55}
 .career-card .cc-reqs{margin-top:.5rem;font-size:.7rem;color:rgba(192,216,240,.45)}
 .career-card .cc-reqs strong{color:rgba(192,216,240,.6)}
@@ -332,7 +332,7 @@ body.menu-open{overflow:hidden!important;}
   width:145px;transition:width .25s,border-color .2s;outline:none;
 }
 .vcp-search-input:focus{width:200px;border-color:rgba(240,192,64,.4);background:rgba(255,255,255,.1);}
-.vcp-search-input::placeholder{color:rgba(255,255,255,.28);}
+.vcp-search-input::placeholder{color:rgba(255,255,255,.55);}
 .vcp-search-icon{position:absolute;left:.6rem;color:rgba(255,255,255,.3);font-size:.75rem;pointer-events:none;}
 .vcp-search-results{
   position:fixed;top:56px;right:1rem;
@@ -348,7 +348,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-sr-title{font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.12rem;}
 .vcp-sr-snippet{font-size:.72rem;color:rgba(192,216,240,.5);line-height:1.4;}
 .vcp-sr-snippet em{color:rgba(240,192,64,.8);font-style:normal;font-weight:600;}
-.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.4);font-size:.82rem;text-align:center;}
+.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.62);font-size:.82rem;text-align:center;}
 
 /* ── HAMBURGER ── */
 .vcp-ham{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:.4rem;flex-shrink:0;align-self:center;margin-left:.25rem;}
@@ -399,7 +399,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-mega-section{margin-bottom:1rem;}
 .vcp-mega-section-label{
   font-size:.58rem;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:rgba(192,216,240,.3);
+  text-transform:uppercase;color:rgba(192,216,240,.6);
   margin-bottom:.35rem;margin-top:.6rem;
 }
 .vcp-mega-section-label:first-child{margin-top:0;}
@@ -561,7 +561,7 @@ body.menu-open{overflow:hidden!important;}
     <div class="vcp-search-results" id="vcp-sr"></div>
   </div>
 
-  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu">
+  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -904,7 +904,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- ══ MOBILE MENU ══════════════════════════════════════════════════════════ -->
 <div class="vcp-mob" id="vcp-mob">
   <div class="vcp-mob-search">
-    <input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off">
+    <input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off" aria-label="Search all pages">
   </div>
   <div class="vcp-mob-sr" id="vcp-mob-sr"></div>
 
@@ -2264,14 +2264,14 @@ function _renderResults(){
   html += '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1rem;text-align:center;">';
   html += '<div style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(192,216,240,.45);margin-bottom:.2rem;">Assessment Only</div>';
   html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.7rem;color:#f0c040;line-height:1;">$9.99</div>';
-  html += '<div style="font-size:.62rem;color:rgba(192,216,240,.3);margin-bottom:.5rem;">one-time</div>';
+  html += '<div style="font-size:.62rem;color:rgba(192,216,240,.6);margin-bottom:.5rem;">one-time</div>';
   html += '<a href="https://buy.stripe.com/9B6dR94Db3GMcuReIvenS02" style="display:block;padding:.6rem;background:rgba(240,192,64,.12);border:1.5px solid rgba(240,192,64,.25);border-radius:8px;color:#f0c040;font-weight:700;font-size:.82rem;text-decoration:none;">Buy Assessment \u2192</a>';
   html += '</div>';
   html += '<div style="background:rgba(240,192,64,.05);border:2px solid rgba(240,192,64,.25);border-radius:10px;padding:1rem;text-align:center;position:relative;">';
   html += '<div style="position:absolute;top:-.5rem;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;font-size:.55rem;font-weight:800;letter-spacing:.08em;padding:.1rem .5rem;border-radius:100px;text-transform:uppercase;white-space:nowrap;">Best Value</div>';
   html += '<div style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(192,216,240,.45);margin-bottom:.2rem;margin-top:.15rem;">Full AI Toolkit</div>';
   html += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.7rem;color:#f0c040;line-height:1;">$15/mo</div>';
-  html += '<div style="font-size:.62rem;color:rgba(192,216,240,.3);margin-bottom:.25rem;">cancel anytime</div>';
+  html += '<div style="font-size:.62rem;color:rgba(192,216,240,.6);margin-bottom:.25rem;">cancel anytime</div>';
   html += '<div style="font-size:.6rem;color:#4ade80;font-weight:600;margin-bottom:.4rem;">Assessment + 20 AI tools</div>';
   html += '<a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:block;padding:.6rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border-radius:8px;color:#0a1628;font-weight:700;font-size:.82rem;text-decoration:none;">Subscribe &amp; Unlock All \u2192</a>';
   html += '</div>';

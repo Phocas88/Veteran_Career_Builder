@@ -117,7 +117,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-search-wrap{display:flex;align-items:center;margin:auto .5rem auto auto;position:relative;flex-shrink:0;}
 .vcp-search-input{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:.28rem .8rem .28rem 1.9rem;color:#fff;font-size:.75rem;font-family:'Inter',sans-serif;width:145px;transition:width .25s,border-color .2s;outline:none;}
 .vcp-search-input:focus{width:200px;border-color:rgba(240,192,64,.4);background:rgba(255,255,255,.1);}
-.vcp-search-input::placeholder{color:rgba(255,255,255,.28);}
+.vcp-search-input::placeholder{color:rgba(255,255,255,.55);}
 .vcp-search-icon{position:absolute;left:.6rem;color:rgba(255,255,255,.3);font-size:.75rem;pointer-events:none;}
 .vcp-search-results{position:fixed;top:56px;right:1rem;background:#0d1a2d;border:1px solid rgba(240,192,64,.2);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.6);width:340px;max-width:calc(100vw - 2rem);max-height:420px;overflow-y:auto;z-index:3000;display:none;}
 .vcp-search-results.open{display:block;}
@@ -127,7 +127,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-sr-title{font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.12rem;}
 .vcp-sr-snippet{font-size:.72rem;color:rgba(192,216,240,.5);line-height:1.4;}
 .vcp-sr-snippet em{color:rgba(240,192,64,.8);font-style:normal;font-weight:600;}
-.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.4);font-size:.82rem;text-align:center;}
+.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.62);font-size:.82rem;text-align:center;}
 .vcp-ham{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:.4rem;flex-shrink:0;align-self:center;margin-left:.25rem;}
 .vcp-ham span{display:block;width:20px;height:2px;background:#c0d8f0;border-radius:2px;transition:.25s;}
 .vcp-ham.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
@@ -140,7 +140,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-mega-col:first-child{padding-left:0;}.vcp-mega-col:last-child{border-right:none;padding-right:0;}
 .vcp-mega-col-title{font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(240,192,64,.6);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:1px solid rgba(240,192,64,.15);display:flex;align-items:center;gap:.4rem;}
 .vcp-mega-section{margin-bottom:1rem;}
-.vcp-mega-section-label{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(192,216,240,.3);margin-bottom:.35rem;margin-top:.6rem;}
+.vcp-mega-section-label{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(192,216,240,.6);margin-bottom:.35rem;margin-top:.6rem;}
 .vcp-mega-section-label:first-child{margin-top:0;}
 .vcp-mega-col a{display:block;color:rgba(192,216,240,.65);text-decoration:none;font-size:.76rem;font-weight:400;padding:.22rem 0;transition:color .1s;line-height:1.4;}
 .vcp-mega-col a:hover{color:#fff;}
@@ -195,7 +195,7 @@ body.menu-open{overflow:hidden!important;}
     <input class="vcp-search-input" id="vcp-si" type="text" placeholder="Search all pages…" autocomplete="off" aria-label="Search">
     <div class="vcp-search-results" id="vcp-sr"></div>
   </div>
-  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu"><span></span><span></span><span></span></button>
+  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </nav>
 
 <div class="vcp-mega" id="vcp-mega" role="navigation" aria-label="Site navigation">
@@ -322,7 +322,7 @@ body.menu-open{overflow:hidden!important;}
 </div>
 
 <div class="vcp-mob" id="vcp-mob">
-  <div class="vcp-mob-search"><input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off"></div>
+  <div class="vcp-mob-search"><input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off" aria-label="Search all pages"></div>
   <div class="vcp-mob-sr" id="vcp-mob-sr"></div>
   <a href="https://veterancareerpath.com/app.html" class="vcp-mob-cta">Career Path Tools, $15/mo</a>
   <a href="https://veterancareerpath.com/app.html#profile" class="vcp-account-link vcp-mob-account" style="background:rgba(240,192,64,.06);border-bottom:1px solid rgba(240,192,64,.1);font-weight:600;color:#f0c040;">My Account / Login</a>

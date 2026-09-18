@@ -287,7 +287,7 @@ body.menu-open{overflow:hidden!important;}
   width:145px;transition:width .25s,border-color .2s;outline:none;
 }
 .vcp-search-input:focus{width:200px;border-color:rgba(240,192,64,.4);background:rgba(255,255,255,.1);}
-.vcp-search-input::placeholder{color:rgba(255,255,255,.28);}
+.vcp-search-input::placeholder{color:rgba(255,255,255,.55);}
 .vcp-search-icon{position:absolute;left:.6rem;color:rgba(255,255,255,.3);font-size:.75rem;pointer-events:none;}
 .vcp-search-results{
   position:fixed;top:56px;right:1rem;
@@ -303,7 +303,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-sr-title{font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.12rem;}
 .vcp-sr-snippet{font-size:.72rem;color:rgba(192,216,240,.5);line-height:1.4;}
 .vcp-sr-snippet em{color:rgba(240,192,64,.8);font-style:normal;font-weight:600;}
-.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.4);font-size:.82rem;text-align:center;}
+.vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.62);font-size:.82rem;text-align:center;}
 
 /* ── HAMBURGER ── */
 .vcp-ham{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:.4rem;flex-shrink:0;align-self:center;margin-left:.25rem;}
@@ -354,7 +354,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-mega-section{margin-bottom:1rem;}
 .vcp-mega-section-label{
   font-size:.58rem;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:rgba(192,216,240,.3);
+  text-transform:uppercase;color:rgba(192,216,240,.6);
   margin-bottom:.35rem;margin-top:.6rem;
 }
 .vcp-mega-section-label:first-child{margin-top:0;}
@@ -516,7 +516,7 @@ body.menu-open{overflow:hidden!important;}
     <div class="vcp-search-results" id="vcp-sr"></div>
   </div>
 
-  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu">
+  <button class="vcp-ham" id="vcp-ham" aria-label="Open menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -859,7 +859,7 @@ body.menu-open{overflow:hidden!important;}
 <!-- ══ MOBILE MENU ══════════════════════════════════════════════════════════ -->
 <div class="vcp-mob" id="vcp-mob">
   <div class="vcp-mob-search">
-    <input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off">
+    <input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off" aria-label="Search all pages">
   </div>
   <div class="vcp-mob-sr" id="vcp-mob-sr"></div>
 
@@ -1256,7 +1256,7 @@ body.menu-open{overflow:hidden!important;}
   <a href="https://buy.stripe.com/bJedR91qZcdieCZ8k7enS00" style="display:block;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.92rem;padding:.8rem 1.75rem;border-radius:9px;text-decoration:none;margin-bottom:.55rem;">Subscribe, $15/month →</a>
   <a href="https://veterancareerpath.com/app.html" style="display:block;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#c0d8f0;font-size:.85rem;padding:.6rem 1.5rem;border-radius:9px;text-decoration:none;margin-bottom:.5rem;">Already subscribed? Open app to sync access →</a>
   <div style="margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.08);">
-    <div style="font-size:.72rem;color:rgba(192,216,240,.4);margin-bottom:.5rem;font-weight:500;">Get free career tips:</div>
+    <div style="font-size:.72rem;color:rgba(192,216,240,.62);margin-bottom:.5rem;font-weight:500;">Get free career tips:</div>
     <div style="display:flex;gap:.4rem;max-width:360px;margin:0 auto;">
       <input type="email" id="vcp-email-gate" placeholder="your.email@example.com" style="flex:1;min-width:0;padding:.5rem .7rem;border-radius:6px;border:1px solid rgba(240,192,64,.2);background:rgba(255,255,255,.05);color:#fff;font-size:.76rem;font-family:inherit;outline:none;" onfocus="this.style.borderColor='rgba(240,192,64,.45)'" onblur="this.style.borderColor='rgba(240,192,64,.2)'" onkeydown="if(event.key==='Enter'){event.preventDefault();vcp_subscribeEmail('vcp-email-gate','vcp-email-gate-msg')}">
       <button onclick="vcp_subscribeEmail('vcp-email-gate','vcp-email-gate-msg')" style="padding:.5rem .9rem;border-radius:6px;border:none;background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e;font-weight:700;font-size:.72rem;font-family:inherit;cursor:pointer;white-space:nowrap;">Subscribe</button>
@@ -1264,7 +1264,7 @@ body.menu-open{overflow:hidden!important;}
     <div id="vcp-email-gate-msg" style="display:none;font-size:.6rem;margin-top:.35rem;min-height:1em;"></div>
     <div style="font-size:.6rem;color:rgba(192,216,240,.25);margin-top:.35rem;">No spam. Unsubscribe anytime.</div>
   </div>
-  <button onclick="tryManualUnlock()" style="background:none;border:none;color:rgba(192,216,240,.3);font-size:.7rem;cursor:pointer;text-decoration:underline;margin-top:.25rem;">Manual unlock</button>
+  <button onclick="tryManualUnlock()" style="background:none;border:none;color:rgba(192,216,240,.6);font-size:.7rem;cursor:pointer;text-decoration:underline;margin-top:.25rem;">Manual unlock</button>
 </div>
 <div id="tool-content" style="display:none;">
 <div id="profile-banner" class="profile-banner" style="display:none">
@@ -1320,7 +1320,7 @@ body.menu-open{overflow:hidden!important;}
     </div>
     <div class="field"><label>Certifications You Already Have</label>
       <input id="ca-current" type="text" placeholder="e.g. CompTIA A+, OSHA 10, PMP" autocomplete="off">
-      <div style="font-size:.7rem;color:rgba(192,216,240,.4);margin-top:.25rem;">✅ Auto-filled from your profile, AI will not suggest certs you already hold</div></div>
+      <div style="font-size:.7rem;color:rgba(192,216,240,.62);margin-top:.25rem;">✅ Auto-filled from your profile, AI will not suggest certs you already hold</div></div>
   </div>
   <div class="field"><label>Any other goals</label>
     <input id="ca-notes" type="text" placeholder="e.g. want remote work, have TS/SCI, in Texas..."></div>

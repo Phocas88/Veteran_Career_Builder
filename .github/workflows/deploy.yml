@@ -27,12 +27,24 @@ jobs:
       - name: Regenerate sitemap
         run: python generate-sitemap.py
 
+      - name: Install build deps
+        run: npm ci
+
       - name: Validate JavaScript
         run: |
           node --check assets/js/vcb-secure-api.js
           node --check scripts/build-hosting.mjs
           node --check scripts/apply-security-refactor.mjs
-          npx --yes esbuild app.js --loader:.js=jsx --outfile=/tmp/app-check.js
+
+      - name: Verify app.bundle.js is in sync with app.js
+        run: |
+          npm run build
+          if ! git diff --quiet -- app.bundle.js; then
+            echo "::error::app.bundle.js is out of sync with app.js. Run 'npm run build' and commit app.bundle.js."
+            git --no-pager diff --stat -- app.bundle.js
+            exit 1
+          fi
+          echo "app.bundle.js is in sync with app.js"
 
       - name: Build Firebase hosting directory
         run: node scripts/build-hosting.mjs

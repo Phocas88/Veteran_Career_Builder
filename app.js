@@ -967,7 +967,7 @@ function MyProfileHero(props) {
               <span style={{opacity:.65,marginRight:".3rem"}}>Rank:</span>{exp.rank}{rankObj?", "+rankObj.title:""}
             </div>}
             {(exp.startDate||exp.endDate)&&<div style={{fontSize:".72rem",color:"rgba(255,255,255,.75)",marginTop:".15rem"}}>
-              <span style={{opacity:.65,marginRight:".3rem"}}>Served:</span>{exp.startDate||"?"} – {exp.currently?"Present":(exp.endDate||"?")}
+              <span style={{opacity:.65,marginRight:".3rem"}}>Served:</span>{exp.startDate||"?"} – {exp.current?"Present":(exp.endDate||"?")}
             </div>}
             {exp.tos&&<div style={{fontSize:".7rem",color:"rgba(255,255,255,.6)",marginTop:".1rem"}}>
               {exp.tos} total
@@ -1688,11 +1688,11 @@ function App() {
     const unsubscribe = fbAuth.onAuthStateChanged(async (firebaseUser) => {
       if (firebaseUser) {
         // User is signed in
-        const initials = (firebaseUser.displayName || firebaseUser.email)
+        const initials = (firebaseUser.displayName || firebaseUser.email || "U")
           .split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
         const user = {
           uid: firebaseUser.uid,
-          name: firebaseUser.displayName || firebaseUser.email.split("@")[0],
+          name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split("@")[0] : "Veteran"),
           email: firebaseUser.email,
           initials,
         };
@@ -2132,7 +2132,7 @@ RULES, follow strictly:
       // Fix common JSON issues
       const parsed = JSON.parse(cleaned);
       if (!Array.isArray(parsed) || parsed.length === 0) throw new Error("Empty array");
-      setCareers(parsed);
+      setCareers((parsed||[]).map(function(c){ return Object.assign({description:c.whyFit||c.description||"", outlook:c.outlook||"Stable"}, c); }));
     } catch(err) {
       console.error("findCareers error:", err);
       setCareerError("Career match failed: " + (err.message||"Try again."));
@@ -2307,7 +2307,8 @@ Use this exact structure:
         "2. Quantify ONLY using numbers the veteran explicitly provided. NEVER invent or fabricate metrics. If they gave no numbers for a task, write the bullet without numbers, an honest bullet beats a fabricated one.\n" +
         "3. Start every bullet with a strong civilian action verb: Led, Managed, Coordinated, Developed, Implemented, Reduced, Increased, Trained, Oversaw, Delivered.\n" +
         "4. Security clearances may be included only if the veteran chose to include them and the role makes them relevant.\n" +
-        "5. ATS keywords for: " + (target.title||"operations management, leadership, logistics") + "\n\n" +
+        "5. ATS keywords for: " + (target.title||"operations management, leadership, logistics") + "\n" +
+        "6. RESUME FORMAT (follow this structure): " + formatGuide + "\n\n" +
         "Return ONLY valid JSON, no markdown, starting with { ending with }.\n" +
         "Keys: name, contact (string), summary (2-3 sentence professional paragraph), " +
         "experience (array of {employer, title, dates, bullets:[4-6 strong civilian bullet strings]}), " +
@@ -2319,7 +2320,7 @@ Use this exact structure:
       const raw = await callClaude(
         prompt,
         "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
-        3500
+        3000
       );
       const rStart = raw.indexOf("{");
       const rEnd = raw.lastIndexOf("}");
@@ -2513,7 +2514,7 @@ Return this exact JSON structure:
   const isMilType = t => t==="Military Service"||t==="Reserve/Guard (concurrent with civilian)";
   const DI = "Defense/Intel";
   const RG = "Reserve/Guard (concurrent with civilian)";
-  const matchesSector = (c, filter) => filter==="All" || c.sector===filter || (filter===DI && c.sector===DI);
+  const matchesSector = (c, filter) => { if(filter==="All") return true; var sec=(c.sector||"").toLowerCase(); if(filter==="Government") return /gov|federal|public sector|civil service/.test(sec); if(filter===DI) return /defense|intel/.test(sec); if(filter==="Civilian") return !/gov|federal|defense|intel|public sector|civil service/.test(sec); return c.sector===filter; };
   const filterCareers = (careers, filter) => careers.filter(c => matchesSector(c, filter));
 
   return (
@@ -4244,7 +4245,7 @@ Return this exact JSON structure:
 
 ) : (
                       <div style={{width:"100%",maxWidth:"760px",background:"#fff",boxShadow:"0 4px 20px rgba(0,0,0,.15)",padding:"2rem 2.4rem",fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a"}}>
-                        {resume.split("\\n").map((line,i)=>{
+                        {resume.split("\n").map((line,i)=>{
                           const t=line.trim();
                           if(!t) return <div key={i} style={{height:"6pt"}}/>;
                           const isH=t===t.toUpperCase()&&t.length>3&&t.length<60&&!/[0-9@|]/.test(t);
@@ -4334,10 +4335,8 @@ Return this exact JSON structure:
                       </div>
                     </div>
                     <div className="cl-output">{coverLetter}</div>
-                    <button className="btn-sec" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={genCoverLetter}>
+                    <button className="btn-sec" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={genCoverLetter}>↺ Regenerate</button>
                     <button className="btn-primary" style={{marginTop:".6rem",fontSize:".8rem"}} onClick={saveCoverLetter}>💾 Save Cover Letter</button>
-                      ↺ Regenerate
-                    </button>
                   </>
                 )}
               </div>
@@ -4624,7 +4623,7 @@ Return this exact JSON structure:
                     <button className="btn-primary" style={{width:"auto"}} onClick={()=>{
                       if(!newJob.company||!newJob.title) return;
                       saveJobs([...jobApps,{...newJob,id:Date.now(),date:newJob.date||new Date().toISOString().slice(0, 10)}]);
-                      setNewJob({company:"",title:"",date:"",status:"Applied",notes:"",link:""});
+                      setNewJob({company:"",title:"",date:"",status:"Applied",notes:"",link:"",source:""});
                       setShowAddJob(false);
                     }}>Save Application</button>
                   </div>

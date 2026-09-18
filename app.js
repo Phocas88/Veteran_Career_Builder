@@ -3925,22 +3925,6 @@ Return this exact JSON structure:
                           </div>
                         )}
 
-                        {resumeTemplate==="minimal"&&(
-                          <div style={{fontFamily:"Arial,sans-serif",fontSize:"10pt",color:"#1a1a1a",padding:"2.5rem"}}>
-                            <div style={{marginBottom:"1.8rem"}}>
-                              <div style={{fontSize:"24pt",fontWeight:700,marginBottom:".15rem"}}>{resumeData.name||personal.name}</div>
-                              <div style={{fontSize:"8.5pt",color:"#888"}}>{resumeData.contact||personal.email}</div>
-                              {(includeClearance&&resumeData.clearance)&&(<div style={{fontSize:"8.5pt",fontWeight:600,color:"#333",marginTop:".2rem"}}>{resumeData.clearance}</div>)}
-                            </div>
-                            {resumeData.summary&&(<div style={{marginBottom:"1.8rem",paddingBottom:"1.8rem",borderBottom:"1px solid #eee"}}><div style={{fontSize:"10pt",lineHeight:1.8,color:"#444"}}>{resumeData.summary}</div></div>)}
-                            {(resumeData.experience||[]).map((job,i)=>(<div key={i} style={{marginBottom:"1.6rem"}}><div style={{display:"flex",justifyContent:"space-between"}}><div style={{fontWeight:700,fontSize:"10.5pt"}}>{job.title}</div><div style={{fontSize:"8.5pt",color:"#999"}}>{job.dates}</div></div><div style={{color:"#666",fontSize:"9pt",marginBottom:".4rem"}}>{job.employer}</div>{(job.bullets||[]).map((b,j)=>(<div key={j} style={{fontSize:"9pt",lineHeight:1.6,paddingLeft:".9rem",borderLeft:"2px solid #eee",marginBottom:".25rem",color:"#333"}}>{b}</div>))}</div>))}
-                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.8rem",paddingTop:"1.5rem",borderTop:"1px solid #eee"}}>
-                              <div><div style={{fontSize:"7.5pt",letterSpacing:".15em",textTransform:"uppercase",color:"#999",fontWeight:700,marginBottom:".6rem"}}>Education</div>{(resumeData.education||[]).map((e,i)=>(<div key={i} style={{fontSize:"9pt",marginBottom:".4rem"}}><div style={{fontWeight:600}}>{e.degree}</div><div style={{color:"#777"}}>{e.school}</div></div>))}</div>
-                              <div><div style={{fontSize:"7.5pt",letterSpacing:".15em",textTransform:"uppercase",color:"#999",fontWeight:700,marginBottom:".6rem"}}>Skills</div><div style={{fontSize:"9pt",color:"#444",lineHeight:1.8}}>{(resumeData.skills||[]).join(" \u00b7 ")}</div></div>
-                            </div>
-                          </div>
-                        )}
-
                         {resumeTemplate==="federal"&&(
                           <div style={{fontFamily:"Arial,sans-serif",fontSize:"9.5pt",color:"#000",padding:"1.6rem 2rem"}}>
                             <div style={{borderBottom:"3px double #000",paddingBottom:".8rem",marginBottom:".8rem"}}>
@@ -4220,17 +4204,17 @@ Return this exact JSON structure:
                               </div>
                             </div>
                             <div style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"1px solid #ddd"}}>
-                              <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"6pt"}}>Relevant Experience</div>
+                              <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"6pt"}}>Key Accomplishments</div>
+                              {(resumeData.experience||[]).flatMap(job=>(job.bullets||[])).map((b,j)=>(
+                                <div key={j} style={{fontSize:"9pt",paddingLeft:"12pt",marginBottom:"3pt",lineHeight:1.55,position:"relative"}}><span style={{position:"absolute",left:0,color:"#1a3a6b",fontWeight:700}}>&#9658;</span>{b}</div>
+                              ))}
+                            </div>
+                            <div style={{marginBottom:"8pt",paddingBottom:"6pt",borderBottom:"1px solid #ddd"}}>
+                              <div style={{fontSize:"8.5pt",fontWeight:700,textTransform:"uppercase",letterSpacing:".12em",color:"#1a3a6b",marginBottom:"6pt"}}>Work History</div>
                               {(resumeData.experience||[]).map((job,i)=>(
-                                <div key={i} style={{marginBottom:"7pt"}}>
-                                  <div style={{fontWeight:700,fontSize:"10pt"}}>{job.title}</div>
-                                  <div style={{display:"flex",justifyContent:"space-between"}}>
-                                    <span style={{fontStyle:"italic",fontSize:"9pt",color:"#555"}}>{job.employer}</span>
-                                    <span style={{fontSize:"8.5pt",color:"#888"}}>{job.dates}</span>
-                                  </div>
-                                  {(job.bullets||[]).map((b,j)=>(
-                                    <div key={j} style={{fontSize:"9pt",paddingLeft:"10pt",marginTop:"2pt",lineHeight:1.55}}>&#8226; {b}</div>
-                                  ))}
+                                <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:"3pt"}}>
+                                  <span style={{fontSize:"9.5pt"}}><strong>{job.title}</strong>{job.employer?", "+job.employer:""}</span>
+                                  <span style={{fontSize:"8.5pt",color:"#888"}}>{job.dates}</span>
                                 </div>
                               ))}
                             </div>

@@ -1488,6 +1488,9 @@ Use this exact structure:
         if (rStart > -1 && rEnd > -1) {
           try {
             const rd = JSON.parse(raw.slice(rStart, rEnd + 1));
+            ["name", "contact", "summary", "clearance"].forEach(function(k) {
+              if (rd[k] && typeof rd[k] === "object") rd[k] = Object.values(rd[k]).filter(Boolean).join(", ");
+            });
             delete rd.careerPath;
             setResumeData(rd);
           } catch (pe) {

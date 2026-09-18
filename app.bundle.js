@@ -686,8 +686,7 @@
       }
     };
     const ensureAuthPersistence = async () => {
-      var _a, _b, _c;
-      if (!fbAuth || !window.firebase || !((_c = (_b = (_a = firebase.auth) == null ? void 0 : _a.Auth) == null ? void 0 : _b.Persistence) == null ? void 0 : _c.LOCAL)) return;
+      if (!fbAuth || !window.firebase || !firebase.auth?.Auth?.Persistence?.LOCAL) return;
       try {
         await fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
       } catch (error) {

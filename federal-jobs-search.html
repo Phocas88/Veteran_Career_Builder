@@ -1828,6 +1828,7 @@ function fetchUSAJobsAPI(p) {
     var total = (data.SearchResult && data.SearchResult.SearchResultCount) || items.length;
     var html = '<div style="font-size:.82rem;color:#5a7090;margin-bottom:.75rem;">Showing ' + items.length + ' of ' + total + ' federal positions matching "<strong>' + (p.keyword||'veteran') + '</strong>"</div>';
     window._vcpFeedJobs = [];
+    window._vcpFeedMeta = [];
     items.forEach(function(item, idx) {
       var job = item.MatchedObjectDescriptor;
       var title = job.PositionTitle || 'Untitled';
@@ -1843,6 +1844,7 @@ function fetchUSAJobsAPI(p) {
       var det = (job.UserArea && job.UserArea.Details) || {};
       var duties = det.MajorDuties && det.MajorDuties.join ? det.MajorDuties.join(' ') : '';
       window._vcpFeedJobs[idx] = title + ' at ' + (org || 'a federal agency') + '. Location: ' + locations + '. ' + (grade ? 'Pay grade: ' + grade + '. ' : '') + (salary ? 'Salary: ' + salary + '. ' : '') + 'Job summary: ' + (det.JobSummary || '') + ' Major duties: ' + duties + ' Qualifications required: ' + (job.QualificationSummary || '');
+      window._vcpFeedMeta[idx] = {title: title, company: org, link: url};
 
       html += '<div style="background:#fff;border:1.5px solid #dde3ec;border-radius:10px;padding:1rem 1.25rem;margin-bottom:.5rem;">';
       html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.3rem;margin-bottom:.3rem;">';
@@ -1937,10 +1939,21 @@ function renderMarkdown(text) {
   return html;
 }
 
+function vcpSaveJob(btn){
+  var j = window._vcpAnalyzedJob; if(!j) return;
+  try {
+    var jobs = JSON.parse(localStorage.getItem('vcb_jobs') || '[]');
+    jobs.unshift({ id: Date.now(), title: j.title || 'Analyzed job', company: j.company || '', link: j.link || '', date: new Date().toISOString().slice(0,10), status: 'Analyzed', notes: (j.score != null ? 'AI match score: ' + j.score + '/100' : 'Analyzed via Job Analyzer'), source: 'Job Analyzer' });
+    localStorage.setItem('vcb_jobs', JSON.stringify(jobs.slice(0, 100)));
+    if(btn){ btn.textContent = '\u2713 Saved to Job Tracker'; btn.disabled = true; btn.style.opacity = '.7'; btn.style.cursor = 'default'; }
+  } catch(e){ alert('Could not save to tracker. Please try again.'); }
+}
 function analyzeFeedJob(i){
   var t = (window._vcpFeedJobs || [])[i];
   var ta = document.getElementById('analyze-input');
   if(!t || !ta) return;
+  var m = (window._vcpFeedMeta || [])[i] || {};
+  window._vcpPendingLink = m.link || '';
   ta.value = t;
   ta.scrollIntoView({behavior:'smooth', block:'center'});
   analyzeJob();
@@ -1949,6 +1962,8 @@ async function analyzeJob() {
   var input = (document.getElementById('analyze-input').value||'').trim();
   if (!input) { alert('Please paste a job URL or job description.'); return; }
   if (!checkAccess()) { alert('This feature requires a subscription.'); return; }
+  var _prof = getProfile();
+  window._vcpNoProfile = !(_prof && ((_prof.milExperiences || _prof.experiences || []).length || (_prof.civExperiences || _prof.civilianExperiences || []).length));
 
   // The AI cannot open URLs. If the user pasted only a link, ask for the text
   // so we never fabricate an analysis of a posting we can't see.
@@ -2008,7 +2023,13 @@ async function analyzeJob() {
         '<div><div style="font-weight:700;font-size:1rem;color:#0d1f3c;">Match Score: ' + score + '/100</div>' +
         '<div style="font-size:.78rem;color:#5a6a7a;">' + (score >= 70 ? 'Strong match. Apply if the required qualifications fit.' : score >= 40 ? 'Moderate match. Address the gaps below.' : 'Low match. Significant gaps to address.') + '</div></div></div>';
     }
-    result.innerHTML = scoreHtml + '<div class="md-output">' + renderMarkdown(text) + '</div>' +
+    var jt = ((text.match(/Job Title:\*?\*?\s*([^\n]+)/i) || [])[1] || '').replace(/\*+/g, '').replace(/not specified/i, '').replace(/[\[\]]/g, '').trim();
+    var jc = ((text.match(/Company\/Agency:\*?\*?\s*([^\n]+)/i) || [])[1] || '').replace(/\*+/g, '').replace(/not specified/i, '').replace(/[\[\]]/g, '').trim();
+    window._vcpAnalyzedJob = { title: jt, company: jc, link: (window._vcpPendingLink || ''), score: score };
+    window._vcpPendingLink = '';
+    var nudge = window._vcpNoProfile ? '<div style="background:#fff8e6;border:1px solid #e8c96a;border-radius:8px;padding:.6rem .85rem;font-size:.8rem;color:#5a4a1a;margin-bottom:.75rem;">\u26A0\uFE0F No veteran profile found, so this is a generic match. <a href="/app.html" style="color:#1a3a6b;text-decoration:underline;">Build your profile in the app</a> for an accurate, personalized analysis.</div>' : '';
+    var saveBtn = '<button type="button" onclick="vcpSaveJob(this)" style="background:#1a7a40;color:#fff;border:none;border-radius:6px;padding:.45rem 1rem;font-size:.82rem;font-weight:700;cursor:pointer;margin-bottom:.85rem;">\uD83D\uDCBE Save to Job Tracker</button>';
+    result.innerHTML = nudge + saveBtn + scoreHtml + '<div class="md-output">' + renderMarkdown(text) + '</div>' +
       '<div style="margin-top:1rem;padding:.6rem .8rem;font-size:.72rem;line-height:1.5;color:#5a6a7a;border-top:1px solid #dde3ec;"><strong>AI-generated — verify before relying on it.</strong> The match score and analysis are AI estimates based only on the text you pasted. Confirm the job\'s requirements, qualifications, and deadlines on the official posting before applying. Not legal, financial, or career-outcome advice.</div>';
     result.style.display = 'block';
   } catch (err) {

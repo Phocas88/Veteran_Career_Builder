@@ -796,7 +796,9 @@
         }
       }
       try {
-        const lookup = /^(cs_(test_|live_)?|sub_|ch_)[A-Za-z0-9_]+$/.test(stripeId) ? { sessionId: stripeId } : { email: normalizedEmail };
+        const lookup = {};
+        if (/^(cs_(test_|live_)?|sub_|ch_)[A-Za-z0-9_]+$/.test(stripeId)) lookup.sessionId = stripeId;
+        if (normalizedEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) lookup.email = normalizedEmail;
         const result = await window.VCBSecureApi.verifySubscription(lookup);
         if (!result.active) {
           if (emailKey) {
@@ -1084,6 +1086,7 @@
       try {
         localStorage.removeItem("vcb_profile");
         localStorage.removeItem("vcb_access");
+        Object.keys(localStorage).filter((k) => k.indexOf("vcb_subscription_check:") === 0).forEach((k) => localStorage.removeItem(k));
       } catch (e) {
       }
       setPersonal({ name: "", email: "", phone: "", location: "", linkedin: "" });

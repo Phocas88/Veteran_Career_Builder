@@ -552,9 +552,9 @@
     if (Array.isArray(e.additionalDuties) && e.additionalDuties.length) parts.push("Additional duties: " + e.additionalDuties.join(", "));
     var aw = (Array.isArray(e.awards) ? e.awards : []).filter(Boolean);
     if (aw.length) parts.push("Awards: " + aw.join(", "));
-    return parts.join("\n").split("\n").map(function(s) {
-      return s.trim();
-    }).filter(Boolean).slice(0, 14);
+    return parts.join("\n").replace(/[•▪◦]/g, "\n").split(/\n+/).map(function(s) {
+      return s.replace(/^[\-\*\s]+/, "").trim();
+    }).filter(Boolean).slice(0, 16);
   }
   function PublicProfileCard(props) {
     const { tab, currentUser, hasAccess, personal, milExperiences, civExperiences, education, skills, serviceRecords, target, showToast, setShowPaywall } = props;
@@ -600,9 +600,9 @@
         if (e.duties) b.push(e.duties);
         var aw = (Array.isArray(e.awards) ? e.awards : []).filter(Boolean);
         if (aw.length) b.push("Awards: " + aw.join(", "));
-        var bl = b.join("\n").split("\n").map(function(s) {
-          return s.trim();
-        }).filter(Boolean).slice(0, 14);
+        var bl = b.join("\n").replace(/[•▪◦]/g, "\n").split(/\n+/).map(function(s) {
+          return s.replace(/^[\-\*\s]+/, "").trim();
+        }).filter(Boolean).slice(0, 16);
         return { title: e.jobTitle || "", employer: e.employer || "", location: e.location || "", startDate: e.startDate || "", endDate: e.endDate || "", current: !!e.current, bullets: bl };
       }) : [];
       const edu = incEdu ? edus.map(function(e) {

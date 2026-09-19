@@ -1347,7 +1347,7 @@ function MyProfileTab(props) {
 }
 
 function ppSlugify(s){return String(s||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,50);}
-function ppMilBullets(e){var acc=[e._operations,e._improvement,e._communication,e._compliance].filter(Boolean).join("\n");return acc.split("\n").map(function(s){return s.trim();}).filter(Boolean).slice(0,6);}
+function ppMilBullets(e){var parts=[];if(e.duties)parts.push(e.duties);[e._operations,e._improvement,e._communication,e._compliance].forEach(function(x){if(x&&String(x).trim())parts.push(x);});if(e.deployments&&!/^n\/?a\.?$/i.test(String(e.deployments).trim()))parts.push("Deployments / Operations: "+e.deployments);if(Array.isArray(e.additionalDuties)&&e.additionalDuties.length)parts.push("Additional duties: "+e.additionalDuties.join(", "));var aw=(Array.isArray(e.awards)?e.awards:[]).filter(Boolean);if(aw.length)parts.push("Awards: "+aw.join(", "));return parts.join("\n").split("\n").map(function(s){return s.trim();}).filter(Boolean).slice(0,14);}
 
 function PublicProfileCard(props){
   const {tab,currentUser,hasAccess,personal,milExperiences,civExperiences,education,skills,serviceRecords,target,showToast,setShowPaywall}=props;
@@ -1381,7 +1381,7 @@ function PublicProfileCard(props){
 
   function build(){
     const mil=incMil?mils.map(function(e){return {branch:e.branch||"",rank:e.rank||"",mosTitle:e.mosTitle||"",unit:e.unit||"",serviceType:e.serviceType||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,bullets:ppMilBullets(e)};}):[];
-    const civ=incCiv?civs.map(function(e){return {title:e.jobTitle||"",employer:e.employer||"",location:e.location||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,bullets:e.duties?[e.duties]:[]};}):[];
+    const civ=incCiv?civs.map(function(e){var b=[];if(e.duties)b.push(e.duties);var aw=(Array.isArray(e.awards)?e.awards:[]).filter(Boolean);if(aw.length)b.push("Awards: "+aw.join(", "));var bl=b.join("\n").split("\n").map(function(s){return s.trim();}).filter(Boolean).slice(0,14);return {title:e.jobTitle||"",employer:e.employer||"",location:e.location||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,bullets:bl};}):[];
     const edu=incEdu?edus.map(function(e){return {degree:e.degree||"",field:e.field||"",institution:e.institution||"",year:e.year||""};}):[];
     const sk=incSkills?{technical:skills.technical||"",leadership:skills.leadership||"",languages:skills.languages||"",certs:skills.certs||""}:{};
     const contact={};

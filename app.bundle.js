@@ -539,6 +539,93 @@
     const { tab, currentUser, setShowAuth, personal, hasAccess, hasUnsaved, milExperiences, BRANCH_EMBLEMS: BRANCH_EMBLEMS2, BRANCH_COLORS: BRANCH_COLORS2, RANKS: RANKS2, RankInsignia: RankInsignia2, careers, openCareerDetail, setTab, resume, savedResumes, handleDeleteResume, savedCoverLetters, savedEmails, savedScores, handleDeleteSaved, handleLogout, handleSaveProfile, handleSaveResume, showToast, setShowPaywall, savedPaths, setSavedPaths } = props;
     return /* @__PURE__ */ React.createElement("div", { className: "panel " + (tab === 5 ? "on" : "") }, /* @__PURE__ */ React.createElement(MyProfileContent, { tab, currentUser, personal, hasAccess, hasUnsaved, milExperiences, BRANCH_EMBLEMS: BRANCH_EMBLEMS2, BRANCH_COLORS: BRANCH_COLORS2, RANKS: RANKS2, RankInsignia: RankInsignia2, careers, openCareerDetail, setTab, resume, savedResumes, handleDeleteResume, savedCoverLetters, savedEmails, savedScores, handleDeleteSaved, handleLogout, handleSaveProfile, handleSaveResume, showToast, setShowPaywall, savedPaths, setSavedPaths }));
   }
+  function ppSlugify(s) {
+    return String(s || "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 50);
+  }
+  function ppMilBullets(e) {
+    var acc = [e._operations, e._improvement, e._communication, e._compliance].filter(Boolean).join("\n");
+    return acc.split("\n").map(function(s) {
+      return s.trim();
+    }).filter(Boolean).slice(0, 6);
+  }
+  function PublicProfileCard(props) {
+    const { tab, currentUser, hasAccess, personal, milExperiences, civExperiences, education, skills, serviceRecords, target, showToast, setShowPaywall } = props;
+    const BASE = "https://vcp-proxy.vercel.app/veteran/";
+    const slug = (ppSlugify(personal.name || "veteran") + "-" + String(currentUser.uid).slice(-5).toLowerCase()).replace(/[^a-z0-9-]/g, "");
+    const url = BASE + slug;
+    const [headline, setHeadline] = useState("");
+    const [summary, setSummary] = useState("");
+    const [showEmail, setShowEmail] = useState(false);
+    const [showPhone, setShowPhone] = useState(false);
+    const [showLinkedin, setShowLinkedin] = useState(false);
+    const [showLocation, setShowLocation] = useState(false);
+    const [noindex, setNoindex] = useState(false);
+    const [published, setPublished] = useState(false);
+    const [busy, setBusy] = useState(false);
+    function build() {
+      const mil = (milExperiences || []).filter(function(e) {
+        return e.branch || e.mosTitle || e.unit;
+      }).map(function(e) {
+        return { branch: e.branch || "", rank: e.rank || "", mosTitle: e.mosTitle || "", unit: e.unit || "", serviceType: e.serviceType || "", startDate: e.startDate || "", endDate: e.endDate || "", current: !!e.current, bullets: ppMilBullets(e) };
+      });
+      const civ = (civExperiences || []).filter(function(e) {
+        return e.employer || e.jobTitle;
+      }).map(function(e) {
+        return { title: e.jobTitle || "", employer: e.employer || "", location: e.location || "", startDate: e.startDate || "", endDate: e.endDate || "", current: !!e.current, bullets: e.duties ? [e.duties] : [] };
+      });
+      const edu = (education || []).filter(function(e) {
+        return e.institution || e.degree;
+      }).map(function(e) {
+        return { degree: e.degree || "", field: e.field || "", institution: e.institution || "", year: e.year || "" };
+      });
+      const branch = serviceRecords && serviceRecords[0] && serviceRecords[0].branch || mil[0] && mil[0].branch || "";
+      const contact = {};
+      if (showEmail && personal.email) contact.email = personal.email;
+      if (showPhone && personal.phone) contact.phone = personal.phone;
+      if (showLinkedin && personal.linkedin) contact.linkedin = personal.linkedin;
+      const autoHead = (target && target.title ? target.title.split(",")[0].trim() + " | " : "") + (branch ? branch + " Veteran" : "U.S. Military Veteran");
+      return { uid: currentUser.uid, slug, published: true, noindex: !!noindex, publishedAt: Date.now(), updatedAt: Date.now(), name: personal.name || "Veteran", headline: headline.trim() || autoHead, location: showLocation ? personal.location || "" : "", summary: summary.trim(), military: mil, civilian: civ, education: edu, skills: { technical: skills.technical || "", leadership: skills.leadership || "", languages: skills.languages || "", certs: skills.certs || "" }, contact };
+    }
+    async function doPublish() {
+      if (!hasAccess) {
+        setShowPaywall(true);
+        return;
+      }
+      if (!(personal.name || "").trim()) {
+        showToast("Add your name on the Service Record tab first");
+        return;
+      }
+      setBusy(true);
+      try {
+        await fbDb.collection("publicProfiles").doc(slug).set(build());
+        setPublished(true);
+        showToast("Public profile published \u2713");
+      } catch (e) {
+        showToast("Publish failed, check connection");
+      }
+      setBusy(false);
+    }
+    async function doUnpublish() {
+      setBusy(true);
+      try {
+        await fbDb.collection("publicProfiles").doc(slug).delete();
+        setPublished(false);
+        showToast("Profile unpublished");
+      } catch (e) {
+        showToast("Unpublish failed");
+      }
+      setBusy(false);
+    }
+    function doCopy() {
+      try {
+        navigator.clipboard.writeText(url);
+        showToast("Link copied \u2713");
+      } catch (e) {
+        showToast(url);
+      }
+    }
+    return /* @__PURE__ */ React.createElement("div", { className: "panel " + (tab === 5 ? "on" : "") }, /* @__PURE__ */ React.createElement("div", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "ch" }, /* @__PURE__ */ React.createElement("h3", null, "\u{1F310} Public Profile \u2014 Shareable CV")), /* @__PURE__ */ React.createElement("div", { className: "cb" }, /* @__PURE__ */ React.createElement("p", { style: { fontSize: ".88rem", color: "var(--dim)", marginTop: 0 } }, "Publish a public version of your profile to share on LinkedIn, in applications, or with employers. You control exactly what appears; contact details stay hidden unless you turn them on. Disability ratings and VA claim details are never included."), !hasAccess && /* @__PURE__ */ React.createElement("div", { style: { background: "rgba(240,192,64,.12)", border: "1px solid rgba(240,192,64,.35)", borderRadius: "8px", padding: ".7rem .9rem", fontSize: ".85rem", marginBottom: ".8rem" } }, "Public profiles are a subscriber feature. ", /* @__PURE__ */ React.createElement("button", { className: "btn-primary", style: { marginLeft: ".5rem", fontSize: ".78rem", padding: ".3rem .8rem" }, onClick: () => setShowPaywall(true) }, "Subscribe \u2192")), /* @__PURE__ */ React.createElement("div", { className: "field" }, /* @__PURE__ */ React.createElement("label", null, "Headline (optional)"), /* @__PURE__ */ React.createElement("input", { placeholder: "e.g. Project Manager | U.S. Army Veteran", value: headline, onChange: (e) => setHeadline(e.target.value) })), /* @__PURE__ */ React.createElement("div", { className: "field" }, /* @__PURE__ */ React.createElement("label", null, "Professional summary (optional)"), /* @__PURE__ */ React.createElement("textarea", { rows: 3, placeholder: "A short summary of who you are and what you're looking for...", value: summary, onChange: (e) => setSummary(e.target.value) })), /* @__PURE__ */ React.createElement("div", { style: { margin: ".7rem 0", fontSize: ".86rem" } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 600, marginBottom: ".35rem" } }, "Show publicly:"), /* @__PURE__ */ React.createElement("label", { style: { display: "block", margin: ".25rem 0" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: showLocation, onChange: (e) => setShowLocation(e.target.checked) }), " City / State"), /* @__PURE__ */ React.createElement("label", { style: { display: "block", margin: ".25rem 0" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: showEmail, onChange: (e) => setShowEmail(e.target.checked) }), " Email address"), /* @__PURE__ */ React.createElement("label", { style: { display: "block", margin: ".25rem 0" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: showPhone, onChange: (e) => setShowPhone(e.target.checked) }), " Phone number"), /* @__PURE__ */ React.createElement("label", { style: { display: "block", margin: ".25rem 0" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: showLinkedin, onChange: (e) => setShowLinkedin(e.target.checked) }), " LinkedIn URL"), /* @__PURE__ */ React.createElement("label", { style: { display: "block", margin: ".25rem 0" } }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: noindex, onChange: (e) => setNoindex(e.target.checked) }), " Hide from Google search (still shareable by link)")), /* @__PURE__ */ React.createElement("div", { className: "nav-row", style: { gap: ".5rem", flexWrap: "wrap", justifyContent: "flex-start" } }, /* @__PURE__ */ React.createElement("button", { className: "btn-primary", disabled: busy, onClick: doPublish }, published ? "\u21BB Update Profile" : "\u{1F310} Publish Profile"), published && /* @__PURE__ */ React.createElement("button", { className: "btn-sec", disabled: busy, onClick: doCopy }, "\u{1F4CB} Copy Link"), published && /* @__PURE__ */ React.createElement("button", { className: "btn-danger", disabled: busy, onClick: doUnpublish }, "Unpublish")), published && /* @__PURE__ */ React.createElement("div", { style: { marginTop: ".7rem", fontSize: ".82rem", wordBreak: "break-all" } }, "Live at ", /* @__PURE__ */ React.createElement("a", { href: url, target: "_blank", rel: "noopener" }, url)))));
+  }
   function App() {
     const [tab, setTab] = useState(0);
     const [personal, setPersonal] = useState({ name: "", email: "", phone: "", location: "", linkedin: "" });
@@ -2960,7 +3047,7 @@ Return this exact JSON structure:
           { name: "Veteran Recovery Centers", desc: "Residential and outpatient recovery programs specifically for veterans. Peer support from fellow veterans in recovery who understand military culture.", contact: "va.gov/find-locations/?facilityType=benefits", href: "https://www.va.gov/find-locations/?facilityType=benefits", color: "green", tags: ["Substance Use"] }
         ]
       }
-    ].filter((section) => resFilter === "All" || section.tag === resFilter).map((section, si) => /* @__PURE__ */ React.createElement("div", { key: si, className: "res-section" }, /* @__PURE__ */ React.createElement("div", { className: "res-section-title" }, section.icon, " ", section.category), section.resources.filter((r) => resFilter === "All" || r.tags.includes(resFilter)).map((r, ri) => /* @__PURE__ */ React.createElement("div", { key: ri, className: "res-card" }, /* @__PURE__ */ React.createElement("div", { className: "res-body" }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: ".5rem", marginBottom: ".2rem", flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement("div", { className: "res-name" }, r.name), r.tags.map((t) => /* @__PURE__ */ React.createElement("span", { key: t, className: "res-tag" }, t))), /* @__PURE__ */ React.createElement("div", { className: "res-desc" }, r.desc), /* @__PURE__ */ React.createElement("a", { href: r.href, target: r.href.startsWith("tel:") || r.href.startsWith("sms:") ? "_self" : "_blank", className: "res-contact " + r.color }, r.href.startsWith("tel:") ? "\u{1F4DE} " : r.href.startsWith("sms:") ? "\u{1F4F1} " : "\u{1F517} ", r.contact)))))), /* @__PURE__ */ React.createElement("div", { style: { background: "#f0f4ff", border: "1px solid #c0d0e4", borderRadius: "8px", padding: "1rem 1.2rem", marginTop: "1rem", fontSize: ".82rem", color: "#3a5070", lineHeight: 1.7 } }, /* @__PURE__ */ React.createElement("strong", { style: { color: "#1a3a6b" } }, "\u{1F4CC} A note from Veteran Career Path:"), " This resource page exists because we know the transition is more than just a job search. You served. You sacrificed. And you deserve support in every area of your life, not just your career. If you know a veteran who needs help, please share these resources with them."), /* @__PURE__ */ React.createElement("div", { className: "nav-row", style: { marginTop: "1.5rem" } }, /* @__PURE__ */ React.createElement("button", { className: "btn-sec", onClick: () => setTab(4) }, "\u2190 Job Search Hub"), /* @__PURE__ */ React.createElement("button", { className: "btn-sec", onClick: () => setTab(5) }, "My Profile \u2192"))), /* @__PURE__ */ React.createElement(MyProfileTab, { tab, currentUser, setShowAuth, personal, hasAccess, hasUnsaved, milExperiences, BRANCH_EMBLEMS, BRANCH_COLORS, RANKS, RankInsignia, careers, openCareerDetail, setTab, resume, savedResumes, handleDeleteResume, savedCoverLetters, savedEmails, savedScores, handleDeleteSaved, handleLogout, handleSaveProfile, handleSaveResume, showToast, setShowPaywall, savedPaths, setSavedPaths }))), /* @__PURE__ */ React.createElement("div", { className: "tools-overlay", id: "tools-overlay", onClick: () => closeToolsDrawer() }), /* @__PURE__ */ React.createElement("button", { className: "tools-fab", id: "tools-fab", onClick: () => openToolsDrawer(), title: "AI Tools" }, "\u{1F6E0}\uFE0F"), /* @__PURE__ */ React.createElement("div", { className: "tools-drawer", id: "tools-drawer" }, /* @__PURE__ */ React.createElement("div", { className: "tools-drawer-header" }, /* @__PURE__ */ React.createElement("span", { className: "tools-drawer-title" }, "AI Career Tools"), /* @__PURE__ */ React.createElement("button", { className: "tools-drawer-close", onClick: () => closeToolsDrawer() }, "\u2715")), /* @__PURE__ */ React.createElement("div", { className: "tools-drawer-body" }, /* @__PURE__ */ React.createElement("div", { className: "tools-drawer-section" }, "Inside This App"), /* @__PURE__ */ React.createElement("a", { className: "tools-drawer-link active-tool", href: "#", onClick: (e) => {
+    ].filter((section) => resFilter === "All" || section.tag === resFilter).map((section, si) => /* @__PURE__ */ React.createElement("div", { key: si, className: "res-section" }, /* @__PURE__ */ React.createElement("div", { className: "res-section-title" }, section.icon, " ", section.category), section.resources.filter((r) => resFilter === "All" || r.tags.includes(resFilter)).map((r, ri) => /* @__PURE__ */ React.createElement("div", { key: ri, className: "res-card" }, /* @__PURE__ */ React.createElement("div", { className: "res-body" }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: ".5rem", marginBottom: ".2rem", flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement("div", { className: "res-name" }, r.name), r.tags.map((t) => /* @__PURE__ */ React.createElement("span", { key: t, className: "res-tag" }, t))), /* @__PURE__ */ React.createElement("div", { className: "res-desc" }, r.desc), /* @__PURE__ */ React.createElement("a", { href: r.href, target: r.href.startsWith("tel:") || r.href.startsWith("sms:") ? "_self" : "_blank", className: "res-contact " + r.color }, r.href.startsWith("tel:") ? "\u{1F4DE} " : r.href.startsWith("sms:") ? "\u{1F4F1} " : "\u{1F517} ", r.contact)))))), /* @__PURE__ */ React.createElement("div", { style: { background: "#f0f4ff", border: "1px solid #c0d0e4", borderRadius: "8px", padding: "1rem 1.2rem", marginTop: "1rem", fontSize: ".82rem", color: "#3a5070", lineHeight: 1.7 } }, /* @__PURE__ */ React.createElement("strong", { style: { color: "#1a3a6b" } }, "\u{1F4CC} A note from Veteran Career Path:"), " This resource page exists because we know the transition is more than just a job search. You served. You sacrificed. And you deserve support in every area of your life, not just your career. If you know a veteran who needs help, please share these resources with them."), /* @__PURE__ */ React.createElement("div", { className: "nav-row", style: { marginTop: "1.5rem" } }, /* @__PURE__ */ React.createElement("button", { className: "btn-sec", onClick: () => setTab(4) }, "\u2190 Job Search Hub"), /* @__PURE__ */ React.createElement("button", { className: "btn-sec", onClick: () => setTab(5) }, "My Profile \u2192"))), /* @__PURE__ */ React.createElement(MyProfileTab, { tab, currentUser, setShowAuth, personal, hasAccess, hasUnsaved, milExperiences, BRANCH_EMBLEMS, BRANCH_COLORS, RANKS, RankInsignia, careers, openCareerDetail, setTab, resume, savedResumes, handleDeleteResume, savedCoverLetters, savedEmails, savedScores, handleDeleteSaved, handleLogout, handleSaveProfile, handleSaveResume, showToast, setShowPaywall, savedPaths, setSavedPaths }), currentUser && /* @__PURE__ */ React.createElement(PublicProfileCard, { tab, currentUser, hasAccess, personal, milExperiences, civExperiences, education, skills, serviceRecords, target, showToast, setShowPaywall }))), /* @__PURE__ */ React.createElement("div", { className: "tools-overlay", id: "tools-overlay", onClick: () => closeToolsDrawer() }), /* @__PURE__ */ React.createElement("button", { className: "tools-fab", id: "tools-fab", onClick: () => openToolsDrawer(), title: "AI Tools" }, "\u{1F6E0}\uFE0F"), /* @__PURE__ */ React.createElement("div", { className: "tools-drawer", id: "tools-drawer" }, /* @__PURE__ */ React.createElement("div", { className: "tools-drawer-header" }, /* @__PURE__ */ React.createElement("span", { className: "tools-drawer-title" }, "AI Career Tools"), /* @__PURE__ */ React.createElement("button", { className: "tools-drawer-close", onClick: () => closeToolsDrawer() }, "\u2715")), /* @__PURE__ */ React.createElement("div", { className: "tools-drawer-body" }, /* @__PURE__ */ React.createElement("div", { className: "tools-drawer-section" }, "Inside This App"), /* @__PURE__ */ React.createElement("a", { className: "tools-drawer-link active-tool", href: "#", onClick: (e) => {
       e.preventDefault();
       setTab(0);
       closeToolsDrawer();

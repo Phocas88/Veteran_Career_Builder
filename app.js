@@ -1351,7 +1351,7 @@ function ppMilBullets(e){var acc=[e._operations,e._improvement,e._communication,
 
 function PublicProfileCard(props){
   const {tab,currentUser,hasAccess,personal,milExperiences,civExperiences,education,skills,serviceRecords,target,showToast,setShowPaywall}=props;
-  const BASE="https://vcp-proxy.vercel.app/veteran/";
+  const BASE="https://profiles.veterancareerpath.com/veteran/";
   const slug=(ppSlugify(personal.name||"veteran")+"-"+String(currentUser.uid).slice(-5).toLowerCase()).replace(/[^a-z0-9-]/g,"");
   const url=BASE+slug;
   const [headline,setHeadline]=useState("");
@@ -2866,7 +2866,7 @@ Return this exact JSON structure:
             <React.Fragment key={i}>
               {i===2&&<div className="tabs-separator">AI</div>}
               {i===5&&<div className="tabs-separator">·</div>}
-              <button className={"tab "+(AI_TABS.includes(i)?"ai-tab ":"")+(tab===i?"active":"")} onClick={()=>setTab(i)}>
+              <button className={"tab "+(AI_TABS.includes(i)?"ai-tab ":"")+(tab===i?"active":"")} onClick={()=>{if(!currentUser){setShowAuth(true);return;}setTab(i);}}>
                 <span className="tab-n">{AI_TABS.includes(i)?"🤖":i+1}</span>{t}
               </button>
             </React.Fragment>

@@ -61,30 +61,33 @@
     panel.appendChild(row('Analytics', 'Google Analytics — anonymous traffic measurement to improve the site.', saved.analytics !== false, false, 'vcb-cc-an'));
     panel.appendChild(row('Advertising', 'Cookies that support relevant ads and measure their performance.', saved.ads !== false, false, 'vcb-cc-ad'));
 
-    var btns = el('div', 'display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;');
-    function button(label, primary, ghost) {
-      var b = el('button', 'font:inherit;font-size:.82rem;font-weight:700;padding:.55rem 1.1rem;border-radius:8px;cursor:pointer;border:1px solid ' +
+    // One tidy row of equal-width buttons (fits a single line on mobile).
+    var btns = el('div', 'display:flex;gap:.5rem;align-items:stretch;');
+    function button(label, primary) {
+      return el('button', 'font:inherit;font-size:.8rem;font-weight:700;padding:.6rem .4rem;border-radius:8px;cursor:pointer;flex:1 1 0;min-width:0;white-space:nowrap;border:1px solid ' +
         (primary ? GOLD : 'rgba(255,255,255,.35)') + ';' + (primary ? 'background:' + GOLD + ';color:' + NAVY + ';' : 'background:transparent;color:#e8eef7;'), label);
-      return b;
     }
     var accept = button('Accept all', true);
-    var reject = button('Reject non-essential', false);
+    var reject = button('Reject', false);
     var custom = button('Customize', false);
-    var savePref = button('Save choices', true); savePref.style.display = 'none';
+    // Save button lives inside the Customize panel (full width) so the main row stays 3.
+    var savePref = el('button', 'font:inherit;font-size:.82rem;font-weight:700;padding:.6rem 1rem;border-radius:8px;cursor:pointer;width:100%;margin-top:.7rem;border:1px solid ' + GOLD + ';background:' + GOLD + ';color:' + NAVY + ';', 'Save my choices');
+    savePref.style.display = 'none';
+    panel.appendChild(savePref);
 
     accept.onclick = function () { save({ analytics: true, ads: true }); remove(); };
     reject.onclick = function () { save({ analytics: false, ads: false }); remove(); };
     custom.onclick = function () {
       var open = panel.style.display === 'block';
       panel.style.display = open ? 'none' : 'block';
-      savePref.style.display = open ? 'none' : 'inline-block';
+      savePref.style.display = open ? 'none' : 'block';
     };
     savePref.onclick = function () {
       save({ analytics: document.getElementById('vcb-cc-an').checked, ads: document.getElementById('vcb-cc-ad').checked });
       remove();
     };
 
-    [accept, reject, custom, savePref].forEach(function (b) { btns.appendChild(b); });
+    [accept, reject, custom].forEach(function (b) { btns.appendChild(b); });
     inner.appendChild(msg); inner.appendChild(panel); inner.appendChild(btns);
     wrap.appendChild(inner);
     (document.body || document.documentElement).appendChild(wrap);

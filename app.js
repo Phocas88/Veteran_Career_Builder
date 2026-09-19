@@ -1378,6 +1378,7 @@ function PublicProfileCard(props){
   const [noindex,setNoindex]=useState(false);
   const [published,setPublished]=useState(false);
   const [busy,setBusy]=useState(false);
+  useEffect(function(){ if(!currentUser||!fbDb) return; fbDb.collection("publicProfiles").doc(slug).get().then(function(d){ if(d.exists&&(d.data()||{}).published!==false) setPublished(true); }).catch(function(){}); }, []);
 
   function build(){
     const mil=incMil?mils.map(function(e){return {branch:e.branch||"",rank:e.rank||"",mosTitle:e.mosTitle||"",unit:e.unit||"",serviceType:e.serviceType||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,bullets:ppMilBullets(e)};}):[];

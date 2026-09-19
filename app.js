@@ -1354,27 +1354,41 @@ function PublicProfileCard(props){
   const BASE="https://profiles.veterancareerpath.com/veteran/";
   const slug=(ppSlugify(personal.name||"veteran")+"-"+String(currentUser.uid).slice(-5).toLowerCase()).replace(/[^a-z0-9-]/g,"");
   const url=BASE+slug;
-  const [headline,setHeadline]=useState("");
-  const [summary,setSummary]=useState("");
+
+  const mils=(milExperiences||[]).filter(function(e){return e.branch||e.mosTitle||e.unit;});
+  const civs=(civExperiences||[]).filter(function(e){return e.employer||e.jobTitle;});
+  const edus=(education||[]).filter(function(e){return e.institution||e.degree;});
+  const hasSkills=!!(skills&&["technical","leadership","languages","certs"].some(function(k){return skills[k]&&String(skills[k]).trim();}));
+  const branch=(serviceRecords&&serviceRecords[0]&&serviceRecords[0].branch)||(mils[0]&&mils[0].branch)||"";
+  const topRole=(target&&target.title?String(target.title).split(",")[0].trim():"")||(mils[0]&&mils[0].mosTitle)||"";
+  const autoHeadline=(topRole?topRole+" | ":"")+(branch?branch+" Veteran":"U.S. Military Veteran");
+  const topMos=(mils[0]&&(mils[0].mosTitle||mils[0].jobTitle))||"";
+  const autoSummary=(branch?branch+" veteran":"Military veteran")+(topMos?" with a background in "+topMos:"")+(target&&target.title?", pursuing "+String(target.title).split(",")[0].trim()+" opportunities.":".");
+
+  const [headline,setHeadline]=useState(autoHeadline);
+  const [summary,setSummary]=useState(autoSummary);
+  const [incMil,setIncMil]=useState(true);
+  const [incCiv,setIncCiv]=useState(true);
+  const [incEdu,setIncEdu]=useState(true);
+  const [incSkills,setIncSkills]=useState(true);
+  const [showLocation,setShowLocation]=useState(false);
   const [showEmail,setShowEmail]=useState(false);
   const [showPhone,setShowPhone]=useState(false);
   const [showLinkedin,setShowLinkedin]=useState(false);
-  const [showLocation,setShowLocation]=useState(false);
   const [noindex,setNoindex]=useState(false);
   const [published,setPublished]=useState(false);
   const [busy,setBusy]=useState(false);
 
   function build(){
-    const mil=(milExperiences||[]).filter(function(e){return e.branch||e.mosTitle||e.unit;}).map(function(e){return {branch:e.branch||"",rank:e.rank||"",mosTitle:e.mosTitle||"",unit:e.unit||"",serviceType:e.serviceType||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,bullets:ppMilBullets(e)};});
-    const civ=(civExperiences||[]).filter(function(e){return e.employer||e.jobTitle;}).map(function(e){return {title:e.jobTitle||"",employer:e.employer||"",location:e.location||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,bullets:e.duties?[e.duties]:[]};});
-    const edu=(education||[]).filter(function(e){return e.institution||e.degree;}).map(function(e){return {degree:e.degree||"",field:e.field||"",institution:e.institution||"",year:e.year||""};});
-    const branch=(serviceRecords&&serviceRecords[0]&&serviceRecords[0].branch)||(mil[0]&&mil[0].branch)||"";
+    const mil=incMil?mils.map(function(e){return {branch:e.branch||"",rank:e.rank||"",mosTitle:e.mosTitle||"",unit:e.unit||"",serviceType:e.serviceType||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,bullets:ppMilBullets(e)};}):[];
+    const civ=incCiv?civs.map(function(e){return {title:e.jobTitle||"",employer:e.employer||"",location:e.location||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,bullets:e.duties?[e.duties]:[]};}):[];
+    const edu=incEdu?edus.map(function(e){return {degree:e.degree||"",field:e.field||"",institution:e.institution||"",year:e.year||""};}):[];
+    const sk=incSkills?{technical:skills.technical||"",leadership:skills.leadership||"",languages:skills.languages||"",certs:skills.certs||""}:{};
     const contact={};
     if(showEmail&&personal.email)contact.email=personal.email;
     if(showPhone&&personal.phone)contact.phone=personal.phone;
     if(showLinkedin&&personal.linkedin)contact.linkedin=personal.linkedin;
-    const autoHead=((target&&target.title)?target.title.split(",")[0].trim()+" | ":"")+(branch?branch+" Veteran":"U.S. Military Veteran");
-    return {uid:currentUser.uid,slug:slug,published:true,noindex:!!noindex,publishedAt:Date.now(),updatedAt:Date.now(),name:personal.name||"Veteran",headline:(headline.trim()||autoHead),location:showLocation?(personal.location||""):"",summary:summary.trim(),military:mil,civilian:civ,education:edu,skills:{technical:skills.technical||"",leadership:skills.leadership||"",languages:skills.languages||"",certs:skills.certs||""},contact:contact};
+    return {uid:currentUser.uid,slug:slug,published:true,noindex:!!noindex,publishedAt:Date.now(),updatedAt:Date.now(),name:personal.name||"Veteran",headline:(headline.trim()||autoHeadline),location:showLocation?(personal.location||""):"",summary:summary.trim(),military:mil,civilian:civ,education:edu,skills:sk,contact:contact};
   }
   async function doPublish(){
     if(!hasAccess){setShowPaywall(true);return;}
@@ -1392,30 +1406,58 @@ function PublicProfileCard(props){
   }
   function doCopy(){try{navigator.clipboard.writeText(url);showToast("Link copied ✓");}catch(e){showToast(url);}}
 
+  const INK="#1a2a3a",SUB="#4a5a6e",LINE="#d7deea";
+  const toggle=(key,label,count,on,set)=>(
+    <label key={key} style={{display:"flex",alignItems:"center",gap:".55rem",padding:".55rem .7rem",border:"1px solid "+LINE,borderRadius:"8px",background:on?"#eaf3ff":"#fff",cursor:"pointer",fontSize:".9rem",color:INK,fontWeight:600}}>
+      <input type="checkbox" checked={on} onChange={e=>set(e.target.checked)} style={{width:"17px",height:"17px",accentColor:"#1a3a6b",flexShrink:0}}/>
+      <span>{label}{count?<span style={{color:SUB,fontWeight:400}}> ({count})</span>:null}</span>
+    </label>
+  );
+  const secTitle=(t,note)=>(<div style={{fontWeight:700,fontSize:".8rem",textTransform:"uppercase",letterSpacing:".05em",color:INK,margin:"0 0 .5rem"}}>{t}{note?<span style={{fontWeight:400,textTransform:"none",letterSpacing:0,color:SUB}}> {note}</span>:null}</div>);
+  const grid={display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:".5rem",marginBottom:"1.1rem"};
+
   return (
     <div className={"panel "+(tab===5?"on":"")}>
-      <div className="card">
-        <div className="ch"><h3>🌐 Public Profile — Shareable CV</h3></div>
-        <div className="cb">
-          <p style={{fontSize:".88rem",color:"var(--dim)",marginTop:0}}>Publish a public version of your profile to share on LinkedIn, in applications, or with employers. You control exactly what appears; contact details stay hidden unless you turn them on. Disability ratings and VA claim details are never included.</p>
-          {!hasAccess&&<div style={{background:"rgba(240,192,64,.12)",border:"1px solid rgba(240,192,64,.35)",borderRadius:"8px",padding:".7rem .9rem",fontSize:".85rem",marginBottom:".8rem"}}>Public profiles are a subscriber feature. <button className="btn-primary" style={{marginLeft:".5rem",fontSize:".78rem",padding:".3rem .8rem"}} onClick={()=>setShowPaywall(true)}>Subscribe →</button></div>}
-          <div className="field"><label>Headline (optional)</label><input placeholder="e.g. Project Manager | U.S. Army Veteran" value={headline} onChange={e=>setHeadline(e.target.value)}/></div>
-          <div className="field"><label>Professional summary (optional)</label><textarea rows={3} placeholder="A short summary of who you are and what you're looking for..." value={summary} onChange={e=>setSummary(e.target.value)}/></div>
-          <div style={{margin:".7rem 0",fontSize:".86rem"}}>
-            <div style={{fontWeight:600,marginBottom:".35rem"}}>Show publicly:</div>
-            <label style={{display:"block",margin:".25rem 0"}}><input type="checkbox" checked={showLocation} onChange={e=>setShowLocation(e.target.checked)}/> City / State</label>
-            <label style={{display:"block",margin:".25rem 0"}}><input type="checkbox" checked={showEmail} onChange={e=>setShowEmail(e.target.checked)}/> Email address</label>
-            <label style={{display:"block",margin:".25rem 0"}}><input type="checkbox" checked={showPhone} onChange={e=>setShowPhone(e.target.checked)}/> Phone number</label>
-            <label style={{display:"block",margin:".25rem 0"}}><input type="checkbox" checked={showLinkedin} onChange={e=>setShowLinkedin(e.target.checked)}/> LinkedIn URL</label>
-            <label style={{display:"block",margin:".25rem 0"}}><input type="checkbox" checked={noindex} onChange={e=>setNoindex(e.target.checked)}/> Hide from Google search (still shareable by link)</label>
+      <div style={{background:"#fff",border:"1px solid "+LINE,borderRadius:"12px",padding:"1.3rem 1.4rem",color:INK}}>
+        <h3 style={{margin:"0 0 .5rem",fontSize:"1.2rem",color:"#1a3a6b"}}>🌐 Share Your Profile</h3>
+        <p style={{fontSize:".92rem",lineHeight:1.6,color:SUB,margin:"0 0 1rem"}}>We build a public profile from the info you already entered, just pick what to show and publish. You get one link to share on LinkedIn, in applications, or with employers. Contact details stay hidden unless you turn them on, and disability ratings and VA claim details are never included.</p>
+        {!hasAccess&&<div style={{background:"#fff8e6",border:"1px solid #f0c040",borderRadius:"8px",padding:".7rem .9rem",fontSize:".9rem",color:INK,marginBottom:"1rem"}}>Public profiles are a subscriber feature. <button className="btn-primary" style={{marginLeft:".4rem",fontSize:".8rem",padding:".35rem .8rem"}} onClick={()=>setShowPaywall(true)}>Subscribe →</button></div>}
+
+        {(mils.length||civs.length||edus.length||hasSkills)?<React.Fragment>
+          {secTitle("What to include")}
+          <div style={grid}>
+            {mils.length?toggle("mil","Military service",mils.length+(mils.length===1?" role":" roles"),incMil,setIncMil):null}
+            {civs.length?toggle("civ","Civilian experience",civs.length+(civs.length===1?" job":" jobs"),incCiv,setIncCiv):null}
+            {edus.length?toggle("edu","Education",String(edus.length),incEdu,setIncEdu):null}
+            {hasSkills?toggle("sk","Skills & certifications","",incSkills,setIncSkills):null}
           </div>
-          <div className="nav-row" style={{gap:".5rem",flexWrap:"wrap",justifyContent:"flex-start"}}>
-            <button className="btn-primary" disabled={busy} onClick={doPublish}>{published?"↻ Update Profile":"🌐 Publish Profile"}</button>
-            {published&&<button className="btn-sec" disabled={busy} onClick={doCopy}>📋 Copy Link</button>}
-            {published&&<button className="btn-danger" disabled={busy} onClick={doUnpublish}>Unpublish</button>}
-          </div>
-          {published&&<div style={{marginTop:".7rem",fontSize:".82rem",wordBreak:"break-all"}}>Live at <a href={url} target="_blank" rel="noopener">{url}</a></div>}
+        </React.Fragment>:<div style={{background:"#fff8e6",border:"1px solid #f0c040",borderRadius:"8px",padding:".7rem .9rem",fontSize:".9rem",color:INK,marginBottom:"1rem"}}>Fill in your <strong>Service Record</strong> first, then come back here to publish a public profile.</div>}
+
+        {secTitle("Contact & visibility","(off by default)")}
+        <div style={grid}>
+          {toggle("loc","City / State","",showLocation,setShowLocation)}
+          {toggle("em","Email","",showEmail,setShowEmail)}
+          {toggle("ph","Phone","",showPhone,setShowPhone)}
+          {toggle("li","LinkedIn","",showLinkedin,setShowLinkedin)}
+          {toggle("ni","Hide from Google","",noindex,setNoindex)}
         </div>
+
+        <details style={{marginBottom:"1.1rem"}}>
+          <summary style={{cursor:"pointer",fontSize:".88rem",fontWeight:600,color:"#1a3a6b"}}>Fine-tune headline & summary (auto-filled)</summary>
+          <div style={{marginTop:".7rem"}}>
+            <label style={{display:"block",fontSize:".76rem",fontWeight:700,color:INK,marginBottom:".25rem"}}>HEADLINE</label>
+            <input value={headline} onChange={e=>setHeadline(e.target.value)} style={{width:"100%",boxSizing:"border-box",padding:".55rem .7rem",border:"1px solid "+LINE,borderRadius:"7px",fontSize:".92rem",color:INK,marginBottom:".8rem"}}/>
+            <label style={{display:"block",fontSize:".76rem",fontWeight:700,color:INK,marginBottom:".25rem"}}>SUMMARY</label>
+            <textarea value={summary} onChange={e=>setSummary(e.target.value)} rows={3} style={{width:"100%",boxSizing:"border-box",padding:".55rem .7rem",border:"1px solid "+LINE,borderRadius:"7px",fontSize:".92rem",color:INK,resize:"vertical"}}/>
+          </div>
+        </details>
+
+        <div style={{display:"flex",gap:".5rem",flexWrap:"wrap",alignItems:"center"}}>
+          <button className="btn-primary" disabled={busy} onClick={doPublish}>{published?"↻ Update Profile":"🌐 Publish Profile"}</button>
+          {published&&<button className="btn-sec" disabled={busy} onClick={doCopy}>📋 Copy Link</button>}
+          {published&&<button className="btn-danger" disabled={busy} onClick={doUnpublish}>Unpublish</button>}
+        </div>
+        {published&&<div style={{marginTop:".8rem",fontSize:".9rem",color:INK,wordBreak:"break-all"}}>Live at <a href={url} target="_blank" rel="noopener" style={{color:"#1a3a6b",fontWeight:600}}>{url}</a></div>}
       </div>
     </div>
   );

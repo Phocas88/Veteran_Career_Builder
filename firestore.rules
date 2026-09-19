@@ -19,6 +19,23 @@ service cloud.firestore {
       }
     }
 
+    // Public, shareable veteran profiles (opt-in "digital CV"). World-readable BY
+    // DESIGN: the Vercel proxy server-renders these so a shared link shows a real
+    // social preview card. Only SANITIZED, owner-chosen fields are ever written here
+    // (contact info only if the vet toggles it on; NEVER disability ratings or VA
+    // claim data). Only the owner (uid) may create/update/delete their own profile.
+    match /publicProfiles/{slug} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() <= 120;
+      allow update: if request.auth != null
+                    && resource.data.uid == request.auth.uid
+                    && request.resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
     // Email capture / lead gen. Anonymous visitors may submit (the signup gate runs
     // before login), but only an admin may read, edit, or delete the subscriber list.
     match /email_subscribers/{doc} {

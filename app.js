@@ -2803,6 +2803,14 @@ Return this exact JSON structure:
 
 
           <div className={"panel "+(tab===0?"on":"")}>
+            {!currentUser ? (
+            <div className="card" style={{textAlign:"center",padding:"2.6rem 1.5rem"}}>
+              <div style={{fontSize:"2.5rem",marginBottom:".6rem"}}>🎖️</div>
+              <h3 style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.6rem",letterSpacing:".05em",color:"#1a3a6b",marginBottom:".6rem"}}>Create a free account to start</h3>
+              <p style={{color:"#55637a",maxWidth:"440px",margin:"0 auto 1.3rem",fontSize:".93rem",lineHeight:1.6}}>Sign in or create a free account to build your Service Record. Your progress saves automatically so you never lose your work, and an account is required before you enter your information.</p>
+              <button className="btn-primary" onClick={()=>setShowAuth(true)}>Sign In / Create Free Account →</button>
+            </div>
+            ) : (<React.Fragment>
             <div className="intro">
               <strong>Your service matters.</strong> Fill in your background below, your military experience, civilian work, education, and skills. The more you add, the better your career matches and resume will be. Take your time and be as detailed as you like.
             </div>
@@ -3745,6 +3753,7 @@ Return this exact JSON structure:
             )}
 
             <div className="nav-row"><div/><button className="btn-sec" onClick={()=>setTab(1)}>Next: Career Pathways →</button></div>
+            </React.Fragment>)}
           </div>
 
 

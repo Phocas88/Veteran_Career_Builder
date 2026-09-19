@@ -36,15 +36,15 @@ jobs:
           node --check scripts/build-hosting.mjs
           node --check scripts/apply-security-refactor.mjs
 
-      - name: Verify app.bundle.js is in sync with app.js
+      - name: Verify app.bundle.js + app.html are in sync with app.js
         run: |
           npm run build
-          if ! git diff --quiet -- app.bundle.js; then
-            echo "::error::app.bundle.js is out of sync with app.js. Run 'npm run build' and commit app.bundle.js."
-            git --no-pager diff --stat -- app.bundle.js
+          if ! git diff --quiet -- app.bundle.js app.html; then
+            echo "::error::app.bundle.js/app.html out of sync. Run 'npm run build' and commit both."
+            git --no-pager diff --stat -- app.bundle.js app.html
             exit 1
           fi
-          echo "app.bundle.js is in sync with app.js"
+          echo "app.bundle.js + app.html are in sync with app.js"
 
       - name: Build Firebase hosting directory
         run: node scripts/build-hosting.mjs

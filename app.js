@@ -1346,6 +1346,81 @@ function MyProfileTab(props) {
   );
 }
 
+function ppSlugify(s){return String(s||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,50);}
+function ppMilBullets(e){var acc=[e._operations,e._improvement,e._communication,e._compliance].filter(Boolean).join("\n");return acc.split("\n").map(function(s){return s.trim();}).filter(Boolean).slice(0,6);}
+
+function PublicProfileCard(props){
+  const {tab,currentUser,hasAccess,personal,milExperiences,civExperiences,education,skills,serviceRecords,target,showToast,setShowPaywall}=props;
+  const BASE="https://vcp-proxy.vercel.app/veteran/";
+  const slug=(ppSlugify(personal.name||"veteran")+"-"+String(currentUser.uid).slice(-5).toLowerCase()).replace(/[^a-z0-9-]/g,"");
+  const url=BASE+slug;
+  const [headline,setHeadline]=useState("");
+  const [summary,setSummary]=useState("");
+  const [showEmail,setShowEmail]=useState(false);
+  const [showPhone,setShowPhone]=useState(false);
+  const [showLinkedin,setShowLinkedin]=useState(false);
+  const [showLocation,setShowLocation]=useState(false);
+  const [noindex,setNoindex]=useState(false);
+  const [published,setPublished]=useState(false);
+  const [busy,setBusy]=useState(false);
+
+  function build(){
+    const mil=(milExperiences||[]).filter(function(e){return e.branch||e.mosTitle||e.unit;}).map(function(e){return {branch:e.branch||"",rank:e.rank||"",mosTitle:e.mosTitle||"",unit:e.unit||"",serviceType:e.serviceType||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,bullets:ppMilBullets(e)};});
+    const civ=(civExperiences||[]).filter(function(e){return e.employer||e.jobTitle;}).map(function(e){return {title:e.jobTitle||"",employer:e.employer||"",location:e.location||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,bullets:e.duties?[e.duties]:[]};});
+    const edu=(education||[]).filter(function(e){return e.institution||e.degree;}).map(function(e){return {degree:e.degree||"",field:e.field||"",institution:e.institution||"",year:e.year||""};});
+    const branch=(serviceRecords&&serviceRecords[0]&&serviceRecords[0].branch)||(mil[0]&&mil[0].branch)||"";
+    const contact={};
+    if(showEmail&&personal.email)contact.email=personal.email;
+    if(showPhone&&personal.phone)contact.phone=personal.phone;
+    if(showLinkedin&&personal.linkedin)contact.linkedin=personal.linkedin;
+    const autoHead=((target&&target.title)?target.title.split(",")[0].trim()+" | ":"")+(branch?branch+" Veteran":"U.S. Military Veteran");
+    return {uid:currentUser.uid,slug:slug,published:true,noindex:!!noindex,publishedAt:Date.now(),updatedAt:Date.now(),name:personal.name||"Veteran",headline:(headline.trim()||autoHead),location:showLocation?(personal.location||""):"",summary:summary.trim(),military:mil,civilian:civ,education:edu,skills:{technical:skills.technical||"",leadership:skills.leadership||"",languages:skills.languages||"",certs:skills.certs||""},contact:contact};
+  }
+  async function doPublish(){
+    if(!hasAccess){setShowPaywall(true);return;}
+    if(!(personal.name||"").trim()){showToast("Add your name on the Service Record tab first");return;}
+    setBusy(true);
+    try{await fbDb.collection("publicProfiles").doc(slug).set(build());setPublished(true);showToast("Public profile published ✓");}
+    catch(e){showToast("Publish failed, check connection");}
+    setBusy(false);
+  }
+  async function doUnpublish(){
+    setBusy(true);
+    try{await fbDb.collection("publicProfiles").doc(slug).delete();setPublished(false);showToast("Profile unpublished");}
+    catch(e){showToast("Unpublish failed");}
+    setBusy(false);
+  }
+  function doCopy(){try{navigator.clipboard.writeText(url);showToast("Link copied ✓");}catch(e){showToast(url);}}
+
+  return (
+    <div className={"panel "+(tab===5?"on":"")}>
+      <div className="card">
+        <div className="ch"><h3>🌐 Public Profile — Shareable CV</h3></div>
+        <div className="cb">
+          <p style={{fontSize:".88rem",color:"var(--dim)",marginTop:0}}>Publish a public version of your profile to share on LinkedIn, in applications, or with employers. You control exactly what appears; contact details stay hidden unless you turn them on. Disability ratings and VA claim details are never included.</p>
+          {!hasAccess&&<div style={{background:"rgba(240,192,64,.12)",border:"1px solid rgba(240,192,64,.35)",borderRadius:"8px",padding:".7rem .9rem",fontSize:".85rem",marginBottom:".8rem"}}>Public profiles are a subscriber feature. <button className="btn-primary" style={{marginLeft:".5rem",fontSize:".78rem",padding:".3rem .8rem"}} onClick={()=>setShowPaywall(true)}>Subscribe →</button></div>}
+          <div className="field"><label>Headline (optional)</label><input placeholder="e.g. Project Manager | U.S. Army Veteran" value={headline} onChange={e=>setHeadline(e.target.value)}/></div>
+          <div className="field"><label>Professional summary (optional)</label><textarea rows={3} placeholder="A short summary of who you are and what you're looking for..." value={summary} onChange={e=>setSummary(e.target.value)}/></div>
+          <div style={{margin:".7rem 0",fontSize:".86rem"}}>
+            <div style={{fontWeight:600,marginBottom:".35rem"}}>Show publicly:</div>
+            <label style={{display:"block",margin:".25rem 0"}}><input type="checkbox" checked={showLocation} onChange={e=>setShowLocation(e.target.checked)}/> City / State</label>
+            <label style={{display:"block",margin:".25rem 0"}}><input type="checkbox" checked={showEmail} onChange={e=>setShowEmail(e.target.checked)}/> Email address</label>
+            <label style={{display:"block",margin:".25rem 0"}}><input type="checkbox" checked={showPhone} onChange={e=>setShowPhone(e.target.checked)}/> Phone number</label>
+            <label style={{display:"block",margin:".25rem 0"}}><input type="checkbox" checked={showLinkedin} onChange={e=>setShowLinkedin(e.target.checked)}/> LinkedIn URL</label>
+            <label style={{display:"block",margin:".25rem 0"}}><input type="checkbox" checked={noindex} onChange={e=>setNoindex(e.target.checked)}/> Hide from Google search (still shareable by link)</label>
+          </div>
+          <div className="nav-row" style={{gap:".5rem",flexWrap:"wrap",justifyContent:"flex-start"}}>
+            <button className="btn-primary" disabled={busy} onClick={doPublish}>{published?"↻ Update Profile":"🌐 Publish Profile"}</button>
+            {published&&<button className="btn-sec" disabled={busy} onClick={doCopy}>📋 Copy Link</button>}
+            {published&&<button className="btn-danger" disabled={busy} onClick={doUnpublish}>Unpublish</button>}
+          </div>
+          {published&&<div style={{marginTop:".7rem",fontSize:".82rem",wordBreak:"break-all"}}>Live at <a href={url} target="_blank" rel="noopener">{url}</a></div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
 
   // ── APP STATE (must be declared first) ──
@@ -5204,6 +5279,7 @@ Return this exact JSON structure:
 
 
           <MyProfileTab tab={tab} currentUser={currentUser} setShowAuth={setShowAuth} personal={personal} hasAccess={hasAccess} hasUnsaved={hasUnsaved} milExperiences={milExperiences} BRANCH_EMBLEMS={BRANCH_EMBLEMS} BRANCH_COLORS={BRANCH_COLORS} RANKS={RANKS} RankInsignia={RankInsignia} careers={careers} openCareerDetail={openCareerDetail} setTab={setTab} resume={resume} savedResumes={savedResumes} handleDeleteResume={handleDeleteResume} savedCoverLetters={savedCoverLetters} savedEmails={savedEmails} savedScores={savedScores} handleDeleteSaved={handleDeleteSaved} handleLogout={handleLogout} handleSaveProfile={handleSaveProfile} handleSaveResume={handleSaveResume} showToast={showToast} setShowPaywall={setShowPaywall} savedPaths={savedPaths} setSavedPaths={setSavedPaths} />
+          {currentUser && <PublicProfileCard tab={tab} currentUser={currentUser} hasAccess={hasAccess} personal={personal} milExperiences={milExperiences} civExperiences={civExperiences} education={education} skills={skills} serviceRecords={serviceRecords} target={target} showToast={showToast} setShowPaywall={setShowPaywall} />}
         </div>
       </div>
 

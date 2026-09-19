@@ -719,6 +719,20 @@
     const [apiError, setApiError] = useState("");
     const [careerError, setCareerError] = useState("");
     const [resumeData, setResumeData] = useState(null);
+    const resetProfileFields = () => {
+      setPersonal({ name: "", email: "", phone: "", location: "", linkedin: "" });
+      setMilExperiences([newMilExp()]);
+      setCivExperiences([]);
+      setEducation([{ id: 1, institution: "", degree: "", field: "", year: "", pme: "" }]);
+      setSkills({ technical: "", leadership: "", languages: "", certs: "" });
+      setTarget({ title: "", industry: "", keywords: "", interests: "", openTo: "" });
+      setTargetLocation2("");
+      setServiceRecords([{ id: 1, branch: "", rank: "", status: "Veteran" }]);
+      setCareers(null);
+      setSelectedCareer(null);
+      setResume("");
+      setResumeData(null);
+    };
     const [resumeTemplate, setResumeTemplate] = useState("ats_chrono");
     const [resumeError, setResumeError] = useState("");
     const [copied, setCopied] = useState(false);
@@ -995,6 +1009,7 @@
           setSavedCoverLetters([]);
           setSavedEmails([]);
           setSavedScores([]);
+          resetProfileFields();
           try {
             localStorage.removeItem("vcb_profile");
           } catch (e) {
@@ -1089,11 +1104,7 @@
         Object.keys(localStorage).filter((k) => k.indexOf("vcb_subscription_check:") === 0).forEach((k) => localStorage.removeItem(k));
       } catch (e) {
       }
-      setPersonal({ name: "", email: "", phone: "", location: "", linkedin: "" });
-      setMilExperiences([newMilExp()]);
-      setCivExperiences([]);
-      setEducation([{ id: 1, institution: "", degree: "", field: "", year: "", pme: "" }]);
-      setSkills({ technical: "", leadership: "", languages: "", certs: "" });
+      resetProfileFields();
     };
     const handleSaveProfile = async () => {
       if (!currentUser) {

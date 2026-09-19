@@ -1513,6 +1513,22 @@ function App() {
   const [apiError, setApiError] = useState("");
   const [careerError, setCareerError] = useState("");
   const [resumeData, setResumeData] = useState(null);
+
+  // Clear ALL profile form state so a signed-out / lost session never shows stale
+  // data ("half signed in"). The data itself stays safe in Firestore and reloads
+  // on next sign-in.
+  const resetProfileFields = () => {
+    setPersonal({ name:"", email:"", phone:"", location:"", linkedin:"" });
+    setMilExperiences([newMilExp()]);
+    setCivExperiences([]);
+    setEducation([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
+    setSkills({ technical:"", leadership:"", languages:"", certs:"" });
+    setTarget({ title:"", industry:"", keywords:"", interests:"", openTo:"" });
+    setTargetLocation("");
+    setServiceRecords([{ id:1, branch:"", rank:"", status:"Veteran" }]);
+    setCareers(null); setSelectedCareer(null);
+    setResume(""); setResumeData(null);
+  };
   const [resumeTemplate, setResumeTemplate] = useState("ats_chrono");
   
   const [resumeError, setResumeError] = useState("");
@@ -1811,6 +1827,7 @@ function App() {
         setSavedResumes([]);
         setJobApps([]); setTlChecks({});
         setSavedCoverLetters([]); setSavedEmails([]); setSavedScores([]);
+        resetProfileFields();
         try { localStorage.removeItem("vcb_profile"); } catch(e) {}
       }
     });
@@ -1885,12 +1902,7 @@ function App() {
       localStorage.removeItem("vcb_profile"); localStorage.removeItem("vcb_access");
       Object.keys(localStorage).filter(k=>k.indexOf("vcb_subscription_check:")===0).forEach(k=>localStorage.removeItem(k));
     } catch(e) {}
-    // Reset form fields
-    setPersonal({ name:"", email:"", phone:"", location:"", linkedin:"" });
-    setMilExperiences([newMilExp()]);
-    setCivExperiences([]);
-    setEducation([{ id:1, institution:"", degree:"", field:"", year:"", pme:"" }]);
-    setSkills({ technical:"", leadership:"", languages:"", certs:"" });
+    resetProfileFields();
   };
 
   const handleSaveProfile = async () => {

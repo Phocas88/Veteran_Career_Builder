@@ -291,7 +291,7 @@ function closeToolsDrawer() {
 
 function newMilExp() {
   return { 
-    id:Date.now(), type:"Military Service", branch:"Army", rank:"", mos:"", mosTitle:"", serviceType:"Active Duty",
+    id:Date.now(), type:"Military Service", branch:"", rank:"", mos:"", mosTitle:"", serviceType:"",
     unit:"", startDate:"", endDate:"", current:false, tos:"", duties:"",
     mosRoles:[], // sub-roles held within this MOS
     deployments:"", awards:[], customAward:"",
@@ -1362,7 +1362,7 @@ function App() {
   const [collapsed, setCollapsed] = useState({});
   const [mosOut, setMosOut] = useState("");
   const [careers, setCareers] = useState(null);
-  const [serviceRecords, setServiceRecords] = useState([{ id:1, branch:"Army", rank:"", status:"Veteran" }]);
+  const [serviceRecords, setServiceRecords] = useState([{ id:1, branch:"", rank:"", status:"Veteran" }]);
   const [coverLetter, setCoverLetter] = useState("");
   const [coverLetterJob, setCoverLetterJob] = useState({ title:"", company:"", description:"" });
   const [resumeScore, setResumeScore] = useState(null);
@@ -2843,7 +2843,7 @@ Return this exact JSON structure:
                 {milExperiences.map((exp)=>(
                   <div className="entry" key={exp.id}>
                     <div className="etop">
-                      <span className="badge bm">{exp.branch||"Military Service"} · {exp.serviceType||"Active Duty"}</span>
+                      <span className="badge bm">{exp.branch||"Military Service"}{exp.serviceType?" · "+exp.serviceType:""}</span>
                       {milExperiences.length>1&&<button className="btn-rm" onClick={()=>rmExp(exp.id)}>Remove</button>}
                     </div>
 
@@ -2852,6 +2852,7 @@ Return this exact JSON structure:
                       <div className="field">
                         <label>Branch of Service</label>
                         <select value={exp.branch} onChange={e=>upMilExp(exp.id,"branch",e.target.value)}>
+                          <option value="">Select Branch</option>
                           {BRANCHES.map(b=><option key={b}>{b}</option>)}
                         </select>
                       </div>
@@ -2881,6 +2882,7 @@ Return this exact JSON structure:
                       <div className="field">
                         <label>Service Status</label>
                         <select value={exp.serviceType} onChange={e=>upMilExp(exp.id,"serviceType",e.target.value)}>
+                          <option value="">Select Status</option>
                           {SERVICE_TYPES.map(s=><option key={s}>{s}</option>)}
                         </select>
                       </div>

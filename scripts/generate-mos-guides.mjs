@@ -132,8 +132,56 @@ function genericCapabilities(title,family){
 function hubCard(entry, href, count){
   return `<a class="mos-card" data-code="${esc(entry.code)}" data-title="${esc(entry.title)}" href="${href}" style="display:block;background:#fff;border:1px solid #dde3ec;border-radius:8px;padding:.85rem;text-decoration:none;transition:border-color .15s"><div style="font-family:Bebas Neue,sans-serif;font-size:1rem;letter-spacing:.08em;color:#1a3a6b">${esc(entry.code)}</div><div style="font-size:.78rem;color:#5a7090;margin-top:.2rem;line-height:1.4">${esc(entry.title)}</div><div class="career-dir" style="font-size:.72rem;color:#1a7a40;margin-top:.35rem;font-weight:600">→ Explore ${count} career directions</div></a>`;
 }
+// Data-driven baseline: map each code's OFFICIAL O*NET occupations (via SOC major
+// group) to civilian career clusters, so non-curated pages still get code-specific
+// directions instead of a keyword-picked family. Grounded in the crosswalk; honest.
+const SOC_CLUSTER={
+  '11':['Management & project leadership','veteran-project-management-careers.html'],
+  '13':['Business & financial operations','veteran-financial-services-careers.html'],
+  '15':['IT, cybersecurity & data','veteran-cybersecurity-careers.html'],
+  '17':['Engineering & technical design','veteran-construction-management-careers.html'],
+  '19':['Science & analysis','veteran-data-analytics-careers.html'],
+  '21':['Community & social services','veteran-human-resources-careers.html'],
+  '25':['Training & education','veteran-teaching-careers.html'],
+  '27':['Media & communications','veteran-project-management-careers.html'],
+  '29':['Healthcare (clinical)','veteran-healthcare-careers.html'],
+  '31':['Healthcare support','veteran-healthcare-careers.html'],
+  '33':['Protective & law enforcement','veteran-law-enforcement-careers.html'],
+  '37':['Facilities & grounds','veteran-construction-management-careers.html'],
+  '41':['Sales & client operations','veteran-financial-services-careers.html'],
+  '43':['Administration & operations support','veteran-human-resources-careers.html'],
+  '47':['Construction & skilled trades','veteran-construction-management-careers.html'],
+  '49':['Maintenance, repair & installation','veteran-manufacturing-careers.html'],
+  '51':['Manufacturing & production','veteran-manufacturing-careers.html'],
+  '53':['Transportation & logistics','veteran-supply-chain-careers.html']
+};
+function clusterFor(code){
+  const c=String(code||'');
+  if(c.startsWith('49-3011')||c.startsWith('53-2')) return ['Aviation & aircraft','veteran-aviation-careers.html'];
+  return SOC_CLUSTER[c.slice(0,2)]||null;
+}
+function dataDrivenPaths(roles, title){
+  if(!roles||!roles.length) return null;
+  const seen=new Set(), out=[];
+  for(const r of roles){
+    const cl=clusterFor(r.code); if(!cl||seen.has(cl[1])) continue; seen.add(cl[1]);
+    out.push([cl[0],'Civilian / government',`Official O*NET matches for this code include ${r.title} and related work in this field.`,'Confirm the specific role’s civilian license, certification, or education requirements—service alone does not grant them.',cl[1]]);
+    if(out.length>=5) break;
+  }
+  if(!out.length) return null;
+  out.push(['Federal & public-sector roles','Federal / state / local',`Your ${title.toLowerCase()} experience may meet the specialized-experience requirement for related occupational series.`,'Mirror the vacancy questionnaire and document scope precisely.','federal-jobs-search.html']);
+  return out;
+}
+// Lead with code-specific (data-driven) directions, then pad with relevant family
+// directions (skipping duplicate destinations) so every page shows real breadth.
+function combinePaths(dd, fam){
+  if(!dd) return fam;
+  const pages=new Set(dd.map(p=>p[4])), out=dd.slice();
+  for(const p of fam){ if(out.length>=6) break; if(!pages.has(p[4])){ out.push(p); pages.add(p[4]); } }
+  return out;
+}
 function page(branch, entry){
-  const key=`${branch}|${entry.code}`, curated=CURATED[key], family=curated?.family||familyFor(entry.title), paths=curated?.paths||PATHS[family], roles=official[key]||[], caps=curated?.capabilities||genericCapabilities(entry.title,family), bands=curated?.bands||experienceBands(branch,entry.title);
+  const key=`${branch}|${entry.code}`, curated=CURATED[key], family=curated?.family||familyFor(entry.title), roles=official[key]||[], paths=curated?.paths||combinePaths(dataDrivenPaths(roles,entry.title),PATHS[family]), caps=curated?.capabilities||genericCapabilities(entry.title,family), bands=curated?.bands||experienceBands(branch,entry.title);
   const citesHtml=(curated?.citations?.length)?`<section class="sources"><h2>Sources for this guide</h2><ul>${curated.citations.map(c=>`<li><a href="${esc(c.url)}" rel="nofollow noopener" target="_blank">${esc(c.label)}</a></li>`).join('')}</ul></section>`:'';
   const direct=roles.length?roles.map(r=>`<li><strong>${esc(r.title)}</strong>${r.code?` <span class="soc">O*NET ${esc(r.code)}</span>`:''}</li>`).join(''):'<li>No single official civilian occupation captures this code. Use the capability-based pathways below and validate them against your actual assignments.</li>';
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(entry.code)} ${esc(entry.title)} Civilian Careers by Rank | Veteran Career Path</title><meta name="description" content="Explore civilian, federal, contractor, and training pathways for ${esc(branch)} ${esc(entry.code)} ${esc(entry.title)}, with different guidance for junior and senior experience."><link rel="canonical" href="https://veterancareerpath.com/mos/${slug(entry.code)}.html"><link rel="stylesheet" href="/vcp-styles.css"><style>${MOS_CSS}</style></head><body><nav><a href="/">Veteran Career Path</a><a href="/${HUB[branch]}">← ${esc(branch)} job codes</a></nav><header><p class="eyebrow">${esc(branch)} · ${esc(entry.code)}</p><h1>${esc(entry.title)}</h1><p>${esc(curated?.intro||`Your ${entry.title} background is a portfolio of capabilities—not a sentence to one civilian job. Explore direct matches, adjacent fields, government work, and new directions where your experience gives you a credible starting point.`)}</p><div class="chips">${caps.map(c=>`<span>${esc(c)}</span>`).join('')}</div></header><main><section><h2>Official civilian crosswalk starting points</h2><p class="lede">These are links from the U.S. Department of Labor O*NET military crosswalk. They are starting points, not the full value of your service.</p><ul class="official">${direct}</ul><p class="source">Source: <a href="https://www.onetcenter.org/crosswalks.html">O*NET Military Transition Search / DMDC crosswalk</a>, August 2024.</p></section><section><h2>Your rank changes the story</h2><p class="lede">Use the band that reflects what you actually did—not rank alone. An E-2 and an E-7 in the same code should not submit the same résumé.</p><div class="bands">${bands.map(([name,text],i)=>`<article><span>0${i+1}</span><h3>${esc(name)}</h3><p>${esc(text)}</p></article>`).join('')}</div></section><section><h2>${paths.length} directions worth exploring</h2><p class="lede">Some are direct transfers; others need civilian credentials. The point is to widen the map while staying honest about qualification gaps.</p><div class="paths">${paths.map((p,i)=>`<article><div class="path-head"><span>${String(i+1).padStart(2,'0')}</span><div><small>${esc(p[1])}</small><h3>${esc(p[0])}</h3></div></div><p>${esc(p[2])}</p><p class="bridge"><strong>Bridge:</strong> ${esc(p[3])}</p><a href="/${p[4]}">Explore this route →</a></article>`).join('')}</div></section><section><h2>Build evidence, not just a translated title</h2><div class="evidence"><div><h3>Hands-on scope</h3><p>List systems, tools, vehicles, environments, certifications, and recurring tasks.</p></div><div><h3>Leadership scope</h3><p>State people trained or supervised, asset value, work volume, readiness, safety, and quality outcomes.</p></div><div><h3>Credential gap</h3><p>Identify licenses, degrees, software, or civilian standards required before claiming the target role.</p></div><div><h3>Search wider</h3><p>Search by capabilities and equipment as well as by “${esc(entry.code)}” or “${esc(entry.title)}.”</p></div></div></section><aside><strong>Reality check:</strong> MOS, AFSC, rating, or rank never guarantees civilian qualification. Duties vary by unit and assignment; regulated professions require their own education, experience, exams, or licenses.</aside><div class="actions"><a href="/app.html">Build a capability-based résumé</a><a class="secondary" href="/federal-jobs-search.html">Search federal jobs</a></div>${citesHtml}</main><footer>Built for veterans who want more than a one-job crosswalk. · <a href="/contact.html">Suggest a correction or pathway</a></footer></body></html>`;
@@ -146,7 +194,7 @@ for(const [branch,entries] of Object.entries(codesByBranch)){
   for(const entry of entries){fs.writeFileSync(path.join(ROOT,'mos',`${slug(entry.code)}.html`),page(branch,entry));made++;}
   const hubPath=path.join(ROOT,HUB[branch]); let hub=fs.readFileSync(hubPath,'utf8');
   for(const entry of entries){
-    const cur=CURATED[`${branch}|${entry.code}`], code=entry.code.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), href=`https://veterancareerpath.com/mos/${slug(entry.code)}.html`, count=(cur?.paths||PATHS[cur?.family||familyFor(entry.title)]).length;
+    const cur=CURATED[`${branch}|${entry.code}`], code=entry.code.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), href=`https://veterancareerpath.com/mos/${slug(entry.code)}.html`, count=(cur?.paths||combinePaths(dataDrivenPaths(official[`${branch}|${entry.code}`]||[],entry.title),PATHS[cur?.family||familyFor(entry.title)])).length;
     const re=new RegExp(`(<a class="mos-card" data-code="${code}"[^>]*href=")[^"]+("[^>]*>[\\s\\S]*?<div class="career-dir"[^>]*>)[\\s\\S]*?(</div></a>)`);
     hub=hub.replace(re,`$1${href}$2→ Explore ${count} career directions$3`);
     if(!hub.includes(href)){

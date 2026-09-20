@@ -1635,11 +1635,15 @@ function App() {
   };
 
   const ensureAuthPersistence = async () => {
-    if (!fbAuth || !window.firebase || !firebase.auth?.Auth?.Persistence?.LOCAL) return;
+    if (!fbAuth || !window.firebase || !firebase.auth?.Auth?.Persistence?.LOCAL) {
+      throw new Error("Persistent sign-in is not available in this browser.");
+    }
     try {
       await fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      return true;
     } catch (error) {
       console.warn("Could not confirm local auth persistence:", error);
+      throw new Error("Your browser is blocking persistent sign-in. Allow site storage for veterancareerpath.com, then try again.");
     }
   };
 
@@ -1833,6 +1837,7 @@ function App() {
           initials,
         };
         setCurrentUser(user);
+        window.dispatchEvent(new CustomEvent("vcp-auth-changed", { detail: firebaseUser }));
         setHasUnsaved(false);
         // Load their saved profile
         try {
@@ -1867,6 +1872,7 @@ function App() {
         } catch(e) { console.warn("Profile load error:", e); }
       } else {
         setCurrentUser(null);
+        window.dispatchEvent(new CustomEvent("vcp-auth-changed", { detail: null }));
         setSavedResumes([]);
         setJobApps([]); setTlChecks({});
         setSavedCoverLetters([]); setSavedEmails([]); setSavedScores([]);
@@ -1911,7 +1917,7 @@ function App() {
     } catch(e) {
       if (e.code === "auth/email-already-in-use") setAuthErr("An account with this email already exists.");
       else if (e.code === "auth/invalid-email") setAuthErr("Please enter a valid email address.");
-      else setAuthErr(e.message);
+      else setAuthErr(e.message || "Account creation failed.");
     }
   };
 
@@ -1931,7 +1937,7 @@ function App() {
       else if (e.code === "auth/wrong-password") setAuthErr("Incorrect password. Try again or reset it below.");
       else if (e.code === "auth/invalid-email") setAuthErr("Please enter a valid email address.");
       else if (e.code === "auth/too-many-requests") setAuthErr("Too many attempts. Please wait a moment and try again.");
-      else setAuthErr("Sign in failed: " + (e.message||"Unknown error"));
+      else setAuthErr(e.message && e.message.indexOf("persistent sign-in") > -1 ? e.message : "Sign in failed: " + (e.message||"Unknown error"));
     }
   };
 
@@ -2890,7 +2896,7 @@ Return this exact JSON structure:
               <span>Signed in as <strong>{currentUser&&currentUser.name}</strong></span>
               {hasUnsaved&&<span className="unsaved" title="Unsaved changes"/>}
             </div>
-            <div style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
+            <div className="user-bar-actions" style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
               <button className="btn-sec" style={{fontSize:".72rem",padding:".3rem .75rem"}} onClick={handleSaveProfile}>
                 {hasUnsaved?"⏳ Saving…":"✓ Profile Saved"}
               </button>

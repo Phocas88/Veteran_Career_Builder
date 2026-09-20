@@ -55,7 +55,9 @@
 };
       firebase.initializeApp(firebaseConfig);
       window.fbAuth = firebase.auth();
-      window.fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      window.fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(error) {
+        console.warn("Firebase local persistence is unavailable:", error);
+      });
       window.fbDb = firebase.firestore();
     } catch(e) {
       console.warn("Firebase not configured:", e.message);
@@ -358,6 +360,10 @@ body.menu-open{overflow:hidden!important;}
   padding:.5rem 5%;border-bottom:1px solid rgba(255,255,255,.04);
   display:block;
 }
+.vcp-mob-account-panel{display:flex;align-items:stretch;gap:.5rem;padding:.65rem 4%;background:rgba(240,192,64,.06);border-bottom:1px solid rgba(240,192,64,.16);}
+.vcp-mob-account-panel a,.vcp-mob-account-panel button{min-height:48px!important;border-radius:8px!important;justify-content:center!important;font-weight:700!important;font-size:.88rem!important;padding:.65rem .8rem!important;}
+.vcp-mob-account-panel .vcp-mob-account{flex:1;color:#f0c040;background:rgba(255,255,255,.04);border:1px solid rgba(240,192,64,.2);}
+.vcp-mob-logout{display:none;flex:0 0 auto;background:rgba(185,45,45,.18);border:1px solid rgba(255,110,110,.35);color:#ffd0d0;cursor:pointer;font-family:'Inter',sans-serif;}
 .vcp-mob a:hover{background:rgba(255,255,255,.04);color:#fff;}
 .vcp-mob-search{padding:.65rem 5%;border-bottom:1px solid rgba(255,255,255,.07);}
 .vcp-mob-search input{
@@ -386,9 +392,9 @@ body.menu-open{overflow:hidden!important;}
   .vcp-ham{display:flex;min-width:44px;min-height:44px;align-items:center;justify-content:center;}
   .vcp-mega{display:none!important;}
   /* Mobile menu touch targets */
-  .vcp-mob a{min-height:44px;display:flex;align-items:center;padding:.6rem 5%;font-size:.88rem;}
+  .vcp-mob a{min-height:48px;display:flex;align-items:center;padding:.7rem 5%;font-size:.9rem;}
   .vcp-mob-cta{min-height:48px;display:flex;align-items:center;justify-content:center;font-size:.9rem;}
-  .vcp-mob-sect{min-height:36px;display:flex;align-items:center;padding:.5rem 5% .25rem;}
+  .vcp-mob-sect{min-height:48px;display:flex;align-items:center;padding:.65rem 5%;}
   /* Mobile menu scroll fix for long content */
   .vcp-mob{max-height:calc(100vh - 56px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:2rem;}
   /* Mobile search full-width and tappable */
@@ -753,7 +759,10 @@ body.menu-open{overflow:hidden!important;}
   </div>
   <div class="vcp-mob-sr" id="vcp-mob-sr"></div>
   <a href="https://veterancareerpath.com/app.html" class="vcp-mob-cta">Career Path Tools, $15/mo</a>
-  <a href="https://veterancareerpath.com/app.html#profile" class="vcp-account-link vcp-mob-account" style="background:rgba(240,192,64,.06);border-bottom:1px solid rgba(240,192,64,.1);font-weight:600;color:#f0c040;">My Account / Login</a>
+  <div class="vcp-mob-account-panel">
+    <a href="https://veterancareerpath.com/app.html#profile" class="vcp-account-link vcp-mob-account">My Account / Login</a>
+    <button type="button" class="vcp-mob-logout" aria-label="Sign out of Veteran Career Path">Sign Out</button>
+  </div>
 
   <span class="vcp-mob-sect">Career Tools</span>
   <a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
@@ -954,6 +963,31 @@ body.menu-open{overflow:hidden!important;}
       if (!isOpen) { mob.classList.add('open'); ham.classList.add('open'); document.body.classList.add('menu-open'); }
     });
   }
+  function syncMobileAccount(user) {
+    var signedIn = !!user;
+    document.querySelectorAll('.vcp-mob-account').forEach(function(el) {
+      el.textContent = signedIn ? ('My Account' + (user.displayName ? ' · ' + user.displayName.split(' ')[0] : '')) : 'My Account / Login';
+    });
+    document.querySelectorAll('.vcp-mob-logout').forEach(function(el) {
+      el.style.display = signedIn ? 'flex' : 'none';
+    });
+  }
+  document.querySelectorAll('.vcp-mob-logout').forEach(function(button) {
+    button.addEventListener('click', function() {
+      if (!window.fbAuth) { window.location.href = '/app.html#logout'; return; }
+      button.disabled = true;
+      button.textContent = 'Signing out…';
+      window.fbAuth.signOut().then(function() {
+        try { localStorage.removeItem('vcb_profile'); localStorage.removeItem('vcb_access'); } catch(e) {}
+        syncMobileAccount(null);
+        closeAll();
+      }).catch(function() {
+        button.disabled = false;
+        button.textContent = 'Sign Out';
+      });
+    });
+  });
+  if (window.fbAuth) window.fbAuth.onAuthStateChanged(syncMobileAccount);
   // Close on outside click
   document.addEventListener('click', function(e) {
     var inside = false;
@@ -1176,7 +1210,7 @@ body.menu-open{overflow:hidden!important;}
   <script defer src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
 <script defer src="/app-data.js"></script>
 <script defer src="/vcp-mos-data.js"></script>
-<script defer src="/app.bundle.js?v=136f6a96cd"></script>
+<script defer src="/app.bundle.js?v=b5341fa719"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   <footer style="background:#0d1f3c;color:#a0b8d0;text-align:center;padding:1.5rem 1rem;font-size:.78rem;margin-top:2rem;word-wrap:break-word;">
     <div style="margin-bottom:.6rem;">

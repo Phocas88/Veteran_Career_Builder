@@ -827,11 +827,15 @@
       }
     };
     const ensureAuthPersistence = async () => {
-      if (!fbAuth || !window.firebase || !firebase.auth?.Auth?.Persistence?.LOCAL) return;
+      if (!fbAuth || !window.firebase || !firebase.auth?.Auth?.Persistence?.LOCAL) {
+        throw new Error("Persistent sign-in is not available in this browser.");
+      }
       try {
         await fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        return true;
       } catch (error) {
         console.warn("Could not confirm local auth persistence:", error);
+        throw new Error("Your browser is blocking persistent sign-in. Allow site storage for veterancareerpath.com, then try again.");
       }
     };
     const restorePaidAccessFromProfile = async (profileData, authEmail, firebaseUid) => {
@@ -1010,6 +1014,7 @@
             initials
           };
           setCurrentUser(user);
+          window.dispatchEvent(new CustomEvent("vcp-auth-changed", { detail: firebaseUser }));
           setHasUnsaved(false);
           try {
             const doc = await fbDb.collection("profiles").doc(firebaseUser.uid).get();
@@ -1043,6 +1048,7 @@
           }
         } else {
           setCurrentUser(null);
+          window.dispatchEvent(new CustomEvent("vcp-auth-changed", { detail: null }));
           setSavedResumes([]);
           setJobApps([]);
           setTlChecks({});
@@ -1101,7 +1107,7 @@
       } catch (e) {
         if (e.code === "auth/email-already-in-use") setAuthErr("An account with this email already exists.");
         else if (e.code === "auth/invalid-email") setAuthErr("Please enter a valid email address.");
-        else setAuthErr(e.message);
+        else setAuthErr(e.message || "Account creation failed.");
       }
     };
     const handleLogin = async () => {
@@ -1130,7 +1136,7 @@
         else if (e.code === "auth/wrong-password") setAuthErr("Incorrect password. Try again or reset it below.");
         else if (e.code === "auth/invalid-email") setAuthErr("Please enter a valid email address.");
         else if (e.code === "auth/too-many-requests") setAuthErr("Too many attempts. Please wait a moment and try again.");
-        else setAuthErr("Sign in failed: " + (e.message || "Unknown error"));
+        else setAuthErr(e.message && e.message.indexOf("persistent sign-in") > -1 ? e.message : "Sign in failed: " + (e.message || "Unknown error"));
       }
     };
     const handleLogout = async () => {
@@ -2037,7 +2043,7 @@ Return this exact JSON structure:
         },
         "Forgot password?"
       )), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginTop: "1rem", paddingTop: ".75rem", borderTop: "1px solid #e8edf5" } }, /* @__PURE__ */ React.createElement("button", { style: { background: "transparent", border: "none", color: "#8aa0b8", fontSize: ".8rem", cursor: "pointer" }, onClick: () => setShowAuth(false) }, "Continue without an account"))))
-    ), currentUser ? /* @__PURE__ */ React.createElement("div", { className: "user-bar" }, /* @__PURE__ */ React.createElement("div", { className: "user-bar-left" }, /* @__PURE__ */ React.createElement("div", { className: "user-avatar" }, currentUser && currentUser.initials), /* @__PURE__ */ React.createElement("span", null, "Signed in as ", /* @__PURE__ */ React.createElement("strong", null, currentUser && currentUser.name)), hasUnsaved && /* @__PURE__ */ React.createElement("span", { className: "unsaved", title: "Unsaved changes" })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: ".4rem", flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement("button", { className: "btn-sec", style: { fontSize: ".72rem", padding: ".3rem .75rem" }, onClick: handleSaveProfile }, hasUnsaved ? "\u23F3 Saving\u2026" : "\u2713 Profile Saved"), /* @__PURE__ */ React.createElement("button", { className: "btn-sec", style: { fontSize: ".72rem", padding: ".3rem .75rem" }, onClick: () => setTab(3) }, "My Resumes (", savedResumes.length, ")"), !hasAccess && /* @__PURE__ */ React.createElement("button", { style: { background: "#f0c040", border: "none", borderRadius: "4px", color: "#0d1f3c", padding: ".3rem .75rem", fontSize: ".72rem", fontWeight: 700, cursor: "pointer", fontFamily: "'Bebas Neue',sans-serif", letterSpacing: ".05em" }, onClick: () => setShowPaywall(true) }, "\u2B50 All 8 Tools, $15/mo"), /* @__PURE__ */ React.createElement("button", { className: "btn-danger", style: { fontSize: ".72rem", padding: ".3rem .75rem" }, onClick: handleLogout }, "Sign Out"))) : /* @__PURE__ */ React.createElement("div", { style: { background: "#1a3a6b", borderBottom: "1px solid #2456a0", padding: ".45rem 1.2rem", display: "flex", alignItems: "center", justifyContent: "space-between" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: ".78rem", color: "#90b8e0", letterSpacing: ".02em" } }, "Not signed in, ", /* @__PURE__ */ React.createElement("span", { style: { color: "#b8d0f0" } }, "your progress won't be saved")), /* @__PURE__ */ React.createElement(
+    ), currentUser ? /* @__PURE__ */ React.createElement("div", { className: "user-bar" }, /* @__PURE__ */ React.createElement("div", { className: "user-bar-left" }, /* @__PURE__ */ React.createElement("div", { className: "user-avatar" }, currentUser && currentUser.initials), /* @__PURE__ */ React.createElement("span", null, "Signed in as ", /* @__PURE__ */ React.createElement("strong", null, currentUser && currentUser.name)), hasUnsaved && /* @__PURE__ */ React.createElement("span", { className: "unsaved", title: "Unsaved changes" })), /* @__PURE__ */ React.createElement("div", { className: "user-bar-actions", style: { display: "flex", gap: ".4rem", flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement("button", { className: "btn-sec", style: { fontSize: ".72rem", padding: ".3rem .75rem" }, onClick: handleSaveProfile }, hasUnsaved ? "\u23F3 Saving\u2026" : "\u2713 Profile Saved"), /* @__PURE__ */ React.createElement("button", { className: "btn-sec", style: { fontSize: ".72rem", padding: ".3rem .75rem" }, onClick: () => setTab(3) }, "My Resumes (", savedResumes.length, ")"), !hasAccess && /* @__PURE__ */ React.createElement("button", { style: { background: "#f0c040", border: "none", borderRadius: "4px", color: "#0d1f3c", padding: ".3rem .75rem", fontSize: ".72rem", fontWeight: 700, cursor: "pointer", fontFamily: "'Bebas Neue',sans-serif", letterSpacing: ".05em" }, onClick: () => setShowPaywall(true) }, "\u2B50 All 8 Tools, $15/mo"), /* @__PURE__ */ React.createElement("button", { className: "btn-danger", style: { fontSize: ".72rem", padding: ".3rem .75rem" }, onClick: handleLogout }, "Sign Out"))) : /* @__PURE__ */ React.createElement("div", { style: { background: "#1a3a6b", borderBottom: "1px solid #2456a0", padding: ".45rem 1.2rem", display: "flex", alignItems: "center", justifyContent: "space-between" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: ".78rem", color: "#90b8e0", letterSpacing: ".02em" } }, "Not signed in, ", /* @__PURE__ */ React.createElement("span", { style: { color: "#b8d0f0" } }, "your progress won't be saved")), /* @__PURE__ */ React.createElement(
       "button",
       {
         style: { background: "#f0c040", border: "none", borderRadius: "4px", color: "#0d1f3c", padding: ".32rem .9rem", fontSize: ".78rem", fontWeight: 700, cursor: "pointer", fontFamily: "'Bebas Neue',sans-serif", letterSpacing: ".08em" },

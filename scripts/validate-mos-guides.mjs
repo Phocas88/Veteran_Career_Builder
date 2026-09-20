@@ -16,7 +16,8 @@ for(const [branch,entries] of Object.entries(branches)){
     const rel=`mos/${slug(entry.code)}.html`, full=path.join(root,rel), expectedHref=`https://veterancareerpath.com/${rel}`;
     if(!fs.existsSync(full)){errors.push(`missing ${rel}`);continue;}
     const html=fs.readFileSync(full,'utf8');
-    for(const marker of ['Official civilian crosswalk starting points','Your rank changes the story','directions worth exploring','How to use this:']) if(!html.includes(marker)) errors.push(`${rel}: missing ${marker}`);
+    for(const marker of ['Your rank changes the story','Build evidence','How to use this:']) if(!html.includes(marker)) errors.push(`${rel}: missing ${marker}`);
+    if(!/Civilian jobs that match|directions worth exploring|directions to explore/.test(html)) errors.push(`${rel}: no jobs/directions section`);
     if(/http-equiv="refresh"|noindex/i.test(html)) errors.push(`${rel}: still a redirect or noindex`);
     if(!hub.includes(expectedHref)) errors.push(`${hubs[branch]}: missing ${expectedHref}`);
   }

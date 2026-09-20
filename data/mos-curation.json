@@ -1,0 +1,211 @@
+{
+  "_meta": {
+    "purpose": "Per-code human/researched curation overrides for the MOS career guides. The generator (scripts/generate-mos-guides.mjs) prefers these fields over the generic family fallback. Grounded in official duty sources; credential gaps are always explicit. Never imply a code auto-grants a civilian license or protected title.",
+    "schema": "Army|CODE -> { title, status, reviewedAt, intro, capabilities[], paths[[name,sector,why,bridge,internalPage]], bands[[label,text]], citations[{label,url}] }",
+    "status_values": ["baseline", "researched", "veteran-reviewed"]
+  },
+
+  "Army|11B": {
+    "title": "Infantryman",
+    "status": "researched",
+    "reviewedAt": "2026-09-20",
+    "intro": "Infantry is far more than a path to police or security work. It builds decision-making under pressure, small-unit leadership, mission planning, communications, land navigation, weapons safety, and first aid. Those are transferable leadership and operations capabilities that open doors in trades, operations, public safety, training, and government, not a single career lane.",
+    "capabilities": [
+      "Small-unit leadership and decision-making under stress",
+      "Mission planning, briefing, and execution",
+      "Land navigation and situational awareness",
+      "Weapons handling and range safety",
+      "Communications, reporting, and accountability",
+      "Tactical combat casualty care (first aid under pressure)"
+    ],
+    "paths": [
+      ["Skilled trades apprenticeship", "Civilian", "Discipline, teamwork, and working safely in tough conditions transfer well to construction and industrial trades.", "Enter a registered/union apprenticeship (e.g., Helmets to Hardhats); no trade license is implied by service.", "veteran-construction-management-careers.html"],
+      ["Operations / production supervisor", "Civilian", "Leading teams, enforcing standards, and hitting objectives maps to frontline operations leadership.", "Translate team size, tempo, and outcomes into civilian terms; Lean fundamentals help.", "veteran-project-management-careers.html"],
+      ["Emergency medical or fire services", "Public safety", "Casualty care, composure, and teamwork support EMS and fire work.", "Earn EMT or firefighter certification; state licensure is separate from military training.", "veteran-healthcare-careers.html"],
+      ["Law enforcement or corrections", "Federal / state / local", "One credible option among many, not the default; leadership and judgment apply.", "Complete a police academy / POST; background and fitness standards apply.", "veteran-law-enforcement-careers.html"],
+      ["Site supervision / project coordination", "Civilian / construction", "Planning people, equipment, and timelines under constraints maps to project delivery.", "OSHA 10/30 and CAPM can bridge terminology.", "veteran-project-management-careers.html"],
+      ["Protective services / security operations", "Government contractor", "Risk awareness and disciplined execution support protective and security operations roles.", "Clearance eligibility and state guard/PI licensing may be required.", "veteran-government-contractor-careers.html"],
+      ["Training and instruction", "Civilian / government", "Cadre and range-cadre experience supports workforce training and safety instruction.", "Document audience size and outcomes; instructional-design basics help.", "veteran-human-resources-careers.html"]
+    ],
+    "bands": [
+      ["E-1–E-4", "Lead with individual and team tasks, weapons and equipment qualifications, first-aid training, physical standards, and the conditions you operated in. Do not inflate supervisory scope."],
+      ["E-5–E-6 / NCO", "Add team/squad leadership: soldiers led, training delivered, mission planning, standards enforcement, and accountability for people and sensitive equipment."],
+      ["E-7–E-9 / Senior NCO", "Emphasize platoon/company operations, planning and rehearsals, personnel development, resource and readiness management, and advising senior leaders."]
+    ],
+    "citations": [
+      {"label": "U.S. Army — Infantryman (11B) overview", "url": "https://www.goarmy.com/careers-and-jobs/specialty-careers/infantry.html"},
+      {"label": "Helmets to Hardhats (apprenticeship transition)", "url": "https://helmetstohardhats.org/"},
+      {"label": "O*NET Military Crosswalk", "url": "https://www.onetcenter.org/crosswalks.html"}
+    ]
+  },
+
+  "Army|12B": {
+    "title": "Combat Engineer",
+    "status": "researched",
+    "reviewedAt": "2026-09-20",
+    "intro": "Combat engineering is much broader than law enforcement. It combines construction, route and terrain reconnaissance, heavy equipment, demolition safety, obstacle reduction, logistics, and small-team problem solving. Those capabilities can open several civilian and government directions; they do not limit a veteran to one field.",
+    "capabilities": [
+      "Construction and survivability work",
+      "Route, bridge, terrain, and obstacle reconnaissance",
+      "Light and heavy engineer vehicle operation",
+      "Demolition planning and explosives safety",
+      "Job-site risk controls and standards",
+      "Equipment, materials, and team coordination"
+    ],
+    "paths": [
+      ["Construction operations", "Civilian", "Field coordination, site preparation, materials, safety, and work sequencing transfer directly.", "OSHA 10/30; document project scope and equipment used.", "veteran-construction-management-careers.html"],
+      ["Heavy equipment operator", "Civilian / public works", "Engineer vehicle operation transfers to earthmoving, utilities, roadwork, and site development.", "State or employer equipment qualification; a CDL widens options.", "veteran-construction-management-careers.html"],
+      ["Surveying or GIS technician", "Civilian / government", "Reconnaissance, route analysis, terrain reading, and reporting support technical field work.", "Learn civilian GIS/CAD tools; licensure is not implied.", "veteran-data-analytics-careers.html"],
+      ["Emergency management specialist", "Federal / state / local", "Risk assessment, contingency planning, and operating under pressure support disaster work.", "FEMA Independent Study courses translate exercises into planning outcomes.", "veteran-emergency-management-careers.html"],
+      ["Safety coordinator", "Civilian / federal contractor", "Hazard recognition, controls, and pre-operation checks are valuable safety experience.", "OSHA credential; ASP/CSP require separate eligibility.", "veteran-construction-management-careers.html"],
+      ["Project coordinator", "Civilian / contractor", "Planning people, equipment, timelines, and requirements maps to project delivery.", "CAPM or construction scheduling fundamentals can bridge terminology.", "veteran-project-management-careers.html"],
+      ["Explosives or blasting support", "Civilian / government", "Demolition planning and explosives safety may relate to regulated blasting, mining, or public safety.", "Civilian licensing, background checks, and employer training are mandatory.", "veteran-construction-management-careers.html"]
+    ],
+    "bands": [
+      ["E-1–E-4", "Lead with hands-on construction/demolition tasks, engineer equipment operated, safety discipline, and field conditions. Do not inflate supervisory scope."],
+      ["E-5–E-6 / NCO", "Add squad leadership, training, work allocation, quality control, and the people or equipment you directly supervised."],
+      ["E-7–E-9 / Senior NCO", "Emphasize multi-team operations, project scheduling, resource forecasting, safety systems, and organization-level results."]
+    ],
+    "citations": [
+      {"label": "U.S. Army — Combat Engineer enable overview", "url": "https://www.army.mil/article/200797/combat_engineers_enable_infantry_commanders_soldiers"},
+      {"label": "2025 Army enlisted MOS specifications (Chapter 10)", "url": "https://api.army.mil/e2/c/downloads/2025/12/04/20612de5/chapter-10c-enlisted-mos-specifications.pdf"},
+      {"label": "O*NET Military Crosswalk", "url": "https://www.onetcenter.org/crosswalks.html"}
+    ]
+  },
+
+  "Army|68W": {
+    "title": "Combat Medic Specialist",
+    "status": "researched",
+    "reviewedAt": "2026-09-20",
+    "intro": "A combat medic is not just an EMT. The role covers emergency and trauma care, patient assessment, medication administration under protocol, medical documentation, medical logistics, and clinic support, often while leading and training others. That range supports many clinical, logistics, public-health, and healthcare-administration directions, though civilian roles still require their own licensure.",
+    "capabilities": [
+      "Emergency and trauma care (Tactical Combat Casualty Care)",
+      "Patient assessment, vitals, and triage",
+      "Medication administration under medical protocol",
+      "Medical documentation and records",
+      "Medical supply, equipment, and logistics accountability",
+      "Sick call and outpatient clinic support"
+    ],
+    "paths": [
+      ["EMT / Paramedic", "Public safety", "Field trauma care and composure map directly to emergency medical services.", "The NREMT earned in training helps; state licensure is required and paramedic needs added schooling.", "veteran-healthcare-careers.html"],
+      ["Patient care tech / medical assistant", "Civilian healthcare", "Assessment, vitals, and bedside care transfer to hospital and clinic support roles.", "Employer onboarding or a CMA/CCMA credential; military training may shorten it.", "veteran-healthcare-careers.html"],
+      ["Practical nurse to registered nurse", "Civilian healthcare", "Clinical exposure is a strong foundation for LPN/LVN and RN pathways.", "Complete an accredited nursing program; some schools grant credit for military medical training.", "veteran-healthcare-careers.html"],
+      ["Physician assistant", "Civilian healthcare", "Advanced medic experience is a recognized on-ramp; it does not by itself qualify you.", "PA school required (active-duty IPAP is one route).", "veteran-healthcare-careers.html"],
+      ["Healthcare logistics / sterile processing", "Civilian healthcare", "Medical supply accountability and equipment handling support supply chain and sterile-processing roles.", "A CRCST or supply credential strengthens the move.", "veteran-supply-chain-careers.html"],
+      ["Public / community health worker", "Government / nonprofit", "Screening, education, and coordination support community health programs.", "A community-health-worker certificate helps in many states.", "veteran-healthcare-careers.html"],
+      ["VA / federal health technician", "Federal", "Documented clinical experience can support 0640/0620-series roles when specialized experience is met.", "Mirror the vacancy questionnaire; licensure requirements vary by role.", "federal-jobs-search.html"]
+    ],
+    "bands": [
+      ["E-1–E-4", "Lead with hands-on patient care, procedures performed, certifications (e.g., NREMT/TCCC), and aid-station or line-medic settings."],
+      ["E-5–E-6 / NCO", "Add section-medic leadership: junior medics trained, clinic/treatment-team supervision, protocols enforced, and readiness tracking."],
+      ["E-7–E-9 / Senior NCO", "Emphasize medical operations planning, personnel and equipment management, program oversight, and advising commanders on medical readiness."]
+    ],
+    "citations": [
+      {"label": "U.S. Army — Combat Medic Specialist (68W)", "url": "https://www.goarmy.com/careers-and-jobs/specialty-careers/medical/combat-medic-specialist.html"},
+      {"label": "Army COOL — 68W credentialing (NREMT)", "url": "https://www.cool.osd.mil/army/moc/index.html?moc=68W"},
+      {"label": "O*NET Military Crosswalk", "url": "https://www.onetcenter.org/crosswalks.html"}
+    ]
+  },
+
+  "Army|88M": {
+    "title": "Motor Transport Operator",
+    "status": "researched",
+    "reviewedAt": "2026-09-20",
+    "intro": "Motor transport is more than driving a truck. It covers convoy planning and execution, load planning and cargo securement, vehicle inspection and fault reporting, hazardous-materials handling, and movement tracking and accountability, often leading teams and managing fleets. That opens driving, logistics, fleet-management, safety, and government directions.",
+    "capabilities": [
+      "Heavy and wheeled vehicle operation",
+      "Convoy planning, execution, and defensive driving",
+      "Load planning, weight distribution, and cargo securement",
+      "Preventive maintenance checks (PMCS) and fault reporting",
+      "Hazardous-materials handling and documentation",
+      "Dispatch, movement tracking, and accountability"
+    ],
+    "paths": [
+      ["Commercial truck driver (CDL)", "Civilian", "Military driving and load experience transfers directly to regional/OTR and specialized hauling.", "State CDL required; the FMCSA Military Skills Test Waiver may waive the road test; add HazMat/tanker endorsements.", "veteran-trucking-careers.html"],
+      ["Fleet or transportation supervisor", "Civilian / government", "Dispatch, readiness, and operator oversight map to fleet operations leadership.", "Fleet software and DOT compliance familiarity help; document fleet size and uptime.", "veteran-trucking-careers.html"],
+      ["Logistics / dispatch coordinator", "Civilian", "Movement planning, tracking, and deadlines map to transportation and distribution operations.", "TMS/ERP tools and Excel widen access.", "veteran-supply-chain-careers.html"],
+      ["Hazardous-materials transport specialist", "Civilian / contractor", "Regulated cargo handling and documentation support HazMat transport roles.", "HazMat endorsement and 49 CFR training are required.", "veteran-trucking-careers.html"],
+      ["Heavy equipment operator", "Civilian / public works", "Vehicle control transfers to earthmoving, roadwork, and site development.", "Equipment-specific qualification; a CDL widens options.", "veteran-construction-management-careers.html"],
+      ["Warehouse / distribution operations lead", "Civilian", "Accountability, tempo, and safety map to distribution-center operations.", "Forklift and OSHA credentials may help.", "veteran-supply-chain-careers.html"],
+      ["Federal motor vehicle operator / transportation", "Federal", "Documented operating and movement experience can support 5703/2150-series roles.", "Match the vacancy's specialized-experience statement; a valid state CDL is often required.", "federal-jobs-search.html"]
+    ],
+    "bands": [
+      ["E-1–E-4", "Lead with vehicles operated, license classes, cargo/HazMat handled, PMCS performed, and the environments you drove in. Do not inflate supervisory scope."],
+      ["E-5–E-6 / NCO", "Add convoy or dispatch leadership: drivers led, movement planning, safety and licensing oversight, and the assets you managed."],
+      ["E-7–E-9 / Senior NCO", "Emphasize movement control, multi-team operations, maintenance and safety programs, and resource/readiness forecasting."]
+    ],
+    "citations": [
+      {"label": "U.S. Army — Motor Transport Operator (88M)", "url": "https://www.goarmy.com/careers-and-jobs/specialty-careers/transport-and-aviation/motor-transport-operator.html"},
+      {"label": "FMCSA — Military Skills Test Waiver (CDL)", "url": "https://www.fmcsa.dot.gov/registration/commercial-drivers-license/military-programs"},
+      {"label": "O*NET Military Crosswalk", "url": "https://www.onetcenter.org/crosswalks.html"}
+    ]
+  },
+
+  "Army|91B": {
+    "title": "Wheeled Vehicle Mechanic",
+    "status": "researched",
+    "reviewedAt": "2026-09-20",
+    "intro": "A wheeled vehicle mechanic does far more than 'turn wrenches.' The work covers engine and powertrain diagnostics, electrical and hydraulic troubleshooting, preventive maintenance, use of technical manuals and test equipment, and field repair under constraints, often leading a shop. That supports automotive/diesel, fleet, field-service, quality, and maintenance-management directions.",
+    "capabilities": [
+      "Engine and powertrain diagnostics and repair",
+      "Electrical and hydraulic systems troubleshooting",
+      "Preventive maintenance (PMCS) and service scheduling",
+      "Technical manuals, schematics, and test equipment",
+      "Field and battle-damage repair under constraints",
+      "Parts, tools, and maintenance records management"
+    ],
+    "paths": [
+      ["Diesel / automotive technician", "Civilian", "Diagnostics and repair on military wheeled platforms transfer to civilian shops and dealerships.", "ASE certifications validate skills; some employers offer military-to-ASE bridges.", "veteran-manufacturing-careers.html"],
+      ["Fleet maintenance supervisor", "Civilian / government", "Shop leadership, scheduling, and readiness map to fleet maintenance management.", "Fleet software and DOT familiarity help; document fleet size and uptime.", "veteran-trucking-careers.html"],
+      ["Field service technician", "Civilian", "Independent diagnostics, repair, and customer communication fit field-service work.", "OEM/product training; translate platforms into systems and fault-isolation methods.", "veteran-manufacturing-careers.html"],
+      ["Heavy equipment / industrial mechanic", "Civilian", "Hydraulic and electrical troubleshooting transfers to construction and industrial equipment.", "OEM certification for specific equipment lines helps.", "veteran-manufacturing-careers.html"],
+      ["Maintenance planner / reliability", "Civilian", "Service records, parts forecasting, and failure patterns map to reliability and planning roles.", "CMMS experience and planning credentials help.", "veteran-manufacturing-careers.html"],
+      ["Quality or warranty inspector", "Civilian / defense", "Inspection discipline and corrective action support quality functions.", "ASE or metrology training strengthens the move.", "veteran-manufacturing-careers.html"],
+      ["Federal mobile equipment mechanic", "Federal", "Documented repair experience can support WG-5803-series roles.", "Match the vacancy's specialized experience; trade tests may apply.", "federal-jobs-search.html"]
+    ],
+    "bands": [
+      ["E-1–E-4", "Lead with systems repaired, diagnostics performed, tools and test equipment used, PMCS, and the platforms you maintained."],
+      ["E-5–E-6 / NCO", "Add shop/section leadership: mechanics led, quality control, training, and the equipment value and readiness you managed."],
+      ["E-7–E-9 / Senior NCO", "Emphasize maintenance operations, shop management, readiness and resource forecasting, and safety/quality programs."]
+    ],
+    "citations": [
+      {"label": "U.S. Army — Wheeled Vehicle Mechanic (91B)", "url": "https://www.goarmy.com/careers-and-jobs/specialty-careers/mechanics/wheeled-vehicle-mechanic.html"},
+      {"label": "ASE — certification overview", "url": "https://www.ase.com/"},
+      {"label": "O*NET Military Crosswalk", "url": "https://www.onetcenter.org/crosswalks.html"}
+    ]
+  },
+
+  "Army|92Y": {
+    "title": "Unit Supply Specialist",
+    "status": "researched",
+    "reviewedAt": "2026-09-20",
+    "intro": "A unit supply specialist is not just a stock clerk. The role covers property accountability, inventory control, requisition and receipt processing, supply-system data entry, records and audits, and management of hazardous and sensitive items, often supervising a supply room. That supports inventory, procurement, logistics-analysis, warehouse-management, and government property directions.",
+    "capabilities": [
+      "Property accountability and inventory control",
+      "Supply requisition, receipt, and turn-in processing",
+      "Warehouse operations and materiel handling",
+      "Supply-system data entry (GCSS-Army / ERP)",
+      "Property and financial records and audits",
+      "Hazardous and sensitive-item management"
+    ],
+    "paths": [
+      ["Inventory / supply chain specialist", "Civilian", "Accountability, requisition, and inventory control transfer directly to supply-chain roles.", "ERP and Excel skills widen access; document volume and accuracy.", "veteran-supply-chain-careers.html"],
+      ["Warehouse / distribution supervisor", "Civilian", "Materiel handling, accountability, and team tempo map to distribution operations.", "Forklift and OSHA credentials may help.", "veteran-supply-chain-careers.html"],
+      ["Procurement / purchasing assistant", "Civilian / government", "Requisition and vendor coordination support purchasing and procurement.", "Purchasing fundamentals or a CPPB track bridge terminology.", "veteran-supply-chain-careers.html"],
+      ["Logistics analyst", "Civilian", "Inventory data, forecasting, and readiness metrics provide an analytics foundation.", "Add Excel, SQL, and visualization skills.", "veteran-data-analytics-careers.html"],
+      ["Property book / asset manager", "Civilian / government", "Property accountability at scale maps to asset-management roles.", "Asset-management software experience helps.", "veteran-supply-chain-careers.html"],
+      ["Federal supply / logistics management", "Federal", "Documented property and supply experience can support 2005/2010/2030-series roles.", "Target the specialized experience in each announcement.", "federal-jobs-search.html"],
+      ["Government contractor property management", "Government contractor", "Property control experience supports contractor property-management roles.", "Clearance eligibility and FAR/property-management familiarity help.", "veteran-government-contractor-careers.html"]
+    ],
+    "bands": [
+      ["E-1–E-4", "Lead with items issued/received, inventories conducted, systems used, and the dollar value and accountability you handled."],
+      ["E-5–E-6 / NCO", "Add supply-room leadership: soldiers led, audits passed, records managed, training, and property accountability outcomes."],
+      ["E-7–E-9 / Senior NCO", "Emphasize supply operations, multi-unit accountability, financial and resource oversight, and process improvement results."]
+    ],
+    "citations": [
+      {"label": "U.S. Army — Unit Supply Specialist (92Y)", "url": "https://www.goarmy.com/careers-and-jobs/specialty-careers/logistics-support/unit-supply-specialist.html"},
+      {"label": "Army COOL — 92Y credentialing", "url": "https://www.cool.osd.mil/army/moc/index.html?moc=92Y"},
+      {"label": "O*NET Military Crosswalk", "url": "https://www.onetcenter.org/crosswalks.html"}
+    ]
+  }
+}

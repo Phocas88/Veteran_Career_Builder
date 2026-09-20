@@ -1365,8 +1365,8 @@ function PublicProfileCard(props){
   const topMos=(mils[0]&&(mils[0].mosTitle||mils[0].jobTitle))||"";
   const autoSummary=(branch?branch+" veteran":"Military veteran")+(topMos?" with a background in "+topMos:"")+(target&&target.title?", pursuing "+String(target.title).split(",")[0].trim()+" opportunities.":".");
 
-  const [headline,setHeadline]=useState(autoHeadline);
-  const [summary,setSummary]=useState(autoSummary);
+  const [headline,setHeadline]=useState("");
+  const [summary,setSummary]=useState("");
   const [incMil,setIncMil]=useState(true);
   const [incCiv,setIncCiv]=useState(true);
   const [incEdu,setIncEdu]=useState(true);
@@ -1378,7 +1378,7 @@ function PublicProfileCard(props){
   const [noindex,setNoindex]=useState(false);
   const [published,setPublished]=useState(false);
   const [busy,setBusy]=useState(false);
-  useEffect(function(){ if(!currentUser||!fbDb) return; fbDb.collection("publicProfiles").doc(slug).get().then(function(d){ if(d.exists&&(d.data()||{}).published!==false) setPublished(true); }).catch(function(){}); }, []);
+  useEffect(function(){ if(!currentUser||!fbDb||!(personal.name||"").trim()) return; fbDb.collection("publicProfiles").doc(slug).get().then(function(d){ if(d.exists&&(d.data()||{}).published!==false) setPublished(true); }).catch(function(){}); }, [slug]);
 
   function build(){
     const mil=incMil?mils.map(function(e){return {branch:e.branch||"",rank:e.rank||"",mosTitle:e.mosTitle||"",unit:e.unit||"",serviceType:e.serviceType||"",startDate:e.startDate||"",endDate:e.endDate||"",current:!!e.current,bullets:ppMilBullets(e)};}):[];
@@ -1389,7 +1389,7 @@ function PublicProfileCard(props){
     if(showEmail&&personal.email)contact.email=personal.email;
     if(showPhone&&personal.phone)contact.phone=personal.phone;
     if(showLinkedin&&personal.linkedin)contact.linkedin=personal.linkedin;
-    return {uid:currentUser.uid,slug:slug,published:true,noindex:!!noindex,publishedAt:Date.now(),updatedAt:Date.now(),name:personal.name||"Veteran",headline:(headline.trim()||autoHeadline),location:showLocation?(personal.location||""):"",summary:summary.trim(),military:mil,civilian:civ,education:edu,skills:sk,contact:contact};
+    return {uid:currentUser.uid,slug:slug,published:true,noindex:!!noindex,publishedAt:Date.now(),updatedAt:Date.now(),name:personal.name||"Veteran",headline:(headline.trim()||autoHeadline),location:showLocation?(personal.location||""):"",summary:(summary.trim()||autoSummary),military:mil,civilian:civ,education:edu,skills:sk,contact:contact};
   }
   async function doPublish(){
     if(!hasAccess){setShowPaywall(true);return;}
@@ -1447,9 +1447,9 @@ function PublicProfileCard(props){
           <summary style={{cursor:"pointer",fontSize:".88rem",fontWeight:600,color:"#1a3a6b"}}>Fine-tune headline & summary (auto-filled)</summary>
           <div style={{marginTop:".7rem"}}>
             <label style={{display:"block",fontSize:".76rem",fontWeight:700,color:INK,marginBottom:".25rem"}}>HEADLINE</label>
-            <input value={headline} onChange={e=>setHeadline(e.target.value)} style={{width:"100%",boxSizing:"border-box",padding:".55rem .7rem",border:"1px solid "+LINE,borderRadius:"7px",fontSize:".92rem",color:INK,marginBottom:".8rem"}}/>
+            <input value={headline} placeholder={autoHeadline} onChange={e=>setHeadline(e.target.value)} style={{width:"100%",boxSizing:"border-box",padding:".55rem .7rem",border:"1px solid "+LINE,borderRadius:"7px",fontSize:".92rem",color:INK,marginBottom:".8rem"}}/>
             <label style={{display:"block",fontSize:".76rem",fontWeight:700,color:INK,marginBottom:".25rem"}}>SUMMARY</label>
-            <textarea value={summary} onChange={e=>setSummary(e.target.value)} rows={3} style={{width:"100%",boxSizing:"border-box",padding:".55rem .7rem",border:"1px solid "+LINE,borderRadius:"7px",fontSize:".92rem",color:INK,resize:"vertical"}}/>
+            <textarea value={summary} placeholder={autoSummary} onChange={e=>setSummary(e.target.value)} rows={3} style={{width:"100%",boxSizing:"border-box",padding:".55rem .7rem",border:"1px solid "+LINE,borderRadius:"7px",fontSize:".92rem",color:INK,resize:"vertical"}}/>
           </div>
         </details>
 

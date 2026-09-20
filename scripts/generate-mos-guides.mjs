@@ -42,7 +42,12 @@ if(SOURCE_CSV){
   for(const [branch, entries] of Object.entries(codesByBranch)){
     for(const entry of entries){
       const key=`${branch}|${entry.code}`;
-      const all=rows.filter(r=>r.SVC===SERVICE[branch]&&norm(r.MOC)===norm(entry.code));
+      // Space Force Guardians use Air Force (F) codes in the crosswalk. Match the code
+      // exactly OR as a family stem: X is a skill-level wildcard and a trailing skill
+      // digit / shredout letter (e.g. 1A6X1 -> 1A651A) should still match.
+      const svc = branch==='Space Force' ? 'F' : SERVICE[branch];
+      const codeRe = new RegExp('^'+norm(entry.code).replace(/x/g,'[0-9]')+'[a-z0-9]*$');
+      const all=rows.filter(r=>r.SVC===svc && (norm(r.MOC)===norm(entry.code) || codeRe.test(norm(r.MOC))));
       const titleKind=rankKind(entry.title);
       const mpcs=all.map(r=>r.MPC).filter(Boolean);
       // rank category (E/W/O): trust the title hint if the data agrees, else the most common MPC in the data

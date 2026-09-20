@@ -459,10 +459,16 @@
             catLinks.push(allChildren[j]);
             j++;
           }
-          // Hide links initially
-          catLinks.forEach(function(link) { link.style.display = 'none'; });
+          // Hide links initially and give every destination a comfortable touch target.
+          catLinks.forEach(function(link) {
+            link.style.display = 'none';
+            link.style.minHeight = '48px';
+          });
           // Make the span clickable
-          el.setAttribute('style', el.getAttribute('style') + ';pointer-events:auto!important;cursor:pointer;display:flex!important;justify-content:space-between;align-items:center;-webkit-tap-highlight-color:transparent;');
+          el.setAttribute('role', 'button');
+          el.setAttribute('tabindex', '0');
+          el.setAttribute('aria-expanded', 'false');
+          el.setAttribute('style', (el.getAttribute('style') || '') + ';pointer-events:auto!important;cursor:pointer;display:flex!important;justify-content:space-between;align-items:center;min-height:48px;padding-top:.65rem;padding-bottom:.65rem;-webkit-tap-highlight-color:transparent;touch-action:manipulation;');
           // Add chevron if not present
           if (!el.querySelector('.mob-arr')) {
             var arr = document.createElement('span');
@@ -471,19 +477,33 @@
             arr.setAttribute('style', 'font-size:.65rem;color:rgba(240,192,64,.5);pointer-events:none;transition:transform .2s;');
             el.appendChild(arr);
           }
-          // Use ontouchstart + onclick for maximum mobile compatibility
+          // A single click handler avoids the synthetic click that follows touchend on
+          // some mobile browsers. Opening one category closes the others.
           (function(header, links) {
             var handler = function(evt) {
               evt.preventDefault();
               evt.stopPropagation();
-              evt.stopImmediatePropagation();
               var open = links[0] && links[0].style.display !== 'none';
-              links.forEach(function(l) { l.style.display = open ? 'none' : 'block'; });
+              mob.querySelectorAll('.vcp-mob-sect[aria-expanded="true"]').forEach(function(other) {
+                if (other === header) return;
+                other.setAttribute('aria-expanded', 'false');
+                var sibling = other.nextElementSibling;
+                while (sibling && !sibling.classList.contains('vcp-mob-sect')) {
+                  if (!sibling.classList.contains('vcp-mob-cta') && !sibling.classList.contains('vcp-mob-search')) sibling.style.display = 'none';
+                  sibling = sibling.nextElementSibling;
+                }
+                var otherArrow = other.querySelector('.mob-arr');
+                if (otherArrow) otherArrow.style.transform = '';
+              });
+              links.forEach(function(l) { l.style.display = open ? 'none' : 'flex'; });
+              header.setAttribute('aria-expanded', open ? 'false' : 'true');
               var a = header.querySelector('.mob-arr');
               if (a) a.style.transform = open ? '' : 'rotate(90deg)';
             };
-            header.ontouchend = handler;
             header.onclick = handler;
+            header.onkeydown = function(evt) {
+              if (evt.key === 'Enter' || evt.key === ' ') handler(evt);
+            };
           })(el, catLinks);
           i = j;
         } else {

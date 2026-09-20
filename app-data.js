@@ -1182,6 +1182,8 @@ html{scroll-behavior:smooth;}
   .card{border-radius:10px;margin-bottom:1rem;}
   .ch,.cb{padding:.9rem 1rem;}
   .user-bar{padding:.5rem 1rem;flex-wrap:wrap;gap:.35rem;}
+  .user-bar-left{min-width:0;}
+  .user-bar-actions{margin-left:auto;}
   .hdr h1{font-size:clamp(1.6rem,5vw,2.4rem);}
   .pw-plans{grid-template-columns:1fr;}
   .two-col,.result-row{grid-template-columns:1fr;}
@@ -1206,8 +1208,11 @@ html{scroll-behavior:smooth;}
   .hdr{padding:1.25rem .75rem 1rem;}
   .hdr h1{font-size:clamp(1.4rem,6vw,2rem);}
   .hdr p{font-size:.82rem;}
-  .user-bar{padding:.4rem .75rem;font-size:.72rem;}
-  .user-bar button{min-height:36px;padding:.3rem .6rem;}
+  .user-bar{padding:.55rem .75rem;font-size:.74rem;align-items:stretch;}
+  .user-bar-left{width:100%;min-height:36px;display:flex;align-items:center;}
+  .user-bar-actions{width:100%;display:grid!important;grid-template-columns:1fr 1fr;gap:.5rem!important;margin-left:0;}
+  .user-bar button{min-height:48px;padding:.55rem .65rem;font-size:.76rem!important;}
+  .user-bar .btn-danger{grid-column:1 / -1;order:-1;background:rgba(185,45,45,.28);border-color:rgba(255,120,120,.5);color:#fff;}
   .entry{padding:.85rem;}
   .field input,.field select,.field textarea{font-size:.88rem;padding:.55rem .75rem;}
   .tools-drawer{width:calc(100vw - 3rem);max-width:280px;}

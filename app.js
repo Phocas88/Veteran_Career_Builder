@@ -1585,6 +1585,7 @@ function App() {
   const [authErr, setAuthErr] = useState("");
   const [authOk, setAuthOk] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
   const [saveToast, setSaveToast] = useState("");
   const [hasUnsaved, setHasUnsaved] = useState(false);
   const [savedResumes, setSavedResumes] = useState([]);
@@ -1812,7 +1813,11 @@ function App() {
       if (hash !== "#profile" && hash !== "#account" && hash !== "#login") return;
       setShowPaywall(false);
       setAuthMode("login");
+      // Wait for Firebase to restore the persisted session before deciding whether to
+      // prompt for login — otherwise the modal flashes on every navigation in.
+      if (!authReady) return;
       if (currentUser) {
+        setShowAuth(false);
         setTab(5);
       } else {
         setShowAuth(true);
@@ -1821,11 +1826,12 @@ function App() {
     openAccountRoute();
     window.addEventListener("hashchange", openAccountRoute);
     return () => window.removeEventListener("hashchange", openAccountRoute);
-  }, [currentUser]);
+  }, [currentUser, authReady]);
 
   useEffect(() => {
-    if (!fbAuth) return;
+    if (!fbAuth) { setAuthReady(true); return; }
     const unsubscribe = fbAuth.onAuthStateChanged(async (firebaseUser) => {
+      setAuthReady(true);
       if (firebaseUser) {
         // User is signed in
         const initials = (firebaseUser.displayName || firebaseUser.email || "U")

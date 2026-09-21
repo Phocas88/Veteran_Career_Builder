@@ -783,6 +783,7 @@
     const [authErr, setAuthErr] = useState("");
     const [authOk, setAuthOk] = useState("");
     const [currentUser, setCurrentUser] = useState(null);
+    const [authReady, setAuthReady] = useState(false);
     const [saveToast, setSaveToast] = useState("");
     const [hasUnsaved, setHasUnsaved] = useState(false);
     const [savedResumes, setSavedResumes] = useState([]);
@@ -992,7 +993,9 @@
         if (hash !== "#profile" && hash !== "#account" && hash !== "#login") return;
         setShowPaywall(false);
         setAuthMode("login");
+        if (!authReady) return;
         if (currentUser) {
+          setShowAuth(false);
           setTab(5);
         } else {
           setShowAuth(true);
@@ -1001,10 +1004,14 @@
       openAccountRoute();
       window.addEventListener("hashchange", openAccountRoute);
       return () => window.removeEventListener("hashchange", openAccountRoute);
-    }, [currentUser]);
+    }, [currentUser, authReady]);
     useEffect(() => {
-      if (!fbAuth) return;
+      if (!fbAuth) {
+        setAuthReady(true);
+        return;
+      }
       const unsubscribe = fbAuth.onAuthStateChanged(async (firebaseUser) => {
+        setAuthReady(true);
         if (firebaseUser) {
           const initials = (firebaseUser.displayName || firebaseUser.email || "U").split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
           const user = {

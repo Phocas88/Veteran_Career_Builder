@@ -241,11 +241,11 @@ function combinePaths(dd, fam){
 }
 function jobCard(r,kind,mosTitle){
   const cl=clusterFor(r.code), d=(OCC[r.code]||{}).d, mt=esc(mosTitle), clx=cl?esc(cl[0].toLowerCase()):'';
-  const why = kind==='closest'
+  const why = r.why ? esc(r.why) : (kind==='closest'
     ? (cl ? 'A direct Department of Labor match—your '+mt+' work maps straight onto the '+clx+' side of this role.'
           : 'A direct U.S. Department of Labor crosswalk match for your '+mt+' experience.')
     : (cl ? 'Closely related to your '+mt+' occupations on the '+clx+' side—a natural next step.'
-          : 'Closely related to the civilian jobs your '+mt+' experience already matches.');
+          : 'Closely related to the civilian jobs your '+mt+' experience already matches.'));
   return '<article class="'+kind+'"><h3>'+esc(r.title)+'</h3>'+
     (d?'<p class="entails">'+esc(d)+'</p>':'')+
     '<p class="why"><strong>Why it fits:</strong> '+why+'</p>'+
@@ -253,14 +253,26 @@ function jobCard(r,kind,mosTitle){
     (cl?'<a href="/'+cl[1]+'">Explore '+esc(cl[0])+' careers →</a>':'')+'</div></article>';
 }
 function page(branch, entry){
-  const key=`${branch}|${entry.code}`, curated=CURATED[key], roles=official[key]||[], civRoles=roles.filter(r=>!String(r.code||'').startsWith('55')), family=curated?.family||familyFromRoles(roles)||familyFor(entry.title), bands=curated?.bands||experienceBands(branch,entry.title,rankTypeMap[key]), introText=curated?.intro||(civRoles.length?`Your ${entry.title} experience maps to civilian jobs like ${civRoles.slice(0,2).map(r=>r.title).join(' and ')}—and well beyond. Explore the specific roles below, see what each pays and requires, and build from there.`:`Your ${entry.title} background is a portfolio of capabilities—not a sentence to one civilian job. Explore adjacent fields, government work, and new directions where your experience gives you a credible starting point.`);
+  const key=`${branch}|${entry.code}`, curated=CURATED[key], roles=official[key]||[], rawCiv=roles.filter(r=>!String(r.code||'').startsWith('55'));
+  // A curated `jobs` list of O*NET codes overrides a weak/generic crosswalk match (e.g. an
+  // "All Other" catch-all) with specific, hand-picked civilian occupations.
+  const curatedJobs=(curated?.jobs&&curated.jobs.length)?curated.jobs.map(x=>Array.isArray(x)?{code:x[0],why:x[1]}:{code:x}).map(o=>({code:o.code,title:(OCC[o.code]||{}).t||'',why:o.why})).filter(o=>o.title):null;
+  const civRoles=curatedJobs||rawCiv, jobsCurated=!!curatedJobs;
+  const family=curated?.family||familyFromRoles(roles)||familyFor(entry.title), bands=curated?.bands||experienceBands(branch,entry.title,rankTypeMap[key]), introText=curated?.intro||(civRoles.length?`Your ${entry.title} experience maps to civilian jobs like ${civRoles.slice(0,2).map(r=>r.title).join(' and ')}—and well beyond. Explore the specific roles below, see what each pays and requires, and build from there.`:`Your ${entry.title} background is a portfolio of capabilities—not a sentence to one civilian job. Explore adjacent fields, government work, and new directions where your experience gives you a credible starting point.`);
   const citesHtml=(curated?.citations?.length)?`<section class="sources"><h2>Sources for this guide</h2><ul>${curated.citations.map(c=>`<li><a href="${esc(c.url)}" rel="nofollow noopener" target="_blank">${esc(c.label)}</a></li>`).join('')}</ul></section>`:'';
   // More close matches per code: direct crosswalk occupations (closest) + their O*NET related occupations.
   const relSeen=new Set(civRoles.map(r=>r.code)), relatedMatches=[];
   for(const r of civRoles){ for(const rc of (RELATED[r.code]||[])){ if(relSeen.has(rc)||relatedMatches.length>=6) continue; relSeen.add(rc); const info=OCC[rc]; if(info&&info.t) relatedMatches.push({code:rc,title:info.t}); } }
   const closestGrid=civRoles.length?`<h3 class="jobgroup">${civRoles.length>1?'Closest matches':'Closest match'}</h3><div class="jobs">${civRoles.map(r=>jobCard(r,'closest',entry.title)).join('')}</div>`:'';
   const relatedGrid=relatedMatches.length?`<h3 class="jobgroup">Related roles worth exploring</h3><div class="jobs">${relatedMatches.map(r=>jobCard(r,'related',entry.title)).join('')}</div>`:'';
-  const jobsSection=civRoles.length?`<section><h2>Civilian jobs that match ${esc(entry.code)}</h2><p class="lede">These are the civilian jobs the U.S. Department of Labor maps to ${esc(entry.code)}${relatedMatches.length?', plus the roles most closely related to them':''}—ordered from the closest match. Think of them as a floor, not a ceiling: see what each role involves and pays, start where your ${esc(entry.title)} experience already fits, and build toward the rest.</p>${closestGrid}${relatedGrid}<p class="source">Source: <a href="https://www.onetcenter.org/crosswalks.html" rel="nofollow noopener" target="_blank">O*NET / DMDC Military Crosswalk</a> and O*NET related-occupations data, August 2024.</p></section>`:'';
+  const catchall=esc((rawCiv[0]||{}).title||'All Other');
+  const jobsLede=jobsCurated
+    ? `The federal crosswalk lists only a broad “${catchall}” bucket for ${esc(entry.code)}—so here are the specific civilian roles a ${esc(entry.title)} is genuinely equipped for. See what each involves, what it pays, and why it fits.`
+    : `These are the civilian jobs the U.S. Department of Labor maps to ${esc(entry.code)}${relatedMatches.length?', plus the roles most closely related to them':''}—ordered from the closest match. Think of them as a floor, not a ceiling: see what each role involves and pays, start where your ${esc(entry.title)} experience already fits, and build toward the rest.`;
+  const jobsSource=jobsCurated
+    ? `Roles selected from the O*NET occupations that fit a ${esc(entry.title)}; the Department of Labor's own crosswalk lists only the broad “${catchall}” category for this code. See the <a href="https://www.onetcenter.org/crosswalks.html" rel="nofollow noopener" target="_blank">O*NET crosswalk</a>.`
+    : `Source: <a href="https://www.onetcenter.org/crosswalks.html" rel="nofollow noopener" target="_blank">O*NET / DMDC Military Crosswalk</a> and O*NET related-occupations data, August 2024.`;
+  const jobsSection=civRoles.length?`<section><h2>Civilian jobs that match ${esc(entry.code)}</h2><p class="lede">${jobsLede}</p>${closestGrid}${relatedGrid}<p class="source">${jobsSource}</p></section>`:'';
   const dirPaths=curated?.paths||(civRoles.length?null:combinePaths(dataDrivenPaths(roles,entry.title),PATHS[family]));
   const noCross=!civRoles.length;
   const dirTitle=noCross?`Civilian careers that fit ${esc(entry.code)}`:(curated?.paths?'More directions worth exploring':(dirPaths?dirPaths.length+' broader directions to explore':''));

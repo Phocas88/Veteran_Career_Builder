@@ -8,12 +8,14 @@ vm.runInNewContext(fs.readFileSync(path.join(root,'vcp-mos-data.js'),'utf8'),san
 const branches=sandbox.window.VCP_MOS;
 const hubs={Army:'army-mos-careers.html',Marines:'marine-corps-mos-careers.html',Navy:'navy-rate-careers.html','Air Force':'air-force-afsc-careers.html','Coast Guard':'coast-guard-rating-careers.html','Space Force':'space-force-afsc-careers.html'};
 const slug=code=>code.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const SLUG_PREFIX={'Navy|BM':'navy-','Navy|DC':'navy-','Navy|EM':'navy-','Navy|ET':'navy-','Navy|GM':'navy-','Navy|MU':'navy-','Navy|OS':'navy-','Navy|PS':'navy-','Navy|YN':'navy-','Coast Guard|IT':'coast-guard-'};
+const slugFor=(branch,code)=>(SLUG_PREFIX[branch+'|'+code]||'')+slug(code);
 const errors=[]; let expected=0;
 for(const [branch,entries] of Object.entries(branches)){
   const hub=fs.readFileSync(path.join(root,hubs[branch]),'utf8');
   for(const entry of entries){
     expected++;
-    const rel=`mos/${slug(entry.code)}.html`, full=path.join(root,rel), expectedHref=`https://veterancareerpath.com/${rel}`;
+    const rel=`mos/${slugFor(branch,entry.code)}.html`, full=path.join(root,rel), expectedHref=`https://veterancareerpath.com/${rel}`;
     if(!fs.existsSync(full)){errors.push(`missing ${rel}`);continue;}
     const html=fs.readFileSync(full,'utf8');
     for(const marker of ['Your rank changes the story','Build evidence','How to use this:']) if(!html.includes(marker)) errors.push(`${rel}: missing ${marker}`);

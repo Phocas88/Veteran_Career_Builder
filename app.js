@@ -5415,7 +5415,7 @@ Return this exact JSON structure:
           </a>
           <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-salary-negotiator.html" target="_blank">
             <span className="tdl-icon">💰</span>
-            <span className="tdl-text"><span className="tdl-name">Salary Negotiator</span><span className="tdl-sub">Scripts + clearance leverage tactics</span></span>
+            <span className="tdl-text"><span className="tdl-name">Salary Negotiator — Scripts</span><span className="tdl-sub">Counter-offer scripts + clearance leverage</span></span>
             <span className="tdl-badge">AI</span>
           </a>
           <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-cert-advisor.html" target="_blank">
@@ -5430,11 +5430,6 @@ Return this exact JSON structure:
             <span className="tdl-text"><span className="tdl-name">Full Career Assessment</span><span className="tdl-sub">60-question RIASEC + AI profile blend</span></span>
             <span className="tdl-badge">AI</span>
           </a>
-          <a className="tools-drawer-link" href="https://veterancareerpath.com/mos-career-translator.html" target="_blank">
-            <span className="tdl-icon">🔄</span>
-            <span className="tdl-text"><span className="tdl-name">Real MOS Experience Translator</span><span className="tdl-sub">AI translates any MOS to civilian titles</span></span>
-            <span className="tdl-badge">AI</span>
-          </a>
           <a className="tools-drawer-link" href="https://veterancareerpath.com/dd214-decoder.html" target="_blank">
             <span className="tdl-icon">📋</span>
             <span className="tdl-text"><span className="tdl-name">DD-214 Decoder</span><span className="tdl-sub">Benefit paths to review from selected fields</span></span>
@@ -5445,19 +5440,9 @@ Return this exact JSON structure:
             <span className="tdl-text"><span className="tdl-name">Clearance Job Match</span><span className="tdl-sub">Cleared roles + compensation context</span></span>
             <span className="tdl-badge">AI</span>
           </a>
-          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-linkedin-builder.html" target="_blank">
-            <span className="tdl-icon">🔵</span>
-            <span className="tdl-text"><span className="tdl-name">LinkedIn Profile Rewriter</span><span className="tdl-sub">Full civilian rewrite, ready to paste</span></span>
-            <span className="tdl-badge">AI</span>
-          </a>
-          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-federal-resume.html" target="_blank">
-            <span className="tdl-icon">🏛</span>
-            <span className="tdl-text"><span className="tdl-name">Federal Resume AI Builder</span><span className="tdl-sub">OPM-format, USAJobs-ready</span></span>
-            <span className="tdl-badge">AI</span>
-          </a>
-          <a className="tools-drawer-link" href="https://veterancareerpath.com/tools-salary-negotiator.html" target="_blank">
-            <span className="tdl-icon">🎯</span>
-            <span className="tdl-text"><span className="tdl-name">Salary Negotiation Role-Play</span><span className="tdl-sub">Practice with AI hiring manager</span></span>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/salary-negotiation-roleplay.html" target="_blank">
+            <span className="tdl-icon">🗣️</span>
+            <span className="tdl-text"><span className="tdl-name">Salary Role-Play — Live Practice</span><span className="tdl-sub">Practice negotiating with an AI hiring manager</span></span>
             <span className="tdl-badge">AI</span>
           </a>
           <a className="tools-drawer-link" href="https://veterancareerpath.com/transition-timeline-planner.html" target="_blank">
@@ -5465,14 +5450,29 @@ Return this exact JSON structure:
             <span className="tdl-text"><span className="tdl-name">Transition Timeline Planner</span><span className="tdl-sub">Week-by-week ETS action plan</span></span>
             <span className="tdl-badge">AI</span>
           </a>
-          <a className="tools-drawer-link" href="https://veterancareerpath.com/veteran-business-funding.html" target="_blank">
-            <span className="tdl-icon">💼</span>
-            <span className="tdl-text"><span className="tdl-name">Veteran Business Funding</span><span className="tdl-sub">Funding leads to verify with official sources</span></span>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/star-story-builder.html" target="_blank">
+            <span className="tdl-icon">🌟</span>
+            <span className="tdl-text"><span className="tdl-name">STAR Story Builder</span><span className="tdl-sub">Turn an experience into a STAR interview answer</span></span>
             <span className="tdl-badge">AI</span>
           </a>
-          <a className="tools-drawer-link" href="https://veterancareerpath.com/va-home-loan-analyzer.html" target="_blank">
-            <span className="tdl-icon">🏠</span>
-            <span className="tdl-text"><span className="tdl-name">VA Home Loan Analyzer</span><span className="tdl-sub">Buy vs rent + funding fee math</span></span>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/elevator-pitch-generator.html" target="_blank">
+            <span className="tdl-icon">📢</span>
+            <span className="tdl-text"><span className="tdl-name">Elevator Pitch Generator</span><span className="tdl-sub">30-sec pitch, "tell me about yourself," LinkedIn line</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/networking-outreach-writer.html" target="_blank">
+            <span className="tdl-icon">📨</span>
+            <span className="tdl-text"><span className="tdl-name">Networking & Outreach Writer</span><span className="tdl-sub">LinkedIn, recruiter & informational-interview messages</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/eval-to-achievements.html" target="_blank">
+            <span className="tdl-icon">📝</span>
+            <span className="tdl-text"><span className="tdl-name">Eval → Résumé Achievements</span><span className="tdl-sub">NCOER/OER → quantified civilian bullets</span></span>
+            <span className="tdl-badge">AI</span>
+          </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/benefits-explainer.html" target="_blank">
+            <span className="tdl-icon">🎓</span>
+            <span className="tdl-text"><span className="tdl-name">Benefits Explainer</span><span className="tdl-sub">GI Bill, VR&E, SkillBridge, VET TEC — plain language</span></span>
             <span className="tdl-badge">AI</span>
           </a>
           <div className="tools-drawer-section">Free Tools</div>
@@ -5486,6 +5486,11 @@ Return this exact JSON structure:
             <span className="tdl-text"><span className="tdl-name">Salary Data by MOS</span><span className="tdl-sub">Crowdsourced real veteran salaries</span></span>
             <span className="tdl-badge free">Free</span>
           </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/mos-career-translator.html" target="_blank">
+            <span className="tdl-icon">🔄</span>
+            <span className="tdl-text"><span className="tdl-name">MOS → Civilian Careers</span><span className="tdl-sub">Instant: your code → civilian jobs, pay & outlook</span></span>
+            <span className="tdl-badge free">Free</span>
+          </a>
         </div>
         <div className="tools-drawer-footer">
           <a href="https://veterancareerpath.com" target="_blank">← Back to VeteranCareerPath.com</a>
@@ -5495,7 +5500,7 @@ Return this exact JSON structure:
 
       {!hasAccess&&<div style={{position:"fixed",bottom:0,left:0,right:0,background:"linear-gradient(135deg,#0d1f3c,#1a3a6b)",color:"#fff",zIndex:99999,boxShadow:"0 -2px 16px rgba(0,0,0,.4)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".5rem 1rem .3rem",flexWrap:"wrap",gap:".4rem"}}>
-          <div style={{fontSize:".72rem",color:"#f0c040",fontWeight:700,letterSpacing:".06em",textTransform:"uppercase"}}>🔒 $15/mo · 16 AI Tools</div>
+          <div style={{fontSize:".72rem",color:"#f0c040",fontWeight:700,letterSpacing:".06em",textTransform:"uppercase"}}>🔒 $15/mo · 20+ AI Tools</div>
           <button onClick={()=>setShowPaywall(true)} style={{background:"linear-gradient(135deg,#c8960a,#e8aa10)",border:"none",borderRadius:"6px",color:"#0a1628",fontWeight:700,fontSize:".82rem",padding:".4rem 1rem",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Subscribe, $15/month →</button>
         </div>
         <div style={{display:"flex",overflowX:"auto",gap:".4rem",padding:".2rem 1rem .5rem",scrollbarWidth:"none"}}>

@@ -500,8 +500,6 @@ body.menu-open{overflow:hidden!important;}
         <a href="https://veterancareerpath.com/tools-federal-resume.html">Federal Resume AI</a>
         <a href="https://veterancareerpath.com/tools-salary-negotiator.html">Salary Roleplay</a>
         <a href="https://veterancareerpath.com/transition-timeline-planner.html">Transition Planner</a>
-        <a href="https://veterancareerpath.com/va-home-loan-analyzer.html">VA Loan Analyzer</a>
-        <a href="https://veterancareerpath.com/veteran-business-funding.html">Business Funding</a>
         <a href="https://veterancareerpath.com/tools-job-tracker.html">Job Tracker</a>
         <a href="https://veterancareerpath.com/tools-newsletter.html">Newsletter Generator</a>
       </div>
@@ -549,9 +547,7 @@ body.menu-open{overflow:hidden!important;}
         <a href="https://veterancareerpath.com/tools-cert-advisor.html">Certification Advisor</a>
         <a href="https://veterancareerpath.com/career-assessment-full.html">Full Career Assessment</a>
         <a href="https://veterancareerpath.com/transition-timeline-planner.html">Transition Planner</a>
-        <a href="https://veterancareerpath.com/va-home-loan-analyzer.html">VA Loan Analyzer</a>
-        <a href="https://veterancareerpath.com/veteran-business-funding.html">Business Funding</a>
-      </div>
+        </div>
     </div>
 
     <!-- COL 2: MOS / BRANCH GUIDES -->
@@ -1193,9 +1189,39 @@ body.menu-open{overflow:hidden!important;}
   <div class="badge">All 6 Branches Supported</div>
   <h1>What Civilian Jobs <span>Match Your MOS?</span></h1>
   <p>A hiring manager does not know what an 88M or a 35F or an HM does. But you do. And so do we. Translate your military job code into civilian language that actually gets you hired.</p>
-  <a href="https://veterancareerpath.com/app.html" class="btn-hero">Translate My MOS</a>
-  <a href="#how" class="btn-ghost">See How It Works</a>
+  <div style="max-width:640px;margin:1.25rem auto 0;text-align:left;">
+    <input id="mosx-input" type="text" autocomplete="off" aria-label="Enter your military job code" placeholder="Enter your MOS, AFSC, or rating — e.g. 11B, 68W, HM, 3D0X2" style="width:100%;box-sizing:border-box;padding:.9rem 1.1rem;border-radius:10px;border:1.5px solid #cdd9ea;font-size:1rem;font-family:inherit;outline:none;">
+    <div id="mosx-results" style="margin-top:.5rem;"></div>
+    <p style="font-size:.82rem;color:#5a7090;margin:.6rem 0 0;text-align:center;">Instant &amp; free — jump straight to civilian jobs, real salaries, and hiring outlook for your code. Want a full AI translation of <em>your</em> specific duties? <a href="https://veterancareerpath.com/app.html" style="color:#1a5fb4;font-weight:600;">Open the app →</a></p>
+  </div>
 </section>
+<script src="/vcp-mos-data.js"></script>
+<script>
+(function(){
+  var input=document.getElementById('mosx-input'), box=document.getElementById('mosx-results');
+  if(!input||!window.VCP_MOS){ return; }
+  var PFX={'Navy|BM':'navy-','Navy|DC':'navy-','Navy|EM':'navy-','Navy|ET':'navy-','Navy|GM':'navy-','Navy|MU':'navy-','Navy|OS':'navy-','Navy|PS':'navy-','Navy|YN':'navy-','Coast Guard|IT':'coast-guard-'};
+  function slug(c){ return c.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+  var LIST=[];
+  Object.keys(window.VCP_MOS).forEach(function(br){ (window.VCP_MOS[br]||[]).forEach(function(e){ LIST.push({br:br,code:e.code,title:e.title,url:'https://veterancareerpath.com/mos/'+(PFX[br+'|'+e.code]||'')+slug(e.code)+'.html'}); }); });
+  function esc(s){ return String(s).replace(/[<>"&]/g,function(c){return {'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c];}); }
+  function run(q){
+    q=q.trim().toLowerCase();
+    if(!q){ box.innerHTML=''; return; }
+    var starts=[], contains=[];
+    for(var i=0;i<LIST.length;i++){ var x=LIST[i], c=x.code.toLowerCase(), t=x.title.toLowerCase();
+      if(c.indexOf(q)===0||t.indexOf(q)===0) starts.push(x);
+      else if(c.indexOf(q)>=0||t.indexOf(q)>=0) contains.push(x);
+      if(starts.length>=12) break;
+    }
+    var res=starts.concat(contains).slice(0,12);
+    if(!res.length){ box.innerHTML='<div style="padding:.7rem;color:#5a7090;background:#fff;border:1px solid #dde3ec;border-radius:8px;">No match for "'+esc(q)+'". Try the code (e.g. 11B) or a keyword (e.g. medic, cyber).</div>'; return; }
+    box.innerHTML=res.map(function(r){ return '<a href="'+r.url+'" style="display:block;background:#fff;border:1px solid #dde3ec;border-radius:8px;padding:.6rem .85rem;margin:.35rem 0;text-decoration:none;"><span style="font-family:\'Bebas Neue\',sans-serif;color:#1a3a6b;font-size:1.05rem;letter-spacing:.04em;">'+esc(r.code)+'</span> <span style="color:#33455e;">'+esc(r.title)+'</span> <span style="color:#8aa0b8;font-size:.8rem;">· '+esc(r.br)+' →</span></a>'; }).join('');
+  }
+  var dt=null;
+  input.addEventListener('input', function(){ clearTimeout(dt); dt=setTimeout(function(){ run(input.value); }, 140); });
+})();
+</script>
 
 <div id="main-content" class="content" id="how">
   <h2>The Translation Problem Every Veteran Faces</h2>

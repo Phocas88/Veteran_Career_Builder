@@ -13,9 +13,6 @@
 <link rel="apple-touch-icon" href="https://veterancareerpath.com/img/optimized/logo-96.webp">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
 (function(){var c={};try{c=JSON.parse(localStorage.getItem('vcb_cookie_consent')||'{}');}catch(e){}gtag('consent','default',{ad_storage:c.ads?'granted':'denied',ad_user_data:c.ads?'granted':'denied',ad_personalization:c.ads?'granted':'denied',analytics_storage:c.analytics?'granted':'denied',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});window.addEventListener('DOMContentLoaded',function(){var b=document.createElement('script');b.src='/vcp-cookie-consent.js';b.defer=true;document.body.appendChild(b);});})();gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <style>.vcp-skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;z-index:99999;text-decoration:none;transition:top .2s;}.vcp-skip-link:focus{top:0;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,sans-serif;background:#0a1628;color:#fff;min-height:100vh;line-height:1.6}
@@ -182,21 +179,6 @@ img,video,iframe,table,pre,code{max-width:100%;}
 <meta name="twitter:title" content="$1 Military Resume &amp; Career Report">
 <meta name="twitter:description" content="Build an editable, ATS-friendly civilian resume and practical career report from your confirmed military experience.">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"Military Resume & Career Report","description":"An editable, ATS-friendly civilian resume and career report generated from confirmed military experience.","brand":{"@type":"Brand","name":"Veteran Career Path"},"offers":{"@type":"Offer","price":"1.00","priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://veterancareerpath.com/resume-pro.html"}}</script>
-<script>
-try{firebase.initializeApp({apiKey:"AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",authDomain:"veteran-career-builder.firebaseapp.com",projectId:"veteran-career-builder",storageBucket:"veteran-career-builder.firebasestorage.app",messagingSenderId:"664123627374",appId:"1:664123627374:web:157c9d6d7f764e12bb537f"});}catch(e){}
-function vcp_subscribeEmail(emailInputId,msgId){
-  var input=document.getElementById(emailInputId),msg=document.getElementById(msgId);
-  if(!input||!msg)return;
-  var email=input.value.trim().toLowerCase();
-  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.textContent='Please enter a valid email address.';msg.style.color='#ff6b6b';msg.style.display='block';return;}
-  msg.textContent='Subscribing...';msg.style.color='rgba(192,216,240,.6)';msg.style.display='block';
-  var db=firebase.firestore();
-  db.collection('email_subscribers').where('email','==',email).get().then(function(snap){
-    if(!snap.empty){msg.textContent="You're already subscribed!";msg.style.color='#f0c040';input.value='';return;}
-    return db.collection('email_subscribers').add({email:email,source:window.location.href,timestamp:firebase.firestore.FieldValue.serverTimestamp(),status:'active'}).then(function(){msg.innerHTML="You're in! Check your inbox.";msg.style.color='#4ade80';input.value='';});
-  }).catch(function(err){console.error('Subscribe error:',err);msg.textContent='Something went wrong. Please try again.';msg.style.color='#ff6b6b';});
-}
-</script>
 <link rel="stylesheet" href="/vcp-styles.css">
   <link rel="stylesheet" href="/assets/css/ai-tools.css">
   <link rel="stylesheet" href="/assets/css/resume-pro.css">

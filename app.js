@@ -5491,6 +5491,11 @@ Return this exact JSON structure:
             <span className="tdl-text"><span className="tdl-name">MOS → Civilian Careers</span><span className="tdl-sub">Instant: your code → civilian jobs, pay & outlook</span></span>
             <span className="tdl-badge free">Free</span>
           </a>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/license-finder.html" target="_blank">
+            <span className="tdl-icon">🔏</span>
+            <span className="tdl-text"><span className="tdl-name">State License Lookup</span><span className="tdl-sub">What license your career needs in your state</span></span>
+            <span className="tdl-badge free">Free</span>
+          </a>
         </div>
         <div className="tools-drawer-footer">
           <a href="https://veterancareerpath.com" target="_blank">← Back to VeteranCareerPath.com</a>

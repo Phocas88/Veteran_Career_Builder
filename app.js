@@ -5424,6 +5424,13 @@ Return this exact JSON structure:
             <span className="tdl-badge">AI</span>
           </a>
 
+          <div className="tools-drawer-section">One-Time Tool</div>
+          <a className="tools-drawer-link" href="https://veterancareerpath.com/resume-pro.html" target="_blank">
+            <span className="tdl-icon">&#128196;</span>
+            <span className="tdl-text"><span className="tdl-name">Military Resume &amp; Career Report</span><span className="tdl-sub">Editable, source-grounded resume + career paths</span></span>
+            <span className="tdl-badge">$1</span>
+          </a>
+
           <div className="tools-drawer-section">More AI Tools, $15/mo</div>
           <a className="tools-drawer-link" href="https://veterancareerpath.com/career-assessment-full.html" target="_blank">
             <span className="tdl-icon">🧠</span>

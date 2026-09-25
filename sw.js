@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'vcp-v5';
+const CACHE_VERSION = 'vcp-v6';
 const STATIC_CACHE = CACHE_VERSION + '-static';
 const DYNAMIC_CACHE = CACHE_VERSION + '-dynamic';
 const MAX_DYNAMIC_CACHE = 80;

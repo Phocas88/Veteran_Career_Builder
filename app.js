@@ -1276,9 +1276,12 @@ function MyProfileSaved(props) {
     <div className="ch"><h3>Account</h3></div>
     <div className="cb" style={{display:"flex",gap:".6rem",flexWrap:"wrap"}}>
       {hasAccess?(
-        <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".4rem .75rem",fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>
-          ✓ Full Access Active
-          <button style={{background:"transparent",border:"none",color:"#1a3a6b",fontSize:".75rem",cursor:"pointer",textDecoration:"underline",padding:0}} onClick={()=>window.open("https://billing.stripe.com/p/login/bJedR91qZcdieCZ8k7enS00","_blank")}>Manage Subscription ↗</button>
+        <div style={{display:"flex",flexDirection:"column",gap:".4rem"}}>
+          <div style={{display:"flex",alignItems:"center",gap:".6rem",flexWrap:"wrap",background:"#f0fff4",border:"1px solid #b0e0c0",borderRadius:"4px",padding:".5rem .75rem",fontSize:".8rem",color:"#1a7a40",fontWeight:600}}>
+            ✓ Full Access Active
+            <button style={{background:"#1a3a6b",border:"none",borderRadius:"4px",color:"#fff",fontSize:".78rem",fontWeight:700,cursor:"pointer",padding:".42rem .85rem"}} onClick={()=>window.open("https://billing.stripe.com/p/login/bJedR91qZcdieCZ8k7enS00","_blank")}>Manage or Cancel Subscription ↗</button>
+          </div>
+          <div style={{fontSize:".72rem",color:"#5a7a5a"}}>Cancel anytime in the secure Stripe billing portal — no cancellation fees.</div>
         </div>
       ):(
         <button style={{background:"#f0c040",border:"none",borderRadius:"4px",color:"#0d1f3c",padding:".45rem 1.1rem",fontSize:".85rem",fontWeight:700,cursor:"pointer"}} onClick={()=>setShowPaywall(true)}>

@@ -45,32 +45,75 @@ img,video,iframe{max-width:100%;}
 .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.6rem,6vw,4.2rem);letter-spacing:.04em;color:var(--white);margin-bottom:.75rem;}
 .page-header p{font-family:'Source Serif 4',serif;font-size:1.05rem;font-style:italic;font-weight:300;color:rgba(245,240,232,.65);max-width:640px;margin:0 auto;line-height:1.7;}
 
-.store-wrap{max-width:1080px;margin:0 auto;padding:3rem 8% 4rem;}
-.store-trust{display:flex;flex-wrap:wrap;justify-content:center;gap:1.25rem 2.25rem;margin-bottom:2.75rem;color:var(--dim);font-size:.82rem;}
-.store-trust span{display:inline-flex;align-items:center;gap:.45rem;}
-.store-trust b{color:var(--cream);font-weight:600;}
+/* compact header so the product shows near the top on phones */
+.store-header{padding:2.4rem 8% 1.8rem;}
+.store-wrap{max-width:1000px;margin:0 auto;padding:1.5rem 6% 6rem;}
+.store-loading,.store-empty{text-align:center;color:var(--dim);padding:3rem 1rem;font-size:.95rem;}
 
-.store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.75rem;}
-.store-loading,.store-empty{grid-column:1/-1;text-align:center;color:var(--dim);padding:3rem 1rem;font-size:.95rem;}
+/* ── product ── */
+.p-top{display:grid;grid-template-columns:1fr;gap:1.5rem;align-items:start;}
+.p-cover{padding:0;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;background:#0b1524;cursor:zoom-in;display:block;width:100%;max-width:320px;margin:0 auto;box-shadow:0 12px 40px rgba(0,0,0,.4);}
+.p-cover img{display:block;width:100%;height:auto;}
+.p-head{display:flex;flex-direction:column;}
+.p-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.9rem,6vw,2.6rem);line-height:1.05;letter-spacing:.02em;color:var(--white);margin-bottom:.6rem;}
+.p-sub{font-size:.95rem;line-height:1.6;color:rgba(245,240,232,.8);margin-bottom:1rem;}
+.p-meta{font-size:1rem;color:var(--cream);margin-bottom:1rem;}
+.p-meta strong{color:var(--gold2);font-size:1.3rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.02em;}
+.p-buy{background:linear-gradient(135deg,var(--gold2),#e0a820);color:var(--navy);font-family:'DM Sans',sans-serif;font-weight:700;font-size:1.02rem;padding:.85rem 1.6rem;border:none;border-radius:10px;cursor:pointer;box-shadow:0 4px 20px rgba(200,169,81,.25);transition:transform .15s,box-shadow .15s,opacity .15s;align-self:flex-start;}
+.p-buy:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(200,169,81,.35);}
+.p-buy:disabled{opacity:.6;cursor:wait;transform:none;}
+.p-samplelink{margin-top:.8rem;font-size:.85rem;color:var(--gold);text-decoration:none;}
+.p-samplelink:hover{text-decoration:underline;}
+.p-microtrust{margin-top:1rem;font-size:.74rem;color:var(--dim);}
 
-.pc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,border-color .15s,box-shadow .15s;}
-.pc:hover{transform:translateY(-3px);border-color:rgba(200,169,81,.35);box-shadow:0 12px 32px rgba(0,0,0,.35);}
-.pc-cover{position:relative;aspect-ratio:3/2;background:linear-gradient(150deg,var(--c1),var(--c2));padding:1.4rem 1.3rem;display:flex;flex-direction:column;justify-content:space-between;border-bottom:3px solid rgba(240,192,64,.5);}
-.pc-kicker{font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.7);}
-.pc-title{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;line-height:1.05;letter-spacing:.02em;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.35);}
-.pc-branch{font-size:.72rem;font-weight:600;color:rgba(255,255,255,.85);}
-.pc-body{padding:1.4rem 1.35rem 1.5rem;display:flex;flex-direction:column;flex:1;}
-.pc-name{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:.03em;color:var(--white);margin-bottom:.6rem;}
-.pc-blurb{font-size:.86rem;line-height:1.65;color:rgba(245,240,232,.72);margin-bottom:1.2rem;flex:1;}
-.pc-buy{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.7rem;}
-.pc-price{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:.02em;color:var(--gold2);}
-.pc-btn{background:linear-gradient(135deg,var(--gold2),#e0a820);color:var(--navy);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;padding:.7rem 1.25rem;border:none;border-radius:8px;cursor:pointer;transition:transform .15s,box-shadow .15s,opacity .15s;box-shadow:0 4px 18px rgba(200,169,81,.22);}
-.pc-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(200,169,81,.34);}
-.pc-btn:disabled{opacity:.6;cursor:wait;transform:none;}
-.pc-note{font-size:.72rem;color:var(--dim);}
+.p-block{margin-top:2.75rem;}
+.p-block h2{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:.04em;color:var(--white);margin-bottom:1rem;}
 
-.store-fineprint{max-width:760px;margin:3rem auto 0;text-align:center;font-size:.78rem;color:var(--dim);line-height:1.7;}
+.p-thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.9rem;}
+.p-thumb{padding:0;border:1px solid rgba(255,255,255,.1);border-radius:8px;overflow:hidden;background:#0b1524;cursor:zoom-in;}
+.p-thumb img{display:block;width:100%;height:auto;}
+.p-thumb:hover{border-color:rgba(200,169,81,.4);}
+.p-thumbs-note{margin-top:.6rem;font-size:.76rem;color:var(--dim);}
+
+.p-inside-meta{font-size:.76rem;color:var(--gold);letter-spacing:.03em;margin-bottom:.9rem;text-transform:uppercase;font-weight:600;}
+.p-inside-list{list-style:none;display:grid;gap:.6rem;}
+.p-inside-list li{position:relative;padding-left:1.5rem;font-size:.9rem;line-height:1.6;color:rgba(245,240,232,.85);}
+.p-inside-list li::before{content:'✓';position:absolute;left:0;color:var(--gold2);font-weight:700;}
+
+.p-how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;}
+.p-how-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1.1rem;}
+.p-how-ic{font-size:1.4rem;margin-bottom:.4rem;}
+.p-how-t{font-weight:600;color:var(--white);font-size:.9rem;margin-bottom:.3rem;}
+.p-how-b{font-size:.82rem;line-height:1.55;color:rgba(245,240,232,.72);}
+.p-how-b a{color:var(--gold);}
+.p-buy-row{display:flex;align-items:center;gap:1.1rem;margin-top:1.75rem;flex-wrap:wrap;}
+.p-buy-price{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--gold2);letter-spacing:.02em;}
+
+.store-fineprint{max-width:720px;margin:3rem auto 0;text-align:center;font-size:.78rem;color:var(--dim);line-height:1.7;padding-right:3.5rem;}
 .store-fineprint a{color:var(--gold);}
+
+/* desktop: cover beside the buy panel */
+@media(min-width:720px){
+  .p-top{grid-template-columns:300px 1fr;gap:2.5rem;}
+  .p-cover{margin:0;}
+  .store-header{padding:3.2rem 8% 2rem;}
+}
+
+/* keep the floating back-to-top clear of the fine print */
+.vcp-back-to-top{bottom:150px!important;}
+
+/* ── lightbox ── */
+.lb{position:fixed;inset:0;background:rgba(5,10,20,.94);z-index:99998;display:none;align-items:center;justify-content:center;padding:2.5rem 1rem;}
+.lb.open{display:flex;}
+.lb-fig{margin:0;max-width:900px;max-height:100%;display:flex;flex-direction:column;align-items:center;gap:.6rem;overflow:auto;}
+.lb-img{max-width:100%;max-height:82vh;border-radius:6px;box-shadow:0 12px 48px rgba(0,0,0,.6);background:#fff;}
+.lb-cap{color:rgba(245,240,232,.75);font-size:.82rem;text-align:center;}
+.lb-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.1);border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:1.1rem;cursor:pointer;z-index:2;}
+.lb-close:hover{background:rgba(255,255,255,.2);}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.6rem;line-height:1;cursor:pointer;z-index:2;}
+.lb-nav:hover{background:rgba(255,255,255,.2);}
+.lb-prev{left:1rem;}.lb-next{right:1rem;}
+@media(max-width:520px){.lb-nav{width:38px;height:38px;font-size:1.3rem;}.lb-prev{left:.3rem;}.lb-next{right:.3rem;}}
 
 /* Download page */
 .dl-card{max-width:560px;margin:0 auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:2.75rem 2rem;text-align:center;}
@@ -89,7 +132,7 @@ img,video,iframe{max-width:100%;}
 .disclaimer{max-width:900px;margin:0 auto;padding:0 8% 4rem;}
 .disclaimer-box{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:8px;padding:1.25rem 1.5rem;font-size:.78rem;color:var(--dim);line-height:1.7;}
 
-@media(max-width:560px){.store-grid{grid-template-columns:1fr;}.page-header{padding:3.5rem 6% 3rem;}}`;
+@media(max-width:560px){.store-header{padding:2.2rem 6% 1.6rem;}.store-fineprint{padding-right:3.5rem;}}`;
 
 function page({ title, description, canonical, bodyContent, script, robots }) {
   return `<!DOCTYPE html>
@@ -122,22 +165,14 @@ ${TRAILING_SCRIPTS}
 `;
 }
 
-const storeBody = `<div class="page-header">
+const storeBody = `<div class="page-header store-header">
   <div class="label">Veteran Career Path Store</div>
   <h1>Career Field Guides &amp; Handbooks</h1>
-  <p>MOS-specific, veteran-written workbooks that translate your service into civilian résumés, interviews, and job offers. Instant PDF download — yours to keep.</p>
 </div>
 
 <main id="main-content" class="store-wrap">
-  <div class="store-trust">
-    <span>🔒 <b>Secure</b> Stripe checkout</span>
-    <span>⚡ <b>Instant</b> PDF download</span>
-    <span>♾️ <b>Yours to keep</b> — one-time purchase</span>
-    <span>🎖️ Written <b>by veterans</b></span>
-  </div>
-
-  <div id="store-grid" class="store-grid" aria-live="polite">
-    <div class="store-loading">Loading the shelf…</div>
+  <div id="store-root" aria-live="polite">
+    <div class="store-loading">Loading…</div>
   </div>
 
   <p class="store-fineprint">Every product is a digital download delivered instantly as a PDF. Because files are delivered immediately, sales are final — but if a download ever fails, <a href="/contact.html">contact us</a> and we'll make it right.</p>
@@ -157,7 +192,7 @@ const downloadBody = `<div class="page-header">
 
 await writeFile(resolve(ROOT, 'store.html'), page({
   title: 'Store — Veteran Career Path Field Guides & Handbooks',
-  description: 'Veteran-written, MOS-specific career handbooks and workbooks. Translate your military experience into civilian résumés, interviews, and job offers. Instant PDF download.',
+  description: 'MOS-specific career handbooks and workbooks for veterans. Translate your military experience into a civilian résumé, compare career paths, and practice interviews. Instant PDF download.',
   canonical: 'https://veterancareerpath.com/store.html',
   bodyContent: storeBody,
   script: '<script src="/assets/js/store.js"></script>',

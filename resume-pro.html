@@ -1,156 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-<title>Veteran Career Tools | AI Resume & Job Builder</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <!-- Google AdSense -->
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-(function(){var c={};try{c=JSON.parse(localStorage.getItem('vcb_cookie_consent')||'{}');}catch(e){}gtag('consent','default',{ad_storage:c.ads?'granted':'denied',ad_user_data:c.ads?'granted':'denied',ad_personalization:c.ads?'granted':'denied',analytics_storage:c.analytics?'granted':'denied',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});window.addEventListener('DOMContentLoaded',function(){var b=document.createElement('script');b.src='/vcp-cookie-consent.js';b.defer=true;document.body.appendChild(b);});})();
-    gtag('js', new Date());
-    gtag('config', 'G-CMFKLT321J');
-  </script>
-  <meta name="description" content="AI-powered veteran career tools: resume builder, MOS translator, career matching, and interview prep. Build your civilian career in minutes."/>
-  <meta name="keywords" content="veteran career, military to civilian, veteran resume, Real MOS Experience Translator, veteran jobs, military transition, veteran career counseling"/>
-                
-<link rel="canonical" href="https://veterancareerpath.com/app.html">
-  <style>.vcp-skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;z-index:99999;text-decoration:none;transition:top .2s;}.vcp-skip-link:focus{top:0;}
-    body{margin:0;background:#f4f6fa;}
-    #loading{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a6b,#1e4a8a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999;}
-    #loading img{width:100px;height:100px;object-fit:contain;mix-blend-mode:screen;}
-    #loading p{color:#f0c040;letter-spacing:.15em;font-size:1rem;font-family:Georgia,serif;}
-    .spin{width:36px;height:36px;border:3px solid rgba(240,192,64,.25);border-top-color:#f0c040;border-radius:50%;animation:sp .8s linear infinite;will-change:transform;}
-    @keyframes sp{to{transform:rotate(360deg)}}
-    #admin-btn{position:fixed;bottom:16px;right:16px;z-index:9999;background:#1a3a6b;color:#fff;border:none;padding:9px 18px;border-radius:4px;cursor:pointer;font-weight:bold;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.25);display:none;}
-    #admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;align-items:center;justify-content:center;padding:16px;}
-    #admin-overlay.open{display:flex;}
-    #admin-box{background:#fff;border:2px solid #1a3a6b;border-radius:8px;padding:24px;max-width:460px;width:100%;color:#1a2a3a;}
-    #admin-box h2{color:#1a3a6b;margin:0 0 8px;font-size:1.2rem;}
-    #admin-box p{font-size:13px;color:#3a5070;margin:0 0 14px;line-height:1.6;}
-    #admin-key-input{width:100%;padding:10px;border-radius:4px;border:1.5px solid #1a3a6b;font-size:14px;margin-bottom:12px;font-family:monospace;box-sizing:border-box;}
-    .arow{display:flex;gap:8px;}
-    .asave{flex:1;padding:10px;background:#1a3a6b;border:none;border-radius:4px;color:#fff;font-weight:bold;cursor:pointer;font-size:14px;}
-    .acancel{padding:10px 16px;background:transparent;border:1px solid #aaa;border-radius:4px;color:#666;cursor:pointer;}
-    #astatus{font-size:12px;color:#1a7a40;margin-top:10px;min-height:16px;}
-  
-.btn-upgrade{width:100%;padding:.75rem;background:linear-gradient(135deg,#f0c040,#e0a820);border:none;border-radius:6px;color:#0d1f3c;font-weight:700;font-size:.95rem;cursor:pointer;letter-spacing:.03em;}
-</style>
-  <script defer src="https://js.stripe.com/v3/"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js" crossorigin="anonymous"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js" crossorigin="anonymous"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-  <script>
-    try {
-     const firebaseConfig = {
-  apiKey: "AIzaSyDEh2Aivj4q8hVITI60fLZz8uCyP6UV7Os",
-  authDomain: "veteran-career-builder.firebaseapp.com",
-  projectId: "veteran-career-builder",
-  storageBucket: "veteran-career-builder.firebasestorage.app",
-  messagingSenderId: "664123627374",
-  appId: "1:664123627374:web:157c9d6d7f764e12bb537f"
-};
-      firebase.initializeApp(firebaseConfig);
-      window.fbAuth = firebase.auth();
-      window.fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(error) {
-        console.warn("Firebase local persistence is unavailable:", error);
-      });
-      window.fbDb = firebase.firestore();
-    } catch(e) {
-      console.warn("Firebase not configured:", e.message);
-      window.fbAuth = null; window.fbDb = null;
-    }
-  </script>
-  <script>window.VCB_STRIPE_PK="pk_live_51TDAAvEYZOEiIlw49BQxf7OqLJIlQbqhY3Ddv87CHr8gpPPGZTuAZQNrsWs2bKopJrXP7rH5Z1huTeADDEaAyfZ100oSOzOrvc";</script>
-  <script>window.VCB_LOGO="/img/optimized/logo-192.png";</script>
-  <script>window.VCB_PROXY_URL="https://vcp-proxy.vercel.app";</script>
-  <link rel="icon" type="image/png" href="https://veterancareerpath.com/img/optimized/logo-96.webp">
-  <link rel="apple-touch-icon" href="https://veterancareerpath.com/img/optimized/logo-96.webp">
-<style>
-@media print {
-  @page { margin: 1.5cm; }
-  /* Suppress browser print headers/footers */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>$1 Military Resume &amp; Career Report | Veteran Career Path</title>
+<meta name="description" content="Turn confirmed military experience into an editable, ATS-friendly civilian resume and practical career report for a one-time $1 payment.">
+<meta name="keywords" content="military resume builder, veteran resume, MOS to civilian resume, veteran career report">
+<link rel="canonical" href="https://veterancareerpath.com/resume-pro.html">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/img/optimized/logo-96.webp">
+<link rel="apple-touch-icon" href="https://veterancareerpath.com/img/optimized/logo-96.webp">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMFKLT321J"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+(function(){var c={};try{c=JSON.parse(localStorage.getItem('vcb_cookie_consent')||'{}');}catch(e){}gtag('consent','default',{ad_storage:c.ads?'granted':'denied',ad_user_data:c.ads?'granted':'denied',ad_personalization:c.ads?'granted':'denied',analytics_storage:c.analytics?'granted':'denied',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});window.addEventListener('DOMContentLoaded',function(){var b=document.createElement('script');b.src='/vcp-cookie-consent.js';b.defer=true;document.body.appendChild(b);});})();gtag("js",new Date());gtag("config","G-CMFKLT321J");</script>
+<style>.vcp-skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:#f0c040;color:#0a1628;padding:.75rem 1.5rem;font-weight:700;font-size:.9rem;border-radius:0 0 8px 8px;z-index:99999;text-decoration:none;transition:top .2s;}.vcp-skip-link:focus{top:0;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,sans-serif;background:#0a1628;color:#fff;min-height:100vh;line-height:1.6}
+
+
+
+
+
+.mmenu{display:none;position:fixed;top:57px;left:0;right:0;background:#08111e;border-top:1px solid rgba(201,168,76,.15);z-index:999;flex-direction:column;padding:.5rem 0;max-height:85vh;overflow-y:auto}
+.mmenu.open{display:flex}
+.mmenu a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;padding:.75rem 6%;border-bottom:1px solid rgba(255,255,255,.05)}
+@media(max-width:768px){}
+.tool-hero{background:linear-gradient(160deg,#0a1628,#1a3a6b 60%,#1a5c9a);padding:2.5rem 6%;text-align:center;position:relative;overflow:hidden}
+.tool-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,.1),transparent 70%)}
+.tool-hero-inner{position:relative;max-width:700px;margin:0 auto}
+.tbadge{display:inline-block;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:.25rem .85rem;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#c9a84c;margin-bottom:.75rem}
+.tool-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.08em;color:#fff;margin-bottom:.5rem;line-height:1.1}
+.tool-hero h1 span{color:#f0c040}
+.tool-hero p{font-size:.9rem;color:rgba(255,255,255,.6);max-width:550px;margin:0 auto;font-weight:300;line-height:1.7}
+.tool-wrap{max-width:800px;margin:0 auto;padding:1.25rem 1.5rem}
+.profile-banner{background:rgba(26,122,64,.1);border:1px solid rgba(26,122,64,.2);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.profile-banner .pb-icon{font-size:1.25rem}
+.profile-banner .pb-text{font-size:.82rem;color:rgba(255,255,255,.7);font-weight:300}
+.profile-banner .pb-name{font-weight:700;color:#90e8b0}
+.card-tool{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.section-head{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.75rem}
+.field{margin-bottom:.85rem}
+.field label{display:block;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:.3rem;letter-spacing:.08em;text-transform:uppercase}
+input[type=text],input[type=url],input[type=date],select,textarea{width:100%;padding:.6rem .85rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:.87rem;font-family:inherit;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:rgba(201,168,76,.5)}
+textarea{resize:vertical}
+select option{background:#1a2a4a;color:#fff}
+.autofilled{border-color:rgba(26,122,64,.4) !important;background:rgba(26,122,64,.05) !important}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.5rem;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s;text-decoration:none}
+.btn-gold{background:linear-gradient(135deg,#c8960a,#e8aa10);color:#08111e}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,150,10,.3)}
+.btn-blue{background:linear-gradient(135deg,#1a3a6b,#1a5c9a);color:#fff}
+.btn-green{background:linear-gradient(135deg,#1a7a40,#22a855);color:#fff}
+.btn-navy{background:linear-gradient(135deg,#2a2a6b,#3a3a9b);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none !important}
+.result-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.25rem 1.5rem;margin-top:1.25rem;display:none}
+.result-box.show{display:block}
+.result-box .result-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:#f0c040;margin-bottom:.75rem}
+.result-text{font-size:.88rem;line-height:1.8;color:rgba(255,255,255,.85);white-space:pre-wrap}
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tip{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-left:3px solid #c9a84c;border-radius:0 8px 8px 0;padding:.75rem 1rem;font-size:.82rem;color:rgba(255,255,255,.7);margin-bottom:1.25rem;line-height:1.6}
+.tip strong{color:#f0c040}
+@media print{nav,.mmenu,body{background:#fff;color:#000}.result-text{color:#000;background:#fff}.result-box{border:none;background:#fff}}
+@media(max-width:600px){.tool-wrap{padding:1.25rem 1rem}}
+
+/* ── AI OUTPUT, Dark theme, readable ─────────────────────── */
+.res-box,.output-box,.ca-out,.jm-out,.cert-out,.dec-out,.lir-out,.res-out,.sr-out,
+[id$="-out"],[id$="-result"],[id$="-output"]{
+  background:rgba(255,255,255,.06);
+  border:1.5px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  padding:1.5rem 1.75rem;
+  margin-top:1.25rem;
+  display:none;
+  box-shadow:0 2px 12px rgba(0,0,0,.15);
 }
-</style><style id="mobile-gap-fix">
-/* Profile icon: position away from hamburger on mobile */
-@media(max-width:960px){
-  .profile-icon-wrap{right:56px!important;top:10px!important;}
+.res-box.show,.output-box.show,.ca-out.show,.jm-out.show,.cert-out.show,
+.dec-out.show,.lir-out.show,.res-out.show,.sr-out.show,
+[id$="-out"].show,[id$="-result"].show,[id$="-output"].show{
+  display:block;
 }
+.res-title,.out-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;
+  letter-spacing:.08em;
+  color:#f0c040;
+  margin-bottom:1rem;
+  padding-bottom:.5rem;
+  border-bottom:2px solid rgba(240,192,64,.2);
+}
+.res-body,.out-body{
+  font-size:.92rem;
+  line-height:1.85;
+  color:rgba(192,216,240,.85);
+  white-space:normal;
+}
+.res-body p,.out-body p{
+  margin-bottom:.85rem;
+  color:rgba(192,216,240,.85);
+}
+.res-body p:last-child,.out-body p:last-child{margin-bottom:0;}
+.res-h,.out-h{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.05rem;
+  letter-spacing:.07em;
+  color:#f0c040;
+  margin:1.25rem 0 .4rem;
+  padding-bottom:.3rem;
+  border-bottom:1px solid rgba(240,192,64,.15);
+}
+.res-li,.out-li{
+  padding:.25rem 0 .25rem 1.1rem;
+  border-left:3px solid rgba(240,192,64,.3);
+  margin:.3rem 0;
+  color:rgba(192,216,240,.85);
+  font-size:.9rem;
+  line-height:1.6;
+}
+.res-li:hover,.out-li:hover{border-left-color:#f0c040;}
+.res-num,.out-num{
+  padding:.25rem 0 .25rem .5rem;
+  margin:.25rem 0;
+  color:rgba(192,216,240,.85);
+  font-size:.9rem;
+  line-height:1.6;
+  counter-increment:none;
+}
+.res-bold,.out-bold{color:#fff;font-weight:700;}
+.res-em,.out-em{color:rgba(192,216,240,.6);font-style:italic;}
 @media(max-width:600px){
-  .panel{padding:0!important;margin:0!important;}
-  .card{border-radius:8px!important;margin-bottom:.65rem!important;}
-  .ch,.cb{padding:.85rem!important;}
-  .nav-row{padding:.75rem!important;gap:.5rem!important;flex-wrap:wrap!important;}
-  .nav-row button{flex:1!important;font-size:.77rem!important;padding:.52rem!important;min-width:0!important;min-height:44px!important;}
-  .pw-plans{grid-template-columns:1fr!important;}
-  .two-col,.result-row{grid-template-columns:1fr!important;}
-  .card-grid{grid-template-columns:1fr!important;gap:.5rem!important;}
-  #site-nav{padding:.5rem 4%!important;}
+  .res-box,.output-box,.ca-out,.jm-out,.cert-out,.dec-out,.lir-out,.res-out,.sr-out,
+  [id$="-out"],[id$="-result"],[id$="-output"]{padding:1rem 1.1rem;}
+  .res-body,.out-body{font-size:.88rem;}
 }
-@media(max-width:400px){
-  .ch,.cb{padding:.7rem!important;}
+
+
+/* ── Mobile overflow fix ── */
+*{box-sizing:border-box;}
+img,video,iframe,table,pre,code{max-width:100%;}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tbl-wrap table,.info-table{min-width:0;width:100%;}
+@media(max-width:768px){
+  main{padding:1rem!important;gap:1rem!important;}
+  .hero,.hero-section,.hero-inner{padding-left:1rem!important;padding-right:1rem!important;}
+  .card-body{padding:.85rem!important;}
+  .form-grid,.result-grid{grid-template-columns:1fr!important;}
+  .total-bar{flex-direction:column;text-align:center;}
+  .tab-
+  .tab-btn{flex-shrink:0;}
+  .radio-group{flex-direction:column;}
+  .radio-opt{min-width:0;width:100%;}
+}
+
+/* ── Mobile overflow fix ── */
+*{box-sizing:border-box;}
+img,video,iframe,table,pre,code{max-width:100%;}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tbl-wrap table,.info-table{min-width:0;width:100%;}
+@media(max-width:768px){
+  main{padding:1rem!important;gap:1rem!important;}
+  .hero,.hero-section,.hero-inner{padding-left:1rem!important;padding-right:1rem!important;}
+  .card-body{padding:.85rem!important;}
+  .form-grid,.result-grid{grid-template-columns:1fr!important;}
+  .total-bar{flex-direction:column;text-align:center;}
+  .tab-nav{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  .tab-btn{flex-shrink:0;}
+  .radio-group{flex-direction:column;}
+  .radio-opt{min-width:0;width:100%;}
 }
 </style>
-<meta property="og:title" content="Veteran Career Tools | AI Resume & Job Builder">
-<meta property="og:description" content="AI-powered veteran career tools: resume builder, MOS translator, career matching, and interview prep. Build your civilian career in minutes.">
-<meta property="og:url" content="https://veterancareerpath.com/app.html">
+<meta property="og:title" content="$1 Military Resume &amp; Career Report">
+<meta property="og:description" content="A source-grounded, editable civilian resume and career report built from the military experience you confirm.">
+<meta property="og:url" content="https://veterancareerpath.com/star-story-builder.html">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://veterancareerpath.com/img/optimized/logo-96.webp">
 <meta property="og:site_name" content="Veteran Career Path">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AI Career Builder for Veterans | Resume & Job Tools">
-<meta name="twitter:description" content="AI-powered career tools for veterans: resume builder, Real MOS Experience Translator, career matching, cover letters, and interview prep. $15/month.">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","name":"AI Career Builder for Veterans | Resume & Job Tools","description":"AI-powered career tools for veterans: resume builder, Real MOS Experience Translator, career matching, cover letters, and interview prep. $15/month.","url":"https://veterancareerpath.com/app.html","publisher":{"@type":"Organization","name":"Veteran Career Path","url":"https://veterancareerpath.com","logo":{"@type":"ImageObject","url":"https://veterancareerpath.com/img/optimized/logo-96.webp"}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://veterancareerpath.com"},{"@type":"ListItem","position":2,"name":"AI Career Builder for Veterans | Resume & Job Tools"}]}}
-</script>
+<meta name="twitter:title" content="$1 Military Resume &amp; Career Report">
+<meta name="twitter:description" content="Build an editable, ATS-friendly civilian resume and practical career report from your confirmed military experience.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"Military Resume & Career Report","description":"An editable, ATS-friendly civilian resume and career report generated from confirmed military experience.","brand":{"@type":"Brand","name":"Veteran Career Path"},"offers":{"@type":"Offer","price":"1.00","priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://veterancareerpath.com/resume-pro.html"}}</script>
 <link rel="stylesheet" href="/vcp-styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/ai-tools.css">
+  <link rel="stylesheet" href="/assets/css/resume-pro.css">
 </head>
 <body>
 
-  <div id="app-skeleton" style="position:fixed;inset:0;z-index:998;background:#f4f6fa;font-family:sans-serif;">
-    <div style="height:56px;background:#08111e;display:flex;align-items:center;padding:0 4%;">
-      <div style="width:28px;height:28px;background:rgba(240,192,64,.2);border-radius:50%;"></div>
-      <div style="width:120px;height:12px;background:rgba(240,192,64,.15);border-radius:4px;margin-left:.55rem;"></div>
-    </div>
-    <div style="max-width:980px;margin:0 auto;padding:1.5rem 1.2rem;">
-      <div style="display:flex;justify-content:center;margin-bottom:1.2rem;">
-        <div style="width:80px;height:80px;background:linear-gradient(135deg,rgba(26,58,107,.08),rgba(26,58,107,.04));border-radius:12px;"></div>
-      </div>
-      <div style="display:flex;gap:.5rem;justify-content:center;margin-bottom:1.5rem;">
-        <div style="width:80px;height:36px;background:rgba(26,58,107,.08);border-radius:6px;"></div>
-        <div style="width:80px;height:36px;background:rgba(26,58,107,.08);border-radius:6px;"></div>
-        <div style="width:80px;height:36px;background:rgba(26,58,107,.08);border-radius:6px;"></div>
-        <div style="width:80px;height:36px;background:rgba(26,58,107,.08);border-radius:6px;"></div>
-      </div>
-      <div style="background:#fff;border-radius:12px;padding:1.25rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.06);">
-        <div style="width:60%;height:14px;background:rgba(26,58,107,.08);border-radius:4px;margin-bottom:.8rem;"></div>
-        <div style="width:90%;height:10px;background:rgba(26,58,107,.05);border-radius:4px;margin-bottom:.6rem;"></div>
-        <div style="width:75%;height:10px;background:rgba(26,58,107,.05);border-radius:4px;margin-bottom:.6rem;"></div>
-        <div style="width:85%;height:10px;background:rgba(26,58,107,.05);border-radius:4px;"></div>
-      </div>
-      <div style="background:#fff;border-radius:12px;padding:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.06);">
-        <div style="width:45%;height:14px;background:rgba(26,58,107,.08);border-radius:4px;margin-bottom:.8rem;"></div>
-        <div style="width:100%;height:38px;background:rgba(26,58,107,.04);border-radius:6px;margin-bottom:.6rem;"></div>
-        <div style="width:100%;height:38px;background:rgba(26,58,107,.04);border-radius:6px;margin-bottom:.6rem;"></div>
-        <div style="width:100%;height:38px;background:rgba(26,58,107,.04);border-radius:6px;"></div>
-      </div>
-    </div>
-  </div>
-  <div id="loading">
-    <img id="loading-logo" src="/img/optimized/logo-192.png" alt="Veteran Career Path"/>
-    <p>VETERAN CAREER BUILDER</p>
-    <div class="spin"></div>
-  </div>
-  
 <style id="vcp-nav-css">
 html{scrollbar-gutter:stable;}
 *{box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
 body.menu-open{overflow:hidden!important;}
+
 /* ── NAV BAR ── */
 .vcp-nav{
   background:#08111e;
@@ -168,6 +208,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-logo{display:flex;align-items:center;gap:.55rem;text-decoration:none;flex-shrink:0;}
 .vcp-logo img{width:28px;height:28px;object-fit:contain;}
 .vcp-logo-text{font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.12em;color:#f0c040;}
+
 /* ── DESKTOP QUICK LINKS ── */
 .vcp-desk{display:flex;align-items:stretch;gap:0;flex:1;padding-left:.5rem;min-width:0;overflow:hidden;}
 .vcp-desk>a{
@@ -181,6 +222,7 @@ body.menu-open{overflow:hidden!important;}
   flex-shrink:0;
 }
 .vcp-desk>a:hover{color:#fff;border-bottom-color:rgba(240,192,64,.4);}
+
 /* Menu trigger button */
 .vcp-menu-btn{
   display:flex;align-items:center;gap:.35rem;
@@ -202,6 +244,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-menu-btn.active{background:rgba(240,192,64,.12);border-color:rgba(240,192,64,.4);color:#f0c040;}
 .vcp-menu-btn svg{transition:transform .2s;}
 .vcp-menu-btn.active svg{transform:rotate(180deg);}
+
 /* Subscribe CTA */
 .vcp-cta-link{
   background:linear-gradient(135deg,#c8960a,#e8aa10)!important;
@@ -217,6 +260,7 @@ body.menu-open{overflow:hidden!important;}
   display:flex;align-items:center;
 }
 .vcp-cta-link:hover{opacity:.9;}
+
 /* ── SEARCH ── */
 .vcp-search-wrap{display:flex;align-items:center;margin:auto .5rem auto auto;position:relative;flex-shrink:0;}
 .vcp-search-input{
@@ -243,12 +287,14 @@ body.menu-open{overflow:hidden!important;}
 .vcp-sr-snippet{font-size:.72rem;color:rgba(192,216,240,.5);line-height:1.4;}
 .vcp-sr-snippet em{color:rgba(240,192,64,.8);font-style:normal;font-weight:600;}
 .vcp-sr-none,.vcp-sr-loading{padding:.9rem;color:rgba(192,216,240,.62);font-size:.82rem;text-align:center;}
+
 /* ── HAMBURGER ── */
 .vcp-ham{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:.4rem;flex-shrink:0;align-self:center;margin-left:.25rem;}
 .vcp-ham span{display:block;width:20px;height:2px;background:#c0d8f0;border-radius:2px;transition:.25s;}
 .vcp-ham.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
 .vcp-ham.open span:nth-child(2){opacity:0;}
 .vcp-ham.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);}
+
 /* ══════════════════════════════════════════════════════════════════════════════
    MEGA DROPDOWN
 ══════════════════════════════════════════════════════════════════════════════ */
@@ -263,6 +309,7 @@ body.menu-open{overflow:hidden!important;}
   overflow-y:auto;
 }
 .vcp-mega.open{display:block;}
+
 .vcp-mega-inner{
   display:grid;
   grid-template-columns:repeat(5,1fr);
@@ -271,12 +318,14 @@ body.menu-open{overflow:hidden!important;}
   margin:0 auto;
   padding:1.5rem 2rem;
 }
+
 .vcp-mega-col{
   padding:0 1rem;
   border-right:1px solid rgba(255,255,255,.05);
 }
 .vcp-mega-col:first-child{padding-left:0;}
 .vcp-mega-col:last-child{border-right:none;padding-right:0;}
+
 .vcp-mega-col-title{
   font-size:.6rem;font-weight:700;letter-spacing:.14em;
   text-transform:uppercase;color:rgba(240,192,64,.6);
@@ -284,6 +333,7 @@ body.menu-open{overflow:hidden!important;}
   border-bottom:1px solid rgba(240,192,64,.15);
   display:flex;align-items:center;gap:.4rem;
 }
+
 .vcp-mega-section{margin-bottom:1rem;}
 .vcp-mega-section-label{
   font-size:.58rem;font-weight:700;letter-spacing:.1em;
@@ -291,6 +341,7 @@ body.menu-open{overflow:hidden!important;}
   margin-bottom:.35rem;margin-top:.6rem;
 }
 .vcp-mega-section-label:first-child{margin-top:0;}
+
 .vcp-mega-col a{
   display:block;
   color:rgba(192,216,240,.65);
@@ -315,6 +366,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-mega-col a.hot::after{
   content:'🔥';font-size:.65rem;margin-left:.3rem;
 }
+
 /* Mega footer bar */
 .vcp-mega-footer{
   background:rgba(240,192,64,.06);
@@ -330,6 +382,7 @@ body.menu-open{overflow:hidden!important;}
   color:#08111e!important;font-weight:700;font-size:.78rem;
   padding:.4rem 1rem;border-radius:6px;text-decoration:none;
 }
+
 /* ══════════════════════════════════════════════════════════════════════════════
    MOBILE MENU
 ══════════════════════════════════════════════════════════════════════════════ */
@@ -362,10 +415,6 @@ body.menu-open{overflow:hidden!important;}
   padding:.5rem 5%;border-bottom:1px solid rgba(255,255,255,.04);
   display:block;
 }
-.vcp-mob-account-panel{display:flex;align-items:stretch;gap:.5rem;padding:.65rem 4%;background:rgba(240,192,64,.06);border-bottom:1px solid rgba(240,192,64,.16);}
-.vcp-mob-account-panel a,.vcp-mob-account-panel button{min-height:48px!important;border-radius:8px!important;justify-content:center!important;font-weight:700!important;font-size:.88rem!important;padding:.65rem .8rem!important;}
-.vcp-mob-account-panel .vcp-mob-account{flex:1;color:#f0c040;background:rgba(255,255,255,.04);border:1px solid rgba(240,192,64,.2);}
-.vcp-mob-logout{display:none;flex:0 0 auto;background:rgba(185,45,45,.18);border:1px solid rgba(255,110,110,.35);color:#ffd0d0;cursor:pointer;font-family:'Inter',sans-serif;}
 .vcp-mob a:hover{background:rgba(255,255,255,.04);color:#fff;}
 .vcp-mob-search{padding:.65rem 5%;border-bottom:1px solid rgba(255,255,255,.07);}
 .vcp-mob-search input{
@@ -381,6 +430,7 @@ body.menu-open{overflow:hidden!important;}
 .vcp-mob-sr-title{font-size:.85rem;font-weight:600;color:#fff;}
 .vcp-mob-sr-snip{font-size:.73rem;color:rgba(192,216,240,.5);margin-top:.1rem;line-height:1.4;}
 .vcp-mob-sr-snip em{color:rgba(240,192,64,.8);font-style:normal;}
+
 @media(max-width:1080px){
   .vcp-mega-inner{grid-template-columns:repeat(3,1fr);}
   .vcp-mega-col:nth-child(4),.vcp-mega-col:nth-child(5){
@@ -394,9 +444,9 @@ body.menu-open{overflow:hidden!important;}
   .vcp-ham{display:flex;min-width:44px;min-height:44px;align-items:center;justify-content:center;}
   .vcp-mega{display:none!important;}
   /* Mobile menu touch targets */
-  .vcp-mob a{min-height:48px;display:flex;align-items:center;padding:.7rem 5%;font-size:.9rem;}
+  .vcp-mob a{min-height:44px;display:flex;align-items:center;padding:.6rem 5%;font-size:.88rem;}
   .vcp-mob-cta{min-height:48px;display:flex;align-items:center;justify-content:center;font-size:.9rem;}
-  .vcp-mob-sect{min-height:48px;display:flex;align-items:center;padding:.65rem 5%;}
+  .vcp-mob-sect{min-height:36px;display:flex;align-items:center;padding:.5rem 5% .25rem;}
   /* Mobile menu scroll fix for long content */
   .vcp-mob{max-height:calc(100vh - 56px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:2rem;}
   /* Mobile search full-width and tappable */
@@ -413,6 +463,7 @@ body.menu-open{overflow:hidden!important;}
   .vcp-mob-search{padding:.65rem 4%;}
 }
 </style>
+
 <!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
 <a href="#main-content" class="vcp-skip-link">Skip to main content</a>
 <nav class="vcp-nav" aria-label="Main navigation">
@@ -420,6 +471,7 @@ body.menu-open{overflow:hidden!important;}
     <img src="https://veterancareerpath.com/img/optimized/logo-96.webp" alt="Veteran Career Path" width="28" height="28">
     <span class="vcp-logo-text">Veteran Career Path</span>
   </a>
+
   <div class="vcp-desk">
     <a href="https://veterancareerpath.com/career-assessment-full.html">PathFinder™ Pro</a>
     <a href="https://veterancareerpath.com/military-transition-guide.html">Transition</a>
@@ -437,18 +489,22 @@ body.menu-open{overflow:hidden!important;}
         <polyline points="2,3 5,7 8,3"/>
       </svg>
     </button>
+
     <a href="https://veterancareerpath.com/app.html" class="vcp-cta-link">AI Tools, $15/mo</a>
     <a href="https://veterancareerpath.com/app.html#profile" class="vcp-account-link" style="display:flex;align-items:center;gap:.3rem;padding:0 .5rem;color:rgba(192,216,240,.6);text-decoration:none;font-size:.72rem;font-weight:500;white-space:nowrap;flex-shrink:0;">👤 My Account</a>
   </div>
+
   <div class="vcp-search-wrap" id="vcp-search-wrap">
     <span class="vcp-search-icon">⌕</span>
     <input class="vcp-search-input" id="vcp-si" type="text" placeholder="Search all pages…" autocomplete="off" aria-label="Search">
     <div class="vcp-search-results" id="vcp-sr"></div>
   </div>
+
   <button class="vcp-ham" id="vcp-ham" aria-label="Open menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 </nav>
+
 <!-- ══ MEGA DROPDOWN ════════════════════════════════════════════════════════ -->
 <div class="vcp-mega" id="vcp-mega" role="navigation" aria-label="Site navigation">
   <div class="vcp-mega-inner">
@@ -798,11 +854,10 @@ body.menu-open{overflow:hidden!important;}
     <input type="text" id="vcp-mob-si" placeholder="Search all pages…" autocomplete="off" aria-label="Search all pages">
   </div>
   <div class="vcp-mob-sr" id="vcp-mob-sr"></div>
+
   <a href="https://veterancareerpath.com/app.html" class="vcp-mob-cta">Career Path Tools, $15/mo</a>
-  <div class="vcp-mob-account-panel">
-    <a href="https://veterancareerpath.com/app.html#profile" class="vcp-account-link vcp-mob-account">My Account / Login</a>
-    <button type="button" class="vcp-mob-logout" aria-label="Sign out of Veteran Career Path">Sign Out</button>
-  </div>
+  <a href="https://veterancareerpath.com/app.html#profile" class="vcp-account-link vcp-mob-account" style="background:rgba(240,192,64,.06);border-bottom:1px solid rgba(240,192,64,.1);font-weight:600;color:#f0c040;">My Account / Login</a>
+
 
   <span class="vcp-mob-sect">Career Tools</span>
   <a href="https://veterancareerpath.com/tools-job-match.html">Job Match Analyzer</a>
@@ -820,9 +875,10 @@ body.menu-open{overflow:hidden!important;}
   <a href="https://veterancareerpath.com/dd214-decoder.html">DD-214 Decoder</a>
   <a href="https://veterancareerpath.com/mos-career-translator.html">MOS Translator</a>
   <a href="https://veterancareerpath.com/federal-jobs-search.html">🔴 Live Federal Jobs</a>
-  <a href="https://veterancareerpath.com/career-assessment-full.html">VCP PathFinder™ Pro</a>
+  <a href="https://veterancareerpath.com/career-assessment-full.html">Full Career Assessment</a>
   <a href="https://veterancareerpath.com/transition-timeline-planner.html">Transition Planner</a>
   <a href="https://veterancareerpath.com/free-assessment.html">PathFinder Lite (Free)</a>
+
   <span class="vcp-mob-sect">🎖️ MOS &amp; Branch Guides</span>
   <a href="https://veterancareerpath.com/army-mos-careers.html">Army MOS Careers</a>
   <a href="https://veterancareerpath.com/marine-corps-mos-careers.html">Marine Corps MOS</a>
@@ -830,6 +886,7 @@ body.menu-open{overflow:hidden!important;}
   <a href="https://veterancareerpath.com/air-force-afsc-careers.html">Air Force AFSC</a>
   <a href="https://veterancareerpath.com/coast-guard-rating-careers.html">Coast Guard</a>
   <a href="https://veterancareerpath.com/space-force-afsc-careers.html">Space Force</a>
+
   <span class="vcp-mob-sect">🏛️ Transition &amp; Federal</span>
   <a href="https://veterancareerpath.com/military-transition-guide.html">Transition Guide</a>
   <a href="https://veterancareerpath.com/veteran-first-90-days-guide.html">First 90 Days Guide</a>
@@ -849,6 +906,7 @@ body.menu-open{overflow:hidden!important;}
   <a href="https://veterancareerpath.com/military-to-federal-pay-chart.html">Military → GS Pay</a>
   <a href="https://veterancareerpath.com/federal-gs-grade-estimator.html">GS Grade Estimator</a>
   <a href="https://veterancareerpath.com/veteran-hiring-companies.html">Top 100 Employers</a>
+
   <span class="vcp-mob-sect">💼 Career Pathways</span>
   <a href="https://veterancareerpath.com/veteran-cybersecurity-careers.html">Cybersecurity</a>
   <a href="https://veterancareerpath.com/veteran-healthcare-careers.html">Healthcare</a>
@@ -870,6 +928,7 @@ body.menu-open{overflow:hidden!important;}
   <a href="https://veterancareerpath.com/veteran-human-resources-careers.html">Human Resources</a>
   <a href="https://veterancareerpath.com/veteran-manufacturing-careers.html">Manufacturing</a>
   <a href="https://veterancareerpath.com/veteran-supply-chain-careers.html">Supply Chain</a>
+
   <span class="vcp-mob-sect">🧮 Calculators</span>
   <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html">PCS / DITY Calculator</a>
   <a href="https://veterancareerpath.com/should-i-reenlist-calculator.html">Reenlist vs Separate</a>
@@ -877,6 +936,7 @@ body.menu-open{overflow:hidden!important;}
   <a href="https://veterancareerpath.com/va-disability-benefits-calculator.html">VA Disability Calc</a>
   <a href="https://veterancareerpath.com/gi-bill-bah-maximizer.html">GI Bill BAH</a>
   <a href="https://veterancareerpath.com/gi-bill-vs-vre-calculator.html">GI Bill vs VR&amp;E</a>
+
   <span class="vcp-mob-sect">🏥 VA Benefits &amp; Claims</span>
   <a href="https://veterancareerpath.com/va-disability-rating-schedule.html">Disability Rating Schedule</a>
   <a href="https://veterancareerpath.com/va-disability-rating-guide.html">Disability Guide</a>
@@ -898,6 +958,7 @@ body.menu-open{overflow:hidden!important;}
   <a href="https://veterancareerpath.com/veteran-tax-guide.html">Veteran Tax Guide</a>
   <a href="https://veterancareerpath.com/blended-retirement-system-guide.html">Blended Retirement</a>
   <a href="https://veterancareerpath.com/tsp-guide-for-veterans.html">TSP Guide</a>
+
   <span class="vcp-mob-sect">📝 Blog &amp; Resources</span>
   <a href="https://veterancareerpath.com/blog/">Blog, All Articles</a>
   <a href="https://veterancareerpath.com/blog/what-jobs-can-a-68w-get.html">68W Careers Guide</a>
@@ -959,7 +1020,9 @@ body.menu-open{overflow:hidden!important;}
   <a href="https://veterancareerpath.com/west-virginia-veteran-benefits.html">West Virginia</a>
   <a href="https://veterancareerpath.com/wisconsin-veteran-benefits.html">Wisconsin</a>
   <a href="https://veterancareerpath.com/wyoming-veteran-benefits.html">Wyoming</a>
+
 </div>
+
 <script id="vcp-nav-js">
 (function(){
   var menuBtn = document.getElementById('vcp-menu-btn');
@@ -970,6 +1033,7 @@ body.menu-open{overflow:hidden!important;}
   var sr      = document.getElementById('vcp-sr');
   var msi     = document.getElementById('vcp-mob-si');
   var msr     = document.getElementById('vcp-mob-sr');
+
   function closeAll() {
     mega && mega.classList.remove('open');
     menuBtn && menuBtn.classList.remove('active');
@@ -982,6 +1046,7 @@ body.menu-open{overflow:hidden!important;}
     sr  && sr.classList.remove('open');
     msr && msr.classList.remove('open');
   }
+
   // Mega menu toggle
   if (menuBtn && mega) {
     menuBtn.addEventListener('click', function(e) {
@@ -1000,6 +1065,7 @@ body.menu-open{overflow:hidden!important;}
       a.addEventListener('click', closeAll);
     });
   }
+
   // Hamburger (mobile)
   if (ham && mob) {
     ham.addEventListener('click', function(e) {
@@ -1009,31 +1075,7 @@ body.menu-open{overflow:hidden!important;}
       if (!isOpen) { mob.classList.add('open'); ham.classList.add('open'); document.body.classList.add('menu-open'); }
     });
   }
-  function syncMobileAccount(user) {
-    var signedIn = !!user;
-    document.querySelectorAll('.vcp-mob-account').forEach(function(el) {
-      el.textContent = signedIn ? ('My Account' + (user.displayName ? ' · ' + user.displayName.split(' ')[0] : '')) : 'My Account / Login';
-    });
-    document.querySelectorAll('.vcp-mob-logout').forEach(function(el) {
-      el.style.display = signedIn ? 'flex' : 'none';
-    });
-  }
-  document.querySelectorAll('.vcp-mob-logout').forEach(function(button) {
-    button.addEventListener('click', function() {
-      if (!window.fbAuth) { window.location.href = '/app.html#logout'; return; }
-      button.disabled = true;
-      button.textContent = 'Signing out…';
-      window.fbAuth.signOut().then(function() {
-        try { localStorage.removeItem('vcb_profile'); localStorage.removeItem('vcb_access'); } catch(e) {}
-        syncMobileAccount(null);
-        closeAll();
-      }).catch(function() {
-        button.disabled = false;
-        button.textContent = 'Sign Out';
-      });
-    });
-  });
-  if (window.fbAuth) window.fbAuth.onAuthStateChanged(syncMobileAccount);
+
   // Close on outside click
   document.addEventListener('click', function(e) {
     var inside = false;
@@ -1042,13 +1084,16 @@ body.menu-open{overflow:hidden!important;}
     });
     if (!inside) { closeAll(); closeSearch(); }
   });
+
   // Escape key closes everything
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') { closeAll(); closeSearch(); }
   });
+
   // ── Search ───────────────────────────────────────────────────────────────
   var IDX = null, IDX_LOADING = false, IDX_CBS = [];
   var SIDX = 'https://veterancareerpath.com/search_index.json';
+
   function loadIdx(cb) {
     if (IDX) { cb(IDX); return; }
     IDX_CBS.push(cb);
@@ -1059,6 +1104,7 @@ body.menu-open{overflow:hidden!important;}
       .then(function(d){ IDX = d; IDX_CBS.forEach(function(f){ f(IDX); }); IDX_CBS = []; })
       .catch(function(){ IDX = []; IDX_CBS.forEach(function(f){ f(IDX); }); IDX_CBS = []; });
   }
+
   function doSearch(idx, q) {
     var terms = q.toLowerCase().replace(/[^a-z0-9 ]/g,' ').trim().split(' ').filter(function(t){ return t.length > 1; });
     if (!terms.length) return [];
@@ -1090,6 +1136,7 @@ body.menu-open{overflow:hidden!important;}
     out.sort(function(a,b){ return b.score - a.score; });
     return out.slice(0, 12);
   }
+
   function renderSR(results, q, container, isMob) {
     q = q.replace(/[<>"']/g, "");
     if (!results.length) {
@@ -1104,6 +1151,7 @@ body.menu-open{overflow:hidden!important;}
     container.innerHTML = h;
     container.classList.add('open');
   }
+
   var dt = null;
   function onInput(input, container, isMob) {
     clearTimeout(dt);
@@ -1115,6 +1163,7 @@ body.menu-open{overflow:hidden!important;}
       loadIdx(function(idx){ renderSR(doSearch(idx, q), q, container, isMob); });
     }, 220);
   }
+
   if (si && sr) {
     si.addEventListener('input', function(){ onInput(si, sr, false); });
     si.addEventListener('keydown', function(e){
@@ -1129,13 +1178,15 @@ body.menu-open{overflow:hidden!important;}
       if (e.key === 'Enter') { var f = msr.querySelector('a'); if (f) window.location.href = f.href; }
     });
   }
+
   // Preload search index when hovering menu
   if (menuBtn) menuBtn.addEventListener('mouseenter', function(){ loadIdx(function(){}); });
   if (ham) ham.addEventListener('mouseenter', function(){ loadIdx(function(){}); });
+
   // Update CTA text for subscribers
   try {
     var acc = JSON.parse(localStorage.getItem("vcb_access")||"{}");
-    var isSub = (acc.type==="paid" && acc.stripeSession && acc.expiry>Date.now() && acc.serverValidated===true) || (acc.type==="code" && acc.code && acc.serverValidated===true);
+    var isSub = (acc.type==="paid" && acc.stripeSession && acc.expiry>Date.now()) || (acc.type==="code" && acc.code);
     if (isSub) {
       var cta = document.querySelector('.vcp-cta-link');
       if (cta) cta.textContent = 'AI Tools';
@@ -1147,133 +1198,199 @@ body.menu-open{overflow:hidden!important;}
   // Update nav for subscribers + login state
   try {
     var _acc = JSON.parse(localStorage.getItem('vcb_access')||'{}');
-    var _isSub = (_acc.type==='paid'&&_acc.stripeSession&&_acc.expiry>Date.now()&&_acc.serverValidated===true)||(_acc.type==='code'&&_acc.code&&_acc.serverValidated===true);
+    var _isSub = (_acc.type==='paid'&&_acc.stripeSession&&_acc.expiry>Date.now())||(_acc.type==='code'&&_acc.code);
     if(_isSub){
       document.querySelectorAll('.vcp-cta-link').forEach(function(el){el.textContent='AI Tools';el.style.background='linear-gradient(135deg,#1a7a40,#22c55e)';});
       document.querySelectorAll('.btn-subscribe').forEach(function(el){el.textContent='Open AI Tools \u2192';});
       document.querySelectorAll('.vcp-mob-cta').forEach(function(el){el.textContent='Career Path Tools';});
     }
   
+    var _user=null;
+    try{_user=JSON.parse(localStorage.getItem('vcb_profile')||'null');}catch(ee){}
+    if(!_user)try{_user=JSON.parse(localStorage.getItem('vcp_pf_user')||'null');}catch(ee){}
     document.querySelectorAll('.vcp-account-link').forEach(function(el){
-      if(_isSub){el.style.color='#f0c040';}
+      if(_user&&_user.name){el.textContent=_user.name.split(' ')[0];el.style.color='#f0c040';}
+      else if(_isSub){el.style.color='#f0c040';}
     });
   }catch(e){}
 })();
 </script>
-<div id="root"></div>
-  <script src="/assets/js/vcb-secure-api.js"></script>
-  <script>
-    // Remove credentials left behind by the legacy browser API-key admin panel.
-    try {
-      localStorage.removeItem("vcb_admin_key");
-      sessionStorage.removeItem("vcb_admin_key");
-      document.cookie = "vcb_ak=; Max-Age=0; path=/; SameSite=Lax";
-    } catch (_) {}
 
-    async function checkStripeReturn() {
-      const params = new URLSearchParams(window.location.search);
-      const sessionId = params.get("session_id");
-      const success = params.get("stripe_success");
 
-      if (success !== "1" || !sessionId) return;
 
-      const result = window.VCBSecureApi
-        ? await window.VCBSecureApi.verifySubscription({ sessionId })
-        : { active: false };
 
-      window.history.replaceState({}, document.title, window.location.pathname);
 
-      if (!result.active) {
-        console.error("Stripe checkout return could not be verified.");
-        return;
-      }
 
-      localStorage.setItem("vcb_access", JSON.stringify({
-        type: "paid",
-        expiry: result.expiry,
-        plan: result.plan || "monthly",
-        session: sessionId,
-        stripeSession: sessionId,
-        serverValidated: true
-      }));
 
-      try {
-        if (window.fbAuth && window.fbDb) {
-          window.fbAuth.onAuthStateChanged(function(user) {
-            if (user) {
-              window.fbDb.collection("profiles").doc(user.uid).set({
-                stripeSession: sessionId,
-                accessExpiry: result.expiry,
-                plan: result.plan || "monthly",
-                updatedAt: Date.now()
-              }, { merge: true });
-            }
-          });
-        }
-      } catch (error) {
-        console.error("Could not persist Stripe access to profile:", error);
-      }
 
-      document.addEventListener("DOMContentLoaded", function() {
-        const msg = document.createElement("div");
-        msg.style.cssText = "position:fixed;top:0;left:0;right:0;background:#1a7a40;color:#fff;text-align:center;padding:1rem;font-weight:700;font-size:1rem;z-index:99999;";
-        msg.textContent = "✓ Subscription confirmed! Loading your tools...";
-        document.body.appendChild(msg);
-        setTimeout(function() { window.location.reload(); }, 1200);
-      });
-    }
 
-    checkStripeReturn();
 
-    function hideLoading() {
-      const el = document.getElementById("loading");
-      const skeleton = document.getElementById("app-skeleton");
-      if (skeleton) {
-        skeleton.setAttribute("aria-hidden", "true");
-        skeleton.style.opacity = "0";
-        skeleton.style.transition = "opacity 0.2s";
-        setTimeout(function() { skeleton.remove(); }, 220);
-      }
-      if (el) {
-        el.style.opacity = "0";
-        el.style.transition = "opacity 0.4s";
-        setTimeout(function() { el.style.display = "none"; }, 400);
-      }
-    }
-
-    window.onerror = function(msg, src, line) {
-      const skeleton = document.getElementById("app-skeleton");
-      if (skeleton) skeleton.remove();
-      const el = document.getElementById("loading");
-      if (el) {
-        el.style.display = "flex";
-        el.style.opacity = "1";
-        el.innerHTML = '<div style="padding:2rem;max-width:560px;"><h2 style="color:#f0c040;font-family:Georgia,serif;margin-bottom:.75rem;">App Error</h2><div style="background:rgba(255,100,100,.15);border:1px solid rgba(255,100,100,.4);border-radius:4px;padding:.85rem;color:#ffc0c0;font-size:.85rem;font-family:monospace;word-break:break-all;">' + msg + ' (line ' + line + ')</div></div>';
-      }
-    };
-  </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js" crossorigin="anonymous"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
-<script defer src="/app-data.js"></script>
-<script defer src="/vcp-mos-data.js"></script>
-<script defer src="/app.bundle.js?v=fb9f5224d3"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-  <footer style="background:#0d1f3c;color:#a0b8d0;text-align:center;padding:1.5rem 1rem;font-size:.78rem;margin-top:2rem;word-wrap:break-word;">
-    <div style="margin-bottom:.6rem;">
-      <a href="https://veterancareerpath.com/about.html" target="_blank" style="color:#a0b8d0;text-decoration:none;margin:0 .5rem;">About</a>
-      <span style="color:#3a5070;">|</span>
-      <a href="https://veterancareerpath.com/privacy-policy.html" target="_blank" style="color:#a0b8d0;text-decoration:none;margin:0 .5rem;">Privacy Policy</a>
-      <span style="color:#3a5070;">|</span>
-      <a href="https://veterancareerpath.com/terms.html" target="_blank" style="color:#a0b8d0;text-decoration:none;margin:0 .5rem;">Terms of Service</a>
-      <span style="color:#3a5070;">|</span>
-      <a href="https://veterancareerpath.com/contact.html" style="color:#a0b8d0;text-decoration:none;margin:0 .5rem;">Contact Us</a>
-    <div style="color:#3a5070;font-size:.72rem;text-align:center;line-height:1.8;">
-      &copy; 2026 Veteran Career Path &bull; Not affiliated with the U.S. Department of Veterans Affairs or any government agency. Tools and calculators produce estimates, not guarantees, and may not reflect your situation. Content is general information only, not legal, tax, financial, or medical advice. Consult a qualified professional (or a VA-accredited representative for VA benefits) before acting. AI-generated tool outputs (resumes, cover letters, analyses, recommendations) can be incomplete or inaccurate — review and verify them before relying on or submitting them.<br>
-      Built by a Veteran, for Veterans. &bull; <a href="https://veterancareerpath.com/privacy-policy.html" style="color:#5a7090;">Privacy Policy</a> &bull; <a href="https://veterancareerpath.com/terms.html" style="color:#5a7090;">Terms of Service</a>
+<main id="main-content">
+  <section class="rp-hero">
+    <div class="rp-hero-inner">
+      <div>
+        <div class="rp-kicker">One report. One dollar. No subscription.</div>
+        <h1>Translate your service into a resume employers <span>understand.</span></h1>
+        <p>Build an editable, ATS-friendly civilian resume and a practical career report from the duties, training, tools, and outcomes you personally confirm. Every generated resume bullet shows the source it came from.</p>
+      </div>
+      <aside class="rp-price-card" aria-label="Price and included features">
+        <div class="rp-price"><strong>$1</strong><span>one-time payment</span></div>
+        <ul>
+          <li>Editable civilian resume content</li>
+          <li>Career matches and readiness gaps</li>
+          <li>Source shown for every resume bullet</li>
+          <li>Downloads and regenerations for 24 hours</li>
+        </ul>
+      </aside>
     </div>
-<script src="/vcp-rank-insignia.js"></script>
+  </section>
+
+  <div class="rp-shell">
+    <div class="rp-progress" aria-label="Progress">
+      <span class="active">1. Your service</span><span>2. Confirm</span><span>3. Secure checkout</span><span>4. Edit and export</span>
+    </div>
+    <div id="rp-status" class="rp-status" role="status" aria-live="polite"></div>
+    <div id="rp-busy" class="rp-busy" aria-live="polite"><span class="rp-spinner" aria-hidden="true"></span><span id="rp-busy-text">Working...</span></div>
+
+    <form id="rp-form" class="rp-intake" novalidate>
+      <section id="rp-intake" class="rp-card">
+        <h2>1. Service basics</h2>
+        <p>Use the details that describe what you actually did. A code or rank alone is never treated as proof of experience.</p>
+        <div class="rp-grid">
+          <div class="rp-field"><label for="rp-branch">Service branch</label><select id="rp-branch" required><option value="">Choose branch...</option><option>Army</option><option>Marine Corps</option><option>Navy</option><option>Air Force</option><option>Space Force</option><option>Coast Guard</option></select></div>
+          <div class="rp-field"><label for="rp-component">Component</label><select id="rp-component"><option value="">Choose component...</option><option>Active Duty</option><option>Reserve</option><option>National Guard</option></select></div>
+          <div class="rp-field"><label for="rp-code">MOS / AFSC / rating <span class="optional">(or enter title)</span></label><input id="rp-code" type="text" maxlength="40" placeholder="e.g. 88M, 3D1X2, HM"></div>
+          <div class="rp-field"><label for="rp-job-title">Military job title</label><input id="rp-job-title" type="text" maxlength="120" placeholder="e.g. Motor Transport Operator"></div>
+          <div class="rp-field"><label for="rp-start">Service start <span class="optional">(month/year)</span></label><input id="rp-start" type="month"></div>
+          <div class="rp-field"><label for="rp-end">Service end <span class="optional">(or expected)</span></label><input id="rp-end" type="month"></div>
+          <div class="rp-field"><label for="rp-rank">Highest or relevant rank</label><input id="rp-rank" type="text" maxlength="80" placeholder="e.g. Staff Sergeant / E-6"></div>
+          <div class="rp-field"><label for="rp-duty-titles">Duty positions</label><input id="rp-duty-titles" type="text" maxlength="300" placeholder="e.g. Squad Leader; Training NCO"></div>
+        </div>
+      </section>
+
+      <section class="rp-card">
+        <h2>2. What you actually did</h2>
+        <p>Specific facts make the output useful. If you do not know a number, leave it out; the report will use a bracketed placeholder instead of inventing one.</p>
+        <div class="rp-grid">
+          <div class="rp-field full"><label for="rp-duties">Recurring duties you personally performed</label><textarea id="rp-duties" required maxlength="5000" placeholder="Describe the work you personally handled, who or what you supported, and the environment you worked in."></textarea></div>
+          <div class="rp-field"><label for="rp-leadership">Leadership and scope <span class="optional">(only confirmed facts)</span></label><textarea id="rp-leadership" maxlength="2500" placeholder="People trained or supervised, equipment accountability, schedules, workload, inspections..."></textarea></div>
+          <div class="rp-field"><label for="rp-outcomes">Outcomes and improvements</label><textarea id="rp-outcomes" maxlength="2500" placeholder="Readiness, time saved, safety, quality, mission results. Include numbers only when you know them."></textarea></div>
+          <div class="rp-field"><label for="rp-equipment">Equipment, vehicles, or systems</label><textarea id="rp-equipment" maxlength="2000" placeholder="List what you personally operated, maintained, inspected, or managed."></textarea></div>
+          <div class="rp-field"><label for="rp-software">Software and digital tools</label><textarea id="rp-software" maxlength="2000" placeholder="e.g. GCSS-Army, Microsoft Excel, Salesforce, Linux"></textarea></div>
+          <div class="rp-field full"><label for="rp-missions">Missions, projects, exercises, or deployments</label><textarea id="rp-missions" maxlength="3000" placeholder="Describe the project or mission, your role, constraints, and what happened. Avoid classified or operationally sensitive details."></textarea><div class="hint">Do not enter classified information, sensitive locations, unit vulnerabilities, medical details, Social Security numbers, or export-controlled data.</div></div>
+        </div>
+      </section>
+
+      <section class="rp-card">
+        <h2>3. Training and qualifications</h2>
+        <p>List only completed or currently held items. The report separates required, preferred, and optional civilian credentials.</p>
+        <div class="rp-grid">
+          <div class="rp-field"><label for="rp-schools">Military schools and formal courses</label><textarea id="rp-schools" maxlength="2500" placeholder="Course name, provider, and completion year if known"></textarea></div>
+          <div class="rp-field"><label for="rp-qualifiers">ASIs, SQIs, NECs, SEIs, qualifications</label><textarea id="rp-qualifiers" maxlength="2000" placeholder="Codes plus plain-language meaning if known"></textarea></div>
+          <div class="rp-field"><label for="rp-certifications">Civilian certifications</label><textarea id="rp-certifications" maxlength="2000" placeholder="e.g. CompTIA Security+, EMT, OSHA 30"></textarea></div>
+          <div class="rp-field"><label for="rp-licenses">Licenses</label><textarea id="rp-licenses" maxlength="1500" placeholder="e.g. CDL Class A, FAA Airframe and Powerplant"></textarea></div>
+          <div class="rp-field"><label for="rp-awards">Relevant awards <span class="optional">(optional)</span></label><textarea id="rp-awards" maxlength="1600" placeholder="Include what the award recognized, if useful"></textarea></div>
+          <div class="rp-field"><label for="rp-education">Civilian education <span class="optional">(optional)</span></label><textarea id="rp-education" maxlength="1600" placeholder="Degree, program, school, graduation year or expected date"></textarea></div>
+          <div class="rp-field"><label for="rp-clearance">Clearance level and status <span class="optional">(optional)</span></label><input id="rp-clearance" type="text" maxlength="120" placeholder="e.g. Secret, active"><div class="hint">A clearance may support job matching but never guarantees eligibility or transfer.</div></div>
+          <div class="rp-field"><label>Permission to use clearance</label><label class="rp-check"><input id="rp-use-clearance" type="checkbox"><span>Include the clearance detail above in this report. Leave unchecked to exclude it entirely.</span></label></div>
+          <div class="rp-field full"><label for="rp-target">Target civilian role or job posting <span class="optional">(optional)</span></label><textarea id="rp-target" maxlength="6000" placeholder="Paste a job posting or name a target role. Leave blank for honest career-discovery options based on the experience above."></textarea></div>
+        </div>
+        <div class="rp-actions"><button id="rp-review-btn" type="button" class="rp-btn rp-btn-primary">Review before checkout</button></div>
+      </section>
+    </form>
+
+    <section id="rp-review" class="rp-review" aria-label="Review and confirm">
+      <div class="rp-card">
+        <h2>4. Confirm the facts</h2>
+        <p>Review what will be used. Go back and edit anything that is incomplete or too sensitive to share.</p>
+        <div id="rp-review-grid" class="rp-review-grid"></div>
+        <div class="rp-actions"><button id="rp-edit-intake" type="button" class="rp-btn rp-btn-secondary">Edit intake</button></div>
+      </div>
+      <div class="rp-card">
+        <h2>Suggested translations</h2>
+        <p>These are local, pre-checkout suggestions. Keep only the translations that match how the term was used in your service.</p>
+        <div id="rp-suggestions" class="rp-suggestions"></div>
+      </div>
+      <div class="rp-card rp-checkout">
+        <h2>What your $1 includes</h2>
+        <p>An editable ATS resume, a career report with readiness gaps and source links, and reasonable edits or regenerations of this same report for 24 hours. This is a separate one-time purchase and does not start a subscription.</p>
+        <label class="rp-check"><input id="rp-accuracy" type="checkbox"><span>I confirm the information above reflects my actual experience, and I will review every generated statement before using it.</span></label>
+        <label class="rp-check" style="margin-top:.65rem"><input id="rp-privacy-ok" type="checkbox"><span>I understand the confirmed intake is sent securely to the AI provider to generate this report.</span></label>
+        <div class="rp-total"><span>One Military Resume &amp; Career Report</span><strong>$1.00</strong></div>
+        <div class="rp-actions"><button id="rp-checkout-btn" type="button" class="rp-btn rp-btn-primary">Continue to secure checkout - $1</button></div>
+        <p class="rp-privacy"><strong>Privacy and retention:</strong> your detailed intake and generated report are saved in this browser so you can return during the 24-hour edit window. The proxy sends the intake to the AI provider for generation but does not intentionally store the resume content. Payment is handled by Stripe. Use “Delete local data” below at any time. Do not enter classified, medical, or other highly sensitive information. See the <a href="/privacy-policy.html">Privacy Policy</a>.</p>
+      </div>
+    </section>
+
+    <section id="rp-output" class="rp-output" aria-label="Generated resume and career report">
+      <div class="rp-card">
+        <div class="rp-output-toolbar">
+          <div><h2>Your editable ATS resume</h2><p>Click any text to edit it. Add your name and contact details before applying.</p></div>
+          <div class="rp-output-actions"><button id="rp-download-resume" type="button" class="rp-btn rp-btn-primary">Download resume .txt</button><button id="rp-print" type="button" class="rp-btn rp-btn-secondary">Print / save PDF</button></div>
+        </div>
+        <div id="rp-resume-header" class="rp-edit-section"><h3>Resume Header</h3><div class="rp-editable" contenteditable="true" spellcheck="true">[Your Name] | [Phone] | [Email] | [City, State] | [LinkedIn]</div></div>
+        <div id="rp-resume-output"></div>
+      </div>
+      <div class="rp-card">
+        <div class="rp-output-toolbar">
+          <div><h2>Your career report</h2><p>Use these as researched starting points, not guarantees.</p></div>
+          <div class="rp-output-actions"><button id="rp-download-career" type="button" class="rp-btn rp-btn-primary">Download career report .txt</button></div>
+        </div>
+        <div id="rp-career-output" class="rp-career-grid"></div>
+        <p class="rp-disclaimer">AI can make mistakes. Verify every credential, license, salary, education requirement, and external link with the official source before spending time or money. This tool does not guarantee employment or clearance eligibility.</p>
+      </div>
+      <div class="rp-actions"><button id="rp-regenerate" type="button" class="rp-btn rp-btn-secondary">Regenerate this report</button><button id="rp-delete" type="button" class="rp-btn rp-btn-danger">Delete local data</button></div>
+    </section>
+  </div>
+</main>
+<noscript><div class="rp-noscript">JavaScript is required to save your draft, verify payment, and generate the report.</div></noscript>
+<footer style="background:#0d1f3c;padding:2.5rem 6%;margin-top:2rem;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.5rem;margin-bottom:2rem;">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">AI Tools</div>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Career Builder App</a>
+        <a href="https://veterancareerpath.com/veteran-career-test.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">PathFinder Lite (Free)</a>
+        <a href="https://veterancareerpath.com/mos-career-translator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Real MOS Experience Translator</a>
+        <a href="https://veterancareerpath.com/military-civilian-resume.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Resume Guide</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">Resources</div>
+        <a href="https://veterancareerpath.com/military-transition-guide.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Transition Guide</a>
+        <a href="https://veterancareerpath.com/va-disability-rating-schedule.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">VA Disability Schedule</a>
+        <a href="https://veterancareerpath.com/pcs-ets-move-calculator.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">PCS / ETS Calculator</a>
+        <a href="https://veterancareerpath.com/gi-bill-school-comparison.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">GI Bill Guide</a>
+        <a href="https://veterancareerpath.com/security-clearance-salary.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Clearance Salary</a>
+        <a href="https://veterancareerpath.com/veteran-hiring-companies.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Top 50 Employers</a>
+        <a href="https://veterancareerpath.com/skillbridge-program-guide (1).html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">SkillBridge Guide</a>
+        <a href="https://veterancareerpath.com/veteran-action-verbs.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Action Verbs</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">MOS Guides</div>
+        <a href="https://veterancareerpath.com/army-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Army MOS Careers</a>
+        <a href="https://veterancareerpath.com/navy-rate-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Navy Rate Careers</a>
+        <a href="https://veterancareerpath.com/marine-corps-mos-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Marine Corps MOS</a>
+        <a href="https://veterancareerpath.com/air-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Air Force AFSC</a>
+        <a href="https://veterancareerpath.com/coast-guard-rating-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Coast Guard Ratings</a>
+        <a href="https://veterancareerpath.com/space-force-afsc-careers.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Space Force AFSC</a>
+      </div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:#f0c040;margin-bottom:.65rem;">Company</div>
+        <a href="https://veterancareerpath.com" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Home</a>
+        <a href="https://veterancareerpath.com/about.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">About</a>
+        <a href="https://veterancareerpath.com/app.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Launch App</a>
+        <a href="https://veterancareerpath.com/contact.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Contact</a>
+        <a href="https://veterancareerpath.com/privacy-policy.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Privacy Policy</a>
+        <a href="https://veterancareerpath.com/terms.html" style="display:block;color:#80a8d0;text-decoration:none;font-size:.8rem;margin-bottom:.35rem;">Terms of Service</a>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:1.25rem;text-align:center;font-size:.73rem;color:rgba(255,255,255,.25);">
+      Veteran Career Path &bull; Built by a veteran, for veterans &bull; &copy; 2026 &bull; Not affiliated with the U.S. Department of Defense, Department of Veterans Affairs, or any government agency. Tools and calculators produce estimates, not guarantees, and may not reflect your situation. Content is general information only, not legal, tax, financial, or medical advice. Consult a qualified professional (or a VA-accredited representative for VA benefits) before acting
+    </div>
+  </div>
+</footer>
+<script src="/assets/js/resume-pro.js"></script>
 <script src="/vcp-components.js"></script>
-<script defer src="/vcp-scout.js"></script>
 <script defer src="/vcp-errors.js"></script>
 </body>
 </html>

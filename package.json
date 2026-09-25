@@ -5,7 +5,8 @@
   "description": "VeteranCareerPath.com static site + in-app React tools",
   "scripts": {
     "build": "esbuild app.js --loader:.js=jsx --format=iife --outfile=app.bundle.js && node scripts/stamp-bundle.mjs",
-    "build:check": "npm run build && git diff --exit-code -- app.bundle.js app.html"
+    "build:check": "npm run build && git diff --exit-code -- app.bundle.js app.html",
+    "validate:resume-pro": "node scripts/validate-resume-pro.mjs"
   },
   "devDependencies": {
     "esbuild": "0.28.2"

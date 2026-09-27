@@ -57,5 +57,24 @@ service cloud.firestore {
     match /successStories/{docId} { allow read, write: if isAdmin(); }
     match /salaries/{docId}       { allow read, write: if isAdmin(); }
     match /salaryData/{docId}     { allow read, write: if isAdmin(); }
+
+    // ── Resume Review service ──────────────────────────────────────────────
+    // Invitations, jobs (with client PII + uploaded-file metadata), and AI runs.
+    // NOT publicly readable or writable. All public intake happens through the Vercel
+    // server APIs using the Firebase Admin SDK (which bypasses these rules). Direct client
+    // access (the admin dashboard's realtime listeners) requires the admin custom claim.
+    match /resumeReviewInvites/{inviteHash} {
+      allow read, write: if isAdmin();
+    }
+    match /resumeReviewJobs/{jobId} {
+      allow read, write: if isAdmin();
+      match /aiRuns/{runId} {
+        allow read, write: if isAdmin();
+      }
+    }
+    // Server-only staging for pending uploads (written by the Admin SDK). No client access.
+    match /resumeReviewUploads/{fileId} {
+      allow read, write: if false;
+    }
   }
 }

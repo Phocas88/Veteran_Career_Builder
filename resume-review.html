@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Veteran Resume Review — get your military experience translated into language civilian employers understand. Human review with AI-assisted tools. $9.99.">
+<meta name="robots" content="noindex, nofollow">
+<title>Veteran Resume Review</title>
+<link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/img/optimized/logo-96.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/resume-review.css">
+</head>
+<body>
+<a href="#rr-main" class="rr-skip">Skip to content</a>
+
+<nav class="rr-nav">
+  <a href="https://veterancareerpath.com" class="rr-logo">
+    <img src="https://veterancareerpath.com/img/optimized/logo-96.webp" alt="Veteran Career Path" width="28" height="28">
+    <span>Veteran Career Path</span>
+  </a>
+  <a class="rr-nav-link" href="https://veterancareerpath.com">veterancareerpath.com</a>
+</nav>
+
+<main id="rr-main" class="rr-wrap">
+
+  <!-- LOADING -->
+  <section id="state-loading" class="rr-state active">
+    <div class="rr-msg"><div class="icon">⏳</div><h2>Loading…</h2><p>Checking your review link.</p></div>
+  </section>
+
+  <!-- INVALID / EXPIRED / USED -->
+  <section id="state-invalid" class="rr-state">
+    <div class="rr-msg">
+      <div class="icon">🔒</div>
+      <h2 id="invalid-title">This link isn’t active</h2>
+      <p id="invalid-msg">This resume-review link is invalid, expired, or already used. If you believe this is a mistake, reply to the DM where you received it and we’ll send a fresh link.</p>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <section id="state-form" class="rr-state">
+    <div class="rr-hero">
+      <div class="rr-kicker">Veteran Career Path</div>
+      <h1>Veteran Resume Review</h1>
+      <p class="sub">Get your military experience translated into language civilian employers understand.</p>
+      <div class="rr-price"><span class="lbl">Intro price</span><span class="amt">$9.99</span></div>
+    </div>
+
+    <div class="rr-value">
+      <h2>What you get</h2>
+      <ul>
+        <li>MOS-specific feedback</li>
+        <li>Civilian wording suggestions</li>
+        <li>Bullet-point improvements</li>
+        <li>Missing metrics &amp; opportunities identified</li>
+        <li>ATS-friendly feedback</li>
+        <li>Career-fit suggestions</li>
+        <li>Resume structure feedback</li>
+      </ul>
+      <p class="rr-human">This is a <strong>human resume review</strong>. A real reviewer reads your resume and writes your feedback, using AI-assisted tools to work faster. It is not an automated, guaranteed result.</p>
+    </div>
+
+    <div class="rr-privacy">
+      <strong>Please protect your privacy.</strong> Do <strong>not</strong> upload a DD-214, medical record, VA claim file, Social Security card, driver’s license, passport, or any document containing a Social Security number. We do not need your SSN, date of birth, VA disability rating, medical, or financial information.
+    </div>
+
+    <form id="rr-form" class="rr-form-card" novalidate>
+      <div class="rr-sec-title">Your details</div>
+      <div class="rr-grid">
+        <div class="rr-field"><label for="f-name">Full name <span class="req">*</span></label><input id="f-name" name="fullName" type="text" autocomplete="name" maxlength="120" required></div>
+        <div class="rr-field"><label for="f-email">Email address <span class="req">*</span></label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="254" required></div>
+        <div class="rr-field"><label for="f-phone">Phone number</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" maxlength="40"></div>
+        <div class="rr-field"><label for="f-status">Current status <span class="req">*</span></label>
+          <select id="f-status" name="serviceStatus" required>
+            <option value="">Select…</option>
+            <option>Active Duty</option><option>Veteran</option><option>National Guard</option><option>Reserve</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="rr-sec-title">Military background</div>
+      <div class="rr-grid">
+        <div class="rr-field"><label for="f-branch">Military branch <span class="req">*</span></label>
+          <select id="f-branch" name="branch" required>
+            <option value="">Select…</option>
+            <option>Army</option><option>Marine Corps</option><option>Navy</option><option>Air Force</option><option>Space Force</option><option>Coast Guard</option>
+          </select>
+        </div>
+        <div class="rr-field"><label for="f-mos">MOS / Rate / AFSC <span class="req">*</span></label><input id="f-mos" name="mos" type="text" maxlength="60" required></div>
+        <div class="rr-field"><label for="f-rank">Highest rank or grade held <span class="req">*</span></label><input id="f-rank" name="rank" type="text" maxlength="60" required></div>
+        <div class="rr-field"><label for="f-years">Years of service <span class="req">*</span></label><input id="f-years" name="yearsService" type="text" maxlength="20" required></div>
+        <div class="rr-field"><label for="f-clear">Security clearance</label><input id="f-clear" name="clearance" type="text" maxlength="60" placeholder="e.g., Secret (as held)"></div>
+        <div class="rr-field"><label for="f-certs">Certifications</label><input id="f-certs" name="certifications" type="text" maxlength="2000"></div>
+        <div class="rr-field full"><label for="f-edu">Education</label><input id="f-edu" name="education" type="text" maxlength="2000"></div>
+        <div class="rr-field full"><label for="f-addl">Additional military experience</label><textarea id="f-addl" name="additionalExperience" maxlength="4000"></textarea></div>
+        <div class="rr-field full"><label for="f-awards">Awards / qualifications you want considered</label><textarea id="f-awards" name="awardsQualifications" maxlength="2000"></textarea></div>
+      </div>
+
+      <div class="rr-sec-title">Career target</div>
+      <div class="rr-grid">
+        <div class="rr-field"><label for="f-target">Primary civilian job or career target <span class="req">*</span></label><input id="f-target" name="primaryTarget" type="text" maxlength="120" required></div>
+        <div class="rr-field"><label for="f-target2">Secondary target job</label><input id="f-target2" name="secondaryTarget" type="text" maxlength="120"></div>
+        <div class="rr-field"><label for="f-industry">Target industry <span class="req">*</span></label><input id="f-industry" name="industry" type="text" maxlength="80" required></div>
+        <div class="rr-field"><label for="f-company">Target company</label><input id="f-company" name="targetCompany" type="text" maxlength="120"></div>
+        <div class="rr-field"><label for="f-loc">Current city/state <span class="req">*</span></label><input id="f-loc" name="targetLocation" type="text" maxlength="120" placeholder="City, ST — or leave blank if remote"></div>
+        <div class="rr-field"><label for="f-remote">Remote preference</label>
+          <select id="f-remote" name="remotePreference">
+            <option value="">No preference</option><option>Remote only</option><option>Hybrid</option><option>On-site</option><option>Open to relocation</option>
+          </select>
+        </div>
+        <div class="rr-field full"><label for="f-joburl">Job posting URL</label><input id="f-joburl" name="jobPostingUrl" type="url" maxlength="500" placeholder="https://…"></div>
+        <div class="rr-field full"><label for="f-jd">Paste job description</label><textarea id="f-jd" name="jobDescription" maxlength="8000" placeholder="Optional — paste a target job description to tailor the review."></textarea></div>
+      </div>
+
+      <div class="rr-sec-title">What you need</div>
+      <div class="rr-grid">
+        <div class="rr-field full"><label for="f-help">What do you want help with? <span class="req">*</span></label><textarea id="f-help" name="requestedHelp" maxlength="4000" required placeholder="e.g., translate my infantry experience for project-coordinator roles, tighten my bullets, add metrics."></textarea></div>
+        <div class="rr-field full"><label for="f-missing">Anything you believe the resume is currently missing</label><textarea id="f-missing" name="missingInfo" maxlength="2000"></textarea></div>
+        <div class="rr-field full"><label for="f-notes">Other notes for the reviewer</label><textarea id="f-notes" name="clientNotes" maxlength="4000"></textarea></div>
+      </div>
+
+      <div class="rr-sec-title">Upload your current resume <span class="req" style="color:var(--gold2)">*</span></div>
+      <div class="rr-grid">
+        <div class="rr-upload">
+          <div class="rr-drop" id="rr-drop" role="button" tabindex="0" aria-label="Choose your resume file">
+            <div class="big">📄 Tap to choose your resume</div>
+            <div class="small">PDF, DOCX, or TXT · 10 MB max · no DD-214 or SSN documents</div>
+          </div>
+          <input id="rr-file" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" hidden>
+          <div class="rr-file-chip" id="rr-file-chip"><span id="rr-file-name"></span><button type="button" id="rr-file-clear">Remove</button></div>
+        </div>
+
+        <label class="rr-consent"><input type="checkbox" id="c-emp"> I understand this is a resume review and not a guarantee of employment.</label>
+        <label class="rr-consent"><input type="checkbox" id="c-ai"> I understand Veteran Career Path may use AI-assisted tools as part of the review, with a human reviewer making the final review.</label>
+      </div>
+
+      <button type="submit" class="rr-submit" id="rr-submit">Continue to secure payment — $9.99</button>
+      <div class="rr-note">🔒 Payment is handled by Stripe. Your resume is stored privately and only seen by your reviewer.</div>
+      <div class="rr-err" id="rr-err"></div>
+    </form>
+  </section>
+
+  <!-- SUCCESS -->
+  <section id="state-success" class="rr-state">
+    <div class="rr-msg">
+      <div class="icon">✅</div>
+      <h2>Your resume review has been submitted.</h2>
+      <p>Your file is now in the Veteran Career Path review queue.</p>
+      <p>Your completed review will be sent to <span class="email" id="success-email">the email you provided</span>.</p>
+      <p style="margin-top:1rem;font-size:.82rem;color:var(--dim);">Most reviews are completed within a few business days. You can close this page.</p>
+    </div>
+  </section>
+
+  <!-- CANCELED -->
+  <section id="state-canceled" class="rr-state">
+    <div class="rr-msg">
+      <div class="icon">↩️</div>
+      <h2>Payment canceled</h2>
+      <p>No charge was made. Your intake was saved — you can finish checkout when you’re ready.</p>
+      <button class="rr-submit" id="rr-retry" style="max-width:320px;margin:1.25rem auto 0;">Complete payment — $9.99</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rr-footer">
+  <strong style="color:var(--cream);">Not affiliated with any government agency.</strong> Veteran Career Path is an independent platform operated by StreamSync Solutions, not affiliated with the U.S. Department of Defense, the Department of Veterans Affairs, or any branch of the Armed Forces. A resume review is professional feedback, not a guarantee of interviews, jobs, ATS results, or salary outcomes.
+</footer>
+
+<script src="/resume-review.js"></script>
+</body>
+</html>

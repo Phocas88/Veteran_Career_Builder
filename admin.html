@@ -25,6 +25,7 @@
     window.db = firebase.firestore();
   }catch(e){ window.db=null; console.warn('Firebase not configured'); }
 </script>
+<link rel="stylesheet" href="/admin-resume-reviews.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-height:100vh;}
@@ -171,6 +172,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <div class="stat-card"><div class="stat-n" id="stat-story-pending">,</div><div class="stat-l">Success Stories</div><div class="stat-sub">Pending approval</div></div>
     <div class="stat-card"><div class="stat-n" id="stat-salary-total">,</div><div class="stat-l">Total Salary Entries</div><div class="stat-sub">Live on site</div></div>
     <div class="stat-card"><div class="stat-n" id="stat-story-total">,</div><div class="stat-l">Total Stories</div><div class="stat-sub">Live on site</div></div>
+    <div class="stat-card" style="border-color:rgba(240,192,64,.25);"><div class="stat-n" id="stat-rr-new">0</div><div class="stat-l">Resume Reviews · New</div><div class="stat-sub" id="stat-rr-sub">0 in review · 0 ready · 0 total</div></div>
   </div>
 
   <!-- Tabs -->
@@ -182,6 +184,12 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <button class="tab" onclick="switchTab('analytics',this)">📊 Analytics</button>
     <button class="tab" onclick="switchTab('add-salary',this)">+ Add Salary Entry</button>
     <button class="tab" onclick="switchTab('add-story',this)">+ Add Story</button>
+    <button class="tab" id="rr-tab-btn" onclick="switchTab('resume-reviews',this)">📝 Resume Reviews <span id="rr-tab-badge" style="color:#f0c040;font-weight:700;display:none;"></span></button>
+  </div>
+
+  <!-- RESUME REVIEWS -->
+  <div class="panel" id="panel-resume-reviews">
+    <div id="rr-root"><div class="loading">Loading Resume Reviews…</div></div>
   </div>
 
   <!-- EMAIL SUBSCRIBERS -->
@@ -383,7 +391,13 @@ function switchTab(name, btn) {
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   btn.classList.add('active');
   document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'resume-reviews' && window.rrOnTabOpen) window.rrOnTabOpen();
 }
+// Allow the Resume Reviews module (desktop notification click) to focus its tab.
+window.rrFocusTab = function() {
+  var btn = document.getElementById('rr-tab-btn');
+  if (btn) switchTab('resume-reviews', btn);
+};
 
 function toast(msg, color) {
   var t = document.getElementById('toast');
@@ -898,5 +912,6 @@ document.getElementById('pin-input').focus();
 </script>
 <script src="/vcp-components.js"></script>
 <script defer src="/vcp-scout.js"></script>
+<script src="/admin-resume-reviews.js"></script>
 </body>
 </html>

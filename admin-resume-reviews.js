@@ -112,6 +112,17 @@
     return Math.floor(s / 86400) + 'd ago';
   }
   var STATUS_LABEL = { awaiting_payment: 'Awaiting Payment', new: 'New', in_review: 'In Review', needs_info: 'Needs Info', ready: 'Ready', delivered: 'Delivered', cancelled: 'Cancelled', refunded: 'Refunded' };
+  function trackOf(j) { return j && j.track === 'civilian' ? 'civilian' : 'veteran'; }
+  function trackLabel(j) { return trackOf(j) === 'civilian' ? 'Civilian' : 'Veteran'; }
+  // One-line "who" summary for a card, by track.
+  function whoLine(j) {
+    if (trackOf(j) === 'civilian') {
+      var g = j.background || {};
+      return (g.currentTitle || '—') + (g.yearsExperience ? ' • ' + g.yearsExperience + ' yrs' : '');
+    }
+    var m = j.military || {};
+    return (m.branch || '—') + ' • ' + (m.mos || '—');
+  }
 
   function updateStats() {
     var c = { new: 0, in_review: 0, ready: 0, total: 0 }, unread = 0;
@@ -161,7 +172,9 @@
       if (j.serviceType && j.serviceType !== 'resume_review') return false;
       if (state.filter !== 'all' && j.status !== state.filter) return false;
       if (state.searchTerm) {
-        var hay = ((j.client && j.client.name) || '') + ' ' + ((j.military && j.military.mos) || '') + ' ' + ((j.military && j.military.branch) || '') + ' ' + ((j.career && j.career.primaryTarget) || '');
+        var m = j.military || {}, g = j.background || {};
+        var hay = ((j.client && j.client.name) || '') + ' ' + (m.mos || '') + ' ' + (m.branch || '') + ' ' +
+          (g.currentTitle || '') + ' ' + (g.currentField || '') + ' ' + ((j.career && j.career.primaryTarget) || '');
         if (hay.toLowerCase().indexOf(state.searchTerm) === -1) return false;
       }
       return true;
@@ -190,12 +203,13 @@
     top.appendChild(node('span', 'rr-dot'));
     var badge = node('span', 'rr-badge b-' + j.status, STATUS_LABEL[j.status] || j.status);
     top.appendChild(badge);
+    var tbadge = node('span', 'rr-track t-' + trackOf(j), trackLabel(j));
+    top.appendChild(tbadge);
     top.appendChild(node('span', 'rr-name', (j.client && j.client.name) || 'Unnamed client'));
     card.appendChild(top);
 
     var meta1 = node('div', 'rr-meta');
-    var branch = (j.military && j.military.branch) || '—', mos = (j.military && j.military.mos) || '—';
-    meta1.appendChild(document.createTextNode(branch + ' • ' + mos));
+    meta1.appendChild(document.createTextNode(whoLine(j)));
     card.appendChild(meta1);
     var meta2 = node('div', 'rr-meta');
     meta2.appendChild(document.createTextNode('Target: ' + ((j.career && j.career.primaryTarget) || '—')));
@@ -228,12 +242,13 @@
   }
   function announce(j) {
     var name = (j.client && j.client.name) || 'New client';
-    var sub = ((j.military && j.military.branch) || '') + ' ' + ((j.military && j.military.mos) || '');
-    showToast('New Resume Review', name + ' • ' + sub.trim());
+    var title = 'New Resume Review (' + trackLabel(j) + ')';
+    var body = name + ' • ' + whoLine(j);
+    showToast(title, body);
     beep();
     if (state.desktopAlerts && 'Notification' in window && Notification.permission === 'granted') {
       try {
-        var n = new Notification('New Resume Review', { body: name + ' • ' + sub.trim(), tag: 'rr-' + j.id });
+        var n = new Notification(title, { body: body, tag: 'rr-' + j.id });
         n.onclick = function () { window.focus(); if (window.rrFocusTab) window.rrFocusTab(); openJob(j.id); n.close(); };
       } catch (_) {}
     }
@@ -259,9 +274,20 @@
     var bg = node('div', 'rr-modal-bg open'); bg.id = 'rr-create-modal';
     var m = node('div', 'rr-modal');
     m.appendChild(node('h3', null, 'Create Review Link'));
-    function field(labelText, el) { m.appendChild(node('label', null, labelText)); m.appendChild(el); return el; }
+    function field(labelText, el) { var lbl = node('label', null, labelText); m.appendChild(lbl); m.appendChild(el); el._label = lbl; return el; }
+    var track = field('Review type', node('select'));
+    [['veteran', 'Veteran (military → civilian)'], ['civilian', 'Civilian (professional)']].forEach(function (o) { var op = node('option', null, o[1]); op.value = o[0]; track.appendChild(op); });
+    track.value = 'veteran';
     var name = field('Client name (optional)', node('input')); name.type = 'text'; name.maxLength = 120;
     var mos = field('MOS / Rate / AFSC (optional)', node('input')); mos.type = 'text'; mos.maxLength = 60;
+    // MOS applies to the veteran track only; hide it for civilian links.
+    function syncTrack() {
+      var vet = track.value === 'veteran';
+      mos.style.display = vet ? '' : 'none';
+      if (mos._label) mos._label.style.display = vet ? '' : 'none';
+      if (!vet) mos.value = '';
+    }
+    track.addEventListener('change', syncTrack);
     var source = field('Source', node('input')); source.type = 'text'; source.value = 'TikTok DM'; source.maxLength = 60;
     var note = field('Admin note (optional)', node('textarea')); note.maxLength = 1000;
     var exp = field('Expiration', node('select'));
@@ -278,7 +304,7 @@
     createBtn.addEventListener('click', async function () {
       createBtn.disabled = true; createBtn.textContent = 'Creating…';
       try {
-        var d = await api('/api/review-invite', { method: 'POST', body: { action: 'create', clientName: name.value, mos: mos.value, source: source.value, adminNotes: note.value, expiresInHours: Number(exp.value) } });
+        var d = await api('/api/review-invite', { method: 'POST', body: { action: 'create', track: track.value, clientName: name.value, mos: mos.value, source: source.value, adminNotes: note.value, expiresInHours: Number(exp.value) } });
         clear(result);
         result.appendChild(node('label', null, 'Private review link (shown once)'));
         var box = node('div', 'rr-linkbox', d.url); result.appendChild(box);
@@ -338,12 +364,21 @@
     // LEFT — client file
     var left = node('div', 'rr-col');
     left.appendChild(node('h4', null, 'Client File'));
-    var c = job.client || {}, m = job.military || {}, ca = job.career || {}, rq = job.reviewRequest || {};
+    var c = job.client || {}, m = job.military || {}, g = job.background || {}, ca = job.career || {}, rq = job.reviewRequest || {};
+    kv(left, 'Review type', trackLabel(job));
     kv(left, 'Name', c.name); kv(left, 'Email', c.email); kv(left, 'Phone', c.phone);
-    kv(left, 'Branch', m.branch); kv(left, 'MOS/Rate/AFSC', m.mos); kv(left, 'Rank/Grade', m.rank);
-    kv(left, 'Years of service', m.yearsService); kv(left, 'Status', m.serviceStatus); kv(left, 'Clearance', m.clearance);
-    kv(left, 'Certifications', m.certifications); kv(left, 'Education', m.education);
-    kv(left, 'Additional experience', m.additionalExperience); kv(left, 'Awards/quals', m.awardsQualifications);
+    if (trackOf(job) === 'civilian') {
+      kv(left, 'Most recent title', g.currentTitle); kv(left, 'Years of experience', g.yearsExperience);
+      kv(left, 'Status', g.employmentStatus); kv(left, 'Career level', g.careerLevel);
+      kv(left, 'Employer', g.currentEmployer); kv(left, 'Field/industry', g.currentField);
+      kv(left, 'Key skills', g.keySkills); kv(left, 'Certifications', g.certifications);
+      kv(left, 'Education', g.education); kv(left, 'Additional experience', g.additionalExperience);
+    } else {
+      kv(left, 'Branch', m.branch); kv(left, 'MOS/Rate/AFSC', m.mos); kv(left, 'Rank/Grade', m.rank);
+      kv(left, 'Years of service', m.yearsService); kv(left, 'Status', m.serviceStatus); kv(left, 'Clearance', m.clearance);
+      kv(left, 'Certifications', m.certifications); kv(left, 'Education', m.education);
+      kv(left, 'Additional experience', m.additionalExperience); kv(left, 'Awards/quals', m.awardsQualifications);
+    }
     kv(left, 'Target role', ca.primaryTarget); kv(left, 'Secondary target', ca.secondaryTarget);
     kv(left, 'Target industry', ca.industry); kv(left, 'Target company', ca.targetCompany);
     kv(left, 'Location / remote', ca.targetLocation || ca.remotePreference);
@@ -372,7 +407,8 @@
     center.appendChild(extractBtn);
     var aiStatus = node('div', 'rr-ai-status'); aiStatus.id = 'rr-ai-status'; center.appendChild(aiStatus);
     var tools = node('div', 'rr-tools');
-    [['full_review', 'Full Resume Review'], ['translate', 'Military → Civilian'], ['rewrite_bullets', 'Rewrite Bullets'], ['summary', 'Professional Summary'], ['ats', 'ATS / Keyword'], ['career_fit', 'Career Fit'], ['missing_metrics', 'Missing Metrics'], ['target_job', 'Target This Job'], ['cert_gaps', 'Cert / Skill Gaps'], ['draft_feedback', 'Draft Client Feedback']]
+    var translateLabel = trackOf(job) === 'civilian' ? 'De-jargon & Clarify' : 'Military → Civilian';
+    [['full_review', 'Full Resume Review'], ['translate', translateLabel], ['rewrite_bullets', 'Rewrite Bullets'], ['summary', 'Professional Summary'], ['ats', 'ATS / Keyword'], ['career_fit', 'Career Fit'], ['missing_metrics', 'Missing Metrics'], ['target_job', 'Target This Job'], ['cert_gaps', 'Cert / Skill Gaps'], ['draft_feedback', 'Draft Client Feedback']]
       .forEach(function (t) { var b = node('button', 'rr-tool', t[1]); b.dataset.tool = t[0]; b.addEventListener('click', function () { runTool(job, t[0], t[1]); }); tools.appendChild(b); });
     center.appendChild(tools);
     // AI output area

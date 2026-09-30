@@ -33,8 +33,10 @@ jobs:
       - name: Validate JavaScript
         run: |
           node --check assets/js/vcb-secure-api.js
+          node --check assets/js/resume-pro.js
           node --check scripts/build-hosting.mjs
           node --check scripts/apply-security-refactor.mjs
+          npm run validate:resume-pro
 
       - name: Verify app.bundle.js + app.html are in sync with app.js
         run: |
@@ -68,6 +70,7 @@ jobs:
             http://127.0.0.1:8080/
             http://127.0.0.1:8080/army-mos-careers.html
             http://127.0.0.1:8080/military-transition-guide.html
+            http://127.0.0.1:8080/resume-pro.html
             http://127.0.0.1:8080/mos/12p.html
           budgetPath: .github/lighthouse-budget.json
           uploadArtifacts: true

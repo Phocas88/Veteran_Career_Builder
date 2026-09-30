@@ -29,6 +29,7 @@ EXCLUDE = {
     "salary-negotiation-roleplay.html", "1a0x1-afsc.html", "1a1x1-afsc.html",
     "army-35e-mos.html", "army-35y-mos.html", "tools-newsletter.html",
     "veteran-business-funding.html", "va-home-loan-analyzer.html",
+    "resume-review.html", "civilian-resume-review.html",
 }
 
 EXCLUDE_DIRS = {"affiliate", "training", ".firebase", ".claude", ".git", "api", "img"}

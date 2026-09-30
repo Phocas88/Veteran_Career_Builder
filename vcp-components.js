@@ -202,7 +202,8 @@
       'federal-resume-builder-ai', 'linkedin-profile-rewriter',
       'salary-negotiation-roleplay', 'transition-timeline-planner',
       'va-claim-builder', 'va-home-loan-analyzer', 'veteran-business-funding',
-      'mos-career-translator', 'career-assessment-full', 'veteran-career-test'
+      'mos-career-translator', 'career-assessment-full', 'veteran-career-test',
+      'resume-pro'
     ];
     var path = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '');
     var isToolPage = false;
@@ -212,6 +213,7 @@
     if (!isToolPage) return;
 
     var tools = [
+      { icon: '\uD83D\uDCC4', name: '$1 Resume & Career Report', url: '/resume-pro.html' },
       { icon: '\uD83D\uDCC4', name: 'AI Resume Builder', url: '/app.html' },
       { icon: '\uD83C\uDFAF', name: 'Job Match Analyzer', url: '/tools-job-match.html' },
       { icon: '\uD83D\uDCBC', name: 'Federal Resume', url: '/tools-federal-resume.html' },

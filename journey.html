@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Your Veteran Career Path journey — your resume review plus personalized next steps, schools, certifications, and resources for your career goals.">
+<meta name="robots" content="noindex, nofollow">
+<title>Your Career Journey — Veteran Career Path</title>
+<link rel="icon" type="image/png" sizes="32x32" href="https://veterancareerpath.com/img/optimized/logo-96.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/journey.css">
+</head>
+<body>
+<a href="#jy-main" class="jy-skip">Skip to content</a>
+
+<nav class="jy-nav">
+  <a href="https://veterancareerpath.com" class="jy-logo">
+    <img src="https://veterancareerpath.com/img/optimized/logo-96.webp" alt="Veteran Career Path" width="28" height="28">
+    <span>Veteran Career Path</span>
+  </a>
+  <a class="jy-nav-link" href="https://veterancareerpath.com">veterancareerpath.com</a>
+</nav>
+
+<main id="jy-main">
+
+  <!-- LOADING -->
+  <section id="state-loading" class="jy-state active">
+    <div class="jy-msg"><div class="icon">⏳</div><h2>Loading your journey…</h2><p>Pulling up your personalized career hub.</p></div>
+  </section>
+
+  <!-- INVALID / EXPIRED / ARCHIVED -->
+  <section id="state-invalid" class="jy-state">
+    <div class="jy-msg">
+      <div class="icon">🔒</div>
+      <h2 id="invalid-title">This journey link isn’t active</h2>
+      <p id="invalid-msg">This link is invalid or no longer available. If you believe this is a mistake, reply to the message where you received it and we’ll send a fresh one.</p>
+      <a class="jy-msg-btn" href="https://veterancareerpath.com">Go to veterancareerpath.com</a>
+    </div>
+  </section>
+
+  <!-- PORTAL -->
+  <section id="state-portal" class="jy-state">
+
+    <header class="jy-hero">
+      <div class="jy-hero-inner">
+        <div class="jy-kicker">Your Career Journey</div>
+        <h1 id="jy-welcome">Welcome</h1>
+        <p class="jy-sub" id="jy-goal"></p>
+        <div class="jy-chip" id="jy-days" hidden></div>
+      </div>
+    </header>
+
+    <div class="jy-wrap">
+
+      <!-- Resume review CTA -->
+      <section class="jy-review-card" id="jy-review-card">
+        <div class="jy-review-text">
+          <div class="jy-review-eyebrow">Start here</div>
+          <h2>My Resume Review</h2>
+          <p id="jy-review-desc">Your personalized resume review from your Veteran Career Path reviewer — the first step of your journey.</p>
+        </div>
+        <button type="button" class="jy-review-btn" id="jy-review-open">Open my review →</button>
+      </section>
+
+      <!-- Resource groups -->
+      <div id="jy-resources"></div>
+
+      <p class="jy-expiry-note" id="jy-expiry-note"></p>
+    </div>
+  </section>
+
+</main>
+
+<!-- REVIEW MODAL -->
+<div class="jy-modal-bg" id="jy-modal" hidden>
+  <div class="jy-modal" role="dialog" aria-modal="true" aria-labelledby="jy-modal-title">
+    <div class="jy-modal-head">
+      <div>
+        <div class="jy-modal-eyebrow">Veteran Career Path</div>
+        <h2 id="jy-modal-title">Your Resume Review</h2>
+      </div>
+      <button type="button" class="jy-modal-close" id="jy-modal-close" aria-label="Close review">✕</button>
+    </div>
+    <div class="jy-modal-body" id="jy-modal-body"></div>
+    <div class="jy-modal-foot">
+      <span>A human review from your Veteran Career Path reviewer.</span>
+      <button type="button" class="jy-btn" id="jy-print">Print / Save as PDF</button>
+    </div>
+  </div>
+</div>
+
+<footer class="jy-footer">
+  <strong style="color:var(--cream);">Not affiliated with any government agency.</strong> Veteran Career Path is an independent platform operated by StreamSync Solutions, not affiliated with the U.S. Department of Defense, the Department of Veterans Affairs, or any branch of the Armed Forces. A resume review is professional feedback, not a guarantee of interviews, jobs, ATS results, or salary outcomes.
+</footer>
+
+<script src="/journey.js"></script>
+</body>
+</html>

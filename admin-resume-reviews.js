@@ -341,6 +341,7 @@
     if (job) { state.currentJob = job; } // live fields (status/payment) update; editor untouched to avoid clobbering typing
     // update status bar + queue-independent bits lightly
     var sb = document.getElementById('rr-statusbar'); if (sb && job) paintStatusBar(job);
+    var pb = document.getElementById('rr-portalbar'); if (pb && job) paintPortalBar(job);
   }
 
   function kv(parent, label, value) {
@@ -358,6 +359,10 @@
     // status bar
     var sb = node('div', 'rr-status-bar'); sb.id = 'rr-statusbar'; r.appendChild(sb);
     paintStatusBar(job);
+
+    // client portal (career journey) controls
+    var pb = node('div', 'rr-portal-bar'); pb.id = 'rr-portalbar'; r.appendChild(pb);
+    paintPortalBar(job);
 
     var ws = node('div', 'rr-ws');
 
@@ -451,6 +456,63 @@
       sb.appendChild(b);
     });
     var ind = node('span', 'rr-save-ind', 'Status: ' + (STATUS_LABEL[job.status] || job.status)); sb.appendChild(ind);
+  }
+
+  // ── client portal (Career Journey) controls ──
+  var SITE = 'https://veterancareerpath.com';
+  function portalLinkOf(job) { return job && job.portalToken ? (SITE + '/journey.html?token=' + job.portalToken) : ''; }
+
+  function paintPortalBar(job) {
+    var pb = document.getElementById('rr-portalbar'); if (!pb) return; clear(pb);
+    var link = portalLinkOf(job);
+    var portal = job.portal || {};
+    var archived = portal.status === 'archived';
+
+    var head = node('div', 'rr-portal-head');
+    head.appendChild(node('span', 'rr-portal-title', 'Client Portal'));
+    if (link) {
+      head.appendChild(node('span', 'rr-portal-badge ' + (archived ? 'archived' : 'active'), archived ? 'Archived' : 'Active'));
+      var expMs = ms(portal.expiresAt);
+      if (!archived && expMs) {
+        var days = Math.max(0, Math.ceil((expMs - Date.now()) / 86400000));
+        head.appendChild(node('span', 'rr-portal-exp', days + ' day' + (days === 1 ? '' : 's') + ' left · expires ' + new Date(expMs).toLocaleDateString()));
+      }
+    }
+    pb.appendChild(head);
+
+    if (!link) {
+      pb.appendChild(node('div', 'rr-portal-hint', 'Marking this review “Delivered” publishes the client’s journey portal automatically — or publish it now.'));
+      var pubBtn = node('button', 'rr-btn primary', 'Publish Client Portal');
+      pubBtn.addEventListener('click', function () { portalAction(job.id, 'relink', 'Portal published'); });
+      pb.appendChild(pubBtn);
+      return;
+    }
+
+    pb.appendChild(node('div', 'rr-linkbox', link));
+    var row = node('div', 'rr-portal-actions');
+    var copy = node('button', 'rr-btn primary', 'Copy Client Link');
+    copy.addEventListener('click', function () { if (navigator.clipboard) navigator.clipboard.writeText(link); copy.textContent = 'Copied ✓'; setTimeout(function () { copy.textContent = 'Copy Client Link'; }, 1800); });
+    row.appendChild(copy);
+    var open = node('button', 'rr-btn', 'Open'); open.addEventListener('click', function () { window.open(link, '_blank', 'noopener'); });
+    row.appendChild(open);
+    if (archived) {
+      var react = node('button', 'rr-btn', 'Reactivate (30 days)');
+      react.addEventListener('click', function () { portalAction(job.id, 'reactivate', 'Portal reactivated'); });
+      row.appendChild(react);
+    } else {
+      var arch = node('button', 'rr-btn', 'Archive');
+      arch.addEventListener('click', function () { if (window.confirm('Archive this client portal? Their link stops working until you reactivate it.')) portalAction(job.id, 'archive', 'Portal archived'); });
+      row.appendChild(arch);
+      var relink = node('button', 'rr-btn', 'New Link');
+      relink.addEventListener('click', function () { if (window.confirm('Issue a fresh link and reset the 30-day window? The current link stops working.')) portalAction(job.id, 'relink', 'New link issued'); });
+      row.appendChild(relink);
+    }
+    pb.appendChild(row);
+  }
+
+  async function portalAction(jobId, action, okMsg) {
+    try { await api('/api/review-job?jobId=' + jobId, { method: 'PATCH', body: { portalAction: action } }); showToast('Client Portal', okMsg); }
+    catch (e) { showToast('Portal error', 'Could not update the portal.'); }
   }
 
   async function setStatus(jobId, status) {

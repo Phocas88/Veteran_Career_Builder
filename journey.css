@@ -1,0 +1,138 @@
+/* Veteran Career Path — Client Career Journey portal.
+   Matches the brand system (navy/gold, Bebas Neue + DM Sans) used by resume-review.css,
+   extended with a warmer "home base" hub: hero, resource cards, and a review modal. */
+:root{
+  --navy:#0d1f3c; --navy2:#1a3a6b; --gold:#c8a951; --gold2:#f0c040;
+  --cream:#f5f0e8; --dim:#6a82a0; --white:#fff; --bg:#050d18;
+  --line:rgba(255,255,255,.08); --card:rgba(255,255,255,.035);
+  --good:#4ade80;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--cream);min-height:100vh;line-height:1.55;}
+img{max-width:100%;}
+a{color:var(--gold);}
+
+.jy-skip{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:var(--gold2);color:#0a1628;padding:.7rem 1.4rem;font-weight:700;border-radius:0 0 8px 8px;z-index:9999;text-decoration:none;}
+.jy-skip:focus{top:0;}
+
+/* nav */
+.jy-nav{background:#08111e;border-bottom:1px solid rgba(240,192,64,.15);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;position:sticky;top:0;z-index:100;}
+.jy-logo{display:flex;align-items:center;gap:.55rem;text-decoration:none;}
+.jy-logo img{width:28px;height:28px;}
+.jy-logo span{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.12em;color:var(--gold2);}
+.jy-nav-link{font-size:.8rem;color:rgba(192,216,240,.7);text-decoration:none;}
+.jy-nav-link:hover{color:#fff;}
+
+.jy-state{display:none;}
+.jy-state.active{display:block;}
+
+/* message states */
+.jy-msg{max-width:540px;margin:4rem auto;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:2.5rem 2rem;}
+.jy-msg .icon{font-size:3rem;margin-bottom:1rem;}
+.jy-msg h2{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--white);letter-spacing:.03em;margin-bottom:.6rem;}
+.jy-msg p{font-size:.92rem;color:rgba(245,240,232,.75);line-height:1.65;margin-bottom:1.1rem;}
+.jy-msg-btn{display:inline-block;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.3);color:var(--gold2);text-decoration:none;font-weight:600;font-size:.86rem;padding:.6rem 1.2rem;border-radius:8px;}
+
+/* hero */
+.jy-hero{
+  background:
+    radial-gradient(120% 160% at 85% -30%, rgba(240,192,64,.14), transparent 55%),
+    linear-gradient(170deg,#0a1830,#071122);
+  border-bottom:1px solid rgba(240,192,64,.14);
+  padding:3rem 6% 2.6rem;
+}
+.jy-hero-inner{max-width:960px;margin:0 auto;}
+.jy-kicker{font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;}
+.jy-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.6rem,7vw,4rem);letter-spacing:.02em;color:var(--white);line-height:1;margin-bottom:.6rem;}
+.jy-sub{font-family:'Source Serif 4',serif;font-weight:300;font-size:clamp(1rem,2.4vw,1.25rem);color:rgba(245,240,232,.78);max-width:620px;}
+.jy-sub strong{color:var(--gold2);font-weight:500;font-style:normal;}
+.jy-chip{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.2rem;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.28);color:#aef2c6;border-radius:100px;padding:.4rem 1rem;font-size:.78rem;font-weight:600;letter-spacing:.02em;}
+.jy-chip::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px rgba(74,222,128,.2);}
+
+/* layout */
+.jy-wrap{max-width:960px;margin:0 auto;padding:2.4rem 6% 4rem;}
+
+/* resume review CTA */
+.jy-review-card{
+  display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;
+  background:linear-gradient(135deg,rgba(240,192,64,.12),rgba(240,192,64,.04));
+  border:1px solid rgba(240,192,64,.3);border-radius:16px;padding:1.6rem 1.8rem;margin-bottom:2.6rem;
+}
+.jy-review-eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;}
+.jy-review-text h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.03em;color:var(--white);margin-bottom:.35rem;}
+.jy-review-text p{font-size:.9rem;color:rgba(245,240,232,.72);max-width:48ch;line-height:1.55;}
+.jy-review-btn{
+  flex-shrink:0;background:linear-gradient(135deg,var(--gold2),#e0a820);color:var(--navy);
+  font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;padding:.9rem 1.6rem;border:none;border-radius:10px;cursor:pointer;
+  box-shadow:0 4px 20px rgba(200,169,81,.25);transition:transform .15s,box-shadow .15s;
+}
+.jy-review-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(200,169,81,.38);}
+.jy-review-btn:disabled{opacity:.55;cursor:default;transform:none;box-shadow:none;}
+.jy-review-btn:focus-visible,.jy-review-open:focus-visible{outline:3px solid var(--gold2);outline-offset:3px;}
+
+/* resource groups */
+.jy-group{margin-bottom:2.4rem;}
+.jy-group-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.05em;color:var(--gold2);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid rgba(240,192,64,.15);display:flex;align-items:center;gap:.6rem;}
+.jy-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:.9rem;}
+.jy-rcard{
+  display:flex;flex-direction:column;gap:.4rem;text-decoration:none;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.2rem;
+  transition:border-color .15s,background .15s,transform .15s;
+}
+.jy-rcard:hover{border-color:rgba(240,192,64,.4);background:rgba(240,192,64,.045);transform:translateY(-2px);}
+.jy-rcard:focus-visible{outline:3px solid var(--gold2);outline-offset:2px;}
+.jy-rcard .t{font-weight:600;font-size:.98rem;color:var(--white);display:flex;align-items:center;gap:.4rem;}
+.jy-rcard .t .ext{font-size:.7rem;color:var(--dim);}
+.jy-rcard .d{font-size:.82rem;color:rgba(245,240,232,.68);line-height:1.5;}
+.jy-rcard .go{margin-top:auto;font-size:.76rem;font-weight:600;color:var(--gold);letter-spacing:.02em;padding-top:.3rem;}
+
+.jy-expiry-note{text-align:center;font-size:.76rem;color:var(--dim);margin-top:1rem;line-height:1.6;}
+
+/* modal */
+.jy-modal-bg{position:fixed;inset:0;background:rgba(3,8,16,.78);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:4vh 4%;overflow-y:auto;}
+.jy-modal-bg[hidden]{display:none;}
+.jy-modal{background:#0a1526;border:1px solid rgba(240,192,64,.22);border-radius:16px;max-width:760px;width:100%;margin:auto;box-shadow:0 30px 80px rgba(0,0,0,.55);}
+.jy-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:1.5rem 1.8rem 1.2rem;border-bottom:1px solid var(--line);position:sticky;top:0;background:#0a1526;border-radius:16px 16px 0 0;}
+.jy-modal-eyebrow{font-size:.66rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
+.jy-modal-head h2{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--white);letter-spacing:.03em;}
+.jy-modal-close{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--cream);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1rem;flex-shrink:0;}
+.jy-modal-close:hover{background:rgba(255,255,255,.12);}
+.jy-modal-close:focus-visible{outline:3px solid var(--gold2);outline-offset:2px;}
+.jy-modal-body{padding:1.6rem 1.8rem;}
+.jy-sec{margin-bottom:1.8rem;}
+.jy-sec:last-child{margin-bottom:0;}
+.jy-sec-h{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.05em;color:var(--gold2);margin-bottom:.7rem;padding-left:.7rem;border-left:3px solid var(--gold);}
+.jy-sec p{font-size:.94rem;color:rgba(245,240,232,.86);line-height:1.68;margin-bottom:.7rem;}
+.jy-sec ul{list-style:none;margin:0 0 .7rem;display:flex;flex-direction:column;gap:.5rem;}
+.jy-sec li{position:relative;padding-left:1.4rem;font-size:.92rem;color:rgba(245,240,232,.86);line-height:1.6;}
+.jy-sec li::before{content:'›';position:absolute;left:.2rem;color:var(--gold2);font-weight:700;}
+.jy-modal-empty{font-size:.92rem;color:var(--dim);line-height:1.7;text-align:center;padding:1.5rem 0;}
+.jy-modal-foot{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1.1rem 1.8rem;border-top:1px solid var(--line);font-size:.78rem;color:var(--dim);}
+.jy-btn{background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.3);color:var(--gold2);font-family:'DM Sans',sans-serif;font-weight:600;font-size:.84rem;padding:.55rem 1.1rem;border-radius:8px;cursor:pointer;}
+.jy-btn:hover{background:rgba(240,192,64,.18);}
+.jy-btn:focus-visible{outline:3px solid var(--gold2);outline-offset:2px;}
+
+/* footer */
+.jy-footer{border-top:1px solid var(--line);padding:2rem 6%;text-align:center;font-size:.74rem;color:var(--dim);line-height:1.7;max-width:900px;margin:0 auto;}
+
+@media (max-width:640px){
+  .jy-review-card{flex-direction:column;align-items:flex-start;}
+  .jy-review-btn{width:100%;}
+  .jy-cards{grid-template-columns:1fr;}
+}
+@media (prefers-reduced-motion:reduce){
+  .jy-rcard,.jy-review-btn{transition:none;}
+  .jy-rcard:hover,.jy-review-btn:hover{transform:none;}
+}
+
+/* print: show only the review modal cleanly */
+@media print{
+  body{background:#fff;color:#111;}
+  .jy-nav,.jy-footer,#state-portal,#state-loading,#state-invalid,.jy-modal-close,.jy-modal-foot{display:none !important;}
+  .jy-modal-bg{position:static;background:#fff;padding:0;backdrop-filter:none;}
+  .jy-modal{border:none;box-shadow:none;max-width:100%;}
+  .jy-modal-head{position:static;background:#fff;}
+  .jy-modal-eyebrow,.jy-sec-h{color:#1a3a6b;}
+  .jy-modal-head h2{color:#0d1f3c;}
+  .jy-sec p,.jy-sec li{color:#222;}
+}

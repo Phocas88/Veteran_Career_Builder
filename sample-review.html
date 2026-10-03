@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#121C27">
+<meta name="description" content="A sample Veteran Career Path resume review — military experience translated for civilian supply-chain careers.">
+<title>Sample Resume Review — 11B to Supply Chain | Veteran Career Path</title>
+<link rel="icon" type="image/png" sizes="96x96" href="/img/optimized/logo-96.png">
+<style>
+  :root{
+    --ink:#121C27;        /* near-black navy */
+    --ink-2:#1E2D3D;
+    --paper:#EDF0F3;       /* cool light ground */
+    --card:#FFFFFF;
+    --brass:#A87E2B;       /* muted brass accent */
+    --brass-lt:#CBA14A;
+    --good:#2F6B4F;        /* "after" / improvement */
+    --good-bg:#EAF2ED;
+    --bad:#9C4B3B;         /* "before" / raw */
+    --bad-bg:#F3EAE7;
+    --muted:#59667A;       /* slate secondary text */
+    --line:#D6DCE3;
+    --line-strong:#B9C2CC;
+
+    --font-head: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-ui: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-read: Georgia, "Iowan Old Style", "Times New Roman", serif;
+
+    --col: 840px;
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .page{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-ui);
+    line-height:1.55;
+    padding:0 20px 80px;
+  }
+
+  .wrap{max-width:var(--col);margin:0 auto;}
+
+  /* ---------- sample ribbon ---------- */
+  .ribbon{
+    max-width:var(--col);margin:0 auto;
+    display:flex;align-items:center;gap:10px;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);
+    padding:14px 2px 10px;
+  }
+  .ribbon .dot{width:7px;height:7px;border-radius:50%;background:var(--brass);}
+  .ribbon b{color:var(--ink);font-weight:700;}
+
+  /* ---------- cover ---------- */
+  .cover{
+    background:
+      radial-gradient(120% 140% at 85% -20%, rgba(203,161,74,.16), transparent 55%),
+      linear-gradient(180deg,var(--ink),var(--ink-2));
+    color:#E9EDF2;
+    border-radius:4px;
+    padding:38px 40px 34px;
+    position:relative;
+    overflow:hidden;
+  }
+  .cover::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+    background:linear-gradient(180deg,var(--brass-lt),var(--brass));
+  }
+  .cover .kicker{
+    font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--brass-lt);font-weight:700;margin:0 0 14px;
+  }
+  .cover h1{
+    font-family:var(--font-head);font-weight:800;
+    font-size:clamp(26px,4.4vw,38px);line-height:1.08;margin:0;
+    letter-spacing:-.01em;text-wrap:balance;
+  }
+  .cover h1 .arw{color:var(--brass-lt);font-weight:600;padding:0 .18em;}
+  .cover .sub{color:#AFBBC9;font-size:15px;margin:14px 0 0;max-width:52ch;}
+
+  .file{
+    margin-top:26px;border-top:1px solid rgba(255,255,255,.14);padding-top:22px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:20px 26px;
+  }
+  .file .f{display:flex;flex-direction:column;gap:3px;}
+  .file .f .lab{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#8495A6;}
+  .file .f .val{font-size:14.5px;color:#EDF1F5;font-weight:600;}
+  .file .f .val.s{font-weight:500;color:#C9D3DD;}
+
+  /* ---------- section scaffold ---------- */
+  section{margin-top:40px;}
+  .eyebrow{
+    display:flex;align-items:baseline;gap:14px;margin:0 0 18px;
+    border-bottom:1px solid var(--line-strong);padding-bottom:12px;
+  }
+  .eyebrow .num{
+    font-family:var(--font-head);font-weight:800;font-size:13px;
+    color:var(--brass);letter-spacing:.04em;
+    font-variant-numeric:tabular-nums;
+    min-width:2.4em;
+  }
+  .eyebrow h2{
+    font-family:var(--font-head);font-weight:800;
+    font-size:clamp(18px,2.6vw,22px);margin:0;letter-spacing:-.01em;
+    flex:1;text-wrap:balance;
+  }
+  .eyebrow .tag{
+    font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--muted);border:1px solid var(--line-strong);
+    padding:3px 9px;border-radius:2px;white-space:nowrap;
+  }
+
+  .prose{font-family:var(--font-read);font-size:16.5px;line-height:1.66;color:#243140;}
+  .prose p{margin:0 0 14px;}
+  .prose strong{color:var(--ink);}
+
+  .callout{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--brass);
+    border-radius:3px;padding:18px 20px;margin:0 0 4px;
+  }
+  .callout .ch{
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);
+    font-weight:700;margin:0 0 8px;
+  }
+
+  /* ---------- assessment scorecard ---------- */
+  .score{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:4px;}
+  .score .s{
+    background:var(--card);border:1px solid var(--line);border-radius:3px;
+    padding:16px 16px 14px;
+  }
+  .score .s .n{font-family:var(--font-head);font-weight:800;font-size:30px;
+    color:var(--ink);line-height:1;font-variant-numeric:tabular-nums;}
+  .score .s .n em{font-style:normal;font-size:16px;color:var(--muted);font-weight:600;}
+  .score .s .l{font-size:12px;color:var(--muted);margin-top:7px;letter-spacing:.02em;}
+  .score .s .bar{height:4px;background:var(--line);border-radius:2px;margin-top:11px;overflow:hidden;}
+  .score .s .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brass),var(--brass-lt));}
+
+  /* ---------- translation table ---------- */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:3px;background:var(--card);}
+  table{border-collapse:collapse;width:100%;min-width:560px;font-size:14.5px;}
+  thead th{
+    text-align:left;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);font-weight:700;padding:13px 18px;background:#F4F6F9;
+    border-bottom:1px solid var(--line-strong);
+  }
+  tbody td{padding:13px 18px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tbody tr:last-child td{border-bottom:0;}
+  td.mil{color:var(--muted);width:42%;}
+  td.civ{color:var(--ink);font-weight:600;}
+  td .ar{color:var(--brass);font-weight:700;}
+
+  /* ---------- before / after ---------- */
+  .ba{display:flex;flex-direction:column;gap:18px;}
+  .pair{
+    background:var(--card);border:1px solid var(--line);border-radius:4px;overflow:hidden;
+  }
+  .pair .grid{display:grid;grid-template-columns:1fr 1fr;}
+  .pair .cell{padding:16px 18px 18px;}
+  .pair .cell.b{background:var(--bad-bg);border-right:1px solid var(--line);}
+  .pair .cell.a{background:var(--good-bg);}
+  .pair .hd{
+    font-size:11px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;
+    display:flex;align-items:center;gap:7px;margin-bottom:10px;
+  }
+  .pair .cell.b .hd{color:var(--bad);}
+  .pair .cell.a .hd{color:var(--good);}
+  .pair .hd .pip{width:8px;height:8px;border-radius:50%;}
+  .pair .cell.b .hd .pip{background:var(--bad);}
+  .pair .cell.a .hd .pip{background:var(--good);}
+  .pair .txt{font-size:14.5px;line-height:1.55;color:#28323D;}
+  .pair .cell.a .txt{font-weight:500;}
+  .pair .why{
+    grid-column:1 / -1;border-top:1px solid var(--line);
+    padding:12px 18px;font-size:13px;color:var(--muted);background:#FBFBFC;
+  }
+  .pair .why b{color:var(--brass);font-weight:700;letter-spacing:.04em;
+    text-transform:uppercase;font-size:11px;}
+
+  /* ---------- keywords ---------- */
+  .kw{display:flex;flex-wrap:wrap;gap:9px;}
+  .chip{
+    font-size:13px;font-weight:600;color:var(--ink-2);
+    background:var(--card);border:1px solid var(--line-strong);
+    padding:7px 13px;border-radius:999px;
+  }
+  .chip.hot{border-color:var(--brass);color:#7d5c17;background:#FBF4E4;}
+  .kw-note{font-size:13px;color:var(--muted);margin-top:14px;}
+  .kw-note .sw{display:inline-block;width:11px;height:11px;border-radius:999px;
+    background:#FBF4E4;border:1px solid var(--brass);vertical-align:-1px;margin:0 4px 0 2px;}
+
+  /* ---------- career fit ---------- */
+  .roles{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .role{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:16px 18px;}
+  .role .t{font-family:var(--font-head);font-weight:700;font-size:16px;margin:0 0 4px;}
+  .role .pay{font-size:14px;color:var(--good);font-weight:700;font-variant-numeric:tabular-nums;}
+  .role .d{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.5;}
+  .role .fit{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);
+    font-weight:700;margin-top:10px;}
+
+  /* ---------- roadmap ---------- */
+  .road{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--line-strong);
+    margin-left:6px;padding-left:0;}
+  .step{position:relative;padding:0 0 22px 26px;}
+  .step:last-child{padding-bottom:0;}
+  .step::before{content:"";position:absolute;left:-7px;top:3px;width:12px;height:12px;
+    border-radius:50%;background:var(--card);border:2px solid var(--brass);}
+  .step.now::before{background:var(--brass);}
+  .step .when{font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--brass);font-weight:700;}
+  .step .t{font-weight:700;font-size:15.5px;margin:3px 0 4px;}
+  .step .d{font-size:13.5px;color:var(--muted);line-height:1.55;}
+  .step .d b{color:var(--ink-2);}
+
+  /* ---------- priority fixes ---------- */
+  .fixes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px;}
+  .fixes li{display:flex;gap:13px;align-items:flex-start;
+    background:var(--card);border:1px solid var(--line);border-radius:3px;padding:14px 16px;}
+  .fixes .mk{flex:0 0 auto;width:22px;height:22px;border-radius:50%;
+    background:var(--ink);color:#fff;font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;}
+  .fixes .bd{font-size:14.5px;line-height:1.5;}
+  .fixes .bd b{display:block;margin-bottom:2px;}
+  .fixes .bd span{color:var(--muted);font-size:13.5px;}
+
+  /* ---------- final message ---------- */
+  .final{
+    background:linear-gradient(180deg,var(--ink),var(--ink-2));color:#E9EDF2;
+    border-radius:4px;padding:34px 36px;position:relative;overflow:hidden;margin-top:42px;
+  }
+  .final::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+    background:linear-gradient(180deg,var(--brass-lt),var(--brass));}
+  .final .ch{font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--brass-lt);font-weight:700;margin:0 0 14px;}
+  .final p{font-family:var(--font-read);font-size:16.5px;line-height:1.7;
+    margin:0 0 14px;color:#DCE3EB;}
+  .final .sig{margin-top:20px;font-size:14px;color:#AFBBC9;}
+  .final .sig b{color:#fff;display:block;font-family:var(--font-head);font-size:16px;}
+
+  /* ---------- cta ---------- */
+  .cta{text-align:center;margin-top:46px;padding-top:34px;border-top:1px solid var(--line-strong);}
+  .cta h3{font-family:var(--font-head);font-weight:800;font-size:22px;margin:0 0 8px;}
+  .cta p{color:var(--muted);font-size:15px;margin:0 0 20px;}
+  .cta a{
+    display:inline-block;background:var(--brass);color:#fff;text-decoration:none;
+    font-weight:700;font-size:15px;letter-spacing:.02em;padding:13px 28px;border-radius:3px;
+    border:1px solid #8c6820;
+  }
+  .cta a:focus-visible{outline:3px solid var(--brass-lt);outline-offset:3px;}
+  .cta .small{display:block;margin-top:14px;font-size:12.5px;color:var(--muted);letter-spacing:.04em;}
+
+  .foot{max-width:var(--col);margin:28px auto 0;font-size:11.5px;color:var(--muted);
+    text-align:center;letter-spacing:.03em;line-height:1.6;}
+
+  /* ---------- reveal ---------- */
+  .cover-logo{height:58px;width:auto;display:block;margin:0 0 20px;filter:drop-shadow(0 8px 20px rgba(0,0,0,.4));}
+  .rv{opacity:0;transform:translateY(8px);animation:rise .6s ease forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:720px){
+    .cover{padding:30px 24px 28px;}
+    .file{grid-template-columns:repeat(2,1fr);}
+    .score{grid-template-columns:repeat(2,1fr);}
+    .pair .grid{grid-template-columns:1fr;}
+    .pair .cell.b{border-right:0;border-bottom:1px solid var(--line);}
+    .roles{grid-template-columns:1fr;}
+    .final{padding:28px 22px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="ribbon">
+    <span class="dot"></span>
+    <span>Sample deliverable &nbsp;·&nbsp; <b>VeteranCareerPath Resume Review</b> &nbsp;·&nbsp; example only</span>
+  </div>
+
+  <div class="wrap">
+
+    <!-- COVER -->
+    <header class="cover rv">
+      <img src="/img/optimized/logo-192.webp" alt="Veteran Career Path" class="cover-logo">
+      <p class="kicker">Military&nbsp;→&nbsp;Civilian Resume Review</p>
+      <h1>Infantry Team Leader <span class="arw">→</span> Supply Chain &amp; Logistics Professional</h1>
+      <p class="sub">A complete, reviewer-written transition package — translating 8 years of 11B leadership into language hiring managers and applicant-tracking systems actually reward.</p>
+
+      <div class="file">
+        <div class="f"><span class="lab">Client</span><span class="val">SSG Marcus T. Reyes</span></div>
+        <div class="f"><span class="lab">Branch / Status</span><span class="val">U.S. Army · Transitioning</span></div>
+        <div class="f"><span class="lab">MOS</span><span class="val">11B — Infantryman</span></div>
+        <div class="f"><span class="lab">Rank / Grade</span><span class="val">Staff Sergeant (E-6)</span></div>
+        <div class="f"><span class="lab">Years of Service</span><span class="val">8</span></div>
+        <div class="f"><span class="lab">Target Role</span><span class="val">Supply Chain / Logistics</span></div>
+        <div class="f"><span class="lab">Location</span><span class="val val s">Fayetteville, NC · open to relocate</span></div>
+        <div class="f"><span class="lab">Review Type</span><span class="val val s">Full Review + Mil→Civ</span></div>
+      </div>
+    </header>
+
+    <!-- 01 ASSESSMENT -->
+    <section class="rv">
+      <div class="eyebrow">
+        <span class="num">01</span>
+        <h2>Reviewer's Assessment</h2>
+        <span class="tag">Overall</span>
+      </div>
+      <div class="prose">
+        <p>Marcus, your record is <strong>stronger than your resume currently shows</strong>. The experience is all there — leading people, owning millions in equipment, keeping a unit supplied in hard conditions — but it's written in Army language that a civilian recruiter skims right past. An 11B who was a hand-receipt holder and squad leader has done real supply-chain work; we just need to name it that way.</p>
+        <p>The biggest wins below are the <strong>property-accountability and resupply numbers</strong> (you were sitting on quantified results and not using them) and the <strong>GCSS-Army → SAP bridge</strong>, which instantly makes you look "experienced" on the #1 system employers screen for.</p>
+      </div>
+
+      <div class="score" style="margin-top:22px;">
+        <div class="s"><div class="n">6.5<em>/10</em></div><div class="l">Resume as submitted</div><div class="bar"><i style="width:65%"></i></div></div>
+        <div class="s"><div class="n">9<em>/10</em></div><div class="l">Projected after fixes</div><div class="bar"><i style="width:90%"></i></div></div>
+        <div class="s"><div class="n">14</div><div class="l">ATS keywords added</div><div class="bar"><i style="width:80%"></i></div></div>
+        <div class="s"><div class="n">$4.2M</div><div class="l">Assets you can now cite</div><div class="bar"><i style="width:95%"></i></div></div>
+      </div>
+    </section>
+
+    <!-- 02 TRANSLATION -->
+    <section class="rv">
+      <div class="eyebrow">
+        <span class="num">02</span>
+        <h2>Military → Civilian Translation</h2>
+        <span class="tag">Glossary</span>
+      </div>
+      <div class="prose" style="margin-bottom:16px;">
+        <p>Recruiters don't speak MOS. Here's how your day-to-day gets re-labeled in supply-chain terms — use these phrasings everywhere: resume, LinkedIn, and in interviews.</p>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>What you did (Army)</th><th>What to call it (civilian)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="mil">Hand-receipt holder / property book</td><td class="civ"><span class="ar">→</span> Asset &amp; inventory accountability · custody management</td></tr>
+            <tr><td class="mil">Drawing &amp; turning in supplies / ammo (Class I–IX)</td><td class="civ"><span class="ar">→</span> Requisition, issue &amp; reconciliation · demand fulfillment</td></tr>
+            <tr><td class="mil">GCSS-Army</td><td class="civ"><span class="ar">→</span> SAP-based ERP / inventory &amp; supply system</td></tr>
+            <tr><td class="mil">Monthly sensitive-items &amp; cyclic inventory</td><td class="civ"><span class="ar">→</span> Cycle counting · inventory audits · variance control</td></tr>
+            <tr><td class="mil">Convoy / movement planning</td><td class="civ"><span class="ar">→</span> Transportation &amp; distribution coordination · route planning</td></tr>
+            <tr><td class="mil">Squad leader (9 soldiers)</td><td class="civ"><span class="ar">→</span> Team / shift supervisor · people &amp; performance management</td></tr>
+            <tr><td class="mil">Pre-combat checks &amp; inspections (PCC/PCI)</td><td class="civ"><span class="ar">→</span> Quality control · readiness &amp; compliance inspection</td></tr>
+            <tr><td class="mil">Forecasting classes of supply for an operation</td><td class="civ"><span class="ar">→</span> Demand planning &amp; forecasting</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 03 PROFESSIONAL SUMMARY -->
+    <section class="rv">
+      <div class="eyebrow">
+        <span class="num">03</span>
+        <h2>Professional Summary — Rewritten</h2>
+        <span class="tag">Top of resume</span>
+      </div>
+      <div class="pair">
+        <div class="grid">
+          <div class="cell b">
+            <div class="hd"><span class="pip"></span>As submitted</div>
+            <div class="txt">"Hard-working Army veteran and infantry NCO with 8 years of experience leading soldiers in high-stress environments. Looking for a job in the logistics field where I can use my leadership skills."</div>
+          </div>
+          <div class="cell a">
+            <div class="hd"><span class="pip"></span>Reviewer rewrite</div>
+            <div class="txt">"Supply chain and logistics professional with 8 years of U.S. Army experience owning inventory accountability, demand forecasting, and distribution for units operating in demanding, time-critical conditions. Maintained 100% accountability of $4.2M in assets across multiple audits, supervised teams up to 9, and operated SAP-based (GCSS-Army) inventory systems. Seeking a Logistics Coordinator or Inventory Control role."</div>
+          </div>
+          <div class="why"><b>Why</b> &nbsp; The original leads with soft traits; the rewrite leads with the role title, hard numbers, and the exact systems/skills an ATS and hiring manager scan for in the first six seconds.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 BULLET REWRITES -->
+    <section class="rv">
+      <div class="eyebrow">
+        <span class="num">04</span>
+        <h2>Experience Bullets — Before &amp; After</h2>
+        <span class="tag">The core rewrite</span>
+      </div>
+      <div class="ba">
+
+        <div class="pair">
+          <div class="grid">
+            <div class="cell b">
+              <div class="hd"><span class="pip"></span>Before</div>
+              <div class="txt">"Responsible for accountability of assigned weapons and equipment during two deployments."</div>
+            </div>
+            <div class="cell a">
+              <div class="hd"><span class="pip"></span>After</div>
+              <div class="txt">"Maintained 100% accountability of $4.2M in mission-critical assets — weapons, optics, comms, and vehicles — across 6 cyclic inventories and two overseas rotations, with zero loss or discrepancy over 8 years."</div>
+            </div>
+            <div class="why"><b>Fix</b> &nbsp; Added dollar value, scope, cadence (6 inventories), and a results metric (zero loss). "Responsible for" became a measurable outcome.</div>
+          </div>
+        </div>
+
+        <div class="pair">
+          <div class="grid">
+            <div class="cell b">
+              <div class="hd"><span class="pip"></span>Before</div>
+              <div class="txt">"Drew and turned in supplies and ammo for platoon operations."</div>
+            </div>
+            <div class="cell a">
+              <div class="hd"><span class="pip"></span>After</div>
+              <div class="txt">"Managed end-to-end requisition, issue, and reconciliation of supplies for a 40-person unit, forecasting demand and coordinating resupply to austere locations with 98% on-time fulfillment."</div>
+            </div>
+            <div class="why"><b>Fix</b> &nbsp; Reframed a routine duty as a supply-chain process (requisition → fulfillment), added unit size and an on-time KPI employers recognize.</div>
+          </div>
+        </div>
+
+        <div class="pair">
+          <div class="grid">
+            <div class="cell b">
+              <div class="hd"><span class="pip"></span>Before</div>
+              <div class="txt">"Led a squad of soldiers and trained them on their jobs."</div>
+            </div>
+            <div class="cell a">
+              <div class="hd"><span class="pip"></span>After</div>
+              <div class="txt">"Supervised, scheduled, and developed a 9-person team; built and ran a training program that qualified 100% of members on time and cut task completion time by ~20%."</div>
+            </div>
+            <div class="why"><b>Fix</b> &nbsp; "Led and trained" is invisible to ATS. Added headcount, supervisory verbs (scheduled, developed), and a process-improvement result.</div>
+          </div>
+        </div>
+
+        <div class="pair">
+          <div class="grid">
+            <div class="cell b">
+              <div class="hd"><span class="pip"></span>Before</div>
+              <div class="txt">"Used the Army supply computer system to order parts."</div>
+            </div>
+            <div class="cell a">
+              <div class="hd"><span class="pip"></span>After</div>
+              <div class="txt">"Operated GCSS-Army (SAP-based ERP) daily to place orders, track inventory, and run status reports — directly transferable to SAP, Oracle, and warehouse management systems (WMS)."</div>
+            </div>
+            <div class="why"><b>Fix</b> &nbsp; Names the real system and explicitly maps it to SAP/Oracle/WMS so both the recruiter and the ATS credit you with ERP experience.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 05 ATS -->
+    <section class="rv">
+      <div class="eyebrow">
+        <span class="num">05</span>
+        <h2>ATS &amp; Keyword Optimization</h2>
+        <span class="tag">Pass the robot</span>
+      </div>
+      <div class="prose" style="margin-bottom:16px;">
+        <p>Most supply-chain applications are filtered by software before a human reads them. These are the terms we worked into your resume to match real job postings — the <span class="chip hot" style="padding:2px 9px;font-size:12px;">highlighted</span> ones were completely missing before.</p>
+      </div>
+      <div class="kw">
+        <span class="chip hot">Inventory Management</span>
+        <span class="chip hot">Demand Forecasting</span>
+        <span class="chip hot">SAP / ERP</span>
+        <span class="chip hot">Cycle Counting</span>
+        <span class="chip hot">Warehouse Management (WMS)</span>
+        <span class="chip hot">Procurement</span>
+        <span class="chip hot">Supply Chain Management</span>
+        <span class="chip">Logistics Coordination</span>
+        <span class="chip">Asset Accountability</span>
+        <span class="chip">Distribution</span>
+        <span class="chip">Process Improvement</span>
+        <span class="chip">Team Leadership</span>
+        <span class="chip">Transportation</span>
+        <span class="chip">Quality Control</span>
+      </div>
+      <p class="kw-note"><span class="sw"></span> = keyword that did not appear anywhere on your original resume. Adding these is often the single difference between "auto-rejected" and "forwarded to hiring manager."</p>
+    </section>
+
+    <!-- 06 CAREER FIT -->
+    <section class="rv">
+      <div class="eyebrow">
+        <span class="num">06</span>
+        <h2>Career Fit &amp; Target Roles</h2>
+        <span class="tag">Where you land</span>
+      </div>
+      <div class="roles">
+        <div class="role">
+          <div class="t">Logistics Coordinator</div>
+          <div class="pay">$52,000 – $68,000</div>
+          <div class="d">Your strongest near-term fit — resupply, scheduling, and distribution map almost one-to-one.</div>
+          <div class="fit">Best entry point</div>
+        </div>
+        <div class="role">
+          <div class="t">Inventory Control Specialist</div>
+          <div class="pay">$48,000 – $62,000</div>
+          <div class="d">Property accountability and cyclic inventories are exactly this job in civilian terms.</div>
+          <div class="fit">Strong match</div>
+        </div>
+        <div class="role">
+          <div class="t">Warehouse / Operations Supervisor</div>
+          <div class="pay">$58,000 – $75,000</div>
+          <div class="d">Leans on your squad-leadership record; many employers prefer veteran supervisors.</div>
+          <div class="fit">Leadership track</div>
+        </div>
+        <div class="role">
+          <div class="t">Supply Chain Analyst</div>
+          <div class="pay">$60,000 – $80,000</div>
+          <div class="d">Reachable within 12–18 months once you add Excel/data skills and a CPIM credential.</div>
+          <div class="fit">Growth target</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 ROADMAP -->
+    <section class="rv">
+      <div class="eyebrow">
+        <span class="num">07</span>
+        <h2>Certification &amp; Skill-Gap Roadmap</h2>
+        <span class="tag">90-day plan</span>
+      </div>
+      <div class="road">
+        <div class="step now">
+          <div class="when">Now · Free</div>
+          <div class="t">Claim your SAP/ERP story</div>
+          <div class="d">You already have this through GCSS-Army — just frame it (done in this review). <b>Brush up Excel</b> with free YouTube/LinkedIn Learning (pivot tables, VLOOKUP). Covers the #1 soft gap for analyst roles.</div>
+        </div>
+        <div class="step">
+          <div class="when">30 days · ~$200 (TA / VET TEC eligible)</div>
+          <div class="t">APICS / ASCM CPIM — Part 1</div>
+          <div class="d">The entry credential recruiters look for in inventory &amp; planning roles. Instantly signals you're serious about supply chain, not just "a veteran trying it out."</div>
+        </div>
+        <div class="step">
+          <div class="when">60 days · Low cost</div>
+          <div class="t">Forklift / OSHA 10 + Lean Six Sigma (White/Yellow Belt)</div>
+          <div class="d">Cheap, fast, and checks literal boxes on warehouse-ops postings. Lean Six Sigma backs up your "cut task time ~20%" bullet with a recognized methodology.</div>
+        </div>
+        <div class="step">
+          <div class="when">90 days</div>
+          <div class="t">Target Supply Chain Analyst / Supervisor tier</div>
+          <div class="d"><b>Use your GI Bill / VET TEC</b> for CPIM completion. With the cert + Excel, you move from the $52–68k band into the $60–80k band.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 PRIORITY FIXES -->
+    <section class="rv">
+      <div class="eyebrow">
+        <span class="num">08</span>
+        <h2>Priority Fixes — Do These First</h2>
+        <span class="tag">Checklist</span>
+      </div>
+      <ul class="fixes">
+        <li><span class="mk">1</span><span class="bd"><b>Add the $4.2M accountability number to your top bullet.</b><span>Biggest single credibility boost on the whole resume — lead with it.</span></span></li>
+        <li><span class="mk">2</span><span class="bd"><b>Replace every "responsible for" with an action verb + result.</b><span>Managed, forecasted, coordinated, reconciled, supervised. No duty without a number where possible.</span></span></li>
+        <li><span class="mk">3</span><span class="bd"><b>Spell out GCSS-Army = SAP-based ERP.</b><span>Don't make the recruiter guess — explicitly bridge to SAP/Oracle/WMS.</span></span></li>
+        <li><span class="mk">4</span><span class="bd"><b>Drop military acronyms (PCC/PCI, Class I–IX, NCO).</b><span>Translate or delete. If a civilian can't decode it in 2 seconds, it's working against you.</span></span></li>
+        <li><span class="mk">5</span><span class="bd"><b>Mirror the exact job posting's keywords for each application.</b><span>If the posting says "distribution," use "distribution," not "logistics." Tailor per role.</span></span></li>
+      </ul>
+    </section>
+
+    <!-- FINAL MESSAGE -->
+    <div class="final rv">
+      <p class="ch">Final message to the client</p>
+      <p>Marcus — thank you for your service, and congratulations on the next move. I want to be clear about something: you are not "starting over." You spent 8 years doing supply-chain work under far more pressure than most civilians will ever face. The only thing missing was translating it onto the page — and that's now done.</p>
+      <p>Apply to the Logistics Coordinator roles this week with the rewritten resume. Don't wait for the certs; start applying now and stack the credentials in parallel. You're more qualified than the résumé you walked in with suggested, and employers who hire veterans already know it.</p>
+      <p class="sig">Reviewed &amp; written by<b>Your VeteranCareerPath Reviewer</b>Human review · not an AI auto-generator</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <h3>This is what you'll receive.</h3>
+      <p>A real person reviews your resume and sends back a package exactly like this — built for your MOS and your target career.</p>
+      <a href="https://veterancareerpath.com">Start My Resume Review</a>
+      <span class="small">Built for every branch &nbsp;·&nbsp; MOS-specific &nbsp;·&nbsp; Military → Civilian translation included</span>
+    </div>
+
+  </div>
+
+  <p class="foot">Sample deliverable for demonstration only. "SSG Marcus T. Reyes" is a fictional composite client; figures are realistic illustrations, not a guarantee. Salary ranges are representative U.S. estimates and vary by location and employer.<br>VeteranCareerPath · veterancareerpath.com</p>
+
+</div>
+
+</body>
+</html>

@@ -30,27 +30,31 @@
       radial-gradient(800px 500px at 90% 110%, #0a1a30, transparent 55%),
       #04080f;
     font-family:var(--f-body);color:var(--cream);
-    display:flex;align-items:center;justify-content:center;
+    display:flex;align-items:stretch;justify-content:center;
     min-height:100%;padding:0;
   }
 
-  /* ===== phone stage (desktop) ===== */
-  .stage{width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:0;}
+  /* ===== phone stage ===== */
+  /* On mobile the app is a DEFINITE-height flex column (100dvh) so the inner .scroll
+     scrolls instead of the app growing taller than the viewport (which, combined with
+     centering, used to make the top unreachable). */
+  .stage{width:100%;display:flex;align-items:stretch;justify-content:center;}
   .app{
-    position:relative;width:100%;max-width:440px;min-height:100vh;
+    position:relative;width:100%;max-width:440px;height:100vh;height:100dvh;
     background:var(--bg);overflow:hidden;display:flex;flex-direction:column;
     box-shadow:0 0 0 1px rgba(255,255,255,.04);
   }
   @media(min-width:900px){
-    body{padding:28px;}
-    .app{min-height:0;height:min(920px,94vh);border-radius:44px;
+    body{padding:28px;align-items:center;}
+    .stage{align-items:center;min-height:100vh;}
+    .app{height:min(920px,94vh);border-radius:44px;
       box-shadow:0 40px 120px rgba(0,0,0,.6), 0 0 0 11px #0a0f17, 0 0 0 13px #1b2433;}
     .app::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
       width:148px;height:28px;background:#0a0f17;border-radius:0 0 18px 18px;z-index:60;}
   }
 
   /* ===== scroll area ===== */
-  .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior:contain;}
   .scroll::-webkit-scrollbar{display:none;}
 
   /* ===== top bar ===== */
@@ -155,7 +159,7 @@
   .detail .back{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--cream);width:36px;height:36px;
     border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
   .detail .dtitle{font-family:var(--f-display);font-weight:600;letter-spacing:.04em;font-size:17px;text-transform:uppercase;color:var(--white);}
-  .detail .dbody{flex:1;overflow-y:auto;padding:18px;scrollbar-width:none;}
+  .detail .dbody{flex:1;min-height:0;overflow-y:auto;padding:18px;scrollbar-width:none;}
   .detail .dbody::-webkit-scrollbar{display:none;}
 
   /* review content */
@@ -232,7 +236,7 @@
   .li .badge{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--good);background:var(--goodBg);border:1px solid rgba(74,222,128,.3);padding:3px 9px;border-radius:100px;}
 
   .openlink{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;background:rgba(240,192,64,.1);
-    border:1px solid var(--line2);color:var(--gold);font-weight:700;font-size:13.5px;padding:13px;border-radius:12px;cursor:pointer;width:100%;font-family:var(--f-body);}
+    border:1px solid var(--line2);color:var(--gold);font-weight:700;font-size:13.5px;padding:13px;border-radius:12px;cursor:pointer;width:100%;font-family:var(--f-body);text-decoration:none;}
   .openlink:hover{background:rgba(240,192,64,.18);}
   .disc{font-size:11px;color:var(--dim2);text-align:center;margin-top:12px;line-height:1.5;}
 
@@ -280,8 +284,70 @@
   .confetti i{position:absolute;top:-12px;width:8px;height:12px;opacity:.9;animation:fall linear forwards;}
   @keyframes fall{to{transform:translateY(960px) rotate(540deg);opacity:0;}}
 
+  /* ===== info tooltip (tap-up bottom sheet) ===== */
+  .infobtn{flex:0 0 auto;width:19px;height:19px;border-radius:50%;border:1px solid var(--line2);background:rgba(240,192,64,.08);
+    color:var(--gold);font-size:11px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+    font-family:var(--f-body);line-height:1;}
+  .infobtn:hover{background:rgba(240,192,64,.2);}
+  .section-h .infobtn,.block-h .infobtn{margin-left:2px;}
+  .tipbackdrop{position:absolute;inset:0;z-index:94;background:rgba(3,8,16,.55);opacity:0;visibility:hidden;transition:opacity .25s;}
+  .tipbackdrop.open{opacity:1;visibility:visible;}
+  .tipsheet{position:absolute;left:0;right:0;bottom:0;z-index:95;background:#0b1626;border-top:1px solid var(--line2);
+    border-radius:20px 20px 0 0;padding:20px 20px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -20px 50px rgba(0,0,0,.55);
+    transform:translateY(112%);transition:transform .3s cubic-bezier(.2,.7,.2,1);}
+  .tipsheet.open{transform:none;}
+  .tipsheet .th{font-family:var(--f-display);font-weight:600;font-size:19px;letter-spacing:.03em;color:var(--gold);text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .tipsheet .th button{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--cream);width:30px;height:30px;border-radius:8px;cursor:pointer;flex:0 0 auto;font-size:14px;}
+  .tipsheet .tcopy{font-size:14px;line-height:1.68;color:var(--cream);}
+  .tipsheet .tcopy b{color:var(--gold);}
+
+  /* ===== ATS callout ===== */
+  .ats-callout{background:linear-gradient(135deg,rgba(240,192,64,.13),rgba(13,31,60,.4));border:1px solid var(--line2);
+    border-radius:14px;padding:15px;margin-bottom:12px;}
+  .ats-callout .big-stat{font-family:var(--f-display);font-weight:600;font-size:36px;color:var(--gold);line-height:1;}
+  .ats-callout .cap{font-size:13px;color:var(--cream);line-height:1.5;margin-top:5px;}
+
+  /* ===== clickable career role ===== */
+  .role{width:100%;text-align:left;cursor:pointer;color:inherit;font-family:var(--f-body);}
+  .role:hover{border-color:rgba(240,192,64,.4);background:rgba(240,192,64,.04);}
+  .role .top .nm{display:flex;align-items:center;gap:7px;}
+  .role .tagline{font-size:11.5px;color:var(--dim);margin-top:6px;line-height:1.45;}
+  .role .seemore{font-size:11px;font-weight:700;color:var(--gold);margin-top:9px;display:flex;align-items:center;gap:5px;}
+  .role.alt{border-style:dashed;}
+  .pill-door{font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--gold2);background:rgba(240,192,64,.1);border:1px solid var(--line2);padding:2px 7px;border-radius:100px;}
+
+  /* ===== career detail ===== */
+  .cstat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 8px;}
+  .cstat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px;}
+  .cstat .n{font-family:var(--f-display);font-weight:600;font-size:25px;color:var(--white);line-height:1;}
+  .cstat .n.g{color:var(--good);}
+  .cstat .l{font-size:10.5px;color:var(--dim);margin-top:6px;letter-spacing:.02em;line-height:1.3;}
+  .why{background:var(--goodBg);border:1px solid rgba(74,222,128,.25);border-radius:12px;padding:13px;margin:8px 0;}
+  .why .h{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--good);margin-bottom:5px;}
+  .why p{font-size:13px;line-height:1.55;color:var(--cream);}
+
+  /* ===== roadmap expandable + options ===== */
+  .step.ex{cursor:pointer;}
+  .step .head{display:flex;align-items:center;gap:8px;}
+  .step .toggle{margin-left:auto;color:var(--gold);font-size:16px;font-weight:700;transition:transform .2s;line-height:1;}
+  .step.open .toggle{transform:rotate(45deg);}
+  .step .opts{max-height:0;overflow:hidden;transition:max-height .32s ease;}
+  .step.open .opts{max-height:420px;}
+  .opt{display:flex;gap:9px;align-items:flex-start;margin-top:10px;}
+  .opt .k{font-size:9.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--gold2);background:rgba(240,192,64,.1);border:1px solid var(--line2);border-radius:6px;padding:3px 7px;white-space:nowrap;flex:0 0 auto;margin-top:1px;}
+  .opt .ov{font-size:12px;color:var(--cream);line-height:1.5;}
+  .note-sm{font-size:12.5px;color:var(--dim);line-height:1.55;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:12px 13px;margin-bottom:12px;}
+  .note-sm b{color:var(--gold);}
+
+  /* ===== experience sources ===== */
+  .srcline{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 12px;}
+  .srctag{font-size:10.5px;font-weight:700;letter-spacing:.02em;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:100px;padding:4px 10px;}
+  .srctag.on{color:var(--gold);border-color:var(--line2);background:rgba(240,192,64,.08);}
+  .ba .srcbadge{font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--gold2);margin-left:auto;}
+  .ba .hd{justify-content:flex-start;}
+
   @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important;}}
-  button:focus-visible,.rcard:focus-visible,.task:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+  button:focus-visible,.rcard:focus-visible,.task:focus-visible,.role:focus-visible,.step:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
 </style>
 </head>
 <body>
@@ -355,46 +421,55 @@
           <div class="t">Navy Cyber → Cybersecurity</div>
           <div class="s">CTN2 Jordan Hayes · Cryptologic Technician · 6 years · Navy → SOC Analyst</div>
           <div class="score2">
-            <div class="c"><div class="n">7 <span class="up">→ 9.5</span></div><div class="l">Resume score, before → after</div></div>
+            <div class="c"><div class="n">7 <span class="up">→ 9.5</span></div><div class="l">Resume score, before → after <button class="infobtn" data-tip="score" aria-label="What is the resume score?">i</button></div></div>
             <div class="c"><div class="n">16</div><div class="l">ATS keywords we added</div></div>
           </div>
         </div>
 
-        <div class="block-h">Military → Civilian</div>
+        <div class="block-h">Military → Civilian <button class="infobtn" data-tip="milciv" aria-label="About military to civilian translation">i</button></div>
         <div class="trow"><span class="m">CTN / network defense</span><span class="ar">→</span><span class="c">SOC analyst &amp; incident response</span></div>
         <div class="trow"><span class="m">Defensive cyber ops (DCO)</span><span class="ar">→</span><span class="c">Threat detection &amp; monitoring</span></div>
         <div class="trow"><span class="m">SIEM on classified networks</span><span class="ar">→</span><span class="c">Splunk / QRadar SIEM analysis</span></div>
         <div class="trow"><span class="m">Watch stander (24/7 ops)</span><span class="ar">→</span><span class="c">24/7 SOC shift operations</span></div>
 
         <div class="block-h">Before → After</div>
+        <div class="note-sm">We rewrite your <b>whole résumé</b> — military, civilian, and government roles, plus education — not just your service.</div>
+        <div class="srcline">
+          <span class="srctag on">Military service</span><span class="srctag on">Civilian jobs</span><span class="srctag on">Government roles</span><span class="srctag on">Education</span>
+        </div>
         <div class="ba">
-          <div class="b"><div class="hd"><span class="pp"></span>Before</div><div class="tt">"Stood watch monitoring Navy networks for intrusions during two deployments."</div></div>
+          <div class="b"><div class="hd"><span class="pp"></span>Before <span class="srcbadge">Military</span></div><div class="tt">"Stood watch monitoring Navy networks for intrusions during two deployments."</div></div>
           <div class="a"><div class="hd"><span class="pp"></span>After</div><div class="tt">"Monitored 10,000+ endpoints across classified networks in a 24/7 SOC, triaging 50+ daily alerts with a sub-15-minute escalation time."</div></div>
         </div>
         <div class="ba">
-          <div class="b"><div class="hd"><span class="pp"></span>Before</div><div class="tt">"Used tools to find and report cyber threats to leadership."</div></div>
+          <div class="b"><div class="hd"><span class="pp"></span>Before <span class="srcbadge">Military</span></div><div class="tt">"Used tools to find and report cyber threats to leadership."</div></div>
           <div class="a"><div class="hd"><span class="pp"></span>After</div><div class="tt">"Led threat hunting &amp; incident response with Splunk SIEM, IDS/IPS, and packet analysis — identified and contained 12+ confirmed intrusions over 6 years."</div></div>
         </div>
+        <div class="ba">
+          <div class="b"><div class="hd"><span class="pp"></span>Before <span class="srcbadge">Civilian job</span></div><div class="tt">"Part-time help desk technician at a community college."</div></div>
+          <div class="a"><div class="hd"><span class="pp"></span>After</div><div class="tt">"Resolved 30+ daily tickets and hardened 200+ campus endpoints as an IT support technician — civilian proof of the security fundamentals you'll apply on day one."</div></div>
+        </div>
 
-        <div class="block-h">ATS Keywords Added</div>
+        <div class="block-h">ATS Keywords <button class="infobtn" data-tip="ats" aria-label="What are ATS keywords?">i</button></div>
+        <div class="ats-callout">
+          <div class="big-stat">~75%</div>
+          <div class="cap">of résumés are filtered out by Applicant Tracking Software <b>before a human ever reads them.</b> We added <b>16 keywords</b> your target roles screen for — so yours gets through.</div>
+        </div>
         <div class="chips">
           <span class="chip hot">SIEM / Splunk</span><span class="chip hot">Incident Response</span><span class="chip hot">Threat Hunting</span>
-          <span class="chip hot">SOC Operations</span><span class="chip hot">IDS / IPS</span><span class="chip">Network Security</span>
-          <span class="chip">Vulnerability Mgmt</span><span class="chip">EDR</span><span class="chip">Packet Analysis</span>
+          <span class="chip hot">SOC Operations</span><span class="chip hot">IDS / IPS</span><span class="chip hot">Vulnerability Mgmt</span>
+          <span class="chip">Network Security</span><span class="chip">EDR</span><span class="chip">Packet Analysis</span>
+          <span class="chip">Firewall Admin</span><span class="chip">Python</span><span class="chip">Security+</span>
+          <span class="chip">Risk Assessment</span><span class="chip">Log Analysis</span><span class="chip">Malware Analysis</span><span class="chip">Cloud Security</span>
         </div>
 
-        <div class="block-h">Career Fit</div>
-        <div class="role"><div class="top"><span class="nm">SOC Analyst</span><span class="pay">$65–85K</span></div><div class="mt"><div class="mbar"><i data-w="96"></i></div><span class="mpct">96%</span></div></div>
-        <div class="role"><div class="top"><span class="nm">Cybersecurity Analyst</span><span class="pay">$75–95K</span></div><div class="mt"><div class="mbar"><i data-w="92"></i></div><span class="mpct">92%</span></div></div>
-        <div class="role"><div class="top"><span class="nm">Incident Response Analyst</span><span class="pay">$80–100K</span></div><div class="mt"><div class="mbar"><i data-w="85"></i></div><span class="mpct">85%</span></div></div>
+        <div class="block-h">Career Fit <button class="infobtn" data-tip="careerfit" aria-label="What is career fit?">i</button></div>
+        <p class="note-sm">Tap any role for real BLS pay, growth, and why you match. We include roles <b>beyond your stated goal</b> — your record opens more doors than you'd think.</p>
+        <div id="careerFit"></div>
 
-        <div class="block-h">Your 90-Day Roadmap</div>
-        <div class="road">
-          <div class="step now"><div class="w">Now · Your edge</div><div class="t">Lead with your clearance</div><div class="d">An active TS/SCI is worth a $10–15K pay premium. Put it at the top.</div></div>
-          <div class="step"><div class="w">30 days</div><div class="t">CompTIA Security+</div><div class="d">The DoD 8570 baseline every SOC posting lists. GI Bill / VET TEC eligible.</div></div>
-          <div class="step"><div class="w">60 days</div><div class="t">CySA+ or Splunk Core Certified</div><div class="d">Proves hands-on detection &amp; SIEM skills — not just theory.</div></div>
-          <div class="step"><div class="w">90 days</div><div class="t">Target the $90K+ analyst tier</div><div class="d">Clearance + certs put you above most civilian applicants.</div></div>
-        </div>
+        <div class="block-h">Your 90-Day Roadmap <button class="infobtn" data-tip="roadmap" aria-label="About your roadmap">i</button></div>
+        <p class="note-sm"><b>Tap any step for options.</b> Can't afford a cert, out of GI Bill, or prefer experience? There's a path. Nothing here is required.</p>
+        <div id="roadmap"></div>
 
         <div class="block-h">A Note From Your Reviewer</div>
         <div class="note">
@@ -417,7 +492,7 @@
       <section class="view" id="view-steps">
         <div class="eyebrow">Your action plan</div>
         <h1 class="big" style="font-size:34px;">Next Steps</h1>
-        <p class="lede">Tap each step as you finish it. Small wins, every day.</p>
+        <p class="lede">Your plan, in order — each one is a real move toward your first offer. Tap to check it off; your progress saves as you go.</p>
 
         <div class="ring-wrap">
           <div class="ring">
@@ -428,7 +503,7 @@
             </svg>
             <div class="ctr"><span class="p" id="ringPct">0%</span><span class="s">Done</span></div>
           </div>
-          <div class="rtx"><div class="rt" id="stepCount">0 of 7 complete</div><div class="rs">You're at the start of something big. Let's build momentum.</div></div>
+          <div class="rtx"><div class="rt" id="stepCount">0 of 7 complete</div><div class="rs" id="stepSub">Check off each move — momentum compounds.</div></div>
         </div>
 
         <div id="taskList" style="margin-top:14px;"></div>
@@ -462,6 +537,13 @@
       <button data-tab="steps"><span class="ni" data-icon="check"></span><span class="lb">Next Steps</span><span class="pip"></span></button>
     </nav>
 
+    <!-- INFO TOOLTIP SHEET -->
+    <div class="tipbackdrop" id="tipBackdrop"></div>
+    <div class="tipsheet" id="tipSheet">
+      <div class="th"><span id="tipTitle">About</span><button id="tipClose" aria-label="Close">✕</button></div>
+      <div class="tcopy" id="tipCopy"></div>
+    </div>
+
     <div class="confetti" id="confetti"></div>
   </div>
 </div>
@@ -492,150 +574,265 @@
 
   // Populate every [data-icon] element from the icon library.
   document.querySelectorAll('[data-icon]').forEach(function(el){ el.innerHTML=ICON[el.dataset.icon]||''; });
+  var chevSm='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
 
-  /* ===== resources data ===== */
+  /* ===== resources (each links to a REAL page on the site) ===== */
   var RES=[
     {g:'Explore your target field',items:[
-      {id:'supply',ic:'brief',t:'Cybersecurity Careers',d:'Roles, pay, and top employers in your field.'},
-      {id:'translator',ic:'link',t:'Rating Career Translator',d:'The civilian jobs your CTN experience maps to.'},
-      {id:'clearance',ic:'star',t:'Using Your Clearance',d:'Turn your active clearance into higher-paying offers.'},
-      {id:'companies',ic:'star',t:'Top Companies Hiring Veterans',d:'Cyber employers with veteran-hiring programs.'},
-      {id:'salary',ic:'chart',t:'Salary Data',d:'What your target roles actually pay.'}
+      {id:'supply',ic:'brief',t:'Cybersecurity Careers',d:'Roles, pay, and top employers in your field.',url:'/veteran-cybersecurity-careers.html'},
+      {id:'translator',ic:'link',t:'Rating Career Translator',d:'The civilian jobs your CTN experience maps to.',url:'/mos-career-translator.html'},
+      {id:'clearance',ic:'star',t:'Using Your Clearance',d:'Turn your active clearance into higher-paying offers.',url:'/clearance-jobs-guide.html'},
+      {id:'companies',ic:'star',t:'Top Companies Hiring Veterans',d:'Cyber employers with veteran-hiring programs.',url:'/veteran-hiring-companies.html'},
+      {id:'salary',ic:'chart',t:'Salary Data',d:'What your target roles actually pay.',url:'/veteran-salary-data.html'}
     ]},
     {g:'Education & certifications',items:[
-      {id:'certs',ic:'cert',t:'Certification Roadmap',d:'Security+, CySA+ & the certs that matter, in order.'},
-      {id:'schools',ic:'cap',t:'Schools & Colleges near San Diego',d:'Compare GI Bill-approved programs by location.',ext:true},
-      {id:'advisor',ic:'cert',t:'Certification Advisor',d:'Match certs to your goals & benefits.'}
+      {id:'certs',ic:'cert',t:'Certification Roadmap',d:'Security+, CySA+ & the certs that matter.',url:'/veteran-certification-roadmap.html'},
+      {id:'schools',ic:'cap',t:'Schools & Colleges near San Diego',d:'Compare GI Bill-approved programs by location.',ext:true,url:'https://www.va.gov/education/gi-bill-comparison-tool/'},
+      {id:'advisor',ic:'cert',t:'Certification Advisor',d:'Match certs to your goals & benefits.',url:'/tools-cert-advisor.html'}
     ]},
     {g:'Land the job',items:[
-      {id:'interview',ic:'users',t:'Interview Questions & Answers',d:'The cyber questions you will face, answered.'},
-      {id:'linkedin',ic:'link',t:'LinkedIn Profile Guide',d:'Turn your resume into a recruiter magnet.'},
-      {id:'network',ic:'users',t:'Networking Guide',d:'Reach hiring managers and veterans in your field.'}
+      {id:'interview',ic:'users',t:'Interview Questions & Answers',d:'The cyber questions you will face, answered.',url:'/veteran-interview-questions.html'},
+      {id:'linkedin',ic:'link',t:'LinkedIn Profile Guide',d:'Turn your resume into a recruiter magnet.',url:'/veteran-linkedin-guide.html'},
+      {id:'network',ic:'users',t:'Networking Guide',d:'Reach hiring managers and veterans in your field.',url:'/veteran-networking-guide.html'}
     ]},
     {g:'Benefits in California',items:[
-      {id:'ncbenefits',ic:'pin',t:'California Veteran Benefits',d:'Education, employment & hiring benefits you earned.'},
-      {id:'cities',ic:'pin',t:'Most Veteran-Friendly Cities',d:'Where veterans find the best opportunities.'}
+      {id:'ncbenefits',ic:'pin',t:'California Veteran Benefits',d:'Education, employment & hiring benefits you earned.',url:'/california-veteran-benefits.html'},
+      {id:'cities',ic:'pin',t:'Most Veteran-Friendly Cities',d:'Where veterans find the best opportunities.',url:'/veteran-friendly-cities.html'}
     ]}
   ];
+  var resById={}; RES.forEach(function(g){g.items.forEach(function(it){resById[it.id]=it;});});
 
-  /* ===== detail content ===== */
+  /* ===== career-fit data (real U.S. BLS figures, May 2025 / 2025–35 projections) ===== */
+  var CAREERS=[
+    {id:'soc',name:'SOC / Cybersecurity Analyst',match:96,door:false,pay:'$70K–$129K',
+     tagline:'One of the fastest-growing, best-paid IT fields.',
+     median:'$129,180',growth:'+21%',growthLabel:'Much faster than average',edu:"Bachelor's (certs + clearance often substitute)",
+     duties:['Monitor networks & investigate incidents','Deploy & manage firewalls, EDR & SIEM','Assess systems for vulnerabilities'],
+     why:'A Navy CTN’s network-defense training plus an active security clearance is a near-perfect, high-demand match for SOC work.',
+     url:'/veteran-cybersecurity-careers.html'},
+    {id:'engineer',name:'Security Engineer / Network Architect',match:84,door:true,pay:'$95K–$134K',
+     tagline:'A senior, high-paying track within reach.',
+     median:'$134,050',growth:'+8%',growthLabel:'Much faster than average',edu:"Bachelor's + experience",
+     duties:['Design & implement secure networks','Test networks to find failure points','Research & recommend new technologies'],
+     why:'Experience designing and securing mission-critical military networks is directly transferable to architect-level work.',
+     url:'/veteran-cybersecurity-careers.html'},
+    {id:'sysadmin',name:'Systems / Network Administrator',match:80,door:true,pay:'$70K–$99K',
+     tagline:'A fast on-ramp — then climb into security.',
+     median:'$99,130',growth:'-4%',growthLabel:'Declining nationally — best used as a stepping stone',edu:"Bachelor's",
+     duties:['Install & maintain LANs/WANs & servers','Maintain network & system security','Diagnose & resolve system problems'],
+     why:'Military IT/network ops maps directly — and this role is a common stepping-stone into higher-growth security jobs.',
+     url:'/veteran-cybersecurity-careers.html'},
+    {id:'support',name:'IT Support Specialist',match:72,door:true,pay:'$50K–$63K',
+     tagline:'Start earning now; stack certs to climb.',
+     median:'$62,890',growth:'-3%',growthLabel:'Declining nationally — a launchpad, not a destination',edu:'HS diploma + IT certs',
+     duties:['Diagnose user computer problems','Test & maintain systems','Guide users through fixes'],
+     why:'A low-barrier entry that lets you start earning immediately while stacking certs toward Information Security Analyst.',
+     url:'/veteran-cybersecurity-careers.html'}
+  ];
+  var carById={}; CAREERS.forEach(function(c){carById[c.id]=c;});
+
+  /* ===== 90-day roadmap (customizable — options for every budget/benefit) ===== */
+  var ROADMAP=[
+    {w:'Now · Free',t:'Lead with your clearance',d:'An active TS/SCI is a $10–15K pay premium — put it at the very top of your résumé. Costs nothing.',now:true},
+    {w:'Credential',t:'Earn CompTIA Security+',d:'The DoD 8570 baseline most SOC postings require. Pick the path that fits YOU:',opts:[
+      ['GI Bill','Security+ bootcamp — tuition is often fully covered'],
+      ['On a budget','Professor Messer free study videos + ~$400 exam voucher'],
+      ['$0','Your base education office, free DoD SkillBridge, or ACE resources'],
+      ['Have it?','Skip ahead to CySA+ or a Splunk certification']
+    ]},
+    {w:'Fast proof',t:'Build hands-on proof',d:'Show you can do the work, not just pass a test:',opts:[
+      ['$0','TryHackMe / Blue Team Labs — free SOC & blue-team exercises'],
+      ['Portfolio','A home-lab write-up: Splunk + a simulated incident'],
+      ['Free','Join VetSec — a free veteran cybersecurity community']
+    ]},
+    {w:'Goal',t:'Reach the $90K+ analyst tier',d:'Clearance + Security+ puts you above most civilian applicants, toward the BLS median of $129,180.'}
+  ];
+
+  /* ===== small HTML helpers ===== */
+  function sec(t){return '<div class="block-h">'+t+'</div>';}
+  function li(n,s,b){return '<div class="listcard" style="margin-bottom:8px;"><div class="li"><span class="lg">'+n.charAt(0)+'</span><div><div class="ln2">'+n+'</div>'+(s?'<div class="ls">'+s+'</div>':'')+'</div>'+(b?'<span class="badge">'+b+'</span>':'')+'</div></div>';}
+  function pills(a){return '<div class="chips">'+a.map(function(x){return '<span class="chip">'+x+'</span>';}).join('')+'</div>';}
+  function bar(l,w,v){return '<div class="brow"><span class="bl">'+l+'</span><span class="bt"><i data-w="'+w+'"></i></span><span class="bv">'+v+'</span></div>';}
+  function qa(q,a){return '<div class="qa"><div class="q"><span class="qm">Q</span><span>'+q+'</span></div><div class="a">'+a+'</div></div>';}
+  function road(cls,w,t,d){return '<div class="step '+cls+'"><div class="w">'+w+'</div><div class="t">'+t+'</div><div class="d">'+d+'</div></div>';}
+  // Real links now — open the actual guide in a new tab.
+  function openBtn(label,url,ext){return '<a class="openlink" href="'+(url||'/vet-resources.html')+'" target="_blank" rel="noopener">'+(ext?ICON.cap:ICON.link)+'<span>'+label+'</span></a>';}
+
+  /* ===== resource detail pages ===== */
   var DETAIL={
-    supply:{title:'Cybersecurity Careers',html:function(){return ''
+    supply:{title:'Cybersecurity Careers',url:'/veteran-cybersecurity-careers.html',html:function(){return ''
       +sec('Top roles for your background')
-      +li('SOC Analyst (Tier 1/2)','Monitors, triages & escalates threats','$65–85K')
-      +li('Cybersecurity Analyst','Defends systems & hunts threats','$75–95K')
-      +li('Incident Response Analyst','Contains & investigates breaches','$80–100K')
-      +li('Vulnerability Analyst','Finds & prioritizes weaknesses','$78–98K')
+      +li('SOC / Cybersecurity Analyst','Monitors, triages & investigates threats','$70–129K')
+      +li('Security Engineer','Designs & defends networks','$95–134K')
+      +li('Incident Response Analyst','Contains & investigates breaches','$80–120K')
+      +li('Systems Administrator','Runs & secures infrastructure','$70–99K')
       +sec('Top employers hiring cleared veterans')
       +pills(['CrowdStrike','Booz Allen','Leidos','Palo Alto Networks','SAIC','Mandiant','Raytheon','Deloitte Cyber'])
-      +openBtn('Open the full guide on veterancareerpath.com');}},
-    salary:{title:'Salary Data',html:function(){return ''
-      +sec('Cybersecurity pay — San Diego, CA area')
-      +'<div class="bars" id="salBars">'
-      +bar('Help Desk / IT',52,'$52K')
-      +bar('SOC Analyst',78,'$78K')
-      +bar('Cyber Analyst',92,'$92K')
-      +bar('Incident Response',98,'$98K')
-      +bar('Security Engineer',118,'$118K')
+      +openBtn('Open the full guide on veterancareerpath.com','/veteran-cybersecurity-careers.html');}},
+    salary:{title:'Salary Data',url:'/veteran-salary-data.html',html:function(){return ''
+      +sec('Cybersecurity pay (U.S. median, BLS 2025)')
+      +'<div class="bars">'
+      +bar('IT Support',47,'$63K')
+      +bar('Sys Admin',74,'$99K')
+      +bar('SOC / Cyber Analyst',96,'$129K')
+      +bar('Security Engineer',100,'$134K')
       +'</div>'
-      +'<p class="disc" style="text-align:left;margin-top:14px;">Median base pay; an active clearance adds roughly $10–15K. Your defensive-cyber experience benchmarks you well above entry level.</p>'
-      +openBtn('See full salary tables');}},
-    certs:{title:'Cert Roadmap',html:function(){return ''
-      +sec('Your recommended certification path')
+      +'<p class="disc" style="text-align:left;margin-top:14px;">U.S. median annual wages, Bureau of Labor Statistics (May 2025). An active clearance typically adds $10–15K.</p>'
+      +openBtn('See full salary tables','/veteran-salary-data.html');}},
+    certs:{title:'Cert Roadmap',url:'/veteran-certification-roadmap.html',html:function(){return ''
+      +sec('Certifications — pick what fits your budget')
       +'<div class="road">'
-      +road('now','Now · Your edge','Lead with your clearance','An active TS/SCI is a $10–15K premium — list it first.')
-      +road('','~$400 · GI Bill','CompTIA Security+','The DoD 8570 baseline every SOC posting requires.')
+      +road('now','Free','Lead with your clearance','An active TS/SCI is worth a $10–15K premium — list it first.')
+      +road('','GI Bill','CompTIA Security+','The DoD 8570 baseline every SOC posting requires.')
+      +road('','~$400','Professor Messer + exam','Free study videos; the budget path to the same cert.')
       +road('','Next','CySA+ or Splunk Core','Proves hands-on detection & SIEM skill.')
-      +road('','Stretch','CISSP (Associate)','Opens senior analyst & engineering roles.')
       +'</div>'
-      +openBtn('Open the certification roadmap');}},
-    interview:{title:'Interview Prep',html:function(){return ''
+      +openBtn('Open the certification roadmap','/veteran-certification-roadmap.html');}},
+    interview:{title:'Interview Prep',url:'/veteran-interview-questions.html',html:function(){return ''
       +sec('Questions you will face')
-      +qa('“Walk me through how you’d triage an alert.”','Use your watch-floor process: validate, enrich with threat intel, scope it, escalate per severity — cite your sub-15-min SOC escalation time.')
-      +qa('“You worked on classified systems — can you talk about it?”','Describe the skills, not the secrets: SIEM analysis, IDS/IPS tuning, incident response, 24/7 ops. Tools and process are fair game.')
-      +qa('“Tell me about an intrusion you handled.”','STAR story: the alert, your analysis, containment, and the outcome — quantify it (e.g., contained before data left the network).')
-      +openBtn('Open full interview guide');}},
-    companies:{title:'Top Employers',html:function(){return ''
+      +qa('“Walk me through triaging an alert.”','Use your watch-floor process: validate, enrich with threat intel, scope it, escalate per severity — cite your sub-15-min SOC escalation time.')
+      +qa('“You worked on classified systems — can you talk about it?”','Describe the skills, not the secrets: SIEM analysis, IDS/IPS tuning, incident response, 24/7 ops.')
+      +qa('“Tell me about an intrusion you handled.”','STAR story: the alert, your analysis, containment, and the outcome — quantify it.')
+      +openBtn('Open the full interview guide','/veteran-interview-questions.html');}},
+    companies:{title:'Top Employers',url:'/veteran-hiring-companies.html',html:function(){return ''
       +sec('Actively hiring cleared veterans')
       +li('CrowdStrike','Remote-friendly SOC & IR roles','Hiring')
       +li('Booz Allen Hamilton','Cyber for federal clients','Clearance+')
       +li('Leidos','Defensive cyber operations','Clearance+')
       +li('Palo Alto Networks','Security analyst pipelines','Hiring')
       +li('Mandiant (Google)','Incident response & threat intel','Hiring')
-      +openBtn('See all veteran-ready employers');}},
-    ncbenefits:{title:'CA Benefits',html:function(){return ''
+      +openBtn('See all veteran-ready employers','/veteran-hiring-companies.html');}},
+    ncbenefits:{title:'CA Benefits',url:'/california-veteran-benefits.html',html:function(){return ''
       +sec('California veteran benefits')
       +li('CalVet Education','Tuition assistance & fee waivers','Education')
       +li('Vet Hiring Preference','State & many local gov jobs','Employment')
       +li('Property Tax Exemption','Disabled veteran exemption','Tax')
       +li('EDD Veterans Services','Priority job placement','Jobs')
-      +openBtn('Open CA benefits guide');}},
-    schools:{title:'Schools Near You',ext:true,html:function(){return ''
-      +sec('Find GI Bill-approved cyber programs near San Diego, CA')
+      +openBtn('Open the CA benefits guide','/california-veteran-benefits.html');}},
+    schools:{title:'Schools Near You',ext:true,url:'https://www.va.gov/education/gi-bill-comparison-tool/',html:function(){return ''
+      +sec('GI Bill-approved cyber programs near San Diego, CA')
       +'<p class="lede" style="margin-bottom:14px;">Compare programs by location, cost, graduation rate, and veteran outcomes using the official VA GI Bill Comparison Tool.</p>'
       +li('San Diego State University','Cybersecurity & information assurance','GI Bill ✓')
       +li('National University','Cybersecurity (online-friendly)','GI Bill ✓')
       +li('UC San Diego Extension','Cybersecurity bootcamp & certs','GI Bill ✓')
-      +openBtn('Open the VA GI Bill Comparison Tool ↗',true);}},
-    generic:{title:'Resource',html:function(name){return ''
-      +sec(name)
-      +'<p class="lede" style="margin-bottom:14px;">A full, step-by-step guide on veterancareerpath.com — tailored to veterans moving into civilian careers.</p>'
-      +li('Guided & practical','Written for transitioning service members','Free')
-      +li('Field-specific','Matched to your cybersecurity goal','Personalized')
-      +openBtn('Open this guide');}}
+      +openBtn('Open the VA GI Bill Comparison Tool','https://www.va.gov/education/gi-bill-comparison-tool/',true);}}
   };
+  function genericHtml(name,url){return ''
+    +sec(name)
+    +'<p class="lede" style="margin-bottom:14px;">A full, step-by-step guide on veterancareerpath.com — tailored to veterans moving into civilian careers.</p>'
+    +li('Guided & practical','Written for transitioning service members','Free')
+    +li('Field-specific','Matched to your goal','Personalized')
+    +openBtn('Open this guide',url||'/vet-resources.html');}
 
-  function sec(t){return '<div class="block-h">'+t+'</div>';}
-  function li(n,s,b){return '<div class="listcard" style="margin-bottom:8px;"><div class="li"><span class="lg">'+n.charAt(0)+'</span><div><div class="ln2">'+n+'</div><div class="ls">'+s+'</div></div>'+(b?'<span class="badge">'+b+'</span>':'')+'</div></div>';}
-  function pills(a){return '<div class="chips">'+a.map(function(x){return '<span class="chip">'+x+'</span>';}).join('')+'</div>';}
-  function bar(l,w,v){return '<div class="brow"><span class="bl">'+l+'</span><span class="bt"><i data-w="'+w+'"></i></span><span class="bv">'+v+'</span></div>';}
-  function qa(q,a){return '<div class="qa"><div class="q"><span class="qm">Q</span><span>'+q+'</span></div><div class="a">'+a+'</div></div>';}
-  function road(cls,w,t,d){return '<div class="step '+cls+'"><div class="w">'+w+'</div><div class="t">'+t+'</div><div class="d">'+d+'</div></div>';}
-  function openBtn(label,ext){return '<button class="openlink">'+(ext?ICON.cap:ICON.link)+'<span>'+label+'</span></button>';}
+  function careerHtml(c){var gpos=/^\+/.test(c.growth);return ''
+    +'<div class="rv-hero" style="margin-bottom:14px;"><div class="t" style="font-size:21px;">'+c.name+'</div><div class="s">'+(c.door?'Opens a new door':'Aligned with your goal')+' · '+c.match+'% match</div></div>'
+    +'<div class="cstat-grid">'
+    +  '<div class="cstat"><div class="n g">'+c.median+'</div><div class="l">Median pay / yr</div></div>'
+    +  '<div class="cstat"><div class="n '+(gpos?'g':'')+'">'+c.growth+'</div><div class="l">Projected growth, 2025–35</div></div>'
+    +  '<div class="cstat"><div class="n" style="font-size:15px;line-height:1.25;">'+c.edu+'</div><div class="l">Typical education</div></div>'
+    +  '<div class="cstat"><div class="n" style="font-size:18px;">'+c.pay+'</div><div class="l">Your likely starting range</div></div>'
+    +'</div>'
+    +'<p class="disc" style="text-align:left;margin:-2px 0 2px;">'+c.growthLabel+' · U.S. Bureau of Labor Statistics (2025)</p>'
+    +sec('What they do')
+    +'<div class="listcard">'+c.duties.map(function(d,i){return '<div class="li"><span class="lg">'+(i+1)+'</span><div><div class="ln2" style="font-weight:500;font-size:13px;">'+d+'</div></div></div>';}).join('')+'</div>'
+    +'<div class="why"><div class="h">Why you’re a strong fit</div><p>'+c.why+'</p></div>'
+    +sec('Outlook')+'<p class="disc" style="text-align:left;">'+c.tagline+'</p>'
+    +openBtn('Explore this career on veterancareerpath.com',c.url);}
 
-  /* ===== render resources ===== */
+  /* ===== render: resources, career fit, roadmap ===== */
   (function(){
     var wrap=document.getElementById('resourceList');
     RES.forEach(function(group){
       var h=document.createElement('div');h.className='section-h';h.innerHTML=group.g+' <span class="ln"></span>';wrap.appendChild(h);
       group.items.forEach(function(it){
-        var b=document.createElement('button');b.className='rcard';b.setAttribute('data-detail',it.id);b.setAttribute('data-name',it.t);
+        var b=document.createElement('button');b.className='rcard';b.setAttribute('data-detail',it.id);
         b.innerHTML='<span class="ic">'+ICON[it.ic]+'</span><span class="tx"><span class="tt">'+it.t+(it.ext?' <span class="ext">↗</span>':'')+'</span><span class="dd">'+it.d+'</span></span><span class="chev">'+ICON.chev+'</span>';
         wrap.appendChild(b);
       });
     });
   })();
+  (function(){
+    var box=document.getElementById('careerFit'); if(!box) return;
+    CAREERS.forEach(function(c){
+      var b=document.createElement('button');b.className='role'+(c.door?' alt':'');b.type='button';b.setAttribute('data-career',c.id);
+      b.innerHTML='<div class="top"><span class="nm">'+c.name+(c.door?' <span class="pill-door">Opens doors</span>':'')+'</span><span class="pay">'+c.pay+'</span></div>'
+        +'<div class="mt"><div class="mbar"><i data-w="'+c.match+'"></i></div><span class="mpct">'+c.match+'%</span></div>'
+        +'<div class="tagline">'+c.tagline+'</div>'
+        +'<div class="seemore">See pay, growth &amp; why you fit '+chevSm+'</div>';
+      box.appendChild(b);
+    });
+  })();
+  (function(){
+    var box=document.getElementById('roadmap'); if(!box) return;
+    var html='<div class="road">';
+    ROADMAP.forEach(function(s){
+      var ex=s.opts&&s.opts.length;
+      html+='<div class="step'+(s.now?' now':'')+(ex?' ex':'')+'">'
+        +'<div class="head"><div style="flex:1;"><div class="w">'+s.w+'</div><div class="t">'+s.t+'</div></div>'+(ex?'<span class="toggle">+</span>':'')+'</div>'
+        +'<div class="d">'+s.d+'</div>';
+      if(ex){html+='<div class="opts">'+s.opts.map(function(o){return '<div class="opt"><span class="k">'+o[0]+'</span><span class="ov">'+o[1]+'</span></div>';}).join('')+'</div>';}
+      html+='</div>';
+    });
+    box.innerHTML=html+'</div>';
+    box.querySelectorAll('.step.ex').forEach(function(st){st.addEventListener('click',function(){st.classList.toggle('open');});});
+  })();
 
-  /* ===== navigation ===== */
+  /* ===== detail overlay + career pages ===== */
+  var detail=document.getElementById('detail');
+  function renderDetailState(st){
+    var title=document.getElementById('detailTitle'), body=document.getElementById('detailBody');
+    if(st.kind==='career'){ var c=carById[st.id]; title.textContent='Career Detail'; body.innerHTML=c?careerHtml(c):''; }
+    else { var d=DETAIL[st.id], item=resById[st.id]||{}; title.textContent=d?d.title:(item.t||'Resource'); body.innerHTML=d?d.html():genericHtml(item.t||'Guide',item.url); }
+    detail.classList.add('open');
+    requestAnimationFrame(function(){setTimeout(function(){body.querySelectorAll('[data-w]').forEach(function(i){i.style.width=i.dataset.w+'%';});},120);});
+    body.scrollTop=0;
+  }
+  function openDetail(st){ history.pushState(Object.assign({level:'detail'},st),''); renderDetailState(st); }
+  document.getElementById('detailBack').addEventListener('click',function(){history.back();});
+
+  /* ===== info tooltip sheets ===== */
+  var TIPS={
+    score:{t:'Resume Score',c:'Your score estimates how well your résumé performs with <b>both hiring managers and automated screening</b> — structure, clarity, metrics, and keyword match. We score it before and after so you can see the lift.'},
+    ats:{t:'ATS Keywords',c:'Most employers use <b>Applicant Tracking Software</b> that auto-scans résumés for specific keywords before any human sees them. Miss the terms and you’re filtered out — even when you’re qualified. An estimated <b>75% of résumés never reach a person.</b> We add the exact keywords your target roles screen for.'},
+    careerfit:{t:'Career Fit',c:'Career Fit shows how closely your experience matches real civilian roles — the % is the overlap between <b>your skills</b> and <b>what employers ask for.</b> We include roles beyond your stated goal because a strong record often opens doors you didn’t know were there.'},
+    milciv:{t:'Military → Civilian',c:'Recruiters don’t speak military. We translate your titles, systems, and duties into the <b>civilian terms</b> that employers and ATS actually search for.'},
+    roadmap:{t:'Your 90-Day Roadmap',c:'A flexible plan to go from résumé to offer. <b>Every step has options</b> for different budgets and benefits — nothing here is mandatory. Tap a step to see the paths.'}
+  };
+  var tipSheet=document.getElementById('tipSheet'),tipBackdrop=document.getElementById('tipBackdrop');
+  function openTip(key){var x=TIPS[key];if(!x)return;document.getElementById('tipTitle').textContent=x.t;document.getElementById('tipCopy').innerHTML=x.c;tipSheet.classList.add('open');tipBackdrop.classList.add('open');}
+  function closeTip(){tipSheet.classList.remove('open');tipBackdrop.classList.remove('open');}
+  document.getElementById('tipClose').addEventListener('click',closeTip);
+  tipBackdrop.addEventListener('click',closeTip);
+
+  /* ===== one delegated click handler ===== */
+  document.addEventListener('click',function(e){
+    var ib=e.target.closest('.infobtn'); if(ib){e.preventDefault();e.stopPropagation();openTip(ib.getAttribute('data-tip'));return;}
+    var rc=e.target.closest('.rcard'); if(rc){openDetail({kind:'res',id:rc.getAttribute('data-detail')});return;}
+    var role=e.target.closest('.role'); if(role&&role.getAttribute('data-career')){openDetail({kind:'career',id:role.getAttribute('data-career')});return;}
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeTip();}});
+
+  /* ===== tabs + history + refresh persistence ===== */
   var scroll=document.getElementById('scroll');
-  function switchTab(name){
+  var currentTab='home';
+  function persist(){try{sessionStorage.setItem('vcpDemo',JSON.stringify({e:true,tab:currentTab}));}catch(_){}}
+  function showTab(name){
+    detail.classList.remove('open'); closeTip();
     document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('active',v.id==='view-'+name);});
     document.querySelectorAll('#nav button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===name);});
-    scroll.scrollTop=0;
+    scroll.scrollTop=0; currentTab=name; persist();
     if(name==='review') animateReview();
     if(name==='home') animateHome();
   }
+  function switchTab(name){ if(name===currentTab&&!detail.classList.contains('open')){return;} history.pushState({level:'tab',tab:name},''); showTab(name); }
   document.querySelectorAll('#nav button').forEach(function(b){b.addEventListener('click',function(){switchTab(b.getAttribute('data-tab'));});});
   document.getElementById('homeReviewCta').addEventListener('click',function(){switchTab('review');});
 
-  /* ===== detail overlay ===== */
-  var detail=document.getElementById('detail');
-  function openDetail(id,name){
-    var d=DETAIL[id]||DETAIL.generic;
-    document.getElementById('detailTitle').textContent=d.title;
-    var body=document.getElementById('detailBody');
-    body.innerHTML=(d===DETAIL.generic)?d.html(name||'Guide'):d.html();
-    detail.classList.add('open');
-    // wire open-link buttons (demo: pulse) & animate any bars
-    body.querySelectorAll('.openlink').forEach(function(btn){btn.addEventListener('click',function(){btn.style.filter='brightness(1.2)';btn.querySelector('span').textContent='Opening…';setTimeout(function(){btn.querySelector('span').textContent='Opens on veterancareerpath.com';btn.style.filter='';},900);});});
-    requestAnimationFrame(function(){setTimeout(function(){body.querySelectorAll('.bars i,[data-w]').forEach(function(i){if(i.dataset.w)i.style.width=i.dataset.w+'%';});},120);});
-    body.scrollTop=0;
-  }
-  function closeDetail(){detail.classList.remove('open');}
-  document.getElementById('detailBack').addEventListener('click',closeDetail);
-  document.addEventListener('click',function(e){
-    var card=e.target.closest('.rcard');
-    if(card){openDetail(card.getAttribute('data-detail'),card.getAttribute('data-name'));}
+  window.addEventListener('popstate',function(e){
+    closeTip();
+    var st=e.state||{level:'tab',tab:'home'};
+    if(st.level==='detail'){ renderDetailState(st); }
+    else { detail.classList.remove('open'); showTab(st.tab||'home'); }
   });
 
   /* ===== animations ===== */
@@ -648,10 +845,10 @@
   function countUp(el){
     var target=parseFloat(el.dataset.count),pre=el.dataset.prefix||'',suf=el.dataset.suffix||'',dec=(target%1!==0)?1:0;
     var start=performance.now?performance.now():Date.now(),dur=1100;
-    function tick(now){
+    function tick(){
       var t=Math.min(1,((performance.now?performance.now():Date.now())-start)/dur);
-      var e=1-Math.pow(1-t,3);var val=(target*e).toFixed(dec);
-      el.textContent=pre+val+suf;
+      var e=1-Math.pow(1-t,3);
+      el.textContent=pre+(target*e).toFixed(dec)+suf;
       if(t<1) requestAnimationFrame(tick); else el.textContent=pre+(dec?target.toFixed(1):target)+suf;
     }
     requestAnimationFrame(tick);
@@ -664,13 +861,13 @@
 
   /* ===== next steps ===== */
   var TASKS=[
-    {t:'Read your full resume review',d:'Open "My Review" and take it all in.'},
-    {t:'Put your clearance at the top',d:'Lead your resume with your biggest advantage.'},
-    {t:'Work in the 16 ATS keywords',d:'SIEM, incident response, SOC — match each posting.'},
-    {t:'Apply to 3 SOC Analyst roles',d:'This week — don’t wait for the certs.'},
-    {t:'Earn CompTIA Security+',d:'The DoD 8570 baseline. GI Bill eligible.'},
-    {t:'Optimize your LinkedIn for cyber',d:'Use the LinkedIn guide in Resources.'},
-    {t:'Connect with 5 veterans in cyber',d:'Warm intros beat cold applications.'}
+    {t:'Read your full resume review',d:'Open "My Review" — every section is built for your goal.'},
+    {t:'Rebuild your résumé with the before→after bullets',d:'Swap in the rewritten, quantified lines — military AND civilian IT.'},
+    {t:'Add the 16 ATS keywords, tailored per job',d:'Mirror the exact terms in each posting so you pass the filter.'},
+    {t:'Apply to 3 SOC Analyst roles this week',d:'Don’t wait for the cert — your clearance already competes.'},
+    {t:'Earn CompTIA Security+',d:'Pick the path that fits — GI Bill, budget, or free.'},
+    {t:'Rewrite your LinkedIn for cyber recruiters',d:'Use the LinkedIn guide in Resources.'},
+    {t:'Message 5 veterans working in cybersecurity',d:'Warm intros beat cold applications, every time.'}
   ];
   var done=[true,true,true,true,false,false,false]; // most pre-done so the finale is 2-3 taps away on camera
   (function(){
@@ -689,6 +886,8 @@
     document.getElementById('ring').style.strokeDashoffset=C*(1-n/TASKS.length);
     document.getElementById('ringPct').textContent=pct+'%';
     document.getElementById('stepCount').textContent=n+' of '+TASKS.length+' complete';
+    var sub=document.getElementById('stepSub');
+    if(sub){ sub.textContent = n===TASKS.length?'Every move done — now go get hired.':(n>=TASKS.length-2?'Almost there — finish strong.':'Check off each move — momentum compounds.'); }
     var cel=document.getElementById('celebrate');
     if(n===TASKS.length){cel.classList.add('show');if(animate)burst();}else{cel.classList.remove('show');}
   }
@@ -696,25 +895,33 @@
   /* ===== confetti ===== */
   function burst(){
     var box=document.getElementById('confetti');var cols=['#f0c040','#4ade80','#c8a951','#fff','#e0a820'];
-    for(var i=0;i<70;i++){(function(){var p=document.createElement('i');
-      p.style.left=Math.random()*100+'%';p.style.background=cols[i%cols.length];
-      p.style.animationDuration=(1.6+Math.random()*1.4)+'s';p.style.animationDelay=(Math.random()*.3)+'s';
-      p.style.transform='rotate('+Math.random()*360+'deg)';box.appendChild(p);
-      setTimeout(function(){p.remove();},3400);})();}
+    for(var i=0;i<70;i++){(function(k){var p=document.createElement('i');
+      p.style.left=(k*1.4%100)+'%';p.style.background=cols[k%cols.length];
+      p.style.animationDuration=(1.6+(k%7)*0.2)+'s';p.style.animationDelay=((k%9)*0.03)+'s';
+      p.style.transform='rotate('+(k*53%360)+'deg)';box.appendChild(p);
+      setTimeout(function(){p.remove();},3600);})(i);}
   }
 
-  /* ===== splash flow ===== */
+  /* ===== splash + first-load / refresh ===== */
   var splash=document.getElementById('splash'),enterBtn=document.getElementById('enterBtn');
-  setTimeout(function(){
-    document.getElementById('verify').style.display='none';
-    document.getElementById('verifyOk').style.display='flex';
-    enterBtn.classList.add('show');
-  },1700);
+  var saved=null; try{saved=JSON.parse(sessionStorage.getItem('vcpDemo')||'null');}catch(_){}
+  if(saved&&saved.e){
+    // Returning via refresh — skip the splash, restore the last tab.
+    splash.style.display='none';
+    history.replaceState({level:'tab',tab:saved.tab||'home'},'');
+    showTab(saved.tab||'home');
+  } else {
+    history.replaceState({level:'tab',tab:'home'},'');
+    setTimeout(function(){
+      document.getElementById('verify').style.display='none';
+      document.getElementById('verifyOk').style.display='flex';
+      enterBtn.classList.add('show');
+    },1700);
+  }
   enterBtn.addEventListener('click',function(){
     splash.classList.add('hide');
-    setTimeout(function(){splash.style.display='none';animateHome();},480);
+    setTimeout(function(){splash.style.display='none';showTab('home');},480);
   });
-  // allow tapping splash lock to skip
   document.getElementById('lock').addEventListener('click',function(){if(enterBtn.classList.contains('show'))enterBtn.click();});
 </script>
 

@@ -159,7 +159,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <div class="dash-header">
     <div>
       <div class="dash-title">VCP Admin Dashboard</div>
-      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05d</span></div>
+      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05e</span></div>
     </div>
     <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
       <span id="admin-auth-status" style="font-size:.78rem;"></span>
@@ -448,13 +448,15 @@ function onAdminAuth(isAdmin, failed) {
   }
 }
 
-// Reload the Firestore tabs + whichever proxy-backed tab is currently open.
+// On admin-ready: reload the Firestore tabs and populate the Paid Subs + Messages
+// stat cards / badges immediately (they render into hidden panels — harmless).
+// Analytics stays lazy (heavier chart) and loads when its tab is opened.
 function adminRefreshActive() {
   try { loadAll(); } catch(e){}
-  var p = function(id){ var el=document.getElementById(id); return el && el.classList.contains('active'); };
-  if (p('panel-subscribers')) loadSubscribers();
-  if (p('panel-analytics')) loadAnalytics();
-  if (p('panel-messages')) loadMessages();
+  try { loadSubscribers(); } catch(e){}
+  try { loadMessages(); } catch(e){}
+  var p = document.getElementById('panel-analytics');
+  if (p && p.classList.contains('active')) { try { loadAnalytics(); } catch(e){} }
 }
 
 function doLogout() {
@@ -508,52 +510,34 @@ function loadAll() {
 
 // ── REGISTERED USERS ─────────────────────────────────────────────────────────
 function loadUsers() {
-  var db = window.db;
-  db.collection('profiles').orderBy('updatedAt','desc').limit(100).get().then(function(snap){
-    document.getElementById('stat-user-total').textContent = snap.size;
-    if(snap.empty){
+  // Profiles are owner-isolated in Firestore rules, so the admin reads them via
+  // the proxy (Admin SDK bypasses rules). Needs the admin Google sign-in.
+  var th = function(t){ return '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">'+t+'</th>'; };
+  var td = function(v,extra){ return '<td style="padding:.55rem .75rem;'+(extra||'color:rgba(192,216,240,.6);font-size:.78rem;')+'">'+admEsc(v||'—')+'</td>'; };
+  admFetch('/api/admin-users').then(function(resp){
+    var users = resp.users || [];
+    document.getElementById('stat-user-total').textContent = users.length;
+    if(!users.length){
       document.getElementById('user-list').innerHTML = '<div class="empty"><h3>No registered users yet</h3></div>';
       return;
     }
-    var html = '<table style="width:100%;border-collapse:collapse;font-size:.82rem;">';
+    var html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;">';
     html += '<thead><tr style="border-bottom:2px solid rgba(240,192,64,.2);text-align:left;">';
-    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Name</th>';
-    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Branch</th>';
-    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Rank</th>';
-    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">MOS</th>';
-    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Subscription</th>';
-    html += '<th style="padding:.6rem .75rem;color:#f0c040;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;">Last Active</th>';
+    html += th('Name')+th('Email')+th('Branch')+th('Rank')+th('MOS')+th('Subscription')+th('Last Active');
     html += '</tr></thead><tbody>';
-    snap.forEach(function(doc){
-      var d = doc.data();
-      var name = d.name || d.displayName || ',';
-      var branch = ','; var rank = ','; var mos = ',';
-      if(d.milExperiences && d.milExperiences[0]){
-        var m = d.milExperiences[0];
-        branch = m.branch || ',';
-        rank = m.rank || ',';
-        mos = m.mos || ',';
-      } else if(d.experiences && d.experiences[0]){
-        var m2 = d.experiences[0];
-        branch = m2.branch || ',';
-        rank = m2.rank || ',';
-        mos = m2.mos || ',';
-      }
-      var hasSub = d.stripeSession ? '<span style="color:#4ade80;font-weight:600;">Active</span>' : '<span style="color:rgba(192,216,240,.6);">Free</span>';
-      var lastActive = d.updatedAt ? new Date(d.updatedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ',';
+    users.forEach(function(u){
+      var sub = u.hasSub ? '<span style="color:#4ade80;font-weight:600;">Active</span>' : '<span style="color:rgba(192,216,240,.6);">Free</span>';
+      var la = u.updatedAt ? new Date(u.updatedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
       html += '<tr style="border-bottom:1px solid rgba(255,255,255,.05);">';
-      html += '<td style="padding:.55rem .75rem;color:#e8f0f8;font-weight:500;">'+name+'</td>';
-      html += '<td style="padding:.55rem .75rem;color:rgba(192,216,240,.6);font-size:.78rem;">'+branch+'</td>';
-      html += '<td style="padding:.55rem .75rem;color:rgba(192,216,240,.6);font-size:.78rem;">'+rank+'</td>';
-      html += '<td style="padding:.55rem .75rem;color:rgba(192,216,240,.6);font-size:.78rem;">'+mos+'</td>';
-      html += '<td style="padding:.55rem .75rem;">'+hasSub+'</td>';
-      html += '<td style="padding:.55rem .75rem;color:rgba(192,216,240,.5);font-size:.78rem;">'+lastActive+'</td>';
+      html += td(u.name, 'color:#e8f0f8;font-weight:500;') + td(u.email) + td(u.branch) + td(u.rank) + td(u.mos);
+      html += '<td style="padding:.55rem .75rem;">'+sub+'</td>';
+      html += td(la, 'color:rgba(192,216,240,.5);font-size:.78rem;');
       html += '</tr>';
     });
-    html += '</tbody></table>';
+    html += '</tbody></table></div>';
     document.getElementById('user-list').innerHTML = html;
-  }).catch(function(err){
-    document.getElementById('user-list').innerHTML = '<div class="empty"><h3>Error loading users</h3>'+err.message+'</div>';
+  }).catch(function(e){
+    document.getElementById('user-list').innerHTML = admErrHtml(e);
   });
 }
 

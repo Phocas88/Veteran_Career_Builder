@@ -1370,6 +1370,40 @@ body.menu-open{overflow:hidden!important;}
   // ── State ──
   var generatedLetter = null; // {greeting, body, closing, name}
   var hasPaid = false;
+  var scoutDraftId = null;    // set when server-enforced (teaser + draftId)
+
+  // Parse the model's JSON (teaser or full) the same way.
+  function parseLetter(text){
+    var t = String(text||'').replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
+    try { return JSON.parse(t); } catch(e){}
+    var m = t.match(/\{[\s\S]*\}/); if(m){ try { return JSON.parse(m[0]); } catch(e){} }
+    return null;
+  }
+  // Render the unlocked full letter + remove the lock.
+  function applyFullLetter(full){
+    var letter = parseLetter(full);
+    if(letter){ generatedLetter = letter; displayPreview(letter); }
+    previewWrap.classList.add('show');
+    downloadEl.classList.add('show');
+    hasPaid = true;
+    unlockDownload();
+    try { previewWrap.scrollIntoView({ behavior:'smooth', block:'start' }); } catch(e){}
+  }
+  // Enforced: start the $5 Stripe checkout bound to this draft.
+  function startScoutCheckout(){
+    if(!scoutDraftId) return;
+    payBtn.disabled = true; var prev = payBtn.textContent; payBtn.textContent = 'Redirecting to secure checkout…';
+    window.VCBSecureApi.scoutCheckout(scoutDraftId, 'cover').then(function(url){ window.location.href = url; })
+      .catch(function(){ payBtn.disabled=false; payBtn.textContent = prev || 'Download Clean PDF  -  $5'; showError('Could not start checkout. Please try again.'); });
+  }
+  // Enforced subscriber: fetch the full letter with a verified session token.
+  function unlockAsSubscriber(){
+    if(!scoutDraftId || !window.VCBSecureApi) return;
+    window.VCBSecureApi.ensureSession(false)
+      .then(function(token){ return window.VCBSecureApi.scoutUnlock(scoutDraftId, null, token); })
+      .then(function(r){ applyFullLetter(r.full); })
+      .catch(function(){ /* not a verified subscriber; stay locked */ });
+  }
 
   // ── Convert Scout Resume JSON to readable text ──
   function scoutJsonToText(data) {
@@ -1533,6 +1567,17 @@ body.menu-open{overflow:hidden!important;}
   // ── Check for return from payment ──
   function checkPaymentReturn(){
     var params = new URLSearchParams(window.location.search);
+    // Enforced: returned from Stripe with a session bound to this draft -> fetch full.
+    var su = params.get('scout_unlock'), sd = params.get('draft');
+    if (su && sd) {
+      scoutDraftId = sd;
+      window.VCBSecureApi.scoutUnlock(sd, su).then(function(resp){
+        applyFullLetter(resp.full);
+        try { localStorage.setItem('vcp_scout_coverletter_access', JSON.stringify({ paid:true, session: su, expiry: Date.now()+24*60*60*1000 })); } catch(e){}
+      }).catch(function(){ showError('We could not verify your unlock. If you were charged, email support and we will sort it out right away.'); });
+      window.history.replaceState({}, '', window.location.pathname);
+      return;
+    }
     if (params.get('coverletter_paid') === '1' && params.get('session_id')) {
       try {
         localStorage.setItem('vcp_scout_coverletter_access', JSON.stringify({
@@ -1577,9 +1622,13 @@ body.menu-open{overflow:hidden!important;}
   // ── Free download for subscribers ──
   freeBtn.addEventListener('click', function(){
     if (isSubscriber()) {
-      hasPaid = true;
-      unlockDownload();
-      if (generatedLetter) downloadPDF();
+      if (scoutDraftId && !hasPaid) {
+        unlockAsSubscriber(); // enforced: fetch the full copy, then it's downloadable
+      } else {
+        hasPaid = true;
+        unlockDownload();
+        if (generatedLetter) downloadPDF();
+      }
     } else {
       alert('No active subscription found. Subscribe at veterancareerpath.com/app.html');
     }
@@ -1656,30 +1705,15 @@ body.menu-open{overflow:hidden!important;}
     }
 
     window.VCBSecureApi.scoutGenerate('cover', systemPrompt + '\n\n' + userPrompt, 2000)
-    .then(function(text){
-      text = String(text || '').trim();
+    .then(function(r){
+      var text = (r && r.text) || '';
+      scoutDraftId = (r && r.draftId) || null; // present => server-enforced teaser
 
-      // Strip markdown code fences if present
-      text = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+      var letter = parseLetter(text);
+      if (!letter) { throw new Error('Could not parse AI response. Please try again.'); }
+      if (!letter.greeting || !letter.body) { throw new Error('Incomplete response from AI. Please try again.'); }
 
-      var letter;
-      try {
-        letter = JSON.parse(text);
-      } catch(e){
-        // Try to extract JSON from the response
-        var jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          letter = JSON.parse(jsonMatch[0]);
-        } else {
-          throw new Error('Could not parse AI response. Please try again.');
-        }
-      }
-
-      if (!letter.greeting || !letter.body) {
-        throw new Error('Incomplete response from AI. Please try again.');
-      }
-
-      generatedLetter = letter;
+      generatedLetter = letter; // teaser when enforced; full when legacy
       displayPreview(letter);
       saveData(resume, company, jobTitle, letter);
 
@@ -1688,13 +1722,19 @@ body.menu-open{overflow:hidden!important;}
       previewWrap.classList.add('show');
       downloadEl.classList.add('show');
 
-      // If already paid/subscriber, unlock immediately
-      if (hasCoverLetterAccess()) {
-        hasPaid = true;
-        unlockDownload();
+      // Enforced: route the $5 button through a dynamic Checkout Session bound to this draft.
+      if (scoutDraftId) {
+        payBtn.removeAttribute('href');
+        payBtn.style.cursor = 'pointer';
+        payBtn.onclick = function(e){ e.preventDefault(); startScoutCheckout(); };
       }
 
-      // Scroll to preview
+      // Already paid / subscriber: enforced needs a server fetch of the full copy; legacy is already present.
+      if (hasCoverLetterAccess()) {
+        if (scoutDraftId) { unlockAsSubscriber(); }
+        else { hasPaid = true; unlockDownload(); }
+      }
+
       previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
     })
     .catch(function(err){

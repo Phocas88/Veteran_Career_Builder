@@ -206,9 +206,46 @@
       err.limit = data && data.limit;
       throw err;
     }
-    return Array.isArray(data.content)
-      ? data.content.map(block => (block && block.text) || '').join('')
-      : '';
+    // Returns { text, draftId, locked }. When enforcement is on, text is a
+    // redacted teaser and draftId must be unlocked via scoutUnlock; when off
+    // (legacy), text is the full content and draftId is null.
+    return {
+      text: Array.isArray(data.content) ? data.content.map(block => (block && block.text) || '').join('') : '',
+      draftId: data.draftId || null,
+      locked: !!data.locked,
+    };
+  }
+
+  // Create a $5/$10 one-time Stripe Checkout Session to unlock a draft; returns the URL to redirect to.
+  async function scoutCheckout(draft, tool) {
+    const response = await fetch(endpoint('scout-checkout'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ draft: String(draft || ''), tool: tool === 'cover' ? 'cover' : 'resume' }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.url) {
+      const err = new Error((data && data.error) || 'checkout_failed');
+      err.status = response.status;
+      throw err;
+    }
+    return data.url;
+  }
+
+  // Release the FULL content for a draft after payment (session_id) or as a subscriber (token). Returns { full, tool }.
+  async function scoutUnlock(draft, sessionId, token) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    const body = { draft: String(draft || '') };
+    if (sessionId) body.session_id = sessionId;
+    const response = await fetch(endpoint('scout-unlock'), { method: 'POST', headers, body: JSON.stringify(body) });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const err = new Error((data && data.error) || 'unlock_failed');
+      err.status = response.status;
+      throw err;
+    }
+    return data;
   }
 
   window.VCBSecureApi = Object.freeze({
@@ -218,6 +255,8 @@
     ensureSession,
     callClaude,
     scoutGenerate,
+    scoutCheckout,
+    scoutUnlock,
     clearSession,
   });
 })();

@@ -3582,7 +3582,7 @@ window.generateResume = function() {
   var prompt = buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis);
 
   window.VCBSecureApi.scoutGenerate('resume', prompt, 3000)
-  .then(function(text) { return { content: [{ text: text || '' }] }; })
+  .then(function(r) { scoutResumeDraftId = (r && r.draftId) || null; return { content: [{ text: (r && r.text) || '' }] }; })
   .then(function(data) {
     clearInterval(loadingInterval);
     console.log('API response:', JSON.stringify(data).substring(0, 500));
@@ -3618,6 +3618,12 @@ window.generateResume = function() {
         } catch(e){}
         window._scoutVerifyCode = vCode;
         showResumePreview(resumeData, p);
+        // Enforced: wire the $10 unlock to the server flow; subscribers auto-unlock the full copy.
+        if (scoutResumeDraftId) {
+          try { localStorage.setItem('vcp_scout_resume_draft', scoutResumeDraftId); } catch(e){}
+          wireResumeCheckout();
+          if (resumeIsSubscriber()) unlockResumeAsSubscriber();
+        }
       } catch(e) {
         alert('Error parsing resume data. Please try again.');
         goStep(8);
@@ -4229,6 +4235,43 @@ function enableDownload() {
   rp.removeAttribute('oncut');
 }
 
+/* ── ENFORCED $10 UNLOCK (server-side) ── */
+var scoutResumeDraftId = null; // set when the server returns a teaser + draftId
+function resumeIsSubscriber(){
+  try { var a = JSON.parse(localStorage.getItem('vcb_access')||'{}');
+    return (a.type==='paid' && a.stripeSession && a.expiry>Date.now()) || (a.type==='code' && a.code); } catch(e){ return false; }
+}
+function startResumeCheckout(){
+  if(!scoutResumeDraftId) return;
+  var btn = document.getElementById('btn-pay-once');
+  if(btn){ btn.textContent = 'Redirecting to secure checkout…'; btn.style.pointerEvents = 'none'; }
+  window.VCBSecureApi.scoutCheckout(scoutResumeDraftId, 'resume')
+    .then(function(url){ window.location.href = url; })
+    .catch(function(){ if(btn){ btn.style.pointerEvents=''; btn.textContent='Download Clean PDF  -  $10'; } alert('Could not start checkout. Please try again.'); });
+}
+// When enforced, route the pay/subscriber buttons through the server flow.
+function wireResumeCheckout(){
+  if(!scoutResumeDraftId) return;
+  var pay = document.getElementById('btn-pay-once');
+  if(pay){ pay.removeAttribute('href'); pay.style.cursor='pointer'; pay.onclick = function(e){ e.preventDefault(); startResumeCheckout(); }; }
+  var sub = document.getElementById('btn-sub-download');
+  if(sub){ sub.onclick = function(){ if(scoutResumeDraftId){ unlockResumeAsSubscriber(); } else { downloadPDF(); } }; }
+}
+// Render the unlocked full resume + enable download.
+function applyFullResume(full){
+  var data = full;
+  if(typeof full === 'string'){ try { data = JSON.parse(full); } catch(e){ var m = full.match(/\{[\s\S]*\}/); data = m ? JSON.parse(m[0]) : null; } }
+  if(data){ resumeData = data; try { localStorage.setItem('vcp_scout_resume', JSON.stringify(data)); } catch(e){} showResumePreview(data, getPersonalData()); }
+  enableDownload();
+}
+function unlockResumeAsSubscriber(){
+  if(!scoutResumeDraftId || !window.VCBSecureApi) return;
+  window.VCBSecureApi.ensureSession(false)
+    .then(function(token){ return window.VCBSecureApi.scoutUnlock(scoutResumeDraftId, null, token); })
+    .then(function(r){ applyFullResume(r.full); })
+    .catch(function(){ /* not a verified subscriber; stay locked */ });
+}
+
 /* ── PDF GENERATION ── */
 window.downloadPDF = async function() {
   if (!resumeData) { alert('No resume data found. Please generate first.'); return; }
@@ -4735,7 +4778,16 @@ loadProgress();
 
 // Check if returning from Stripe with existing resume
 var urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('resume_paid') === '1') {
+// Enforced: returned from Stripe with a session bound to this draft -> fetch full copy.
+if (urlParams.get('scout_unlock') && urlParams.get('draft')) {
+  scoutResumeDraftId = urlParams.get('draft');
+  var _su = urlParams.get('scout_unlock');
+  window.history.replaceState({}, '', window.location.pathname);
+  window.VCBSecureApi.scoutUnlock(scoutResumeDraftId, _su).then(function(r){
+    try { localStorage.setItem('vcp_scout_resume_access', JSON.stringify({ paid:true, session:_su, expiry:Date.now()+24*60*60*1000 })); } catch(e){}
+    applyFullResume(r.full);
+  }).catch(function(){ alert('We could not verify your unlock. If you were charged, email support and we will fix it right away.'); });
+} else if (urlParams.get('resume_paid') === '1') {
   try {
     var savedResume = JSON.parse(localStorage.getItem('vcp_scout_resume'));
     if (savedResume) {

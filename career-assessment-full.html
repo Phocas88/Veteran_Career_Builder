@@ -2268,8 +2268,42 @@ function matchCareers(scores) {
 // RESULTS RENDERING
 // ══════════════════════════════════════════════════════════════════════════════
 
+// Send the taker (name/email entered earlier, or the logged-in account) to the
+// admin PathFinder list. Once per session per test.
+window.vcpLogPathfinder = function(test){
+  try {
+    var u = null;
+    try { u = JSON.parse(localStorage.getItem('vcp_pf_user')||'null'); } catch(e){}
+    if ((!u || !u.email) && window.firebase && firebase.auth) {
+      var cu = firebase.auth().currentUser;
+      if (cu && cu.email) u = { name: cu.displayName||'', email: cu.email };
+    }
+    if (!u || !u.email) return;
+    var key = 'vcp_pf_sent_' + test;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+    fetch((window.VCB_PROXY_URL||'https://vcp-proxy.vercel.app')+'/api/pathfinder-log', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ test: test, name: u.name||'', email: u.email, branch: u.branch||'', rank: u.rank||'', mos: u.mos||'' })
+    }).catch(function(){});
+  } catch(e){}
+};
 function renderResults(scores, rankedCareers, aiData) {
   showScreen('scr-results');
+  // Attribute this PathFinder Pro completion to the logged-in user (once/session).
+  try {
+    if (!window._pfProLogged && typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
+      var _pu = firebase.auth().currentUser;
+      if (_pu) {
+        window._pfProLogged = true;
+        var _inc = firebase.firestore.FieldValue.increment(1);
+        firebase.firestore().collection('profiles').doc(_pu.uid).collection('stats').doc('toolUsage')
+          .set({ pathfinder_pro: _inc, total: _inc, lastTool: 'pathfinder_pro', lastUsed: Date.now() }, { merge: true }).catch(function(){});
+      }
+    }
+  } catch(e) {}
+  // Record the taker (name/email captured earlier) so the admin PathFinder list shows who took it.
+  try { if (window.vcpLogPathfinder) window.vcpLogPathfinder('pathfinder_pro'); } catch(e) {}
   var output = document.getElementById('results-content');
   try {
   var userName = (userProfile && userProfile.name) ? userProfile.name : ((userProfile && userProfile.personal && userProfile.personal.name) ? userProfile.personal.name : 'Service Member');

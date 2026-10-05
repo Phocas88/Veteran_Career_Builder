@@ -159,7 +159,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <div class="dash-header">
     <div>
       <div class="dash-title">VCP Admin Dashboard</div>
-      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05h</span></div>
+      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05i</span></div>
     </div>
     <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
       <span id="admin-auth-status" style="font-size:.78rem;"></span>
@@ -190,6 +190,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <button class="tab" onclick="switchTab('analytics',this)">📊 Analytics</button>
     <button class="tab" onclick="switchTab('subscribers',this)">💳 Paid Subs</button>
     <button class="tab" id="msg-tab-btn" onclick="switchTab('messages',this)">💬 Messages <span id="msg-tab-badge" style="color:#f0c040;font-weight:700;display:none;"></span></button>
+    <button class="tab" onclick="switchTab('pathfinder',this)">🎯 PathFinder</button>
     <button class="tab" onclick="switchTab('add-salary',this)">+ Add Salary Entry</button>
     <button class="tab" onclick="switchTab('add-story',this)">+ Add Story</button>
     <button class="tab" id="rr-tab-btn" onclick="switchTab('resume-reviews',this)">📝 Resume Reviews <span id="rr-tab-badge" style="color:#f0c040;font-weight:700;display:none;"></span></button>
@@ -210,6 +211,12 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <div class="panel" id="panel-messages">
     <div style="font-size:.85rem;color:rgba(192,216,240,.5);margin-bottom:1rem;">Questions left through Scout, with the visitor's email/phone. Reply here (saved to the thread), or use AI Draft, then reach them via their contact.</div>
     <div id="msgs-root"><div class="loading">Loading messages…</div></div>
+  </div>
+
+  <!-- PATHFINDER TAKERS -->
+  <div class="panel" id="panel-pathfinder">
+    <div style="font-size:.85rem;color:rgba(192,216,240,.5);margin-bottom:1rem;">Who took the PathFinder career assessment (name + email they entered). Lite = free test, Pro = subscriber/paid test. Anonymous takers who skip the email step aren't listed.</div>
+    <div id="pf-root"><div class="loading">Loading PathFinder takers…</div></div>
   </div>
 
   <!-- EMAIL SUBSCRIBERS -->
@@ -485,6 +492,7 @@ function switchTab(name, btn) {
   if (name === 'analytics') loadAnalytics();
   if (name === 'subscribers') loadSubscribers();
   if (name === 'messages') loadMessages();
+  if (name === 'pathfinder') loadPathfinder();
 }
 // Allow the Resume Reviews module (desktop notification click) to focus its tab.
 window.rrFocusTab = function() {
@@ -555,6 +563,43 @@ function admUserActivity(u) {
   if ((u.usage && typeof u.usage.total === 'undefined') && tools.total) html += '';
   return html || '<span style="color:rgba(192,216,240,.3);">—</span>';
 }
+// Just the "which AI tools, how many times" list for a user.
+function admToolsCell(u) {
+  var tools = (u.usage && u.usage.tools) || {};
+  var list = Object.keys(tools).filter(function(k){ return k !== 'total'; })
+    .sort(function(a, b){ return tools[b] - tools[a]; }).slice(0, 8)
+    .map(function(k){ return k.replace(/_/g, ' ') + '×' + tools[k]; });
+  return list.length ? admEsc(list.join(', ')) : '<span style="color:rgba(192,216,240,.25);">—</span>';
+}
+
+// ── PATHFINDER TAKERS ────────────────────────────────────────────────────────
+function loadPathfinder() {
+  var root = document.getElementById('pf-root');
+  root.innerHTML = '<div class="loading">Loading PathFinder takers…</div>';
+  admFetch('/api/admin-pathfinder').then(function(d){
+    var takers = d.takers || [];
+    if (!takers.length) { root.innerHTML = '<div class="empty"><h3>No PathFinder takers yet</h3>Takers who enter their email on the assessment will appear here.</div>'; return; }
+    var c = d.counts || {};
+    var th = function(t){ return '<th style="padding:.5rem .6rem;text-align:left;color:#f0c040;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;">'+t+'</th>'; };
+    var html = '<div style="margin-bottom:.75rem;color:rgba(192,216,240,.6);font-size:.82rem;">Lite: <strong style="color:#f0c040;">'+(c.pathfinder_lite||0)+'</strong> · Pro: <strong style="color:#f0c040;">'+(c.pathfinder_pro||0)+'</strong> · Total: '+takers.length+'</div>';
+    html += '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;"><thead><tr>'+th('Name')+th('Email')+th('Test')+th('Service')+th('Taken')+th('Times')+'</tr></thead><tbody>';
+    takers.forEach(function(t){
+      var test = t.test === 'pathfinder_pro' ? '<span style="color:#7fe0a0;font-weight:600;">Pro</span>' : '<span style="color:#9bb3d0;">Lite</span>';
+      var svc = [t.branch,t.rank,t.mos].filter(Boolean).join(' · ');
+      html += '<tr style="border-top:1px solid rgba(255,255,255,.06);">'+
+        '<td style="padding:.5rem .6rem;color:#e8f0f8;">'+admEsc(t.name||'—')+'</td>'+
+        '<td style="padding:.5rem .6rem;"><a href="mailto:'+admEsc(t.email)+'" style="color:#4285f4;">'+admEsc(t.email)+'</a></td>'+
+        '<td style="padding:.5rem .6rem;">'+test+'</td>'+
+        '<td style="padding:.5rem .6rem;color:rgba(192,216,240,.6);font-size:.76rem;">'+admEsc(svc||'—')+'</td>'+
+        '<td style="padding:.5rem .6rem;color:rgba(192,216,240,.5);font-size:.76rem;">'+admDate(t.lastTakenAt)+'</td>'+
+        '<td style="padding:.5rem .6rem;text-align:center;color:#9bb3d0;">'+(t.takes||1)+'</td>'+
+      '</tr>';
+    });
+    html += '</tbody></table></div>';
+    root.innerHTML = html;
+  }).catch(function(e){ root.innerHTML = admErrHtml(e); });
+}
+
 function loadUsers() {
   // Profiles are owner-isolated in Firestore rules, so the admin reads them via
   // the proxy (Admin SDK bypasses rules). Needs the admin Google sign-in.
@@ -569,14 +614,19 @@ function loadUsers() {
     }
     var html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;">';
     html += '<thead><tr style="border-bottom:2px solid rgba(240,192,64,.2);text-align:left;">';
-    html += th('Name')+th('Email')+th('Branch')+th('Rank')+th('MOS')+th('Activity (created · AI tools used)')+th('Subscription')+th('Last Active');
+    html += th('Name')+th('Email')+th('Resumes')+th('Covers')+th('Scores')+th('AI Tools Used')+th('Subscriber')+th('Last Active');
     html += '</tr></thead><tbody>';
+    var cnt = function(n){ return '<td style="padding:.55rem .75rem;text-align:center;font-weight:700;color:'+(n?'#9bd0a0':'rgba(192,216,240,.25)')+';">'+(n==null?'·':n)+'</td>'; };
     users.forEach(function(u){
+      var c = u.created || {};
       var sub = u.hasSub ? '<span style="color:#4ade80;font-weight:600;">Active</span>' : '<span style="color:rgba(192,216,240,.6);">Free</span>';
       var la = u.updatedAt ? new Date(u.updatedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+      var svc = [u.branch,u.rank,u.mos].filter(Boolean).join(' · ');
       html += '<tr style="border-bottom:1px solid rgba(255,255,255,.05);">';
-      html += td(u.name, 'color:#e8f0f8;font-weight:500;') + td(u.email) + td(u.branch) + td(u.rank) + td(u.mos);
-      html += '<td style="padding:.55rem .75rem;font-size:.75rem;">'+admUserActivity(u)+'</td>';
+      html += '<td style="padding:.55rem .75rem;color:#e8f0f8;font-weight:500;">'+admEsc(u.name||'—')+(svc?'<div style="font-size:.68rem;color:rgba(192,216,240,.4);font-weight:400;">'+admEsc(svc)+'</div>':'')+'</td>';
+      html += td(u.email);
+      html += cnt(c.resumes) + cnt(c.coverLetters) + cnt(c.scores);
+      html += '<td style="padding:.55rem .75rem;font-size:.72rem;color:rgba(192,216,240,.6);max-width:220px;">'+admToolsCell(u)+'</td>';
       html += '<td style="padding:.55rem .75rem;">'+sub+'</td>';
       html += td(la, 'color:rgba(192,216,240,.5);font-size:.78rem;');
       html += '</tr>';

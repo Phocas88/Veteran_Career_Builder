@@ -2141,10 +2141,26 @@ function showResults(){
   _renderResults();
 }
 
+// Send the taker (name/email they entered) to the admin PathFinder list.
+window.vcpLogPathfinder = function(test){
+  try {
+    var u = null;
+    try { u = JSON.parse(localStorage.getItem('vcp_pf_user')||'null'); } catch(e){}
+    if (!u || !u.email) return;
+    var key = 'vcp_pf_sent_' + test;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+    fetch((window.VCB_PROXY_URL||'https://vcp-proxy.vercel.app')+'/api/pathfinder-log', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ test: test, name: u.name||'', email: u.email, branch: u.branch||'', rank: u.rank||'', mos: u.mos||'' })
+    }).catch(function(){});
+  } catch(e){}
+};
 function _renderResults(){
   document.getElementById("emailGate").style.display = "none";
   resultsScreen.style.display = "block";
   document.body.style.background = "#0a1628";
+  try { window.vcpLogPathfinder('pathfinder_lite'); } catch(e){}
 
   var scores = calcScores();
   var ranked = getRanked(scores);

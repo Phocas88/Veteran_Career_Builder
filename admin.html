@@ -161,7 +161,11 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
       <div class="dash-title">VCP Admin Dashboard</div>
       <div class="dash-user">Veteran Career Path · Content Management Panel</div>
     </div>
-    <button class="logout-btn" onclick="doLogout()">Log Out</button>
+    <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+      <span id="admin-auth-status" style="font-size:.78rem;"></span>
+      <button id="admin-signin-btn" onclick="adminSignIn()" style="display:none;background:#fff;color:#1a1a1a;border:none;border-radius:7px;padding:.45rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;">Sign in with Google (Admin)</button>
+      <button class="logout-btn" onclick="doLogout()">Log Out</button>
+    </div>
   </div>
 
   <!-- Stats -->
@@ -371,43 +375,65 @@ async function hashPin(pin) {
 }
 
 async function doLogin() {
+  // The admin claim is the real authorization (PIN is just a gate). Trigger the
+  // Google popup NOW — synchronously within this click gesture, before any await —
+  // because a popup opened after `await hashPin` gets blocked by the browser.
+  var signinPromise = null;
+  if (firebase.auth) {
+    var cu = firebase.auth().currentUser;
+    if (cu && !cu.isAnonymous) signinPromise = Promise.resolve(cu);
+    else { try { signinPromise = firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(c){ return c.user; }); } catch(e){ signinPromise = null; } }
+  }
   var pin = document.getElementById('pin-input').value;
   var pinHash = await hashPin(pin);
-  if(pinHash === ADMIN_PIN_HASH) {
-    authed = true;
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    // Sign in anonymously to Firebase for Firestore access
-    if(firebase.auth) {
-      // Real authorization is the Firebase admin claim (the PIN is just a gate).
-      // Firestore reads (emails/users/salary/stories) AND the proxy admin endpoints
-      // all require it, so sign in with the admin Google account here.
-      var u = firebase.auth().currentUser;
-      var needGoogle = !u || u.isAnonymous;
-      var signIn = needGoogle
-        ? firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(c){ return c.user; })
-        : Promise.resolve(u);
-      signIn
-        .then(function(user){ return user.getIdTokenResult(); })
-        .then(function(res){
-          if (!(res.claims && res.claims.admin === true)) {
-            toast('This Google account is not an admin. Data will not load.', '#c0392b');
-          } else {
-            console.log('Admin signed in OK');
-          }
-          loadAll();
-        })
-        .catch(function(e){
-          console.warn('Admin Google sign-in failed:', e.message);
-          toast('Google sign-in is required to load admin data.', '#c0392b');
-        });
-    } else {
-      loadAll();
-    }
-  } else {
+  if (pinHash !== ADMIN_PIN_HASH) {
     document.getElementById('login-error').style.display = 'block';
     document.getElementById('pin-input').value = '';
+    return;
   }
+  authed = true;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  if (!signinPromise) { loadAll(); return; }
+  signinPromise
+    .then(function(user){ return user.getIdTokenResult(); })
+    .then(function(res){ onAdminAuth(res.claims && res.claims.admin === true); loadAll(); })
+    .catch(function(e){ console.warn('Admin Google sign-in failed:', e.message); onAdminAuth(false, true); });
+}
+
+// Explicit, always-in-gesture admin sign-in (fallback if the popup was blocked
+// or a different Google account was used).
+function adminSignIn() {
+  if (!firebase.auth) return;
+  firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    .then(function(c){ return c.user.getIdTokenResult(); })
+    .then(function(res){
+      var ok = res.claims && res.claims.admin === true;
+      onAdminAuth(ok);
+      if (ok) adminRefreshActive();
+    })
+    .catch(function(e){ onAdminAuth(false, true); });
+}
+
+function onAdminAuth(isAdmin, failed) {
+  var s = document.getElementById('admin-auth-status');
+  var b = document.getElementById('admin-signin-btn');
+  if (isAdmin) {
+    if (s) { s.textContent = '✓ Admin'; s.style.color = '#50c878'; }
+    if (b) b.style.display = 'none';
+  } else {
+    if (s) { s.textContent = failed ? 'Sign in to load data →' : 'Not an admin account →'; s.style.color = '#f0c040'; }
+    if (b) b.style.display = 'inline-block';
+  }
+}
+
+// Reload the Firestore tabs + whichever proxy-backed tab is currently open.
+function adminRefreshActive() {
+  try { loadAll(); } catch(e){}
+  var p = function(id){ var el=document.getElementById(id); return el && el.classList.contains('active'); };
+  if (p('panel-subscribers')) loadSubscribers();
+  if (p('panel-analytics')) loadAnalytics();
+  if (p('panel-messages')) loadMessages();
 }
 
 function doLogout() {

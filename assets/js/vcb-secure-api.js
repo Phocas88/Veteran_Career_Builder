@@ -182,12 +182,42 @@
     throw new Error('AI service request failed.');
   }
 
+  // Free preview generation for the Scout resume/cover-letter funnels. No session
+  // token — the proxy runs a server-constrained, rate-limited path. `tool` is
+  // 'resume' or 'cover'; `prompt` is the full prompt the page already builds.
+  async function scoutGenerate(tool, prompt, maxTokens) {
+    if (!proxyBase()) {
+      throw new Error('AI service is not configured.');
+    }
+    const response = await fetch(endpoint('claude'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        scout: tool,
+        prompt: String(prompt || ''),
+        max_tokens: Math.min(Math.max(Number(maxTokens) || 2000, 1), 3000),
+      }),
+    });
+    let data = {};
+    try { data = await response.json(); } catch (e) { data = {}; }
+    if (!response.ok) {
+      const err = new Error(data && data.error ? data.error : 'AI service request failed.');
+      err.status = response.status;
+      err.limit = data && data.limit;
+      throw err;
+    }
+    return Array.isArray(data.content)
+      ? data.content.map(block => (block && block.text) || '').join('')
+      : '';
+  }
+
   window.VCBSecureApi = Object.freeze({
     isConfigured: () => Boolean(proxyBase()),
     validateCode,
     verifySubscription,
     ensureSession,
     callClaude,
+    scoutGenerate,
     clearSession,
   });
 })();

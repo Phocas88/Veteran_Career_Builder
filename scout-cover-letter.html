@@ -1655,7 +1655,7 @@ body.menu-open{overflow:hidden!important;}
       throw new Error('Secure AI client unavailable.');
     }
 
-    window.VCBSecureApi.callClaude(userPrompt, systemPrompt, 2000)
+    window.VCBSecureApi.scoutGenerate('cover', systemPrompt + '\n\n' + userPrompt, 2000)
     .then(function(text){
       text = String(text || '').trim();
 
@@ -1700,7 +1700,11 @@ body.menu-open{overflow:hidden!important;}
     .catch(function(err){
       loadingEl.classList.remove('show');
       generateBtn.disabled = false;
-      showError(err.message || 'Something went wrong. Please try again.');
+      if (err && err.status === 429) {
+        showError((err.message || 'You have reached today\'s free limit.') + ' Subscribe for unlimited at veterancareerpath.com/app.html');
+      } else {
+        showError((err && err.message) ? err.message : 'Something went wrong. Please try again.');
+      }
     });
   });
 

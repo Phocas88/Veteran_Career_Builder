@@ -3581,7 +3581,7 @@ window.generateResume = function() {
   // Build prompt
   var prompt = buildPrompt(p, mil, t, civ, edu, certs, skills, style, emphasis);
 
-  window.VCBSecureApi.callClaude(prompt, '', 3000)
+  window.VCBSecureApi.scoutGenerate('resume', prompt, 3000)
   .then(function(text) { return { content: [{ text: text || '' }] }; })
   .then(function(data) {
     clearInterval(loadingInterval);
@@ -3630,7 +3630,11 @@ window.generateResume = function() {
   })
   .catch(function(err) {
     clearInterval(loadingInterval);
-    alert('Network error. Please check your connection and try again.');
+    if (err && err.status === 429) {
+      alert((err.message || 'You have reached today\'s free limit.') + '\n\nYou can subscribe for unlimited resumes at veterancareerpath.com/app.html');
+    } else {
+      alert((err && err.message) ? err.message : 'Something went wrong generating your resume. Please try again.');
+    }
     goStep(8);
   });
 };

@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#050d18">
+<meta name="description" content="See how Veteran Career Path turns your resume review into a living career hub.">
+<title>Veteran Career Path — Live Demo</title>
+<link rel="icon" type="image/png" sizes="96x96" href="/img/optimized/logo-96.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050d18; --panel:#0a1526; --panel2:#0d1f3c; --panel3:#102542;
+    --gold:#f0c040; --gold2:#c8a951; --goldDeep:#b07d1f;
+    --cream:#f5f0e8; --dim:#8fa3bd; --dim2:#5f7391; --white:#fff;
+    --line:rgba(255,255,255,.09); --line2:rgba(240,192,64,.18);
+    --good:#4ade80; --goodBg:rgba(74,222,128,.12);
+    --bad:#f0876b; --badBg:rgba(240,135,107,.1);
+    --f-display:"Bebas Neue","Oswald","Arial Narrow",system-ui,sans-serif;
+    --f-body:"DM Sans",system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:
+      radial-gradient(1000px 600px at 50% -10%, #0c1c35, transparent 60%),
+      radial-gradient(800px 500px at 90% 110%, #0a1a30, transparent 55%),
+      #04080f;
+    font-family:var(--f-body);color:var(--cream);
+    display:flex;align-items:stretch;justify-content:center;
+    min-height:100%;padding:0;
+  }
+
+  /* ===== phone stage ===== */
+  /* On mobile the app is a DEFINITE-height flex column (100dvh) so the inner .scroll
+     scrolls instead of the app growing taller than the viewport (which, combined with
+     centering, used to make the top unreachable). */
+  .stage{width:100%;display:flex;align-items:stretch;justify-content:center;}
+  .app{
+    position:relative;width:100%;max-width:440px;height:100vh;height:100dvh;
+    background:var(--bg);overflow:hidden;display:flex;flex-direction:column;
+    box-shadow:0 0 0 1px rgba(255,255,255,.04);
+  }
+  @media(min-width:900px){
+    body{padding:28px;align-items:center;}
+    .stage{align-items:center;min-height:100vh;}
+    .app{height:min(920px,94vh);border-radius:44px;
+      box-shadow:0 40px 120px rgba(0,0,0,.6), 0 0 0 11px #0a0f17, 0 0 0 13px #1b2433;}
+    .app::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+      width:148px;height:28px;background:#0a0f17;border-radius:0 0 18px 18px;z-index:60;}
+  }
+
+  /* ===== scroll area ===== */
+  .scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior:contain;}
+  .scroll::-webkit-scrollbar{display:none;}
+
+  /* ===== top bar ===== */
+  .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px;background:rgba(5,13,24,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+  .brand{display:flex;align-items:center;gap:9px;}
+  .brand .blogo{height:38px;width:auto;display:block;}
+  .daychip{display:inline-flex;align-items:center;gap:6px;background:var(--goodBg);border:1px solid rgba(74,222,128,.3);
+    color:#aef2c6;border-radius:100px;padding:5px 11px;font-size:11px;font-weight:700;letter-spacing:.02em;}
+  .daychip .d{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px rgba(74,222,128,.22);}
+
+  /* ===== views ===== */
+  .view{display:none;padding:18px 18px 30px;animation:fade .45s ease;}
+  .view.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  @keyframes slideIn{from{opacity:0;transform:translateX(26px);}to{opacity:1;transform:none;}}
+
+  .eyebrow{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);}
+  h1.big{font-family:var(--f-display);font-weight:600;letter-spacing:.01em;line-height:1.02;
+    font-size:40px;color:var(--white);margin:8px 0 6px;}
+  .lede{font-size:14.5px;color:var(--dim);line-height:1.55;}
+  .lede b{color:var(--gold);font-weight:700;}
+  .section-h{font-family:var(--f-display);font-weight:600;letter-spacing:.05em;font-size:19px;color:var(--gold);
+    text-transform:uppercase;margin:26px 0 12px;display:flex;align-items:center;gap:9px;}
+  .section-h .ln{height:1px;flex:1;background:var(--line2);}
+
+  /* ===== hero review CTA ===== */
+  .reviewCta{margin-top:18px;border-radius:18px;padding:20px;cursor:pointer;border:1px solid var(--line2);
+    background:linear-gradient(135deg,rgba(240,192,64,.16),rgba(240,192,64,.03));position:relative;overflow:hidden;
+    transition:transform .16s,box-shadow .16s;}
+  .reviewCta:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(240,192,64,.14);}
+  .reviewCta:active{transform:translateY(0);}
+  .reviewCta .rc-eye{font-size:10.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);}
+  .reviewCta h2{font-family:var(--f-display);font-weight:600;letter-spacing:.02em;font-size:28px;color:var(--white);margin:6px 0 6px;text-transform:uppercase;}
+  .reviewCta p{font-size:13px;color:var(--dim);line-height:1.5;max-width:40ch;}
+  .reviewCta .arrow{margin-top:14px;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),#e0a820);
+    color:#0a1628;font-weight:800;font-size:14px;padding:11px 18px;border-radius:11px;box-shadow:0 6px 20px rgba(240,192,64,.3);}
+  .reviewCta .ribbon{position:absolute;top:14px;right:-34px;transform:rotate(45deg);background:var(--good);color:#06240f;
+    font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 40px;text-transform:uppercase;}
+
+  /* ===== quick stats ===== */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;}
+  .stat .n{font-family:var(--f-display);font-weight:600;font-size:30px;color:var(--white);line-height:1;letter-spacing:.01em;}
+  .stat .n em{font-style:normal;font-size:15px;color:var(--dim);}
+  .stat .l{font-size:11.5px;color:var(--dim);margin-top:6px;letter-spacing:.02em;}
+  .stat .bar{height:4px;border-radius:3px;background:rgba(255,255,255,.08);margin-top:10px;overflow:hidden;}
+  .stat .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width 1.1s cubic-bezier(.2,.7,.2,1);}
+
+  /* ===== resource cards ===== */
+  .rgroup{margin-top:6px;}
+  .rcard{display:flex;gap:13px;align-items:flex-start;width:100%;text-align:left;cursor:pointer;
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;
+    color:inherit;transition:border-color .15s,background .15s,transform .15s;}
+  .rcard:hover{border-color:rgba(240,192,64,.4);background:rgba(240,192,64,.045);transform:translateY(-2px);}
+  .rcard:active{transform:translateY(0);}
+  .rcard .ic{flex:0 0 42px;height:42px;border-radius:11px;background:rgba(240,192,64,.1);border:1px solid var(--line2);
+    display:flex;align-items:center;justify-content:center;color:var(--gold);}
+  .rcard .ic svg{width:21px;height:21px;}
+  .rcard .tx{flex:1;min-width:0;}
+  .rcard .tt{font-weight:700;font-size:14.5px;color:var(--white);display:flex;align-items:center;gap:6px;}
+  .rcard .tt .ext{font-size:11px;color:var(--dim);}
+  .rcard .dd{font-size:12.5px;color:var(--dim);line-height:1.45;margin-top:3px;}
+  .rcard .chev{align-self:center;color:var(--dim);flex:0 0 auto;}
+
+  /* ===== bottom nav ===== */
+  .nav{display:flex;border-top:1px solid var(--line);background:rgba(7,15,28,.95);backdrop-filter:blur(12px);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:50;}
+  .nav button{flex:1;background:none;border:none;color:var(--dim2);cursor:pointer;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--f-body);border-radius:12px;transition:color .15s;}
+  .nav button svg{width:22px;height:22px;}
+  .nav button .lb{font-size:10px;font-weight:700;letter-spacing:.03em;}
+  .nav button.active{color:var(--gold);}
+  .nav button.active .pip{opacity:1;}
+  .nav button .pip{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:0;margin-top:-2px;}
+
+  /* ===== splash / unlock ===== */
+  .splash{position:absolute;inset:0;z-index:80;
+    background:radial-gradient(120% 90% at 50% 0%, #10294e, transparent 60%), linear-gradient(170deg,#0b1d3a,#050d18);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:34px;gap:6px;}
+  .splash-logo{width:168px;max-width:62%;height:auto;margin-bottom:6px;cursor:pointer;
+    filter:drop-shadow(0 18px 44px rgba(0,0,0,.55));animation:pop .6s ease;}
+  @keyframes pop{0%{transform:scale(.6);opacity:0;}60%{transform:scale(1.08);}100%{transform:scale(1);opacity:1;}}
+  .splash .sp-eye{font-size:11px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);}
+  .splash h1{font-family:var(--f-display);font-weight:600;font-size:46px;letter-spacing:.01em;color:var(--white);line-height:1;margin:8px 0;}
+  .splash .verify{font-size:13px;color:var(--dim);display:flex;align-items:center;gap:9px;min-height:20px;}
+  .splash .spin{width:15px;height:15px;border:2px solid rgba(240,192,64,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .splash .ok{color:var(--good);font-weight:700;display:none;align-items:center;gap:7px;}
+  .splash .enter{margin-top:22px;background:linear-gradient(135deg,var(--gold),#e0a820);color:#0a1628;font-weight:800;
+    font-size:16px;padding:15px 30px;border:none;border-radius:14px;cursor:pointer;box-shadow:0 10px 34px rgba(240,192,64,.34);
+    opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s,filter .15s;font-family:var(--f-body);}
+  .splash .enter.show{opacity:1;transform:none;}
+  .splash .enter:hover{filter:brightness(1.06);}
+  .splash .tag{position:absolute;bottom:20px;font-size:10.5px;color:var(--dim2);letter-spacing:.04em;}
+  .splash.hide{animation:splashOut .5s ease forwards;}
+  @keyframes splashOut{to{opacity:0;transform:scale(1.04);visibility:hidden;}}
+
+  /* ===== detail overlay ===== */
+  .detail{position:absolute;inset:0;z-index:70;background:var(--bg);display:none;flex-direction:column;}
+  .detail.open{display:flex;animation:slideIn .32s ease;}
+  .detail .dhead{position:sticky;top:0;display:flex;align-items:center;gap:12px;padding:14px 16px;
+    background:rgba(5,13,24,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);z-index:5;}
+  .detail .back{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--cream);width:36px;height:36px;
+    border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .detail .dtitle{font-family:var(--f-display);font-weight:600;letter-spacing:.04em;font-size:17px;text-transform:uppercase;color:var(--white);}
+  .detail .dbody{flex:1;min-height:0;overflow-y:auto;padding:18px;scrollbar-width:none;}
+  .detail .dbody::-webkit-scrollbar{display:none;}
+
+  /* review content */
+  .rv-hero{border-radius:16px;padding:18px;background:linear-gradient(135deg,rgba(240,192,64,.14),rgba(13,31,60,.4));border:1px solid var(--line2);}
+  .rv-hero .t{font-family:var(--f-display);font-weight:600;font-size:24px;color:var(--white);text-transform:uppercase;letter-spacing:.02em;line-height:1.05;}
+  .rv-hero .s{font-size:13px;color:var(--dim);margin-top:6px;}
+  .score2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+  .score2 .c{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px;}
+  .score2 .c .n{font-family:var(--f-display);font-weight:600;font-size:27px;color:var(--white);line-height:1;}
+  .score2 .c .n .up{color:var(--good);}
+  .score2 .c .l{font-size:11px;color:var(--dim);margin-top:5px;}
+
+  .block-h{font-family:var(--f-display);font-weight:600;letter-spacing:.05em;font-size:16px;color:var(--gold);text-transform:uppercase;margin:22px 0 11px;}
+  .trow{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin-bottom:8px;}
+  .trow .m{flex:1;font-size:12.5px;color:var(--dim);}
+  .trow .ar{color:var(--gold);font-weight:800;}
+  .trow .c{flex:1;font-size:12.5px;color:var(--white);font-weight:600;text-align:right;}
+
+  .ba{border-radius:13px;overflow:hidden;border:1px solid var(--line);margin-bottom:11px;}
+  .ba .b{background:var(--badBg);padding:12px 13px;border-bottom:1px solid var(--line);}
+  .ba .a{background:var(--goodBg);padding:12px 13px;}
+  .ba .hd{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+  .ba .b .hd{color:var(--bad);} .ba .a .hd{color:var(--good);}
+  .ba .hd .pp{width:7px;height:7px;border-radius:50%;} .ba .b .hd .pp{background:var(--bad);}.ba .a .hd .pp{background:var(--good);}
+  .ba .tt{font-size:13px;line-height:1.5;color:var(--cream);}
+  .ba .a .tt{font-weight:500;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:7px;}
+  .chip{font-size:12px;font-weight:600;color:var(--cream);background:var(--panel);border:1px solid var(--line);padding:6px 11px;border-radius:100px;}
+  .chip.hot{background:rgba(240,192,64,.12);border-color:rgba(240,192,64,.4);color:var(--gold);}
+
+  .role{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:9px;}
+  .role .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+  .role .nm{font-weight:700;font-size:14px;color:var(--white);}
+  .role .pay{font-weight:800;font-size:13px;color:var(--good);white-space:nowrap;}
+  .role .mt{display:flex;align-items:center;gap:8px;margin-top:9px;}
+  .role .mbar{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;}
+  .role .mbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--good));transition:width 1s ease;}
+  .role .mpct{font-size:11px;color:var(--dim);font-weight:700;width:34px;text-align:right;}
+
+  .road{border-left:2px solid var(--line2);margin-left:8px;}
+  .step{position:relative;padding:0 0 18px 20px;}
+  .step:last-child{padding-bottom:0;}
+  .step::before{content:"";position:absolute;left:-7px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--gold);}
+  .step.now::before{background:var(--gold);}
+  .step .w{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
+  .step .t{font-weight:700;font-size:13.5px;margin:3px 0;color:var(--white);}
+  .step .d{font-size:12px;color:var(--dim);line-height:1.5;}
+
+  .note{border-radius:14px;padding:16px;background:linear-gradient(135deg,rgba(13,31,60,.6),rgba(240,192,64,.05));border:1px solid var(--line2);margin-top:8px;}
+  .note p{font-size:13.5px;line-height:1.65;color:var(--cream);}
+  .note .sig{margin-top:10px;font-size:11.5px;color:var(--dim);}
+  .note .sig b{color:var(--gold);display:block;font-family:var(--f-display);font-size:14px;letter-spacing:.04em;}
+
+  /* salary chart */
+  .bars{display:flex;flex-direction:column;gap:11px;margin-top:4px;}
+  .brow{display:flex;align-items:center;gap:10px;}
+  .brow .bl{width:118px;font-size:12px;color:var(--cream);font-weight:600;}
+  .brow .bt{flex:1;height:22px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden;position:relative;}
+  .brow .bt i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--goldDeep),var(--gold));transition:width 1s cubic-bezier(.2,.7,.2,1);}
+  .brow .bv{font-size:12px;font-weight:800;color:var(--gold);width:52px;text-align:right;font-variant-numeric:tabular-nums;}
+
+  .qa{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;margin-bottom:10px;}
+  .qa .q{font-weight:700;font-size:13.5px;color:var(--white);display:flex;gap:8px;}
+  .qa .q .qm{color:var(--gold);font-weight:800;}
+  .qa .a{font-size:12.5px;color:var(--dim);line-height:1.55;margin-top:7px;padding-left:19px;}
+
+  .listcard{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:6px 14px;}
+  .li{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .li:last-child{border-bottom:none;}
+  .li .lg{width:34px;height:34px;border-radius:9px;background:rgba(240,192,64,.1);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:800;font-size:13px;}
+  .li .ln2{font-size:13.5px;color:var(--white);font-weight:600;}
+  .li .ls{font-size:11.5px;color:var(--dim);}
+  .li .badge{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--good);background:var(--goodBg);border:1px solid rgba(74,222,128,.3);padding:3px 9px;border-radius:100px;}
+
+  .openlink{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;background:rgba(240,192,64,.1);
+    border:1px solid var(--line2);color:var(--gold);font-weight:700;font-size:13.5px;padding:13px;border-radius:12px;cursor:pointer;width:100%;font-family:var(--f-body);text-decoration:none;}
+  .openlink:hover{background:rgba(240,192,64,.18);}
+  .disc{font-size:11px;color:var(--dim2);text-align:center;margin-top:12px;line-height:1.5;}
+
+  /* ===== next steps ===== */
+  .ring-wrap{display:flex;align-items:center;gap:18px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:6px;}
+  .ring{position:relative;width:92px;height:92px;flex:0 0 auto;}
+  .ring svg{transform:rotate(-90deg);}
+  .ring .tr{fill:none;stroke:rgba(255,255,255,.08);stroke-width:9;}
+  .ring .pr{fill:none;stroke:url(#gg);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset .7s cubic-bezier(.2,.7,.2,1);}
+  .ring .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .ring .ctr .p{font-family:var(--f-display);font-weight:600;font-size:26px;color:var(--white);line-height:1;}
+  .ring .ctr .s{font-size:9px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;}
+  .ring-wrap .rtx .rt{font-family:var(--f-display);font-weight:600;font-size:18px;color:var(--white);text-transform:uppercase;letter-spacing:.03em;}
+  .ring-wrap .rtx .rs{font-size:12.5px;color:var(--dim);margin-top:4px;line-height:1.5;}
+
+  .task{display:flex;align-items:flex-start;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:13px;
+    padding:14px;margin-bottom:9px;cursor:pointer;transition:border-color .15s,background .15s;}
+  .task:hover{border-color:rgba(240,192,64,.3);}
+  .task .ck{flex:0 0 24px;height:24px;border-radius:7px;border:2px solid var(--dim2);display:flex;align-items:center;justify-content:center;
+    color:#0a1628;transition:background .18s,border-color .18s,transform .18s;margin-top:1px;}
+  .task .ck svg{width:14px;height:14px;opacity:0;transform:scale(.4);transition:opacity .18s,transform .18s;}
+  .task.done .ck{background:var(--good);border-color:var(--good);}
+  .task.done .ck svg{opacity:1;transform:scale(1);}
+  .task .tb .tt{font-size:14px;font-weight:600;color:var(--white);transition:color .18s;}
+  .task.done .tb .tt{color:var(--dim);text-decoration:line-through;}
+  .task .tb .td{font-size:12px;color:var(--dim);margin-top:3px;line-height:1.45;}
+  .celebrate{text-align:center;padding:26px 20px;border-radius:18px;margin-top:14px;display:none;
+    background:linear-gradient(170deg,rgba(74,222,128,.14),rgba(13,31,60,.55));border:1px solid rgba(74,222,128,.3);}
+  .celebrate.show{display:block;animation:pop .5s ease;}
+  .celebrate .cel-logo{width:88px;height:auto;margin:0 auto 10px;display:block;filter:drop-shadow(0 12px 28px rgba(0,0,0,.5));}
+  .celebrate .t{font-family:var(--f-display);font-weight:600;font-size:27px;color:var(--white);text-transform:uppercase;letter-spacing:.02em;line-height:1.04;}
+  .celebrate .s{font-size:13px;color:#cfe9d8;margin:8px auto 0;line-height:1.5;max-width:32ch;}
+  .celebrate .cel-price{display:inline-flex;align-items:baseline;gap:9px;margin:16px 0 2px;background:rgba(240,192,64,.12);border:1px solid rgba(240,192,64,.3);border-radius:100px;padding:8px 18px;}
+  .celebrate .cel-price .amt{font-family:var(--f-display);font-weight:600;font-size:30px;color:var(--gold);letter-spacing:.02em;line-height:1;}
+  .celebrate .cel-price .lbl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);}
+  .celebrate .cel-cta{display:block;margin-top:14px;background:linear-gradient(135deg,var(--gold),#e0a820);color:#0a1628;
+    font-weight:800;font-size:16px;padding:15px;border-radius:13px;text-decoration:none;box-shadow:0 10px 30px rgba(240,192,64,.3);}
+  .celebrate .cel-cta:hover{filter:brightness(1.05);}
+  .celebrate .cel-url{font-size:11px;color:var(--dim);margin-top:12px;letter-spacing:.05em;}
+
+  .foot{text-align:center;font-size:10.5px;color:var(--dim2);line-height:1.6;padding:20px 16px 8px;}
+
+  /* confetti */
+  .confetti{position:absolute;inset:0;pointer-events:none;z-index:90;overflow:hidden;}
+  .confetti i{position:absolute;top:-12px;width:8px;height:12px;opacity:.9;animation:fall linear forwards;}
+  @keyframes fall{to{transform:translateY(960px) rotate(540deg);opacity:0;}}
+
+  /* ===== info tooltip (tap-up bottom sheet) ===== */
+  .infobtn{flex:0 0 auto;width:19px;height:19px;border-radius:50%;border:1px solid var(--line2);background:rgba(240,192,64,.08);
+    color:var(--gold);font-size:11px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+    font-family:var(--f-body);line-height:1;}
+  .infobtn:hover{background:rgba(240,192,64,.2);}
+  .section-h .infobtn,.block-h .infobtn{margin-left:2px;}
+  .tipbackdrop{position:absolute;inset:0;z-index:94;background:rgba(3,8,16,.55);opacity:0;visibility:hidden;transition:opacity .25s;}
+  .tipbackdrop.open{opacity:1;visibility:visible;}
+  .tipsheet{position:absolute;left:0;right:0;bottom:0;z-index:95;background:#0b1626;border-top:1px solid var(--line2);
+    border-radius:20px 20px 0 0;padding:20px 20px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -20px 50px rgba(0,0,0,.55);
+    transform:translateY(112%);transition:transform .3s cubic-bezier(.2,.7,.2,1);}
+  .tipsheet.open{transform:none;}
+  .tipsheet .th{font-family:var(--f-display);font-weight:600;font-size:19px;letter-spacing:.03em;color:var(--gold);text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .tipsheet .th button{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--cream);width:30px;height:30px;border-radius:8px;cursor:pointer;flex:0 0 auto;font-size:14px;}
+  .tipsheet .tcopy{font-size:14px;line-height:1.68;color:var(--cream);}
+  .tipsheet .tcopy b{color:var(--gold);}
+
+  /* ===== ATS callout ===== */
+  .ats-callout{background:linear-gradient(135deg,rgba(240,192,64,.13),rgba(13,31,60,.4));border:1px solid var(--line2);
+    border-radius:14px;padding:15px;margin-bottom:12px;}
+  .ats-callout .big-stat{font-family:var(--f-display);font-weight:600;font-size:36px;color:var(--gold);line-height:1;}
+  .ats-callout .cap{font-size:13px;color:var(--cream);line-height:1.5;margin-top:5px;}
+
+  /* ===== clickable career role ===== */
+  .role{width:100%;text-align:left;cursor:pointer;color:inherit;font-family:var(--f-body);}
+  .role:hover{border-color:rgba(240,192,64,.4);background:rgba(240,192,64,.04);}
+  .role .top .nm{display:flex;align-items:center;gap:7px;}
+  .role .tagline{font-size:11.5px;color:var(--dim);margin-top:6px;line-height:1.45;}
+  .role .seemore{font-size:11px;font-weight:700;color:var(--gold);margin-top:9px;display:flex;align-items:center;gap:5px;}
+  .role.alt{border-style:dashed;}
+  .pill-door{font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--gold2);background:rgba(240,192,64,.1);border:1px solid var(--line2);padding:2px 7px;border-radius:100px;}
+
+  /* ===== career detail ===== */
+  .cstat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 8px;}
+  .cstat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px;}
+  .cstat .n{font-family:var(--f-display);font-weight:600;font-size:25px;color:var(--white);line-height:1;}
+  .cstat .n.g{color:var(--good);}
+  .cstat .l{font-size:10.5px;color:var(--dim);margin-top:6px;letter-spacing:.02em;line-height:1.3;}
+  .why{background:var(--goodBg);border:1px solid rgba(74,222,128,.25);border-radius:12px;padding:13px;margin:8px 0;}
+  .why .h{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--good);margin-bottom:5px;}
+  .why p{font-size:13px;line-height:1.55;color:var(--cream);}
+
+  /* ===== roadmap expandable + options ===== */
+  .step.ex{cursor:pointer;}
+  .step .head{display:flex;align-items:center;gap:8px;}
+  .step .toggle{margin-left:auto;color:var(--gold);font-size:16px;font-weight:700;transition:transform .2s;line-height:1;}
+  .step.open .toggle{transform:rotate(45deg);}
+  .step .opts{max-height:0;overflow:hidden;transition:max-height .32s ease;}
+  .step.open .opts{max-height:420px;}
+  .opt{display:flex;gap:9px;align-items:flex-start;margin-top:10px;}
+  .opt .k{font-size:9.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--gold2);background:rgba(240,192,64,.1);border:1px solid var(--line2);border-radius:6px;padding:3px 7px;white-space:nowrap;flex:0 0 auto;margin-top:1px;}
+  .opt .ov{font-size:12px;color:var(--cream);line-height:1.5;}
+  .note-sm{font-size:12.5px;color:var(--dim);line-height:1.55;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:12px 13px;margin-bottom:12px;}
+  .note-sm b{color:var(--gold);}
+
+  /* ===== experience sources ===== */
+  .srcline{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 12px;}
+  .srctag{font-size:10.5px;font-weight:700;letter-spacing:.02em;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:100px;padding:4px 10px;}
+  .srctag.on{color:var(--gold);border-color:var(--line2);background:rgba(240,192,64,.08);}
+  .ba .srcbadge{font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--gold2);margin-left:auto;}
+  .ba .hd{justify-content:flex-start;}
+
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important;}}
+  button:focus-visible,.rcard:focus-visible,.task:focus-visible,.role:focus-visible,.step:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="app" id="app">
+
+    <!-- SPLASH -->
+    <div class="splash" id="splash">
+      <img src="/img/optimized/logo-512.png" alt="Veteran Career Path" class="splash-logo" id="lock">
+      <h1>Your Career<br>Journey</h1>
+      <div class="verify" id="verify"><span class="spin"></span><span>Verifying your private link…</span></div>
+      <div class="verify ok" id="verifyOk"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Link verified — welcome, Alex</span></div>
+      <button class="enter" id="enterBtn">Open my journey →</button>
+      <div class="tag">Interactive demo · sample client</div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="brand"><img src="/img/optimized/logo-96.webp" alt="Veteran Career Path" class="blogo"></div>
+      <span class="daychip"><span class="d"></span>30 days left</span>
+    </div>
+
+    <!-- SCROLL / VIEWS -->
+    <div class="scroll" id="scroll">
+
+      <!-- HOME -->
+      <section class="view active" id="view-home">
+        <div class="eyebrow">Your career journey</div>
+        <h1 class="big">Welcome,<br>Alex</h1>
+        <p class="lede">Your personalized next steps toward <b>Aircraft Maintenance Technician</b> — built from your resume review by a real Veteran Career Path reviewer.</p>
+
+        <div class="reviewCta" id="homeReviewCta">
+          <span class="ribbon">Ready</span>
+          <div class="rc-eye">Start here</div>
+          <h2>My Resume<br>Review</h2>
+          <p>Your military experience, translated into language civilian employers and hiring systems actually reward.</p>
+          <span class="arrow">Open my review →</span>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><div class="n" data-count="9.5" data-suffix="/10">0/10</div><div class="l">Resume score after fixes</div><div class="bar"><i data-w="95"></i></div></div>
+          <div class="stat"><div class="n" data-count="15">0</div><div class="l">ATS keywords added</div><div class="bar"><i data-w="86"></i></div></div>
+          <div class="stat"><div class="n" data-prefix="+$" data-count="10" data-suffix="K">+$0</div><div class="l">A&amp;P credential pay bump</div><div class="bar"><i data-w="85"></i></div></div>
+          <div class="stat"><div class="n" data-count="5">0</div><div class="l">Matched target roles</div><div class="bar"><i data-w="78"></i></div></div>
+        </div>
+
+        <div class="section-h">Continue your journey <span class="ln"></span></div>
+        <button class="rcard" data-detail="supply">
+          <span class="ic" data-icon="brief"></span>
+          <span class="tx"><span class="tt">Aviation Careers</span><span class="dd">Roles, pay, and top employers in your field</span></span>
+          <span class="chev" data-icon="chev"></span>
+        </button>
+        <button class="rcard" data-detail="certs">
+          <span class="ic" data-icon="cert"></span>
+          <span class="tx"><span class="tt">Certification Roadmap</span><span class="dd">The certs that matter, in the order to earn them</span></span>
+          <span class="chev" data-icon="chev"></span>
+        </button>
+        <button class="rcard" data-detail="salary">
+          <span class="ic" data-icon="chart"></span>
+          <span class="tx"><span class="tt">Salary Data</span><span class="dd">What your target roles actually pay</span></span>
+          <span class="chev" data-icon="chev"></span>
+        </button>
+
+        <div class="foot">Veteran Career Path · veterancareerpath.com<br>Not affiliated with any government agency.</div>
+      </section>
+
+      <!-- REVIEW -->
+      <section class="view" id="view-review">
+        <div class="rv-hero">
+          <div class="t">Flight Line → Aviation</div>
+          <div class="s">TSgt Alex Rivera · 2A3X1 Crew Chief · 10 years · Air Force → Aircraft Maintenance Tech</div>
+          <div class="score2">
+            <div class="c"><div class="n">7 <span class="up">→ 9.5</span></div><div class="l">Resume score, before → after <button class="infobtn" data-tip="score" aria-label="What is the resume score?">i</button></div></div>
+            <div class="c"><div class="n">15</div><div class="l">ATS keywords we added</div></div>
+          </div>
+        </div>
+
+        <div class="block-h">Military → Civilian <button class="infobtn" data-tip="milciv" aria-label="About military to civilian translation">i</button></div>
+        <div class="trow"><span class="m">Crew Chief (2A3X1)</span><span class="ar">→</span><span class="c">Lead aircraft maintenance technician</span></div>
+        <div class="trow"><span class="m">Technical Orders (TOs)</span><span class="ar">→</span><span class="c">FAA manuals &amp; maintenance docs</span></div>
+        <div class="trow"><span class="m">Sortie generation / flight line</span><span class="ar">→</span><span class="c">Line maintenance &amp; turnaround</span></div>
+        <div class="trow"><span class="m">Aircraft forms &amp; Red X</span><span class="ar">→</span><span class="c">Airworthiness records &amp; logbooks</span></div>
+
+        <div class="block-h">Before → After</div>
+        <div class="note-sm">We rewrite your <b>whole résumé</b> — military, civilian, and government roles, plus education — not just your service.</div>
+        <div class="srcline">
+          <span class="srctag on">Military service</span><span class="srctag on">Civilian jobs</span><span class="srctag on">Government roles</span><span class="srctag on">Education</span>
+        </div>
+        <div class="ba">
+          <div class="b"><div class="hd"><span class="pp"></span>Before <span class="srcbadge">Military</span></div><div class="tt">"Performed maintenance on F-16 aircraft during two deployments."</div></div>
+          <div class="a"><div class="hd"><span class="pp"></span>After</div><div class="tt">"Maintained flight-ready status on a fleet of 12 F-16s as Crew Chief; led a 5-person team and logged 2,000+ sortie-hours with zero maintenance-related aborts."</div></div>
+        </div>
+        <div class="ba">
+          <div class="b"><div class="hd"><span class="pp"></span>Before <span class="srcbadge">Military</span></div><div class="tt">"Fixed problems with aircraft systems."</div></div>
+          <div class="a"><div class="hd"><span class="pp"></span>After</div><div class="tt">"Diagnosed &amp; repaired hydraulic, pneumatic, and electrical faults to technical-order standards — returned aircraft to service 20% faster than the squadron average."</div></div>
+        </div>
+        <div class="ba">
+          <div class="b"><div class="hd"><span class="pp"></span>Before <span class="srcbadge">Civilian job</span></div><div class="tt">"Worked at an auto shop before enlisting."</div></div>
+          <div class="a"><div class="hd"><span class="pp"></span>After</div><div class="tt">"Diagnosed and repaired complex mechanical &amp; electrical systems at a high-volume auto shop — hands-on troubleshooting that transfers straight to the flight line."</div></div>
+        </div>
+
+        <div class="block-h">ATS Keywords <button class="infobtn" data-tip="ats" aria-label="What are ATS keywords?">i</button></div>
+        <div class="ats-callout">
+          <div class="big-stat">~75%</div>
+          <div class="cap">of résumés are filtered out by Applicant Tracking Software <b>before a human ever reads them.</b> We added <b>15 keywords</b> your target roles screen for — so yours gets through.</div>
+        </div>
+        <div class="chips">
+          <span class="chip hot">A&amp;P Certification</span><span class="chip hot">FAA Regulations (FAR)</span><span class="chip hot">Troubleshooting</span>
+          <span class="chip hot">Preventive Maintenance</span><span class="chip hot">Technical Manuals</span><span class="chip hot">Airframe &amp; Powerplant</span>
+          <span class="chip">Hydraulics</span><span class="chip">Avionics</span><span class="chip">Sheet Metal Repair</span>
+          <span class="chip">Borescope Inspection</span><span class="chip">NDT Inspection</span><span class="chip">Flight Line Ops</span>
+          <span class="chip">Quality Assurance</span><span class="chip">Safety Compliance</span><span class="chip">Composite Repair</span>
+        </div>
+
+        <div class="block-h">Career Fit <button class="infobtn" data-tip="careerfit" aria-label="What is career fit?">i</button></div>
+        <p class="note-sm">Tap any role for real BLS pay, growth, and why you match. We include roles <b>beyond your stated goal</b> — your record opens more doors than you'd think.</p>
+        <div id="careerFit"></div>
+
+        <div class="block-h">Your 90-Day Roadmap <button class="infobtn" data-tip="roadmap" aria-label="About your roadmap">i</button></div>
+        <p class="note-sm"><b>Tap any step for options.</b> Can't afford a cert, out of GI Bill, or prefer experience? There's a path. Nothing here is required.</p>
+        <div id="roadmap"></div>
+
+        <div class="block-h">A Note From Your Reviewer</div>
+        <div class="note">
+          <p>Alex — aviation is desperate for certified mechanics, and 10 years on the flight line is exactly what they need. Here's the key most maintainers miss: your military experience can qualify you to <b>test for the FAA A&amp;P certificate</b> — you may not need a single day of A&amp;P school. Document those hours, and apply this week.</p>
+          <div class="sig">Reviewed &amp; written by<b>Your VCP Reviewer</b></div>
+        </div>
+        <div class="disc">Human review · not an automated result. Sample deliverable.</div>
+      </section>
+
+      <!-- RESOURCES -->
+      <section class="view" id="view-resources">
+        <div class="eyebrow">Built for your goals</div>
+        <h1 class="big" style="font-size:34px;">Your Resources</h1>
+        <p class="lede">Hand-matched to your field, certifications, and <b>Fort Worth, TX</b> location.</p>
+        <div id="resourceList"></div>
+        <div class="foot">New resources are added to your hub as you progress.</div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <section class="view" id="view-steps">
+        <div class="eyebrow">Your action plan</div>
+        <h1 class="big" style="font-size:34px;">Next Steps</h1>
+        <p class="lede">Your plan, in order — each one is a real move toward your first offer. Tap to check it off; your progress saves as you go.</p>
+
+        <div class="ring-wrap">
+          <div class="ring">
+            <svg width="92" height="92" viewBox="0 0 92 92">
+              <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0c040"/><stop offset="1" stop-color="#4ade80"/></linearGradient></defs>
+              <circle class="tr" cx="46" cy="46" r="40"/>
+              <circle class="pr" id="ring" cx="46" cy="46" r="40" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+            </svg>
+            <div class="ctr"><span class="p" id="ringPct">0%</span><span class="s">Done</span></div>
+          </div>
+          <div class="rtx"><div class="rt" id="stepCount">0 of 7 complete</div><div class="rs" id="stepSub">Check off each move — momentum compounds.</div></div>
+        </div>
+
+        <div id="taskList" style="margin-top:14px;"></div>
+
+        <div class="celebrate" id="celebrate">
+          <img src="/img/optimized/logo-192.webp" alt="Veteran Career Path" class="cel-logo">
+          <div class="t">Your Transition<br>Starts Here</div>
+          <div class="s">A real reviewer translates your service into a civilian career — and builds your journey, like Alex's.</div>
+          <div class="cel-price"><span class="amt">$9.99</span><span class="lbl">Resume Review</span></div>
+          <a class="cel-cta" href="https://veterancareerpath.com">Start my review →</a>
+          <div class="cel-url">veterancareerpath.com</div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- DETAIL OVERLAY -->
+    <div class="detail" id="detail">
+      <div class="dhead">
+        <button class="back" id="detailBack" data-icon="back"></button>
+        <span class="dtitle" id="detailTitle">Resource</span>
+      </div>
+      <div class="dbody" id="detailBody"></div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="nav" id="nav">
+      <button data-tab="home" class="active"><span class="ni" data-icon="home"></span><span class="lb">Home</span><span class="pip"></span></button>
+      <button data-tab="review"><span class="ni" data-icon="doc"></span><span class="lb">My Review</span><span class="pip"></span></button>
+      <button data-tab="resources"><span class="ni" data-icon="grid"></span><span class="lb">Resources</span><span class="pip"></span></button>
+      <button data-tab="steps"><span class="ni" data-icon="check"></span><span class="lb">Next Steps</span><span class="pip"></span></button>
+    </nav>
+
+    <!-- INFO TOOLTIP SHEET -->
+    <div class="tipbackdrop" id="tipBackdrop"></div>
+    <div class="tipsheet" id="tipSheet">
+      <div class="th"><span id="tipTitle">About</span><button id="tipClose" aria-label="Close">✕</button></div>
+      <div class="tcopy" id="tipCopy"></div>
+    </div>
+
+    <div class="confetti" id="confetti"></div>
+  </div>
+</div>
+
+<script>
+/* ===== icons (defined before markup uses them via a second pass) ===== */
+</script>
+<script>
+  // Icon library (stroke, currentColor)
+  var S='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  var ICON={
+    brief:S+'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg>',
+    cert:S+'<circle cx="12" cy="9" r="5"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/></svg>',
+    chart:S+'<path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>',
+    cap:S+'<path d="m22 10-10-5L2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.5 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>',
+    pin:S+'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+    link:S+'<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>',
+    users:S+'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>',
+    star:S+'<path d="m12 2 3 7 7 .5-5.5 4.5 2 7L12 17l-6.5 4 2-7L2 9.5 9 9Z"/></svg>',
+    chev:S+'<path d="m9 6 6 6-6 6"/></svg>',
+    back:S+'<path d="m15 18-6-6 6-6"/></svg>',
+    home:S+'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>',
+    doc:S+'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>',
+    grid:S+'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+    check:S+'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+    ck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+  };
+
+  // Populate every [data-icon] element from the icon library.
+  document.querySelectorAll('[data-icon]').forEach(function(el){ el.innerHTML=ICON[el.dataset.icon]||''; });
+  var chevSm='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
+
+  /* ===== resources (each links to a REAL page on the site) ===== */
+  var RES=[
+    {g:'Explore your target field',items:[
+      {id:'supply',ic:'brief',t:'Aviation Careers',d:'Roles, pay, and top employers in your field.',url:'/veteran-aviation-careers.html'},
+      {id:'translator',ic:'link',t:'AFSC Career Translator',d:'The civilian jobs your Air Force experience maps to.',url:'/mos-career-translator.html'},
+      {id:'clearance',ic:'star',t:'Your A&P Certificate Path',d:'Use your service hours to test for the FAA A&P — often no school.',url:'/veteran-certification-roadmap.html'},
+      {id:'companies',ic:'star',t:'Top Companies Hiring Veterans',d:'Aviation employers with veteran-hiring programs.',url:'/veteran-hiring-companies.html'},
+      {id:'salary',ic:'chart',t:'Salary Data',d:'What your target roles actually pay.',url:'/veteran-salary-data.html'}
+    ]},
+    {g:'Education & certifications',items:[
+      {id:'certs',ic:'cert',t:'Certification Roadmap',d:'A&P, FCC & the certs that matter.',url:'/veteran-certification-roadmap.html'},
+      {id:'schools',ic:'cap',t:'Schools & Colleges near Fort Worth',d:'Compare GI Bill-approved programs by location.',ext:true,url:'https://www.va.gov/education/gi-bill-comparison-tool/'},
+      {id:'advisor',ic:'cert',t:'Certification Advisor',d:'Match certs to your goals & benefits.',url:'/tools-cert-advisor.html'}
+    ]},
+    {g:'Land the job',items:[
+      {id:'interview',ic:'users',t:'Interview Questions & Answers',d:'The questions you will face, answered.',url:'/veteran-interview-questions.html'},
+      {id:'linkedin',ic:'link',t:'LinkedIn Profile Guide',d:'Turn your resume into a recruiter magnet.',url:'/veteran-linkedin-guide.html'},
+      {id:'network',ic:'users',t:'Networking Guide',d:'Reach hiring managers and veterans in your field.',url:'/veteran-networking-guide.html'}
+    ]},
+    {g:'Benefits in Texas',items:[
+      {id:'ncbenefits',ic:'pin',t:'Texas Veteran Benefits',d:'Education, employment & hiring benefits you earned.',url:'/texas-veteran-benefits.html'},
+      {id:'cities',ic:'pin',t:'Most Veteran-Friendly Cities',d:'Where veterans find the best opportunities.',url:'/veteran-friendly-cities.html'}
+    ]}
+  ];
+  var resById={}; RES.forEach(function(g){g.items.forEach(function(it){resById[it.id]=it;});});
+
+  /* ===== career-fit data (real U.S. BLS figures, May 2025 / 2025–35 projections) ===== */
+  var CAREERS=[
+    {id:'amp',name:'Aircraft Mechanic (A&P)',match:96,door:false,pay:'$55K–$80K',
+     tagline:'Your flight-line years, one FAA cert away.',
+     median:'$79,870',growth:'+6%',growthLabel:'Faster than average',edu:'FAA A&P certificate — your service may qualify you',
+     duties:['Diagnose mechanical & electrical faults','Repair / replace components to FAA standards','Run scheduled inspections & keep records'],
+     why:'A crew chief already inspects, troubleshoots, and documents repairs to airworthiness standards — and your service time can qualify you to test for the A&P without A&P school.',
+     url:'/veteran-aviation-careers.html'},
+    {id:'avionics',name:'Avionics Technician',match:90,door:false,pay:'$60K–$82K',
+     tagline:'Aircraft electronics — a direct match.',
+     median:'$82,280',growth:'+9%',growthLabel:'Faster than average',edu:'Postsecondary award; FCC + A&P common',
+     duties:['Install, test & repair aircraft electronics','Troubleshoot nav / radar / comms systems','Document work per FAA regulations'],
+     why:'If your AFSC touched avionics or electrical systems, you already troubleshoot integrated aircraft electronics to blueprint — a near one-to-one match.',
+     url:'/veteran-aviation-careers.html'},
+    {id:'aero',name:'Aerospace Eng. & Ops Technician',match:80,door:true,pay:'$58K–$83K',
+     tagline:'Testing & operations for aircraft/spacecraft.',
+     median:'$82,890',growth:'+12%',growthLabel:'Much faster than average',edu:"Associate's (CCAF credits may apply)",
+     duties:['Operate & maintain aircraft/spacecraft test equipment','Calibrate test systems with engineers','Record test data & monitor quality'],
+     why:'Your hands-on work with aircraft systems, test gear, and calibration transfers cleanly into test and production support.',
+     url:'/veteran-aviation-careers.html'},
+    {id:'indmech',name:'Industrial Machinery Mechanic',match:78,door:true,pay:'$48K–$65K',
+     tagline:'Your mechanic skills, booming demand.',
+     median:'$64,520',growth:'+18%',growthLabel:'Much faster than average',edu:'HS diploma + training',
+     duties:['Diagnose faults with manuals & diagnostics','Disassemble, repair & reassemble machinery','Test equipment & prevent failures'],
+     why:'Your mechanical, hydraulic, and electrical troubleshooting transfers directly — a fast-growing field with a low education barrier while you pursue the A&P.',
+     url:'/veteran-aviation-careers.html'},
+    {id:'qc',name:'Quality Control / QA Inspector',match:74,door:true,pay:'$45K–$70K',
+     tagline:'Your inspection discipline, applied.',
+     median:'$48,570',growth:'+3%',growthLabel:'About as fast as average',edu:'HS diploma',
+     duties:['Inspect products / parts against spec','Monitor compliance with standards','Operate precision inspection equipment'],
+     why:'You are trained to inspect-to-standard and enforce tech-order compliance — a natural fit for aerospace QA, which often pays above the cross-industry median.',
+     url:'/veteran-aviation-careers.html'}
+  ];
+  var carById={}; CAREERS.forEach(function(c){carById[c.id]=c;});
+
+  /* ===== 90-day roadmap (customizable — options for every budget/benefit) ===== */
+  var ROADMAP=[
+    {w:'Now · Free',t:'Document your A&P eligibility',d:'Your military maintenance time can qualify you to TEST for the FAA A&P — no A&P school required. Start gathering your hours. Costs nothing.',now:true},
+    {w:'Credential',t:'Earn your FAA A&P certificate',d:'The credential that unlocks the pay tier. Pick the path that fits YOU:',opts:[
+      ['JSAMTCC','Document 18 mo (one rating) / 30 mo (both) of service experience → test directly, no school'],
+      ['GI Bill','A GI Bill-approved A&P test-prep course or AMT school'],
+      ['On a budget','Self-study the 3 written exams, then the oral & practical with an FAA examiner'],
+      ['CCAF','Apply CCAF credits toward the written prep & your eligibility paperwork']
+    ]},
+    {w:'Fast proof',t:'Stack credentials that pay',d:'Add-ons that lift your hourly rate:',opts:[
+      ['For avionics','FCC license'],
+      ['After A&P','Inspection Authorization (IA) — adds roughly $10–25/hr'],
+      ['Free','OEM / type-specific training certificates']
+    ]},
+    {w:'Goal',t:'Reach the $80K A&P tier',d:'With the A&P you move toward the BLS median of $79,870 — and an IA later opens six-figure inspection roles.'}
+  ];
+
+  /* ===== small HTML helpers ===== */
+  function sec(t){return '<div class="block-h">'+t+'</div>';}
+  function li(n,s,b){return '<div class="listcard" style="margin-bottom:8px;"><div class="li"><span class="lg">'+n.charAt(0)+'</span><div><div class="ln2">'+n+'</div>'+(s?'<div class="ls">'+s+'</div>':'')+'</div>'+(b?'<span class="badge">'+b+'</span>':'')+'</div></div>';}
+  function pills(a){return '<div class="chips">'+a.map(function(x){return '<span class="chip">'+x+'</span>';}).join('')+'</div>';}
+  function bar(l,w,v){return '<div class="brow"><span class="bl">'+l+'</span><span class="bt"><i data-w="'+w+'"></i></span><span class="bv">'+v+'</span></div>';}
+  function qa(q,a){return '<div class="qa"><div class="q"><span class="qm">Q</span><span>'+q+'</span></div><div class="a">'+a+'</div></div>';}
+  function road(cls,w,t,d){return '<div class="step '+cls+'"><div class="w">'+w+'</div><div class="t">'+t+'</div><div class="d">'+d+'</div></div>';}
+  // Real links now — open the actual guide in a new tab.
+  function openBtn(label,url,ext){return '<a class="openlink" href="'+(url||'/vet-resources.html')+'" target="_blank" rel="noopener">'+(ext?ICON.cap:ICON.link)+'<span>'+label+'</span></a>';}
+
+  /* ===== resource detail pages ===== */
+  var DETAIL={
+    supply:{title:'Aviation Careers',url:'/veteran-aviation-careers.html',html:function(){return ''
+      +sec('Top roles for your background')
+      +li('Aircraft Mechanic (A&P)','Inspects & repairs airframes/engines','$55–80K')
+      +li('Avionics Technician','Aircraft electronics & systems','$60–82K')
+      +li('Aerospace Eng. & Ops Tech','Test & production support','$58–83K')
+      +li('Industrial Machinery Mechanic','Mechanical troubleshooting','$48–65K')
+      +sec('Top employers hiring veterans')
+      +pills(['American Airlines','Delta TechOps','Lockheed Martin','Boeing','FedEx','UPS Airlines','GE Aerospace','AAR Corp'])
+      +openBtn('Open the full guide on veterancareerpath.com','/veteran-aviation-careers.html');}},
+    salary:{title:'Salary Data',url:'/veteran-salary-data.html',html:function(){return ''
+      +sec('Aviation maintenance pay (U.S. median, BLS 2025)')
+      +'<div class="bars">'
+      +bar('QC Inspector',59,'$49K')
+      +bar('Industrial Mechanic',78,'$65K')
+      +bar('Aircraft Mechanic',96,'$80K')
+      +bar('Avionics Tech',99,'$82K')
+      +bar('Aerospace Tech',100,'$83K')
+      +'</div>'
+      +'<p class="disc" style="text-align:left;margin-top:14px;">U.S. median annual wages, Bureau of Labor Statistics (May 2025). An A&P certificate typically adds ~10–15%; an Inspection Authorization adds more.</p>'
+      +openBtn('See full salary tables','/veteran-salary-data.html');}},
+    certs:{title:'A&P Cert Path',url:'/veteran-certification-roadmap.html',html:function(){return ''
+      +sec('Your path to the FAA A&P certificate')
+      +'<div class="road">'
+      +road('now','Free','Document your experience','Your military maintenance hours may qualify you to test — no A&P school required.')
+      +road('','JSAMTCC','Certificate of Eligibility','Satisfies the FAA §65.77 experience requirement (18/30 months).')
+      +road('','Exams','Written + Oral & Practical','Pass General, Airframe & Powerplant, then the O&P with an FAA examiner.')
+      +road('','Add-on','FCC / Inspection Authorization','Lift your rate — IA adds roughly $10–25/hr later.')
+      +'</div>'
+      +openBtn('Open the certification roadmap','/veteran-certification-roadmap.html');}},
+    interview:{title:'Interview Prep',url:'/veteran-interview-questions.html',html:function(){return ''
+      +sec('Questions you will face')
+      +qa('“Tell me about yourself.”','Lead with the role: “I’m an aircraft maintenance technician with 10 years on the flight line, A&P-eligible through my service experience…”')
+      +qa('“You worked on F-16s, not commercial jets — why you?”','Reframe: the same inspection, troubleshooting, and documentation standards apply. Airworthiness is airworthiness.')
+      +qa('“Describe a tough repair under time pressure.”','Use a STAR story from a flight-line fault you diagnosed and fixed to launch a sortie on time — quantify it.')
+      +openBtn('Open the full interview guide','/veteran-interview-questions.html');}},
+    companies:{title:'Top Employers',url:'/veteran-hiring-companies.html',html:function(){return ''
+      +sec('Actively hiring veteran maintainers')
+      +li('American Airlines','Tulsa maintenance base','Hiring')
+      +li('Delta TechOps','MRO & line maintenance','Hiring')
+      +li('Lockheed Martin','Fort Worth F-35 line','Clearance+')
+      +li('Boeing','Production & services','Hiring')
+      +li('FedEx Express','Aircraft maintenance','Hiring')
+      +openBtn('See all veteran-ready employers','/veteran-hiring-companies.html');}},
+    ncbenefits:{title:'TX Benefits',url:'/texas-veteran-benefits.html',html:function(){return ''
+      +sec('Texas veteran benefits')
+      +li('Hazlewood Act','Up to 150 tuition hours at state schools','Education')
+      +li('Vet Hiring Preference','State & many local gov jobs','Employment')
+      +li('Property Tax Exemption','Disabled veteran exemption','Tax')
+      +li('Texas Veterans Commission','Employment & claims assistance','Jobs')
+      +openBtn('Open the TX benefits guide','/texas-veteran-benefits.html');}},
+    schools:{title:'Schools Near You',ext:true,url:'https://www.va.gov/education/gi-bill-comparison-tool/',html:function(){return ''
+      +sec('GI Bill-approved A&P programs near Fort Worth, TX')
+      +'<p class="lede" style="margin-bottom:14px;">Compare programs by location, cost, graduation rate, and veteran outcomes using the official VA GI Bill Comparison Tool.</p>'
+      +li('Tarrant County College','Aviation maintenance / A&P','GI Bill ✓')
+      +li('Aviation Institute of Maintenance','A&P (Dallas)','GI Bill ✓')
+      +li('Hallmark University','Aircraft maintenance (San Antonio)','GI Bill ✓')
+      +openBtn('Open the VA GI Bill Comparison Tool','https://www.va.gov/education/gi-bill-comparison-tool/',true);}}
+  };
+  function genericHtml(name,url){return ''
+    +sec(name)
+    +'<p class="lede" style="margin-bottom:14px;">A full, step-by-step guide on veterancareerpath.com — tailored to veterans moving into civilian careers.</p>'
+    +li('Guided & practical','Written for transitioning service members','Free')
+    +li('Field-specific','Matched to your goal','Personalized')
+    +openBtn('Open this guide',url||'/vet-resources.html');}
+
+  function careerHtml(c){var gpos=/^\+/.test(c.growth);return ''
+    +'<div class="rv-hero" style="margin-bottom:14px;"><div class="t" style="font-size:21px;">'+c.name+'</div><div class="s">'+(c.door?'Opens a new door':'Aligned with your goal')+' · '+c.match+'% match</div></div>'
+    +'<div class="cstat-grid">'
+    +  '<div class="cstat"><div class="n g">'+c.median+'</div><div class="l">Median pay / yr</div></div>'
+    +  '<div class="cstat"><div class="n '+(gpos?'g':'')+'">'+c.growth+'</div><div class="l">Projected growth, 2025–35</div></div>'
+    +  '<div class="cstat"><div class="n" style="font-size:15px;line-height:1.25;">'+c.edu+'</div><div class="l">Typical education</div></div>'
+    +  '<div class="cstat"><div class="n" style="font-size:18px;">'+c.pay+'</div><div class="l">Your likely starting range</div></div>'
+    +'</div>'
+    +'<p class="disc" style="text-align:left;margin:-2px 0 2px;">'+c.growthLabel+' · U.S. Bureau of Labor Statistics (2025)</p>'
+    +sec('What they do')
+    +'<div class="listcard">'+c.duties.map(function(d,i){return '<div class="li"><span class="lg">'+(i+1)+'</span><div><div class="ln2" style="font-weight:500;font-size:13px;">'+d+'</div></div></div>';}).join('')+'</div>'
+    +'<div class="why"><div class="h">Why you’re a strong fit</div><p>'+c.why+'</p></div>'
+    +sec('Outlook')+'<p class="disc" style="text-align:left;">'+c.tagline+'</p>'
+    +openBtn('Explore this career on veterancareerpath.com',c.url);}
+
+  /* ===== render: resources, career fit, roadmap ===== */
+  (function(){
+    var wrap=document.getElementById('resourceList');
+    RES.forEach(function(group){
+      var h=document.createElement('div');h.className='section-h';h.innerHTML=group.g+' <span class="ln"></span>';wrap.appendChild(h);
+      group.items.forEach(function(it){
+        var b=document.createElement('button');b.className='rcard';b.setAttribute('data-detail',it.id);
+        b.innerHTML='<span class="ic">'+ICON[it.ic]+'</span><span class="tx"><span class="tt">'+it.t+(it.ext?' <span class="ext">↗</span>':'')+'</span><span class="dd">'+it.d+'</span></span><span class="chev">'+ICON.chev+'</span>';
+        wrap.appendChild(b);
+      });
+    });
+  })();
+  (function(){
+    var box=document.getElementById('careerFit'); if(!box) return;
+    CAREERS.forEach(function(c){
+      var b=document.createElement('button');b.className='role'+(c.door?' alt':'');b.type='button';b.setAttribute('data-career',c.id);
+      b.innerHTML='<div class="top"><span class="nm">'+c.name+(c.door?' <span class="pill-door">Opens doors</span>':'')+'</span><span class="pay">'+c.pay+'</span></div>'
+        +'<div class="mt"><div class="mbar"><i data-w="'+c.match+'"></i></div><span class="mpct">'+c.match+'%</span></div>'
+        +'<div class="tagline">'+c.tagline+'</div>'
+        +'<div class="seemore">See pay, growth &amp; why you fit '+chevSm+'</div>';
+      box.appendChild(b);
+    });
+  })();
+  (function(){
+    var box=document.getElementById('roadmap'); if(!box) return;
+    var html='<div class="road">';
+    ROADMAP.forEach(function(s){
+      var ex=s.opts&&s.opts.length;
+      html+='<div class="step'+(s.now?' now':'')+(ex?' ex':'')+'">'
+        +'<div class="head"><div style="flex:1;"><div class="w">'+s.w+'</div><div class="t">'+s.t+'</div></div>'+(ex?'<span class="toggle">+</span>':'')+'</div>'
+        +'<div class="d">'+s.d+'</div>';
+      if(ex){html+='<div class="opts">'+s.opts.map(function(o){return '<div class="opt"><span class="k">'+o[0]+'</span><span class="ov">'+o[1]+'</span></div>';}).join('')+'</div>';}
+      html+='</div>';
+    });
+    box.innerHTML=html+'</div>';
+    box.querySelectorAll('.step.ex').forEach(function(st){st.addEventListener('click',function(){st.classList.toggle('open');});});
+  })();
+
+  /* ===== detail overlay + career pages ===== */
+  var detail=document.getElementById('detail');
+  function renderDetailState(st){
+    var title=document.getElementById('detailTitle'), body=document.getElementById('detailBody');
+    if(st.kind==='career'){ var c=carById[st.id]; title.textContent='Career Detail'; body.innerHTML=c?careerHtml(c):''; }
+    else { var d=DETAIL[st.id], item=resById[st.id]||{}; title.textContent=d?d.title:(item.t||'Resource'); body.innerHTML=d?d.html():genericHtml(item.t||'Guide',item.url); }
+    detail.classList.add('open');
+    requestAnimationFrame(function(){setTimeout(function(){body.querySelectorAll('[data-w]').forEach(function(i){i.style.width=i.dataset.w+'%';});},120);});
+    body.scrollTop=0;
+  }
+  function openDetail(st){ history.pushState(Object.assign({level:'detail'},st),''); renderDetailState(st); }
+  document.getElementById('detailBack').addEventListener('click',function(){history.back();});
+
+  /* ===== info tooltip sheets ===== */
+  var TIPS={
+    score:{t:'Resume Score',c:'Your score estimates how well your résumé performs with <b>both hiring managers and automated screening</b> — structure, clarity, metrics, and keyword match. We score it before and after so you can see the lift.'},
+    ats:{t:'ATS Keywords',c:'Most employers use <b>Applicant Tracking Software</b> that auto-scans résumés for specific keywords before any human sees them. Miss the terms and you’re filtered out — even when you’re qualified. An estimated <b>75% of résumés never reach a person.</b> We add the exact keywords your target roles screen for.'},
+    careerfit:{t:'Career Fit',c:'Career Fit shows how closely your experience matches real civilian roles — the % is the overlap between <b>your skills</b> and <b>what employers ask for.</b> We include roles beyond your stated goal because a strong record often opens doors you didn’t know were there.'},
+    milciv:{t:'Military → Civilian',c:'Recruiters don’t speak military. We translate your titles, systems, and duties into the <b>civilian terms</b> that employers and ATS actually search for.'},
+    roadmap:{t:'Your 90-Day Roadmap',c:'A flexible plan to go from résumé to offer. <b>Every step has options</b> for different budgets and benefits — nothing here is mandatory. Tap a step to see the paths.'}
+  };
+  var tipSheet=document.getElementById('tipSheet'),tipBackdrop=document.getElementById('tipBackdrop');
+  function openTip(key){var x=TIPS[key];if(!x)return;document.getElementById('tipTitle').textContent=x.t;document.getElementById('tipCopy').innerHTML=x.c;tipSheet.classList.add('open');tipBackdrop.classList.add('open');}
+  function closeTip(){tipSheet.classList.remove('open');tipBackdrop.classList.remove('open');}
+  document.getElementById('tipClose').addEventListener('click',closeTip);
+  tipBackdrop.addEventListener('click',closeTip);
+
+  /* ===== one delegated click handler ===== */
+  document.addEventListener('click',function(e){
+    var ib=e.target.closest('.infobtn'); if(ib){e.preventDefault();e.stopPropagation();openTip(ib.getAttribute('data-tip'));return;}
+    var rc=e.target.closest('.rcard'); if(rc){openDetail({kind:'res',id:rc.getAttribute('data-detail')});return;}
+    var role=e.target.closest('.role'); if(role&&role.getAttribute('data-career')){openDetail({kind:'career',id:role.getAttribute('data-career')});return;}
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeTip();}});
+
+  /* ===== tabs + history + refresh persistence ===== */
+  var scroll=document.getElementById('scroll');
+  var currentTab='home';
+  function persist(){try{sessionStorage.setItem('vcpDemo',JSON.stringify({e:true,tab:currentTab}));}catch(_){}}
+  function showTab(name){
+    detail.classList.remove('open'); closeTip();
+    document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('active',v.id==='view-'+name);});
+    document.querySelectorAll('#nav button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===name);});
+    scroll.scrollTop=0; currentTab=name; persist();
+    if(name==='review') animateReview();
+    if(name==='home') animateHome();
+  }
+  function switchTab(name){ if(name===currentTab&&!detail.classList.contains('open')){return;} history.pushState({level:'tab',tab:name},''); showTab(name); }
+  document.querySelectorAll('#nav button').forEach(function(b){b.addEventListener('click',function(){switchTab(b.getAttribute('data-tab'));});});
+  document.getElementById('homeReviewCta').addEventListener('click',function(){switchTab('review');});
+
+  window.addEventListener('popstate',function(e){
+    closeTip();
+    var st=e.state||{level:'tab',tab:'home'};
+    if(st.level==='detail'){ renderDetailState(st); }
+    else { detail.classList.remove('open'); showTab(st.tab||'home'); }
+  });
+
+  /* ===== animations ===== */
+  var homeAnimated=false;
+  function animateHome(){
+    document.querySelectorAll('#view-home .stat .bar i').forEach(function(i){i.style.width=i.dataset.w+'%';});
+    if(homeAnimated) return; homeAnimated=true;
+    document.querySelectorAll('#view-home .n[data-count]').forEach(function(el){countUp(el);});
+  }
+  function countUp(el){
+    var target=parseFloat(el.dataset.count),pre=el.dataset.prefix||'',suf=el.dataset.suffix||'',dec=(target%1!==0)?1:0;
+    var start=performance.now?performance.now():Date.now(),dur=1100;
+    function tick(){
+      var t=Math.min(1,((performance.now?performance.now():Date.now())-start)/dur);
+      var e=1-Math.pow(1-t,3);
+      el.textContent=pre+(target*e).toFixed(dec)+suf;
+      if(t<1) requestAnimationFrame(tick); else el.textContent=pre+(dec?target.toFixed(1):target)+suf;
+    }
+    requestAnimationFrame(tick);
+  }
+  var reviewAnimated=false;
+  function animateReview(){
+    setTimeout(function(){document.querySelectorAll('#view-review .mbar i').forEach(function(i){i.style.width=i.dataset.w+'%';});},150);
+    reviewAnimated=true;
+  }
+
+  /* ===== next steps ===== */
+  var TASKS=[
+    {t:'Read your full resume review',d:'Open "My Review" — every section is built for your goal.'},
+    {t:'Rebuild your résumé with the before→after bullets',d:'Swap in the rewritten, quantified lines — military AND civilian.'},
+    {t:'Add the 15 ATS keywords, tailored per job',d:'Mirror the exact terms in each posting so you pass the filter.'},
+    {t:'Document your FAA A&P eligibility',d:'Gather your service maintenance hours — they may qualify you to test.'},
+    {t:'Apply to 3 aircraft-mechanic roles this week',d:'Don’t wait for the cert — your flight-line record competes now.'},
+    {t:'Rewrite your LinkedIn for aviation recruiters',d:'Use the LinkedIn guide in Resources.'},
+    {t:'Connect with 5 veteran A&P mechanics',d:'Warm intros beat cold applications, every time.'}
+  ];
+  var done=[true,true,true,true,false,false,false]; // most pre-done so the finale is 2-3 taps away on camera
+  (function(){
+    var list=document.getElementById('taskList');
+    TASKS.forEach(function(tk,i){
+      var el=document.createElement('button');el.className='task'+(done[i]?' done':'');el.type='button';
+      el.innerHTML='<span class="ck">'+ICON.ck+'</span><span class="tb"><span class="tt">'+tk.t+'</span><span class="td">'+tk.d+'</span></span>';
+      el.addEventListener('click',function(){done[i]=!done[i];el.classList.toggle('done',done[i]);updateProgress(true);});
+      list.appendChild(el);
+    });
+    updateProgress(false);
+  })();
+  var C=2*Math.PI*40;
+  function updateProgress(animate){
+    var n=done.filter(Boolean).length,pct=Math.round(n/TASKS.length*100);
+    document.getElementById('ring').style.strokeDashoffset=C*(1-n/TASKS.length);
+    document.getElementById('ringPct').textContent=pct+'%';
+    document.getElementById('stepCount').textContent=n+' of '+TASKS.length+' complete';
+    var sub=document.getElementById('stepSub');
+    if(sub){ sub.textContent = n===TASKS.length?'Every move done — now go get hired.':(n>=TASKS.length-2?'Almost there — finish strong.':'Check off each move — momentum compounds.'); }
+    var cel=document.getElementById('celebrate');
+    if(n===TASKS.length){cel.classList.add('show');if(animate)burst();}else{cel.classList.remove('show');}
+  }
+
+  /* ===== confetti ===== */
+  function burst(){
+    var box=document.getElementById('confetti');var cols=['#f0c040','#4ade80','#c8a951','#fff','#e0a820'];
+    for(var i=0;i<70;i++){(function(k){var p=document.createElement('i');
+      p.style.left=(k*1.4%100)+'%';p.style.background=cols[k%cols.length];
+      p.style.animationDuration=(1.6+(k%7)*0.2)+'s';p.style.animationDelay=((k%9)*0.03)+'s';
+      p.style.transform='rotate('+(k*53%360)+'deg)';box.appendChild(p);
+      setTimeout(function(){p.remove();},3600);})(i);}
+  }
+
+  /* ===== splash + first-load / refresh ===== */
+  var splash=document.getElementById('splash'),enterBtn=document.getElementById('enterBtn');
+  var saved=null; try{saved=JSON.parse(sessionStorage.getItem('vcpDemo')||'null');}catch(_){}
+  if(saved&&saved.e){
+    // Returning via refresh — skip the splash, restore the last tab.
+    splash.style.display='none';
+    history.replaceState({level:'tab',tab:saved.tab||'home'},'');
+    showTab(saved.tab||'home');
+  } else {
+    history.replaceState({level:'tab',tab:'home'},'');
+    setTimeout(function(){
+      document.getElementById('verify').style.display='none';
+      document.getElementById('verifyOk').style.display='flex';
+      enterBtn.classList.add('show');
+    },1700);
+  }
+  enterBtn.addEventListener('click',function(){
+    splash.classList.add('hide');
+    setTimeout(function(){splash.style.display='none';showTab('home');},480);
+  });
+  document.getElementById('lock').addEventListener('click',function(){if(enterBtn.classList.contains('show'))enterBtn.click();});
+</script>
+
+</body>
+</html>

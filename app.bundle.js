@@ -993,10 +993,6 @@
         if (hash === "#logout" || hash === "#signout" || hash === "#sign-out") {
           if (!authReady) return;
           handleLogout();
-          try {
-            window.history.replaceState({}, "", window.location.pathname);
-          } catch (e) {
-          }
           return;
         }
         if (hash !== "#profile" && hash !== "#account" && hash !== "#login") return;
@@ -1170,6 +1166,10 @@
       } catch (e) {
       }
       resetProfileFields();
+      try {
+        window.location.assign("/?signedout=1");
+      } catch (e) {
+      }
     };
     const handleSaveProfile = async () => {
       if (!currentUser) {

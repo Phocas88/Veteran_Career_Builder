@@ -1814,8 +1814,7 @@ function App() {
       // here (/app.html#logout) so logout is reachable from any page.
       if (hash === "#logout" || hash === "#signout" || hash === "#sign-out") {
         if (!authReady) return; // wait for Firebase to restore the session first
-        handleLogout();
-        try { window.history.replaceState({}, "", window.location.pathname); } catch(e) {}
+        handleLogout(); // clears session + redirects to the landing page
         return;
       }
       if (hash !== "#profile" && hash !== "#account" && hash !== "#login") return;
@@ -1967,6 +1966,8 @@ function App() {
       Object.keys(localStorage).filter(k=>k.indexOf("vcb_subscription_check:")===0).forEach(k=>localStorage.removeItem(k));
     } catch(e) {}
     resetProfileFields();
+    // Send the user to the public landing page, not the signed-in dashboard.
+    try { window.location.assign("/?signedout=1"); } catch(e) {}
   };
 
   const handleSaveProfile = async () => {

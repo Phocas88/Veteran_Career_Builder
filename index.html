@@ -1956,6 +1956,15 @@ function skipWelcome(){
 <script>
 // Smart homepage, detect returning users
 window.addEventListener("load",function(){
+  // If we arrived here straight from a sign-out, clear any cached session so
+  // the public landing page shows instead of the "Welcome Back" dashboard.
+  try {
+    if (/[?&]signedout=1/.test(window.location.search)) {
+      ['vcb_profile','vcb_access','vcb_jobs','vcb_timeline','vcb_saved_paths'].forEach(function(k){ localStorage.removeItem(k); });
+      Object.keys(localStorage).filter(function(k){ return k.indexOf('vcb_subscription_check:') === 0; }).forEach(function(k){ localStorage.removeItem(k); });
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  } catch(e) {}
   var isReturning = false;
   try {
     var acc = JSON.parse(localStorage.getItem('vcb_access') || '{}');

@@ -159,7 +159,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <div class="dash-header">
     <div>
       <div class="dash-title">VCP Admin Dashboard</div>
-      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05i</span></div>
+      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05j</span></div>
     </div>
     <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
       <span id="admin-auth-status" style="font-size:.78rem;"></span>
@@ -1132,27 +1132,48 @@ function loadAnalytics(){
 }
 
 /* ── Paid subscribers ── */
+function subsTable(list){
+  if(!list.length) return '<div style="color:rgba(192,216,240,.4);padding:.5rem .2rem;">None</div>';
+  var head=['Email','Name','Status','Plan','Started','Renews',''];
+  var html='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;"><thead><tr>'+head.map(function(h){return '<th style="text-align:left;padding:.5rem .6rem;color:#f0c040;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;">'+h+'</th>';}).join('')+'</tr></thead><tbody>';
+  list.forEach(function(s){
+    var sc=(s.status==='active'||s.status==='trialing')?'#50c878':(s.status==='past_due'?'#f0c040':'#ff8080');
+    html+='<tr style="border-top:1px solid rgba(255,255,255,.06);">'+
+      '<td style="padding:.5rem .6rem;color:#cfe0f5;">'+admEsc(s.email||'—')+'</td>'+
+      '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admEsc(s.name||'—')+'</td>'+
+      '<td style="padding:.5rem .6rem;color:'+sc+';">'+admEsc(s.status)+(s.cancelAtPeriodEnd?' (canceling)':'')+'</td>'+
+      '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admMoney(s.amount)+(s.interval?('/'+s.interval):'')+'</td>'+
+      '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admDate(s.created)+'</td>'+
+      '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admDate(s.currentPeriodEnd)+'</td>'+
+      '<td style="padding:.5rem .6rem;"><a href="https://dashboard.stripe.com/subscriptions/'+encodeURIComponent(s.id)+'" target="_blank" style="color:#4285f4;font-size:.75rem;">Stripe ↗</a></td>'+
+    '</tr>';
+  });
+  return html+'</tbody></table></div>';
+}
+function toggleArchive(){
+  var a=document.getElementById('subs-archive'), b=document.getElementById('subs-arch-btn');
+  if(!a||!b) return;
+  if(a.style.display==='none'){ a.style.display='block'; b.textContent='Hide archive ▴'; }
+  else { a.style.display='none'; b.textContent=b.getAttribute('data-label'); }
+}
 function loadSubscribers(){
   var root=document.getElementById('subs-root'); root.innerHTML='<div class="loading">Loading subscribers…</div>';
   admFetch('/api/admin-subscribers').then(function(d){
-    admSetN('stat-sub-total', d.activeCount||0);
-    var subEl=document.getElementById('stat-sub-sub'); if(subEl) subEl.textContent=(d.uniqueActiveEmails||d.activeCount||0)+' unique active';
     var subs=d.subscribers||[];
+    var ACTIVE={active:1,trialing:1,past_due:1};
+    var active=subs.filter(function(s){return ACTIVE[s.status];});
+    var archived=subs.filter(function(s){return !ACTIVE[s.status];});
+    admSetN('stat-sub-total', active.length);
+    var subEl=document.getElementById('stat-sub-sub'); if(subEl) subEl.textContent=(d.uniqueActiveEmails||active.length)+' unique active';
     if(!subs.length){ root.innerHTML='<div class="empty"><h3>No subscribers yet</h3></div>'; return; }
-    var head=['Email','Status','Plan','Started','Renews',''];
-    var html='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;"><thead><tr>'+head.map(function(h){return '<th style="text-align:left;padding:.5rem .6rem;color:#f0c040;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;">'+h+'</th>';}).join('')+'</tr></thead><tbody>';
-    subs.forEach(function(s){
-      var sc=(s.status==='active'||s.status==='trialing')?'#50c878':(s.status==='past_due'?'#f0c040':'#ff8080');
-      html+='<tr style="border-top:1px solid rgba(255,255,255,.06);">'+
-        '<td style="padding:.5rem .6rem;color:#cfe0f5;">'+admEsc(s.email||'—')+'</td>'+
-        '<td style="padding:.5rem .6rem;color:'+sc+';">'+admEsc(s.status)+(s.cancelAtPeriodEnd?' (canceling)':'')+'</td>'+
-        '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admMoney(s.amount)+(s.interval?('/'+s.interval):'')+'</td>'+
-        '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admDate(s.created)+'</td>'+
-        '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admDate(s.currentPeriodEnd)+'</td>'+
-        '<td style="padding:.5rem .6rem;"><a href="https://dashboard.stripe.com/subscriptions/'+encodeURIComponent(s.id)+'" target="_blank" style="color:#4285f4;font-size:.75rem;">Stripe ↗</a></td>'+
-      '</tr>';
-    });
-    html+='</tbody></table></div>';
+    var html='<div style="font-size:.95rem;color:#50c878;font-weight:700;margin-bottom:.5rem;">Active subscribers ('+active.length+')</div>'+subsTable(active);
+    if(archived.length){
+      var lbl='Show archive ('+archived.length+' past) ▾';
+      html+='<div style="margin-top:1.4rem;">'+
+        '<button id="subs-arch-btn" data-label="'+lbl+'" onclick="toggleArchive()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(192,216,240,.7);padding:.4rem .9rem;border-radius:7px;font-size:.8rem;cursor:pointer;">'+lbl+'</button>'+
+        '<div id="subs-archive" style="display:none;margin-top:.75rem;"><div style="font-size:.85rem;color:rgba(192,216,240,.5);font-weight:600;margin-bottom:.5rem;">Past / canceled subscriptions</div>'+subsTable(archived)+'</div>'+
+      '</div>';
+    }
     root.innerHTML=html;
   }).catch(function(e){ root.innerHTML=admErrHtml(e); });
 }

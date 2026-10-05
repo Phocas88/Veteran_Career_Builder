@@ -103,10 +103,21 @@ function getStoredApiKey() {
   return "";
 }
 
-async function callClaude(prompt, system = "", maxTokens = 2000) {
+async function callClaude(prompt, system = "", maxTokens = 2000, tool = "app_ai") {
   if (!window.VCBSecureApi) {
     throw new Error("AI security module failed to load.");
   }
+  // Record per-user tool usage (owner-writable stats subcollection) so the admin
+  // dashboard can show which tools each registered user has used. Best-effort.
+  try {
+    var u = window.fbAuth && window.fbAuth.currentUser;
+    if (u && window.fbDb && window.firebase && firebase.firestore) {
+      var inc = firebase.firestore.FieldValue.increment(1);
+      window.fbDb.collection("profiles").doc(u.uid).collection("stats").doc("toolUsage")
+        .set({ [tool]: inc, total: inc, lastTool: tool, lastUsed: Date.now() }, { merge: true })
+        .catch(function(){});
+    }
+  } catch (e) {}
   return window.VCBSecureApi.callClaude(prompt, system, maxTokens);
 }
 // ── DATE PICKER COMPONENT ─────────────────────────────────────────────────────
@@ -2200,7 +2211,8 @@ function App() {
       const raw = await callClaude(
         prompt,
         "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
-        2000
+        2000,
+        "service_record"
       );
 
       // Robust JSON extraction
@@ -2276,7 +2288,7 @@ RULES, follow strictly:
 [{"title":"Specific Title","sector":"Civilian|Government|Defense\/Intel","industry":"Field","salaryRange":"$X-$Y","match":"Excellent|Strong|Good","whyFit":"cite specific background","topSkills":["s1","s2","s3"],"nextStep":"first action"}]`
 
     try {
-      const raw = await callClaude(prompt, system, 2500);
+      const raw = await callClaude(prompt, system, 2500, "career_matches");
       // Aggressively clean the response
       let cleaned = raw
         .replace(/```json/gi,"").replace(/```/g,"")
@@ -2340,7 +2352,7 @@ Use this exact structure:
 {"about":"3-4 sentences about this career","salaryBreakdown":{"entry":"$X – $Y","mid":"$X – $Y","senior":"$X – $Y","cleared":"$X – $Y or null","notes":"what drives salary variation"},"careerPath":[{"title":"Job Title","salary":"$X – $Y","description":"one sentence","timeframe":"Years 0-2"},{"title":"Next Role","salary":"$X – $Y","description":"one sentence","timeframe":"Years 2-5"},{"title":"Senior Role","salary":"$X – $Y","description":"one sentence","timeframe":"Years 5-10"},{"title":"Expert/Leadership","salary":"$X – $Y","description":"one sentence","timeframe":"Years 10+"}],"whyYouFit":["reason 1","reason 2","reason 3","reason 4"],"requiredSkills":["skill 1","skill 2","skill 3","skill 4","skill 5"],"gaps":["gap 1","gap 2"],"certifications":["cert 1","cert 2","cert 3"],"actionSteps":["step 1","step 2","step 3","step 4","step 5"]}`;
 
     try {
-      const raw = await callClaude(prompt, "You are a military career transition expert. Return ONLY valid JSON starting with { and ending with }. Never include markdown, backticks, or explanatory text outside the JSON.");
+      const raw = await callClaude(prompt, "You are a military career transition expert. Return ONLY valid JSON starting with { and ending with }. Never include markdown, backticks, or explanatory text outside the JSON.", 2000, "career_detail");
 
       // Robust JSON extraction, find first { to last }
       const start = raw.indexOf("{");
@@ -2477,7 +2489,8 @@ Use this exact structure:
       const raw = await callClaude(
         prompt,
         "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.",
-        3000
+        3000,
+        "resume_builder"
       );
       const rStart = raw.indexOf("{");
       const rEnd = raw.lastIndexOf("}");
@@ -2532,7 +2545,7 @@ Write a professional, warm, and compelling 3-paragraph cover letter that:
 
 Return ONLY the cover letter text, no subject line, no extra commentary.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 1500);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 1500, "cover_letter");
       setCoverLetter(raw);
     } catch(e) {
       setCoverLetter("Error generating cover letter. Please try again.");
@@ -2564,7 +2577,7 @@ Generate 8 interview questions they will likely be asked, with a tailored answer
 
 Make answers specific to their MOS and rank. Use the STAR method. Translate all military jargon.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 3000);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 3000, "interview_prep");
       const clean = raw.replace(/```json|```/g,"").trim();
       const s = clean.indexOf("["); const e = clean.lastIndexOf("]");
       if(s===-1||e===-1) throw new Error("No array");
@@ -2609,7 +2622,7 @@ Write a genuine, professional email that:
 
 Return ONLY the email text including the subject line. No extra commentary.`;
     try {
-      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 800);
+      const raw = await callClaude(prompt, "You are an expert military-to-civilian career translator. RULES: 1) ZERO military jargon, translate everything to civilian language. 2) EMPLOYER/BRANCH NAME: Never change U.S. Army, U.S. Navy, U.S. Marine Corps, U.S. Air Force, U.S. Coast Guard, U.S. Space Force, keep exactly as written. 3) UNIT NAME: Never translate unit names, keep exactly as the veteran typed (e.g. 126 CTC stays 126 CTC). 4) RANK TRANSLATIONS: E5-E6=Supervisor, E7=Operations Manager, E8=Senior Manager, E9=Director, O3=Program Manager, O4=Senior PM, O5=Director, O6=Executive Director. 5) TITLE TRANSLATIONS: NCO=Supervisor, NCOIC=Operations Lead, Armorer=Equipment Inventory Manager, SHARP Rep=HR Compliance Coordinator, Retention NCO=Talent Acquisition Specialist, Supply Sgt=Logistics Manager, Motor Transport=Fleet Operations Manager. 6) METRICS: Only use numbers the veteran explicitly provided, never fabricate metrics. 7) Security clearances: ONLY include if the veteran selected to include it. If not selected, omit entirely. 8) Every bullet starts with a civilian action verb: Led, Managed, Directed, Coordinated, Developed, Implemented, Oversaw, Delivered.", 800, "followup_email");
       setFollowupEmail(raw.trim());
     } catch(err) {
       setFollowupEmail("Subject: Thank You - " + (followupCtx.role||"Position") + " Interview\n\nDear " + (followupCtx.interviewerName||"Hiring Manager") + ",\n\nThank you for taking the time to meet with me regarding the " + (followupCtx.role||"position") + " role at " + (followupCtx.company||"your organization") + ". I enjoyed learning more about the team and am excited about the opportunity to bring my military leadership experience to your organization.\n\nPlease let me know if you need any additional information.\n\nBest regards,\n" + (personal.name||"[Your Name]"));
@@ -2653,7 +2666,7 @@ Return this exact JSON structure:
   "verdict": "One sentence overall assessment"
 }`;
     try {
-      const raw = await callClaude(prompt, "You are an expert resume reviewer. Return ONLY valid JSON, no markdown, no commentary.", 1500);
+      const raw = await callClaude(prompt, "You are an expert resume reviewer. Return ONLY valid JSON, no markdown, no commentary.", 1500, "resume_review");
       const clean = raw.replace(/```json|```/g,"").trim();
       const data = JSON.parse(clean);
       setResumeScore(data.overallScore);

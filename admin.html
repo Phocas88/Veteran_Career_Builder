@@ -159,7 +159,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <div class="dash-header">
     <div>
       <div class="dash-title">VCP Admin Dashboard</div>
-      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05e</span></div>
+      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05f</span></div>
     </div>
     <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
       <span id="admin-auth-status" style="font-size:.78rem;"></span>
@@ -509,6 +509,23 @@ function loadAll() {
 }
 
 // ── REGISTERED USERS ─────────────────────────────────────────────────────────
+// Compact "what this user created + which AI tools they used" cell.
+function admUserActivity(u) {
+  var c = u.created || {}, made = [];
+  if (c.resumes) made.push(c.resumes + ' resume' + (c.resumes > 1 ? 's' : ''));
+  if (c.coverLetters) made.push(c.coverLetters + ' cover');
+  if (c.scores) made.push(c.scores + ' score' + (c.scores > 1 ? 's' : ''));
+  if (c.emails) made.push(c.emails + ' email' + (c.emails > 1 ? 's' : ''));
+  var tools = (u.usage && u.usage.tools) || {};
+  var tlist = Object.keys(tools).filter(function(k){ return k !== 'total'; })
+    .sort(function(a, b){ return tools[b] - tools[a]; }).slice(0, 5)
+    .map(function(k){ return k.replace(/_/g, ' ') + '×' + tools[k]; });
+  var html = '';
+  if (made.length) html += '<div style="color:#9bd0a0;">' + made.join(' · ') + '</div>';
+  if (tlist.length) html += '<div style="color:rgba(192,216,240,.55);font-size:.72rem;margin-top:.15rem;">' + admEsc(tlist.join(', ')) + '</div>';
+  if ((u.usage && typeof u.usage.total === 'undefined') && tools.total) html += '';
+  return html || '<span style="color:rgba(192,216,240,.3);">—</span>';
+}
 function loadUsers() {
   // Profiles are owner-isolated in Firestore rules, so the admin reads them via
   // the proxy (Admin SDK bypasses rules). Needs the admin Google sign-in.
@@ -523,13 +540,14 @@ function loadUsers() {
     }
     var html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;">';
     html += '<thead><tr style="border-bottom:2px solid rgba(240,192,64,.2);text-align:left;">';
-    html += th('Name')+th('Email')+th('Branch')+th('Rank')+th('MOS')+th('Subscription')+th('Last Active');
+    html += th('Name')+th('Email')+th('Branch')+th('Rank')+th('MOS')+th('Activity (created · AI tools used)')+th('Subscription')+th('Last Active');
     html += '</tr></thead><tbody>';
     users.forEach(function(u){
       var sub = u.hasSub ? '<span style="color:#4ade80;font-weight:600;">Active</span>' : '<span style="color:rgba(192,216,240,.6);">Free</span>';
       var la = u.updatedAt ? new Date(u.updatedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
       html += '<tr style="border-bottom:1px solid rgba(255,255,255,.05);">';
       html += td(u.name, 'color:#e8f0f8;font-weight:500;') + td(u.email) + td(u.branch) + td(u.rank) + td(u.mos);
+      html += '<td style="padding:.55rem .75rem;font-size:.75rem;">'+admUserActivity(u)+'</td>';
       html += '<td style="padding:.55rem .75rem;">'+sub+'</td>';
       html += td(la, 'color:rgba(192,216,240,.5);font-size:.78rem;');
       html += '</tr>';

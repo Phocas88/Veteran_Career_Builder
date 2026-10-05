@@ -159,7 +159,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <div class="dash-header">
     <div>
       <div class="dash-title">VCP Admin Dashboard</div>
-      <div class="dash-user">Veteran Career Path · Content Management Panel</div>
+      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05d</span></div>
     </div>
     <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
       <span id="admin-auth-status" style="font-size:.78rem;"></span>
@@ -367,6 +367,27 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 // PIN stored as SHA-256 hash, not readable in source
 var ADMIN_PIN_HASH = '8266498d969081c29737b8daeb5b51d60e56d008fff243a39d16c3032d42f6cf';
 var authed = false;
+var adminReady = false;
+
+// One place that reacts to "are we a signed-in admin?" — updates the header and,
+// once the PIN gate is passed, loads/refreshes all the data.
+function setAdminReady(ok, failed) {
+  adminReady = !!ok;
+  onAdminAuth(ok, failed);
+  if (ok && authed) { try { loadAll(); } catch(e){} adminRefreshActive(); }
+}
+
+// Fires on page load with the PERSISTED Google session (and on any sign-in), so
+// after the first Google sign-in the dashboard just works on refresh — no popup.
+document.addEventListener('DOMContentLoaded', function(){
+  if (window.firebase && firebase.auth) {
+    firebase.auth().onAuthStateChanged(function(user){
+      if (user && !user.isAnonymous) {
+        user.getIdTokenResult().then(function(res){ setAdminReady(!!(res.claims && res.claims.admin === true)); }).catch(function(){});
+      }
+    });
+  }
+});
 
 async function hashPin(pin) {
   var data = new TextEncoder().encode(pin);
@@ -394,11 +415,15 @@ async function doLogin() {
   authed = true;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
-  if (!signinPromise) { loadAll(); return; }
-  signinPromise
-    .then(function(user){ return user.getIdTokenResult(); })
-    .then(function(res){ onAdminAuth(res.claims && res.claims.admin === true); loadAll(); })
-    .catch(function(e){ console.warn('Admin Google sign-in failed:', e.message); onAdminAuth(false, true); });
+  if (!firebase.auth) { loadAll(); return; }
+  // Persisted admin session already confirmed by the observer -> load immediately.
+  if (adminReady) { try { loadAll(); } catch(e){} adminRefreshActive(); return; }
+  if (signinPromise) {
+    signinPromise
+      .then(function(user){ return user.getIdTokenResult(); })
+      .then(function(res){ setAdminReady(!!(res.claims && res.claims.admin === true)); })
+      .catch(function(e){ console.warn('Admin Google sign-in failed:', e.message); onAdminAuth(false, true); });
+  }
 }
 
 // Explicit, always-in-gesture admin sign-in (fallback if the popup was blocked
@@ -407,11 +432,7 @@ function adminSignIn() {
   if (!firebase.auth) return;
   firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
     .then(function(c){ return c.user.getIdTokenResult(); })
-    .then(function(res){
-      var ok = res.claims && res.claims.admin === true;
-      onAdminAuth(ok);
-      if (ok) adminRefreshActive();
-    })
+    .then(function(res){ setAdminReady(!!(res.claims && res.claims.admin === true)); })
     .catch(function(e){ onAdminAuth(false, true); });
 }
 

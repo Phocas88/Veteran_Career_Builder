@@ -159,7 +159,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <div class="dash-header">
     <div>
       <div class="dash-title">VCP Admin Dashboard</div>
-      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05f</span></div>
+      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05g</span></div>
     </div>
     <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
       <span id="admin-auth-status" style="font-size:.78rem;"></span>
@@ -369,12 +369,21 @@ var ADMIN_PIN_HASH = '8266498d969081c29737b8daeb5b51d60e56d008fff243a39d16c3032d
 var authed = false;
 var adminReady = false;
 
-// One place that reacts to "are we a signed-in admin?" — updates the header and,
-// once the PIN gate is passed, loads/refreshes all the data.
+// One place that reacts to "are we a signed-in admin?" — updates the header and
+// loads the data. A verified admin (Google session) is sufficient, so on refresh
+// the dashboard auto-admits without re-entering the PIN (fixes "logs me out").
 function setAdminReady(ok, failed) {
   adminReady = !!ok;
   onAdminAuth(ok, failed);
-  if (ok && authed) { try { loadAll(); } catch(e){} adminRefreshActive(); }
+  if (ok) {
+    if (!authed) {
+      authed = true;
+      var ls = document.getElementById('login-screen'); if (ls) ls.style.display = 'none';
+      var dash = document.getElementById('dashboard'); if (dash) dash.style.display = 'block';
+    }
+    try { loadAll(); } catch(e){}
+    adminRefreshActive();
+  }
 }
 
 // Fires on page load with the PERSISTED Google session (and on any sign-in), so

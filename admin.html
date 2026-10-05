@@ -173,6 +173,8 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <div class="stat-card"><div class="stat-n" id="stat-salary-total">,</div><div class="stat-l">Total Salary Entries</div><div class="stat-sub">Live on site</div></div>
     <div class="stat-card"><div class="stat-n" id="stat-story-total">,</div><div class="stat-l">Total Stories</div><div class="stat-sub">Live on site</div></div>
     <div class="stat-card" style="border-color:rgba(240,192,64,.25);"><div class="stat-n" id="stat-rr-new">0</div><div class="stat-l">Resume Reviews · New</div><div class="stat-sub" id="stat-rr-sub">0 in review · 0 ready · 0 total</div></div>
+    <div class="stat-card" style="border-color:rgba(80,200,120,.3);"><div class="stat-n" id="stat-sub-total">—</div><div class="stat-l">Paid Subscribers</div><div class="stat-sub" id="stat-sub-sub">open tab to load</div></div>
+    <div class="stat-card" style="border-color:rgba(240,192,64,.25);"><div class="stat-n" id="stat-msg-unread">—</div><div class="stat-l">Messages</div><div class="stat-sub">unread</div></div>
   </div>
 
   <!-- Tabs -->
@@ -182,6 +184,8 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <button class="tab" onclick="switchTab('salary',this)">💰 Salary Data</button>
     <button class="tab" onclick="switchTab('stories',this)">🎖 Success Stories</button>
     <button class="tab" onclick="switchTab('analytics',this)">📊 Analytics</button>
+    <button class="tab" onclick="switchTab('subscribers',this)">💳 Paid Subs</button>
+    <button class="tab" id="msg-tab-btn" onclick="switchTab('messages',this)">💬 Messages <span id="msg-tab-badge" style="color:#f0c040;font-weight:700;display:none;"></span></button>
     <button class="tab" onclick="switchTab('add-salary',this)">+ Add Salary Entry</button>
     <button class="tab" onclick="switchTab('add-story',this)">+ Add Story</button>
     <button class="tab" id="rr-tab-btn" onclick="switchTab('resume-reviews',this)">📝 Resume Reviews <span id="rr-tab-badge" style="color:#f0c040;font-weight:700;display:none;"></span></button>
@@ -190,6 +194,18 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <!-- RESUME REVIEWS -->
   <div class="panel" id="panel-resume-reviews">
     <div id="rr-root"><div class="loading">Loading Resume Reviews…</div></div>
+  </div>
+
+  <!-- PAID SUBSCRIBERS -->
+  <div class="panel" id="panel-subscribers">
+    <div style="font-size:.85rem;color:rgba(192,216,240,.5);margin-bottom:1rem;">Active and past Stripe subscribers. Manage billing in the Stripe Dashboard.</div>
+    <div id="subs-root"><div class="loading">Loading subscribers…</div></div>
+  </div>
+
+  <!-- MESSAGE CENTER -->
+  <div class="panel" id="panel-messages">
+    <div style="font-size:.85rem;color:rgba(192,216,240,.5);margin-bottom:1rem;">Questions left through Scout, with the visitor's email/phone. Reply here (saved to the thread), or use AI Draft, then reach them via their contact.</div>
+    <div id="msgs-root"><div class="loading">Loading messages…</div></div>
   </div>
 
   <!-- EMAIL SUBSCRIBERS -->
@@ -392,6 +408,9 @@ function switchTab(name, btn) {
   btn.classList.add('active');
   document.getElementById('panel-' + name).classList.add('active');
   if (name === 'resume-reviews' && window.rrOnTabOpen) window.rrOnTabOpen();
+  if (name === 'analytics') loadAnalytics();
+  if (name === 'subscribers') loadSubscribers();
+  if (name === 'messages') loadMessages();
 }
 // Allow the Resume Reviews module (desktop notification click) to focus its tab.
 window.rrFocusTab = function() {
@@ -912,6 +931,136 @@ document.getElementById('pin-input').focus();
 </script>
 <script src="/vcp-components.js"></script>
 <script defer src="/vcp-scout.js"></script>
+<script>
+/* ===== Admin dashboard: first-party analytics + Stripe subscribers + message center ===== */
+var ADM_PROXY = window.VCB_PROXY_URL || 'https://vcp-proxy.vercel.app';
+function admEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function admDate(ms){ if(!ms) return '—'; try{ return new Date(ms).toLocaleDateString(); }catch(e){ return '—'; } }
+function admMoney(c,cur){ return (c==null)?'—':('$'+(c/100).toFixed(2)); }
+function admSetN(id,n){ var el=document.getElementById(id); if(el) el.textContent=Number(n||0).toLocaleString(); }
+
+async function admToken(){
+  var u = (window.firebase && firebase.auth) ? firebase.auth().currentUser : null;
+  if(!u){ await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()); u = firebase.auth().currentUser; }
+  if(!u) throw new Error('sign_in_required');
+  return await u.getIdToken();
+}
+async function admFetch(path, opts){
+  opts = opts||{};
+  var tok = await admToken();
+  var headers = Object.assign({ 'Authorization':'Bearer '+tok }, opts.headers||{});
+  var r = await fetch(ADM_PROXY+path, Object.assign({}, opts, { headers: headers }));
+  var data = {}; try { data = await r.json(); } catch(e){}
+  if(!r.ok){ var e=new Error((data&&data.error)||('http_'+r.status)); e.status=r.status; throw e; }
+  return data;
+}
+function admErrHtml(e){
+  var msg = e && e.status===403 ? 'This Google account is not an admin.' : (e && e.status===401 ? 'Sign-in required — approve the Google popup.' : 'Could not load. Try again.');
+  return '<div class="empty"><h3>'+msg+'</h3></div>';
+}
+
+/* ── Analytics (first-party) ── */
+function admRelabelStat(id, text){ var el=document.getElementById(id); if(!el) return; var l=el.parentNode&&el.parentNode.querySelector('.ga-stat-l'); if(l) l.textContent=text; }
+function admRelabelCard(tbodyId, title){ var tb=document.getElementById(tbodyId); if(!tb) return; var card=tb.closest('.ga-card'); var t=card&&card.querySelector('.ga-card-title'); if(t) t.textContent=title; }
+function admFillTable(tbodyId, rows){ var tb=document.getElementById(tbodyId); if(!tb) return; tb.innerHTML = rows.length ? rows.map(function(r){ return '<tr><td>'+admEsc(r[0])+'</td><td style="text-align:right;">'+Number(r[1]).toLocaleString()+'</td></tr>'; }).join('') : '<tr><td colspan="2" style="color:rgba(192,216,240,.4);">No data yet</td></tr>'; }
+function loadAnalytics(){
+  var setup=document.getElementById('ga-setup'); if(setup) setup.style.display='none';
+  var widgets=document.getElementById('ga-widgets'); if(widgets) widgets.style.display='block';
+  admFetch('/api/admin-analytics?days=30').then(function(d){
+    var days=d.days||[];
+    var today = days.length ? days[days.length-1].total : 0;
+    var last7 = days.slice(-7).reduce(function(a,x){return a+x.total;},0);
+    admSetN('ga-today', today); admSetN('ga-7d', last7); admSetN('ga-30d', d.totalVisits||0);
+    admRelabelStat('ga-30d','Page Views (30d)');
+    var tu = d.toolUsage||{}; var toolTotal = Object.keys(tu).reduce(function(a,k){return a+tu[k];},0);
+    admSetN('ga-users-30d', toolTotal); admRelabelStat('ga-users-30d','AI Tool Uses (30d)');
+    var max = Math.max(1, Math.max.apply(null, days.map(function(x){return x.total;}).concat([0])));
+    var chart=document.getElementById('ga-chart');
+    if(chart){ chart.innerHTML = days.map(function(x){ var h=Math.max(2,Math.round((x.total/max)*90)); return '<div title="'+x.date+': '+x.total+' views" style="flex:1;min-width:3px;height:'+h+'px;background:linear-gradient(180deg,#f0c040,#c8960a);border-radius:2px 2px 0 0;"></div>'; }).join(''); }
+    admFillTable('ga-sources', (d.topSources||[]).map(function(s){return [s.key, s.count];})); admRelabelCard('ga-sources','Traffic Sources (30d)');
+    admFillTable('ga-geo', (d.topCountries||[]).map(function(s){return [s.key, s.count];})); admRelabelCard('ga-geo','Top Countries (30d)');
+    var toolRows = Object.keys(tu).map(function(k){return [k.replace(/_/g,' '), tu[k]];}).sort(function(a,b){return b[1]-a[1];});
+    admFillTable('ga-pages', toolRows); admRelabelCard('ga-pages','AI Tool Usage (30d)');
+    var dev=document.getElementById('ga-devices'); if(dev){ dev.innerHTML='<tr><td colspan="2" style="color:rgba(192,216,240,.4);">First-party analytics (privacy-light, aggregate only)</td></tr>'; admRelabelCard('ga-devices','About'); }
+  }).catch(function(e){ if(widgets) widgets.insertAdjacentHTML('afterbegin', admErrHtml(e)); });
+}
+
+/* ── Paid subscribers ── */
+function loadSubscribers(){
+  var root=document.getElementById('subs-root'); root.innerHTML='<div class="loading">Loading subscribers…</div>';
+  admFetch('/api/admin-subscribers').then(function(d){
+    admSetN('stat-sub-total', d.activeCount||0);
+    var subEl=document.getElementById('stat-sub-sub'); if(subEl) subEl.textContent=(d.uniqueActiveEmails||d.activeCount||0)+' unique active';
+    var subs=d.subscribers||[];
+    if(!subs.length){ root.innerHTML='<div class="empty"><h3>No subscribers yet</h3></div>'; return; }
+    var head=['Email','Status','Plan','Started','Renews',''];
+    var html='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;"><thead><tr>'+head.map(function(h){return '<th style="text-align:left;padding:.5rem .6rem;color:#f0c040;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;">'+h+'</th>';}).join('')+'</tr></thead><tbody>';
+    subs.forEach(function(s){
+      var sc=(s.status==='active'||s.status==='trialing')?'#50c878':(s.status==='past_due'?'#f0c040':'#ff8080');
+      html+='<tr style="border-top:1px solid rgba(255,255,255,.06);">'+
+        '<td style="padding:.5rem .6rem;color:#cfe0f5;">'+admEsc(s.email||'—')+'</td>'+
+        '<td style="padding:.5rem .6rem;color:'+sc+';">'+admEsc(s.status)+(s.cancelAtPeriodEnd?' (canceling)':'')+'</td>'+
+        '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admMoney(s.amount)+(s.interval?('/'+s.interval):'')+'</td>'+
+        '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admDate(s.created)+'</td>'+
+        '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admDate(s.currentPeriodEnd)+'</td>'+
+        '<td style="padding:.5rem .6rem;"><a href="https://dashboard.stripe.com/subscriptions/'+encodeURIComponent(s.id)+'" target="_blank" style="color:#4285f4;font-size:.75rem;">Stripe ↗</a></td>'+
+      '</tr>';
+    });
+    html+='</tbody></table></div>';
+    root.innerHTML=html;
+  }).catch(function(e){ root.innerHTML=admErrHtml(e); });
+}
+
+/* ── Message center ── */
+function loadMessages(){
+  var root=document.getElementById('msgs-root'); root.innerHTML='<div class="loading">Loading messages…</div>';
+  admFetch('/api/admin-messages').then(function(d){
+    admSetN('stat-msg-unread', d.unread||0);
+    var badge=document.getElementById('msg-tab-badge');
+    if(badge){ if(d.unread){ badge.textContent='('+d.unread+')'; badge.style.display='inline'; } else badge.style.display='none'; }
+    var msgs=d.messages||[];
+    if(!msgs.length){ root.innerHTML='<div class="empty"><h3>No messages yet</h3>Scout conversations with a contact will appear here.</div>'; return; }
+    root.innerHTML = msgs.map(admRenderMessage).join('');
+  }).catch(function(e){ root.innerHTML=admErrHtml(e); });
+}
+function admRenderMessage(m){
+  var contact = [ m.email?('<a href="mailto:'+admEsc(m.email)+'" style="color:#4285f4;">'+admEsc(m.email)+'</a>'):'', m.phone?('<a href="tel:'+admEsc(m.phone)+'" style="color:#4285f4;">'+admEsc(m.phone)+'</a>'):'' ].filter(Boolean).join(' · ');
+  var replies = (m.replies||[]).map(function(r){ return '<div style="margin:.4rem 0;padding:.5rem .7rem;background:rgba(80,200,120,.08);border-left:2px solid #50c878;border-radius:4px;font-size:.82rem;color:#cfe0f5;white-space:pre-wrap;"><strong style="color:#50c878;">You:</strong> '+admEsc(r.body)+'</div>'; }).join('');
+  var sColor = m.status==='replied'?'#50c878':(m.status==='closed'?'#8aa0b8':'#f0c040');
+  return '<div class="msg-card" data-id="'+admEsc(m.id)+'" style="background:rgba(255,255,255,.03);border:1px solid '+(m.unread?'rgba(240,192,64,.4)':'rgba(255,255,255,.08)')+';border-radius:10px;padding:1rem;margin-bottom:1rem;">'+
+    '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.4rem;">'+
+      '<div style="font-weight:600;color:#fff;">'+admEsc(m.name||'Visitor')+' <span style="font-weight:400;color:#9bb3d0;font-size:.8rem;">'+contact+'</span></div>'+
+      '<div style="font-size:.72rem;color:#8aa0b8;">'+admDate(m.createdAt)+' · <span style="color:'+sColor+';">'+admEsc(m.status)+'</span></div>'+
+    '</div>'+
+    '<div style="color:#cfe0f5;font-size:.9rem;white-space:pre-wrap;margin-bottom:.6rem;">'+admEsc(m.message)+'</div>'+ replies +
+    '<textarea class="msg-reply" placeholder="Write a reply… (saved to the thread; use their email/phone to actually send it)" style="width:100%;min-height:56px;background:#0d1a2d;border:1px solid rgba(255,255,255,.12);border-radius:7px;color:#e6eef8;padding:.5rem;font-size:.85rem;font-family:inherit;box-sizing:border-box;"></textarea>'+
+    '<div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.4rem;">'+
+      '<button onclick="msgSendReply(this)" style="background:#1a7a40;border:none;color:#fff;padding:.4rem .9rem;border-radius:6px;font-size:.8rem;cursor:pointer;">Save Reply</button>'+
+      '<button onclick="msgAiDraft(this)" style="background:rgba(240,192,64,.15);border:1px solid rgba(240,192,64,.3);color:#f0c040;padding:.4rem .9rem;border-radius:6px;font-size:.8rem;cursor:pointer;">✨ AI Draft</button>'+
+      '<button onclick="msgSetStatus(this,\''+(m.status==='closed'?'new':'closed')+'\')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#9bb3d0;padding:.4rem .9rem;border-radius:6px;font-size:.8rem;cursor:pointer;">'+(m.status==='closed'?'Reopen':'Close')+'</button>'+
+    '</div>'+
+  '</div>';
+}
+function admMsgCard(btn){ return btn.closest('.msg-card'); }
+function msgSendReply(btn){
+  var card=admMsgCard(btn), id=card.getAttribute('data-id'), ta=card.querySelector('.msg-reply'), text=ta.value.trim();
+  if(!text){ toast('Write a reply first','#c0392b'); return; }
+  btn.disabled=true;
+  admFetch('/api/admin-reply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,reply:text})})
+    .then(function(){ toast('Reply saved'); loadMessages(); }).catch(function(){ btn.disabled=false; toast('Failed to save','#c0392b'); });
+}
+function msgAiDraft(btn){
+  var card=admMsgCard(btn), id=card.getAttribute('data-id'), ta=card.querySelector('.msg-reply'), prev=btn.textContent;
+  btn.disabled=true; btn.textContent='Drafting…';
+  admFetch('/api/admin-reply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,aiDraft:true})})
+    .then(function(d){ ta.value=d.draft||''; btn.disabled=false; btn.textContent=prev; }).catch(function(){ btn.disabled=false; btn.textContent=prev; toast('AI draft failed','#c0392b'); });
+}
+function msgSetStatus(btn,status){
+  var card=admMsgCard(btn), id=card.getAttribute('data-id');
+  admFetch('/api/admin-reply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,status:status})})
+    .then(function(){ toast('Updated'); loadMessages(); }).catch(function(){ toast('Failed','#c0392b'); });
+}
+</script>
 <script src="/admin-resume-reviews.js"></script>
 </body>
 </html>

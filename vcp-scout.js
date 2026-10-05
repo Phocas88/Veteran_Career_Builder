@@ -32,11 +32,59 @@
       '<div id="scout-msgs">' +
         '<div class="scout-msg bot">Hey! I\'m ' + BOT_NAME + '. I can help find pages on this site. Ask me about career resources, VA benefits, MOS guides, tools, or anything else here.</div>' +
       '</div>' +
+      '<div id="scout-contact" style="display:none;padding:.6rem .75rem;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.15);">' +
+        '<div style="font-size:.76rem;color:rgba(192,216,240,.7);margin-bottom:.4rem;">Leave your email or phone and a note, and the team (or Scout) will follow up.</div>' +
+        '<input id="scout-contact-who" type="text" placeholder="Email or phone" autocomplete="off" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.45rem .6rem;color:#e0eaf5;font-size:.82rem;margin-bottom:.35rem;outline:none;">' +
+        '<textarea id="scout-contact-msg" placeholder="Your question or message..." style="width:100%;box-sizing:border-box;min-height:50px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.45rem .6rem;color:#e0eaf5;font-size:.82rem;font-family:inherit;outline:none;"></textarea>' +
+        '<div style="display:flex;gap:.4rem;margin-top:.35rem;">' +
+          '<button id="scout-contact-send" type="button" style="flex:1;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:8px;padding:.45rem;color:#0a1628;font-weight:700;font-size:.82rem;cursor:pointer;">Send</button>' +
+          '<button id="scout-contact-cancel" type="button" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.45rem .7rem;color:rgba(192,216,240,.6);font-size:.82rem;cursor:pointer;">Cancel</button>' +
+        '</div>' +
+      '</div>' +
+      '<button id="scout-contact-toggle" type="button" style="width:100%;background:none;border:none;border-top:1px solid rgba(255,255,255,.06);color:rgba(240,192,64,.75);font-size:.74rem;padding:.4rem;cursor:pointer;">📨 Leave your email/phone for a human follow-up</button>' +
       '<div id="scout-input-wrap">' +
         '<input id="scout-input" type="text" placeholder="Ask me anything..." autocomplete="off" aria-label="Ask Scout">' +
         '<button id="scout-send" type="button" aria-label="Send Scout message">&#10148;</button>' +
       '</div>';
     document.body.appendChild(panel);
+
+    // Contact capture -> /api/scout-message (owner/Scout follows up by email/phone).
+    var SCOUT_PROXY = window.VCB_PROXY_URL || 'https://vcp-proxy.vercel.app';
+    document.getElementById('scout-contact-toggle').addEventListener('click', function () {
+      var c = document.getElementById('scout-contact');
+      c.style.display = c.style.display === 'none' ? 'block' : 'none';
+      if (c.style.display === 'block') document.getElementById('scout-contact-who').focus();
+    });
+    document.getElementById('scout-contact-cancel').addEventListener('click', function () {
+      document.getElementById('scout-contact').style.display = 'none';
+    });
+    document.getElementById('scout-contact-send').addEventListener('click', function () {
+      var who = document.getElementById('scout-contact-who').value.trim();
+      var msg = document.getElementById('scout-contact-msg').value.trim();
+      if (!who) { alert('Please add your email or phone so we can reach you.'); return; }
+      if (!msg) { alert('Please add a short message.'); return; }
+      var body = { message: msg, page: location.pathname };
+      if (/@/.test(who)) body.email = who; else body.phone = who;
+      var sb = document.getElementById('scout-contact-send');
+      sb.disabled = true; sb.textContent = 'Sending…';
+      fetch(SCOUT_PROXY + '/api/scout-message', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().catch(function () { return {}; }); })
+        .then(function (d) {
+          sb.disabled = false; sb.textContent = 'Send';
+          if (d && d.ok) {
+            document.getElementById('scout-contact').style.display = 'none';
+            document.getElementById('scout-contact-who').value = '';
+            document.getElementById('scout-contact-msg').value = '';
+            var msgs = document.getElementById('scout-msgs');
+            var el = document.createElement('div'); el.className = 'scout-msg bot';
+            el.textContent = 'Thanks! Got it. We will reach out to you soon.';
+            msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
+          } else {
+            alert((d && d.error === 'bad_email') ? 'That email looks off, please check it.' : 'Could not send. Please try again.');
+          }
+        })
+        .catch(function () { sb.disabled = false; sb.textContent = 'Send'; alert('Could not send. Please try again.'); });
+    });
 
     document.getElementById('scout-close').addEventListener('click', toggleChat);
     document.getElementById('scout-send').addEventListener('click', window._scoutSend);

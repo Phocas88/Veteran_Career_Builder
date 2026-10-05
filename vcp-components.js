@@ -599,6 +599,33 @@
     initAccountLink();
     initToolsDrawer();
     initHamburgerA11y();
+    initAnalyticsBeacon();
+  }
+
+  /* ── FIRST-PARTY ANALYTICS BEACON (privacy-light, aggregate-only) ──────── */
+  function initAnalyticsBeacon() {
+    try {
+      // Count a "use" of the free tools (opens the tool page). Scout resume/cover
+      // are counted server-side on generate; these are page-based.
+      var TOOL_MAP = {
+        'veteran-career-test': 'pathfinder_lite',
+        'career-assessment-full': 'pathfinder_pro',
+        'mos-career-translator': 'mos_translator',
+        'va-disability-rating-schedule': 'va_calculator'
+      };
+      var slug = location.pathname.replace(/^\//, '').replace(/\.html$/, '');
+      var data = { p: location.pathname, r: document.referrer || '' };
+      if (TOOL_MAP[slug]) data.tool = TOOL_MAP[slug];
+      var payload = JSON.stringify(data);
+      var url = 'https://vcp-proxy.vercel.app/api/track';
+      // text/plain keeps it a "simple" request (no CORS preflight); the server
+      // parses the JSON string. The page never waits on this.
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(url, new Blob([payload], { type: 'text/plain' }));
+      } else {
+        fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: payload, keepalive: true }).catch(function(){});
+      }
+    } catch (e) {}
   }
 
   // Keep the mobile hamburger's aria-expanded in sync (WCAG 4.1.2). The inline

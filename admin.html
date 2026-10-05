@@ -379,13 +379,28 @@ async function doLogin() {
     document.getElementById('dashboard').style.display = 'block';
     // Sign in anonymously to Firebase for Firestore access
     if(firebase.auth) {
-      firebase.auth().signInAnonymously().then(function(){
-        console.log('Firebase auth OK');
-        loadAll();
-      }).catch(function(e){
-        console.warn('Auth failed, trying without:', e.message);
-        loadAll();
-      });
+      // Real authorization is the Firebase admin claim (the PIN is just a gate).
+      // Firestore reads (emails/users/salary/stories) AND the proxy admin endpoints
+      // all require it, so sign in with the admin Google account here.
+      var u = firebase.auth().currentUser;
+      var needGoogle = !u || u.isAnonymous;
+      var signIn = needGoogle
+        ? firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(c){ return c.user; })
+        : Promise.resolve(u);
+      signIn
+        .then(function(user){ return user.getIdTokenResult(); })
+        .then(function(res){
+          if (!(res.claims && res.claims.admin === true)) {
+            toast('This Google account is not an admin. Data will not load.', '#c0392b');
+          } else {
+            console.log('Admin signed in OK');
+          }
+          loadAll();
+        })
+        .catch(function(e){
+          console.warn('Admin Google sign-in failed:', e.message);
+          toast('Google sign-in is required to load admin data.', '#c0392b');
+        });
     } else {
       loadAll();
     }

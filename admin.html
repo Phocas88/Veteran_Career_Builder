@@ -159,7 +159,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <div class="dash-header">
     <div>
       <div class="dash-title">VCP Admin Dashboard</div>
-      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05g</span></div>
+      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05h</span></div>
     </div>
     <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
       <span id="admin-auth-status" style="font-size:.78rem;"></span>
@@ -217,6 +217,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
       <div style="font-size:.85rem;color:rgba(192,216,240,.5);">All newsletter signups from email walls across the site</div>
       <button style="background:rgba(240,192,64,.15);border:1px solid rgba(240,192,64,.3);color:#f0c040;padding:.4rem .9rem;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;" onclick="exportEmails()">📋 Copy All Emails</button>
+      <button style="background:rgba(80,200,120,.15);border:1px solid rgba(80,200,120,.35);color:#7fe0a0;padding:.4rem .9rem;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;" onclick="exportSubscribersCSV()">⬇ Download CSV (for MailerLite/Mailchimp)</button>
     </div>
     <div id="email-list"><div class="loading">Loading email subscribers...</div></div>
   </div>
@@ -500,6 +501,25 @@ function toast(msg, color) {
 }
 
 var allEmails = [];
+var allSubscribers = [];
+
+// Download subscribers as an import-ready CSV (email,name,subscribed_date,source,status)
+// for MailerLite / Mailchimp / any newsletter tool.
+function exportSubscribersCSV() {
+  if (!allSubscribers.length) { toast('No subscribers to export', '#c0392b'); return; }
+  var rows = [['email','name','subscribed_date','source','status']];
+  allSubscribers.forEach(function(s){ rows.push([s.email, s.name, s.date, s.source, s.status]); });
+  var csv = rows.map(function(r){
+    return r.map(function(c){ var v = String(c == null ? '' : c); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(',');
+  }).join('\n');
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'vcp-subscribers-' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('Downloaded ' + allSubscribers.length + ' subscribers');
+}
 
 function loadAll() {
   if(!window.db){
@@ -574,6 +594,7 @@ function loadEmailSubscribers() {
   db.collection('email_subscribers').orderBy('timestamp','desc').get().then(function(snap){
     document.getElementById('stat-email-total').textContent = snap.size;
     allEmails = [];
+    allSubscribers = [];
     if(snap.empty){
       document.getElementById('email-list').innerHTML = '<div class="empty"><h3>No subscribers yet</h3>Email signups from the site will appear here.</div>';
       return;
@@ -589,6 +610,8 @@ function loadEmailSubscribers() {
     snap.forEach(function(doc){
       var d = doc.data();
       allEmails.push(d.email);
+      var tsMs = d.timestamp ? (d.timestamp.seconds ? d.timestamp.seconds*1000 : d.timestamp) : null;
+      allSubscribers.push({ email: d.email || '', name: d.name || d.firstName || '', date: tsMs ? new Date(tsMs).toISOString().slice(0,10) : '', source: d.source || '', status: d.status || 'active' });
       var date = d.timestamp ? new Date(d.timestamp.seconds ? d.timestamp.seconds*1000 : d.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ',';
       var source = (d.source||'').replace('https://veterancareerpath.com/','').replace('https://veterancareerpath.com','Home') || ',';
       if(source.length > 30) source = source.substring(0, 30) + '…';

@@ -383,6 +383,23 @@
   .vcp-section { padding: var(--vcp-space-xl) 4%; }
 }
 
+/* ── MOBILE FOOTER: keep link groups in left/right segments ────────────────
+   The site-wide footer uses an inline `repeat(auto-fit,minmax(160px,1fr))`
+   grid that collapses to a single very long column on phones. Force a 2-up
+   layout so the groups read as left/right segments. The `!important` is
+   required to beat the inline style attribute. */
+@media (max-width: 640px) {
+  footer div[style*="grid-template-columns:repeat(auto-fit"] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1.25rem 1rem !important;
+  }
+}
+@media (max-width: 380px) {
+  footer div[style*="grid-template-columns:repeat(auto-fit"] {
+    gap: 1rem .75rem !important;
+  }
+}
+
 /* ── STAT COUNTER ──────────────────────────────────────────────────────── */
 .vcp-stat {
   text-align: center;

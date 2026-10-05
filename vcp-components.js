@@ -190,6 +190,76 @@
       mlink.textContent = '\uD83D\uDC64 My Account';
       mob.appendChild(mlink);
     }
+    // Reveal a working "Sign out" entry when a session is detected, so logout
+    // is reachable from every page (not just the app). The static content
+    // pages don't load the Firebase SDK, so we detect the persisted session
+    // from its IndexedDB record and route sign-out to the app's #logout handler.
+    vcpDetectSession(function (signedIn) {
+      if (!signedIn) return;
+      addLogoutEntry(desk, false);
+      addLogoutEntry(mob, true);
+    });
+  }
+
+  var LOGOUT_URL = 'https://veterancareerpath.com/app.html#logout';
+
+  function addLogoutEntry(container, isMobile) {
+    if (!container || container.querySelector('.vcp-logout-link')) return;
+    var out = document.createElement('a');
+    out.href = LOGOUT_URL;
+    out.className = 'vcp-account-link vcp-logout-link';
+    out.textContent = '\u23FB Sign out';
+    if (!isMobile) {
+      out.style.cssText = 'display:flex;align-items:center;gap:.3rem;padding:0 .5rem;color:rgba(240,160,160,.8);text-decoration:none;font-size:.72rem;font-weight:500;white-space:nowrap;flex-shrink:0;';
+    }
+    var acct = container.querySelector('.vcp-account-link');
+    if (acct && acct.nextSibling) container.insertBefore(out, acct.nextSibling);
+    else container.appendChild(out);
+  }
+
+  /* Detect a persisted login without pulling in the Firebase SDK. Uses the
+     live auth object when present (the AI-tool pages), otherwise reads the
+     firebase-auth IndexedDB record. Always calls back (false on any error). */
+  function vcpDetectSession(cb) {
+    var done = false;
+    function finish(v) { if (done) return; done = true; try { cb(!!v); } catch (e) {} }
+    try {
+      if (window.fbAuth && typeof window.fbAuth.onAuthStateChanged === 'function') {
+        window.fbAuth.onAuthStateChanged(function (u) { finish(!!u); });
+        return;
+      }
+      if (!window.indexedDB) { finish(false); return; }
+      var DB = 'firebaseLocalStorageDb';
+      function readDb() {
+        var req = window.indexedDB.open(DB);
+        req.onerror = function () { finish(false); };
+        req.onsuccess = function () {
+          try {
+            var db = req.result;
+            if (!db.objectStoreNames || !db.objectStoreNames.contains('firebaseLocalStorage')) { finish(false); db.close(); return; }
+            var keysReq = db.transaction('firebaseLocalStorage', 'readonly').objectStore('firebaseLocalStorage').getAllKeys();
+            keysReq.onsuccess = function () {
+              var keys = keysReq.result || [];
+              finish(keys.some(function (k) { return String(k).indexOf(':authUser:') > -1; }));
+              db.close();
+            };
+            keysReq.onerror = function () { finish(false); db.close(); };
+          } catch (e) { finish(false); }
+        };
+      }
+      // Avoid creating a phantom empty DB for the (vast majority) logged-out
+      // visitors on browsers that expose indexedDB.databases() (Chromium).
+      if (typeof window.indexedDB.databases === 'function') {
+        window.indexedDB.databases().then(function (dbs) {
+          if ((dbs || []).some(function (d) { return d && d.name === DB; })) readDb();
+          else finish(false);
+        }).catch(readDb);
+      } else {
+        readDb();
+      }
+      // Safety net: never hang on a slow/blocked IndexedDB open.
+      setTimeout(function () { finish(false); }, 1500);
+    } catch (e) { finish(false); }
   }
 
   /* ── AI TOOLS QUICK-NAV DRAWER ───────────────────────────────────────── */

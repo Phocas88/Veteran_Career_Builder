@@ -1810,6 +1810,14 @@ function App() {
   useEffect(() => {
     const openAccountRoute = () => {
       const hash = (window.location.hash || "").toLowerCase();
+      // Universal sign-out entry point. Nav/footer links across the site point
+      // here (/app.html#logout) so logout is reachable from any page.
+      if (hash === "#logout" || hash === "#signout" || hash === "#sign-out") {
+        if (!authReady) return; // wait for Firebase to restore the session first
+        handleLogout();
+        try { window.history.replaceState({}, "", window.location.pathname); } catch(e) {}
+        return;
+      }
       if (hash !== "#profile" && hash !== "#account" && hash !== "#login") return;
       setShowPaywall(false);
       setAuthMode("login");
@@ -1948,13 +1956,14 @@ function App() {
   };
 
   const handleLogout = async () => {
-    await fbAuth.signOut();
+    try { if (fbAuth) await fbAuth.signOut(); } catch(e) { console.warn("Sign out error:", e); }
     setCurrentUser(null);
     setSavedResumes([]);
     setHasUnsaved(false);
-    // Clear localStorage caches
+    // Clear localStorage caches (profile, access, cached subscription checks, and
+    // the non-user-scoped work caches so a sign-out fully clears the session)
     try {
-      localStorage.removeItem("vcb_profile"); localStorage.removeItem("vcb_access");
+      ["vcb_profile","vcb_access","vcb_jobs","vcb_timeline","vcb_saved_paths"].forEach(k=>localStorage.removeItem(k));
       Object.keys(localStorage).filter(k=>k.indexOf("vcb_subscription_check:")===0).forEach(k=>localStorage.removeItem(k));
     } catch(e) {}
     resetProfileFields();

@@ -1817,10 +1817,10 @@ body.menu-open{overflow:hidden!important;}
 <!-- ═══ ZIP CODE RESOURCE FINDER ═══════════════════════════════════════ -->
 <div class="zip-locator" id="sec-zip" style="background:linear-gradient(135deg,#0a1628,#1a3a6b);border-radius:14px;padding:2rem;margin-bottom:1.5rem;border:1px solid rgba(240,192,64,.2);">
   <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.06em;color:#f0c040;margin-bottom:.35rem;">Find Resources Near You</h3>
-  <p style="font-size:.88rem;color:rgba(192,216,240,.7);margin-bottom:1rem;line-height:1.6;">Enter your ZIP code to find homeless shelters, VA facilities, housing assistance, food banks, and mental health services in your area.</p>
+  <p style="font-size:.88rem;color:rgba(192,216,240,.7);margin-bottom:1rem;line-height:1.6;">Enter your ZIP code, or your city and state, to find homeless shelters, VA facilities, housing assistance, food banks, free and low-cost medical care, and mental health services in your area.</p>
 
   <div class="zip-input-row" style="display:flex;gap:.5rem;margin-bottom:1rem;">
-    <input type="text" id="zip-input" placeholder="Enter your ZIP code" maxlength="5" pattern="[0-9]{5}" inputmode="numeric" style="flex:1;min-width:120px;border:2px solid rgba(240,192,64,.3);border-radius:8px;padding:.7rem 1rem;font-size:1rem;font-family:inherit;background:rgba(255,255,255,.08);color:#fff;outline:none;">
+    <input type="text" id="zip-input" placeholder="ZIP code, or city & state (e.g. Austin, TX)" maxlength="60" autocomplete="postal-code" style="flex:1;min-width:120px;border:2px solid rgba(240,192,64,.3);border-radius:8px;padding:.7rem 1rem;font-size:1rem;font-family:inherit;background:rgba(255,255,255,.08);color:#fff;outline:none;">
     <button onclick="searchZip()" style="padding:.7rem 1.5rem;background:linear-gradient(135deg,#c8960a,#e8aa10);border:none;border-radius:8px;font-weight:700;font-size:.95rem;color:#0a1628;cursor:pointer;font-family:inherit;white-space:nowrap;">Find Help</button>
   </div>
 
@@ -1831,16 +1831,17 @@ body.menu-open{overflow:hidden!important;}
 
 <script>
 function searchZip() {
-  var zip = document.getElementById('zip-input').value.trim();
-  if (!/^\d{5}$/.test(zip)) { alert('Please enter a valid 5-digit ZIP code.'); return; }
+  var raw = document.getElementById('zip-input').value.trim();
+  if (raw.length < 3) { alert('Please enter your ZIP code, or your city and state.'); return; }
+  var zip = encodeURIComponent(raw); // works as the address/location for the locators below
   var results = document.getElementById('zip-results');
   results.style.display = 'block';
-  results.innerHTML = '<div style="text-align:center;padding:1rem;color:rgba(192,216,240,.6);"><div style="width:32px;height:32px;border:3px solid rgba(255,255,255,.1);border-top-color:#f0c040;border-radius:50%;animation:aispin 1s linear infinite;margin:0 auto .5rem;"></div>Searching for resources near ' + zip + '...</div>';
+  results.innerHTML = '<div style="text-align:center;padding:1rem;color:rgba(192,216,240,.6);"><div style="width:32px;height:32px;border:3px solid rgba(255,255,255,.1);border-top-color:#f0c040;border-radius:50%;animation:aispin 1s linear infinite;margin:0 auto .5rem;"></div>Searching for resources near ' + raw + '...</div>';
 
   var html = '';
 
   // Header
-  html += '<div style="font-weight:700;color:#f0c040;font-size:1.05rem;margin-bottom:.75rem;font-family:Bebas Neue,sans-serif;letter-spacing:.06em;">Resources Near ZIP ' + zip + '</div>';
+  html += '<div style="font-weight:700;color:#f0c040;font-size:1.05rem;margin-bottom:.75rem;font-family:Bebas Neue,sans-serif;letter-spacing:.06em;">Resources Near ' + raw.replace(/</g,'&lt;') + '</div>';
 
   // EMERGENCY, always show first
   html += '<div style="background:rgba(220,38,38,.12);border:1.5px solid rgba(220,38,38,.3);border-radius:10px;padding:.85rem 1rem;margin-bottom:.75rem;">';
@@ -1851,6 +1852,13 @@ function searchZip() {
   html += '<a href="sms:838255" style="display:block;padding:.5rem;background:rgba(220,38,38,.15);border-radius:6px;color:#fca5a5;text-decoration:none;font-weight:600;text-align:center;">💬 Text 838255</a>';
   html += '<a href="tel:211" style="display:block;padding:.5rem;background:rgba(220,38,38,.15);border-radius:6px;color:#fca5a5;text-decoration:none;font-weight:600;text-align:center;">📞 Dial 211</a>';
   html += '</div></div>';
+
+  // All-in-one local search (best single starting point)
+  html += makeResourceCard('🔎', 'Search All Local Help', 'Find free & low-cost housing, food, medical, dental, and financial programs near you, all in one search.', [
+    {text:'FindHelp, All Resources', url:'https://www.findhelp.org/?postal=' + zip},
+    {text:'HUD Find Shelter', url:'https://www.hud.gov/findshelter'},
+    {text:'211.org, Dial or Search', url:'https://www.211.org/'}
+  ]);
 
   // VA Facilities
   html += makeResourceCard('🏥', 'VA Homeless Services', 'VA medical centers, Vet Centers, and homeless programs near you.', [

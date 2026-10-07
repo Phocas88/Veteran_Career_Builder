@@ -8,7 +8,9 @@
   'use strict';
   var PROXY = window.VCB_PROXY_URL || 'https://vcp-proxy.vercel.app';
   var params = new URLSearchParams(location.search);
-  var token = (params.get('token') || '').trim();
+  // Default to the permanent public self-serve invite (reusable) when none in the URL.
+  var PUBLIC_REVIEW_TOKEN = 'e8e07e99471a0e5c8b85da4ea34f3dbaadf9b4d250639c12e9304f377455ef40';
+  var token = (params.get('token') || '').trim() || PUBLIC_REVIEW_TOKEN;
   var paid = params.get('paid') === '1';
   var canceled = params.get('canceled') === '1';
 

@@ -6,7 +6,10 @@
   'use strict';
   var PROXY = window.VCB_PROXY_URL || 'https://vcp-proxy.vercel.app';
   var params = new URLSearchParams(location.search);
-  var token = (params.get('token') || '').trim();
+  // Default to the permanent public self-serve invite (reusable) when no personal
+  // invite token is in the URL, so veterancareerpath.com/resume-review.html just works.
+  var PUBLIC_REVIEW_TOKEN = '9a220f4d05746ed1cc8f63af13b19b0b29158f60cd80444f12609f568c115f5c';
+  var token = (params.get('token') || '').trim() || PUBLIC_REVIEW_TOKEN;
   var paid = params.get('paid') === '1';
   var canceled = params.get('canceled') === '1';
   var jobParam = (params.get('job') || '').trim();

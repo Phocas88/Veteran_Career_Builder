@@ -5,9 +5,8 @@
 import fs from 'fs';
 
 const SRC = 'veteran-homeless-assistance.html';
-// Rebuild the shell from the published hub if the source was already turned into a redirect.
-let base = fs.readFileSync('helpvets/index.html', 'utf8');
-if (base.length < 5000) base = fs.readFileSync(SRC, 'utf8');
+// Always build from the stable, full-content shell template (idempotent).
+const base = fs.readFileSync('scripts/helpvets-shell.html', 'utf8');
 
 // ── Finder + card helpers (match the page's dark locator look) ──
 function card(icon, title, desc, links) {
@@ -91,7 +90,8 @@ let hub = base
 // Remove the old cards that linked to separate pages (if present) and inject the
 // crisis + food + shelter sections right at the top of the main content.
 hub = hub.replace(/<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1\.5rem;">[\s\S]*?Find Food Banks[\s\S]*?<\/a>\s*<\/div>/, '');
-hub = hub.replace('<main>\n', '<main>\n' + crisisSection + '\n' + shelterSection + '\n' + foodSection + '\n');
+// Inject right after <main> (line-ending agnostic).
+hub = hub.replace('<main>', '<main>\n' + crisisSection + '\n' + shelterSection + '\n' + foodSection + '\n');
 
 // Update the sidebar quick-nav to include the new sections.
 hub = hub

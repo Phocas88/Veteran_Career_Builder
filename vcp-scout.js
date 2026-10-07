@@ -223,36 +223,29 @@
       msgs.appendChild(typing);
       msgs.scrollTop = msgs.scrollHeight;
 
-      if (!window.VCBSecureApi) {
-        typing.remove();
-        showFallback(relevant);
-        finishLoading();
-        return;
-      }
-
-      var context = 'You are ' + BOT_NAME + ', a helpful site assistant for veterancareerpath.com. ';
-      context += 'The site has career assessments, AI career tools, VA disability guides, MOS-to-civilian translators, state benefits, GI Bill calculators, resume builders, interview prep, and related transition resources. ';
-      context += 'Help users find the right page or resource. Give direct links using the format [Page Title](https://veterancareerpath.com/page.html). ';
-      context += 'Be concise, usually 2-4 sentences. Be professional and practical for veterans and military families.\n\n';
+      // Answer via the FREE Scout chat endpoint — no login/subscription needed,
+      // so it works for every visitor (the old callClaude was paywalled, which is
+      // why Scout could only show links).
+      var prompt = chatHistory.slice(-10).map(function (m) {
+        return m.role.toUpperCase() + ': ' + m.content;
+      }).join('\n');
       if (relevant.length > 0) {
-        context += 'RELEVANT PAGES for this question:\n';
-        relevant.forEach(function (r) {
-          context += '- ' + r.title + ': ' + r.url + (r.desc ? ', ' + r.desc : '') + '\n';
+        prompt += '\n\nRELEVANT PAGES (link as [Title](url) only if they genuinely help):\n';
+        relevant.slice(0, 6).forEach(function (r) {
+          prompt += '- [' + r.title + '](' + r.url + ')' + (r.desc ? ' — ' + r.desc : '') + '\n';
         });
       }
-      context += '\nCurrent page: ' + window.location.pathname;
+      prompt += '\nCurrent page: ' + window.location.pathname + '\n\nAnswer the veteran\'s most recent question directly and helpfully.';
 
-      window.VCBSecureApi.callClaude(
-        chatHistory.slice(-12).map(function (m) {
-          return m.role.toUpperCase() + ': ' + m.content;
-        }).join('\n'),
-        context,
-        300
-      ).then(function (text) {
+      var PROXY = window.VCB_PROXY_URL || 'https://vcp-proxy.vercel.app';
+      fetch(PROXY + '/api/claude', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scout: 'chat', prompt: prompt, max_tokens: 600 })
+      }).then(function (r) { return r.json(); }).then(function (data) {
         typing.remove();
-        text = text || "Sorry, I could not process that. Try rephrasing your question.";
-        var safe = renderSafeLinks(text);
-        addMsg(safe, 'bot', true);
+        var text = (data && Array.isArray(data.content)) ? data.content.map(function (b) { return (b && b.text) || ''; }).join('') : '';
+        if (!text || !text.trim()) { showFallback(relevant); return; }
+        addMsg(renderSafeLinks(text), 'bot', true);
         chatHistory.push({ role: 'assistant', content: String(text) });
       }).catch(function () {
         typing.remove();

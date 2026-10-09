@@ -159,7 +159,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
   <div class="dash-header">
     <div>
       <div class="dash-title">VCP Admin Dashboard</div>
-      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-05j</span></div>
+      <div class="dash-user">Veteran Career Path · Content Management Panel <span style="opacity:.5;">· build 2026-10-08a</span></div>
     </div>
     <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
       <span id="admin-auth-status" style="font-size:.78rem;"></span>
@@ -398,6 +398,9 @@ function setAdminReady(ok, failed) {
 // after the first Google sign-in the dashboard just works on refresh — no popup.
 document.addEventListener('DOMContentLoaded', function(){
   if (window.firebase && firebase.auth) {
+    // Complete any pending redirect sign-in (popup fallback). onAuthStateChanged
+    // below then auto-admits the verified admin without re-entering the PIN.
+    firebase.auth().getRedirectResult().catch(function(){});
     firebase.auth().onAuthStateChanged(function(user){
       if (user && !user.isAnonymous) {
         user.getIdTokenResult().then(function(res){ setAdminReady(!!(res.claims && res.claims.admin === true)); }).catch(function(){});
@@ -420,7 +423,7 @@ async function doLogin() {
   if (firebase.auth) {
     var cu = firebase.auth().currentUser;
     if (cu && !cu.isAnonymous) signinPromise = Promise.resolve(cu);
-    else { try { signinPromise = firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(c){ return c.user; }); } catch(e){ signinPromise = null; } }
+    else { try { signinPromise = adminPopupSignIn(); } catch(e){ signinPromise = null; } }
   }
   var pin = document.getElementById('pin-input').value;
   var pinHash = await hashPin(pin);
@@ -443,12 +446,32 @@ async function doLogin() {
   }
 }
 
-// Explicit, always-in-gesture admin sign-in (fallback if the popup was blocked
-// or a different Google account was used).
+// Sign in with Google via popup; if the popup is blocked or severed by the
+// Cross-Origin-Opener-Policy on Google's OAuth page, fall back to a full-page
+// redirect (handled on return by getRedirectResult + onAuthStateChanged).
+function adminPopupSignIn() {
+  var provider = new firebase.auth.GoogleAuthProvider();
+  return firebase.auth().signInWithPopup(provider)
+    .then(function(c){ return c.user; })
+    .catch(function(err){
+      var code = err && err.code;
+      if (code === 'auth/popup-blocked' || code === 'auth/popup-closed-by-user' ||
+          code === 'auth/cancelled-popup-request' || code === 'auth/internal-error' ||
+          code === 'auth/web-storage-unsupported' || code === 'auth/operation-not-supported-in-this-environment') {
+        try { sessionStorage.setItem('vcp_admin_pin_ok', '1'); } catch(e){}
+        firebase.auth().signInWithRedirect(provider);
+        return new Promise(function(){}); // page navigates away; never resolves
+      }
+      throw err;
+    });
+}
+
+// Explicit, always-in-gesture admin sign-in (if the popup was blocked or a
+// different Google account was used).
 function adminSignIn() {
   if (!firebase.auth) return;
-  firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
-    .then(function(c){ return c.user.getIdTokenResult(); })
+  adminPopupSignIn()
+    .then(function(user){ return user.getIdTokenResult(); })
     .then(function(res){ setAdminReady(!!(res.claims && res.claims.admin === true)); })
     .catch(function(e){ onAdminAuth(false, true); });
 }

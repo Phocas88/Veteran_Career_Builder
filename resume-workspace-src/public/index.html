@@ -10,8 +10,8 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./resume.css">
-  <link rel="stylesheet" href="./veteran.css?v=20261018-guided">
-  <script type="module" src="./app.js?v=20261018-guided"></script>
+  <link rel="stylesheet" href="./veteran.css?v=20261018-upload">
+  <script type="module" src="./app.js?v=20261018-upload"></script>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to resume workspace</a>
@@ -49,26 +49,24 @@
       </ol>
 
       <section id="resume-panel" class="panel" aria-labelledby="resume-heading"><div class="flow-heading"><button id="flow-back" class="text-button" type="button" hidden>← Back</button><p id="flow-progress" role="status" aria-live="polite">Choose how to start</p></div><section class="card start-card" id="resume-start"><span class="section-kicker">LET’S GET STARTED</span><h2>How would you like to start?</h2><p>Choose one. You can switch paths at any time.</p><div class="start-options"><button id="choose-import" class="start-option" type="button"><span aria-hidden="true">↑</span><strong>Use an existing resume</strong><small>Upload PDF, Word or text — or paste your resume.</small></button><button id="choose-build" class="start-option" type="button"><span aria-hidden="true">＋</span><strong>Build a new resume</strong><small>Add military service, civilian jobs, education and skills.</small></button></div><button id="start-saved" class="text-button" type="button" hidden>Open a saved resume →</button><p class="guest-hint" id="account-value">A free account lets you save your work and return to update it later.</p></section><section id="flow-build" data-flow="build" hidden><details id="background-builder" class="card background-builder" open><summary><span class="section-kicker">START FROM YOUR SERVICE</span><strong>Build a new resume</strong><span>Add your background. You can switch to an existing resume at any time.</span></summary><p>Include only unclassified details you can verify. Specialty codes help explain context; they do not prove individual duties or qualifications. Add a separate experience for each role or branch.</p><div id="background-fields"></div><div class="builder-actions"><button id="build-draft" class="button button-primary" type="button">Create draft &amp; continue →</button><button id="save-profile" class="button button-secondary" type="button">Save these details for later</button><button id="load-profile" class="text-button" type="button">Load my saved details</button></div><p id="builder-status" role="status" aria-live="polite"></p><p class="field-hint">Creating this starting draft runs on your device. Continue through job details and checkout to use AI to translate acronyms and improve the writing.</p></details></section><section id="flow-edit" data-flow="edit" hidden><div class="card editor-card">
-            <div class="card-heading"><div><div class="section-kicker">LET’S START HERE</div><h2 id="resume-heading">Check your resume</h2></div><span class="document-mark" aria-hidden="true">▤</span></div>
-            <p class="card-description">Upload or paste your resume, then check the text. You can edit it here before the AI review.</p>
-            <div class="input-tabs"><span class="input-tab selected">Paste text</span><button class="upload-button" id="import-resume" type="button" aria-describedby="file-help"><span>↑</span> Import resume</button><input id="resume-file" type="file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown" hidden></div>
-            <p id="file-help" class="file-help">PDF, Word (.docx), or TXT · Up to 10 MB · Imported on your device</p>
+            <div class="card-heading"><div><div class="section-kicker">YOUR STARTING POINT</div><h2 id="resume-heading">Add your resume</h2></div></div>
+            <p class="card-description">Choose a file or paste your resume. You can check and edit the text before continuing.</p>
+            <div class="resume-entry-switch" role="group" aria-label="How to add your resume"><button id="resume-upload-mode" type="button" aria-pressed="true">Upload a file</button><button id="resume-paste-mode" type="button" aria-pressed="false">Paste text</button></div>
+            <div id="resume-upload-area" class="resume-upload-area">
+              <span class="resume-upload-icon" aria-hidden="true">↑</span><h3>Upload your resume</h3><p id="file-help">PDF, Word (.docx), or TXT · Up to 10 MB</p>
+              <button class="button button-primary" id="import-resume" type="button" aria-describedby="file-help">Choose a file <span aria-hidden="true">↑</span></button>
+              <p class="resume-local-note">Your file is read on your device. Nothing is sent for AI review yet.</p>
+            </div>
+            <input id="resume-file" type="file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown" hidden>
             <p id="import-status" class="import-status" role="status" aria-live="polite" hidden></p>
-            <label class="sr-only" for="resume-input">Your resume text</label>
-            <textarea id="resume-input" maxlength="20000" spellcheck="true" placeholder="Your name
-Your email · Your location
-
-PROFESSIONAL SUMMARY
-Tell us a little about your experience…
-
-EXPERIENCE
-Role · Company · Dates
-• What you worked on and the difference it made
-
-EDUCATION &amp; SKILLS
-Your qualifications, strengths, and tools"></textarea>
+            <div id="resume-file-summary" class="resume-file-summary" hidden><span aria-hidden="true">▤</span><div><strong id="resume-file-name">Your resume text</strong><small>Ready for you to check</small></div><button id="replace-resume" type="button" class="text-button">Change file</button></div>
+            <div id="resume-text-editor" hidden>
+            <label class="field-label" id="resume-text-label" for="resume-input">Paste your resume</label>
+            <p id="resume-text-help" class="resume-text-help">Include your experience, education, and skills. You can make changes here.</p>
+            <textarea id="resume-input" maxlength="20000" spellcheck="true" aria-describedby="resume-text-help" placeholder="Paste your resume text here…"></textarea>
             <div class="editor-meta"><span id="word-count">0 words</span><span><span id="character-count">0</span> / 20,000 characters</span></div>
             <div class="editor-settings"><label class="checkbox-label"><input type="checkbox" id="remember-draft"> Remember my draft on this device</label><button class="text-button muted" id="clear-resume" type="button">Clear</button></div>
+            </div>
           </div><div class="flow-actions"><button class="text-button" id="change-start" type="button">← Change starting point</button><button class="button button-secondary" id="save-progress" type="button">Save to my account</button><button class="button button-primary" id="next-job" type="button">Next: job details →</button></div></section><section id="flow-job" data-flow="job" hidden><div class="stage-intro"><span class="section-kicker">PERSONALIZE YOUR RESUME</span><h2>What’s your next role?</h2><p>Add a role or job announcement for a more relevant result. You can leave these blank.</p></div><div class="context-column">
             <div class="card context-card"><div class="small-icon">◎</div><h2>Aim for your next role.</h2><p>Give your review a little direction.<br>These details are optional.</p><label class="field-label" for="target-role">Target role</label><input class="field-input" id="target-role" type="text" maxlength="200" placeholder="e.g. Project Manager" autocomplete="off"><label class="field-label" for="job-description">Job description <span>Optional</span></label><textarea id="job-description" class="job-input" maxlength="8000" placeholder="Paste a job description for more relevant feedback…"></textarea><p class="field-hint">Match the job to the experience you actually have.</p></div>
             <div class="card application-card"><label class="field-label" for="application-type">Application type</label><select id="application-type" class="export-select"><option value="private">Private sector</option><option value="federal">U.S. federal · USAJOBS</option><option value="government">State / local government</option></select><p id="application-help" class="export-hint">Review and rewrite for a conventional professional resume.</p><p class="export-hint">Only enter details you can verify. Missing hours, grades, eligibility, or achievements will not be guessed.</p><details class="optional-details"><summary>Add missing facts (optional)</summary><label class="field-label" for="additional-details">Verified details to include <span>Optional</span></label><textarea id="additional-details" maxlength="4000" class="job-input" placeholder="Add only verified facts that are missing from your resume."></textarea></details></div>

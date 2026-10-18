@@ -1,6 +1,29 @@
 const $ = id => document.getElementById(id);
 let current = 'start';
 let adapter;
+let sourceMode = 'upload';
+let importedName = '';
+export function syncResumeEditor() {
+  const hasText = !!$('resume-input').value.trim();
+  if (!hasText) importedName = '';
+  $('resume-upload-mode').setAttribute('aria-pressed', String(sourceMode === 'upload'));
+  $('resume-paste-mode').setAttribute('aria-pressed', String(sourceMode === 'paste'));
+  $('resume-upload-area').hidden = sourceMode !== 'upload' || hasText;
+  $('resume-text-editor').hidden = sourceMode !== 'paste' && !hasText;
+  $('resume-file-summary').hidden = !hasText || sourceMode !== 'upload';
+  $('resume-file-name').textContent = importedName || 'Your resume text';
+  $('resume-heading').textContent = hasText ? 'Check your resume' : 'Add your resume';
+  $('resume-text-label').textContent = hasText ? 'Review & edit your resume text' : 'Paste your resume';
+  $('resume-text-help').textContent = importedName ? 'Check that names, dates, and bullet points were read correctly. You can edit the text below.' : 'Include your experience, education, and skills. You can make changes here.';
+  $('next-job').disabled = $('resume-input').value.trim().length < 100 || $('resume-input').readOnly;
+  $('save-progress').hidden = !hasText;
+}
+export function setResumeFilename(value) { importedName = value; if (value) sourceMode = 'upload'; syncResumeEditor(); }
+function sourceModeTo(mode, focus = false) {
+  sourceMode = mode; syncResumeEditor();
+  if (focus) $('resume-input').focus({preventScroll:true});
+}
+
 const labels = { start:'Choose how to start', build:'1 of 3 · Add your background', edit:'1 of 3 · Check your resume', job:'2 of 3 · Add job details', checkout:'3 of 3 · Review & checkout' };
 export function setFlow(stage, scroll = true) {
   if (!Object.hasOwn(labels, stage)) return;
@@ -10,6 +33,7 @@ export function setFlow(stage, scroll = true) {
   $('flow-progress').textContent = labels[stage];
   $('flow-back').hidden = stage === 'start';
   if (stage === 'build') $('background-builder').open = true;
+  syncResumeEditor();
   updateCheckoutSummary();
   adapter?.showResume();
   if (scroll) $('resume-panel').scrollIntoView({ block:'start', behavior:'instant' });
@@ -22,7 +46,10 @@ function updateCheckoutSummary() {
 }
 export function initGuidedFlow(options) {
   adapter = options;
-  $('choose-import').onclick = () => { setFlow('edit'); $('resume-input').focus(); };
+  $('choose-import').onclick = () => { sourceModeTo('upload'); setFlow('edit'); };
+  $('resume-upload-mode').onclick = () => sourceModeTo('upload');
+  $('resume-paste-mode').onclick = () => sourceModeTo('paste', true);
+  $('replace-resume').onclick = () => $('resume-file').click();
   $('choose-build').onclick = () => { setFlow('build'); $('builder-name').focus(); };
   $('change-start').onclick = () => setFlow('start');
   $('flow-back').onclick = () => setFlow(({ build:'start', edit:'start', job:'edit', checkout:'job' })[current] || 'start');

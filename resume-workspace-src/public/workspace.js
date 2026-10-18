@@ -157,7 +157,7 @@ export function initWorkspace(adapter) {
   });
   try { $('storage-notice').hidden = localStorage.getItem('vcp_workspace_storage_choice') === 'essential'; } catch { /* Show explanation without persistence. */ }
   // Restore only this program’s named Firebase session. No offline disk cache.
-  if (website) ensureConnection().catch(() => status('Account services could not load. You can still edit and export without cloud storage.'));
+  if (website || location.hostname === 'mobile-resume-review-app.vercel.app' || new URLSearchParams(location.search).has('build')) ensureConnection().catch(() => status('Account services could not load. You can still edit and export without cloud storage.'));
 }
 
 export async function requestVeteranReview(payload, signal) {

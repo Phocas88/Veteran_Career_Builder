@@ -1,0 +1,55 @@
+@font-face{font-family:ResumeSans;src:url('/vendor/Roboto-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:ResumeSans;src:url('/vendor/Roboto-Medium.ttf') format('truetype');font-weight:600 800;font-display:swap}
+.export-layout{grid-template-columns:minmax(0,1fr) 350px;grid-template-areas:'preview tools';align-items:start;gap:24px}
+.export-layout>.paper-card{grid-area:preview;min-width:0;overflow:hidden;background:#eef0f5}
+.export-layout>.export-tools{grid-area:tools;display:block;padding:25px}
+.export-tools h2{font-size:25px}.export-tools>p{font-size:12px;color:#777d92;margin-bottom:20px}
+.export-tools .section-kicker{font-size:9px}.export-tools>.field-label{font-size:12px;margin-top:21px}
+.design-picker{border:0;padding:0;margin:0;min-width:0}.design-picker legend{font-size:12px;font-weight:650;padding:0;margin-bottom:11px}
+.design-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.design-option{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 5px;border:1px solid #dfe2ed;border-radius:10px;cursor:pointer;background:#fff;min-width:0}
+.design-option:has(:checked){border-color:#4d47d8;background:#f3f2ff;box-shadow:0 0 0 1px #4d47d8}.design-option:has(:focus-visible){outline:3px solid #a29df5;outline-offset:3px}
+.design-option input{position:absolute;opacity:0;width:1px;height:1px}.design-option strong{font-size:11px}.design-option small{font-size:8px;line-height:1.45;text-align:center;color:#767c91}
+.design-swatch{display:flex;flex-direction:column;gap:5px;width:48px;height:59px;padding:9px 7px;background:white;box-shadow:0 1px 4px #24274125;border:1px solid #e2e5ec}
+.design-swatch i{height:2px;background:#b0b4bd;display:block}.design-swatch i:first-child{height:4px;background:#343b4c;width:65%;margin-bottom:3px}.swatch-classic i:first-child{align-self:center}.swatch-modern i:first-child{background:#245b6a}.swatch-modern i:nth-child(2){background:#245b6a}.swatch-compact{gap:4px}.swatch-compact i:last-child{box-shadow:0 6px #b0b4bd,0 12px #b0b4bd}
+.export-select{width:100%;min-height:44px;padding:10px 12px;border:1px solid #dfe2ed;border-radius:8px;background:white;font:inherit;font-size:12px;color:#343952;white-space:normal}
+.export-tools .export-hint{font-size:11px;margin:8px 0 0;line-height:1.6;color:#777d92}.export-downloads{display:grid;gap:9px;margin-top:24px}.export-downloads .button{width:100%;font-size:12px}.export-downloads>.text-button{text-align:center;min-height:35px}
+.export-tools .export-note{font-size:10px;line-height:1.8;margin:20px 0 10px}.export-tools>.text-button{display:block}
+.paper-toolbar{background:white}.preview-label{font-size:11px;color:#747b8b;margin:15px 15px;text-align:center}.preview-help{font-size:11px;color:#777d92;line-height:1.7;margin:16px 18px}
+.preview-stage{position:relative;overflow:hidden;width:100%;min-width:0;height:auto!important}
+#export-preview{position:absolute!important;width:1px!important;height:1px!important;min-height:0!important;overflow:hidden!important;clip-path:inset(50%);white-space:normal;padding:0!important}
+.pdf-page{padding:0 12px 15px}.pdf-page canvas{display:block;width:100%;height:auto;background:#fff;box-shadow:0 2px 8px #22222218}.pdf-page-label{font-size:10px;letter-spacing:1px;color:#777d92;text-align:center;margin:7px 0 10px}
+.application-card{padding:22px}.application-card .field-label:first-child{margin-top:0}.application-card .job-input{font-size:12px;min-height:135px}.application-card .export-hint{font-size:11px;color:#777d92;line-height:1.7;margin:10px 0}
+.findings-card,.rewrite-card{padding:25px;margin:20px 0}.review-finding{border-top:1px solid #e7e9f1;padding:18px 0}.review-finding h3{margin:10px 0 5px;font-size:16px}.review-finding p{font-size:12px;margin:6px 0}.finding-evidence{color:#777d92}.rewrite-card>p,.rewrite-card ul{font-size:12px;line-height:1.8;color:#646b83}.rewrite-card details{margin:18px 0}.rewrite-card summary{cursor:pointer;color:var(--purple);font-size:12px;font-weight:600}.rewrite-card pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.8 inherit;padding:15px;background:#f6f7fb;max-height:400px;overflow:auto}
+#rewrite-draft{display:block;width:100%;min-height:430px;border:1px solid #dfe2ed;padding:18px;font-size:13px;line-height:1.7;background:#fcfcff;color:#242741}.rewrite-card .button{margin-top:10px}.rewrite-card li+li{margin-top:8px}
+.reflow-control{font-size:11px;margin-top:18px;line-height:1.7}.reflow-control input{min-width:16px;min-height:16px}.break-remove{white-space:normal;overflow-wrap:anywhere;font-size:10px;border-left:2px solid #a29df5;padding-left:8px;margin:8px 0}
+.federal-checks{background:#f1f5f9;border:1px solid #d7e1eb;border-radius:10px;padding:15px;margin-top:20px}.federal-checks h3{font-size:14px}.federal-checks p,.federal-checks li{font-size:10px;line-height:1.75;color:#4c6073}.federal-checks ul{padding-left:17px}.federal-checks li+li{margin-top:8px}.federal-checks a{font-size:11px;text-decoration:underline;color:#245b6a}.swatch-federal i:first-child{background:#182c43}.swatch-federal i:nth-child(2){background:#182c43}
+.resume-document{box-sizing:border-box;background:#fff;color:#222;font-family:ResumeSans,Arial,sans-serif;font-size:var(--body-size,10.5pt);line-height:var(--line-height,1.38);width:var(--paper-width,612pt);min-height:var(--paper-height,792pt);padding:var(--page-margin,48pt);text-align:left;overflow-wrap:anywhere;font-weight:400;letter-spacing:normal}
+.resume-document .resume-name{font-family:inherit;font-size:var(--name-size,24pt);font-weight:700;line-height:1.2;text-align:var(--name-align,center);color:var(--accent,#222);letter-spacing:normal;margin:0 0 5pt;break-after:avoid}
+.resume-document .resume-contact{font-size:9.5pt;line-height:var(--line-height,1.38);text-align:var(--name-align,center);color:#52525b;margin:0 0 var(--paragraph-gap,4pt)}
+.resume-document .resume-heading{font-family:inherit;font-size:var(--heading-size,10.5pt);line-height:1.35;font-weight:700;letter-spacing:.3pt;color:var(--accent,#222);margin:var(--section-gap,12pt) 0 5pt;padding-bottom:4pt;border-bottom:1pt solid var(--accent,#222);break-after:avoid;page-break-after:avoid}
+.resume-document .resume-job{font-size:inherit;font-weight:700;margin:7pt 0 3pt;break-after:avoid;page-break-after:avoid}.resume-document .resume-employer{font-size:inherit;font-style:italic;color:#444;margin:0 0 3pt;break-after:avoid}.resume-document .resume-metadata{font-size:9.5pt;margin:0 0 3pt;color:#444;break-after:avoid}
+.resume-document .resume-body,.resume-document .resume-bullet{font-size:inherit;line-height:inherit;white-space:pre-wrap;margin:0 0 var(--paragraph-gap,4pt);orphans:2;widows:2}
+.resume-document .resume-bullet{padding-left:10pt}.resume-document .resume-space{height:var(--paragraph-gap,4pt);margin:0;padding:0}
+@media(max-width:1180px){.export-layout{grid-template-columns:minmax(0,1fr) 300px;gap:18px}.export-layout>.export-tools{padding:21px}}
+@media(max-width:1000px){.export-layout{grid-template-columns:1fr;grid-template-areas:'tools' 'preview';gap:20px}.export-layout>.export-tools{display:block}.design-option{padding:14px 8px}.design-option small{font-size:10px}}
+@media(max-width:600px){.export-layout>.export-tools{padding:22px}.export-select{font-size:13px}.export-tools h2{font-size:25px}.export-downloads .button{min-height:48px}.design-option small{font-size:9px}.preview-help{font-size:10px}.design-swatch{width:53px;height:66px}}
+@media print{
+  @page resume-letter{size:letter;margin:44pt}
+  @page resume-a4{size:A4;margin:44pt}
+  @page resume-letter-compact{size:letter;margin:38pt}
+  @page resume-a4-compact{size:A4;margin:38pt}
+  @page resume-letter-federal{size:letter;margin:36pt}
+  @page resume-a4-federal{size:A4;margin:36pt}
+  #print-content.print-letter{page:resume-letter}
+  #print-content.print-a4{page:resume-a4}
+  #print-content.print-letter-compact{page:resume-letter-compact}
+  #print-content.print-a4-compact{page:resume-a4-compact}
+  #print-content.print-letter-federal{page:resume-letter-federal}
+  #print-content.print-a4-federal{page:resume-a4-federal}
+  .resume-bullet{break-inside:avoid;page-break-inside:avoid}.force-page-break,.resume-break{break-before:page!important;page-break-before:always!important}
+  html,body{margin:0!important;padding:0!important;background:#fff!important}
+  .sidebar,.app-shell,.mobile-nav,.toast,.error-banner,.loading-overlay,dialog{display:none!important}
+  #print-content{display:block!important;margin:0!important;padding:0!important;white-space:normal!important;font:inherit!important}
+  #print-content>.resume-document{width:auto;min-height:0;padding:0;box-shadow:none;transform:none!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+}

@@ -1,0 +1,20 @@
+import { build } from 'esbuild';
+import { cp, mkdir, writeFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const require = createRequire(import.meta.url);
+const root = fileURLToPath(new URL('../', import.meta.url));
+const vendor = path.join(root, 'public/vendor');
+const pdfRoot = path.dirname(require.resolve('pdfjs-dist/package.json'));
+await mkdir(vendor, { recursive: true });
+await build({ entryPoints: [path.join(pdfRoot, 'build/pdf.mjs')], outfile: path.join(vendor, 'pdf.mjs'), bundle: true, format: 'esm', platform: 'browser', target: 'es2022', minify: true, legalComments: 'eof', external: ['node:*', '@napi-rs/canvas'] });
+await build({ stdin: { contents: "import mammoth from 'mammoth/mammoth.browser.js'; export const extractRawText = mammoth.extractRawText;", resolveDir: root, sourcefile: 'mammoth-entry.js' }, outfile: path.join(vendor, 'mammoth.mjs'), bundle: true, format: 'esm', platform: 'browser', target: 'es2022', minify: true, legalComments: 'eof' });
+await cp(path.join(pdfRoot, 'build/pdf.worker.min.mjs'), path.join(vendor, 'pdf.worker.mjs'));
+for (const directory of ['cmaps', 'standard_fonts', 'wasm']) await cp(path.join(pdfRoot, directory), path.join(vendor, directory), { recursive: true });
+await cp(path.join(pdfRoot, 'LICENSE'), path.join(vendor, 'PDFJS-LICENSE.txt'));
+const mammothRoot = path.dirname(require.resolve('mammoth/package.json'));
+await cp(path.join(mammothRoot, 'LICENSE'), path.join(vendor, 'MAMMOTH-LICENSE.txt'));
+await writeFile(path.join(vendor, '.gitkeep'), '');
+console.log('Built self-hosted PDF and Word readers. Documents are processed in the browser.');

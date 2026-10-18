@@ -2,7 +2,7 @@
 // paid results recoverable without trusting redirect flags or browser storage.
 const $=id=>document.getElementById(id);
 const endpoint='https://vcp-proxy.vercel.app/api/claude';
-let config,active=null,generation=0,dialogReject=null;
+let config,active=null,generation=0;
 const sameInput=(a,b)=>['resume','role','jobDescription','applicationType','additionalDetails'].every(k=>(a?.[k]||'')===(b?.[k]||''));
 const msg=t=>{$('purchase-status').textContent=t;};
 async function api(action,extra={},signal){
@@ -16,13 +16,14 @@ async function api(action,extra={},signal){
  if(!response.ok)throw Object.assign(new Error(data.error||'The purchase service could not complete this action.'),{status:response.status});
  return data;
 }
-export function resetPayments(){generation++;active=null;dialogReject?.(new Error('Account changed.'));dialogReject=null;$('payment-dialog').close();$('purchase-list').replaceChildren();msg('');}
+export function resetPayments(){generation++;active=null;$('purchase-list').replaceChildren();msg('');}
 async function openBuild(id){
  const build=await api('get',{buildId:id});
  if(config.adapter.getDraft().resume.trim()&&!sameInput(build.input,config.adapter.getDraft())&&!confirm('Open this purchase’s original draft? Save or download your current work first.'))return;
- active=build;config.adapter.loadDraft(build.input);
+ active=build; $('account-dialog').close(); config.adapter.loadDraft(build.input);
  if(build.review){config.adapter.loadReview(build.review);msg('Paid build reopened. Formatting and downloads are included.');}
- else msg(build.status==='running'?'This build is running. Reopen it shortly to recover the result.':'Purchase draft restored. Check the AI agreement, then choose Continue to build / recover to verify payment or finish checkout.');
+ else { config.adapter.showCheckout(); msg(build.status==='running'?'This build is running. Reopen it shortly to recover the result.':'Your draft is restored. Continue from checkout to finish this build.'); }
+ return build;
 }
 export async function refreshPurchases(){
  try{
@@ -36,38 +37,25 @@ export async function refreshPurchases(){
  if(id&&/^[a-f0-9]{64}$/.test(id)){
   $('purchase-history').open = true;
   history.replaceState(null,'',location.pathname+location.hash);
-  await openBuild(id);
-  if(params.get('checkout')==='canceled')msg('Checkout canceled. No AI build was started. Your original draft is restored; the existing checkout can be resumed.');
+  const build=await openBuild(id);
+  if(params.get('checkout')==='success' && build && !build.review) {
+    msg('Checking payment and preparing your resume…');
+    await config.adapter.recoverReview(async signal => (await api('run',{buildId:id,consent:true},signal)).review);
+  } else if(params.get('checkout')==='canceled') msg('Checkout canceled. Your draft is restored. You can continue whenever you’re ready.');
  }
  }catch(e){msg(e.message);}
 }
-export function initPayments(c){config=c;
- $('refresh-purchases').onclick=()=>refreshPurchases();
- const close=()=>{dialogReject?.(Object.assign(new Error('Checkout closed. Your draft is unchanged.'),{handled:true}));dialogReject=null;$('payment-dialog').close();};
- $('payment-close').onclick=close;$('payment-dialog').addEventListener('cancel',event=>{event.preventDefault();close();});
-}
+export function initPayments(c){config=c; $('refresh-purchases').onclick=()=>refreshPurchases();}
 export async function requestPaidReview(payload,signal){
  if(active&&sameInput(active.input,payload)){
   try{const result=await api('run',{buildId:active.id,consent:true},signal);refreshPurchases();return result.review;}catch(e){if(e.status!==402)throw e;}
  }
- return new Promise((resolve,reject)=>{
-  dialogReject=reject;$('purchase-consent').checked=false;$('payment-error').textContent='';$('payment-dialog').showModal();
-  const cancel=()=>{if(dialogReject===reject){dialogReject=null;$('payment-dialog').close();reject(Object.assign(new Error('Request canceled.'),{handled:true}));}};
-  signal.addEventListener('abort',cancel,{once:true});
-  $('payment-continue').onclick=async()=>{
-   if(!$('purchase-consent').checked){$('payment-error').textContent='Agree to purchase recovery storage before continuing.';$('purchase-consent').focus();return;}
-   const button=$('payment-continue');button.disabled=true;
-   try{
-    const build=await api('prepare',{input:payload,consent:true,storageConsent:true},signal);active={...build,input:payload};
-    if(build.url){
-     // Only Stripe-hosted Checkout URLs are accepted; the server sets all amounts.
-     const url=new URL(build.url);if(url.origin!=='https://checkout.stripe.com')throw new Error('Checkout URL could not be verified.');
-     dialogReject=null;signal.removeEventListener('abort',cancel);location.assign(url.href);reject(Object.assign(new Error('Opening secure Stripe checkout.'),{handled:true}));return;
-    }
-    const result=build.review?build:await api('run',{buildId:build.id,consent:true},signal);
-    dialogReject=null;$('payment-dialog').close();signal.removeEventListener('abort',cancel);refreshPurchases();resolve(result.review);
-   }catch(e){$('payment-error').textContent=e.message;msg(e.message);}
-   finally{button.disabled=false;}
-  };
- });
+ const build=await api('prepare',{input:payload,consent:true,storageConsent:true},signal);
+ active={...build,input:payload};
+ if(build.url){
+  const url=new URL(build.url);if(url.origin!=='https://checkout.stripe.com')throw new Error('Checkout URL could not be verified.');
+  location.assign(url.href);throw Object.assign(new Error('Opening secure Stripe checkout.'),{handled:true});
+ }
+ const result=build.review?build:await api('run',{buildId:build.id,consent:true},signal);
+ refreshPurchases();return result.review;
 }

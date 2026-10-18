@@ -1,4 +1,5 @@
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261018-branches';
+import { setFlow } from './guided-flow.js?v=20261018-guided';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261018-guided';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';
@@ -319,6 +320,7 @@ $('resume-file').addEventListener('change', async event => {
     $('sidebar-count').textContent = '0';
     input.value = text;
     input.dispatchEvent(new Event('input'));
+    document.dispatchEvent(new Event('resume:draft-ready'));
     $('import-status').textContent = `Imported ${file.name}. Check the extracted text below before requesting a review.`;
     setTab('resume');
     toast('Resume imported. You can edit the text before reviewing it.');
@@ -336,11 +338,11 @@ $('resume-file').addEventListener('change', async event => {
   }
 });
 
-async function requestReview() {
+async function requestReview(recover) {
   if (importing) return;
   $('error-banner').hidden = true;
   if (input.value.trim().length < 100) {
-    setTab('resume');
+    setFlow('edit');
     showError('Add at least 100 characters of resume text so we have enough to review.');
     input.focus();
     return;
@@ -353,7 +355,7 @@ async function requestReview() {
   const timeout = setTimeout(() => controller.abort('timeout'), 240000);
   const context = { role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value };
   try {
-    const data = await requestVeteranReview({ resume: submitted, ...context }, controller.signal);
+    const data = typeof recover === 'function' ? await recover(controller.signal) : await requestVeteranReview({ resume: submitted, ...context }, controller.signal);
     if (controller.signal.aborted) return;
     if (!Number.isFinite(data.score) || !Array.isArray(data.suggestions)) throw new Error('The review could not be read. Please try again.');
     if (submitted !== input.value || JSON.stringify(context) !== JSON.stringify({ role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value })) return toast('Your draft or application details changed during the review. Request a new review.');
@@ -487,6 +489,9 @@ try {
 setTab('resume', false);
 
 initWorkspace({
+  showResume() { setTab('resume', false); },
+  showCheckout() { setFlow('checkout', false); },
+  recoverReview(run) { setFlow('checkout', false); return requestReview(run); },
   getDraft: () => ({ resume: input.value, role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value,
     design: document.querySelector('[name="resume-design"]:checked').value, arrangement: $('resume-arrangement').value, paper: $('resume-paper').value, reflow: $('reflow-lines').checked, pageBreaks: [...pageBreaks] }),
   restoreDeviceDraft(uid) {
@@ -508,7 +513,7 @@ initWorkspace({
     pageBreaks.clear(); if (Array.isArray(draft.pageBreaks)) for (const id of draft.pageBreaks.slice(0,100)) if (typeof id === 'string') pageBreaks.add(id);
     state.review = null; state.applied.clear(); state.history = []; state.stale = false;
     $('review-empty').hidden = false; $('review-results').hidden = true; $('sidebar-count').textContent = '0';
-    syncApplicationType(); setTab('resume', false); refreshDraft(); saveDraft();
+    syncApplicationType(); setTab('resume', false); refreshDraft(); saveDraft(); setFlow('edit', false);
   },
   loadReview(review) { showReview(review); },
   clearAccountDraft() {
@@ -521,7 +526,7 @@ initWorkspace({
     $('import-status').textContent = ''; $('import-status').hidden = true;
     $('error-message').textContent = ''; $('error-banner').hidden = true;
     $('toast').textContent = ''; $('toast').hidden = true; clearTimeout(toastTimer);
-    $('builder-status').textContent = '';
+    $('builder-status').textContent = ''; setFlow('start', false);
     for (const id of ['review-findings','suggestion-list','strength-list','next-steps','rewrite-notes']) if ($(id)) $(id).replaceChildren();
   }
 });

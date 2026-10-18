@@ -29,6 +29,7 @@ export function setFlow(stage, scroll = true) {
   if (!Object.hasOwn(labels, stage)) return;
   current = stage;
   $('resume-start').hidden = stage !== 'start';
+  $('opsec-notice').hidden = stage === 'start';
   for (const node of document.querySelectorAll('[data-flow]')) node.hidden = node.dataset.flow !== stage;
   $('flow-progress').textContent = labels[stage];
   $('flow-back').hidden = stage === 'start';

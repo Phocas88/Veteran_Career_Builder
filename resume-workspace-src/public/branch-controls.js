@@ -115,7 +115,7 @@ export function wireServiceBranchChoices(service) {
     refreshRank(); refreshers.get(service)();
     for (const [key, titleKey] of [['asi', 'label'], ['sqi', 'sqiLabel']]) {
       const group = service.querySelector(`:scope > [data-group="${key}"]`);
-      group.querySelector(':scope > h3').textContent = catalogFor(service)?.qualifications[titleKey] || (key === 'asi' ? 'Branch qualifications' : 'Branch designators');
+      group.querySelector(':scope > summary > h3, :scope > h3').textContent = catalogFor(service)?.qualifications[titleKey] || (key === 'asi' ? 'Branch qualifications' : 'Branch designators');
     }
     for (const group of service.querySelectorAll(':scope > .builder-group')) {
       for (const entry of group.querySelector(':scope > .builder-entries').children) {

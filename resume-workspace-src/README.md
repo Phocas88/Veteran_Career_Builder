@@ -1,6 +1,6 @@
 # Veteran Career Path independent resume program
 
-The source builds into /resume-workspace for Firebase Hosting and the GitHub Pages artifact that serves veterancareerpath.com. Run node scripts/build-resume-workspace.mjs and node scripts/build-hosting.mjs from the repository root. Source, tests and server libraries are not copied into the public artifact.
+The source builds into /resumereview (with /resume-workspace compatibility) for Firebase Hosting and the GitHub Pages artifact that serves veterancareerpath.com. Run node scripts/build-resume-workspace.mjs and node scripts/build-hosting.mjs from the repository root. Source, tests and server libraries are not copied into the public artifact.
 
 Free program accounts use a named Firebase app session, independent of main-site subscription access. Authentication identities share the veteran-career-builder project, so existing emails sign in/reset instead of creating a duplicate identity. Program background and saved editor data use profiles/{uid}/resumeProgram/background and profiles/{uid}/resumeProgramResumes/{id}. Existing owner-only rules apply. Do not change billing entitlements in client-writable paths.
 

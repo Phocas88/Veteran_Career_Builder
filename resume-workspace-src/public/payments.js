@@ -22,7 +22,7 @@ async function openBuild(id){
  if(config.adapter.getDraft().resume.trim()&&!sameInput(build.input,config.adapter.getDraft())&&!confirm('Open this purchase’s original draft? Save or download your current work first.'))return;
  active=build;config.adapter.loadDraft(build.input);
  if(build.review){config.adapter.loadReview(build.review);msg('Paid build reopened. Formatting and downloads are included.');}
- else msg(build.status==='running'?'This build is running. Reopen it shortly to recover the result.':'Purchase draft restored. Check the AI agreement, then choose Build / recover AI resume to verify payment or finish checkout.');
+ else msg(build.status==='running'?'This build is running. Reopen it shortly to recover the result.':'Purchase draft restored. Check the AI agreement, then choose Continue to build / recover to verify payment or finish checkout.');
 }
 export async function refreshPurchases(){
  try{
@@ -34,6 +34,7 @@ export async function refreshPurchases(){
  $('purchase-empty').hidden=builds.length>0;
  const params=new URLSearchParams(location.search);const id=params.get('build');
  if(id&&/^[a-f0-9]{64}$/.test(id)){
+  $('purchase-history').open = true;
   history.replaceState(null,'',location.pathname+location.hash);
   await openBuild(id);
   if(params.get('checkout')==='canceled')msg('Checkout canceled. No AI build was started. Your original draft is restored; the existing checkout can be resumed.');

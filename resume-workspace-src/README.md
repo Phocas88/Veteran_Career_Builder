@@ -4,7 +4,7 @@ Additive mobile resume workflow at `/resume-workspace/index.html`. Existing main
 website navigation, accounts, pricing and AI tools continue to work.
 
 Run `node scripts/build-resume-workspace.mjs` from the website root before
-`node scripts/build-hosting.mjs`. CI does this in both quality and Firebase deploy jobs. GitHub Pages serves the custom domain, so the quality job also packages the complete built site for the Pages deployment job. This switches Pages from raw-branch publishing to an Actions artifact without changing DNS or the custom domain.
+`node scripts/build-hosting.mjs`. CI does this in both quality and Firebase deploy jobs. GitHub Pages serves the custom domain, so the quality job also packages the complete built site for the Pages deployment job. The artifact deploys from main, the existing Pages source branch, without changing repository administration settings, DNS or the custom domain. Selecting GitHub Actions as the Pages source in repository settings is optional and avoids a competing automatic raw-branch deployment during future updates.
 Generated vendor bundles and the output directory are not checked in. PDF.js
 workers, CMaps, WebAssembly and fonts must remain in the published output.
 

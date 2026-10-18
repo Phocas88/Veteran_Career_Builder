@@ -50,7 +50,7 @@ export function initGuidedFlow(options) {
   $('resume-upload-mode').onclick = () => sourceModeTo('upload');
   $('resume-paste-mode').onclick = () => sourceModeTo('paste', true);
   $('replace-resume').onclick = () => $('resume-file').click();
-  $('choose-build').onclick = () => { setFlow('build'); $('builder-name').focus(); };
+  $('choose-build').onclick = () => setFlow('build');
   $('change-start').onclick = () => setFlow('start');
   $('flow-back').onclick = () => setFlow(({ build:'start', edit:'start', job:'edit', checkout:'job' })[current] || 'start');
   $('back-edit').onclick = () => setFlow('edit');

@@ -23,6 +23,7 @@ export async function start(page,path='edit') {
  if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();
  await page.locator(path==='build'?'#choose-build':'#choose-import').click();
  if(path!=='build')await page.locator('#resume-paste-mode').click();
+ else await page.locator('#background-fields > details').evaluateAll(nodes=>nodes.forEach(n=>n.open=true));
 }
 export async function checkout(page) {
  await page.locator('#next-job').click();await page.locator('#next-checkout').click();

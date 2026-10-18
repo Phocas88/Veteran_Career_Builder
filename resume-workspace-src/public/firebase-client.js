@@ -21,7 +21,8 @@ export function connectFirebase() {
     if (!window.firebase) await script('app');
     if (!window.firebase.auth) await script('auth');
     if (!window.firebase.firestore) await script('firestore');
-    const app = window.firebase.apps.length ? window.firebase.app() : window.firebase.initializeApp(config);
+    // A named app has its own sign-in persistence, separate from the main site's session.
+    const app = window.firebase.apps.find(app => app.name === 'vcp-resume-program') || window.firebase.initializeApp(config, 'vcp-resume-program');
     return { auth: app.auth(), db: app.firestore(), firebase: window.firebase };
   })().catch(error => { pending = null; throw error; });
   return pending;

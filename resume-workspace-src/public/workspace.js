@@ -1,4 +1,6 @@
-import { branches, components, normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js';
+import { fillBackground, readBackground } from './background-form.js';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases } from './payments.js';
+import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js';
 import { connectFirebase } from './firebase-client.js';
 
@@ -8,7 +10,7 @@ let connection, store, user = null, accountVersion = 0;
 let saved = [];
 let callback;
 let profileDirty = false;
-const profileIds = ['name', 'contact', 'summary', 'civilian', 'education', 'skills'];
+
 
 function status(text) { $('cloud-status').textContent = text; }
 function errorText(error) {
@@ -21,51 +23,13 @@ function errorText(error) {
   if (/network/.test(code)) return 'Account services could not connect. Check your connection and try again.';
   return 'Account services could not complete that action. Your current draft is unchanged. Try again or contact support.';
 }
-function field(label, key, value = '', multiline = false) {
-  const wrap = document.createElement('label'); wrap.className = 'builder-field';
-  const text = document.createElement('span'); text.textContent = label;
-  const input = document.createElement(multiline ? 'textarea' : 'input'); input.dataset.key = key;
-  input.value = value; input.maxLength = multiline ? 2400 : key === 'hours' ? 30 : 200;
-  wrap.append(text, input); return wrap;
-}
-function addRole(role = {}) {
-  if ($('service-roles').children.length >= 12) return;
-  const box = document.createElement('fieldset'); box.className = 'service-role';
-  const legend = document.createElement('legend'); legend.textContent = 'Service experience'; box.append(legend);
-  const branch = document.createElement('select'); branch.dataset.key = 'branch'; branch.setAttribute('aria-label', 'Service branch');
-  branch.add(new Option('Choose your branch…', ''));
-  for (const [key, value] of Object.entries(branches)) branch.add(new Option(value.name, key));
-  branch.value = role.branch || '';
-  const component = document.createElement('select'); component.dataset.key = 'component'; component.setAttribute('aria-label', 'Service component');
-  component.add(new Option('Choose component (optional)', ''));
-  for (const value of components) component.add(new Option(value));
-  component.value = role.component || '';
-  const branchLabel = document.createElement('label'); branchLabel.textContent = 'Branch'; branchLabel.append(branch);
-  const componentLabel = document.createElement('label'); componentLabel.textContent = 'Component'; componentLabel.append(component);
-  box.append(branchLabel, componentLabel);
-  const code = field('', 'code', role.code); const codeLabel = code.querySelector('span');
-  const update = () => { codeLabel.textContent = (branches[branch.value]?.code || 'Specialty code'); code.querySelector('input').placeholder = (branches[branch.value]?.example || 'Select a branch first'); };
-  branch.addEventListener('change', update); update(); box.append(code);
-  for (const [key, label] of Object.entries({rank:'Rank / pay grade (as held)', title:'Actual duty title', organization:'Unit / organization', location:'Location', dates:'Start and end month/year', hours:'Hours per week (verified)'})) box.append(field(label, key, role[key]));
-  box.append(field('What you actually did · responsibilities, tools, achievements, verified numbers', 'duties', role.duties, true));
-  const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'text-button'; remove.textContent = 'Remove this experience';
-  remove.addEventListener('click', () => { box.remove(); profileDirty = true; }); box.append(remove);
-  $('service-roles').append(box);
-}
-function readProfile() {
-  return normalizeProfile({ ...Object.fromEntries(profileIds.map(key => [key, $('builder-' + key).value])),
-    roles: [...$('service-roles').children].map(box => Object.fromEntries([...box.querySelectorAll('[data-key]')].map(input => [input.dataset.key, input.value]))) });
-}
-function fillProfile(profile) {
-  const p = normalizeProfile(profile); for (const key of profileIds) $('builder-' + key).value = p[key];
-  $('service-roles').replaceChildren(); for (const role of p.roles) addRole(role);
-  if (!p.roles.length) addRole(); profileDirty = false;
-}
+const readProfile = readBackground;
+function fillProfile(profile) { fillBackground(profile); profileDirty = false; }
 function resetPrivateState() {
   saved = []; renderSaved(); fillProfile({}); $('cloud-consent').checked = false;
   $('save-title').value = ''; $('auth-email').value = ''; $('auth-password').value = ''; $('ai-consent').checked = false;
   callback?.clearAccountDraft();
-  try { localStorage.removeItem('vcb_access'); localStorage.removeItem('vcb_profile'); sessionStorage.removeItem('vcb_server_session'); } catch { /* Optional persistence unavailable. */ }
+  resetPayments();
 }
 async function ensureConnection() {
   if (connection) return connection;
@@ -79,7 +43,7 @@ async function ensureConnection() {
     $('account-signed-in').hidden = !next; $('account-form').hidden = !!next;
     $('cloud-signed-in').hidden = !next; $('cloud-signed-out').hidden = !!next;
     status(next ? 'Signed in. Your draft is saved only when you choose Save to account.' : 'Work without an account, or sign in to save across devices.');
-    if (next) { callback?.restoreDeviceDraft(next.uid); refreshSaved(); }
+    if (next) { callback?.restoreDeviceDraft(next.uid); refreshSaved(); refreshPurchases(); }
   });
   return c;
 }
@@ -119,8 +83,8 @@ async function cloudAction(action) {
 export const draftOwnerId = () => user?.uid || null;
 
 export function initWorkspace(adapter) {
-  callback = adapter; addRole();
-  $('add-service-role').addEventListener('click', () => { addRole(); profileDirty = true; });
+  callback = adapter; fillProfile({});
+  initPayments({ ensureConnection, adapter });
   $('background-builder').addEventListener('input', () => { profileDirty = true; });
   $('build-draft').addEventListener('click', () => {
     try {
@@ -160,8 +124,8 @@ export function initWorkspace(adapter) {
     if (!confirm('Sign out and clear this workspace on this device? Save or download any work you need first.')) return;
     try { await connection.auth.signOut(); $('account-dialog').close(); } catch { $('auth-status').textContent = 'Sign-out failed. Try again before leaving a shared device.'; }
   });
-  $('save-cloud').addEventListener('click', () => cloudAction(async () => { await store.save(callback.getDraft(), $('save-title').value); await refreshSaved(); status('Resume saved to your Veteran Career Path account.'); }));
-  $('save-profile').addEventListener('click', () => cloudAction(async () => { await store.saveProfile(readProfile()); profileDirty = false; status('Service background saved. Your existing website profile fields are unchanged.'); }));
+  $('save-cloud').addEventListener('click', () => cloudAction(async () => { await store.save(callback.getDraft(), $('save-title').value); await refreshSaved(); status('Resume saved to your resume-program account.'); }));
+  $('save-profile').addEventListener('click', () => cloudAction(async () => { await store.saveProfile(readProfile()); profileDirty = false; status('Program background saved. Main-site profile and subscriptions are separate.'); }));
   $('load-profile').addEventListener('click', async () => {
     try {
       await ensureConnection(); if (!user) { $('account-dialog').showModal(); return; }
@@ -173,7 +137,7 @@ export function initWorkspace(adapter) {
   $('refresh-saved').addEventListener('click', () => { if (store && user) refreshSaved(); });
   $('delete-background').addEventListener('click', async () => {
     if (!user || !confirm('Delete the service background saved by this workspace? Your original website profile, resumes, and downloaded files are unchanged.')) return;
-    try { const uid = connection.auth.currentUser.uid; await connection.db.collection('profiles').doc(uid).update({ resumeWorkspaceProfile: connection.firebase.firestore.FieldValue.delete() }); if (user?.uid === uid) status('Workspace service background deleted from the active database.'); }
+    try { const uid = connection.auth.currentUser.uid; await store.removeProfile(); if (user?.uid === uid) status('Workspace service background deleted from the active database.'); }
     catch (error) { status(errorText(error)); }
   });
   $('export-account').addEventListener('click', async () => {
@@ -192,30 +156,13 @@ export function initWorkspace(adapter) {
     $('storage-notice').hidden = true;
   });
   try { $('storage-notice').hidden = localStorage.getItem('vcp_workspace_storage_choice') === 'essential'; } catch { /* Show explanation without persistence. */ }
-  // On the main website, restore the existing Firebase sign-in. No Firestore
-  // offline persistence is enabled. Standalone previews connect on account action.
-  if (website) ensureConnection().catch(() => status('Account services could not load. You can still edit and export without cloud storage.'));
+  // Restore only this program’s named Firebase session. No offline disk cache.
+  if (website || location.hostname === 'mobile-resume-review-app.vercel.app' || new URLSearchParams(location.search).has('build')) ensureConnection().catch(() => status('Account services could not load. You can still edit and export without cloud storage.'));
 }
 
 export async function requestVeteranReview(payload, signal) {
-  if (!$('ai-consent').checked) { $('ai-consent').focus(); throw new Error('Agree to sending this draft for AI processing before requesting a review.'); }
-  if (!website) {
-    const response = await fetch('./api/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal });
-    const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Review unavailable. Try again.'); return data;
-  }
-  const c = await ensureConnection(); if (!c.auth.currentUser) { $('account-dialog').showModal(); throw new Error('Sign in to your Veteran Career Path account to use the AI tools.'); }
-  const uid = c.auth.currentUser.uid;
-  if (!window.VCBSecureApi) await new Promise((resolve, reject) => { const script = document.createElement('script'); script.src = '/assets/js/vcb-secure-api.js'; script.onload = resolve; script.onerror = () => reject(new Error('AI access could not load. Reload the page and try again.')); document.head.append(script); });
-  if (!window.VCBSecureApi) throw new Error('AI access could not load. Reload the page and try again.');
-  let access; try { access = JSON.parse(localStorage.getItem('vcb_access') || '{}'); } catch { access = {}; }
-  if (access.type === 'paid' && access.email && access.email.toLowerCase() !== (c.auth.currentUser.email || '').toLowerCase()) throw new Error('Restore AI access for your signed-in account on the main website before requesting a review.');
-  const session = await window.VCBSecureApi.ensureSession(false);
-  const idToken = await c.auth.currentUser.getIdToken();
-  if (c.auth.currentUser?.uid !== uid || signal.aborted) throw new Error('Account or request changed. Try again.');
-  const response = await fetch('https://vcp-proxy.vercel.app/api/claude', { method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session}`, 'X-VCP-Firebase-Token': idToken },
-    body: JSON.stringify({ workspace: true, consent: true, input: payload }), signal });
-  const data = await response.json();
-  if (c.auth.currentUser?.uid !== uid) throw new Error('Account changed. Review discarded.');
-  if (!response.ok) throw new Error(data.error || 'AI review could not complete. Your draft is unchanged.'); return data;
+  if (!$('ai-consent').checked) { $('ai-consent').focus(); throw new Error('Agree to sending this draft for AI processing before requesting a build.'); }
+  const c=await ensureConnection();
+  if(!c.auth.currentUser){$('account-dialog').showModal();throw new Error('Create a free resume-program account or sign in. No main-site subscription is required.');}
+  return requestPaidReview(payload,signal);
 }

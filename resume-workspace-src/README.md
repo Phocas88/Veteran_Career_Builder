@@ -1,40 +1,13 @@
-# Veteran Career Path resume workspace
+# Veteran Career Path independent resume program
 
-Additive mobile resume workflow at `/resume-workspace/index.html`. Existing main
-website navigation, accounts, pricing and AI tools continue to work.
+The source builds into /resume-workspace for Firebase Hosting and the GitHub Pages artifact that serves veterancareerpath.com. Run node scripts/build-resume-workspace.mjs and node scripts/build-hosting.mjs from the repository root. Source, tests and server libraries are not copied into the public artifact.
 
-Run `node scripts/build-resume-workspace.mjs` from the website root before
-`node scripts/build-hosting.mjs`. CI does this in both quality and Firebase deploy jobs. GitHub Pages serves the custom domain, so the quality job also packages the complete built site for the Pages deployment job. The artifact deploys from main, the existing Pages source branch, without changing repository administration settings, DNS or the custom domain. Selecting GitHub Actions as the Pages source in repository settings is optional and avoids a competing automatic raw-branch deployment during future updates.
-Generated vendor bundles and the output directory are not checked in. PDF.js
-workers, CMaps, WebAssembly and fonts must remain in the published output.
+Free program accounts use a named Firebase app session, independent of main-site subscription access. Authentication identities share the veteran-career-builder project, so existing emails sign in/reset instead of creating a duplicate identity. Program background and saved editor data use profiles/{uid}/resumeProgram/background and profiles/{uid}/resumeProgramResumes/{id}. Existing owner-only rules apply. Do not change billing entitlements in client-writable paths.
 
-Firebase uses the public web config already present in `app.html`. No Admin key
-belongs in this frontend. Existing owner-only Firestore rules cover
-`profiles/{uid}/resumes/{id}` and `profiles/{uid}.resumeWorkspaceProfile`.
-The profile write merges only that new field, preserving existing profile data.
-No rules are broadened and no public-profile documents are written.
+AI builds cost $1.99 USD through the existing Stripe account. The matching server implementation lives in Phocas88/vcp-proxy api/_lib/resume-program.js, dispatched through the existing /api/claude function with workspace:true. No additional Hobby function, Stripe subscription or new webhook is required. STRIPE_SECRET_KEY and FIREBASE_SERVICE_ACCOUNT_JSON are already provisioned. The configured production AI uses ANTHROPIC_API_KEY; optional OPENAI_API_KEY selects OpenAI. Both providers are disclosed where used. All keys remain server-side.
 
-On the company domain, the app calls the additional `workspace:true` mode of the
-existing `vcp-proxy/api/claude` function. That mode requires both the existing
-server-validated subscription/access-code token and a Firebase ID token verified
-with revocation checking. The proxy needs its existing ANTHROPIC_API_KEY,
-VCB_SESSION_SECRET and FIREBASE_SERVICE_ACCOUNT_JSON. No new key is required.
-The backend uses server-owned instructions, structured tool output and an atomic
-Firestore per-user quota (10 requests / 15 minutes). Its counter collection is
-server-only under the existing default-deny rules.
+Private build records live under _privateResumeProgramUsers/{uid}/builds/{hash}, excluded from client access by existing default-deny rules. Checkout requires explicit recovery-storage agreement. The server binds input/context to owner, sets the price, verifies payment with Stripe directly, serializes executions with a lease, saves successful results and leaves failed builds retryable. Returning or refreshing never needs a second payment for that build. Purchase history can reopen/delete build input and result; minimal accounting records remain.
 
-The backend module copies `lib/review.mjs` and `public/corrections.js`; keep these
-in sync with `vcp-proxy/api/_lib/resume-workspace/` when changing review behavior.
-The additional mode lives in the existing function to respect Vercel Hobby
-function-count limits. It requires 180 seconds maxDuration.
+Structured military fields mirror the full app's service schema, including MOS roles, clearance opt-in/status, identifiers, additional duties, awards and deployments. Civilian jobs, education, certificates, training, skills, languages and projects are repeatable structured entries. Facts and credential status are never inferred. Legacy saved drafts remain readable.
 
-No automatic cloud saves; no analytics/advertising/social embeds. The local
-draft checkbox, AI agreement, cloud storage agreement and explicit save actions
-are separate controls. Account changes clear private workspace state. Exported
-files and other device copies cannot be recalled. The supplemental privacy page
-documents providers, retention, deletion, browser storage and support requests.
-Review legal wording for business policy and jurisdiction-specific obligations.
-
-Verification uses fictional resumes, stubbed providers and account fixtures.
-Production provider quality, existing Google sign-in and full account deletion
-processes remain dependent on the existing company services and support policy.
+Privacy, cookies and one-time purchase terms are in public/privacy.html, public/cookies.html and public/terms.html, with matching company policy supplements. Functional verification uses fictional data and fake payment/provider responses; real card payments are never made by tests.

@@ -38,11 +38,25 @@ test('cloud operations use authenticated owner paths, preserve the main profile,
   });
   const store = createCloudStore({ auth, db: { collection(name) { return ref(name); } } });
   await store.saveProfile({ name: 'ALEX' });
-  assert.deepEqual(lastEntry.options, { merge: true }); assert.equal(lastEntry.data.resumeWorkspaceProfile.name, 'ALEX');
+  assert.deepEqual(lastEntry.options, { merge: true }); assert.equal(lastEntry.data.background.name, 'ALEX');
   await store.save({ resume: 'ALEX\nActual experience' }, '<script>bad</script>');
-  assert.ok(paths.includes('profiles/owner-a/resumes/new-id')); assert.equal(lastEntry.data.content, 'ALEX\nActual experience');
+  assert.ok(paths.includes('profiles/owner-a/resumeProgramResumes/new-id')); assert.equal(lastEntry.data.content, 'ALEX\nActual experience');
   await assert.rejects(store.remove('../other'), /Choose/);
   const pending = store.profile(); auth.currentUser = { uid: 'owner-b' }; resolveRead({ exists: true, data: () => ({ personal: 'owner-a information' }) });
   await assert.rejects(pending, /account changed/);
   auth.currentUser = null; await assert.rejects(store.saveProfile({}), /Sign in/);
+});
+
+test('structured civilian, military progression, education and credentials retain verified facts and statuses', () => {
+ const p={name:'ALEX EXAMPLE',email:'alex@example.com',phone:'555-0100',city:'Austin',state:'TX',roles:[{branch:'army',rank:'SSG',payGrade:'E-6',code:'92Y',mosTitle:'Unit Supply Specialist',title:'Supply sergeant',serviceType:'Separated/Veteran',startDate:'2021-01',endDate:'2024-12',tos:'Verified service period',duties:'Maintained supplies.',clearanceLevel:'Secret',clearanceStatus:'Inactive',includeClearance:true,mosRoles:[{title:'Dispatcher',rankAtRole:'E-5',fromYear:'2021',toYear:'2022',keyDuty:'Coordinated deliveries.'}],asi:[{code:'TEST',desc:'Verified qualifier'}],sqi:[{code:'X',desc:'Recorded designator'}],additionalDuties:[{name:'Safety NCO',duties:'Delivered safety briefings.'}],awards:[{name:'Achievement Medal',date:'2022-06',reason:'Verified award reason.'}],deployments:[{name:'Training rotation',location:'Releasable location',startDate:'2022-01',endDate:'2022-06',duties:'Maintained records.'}]}],jobs:[{employer:'Example Agency',jobTitle:'Inventory analyst',type:'Other Government (Federal/State)',startDate:'2025-01',current:true,hours:'32',series:'2005',grade:'GS-7',duties:'Reconciled inventory records.',achievements:'Resolved documented discrepancies.',supervisor:'Do not publish',includeSupervisor:false}],educationEntries:[{institution:'Example University',degree:'B.S.',field:'Analytics',status:'In progress',year:'2027',gpa:'3.5',gpaScale:'4.0',credits:'60',creditType:'Semester',pme:'Completed PME'}],certifications:[{name:'Example credential',issuer:'Example issuer',status:'Expired',issued:'2020-01',expires:'2023-01'}],training:[{name:'Completed course',institution:'Service school',status:'Completed',hours:'40'}],skillsEntries:[{name:'Spreadsheet analysis',category:'Technical',evidence:'Used in inventory role.'}],languages:[{name:'Spanish',speaking:'Conversational',test:'Verified test supplied'}]};
+ const result=profileToResume(p);
+ for(const fact of ['Example Agency','Hours per week: 32','Federal series: 2005','GS-7','Dispatcher','E-5','Verified qualifier','Recorded designator','Safety NCO','Achievement Medal','Training rotation','Secret','Inactive','In progress','2027','Expired','Spanish','Semester credits','Completed PME'])assert.ok(result.includes(fact),fact);
+ assert.ok(!result.includes('Do not publish'));
+ assert.ok(!profileToResume({...p,roles:p.roles.map(r=>({...r,includeClearance:false}))}).includes('Clearance:'));
+ assert.equal(normalizeProfile(p).educationEntries[0].status,'In progress');
+});
+
+test('overlong backgrounds fail without silently cutting the generated resume',()=>{
+ const roles=Array.from({length:12},()=>({branch:'navy',title:'Supply specialist',duties:'A'.repeat(2400)}));
+ assert.throws(()=>profileToResume({name:'ALEX',roles}),/fields are unchanged/);
 });

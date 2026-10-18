@@ -45,7 +45,7 @@
     var inner = el('div', 'max-width:1000px;margin:0 auto;padding:1rem 1.2rem;');
 
     var msg = el('div', 'font-size:.86rem;line-height:1.55;margin-bottom:.8rem;',
-      '<strong style="color:' + GOLD + '">We value your privacy.</strong> We use essential cookies to keep you signed in, and—with your permission—analytics to measure traffic and cookies to support advertising. You choose what to allow. See our <a href="/privacy-policy.html" style="color:' + GOLD + ';">Privacy Policy</a>.');
+      '<strong style="color:' + GOLD + '">We value your privacy.</strong> We use essential cookies to keep you signed in, and—with your permission—analytics to measure traffic and cookies to support advertising. You choose what to allow. See our <a href="/privacy-policy.html" style="color:' + GOLD + ';">Privacy Policy</a> and <a href="/cookie-policy.html" style="color:' + GOLD + ';">Cookie Policy</a>. OpenAI and Anthropic process AI submissions server-side; the independent resume program has separate storage choices.');
 
     // Customize panel (hidden until "Customize")
     var panel = el('div', 'display:none;margin:.4rem 0 .9rem;border-top:1px solid rgba(255,255,255,.12);padding-top:.7rem;');

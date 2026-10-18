@@ -306,13 +306,15 @@ $('resume-file').addEventListener('change', async event => {
   if (importing || state.controller) { event.target.value = ''; return; }
   if (input.value.trim() && !window.confirm('Replace the resume currently in the editor with this file? Your draft will stay unchanged if the import fails.')) { event.target.value = ''; return; }
   importing = true;
+  const importAccount = draftOwnerId();
   $('error-banner').hidden = true;
   for (const id of ['import-resume', 'resume-file', 'review-button', 'clear-resume']) $(id).disabled = true;
   input.readOnly = true;
   $('import-resume').setAttribute('aria-busy', 'true');
   $('import-status').hidden = false;
   try {
-    const text = await importResumeFile(file, message => { $('import-status').textContent = message; });
+    const text = await importResumeFile(file, message => { if (importAccount === draftOwnerId()) $('import-status').textContent = message; });
+    if (importAccount !== draftOwnerId()) return;
     if (state.sample && roleInput.value === 'Operations Coordinator' && !jobInput.value.trim()) roleInput.value = '';
     state.review = null; state.applied.clear(); state.history = []; state.stale = false; state.sample = false;
     $('review-empty').hidden = false;
@@ -324,6 +326,7 @@ $('resume-file').addEventListener('change', async event => {
     setTab('resume');
     toast('Resume imported. You can edit the text before reviewing it.');
   } catch (error) {
+    if (importAccount !== draftOwnerId()) return;
     $('import-status').textContent = 'Import failed. Your current draft is unchanged.';
     showError(error.message || 'We could not open that file. Choose a fresh PDF, Word, or TXT copy.');
   } finally {
@@ -451,14 +454,18 @@ for (const [id, extension, generate] of [['download-pdf', 'pdf', async model => 
   $(id).addEventListener('click', async () => {
     if (exporting || !input.value.trim()) return;
     const model = currentDocument();
+    const exportAccount = draftOwnerId();
     exporting = true;
     $(id).setAttribute('aria-busy', 'true');
     refreshDraft();
     toast(`Preparing your ${extension === 'pdf' ? 'PDF' : 'Word document'}…`);
     try {
-      saveDownload(await generate(model), exportFilename(model, extension));
+      const blob = await generate(model);
+      if (exportAccount !== draftOwnerId()) return;
+      saveDownload(blob, exportFilename(model, extension));
       toast('Your formatted resume download is ready.');
     } catch (error) {
+      if (exportAccount !== draftOwnerId()) return;
       showError(model.applicationType === 'federal' && /^This federal|^Federal USAJOBS/iu.test(error.message) ? error.message : 'The formatted download could not be created. Your draft is safe. Try again, or use Print resume or Download plain text.');
     } finally {
       exporting = false;
@@ -562,6 +569,10 @@ initWorkspace({
     state.reviewSource = ''; state.rewriteInvalid = true; clearPdfCache(); $('print-content').replaceChildren();
     $('rewrite-draft').value = ''; $('rewrite-original').textContent = ''; $('review-summary').textContent = '';
     $('remember-draft').checked = false; saveDraft(); setTab('resume', false); refreshDraft();
+    $('import-status').textContent = ''; $('import-status').hidden = true;
+    $('error-message').textContent = ''; $('error-banner').hidden = true;
+    $('toast').textContent = ''; $('toast').hidden = true; clearTimeout(toastTimer);
+    $('builder-status').textContent = '';
     for (const id of ['review-findings','suggestion-list','strength-list','next-steps','rewrite-notes']) if ($(id)) $(id).replaceChildren();
   }
 });

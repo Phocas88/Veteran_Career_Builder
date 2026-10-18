@@ -1,5 +1,5 @@
-import { setFlow } from './guided-flow.js?v=20261018-guided';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261018-guided';
+import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261018-upload';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261018-upload';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';
@@ -100,6 +100,7 @@ function saveDraft() {
 }
 
 function refreshDraft() {
+  syncResumeEditor();
   const text = input.value;
   const words = text.trim() ? text.trim().split(/\s+/u).length : 0;
   $('word-count').textContent = `${words.toLocaleString()} ${words === 1 ? 'word' : 'words'}`;
@@ -307,7 +308,7 @@ $('resume-file').addEventListener('change', async event => {
   importing = true;
   const importAccount = draftOwnerId();
   $('error-banner').hidden = true;
-  for (const id of ['import-resume', 'resume-file', 'review-button', 'clear-resume']) $(id).disabled = true;
+  for (const id of ['import-resume', 'replace-resume', 'resume-upload-mode', 'resume-paste-mode', 'resume-file', 'next-job', 'review-button', 'clear-resume']) $(id).disabled = true;
   input.readOnly = true;
   $('import-resume').setAttribute('aria-busy', 'true');
   $('import-status').hidden = false;
@@ -319,10 +320,11 @@ $('resume-file').addEventListener('change', async event => {
     $('review-results').hidden = true;
     $('sidebar-count').textContent = '0';
     input.value = text;
+    setResumeFilename(file.name);
     input.dispatchEvent(new Event('input'));
     document.dispatchEvent(new Event('resume:draft-ready'));
     $('import-status').textContent = `Imported ${file.name}. Check the extracted text below before requesting a review.`;
-    setTab('resume');
+    setTab('resume', false);
     toast('Resume imported. You can edit the text before reviewing it.');
   } catch (error) {
     if (importAccount !== draftOwnerId()) return;
@@ -332,8 +334,9 @@ $('resume-file').addEventListener('change', async event => {
     importing = false;
     input.readOnly = false;
     $('import-resume').removeAttribute('aria-busy');
-    for (const id of ['import-resume', 'resume-file', 'clear-resume']) $(id).disabled = false;
+    for (const id of ['import-resume', 'replace-resume', 'resume-upload-mode', 'resume-paste-mode', 'resume-file', 'clear-resume']) $(id).disabled = false;
     $('review-button').disabled = !!state.controller;
+    syncResumeEditor();
     event.target.value = '';
   }
 });
@@ -500,6 +503,7 @@ initWorkspace({
     } catch { /* Ignore unavailable or malformed device copies. */ }
   },
   loadDraft(draft) {
+    setResumeFilename('');
     state.controller?.abort('draft-change');
     input.value = typeof draft.resume === 'string' ? draft.resume.slice(0, 20000) : '';
     roleInput.value = typeof draft.role === 'string' ? draft.role.slice(0, 200) : '';
@@ -517,6 +521,7 @@ initWorkspace({
   },
   loadReview(review) { showReview(review); },
   clearAccountDraft() {
+    setResumeFilename('');
     state.controller?.abort('account-change'); input.value = ''; roleInput.value = ''; jobInput.value = ''; detailsInput.value = '';
     applicationInput.value = 'private'; pageBreaks.clear(); state.review = null; state.history = []; state.applied.clear(); state.stale = false;
     $('review-empty').hidden = false; $('review-results').hidden = true; $('sidebar-count').textContent = '0';

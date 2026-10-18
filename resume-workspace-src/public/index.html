@@ -10,8 +10,8 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./resume.css">
-  <link rel="stylesheet" href="./veteran.css?v=20261018-upload">
-  <script type="module" src="./app.js?v=20261018-upload"></script>
+  <link rel="stylesheet" href="./veteran.css?v=20261018-import-cta">
+  <script type="module" src="./app.js?v=20261018-import-cta"></script>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to resume workspace</a>
@@ -53,13 +53,14 @@
             <p class="card-description">Choose a file or paste your resume. You can check and edit the text before continuing.</p>
             <div class="resume-entry-switch" role="group" aria-label="How to add your resume"><button id="resume-upload-mode" type="button" aria-pressed="true">Upload a file</button><button id="resume-paste-mode" type="button" aria-pressed="false">Paste text</button></div>
             <div id="resume-upload-area" class="resume-upload-area">
-              <span class="resume-upload-icon" aria-hidden="true">↑</span><h3>Upload your resume</h3><p id="file-help">PDF, Word (.docx), or TXT · Up to 10 MB</p>
-              <button class="button button-primary" id="import-resume" type="button" aria-describedby="file-help">Choose a file <span aria-hidden="true">↑</span></button>
-              <p class="resume-local-note">Your file is read on your device. Nothing is sent for AI review yet.</p>
+              <h3>Import your existing resume</h3><p class="resume-upload-prompt">Press the gold button below to choose a file from your phone or computer.</p>
+              <button class="button button-primary" id="import-resume" type="button" aria-describedby="file-help"><span class="import-cta-icon" aria-hidden="true">↑</span><span><strong>Import your resume</strong><small>Tap to choose a file</small></span></button>
+              <div id="file-help"><p class="resume-format-label">Supported file types</p><ul class="resume-format-badges" aria-label="Supported resume file types"><li><strong>PDF</strong><span>.pdf</span></li><li><strong>Word</strong><span>.docx</span></li><li><strong>Text</strong><span>.txt or .md</span></li></ul><p class="resume-file-limit">Maximum file size: <strong>10 MB</strong></p></div>
+              <p class="resume-local-note">Your file is read on your device. Nothing is sent for AI review yet.</p><p class="resume-older-word">Have an older Word .doc file? Save it as .docx first.</p>
             </div>
             <input id="resume-file" type="file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown" hidden>
             <p id="import-status" class="import-status" role="status" aria-live="polite" hidden></p>
-            <div id="resume-file-summary" class="resume-file-summary" hidden><span aria-hidden="true">▤</span><div><strong id="resume-file-name">Your resume text</strong><small>Ready for you to check</small></div><button id="replace-resume" type="button" class="text-button">Change file</button></div>
+            <div id="resume-file-summary" class="resume-file-summary" hidden><span aria-hidden="true">▤</span><div><strong id="resume-file-name">Your resume text</strong><small>Ready for you to check</small></div><button id="replace-resume" type="button" class="button button-primary"><span aria-hidden="true">↑</span> Import a different file</button><p class="resume-replace-types">PDF (.pdf), Word (.docx), or text (.txt / .md) · Up to 10 MB</p></div>
             <div id="resume-text-editor" hidden>
             <label class="field-label" id="resume-text-label" for="resume-input">Paste your resume</label>
             <p id="resume-text-help" class="resume-text-help">Include your experience, education, and skills. You can make changes here.</p>

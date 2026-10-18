@@ -46,6 +46,9 @@ jobs:
           fi
           echo "app.bundle.js + app.html are in sync with app.js"
 
+      - name: Build veteran resume workspace
+        run: node scripts/build-resume-workspace.mjs
+
       - name: Build Firebase hosting directory
         run: node scripts/build-hosting.mjs
 
@@ -95,6 +98,9 @@ jobs:
       - name: Regenerate sitemap
         run: python generate-sitemap.py
 
+      - name: Build veteran resume workspace
+        run: node scripts/build-resume-workspace.mjs
+
       - name: Build Firebase hosting directory
         run: node scripts/build-hosting.mjs
 
@@ -106,3 +112,4 @@ jobs:
           channelId: live
           projectId: veteran-career-builder
           force: true
+

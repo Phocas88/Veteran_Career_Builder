@@ -1,0 +1,25 @@
+{
+  "name": "vcp-resume-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Veteran Career Path military-to-civilian resume workspace.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build-imports.mjs && node scripts/build-exports.mjs",
+    "test": "node --test --test-isolation=none test/veteran.test.mjs",
+    "check": "node --check public/workspace.js && node --check public/app.js && npm test"
+  },
+  "dependencies": {
+    "docx": "9.12.0",
+    "mammoth": "1.13.0",
+    "pdfmake": "0.3.12",
+    "pdfjs-dist": "6.4.299"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "esbuild": "0.28.2"
+  }
+}

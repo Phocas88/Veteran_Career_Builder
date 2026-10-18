@@ -14,6 +14,7 @@ const excludedDirs = new Set([
   'reports',
   'scripts',
   'node_modules',
+  'resume-workspace-src',
 ]);
 
 const allowedExtensions = new Set([
@@ -36,6 +37,10 @@ const allowedExtensions = new Set([
   '.otf',
   '.eot',
   '.webmanifest',
+  '.mjs',
+  '.wasm',
+  '.bcmap',
+  '.pfb',
   '.pdf',
 ]);
 
@@ -97,3 +102,4 @@ for (const file of required) {
 }
 
 console.log(`Firebase hosting directory built at ${output}`);
+

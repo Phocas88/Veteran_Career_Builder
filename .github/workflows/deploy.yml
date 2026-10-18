@@ -75,6 +75,40 @@ jobs:
           budgetPath: .github/lighthouse-budget.json
           uploadArtifacts: true
 
+      - name: Package the built site for GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .firebase-public
+
+  publish-pages:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: quality
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Use the built site for Pages deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.request('PUT /repos/{owner}/{repo}/pages', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              build_type: 'workflow'
+            });
+      - name: Deploy the built site to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: quality

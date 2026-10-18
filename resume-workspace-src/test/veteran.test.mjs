@@ -1,7 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { branches, profileToResume, normalizeProfile, profileFromWebsite } from '../public/veteran-profile.js';
-import { createCloudStore } from '../public/cloud-store.js';
+import { createCloudStore, savedResumeToDraft } from '../public/cloud-store.js';
+
+test('older website structured resumes open as readable text while retaining facts and clearance status', () => {
+  const data = { name: 'ALEX EXAMPLE', contact: 'alex@example.com', summary: 'Logistics professional.', experience: [{ employer: 'U.S. Navy', title: 'Logistics specialist', dates: 'Jan 2021 – Dec 2024', bullets: ['Maintained records for 12 systems.'] }], education: [{ degree: 'B.S. in progress', school: 'Example University', year: 'Expected 2027' }], skills: ['Excel'], clearance: 'Inactive Secret' };
+  const draft = savedResumeToDraft({ resumeData: data });
+  assert.match(draft.resume, /U.S. Navy/); assert.match(draft.resume, /12 systems/); assert.match(draft.resume, /B.S. in progress/); assert.match(draft.resume, /Inactive Secret/);
+  assert.equal(savedResumeToDraft({ content: JSON.stringify(data) }).resume, draft.resume);
+  assert.deepEqual(savedResumeToDraft({ content: 'Plain text' }), { resume: 'Plain text' });
+});
 
 test('every branch can build a resume from actual duties without inventing hours, credentials, or outcomes', () => {
   for (const [branch, info] of Object.entries(branches)) {

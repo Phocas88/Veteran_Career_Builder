@@ -1,5 +1,5 @@
 import { branches, components, normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js';
-import { createCloudStore } from './cloud-store.js';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -95,7 +95,7 @@ function renderSaved() {
     const open = document.createElement('button'); open.className = 'text-button'; open.textContent = 'Open';
     open.addEventListener('click', () => {
       if (callback.getDraft().resume.trim() && !confirm('Replace the current draft with this saved resume? Download or save your current work first.')) return;
-      callback.loadDraft(item.workspace || { resume: item.content || '' }); status('Saved resume opened. Changes are not saved automatically.');
+      callback.loadDraft(savedResumeToDraft(item)); status('Saved resume opened. Changes are not saved automatically.');
     });
     const remove = document.createElement('button'); remove.className = 'text-button danger'; remove.textContent = 'Delete';
     remove.addEventListener('click', async () => {

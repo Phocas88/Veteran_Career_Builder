@@ -353,7 +353,7 @@ async function requestReview() {
   $('loading').hidden = false;
   $('review-button').disabled = true;
   const submitted = input.value;
-  const timeout = setTimeout(() => controller.abort('timeout'), 150000);
+  const timeout = setTimeout(() => controller.abort('timeout'), 240000);
   const context = { role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value };
   try {
     const data = await requestVeteranReview({ resume: submitted, ...context }, controller.signal);
@@ -366,7 +366,7 @@ async function requestReview() {
     if (controller.signal.aborted) {
       if (controller.signal.reason === 'timeout') showError('The review took too long. Your draft is unchanged; please try again.');
       else toast('Review canceled. Your draft is unchanged.');
-    } else showError(error.message || 'The review could not complete. Please try again.');
+    } else if (!error.handled) showError(error.message || 'The review could not complete. Please try again.');
   } finally {
     clearTimeout(timeout);
     state.controller = null;
@@ -562,6 +562,7 @@ initWorkspace({
     $('review-empty').hidden = false; $('review-results').hidden = true; $('sidebar-count').textContent = '0';
     syncApplicationType(); setTab('resume', false); refreshDraft(); saveDraft();
   },
+  loadReview(review) { showReview(review); },
   clearAccountDraft() {
     state.controller?.abort('account-change'); input.value = ''; roleInput.value = ''; jobInput.value = ''; detailsInput.value = '';
     applicationInput.value = 'private'; pageBreaks.clear(); state.review = null; state.history = []; state.applied.clear(); state.stale = false;

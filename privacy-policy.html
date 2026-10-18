@@ -1218,9 +1218,9 @@ body.menu-open{overflow:hidden!important;}
   <p>We do <strong>not</strong> use your military service data, resume content, or job application history for advertising purposes. We do not sell, rent, or trade your personal information to third parties.</p>
 
   <h2>4. AI Processing</h2>
-  <p>Veteran Career Path uses artificial intelligence to generate career recommendations, resume content, cover letters, and interview preparation materials. Content you submit to AI tools, such as profile details, resume text, job descriptions, cover-letter inputs, interview answers, and similar prompts, may be transmitted through our server-side proxy to Anthropic's Claude API to produce the requested output.</p>
+  <p>Veteran Career Path uses artificial intelligence to generate career recommendations, resume content, cover letters, and interview preparation materials. Content you submit to AI tools, such as profile details, resume text, job descriptions, cover-letter inputs, interview answers, and similar prompts, may be transmitted through our server-side proxy to Anthropic’s Claude API or OpenAI’s API, depending on the tool and deployment, to produce the requested output. The current paid resume program uses Anthropic; deployments configured with OpenAI use OpenAI.</p>
   <p>The individualized VA claim strategy generator is disabled pending legal review. If you use educational VA, health, or disability-related pages, minimize what you enter and do not submit sensitive identifiers. We do not use military service data, resume content, job application history, or health/disability-related entries for advertising, and we do not sell that information.</p>
-  <p>Anthropic's API data retention and processing practices are governed by Anthropic's applicable API terms and privacy documentation. We do not claim zero retention unless our account and contract are specifically configured for that status.</p>
+  <p>Anthropic’s and OpenAI’s API data retention and processing practices are governed by each provider’s applicable API terms and privacy documentation. OpenAI API calls in our resume service set store:false, which does not guarantee zero retention. We do not claim zero retention unless our account and contract are specifically configured for that status.</p>
   <p>AI-generated content is produced automatically and may contain errors or inaccuracies. You are responsible for reviewing all AI-generated content before using it in job applications or other professional contexts.</p>
 
   <h2>5. Data Storage and Security</h2>
@@ -1240,7 +1240,7 @@ body.menu-open{overflow:hidden!important;}
   <p>You can delete your account by contacting us at <a href="https://veterancareerpath.com/contact.html"><span class="__cf_email__" data-cfemail="37615243524556597456455252456756435f7764434552565a644e595464585b42435e58594419595243">[email&#160;protected]</span></a>.</p>
 
   <h2>7. Data Sync &amp; Local Storage</h2>
-  <p>When you create an account, your data is stored securely in the cloud via Google Firebase and syncs across any device you sign in on. This includes your military service profile, civilian work history, education, career targets, saved resumes, cover letters, emails, score reports, and job tracker entries.</p>
+  <p>For the original main-site tools, information you choose to save is stored in Google Firebase and can sync across devices when signed in. This can include career profiles, work history, education, saved documents and job tracker entries. The independent resume program uses the separate storage and purchase agreements described below; signing in alone does not save its draft or background.</p>
 
   <p>We also use your browser's local storage for a small number of session-level preferences that do not need to be stored server-side:</p>
   <ul>
@@ -1248,16 +1248,17 @@ body.menu-open{overflow:hidden!important;}
     <li><strong>Job tracker entries:</strong> also saved locally as a backup so the tracker works even if you are briefly offline. These are synced to Firebase when you are signed in.</li>
   </ul>
 
-  <p>Clearing your browser's local storage or cookies will sign you out of your session, but <strong>your profile data, saved resumes, and job tracker are safely stored in your Firebase account and will be restored the next time you sign in</strong>. You will not lose your work.</p>
+  <p>Clearing browser storage can sign you out and remove device-only drafts or unsaved work. Items successfully saved in your Firebase account can be reopened after sign-in. Do not assume unsaved drafts have been uploaded or backed up.</p>
 
   <h2>Resume Workspace: Optional Storage &amp; AI Processing</h2>
-  <p>The <a href="/resume-workspace/index.html">Veteran Resume Workspace</a> can convert an imported resume or build a draft from service details for all six military branches. Original PDF, Word and text files are processed on the device. Requesting an AI review sends the draft and application context through our authenticated service to Anthropic; cloud saves are a separate, explicit choice using your Firebase account. The standalone preview uses OpenAI. Saved resumes can be reopened or deleted from your account. Device drafts are separately optional.</p>
-  <p>This workspace does not run analytics or advertising trackers. Essential storage supports sign-in, AI access, security and your storage-notice choice. For the exact data collected, provider processing, retention, cloud deletion, local controls and data requests, read the <a href="/resume-workspace/privacy.html">Resume Data &amp; AI Notice</a>. The retention and data-rights provisions of this policy continue to apply.</p>
+  <p>The <a href="/resume-workspace/index.html">Veteran Resume Workspace</a> can convert an imported resume or build a draft from service details for all six military branches. Original PDF, Word and text files are processed on the device. The independent resume program requires no main-site subscription: accounts are free and each successful AI build costs $1.99 USD through Stripe. AI services include Anthropic and OpenAI where configured. Beginning checkout requires separate agreement to store the fixed resume input, application context and later AI result privately in Firebase for recovery; Stripe receives payment and purchase identifiers, not resume content. Optional background and editor saves use program-only owner paths in our existing Firebase project and have a separate agreement. Authentication identities share the project, but program sign-in sessions and main-site subscriptions are separate. Saved resumes can be reopened or deleted from your account. Device drafts are separately optional.</p>
+  <p>This workspace does not run analytics or advertising trackers. Essential storage supports sign-in, program sign-in, security and your storage-notice choice. Stripe-hosted checkout uses essential payment and fraud-prevention storage. OpenAI and Anthropic are accessed server-side; the resume program does not load their browser tracking scripts. See the <a href='/cookie-policy.html'>Cookie Policy</a>. For the exact data collected, provider processing, retention, cloud deletion, local controls and data requests, read the <a href="/resume-workspace/privacy.html">Resume Data &amp; AI Notice</a>. The retention and data-rights provisions of this policy continue to apply.</p>
   <h2>8. Third-Party Services</h2>
   <p>We use the following third-party services that have their own privacy policies:</p>
   <ul>
     <li><strong>Google Firebase:</strong> Authentication and database storage. <a href="https://firebase.google.com/support/privacy" target="_blank">Firebase Privacy Policy</a></li>
     <li><strong>Stripe:</strong> Payment processing. <a href="https://stripe.com/privacy" target="_blank">Stripe Privacy Policy</a></li>
+    <li><strong>OpenAI:</strong> AI API processing where configured. <a href="https://platform.openai.com/docs/guides/your-data" target="_blank" rel="noopener noreferrer">OpenAI API data policies</a></li>
     <li><strong>Anthropic:</strong> AI model API. <a href="https://www.anthropic.com/privacy" target="_blank">Anthropic Privacy Policy</a></li>
   </ul>
   <p>We link to external job boards (Indeed, USAJobs, LinkedIn, ZipRecruiter, ClearanceJobs) as a convenience. We are not responsible for the privacy practices of those sites.</p>

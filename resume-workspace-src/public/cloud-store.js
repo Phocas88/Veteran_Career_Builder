@@ -32,20 +32,21 @@ export function createCloudStore({ db, auth }) {
     if (auth.currentUser?.uid !== uid) throw new Error('Your account changed. Please try again.');
   }
   return {
-    async profile() { const { uid, ref } = owner(); const snap = await ref.get(); assertOwner(uid); return snap.exists ? snap.data() : {}; },
-    async saveProfile(profile) { const { uid, ref } = owner(); await ref.set({ resumeWorkspaceProfile: profile, updatedAt: Date.now() }, { merge: true }); assertOwner(uid); },
-    async list() { const { uid, ref } = owner(); const snap = await ref.collection('resumes').orderBy('createdAt', 'desc').limit(50).get(); assertOwner(uid); return snap.docs.map(doc => ({ ...doc.data(), id: doc.id })); },
+    async profile() { const { uid, ref } = owner(); const snap = await ref.collection('resumeProgram').doc('background').get(); assertOwner(uid); return snap.exists ? {resumeWorkspaceProfile: snap.data().background} : {}; },
+    async saveProfile(profile) { const { uid, ref } = owner(); await ref.collection('resumeProgram').doc('background').set({ background: profile, updatedAt: Date.now() }, { merge: true }); assertOwner(uid); },
+    async removeProfile() { const {uid,ref} = owner(); await ref.collection('resumeProgram').doc('background').delete(); assertOwner(uid); },
+    async list() { const { uid, ref } = owner(); const snap = await ref.collection('resumeProgramResumes').orderBy('createdAt', 'desc').limit(50).get(); assertOwner(uid); return snap.docs.map(doc => ({ ...doc.data(), id: doc.id })); },
     async save(draft, title) {
       const { uid, ref } = owner();
       if (!draft.resume?.trim() || draft.resume.length > 20000) throw new Error('Add a resume of up to 20,000 characters before saving.');
-      const doc = ref.collection('resumes').doc();
-      // Compatible with the website’s existing My Account resume list.
+      const doc = ref.collection('resumeProgramResumes').doc();
+      // Program-only namespace; main-site resumes and subscription data are untouched.
       const entry = { id: doc.id, title: String(title || 'My veteran resume').trim().slice(0, 120),
         content: draft.resume, createdAt: new Date().toISOString(), date: new Date().toLocaleDateString('en-US'),
         preview: draft.resume.slice(0, 120), format: 'workspace', source: 'vcp-resume-workspace',
         workspace: draft };
       await doc.set(entry); assertOwner(uid); return entry;
     },
-    async remove(id) { const { uid, ref } = owner(); if (typeof id !== 'string' || !id || id.includes('/')) throw new Error('Choose a saved resume.'); await ref.collection('resumes').doc(id).delete(); assertOwner(uid); }
+    async remove(id) { const { uid, ref } = owner(); if (typeof id !== 'string' || !id || id.includes('/')) throw new Error('Choose a saved resume.'); await ref.collection('resumeProgramResumes').doc(id).delete(); assertOwner(uid); }
   };
 }

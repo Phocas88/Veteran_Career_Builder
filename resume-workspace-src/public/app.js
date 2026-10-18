@@ -1,4 +1,4 @@
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261018-branches';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';
@@ -11,7 +11,7 @@ const jobInput = $('job-description');
 const applicationInput = $('application-type');
 const detailsInput = $('additional-details');
 const storageKey = 'resume-studio-draft-v1';
-const state = { review: null, applied: new Set(), history: [], stale: false, sample: false, controller: null };
+const state = { review: null, applied: new Set(), history: [], stale: false, controller: null };
 let toastTimer;
 let importing = false;
 let exporting = false;
@@ -187,9 +187,8 @@ function renderSuggestions() {
   refreshDraft();
 }
 
-function showReview(review, isSample = false) {
+function showReview(review) {
   state.review = review;
-  state.sample = isSample;
   state.applied.clear();
   state.history = [];
   state.stale = false;
@@ -199,7 +198,6 @@ function showReview(review, isSample = false) {
   $('review-results').hidden = false;
   $('review-score').textContent = review.score;
   $('score-title').textContent = review.score >= 85 ? 'Strong foundations.' : review.score >= 65 ? 'Room to shine.' : 'Let’s build on this.';
-  $('sample-label').hidden = !isSample;
   $('review-summary').textContent = review.summary;
   listItems('strength-list', review.strengths);
   $('strength-list').closest('.strengths-card').hidden = !review.strengths.length;
@@ -315,8 +313,7 @@ $('resume-file').addEventListener('change', async event => {
   try {
     const text = await importResumeFile(file, message => { if (importAccount === draftOwnerId()) $('import-status').textContent = message; });
     if (importAccount !== draftOwnerId()) return;
-    if (state.sample && roleInput.value === 'Operations Coordinator' && !jobInput.value.trim()) roleInput.value = '';
-    state.review = null; state.applied.clear(); state.history = []; state.stale = false; state.sample = false;
+    state.review = null; state.applied.clear(); state.history = []; state.stale = false;
     $('review-empty').hidden = false;
     $('review-results').hidden = true;
     $('sidebar-count').textContent = '0';
@@ -378,55 +375,6 @@ async function requestReview() {
 $('review-button').addEventListener('click', requestReview);
 $('cancel-review').addEventListener('click', () => state.controller?.abort('user'));
 $('error-dismiss').addEventListener('click', () => { $('error-banner').hidden = true; });
-
-const sampleResume = `ALEX MORGAN
-alex.morgan@example.com · Portland, OR
-
-PROFESSIONAL SUMMARY
-Operations coordinator with 4 years of experience supporting schedules, records, and team communication. Interested in bringing organized, reliable support to a growing team.
-
-EXPERIENCE
-Operations Coordinator · Northline Services
-March 2022 – Present
-• Responsible for managing weekly schedules and helped with team communications.
-• Maintained records and was assisting the team with monthly reporting.
-• Worked with different teams to make sure project deadlines were being met.
-• Created weekly updates for managers, this kept everyone informed.
-• Helped new staff learn the scheduling system and answer their questions.
-
-EDUCATION
-Associate Degree in Business Administration
-Cascadia Community College · 2021
-
-SKILLS
-Microsoft Excel · Scheduling · Recordkeeping · Team communication`;
-
-const sampleReview = {
-  score: 74,
-  summary: 'Your experience is easy to follow, and your operations background comes through clearly. A few sentences can be more direct and consistent. The edits below tighten your writing while preserving the experience you described.',
-  strengths: ['Clear work history and dates', 'Relevant operations experience', 'Focused, readable sections'],
-  suggestions: [
-    { id: 'sample-1', category: 'Clarity', priority: 'Medium', original: 'Responsible for managing weekly schedules and helped with team communications.', replacement: 'Managed weekly schedules and supported team communications.', explanation: 'Lead with the work you did and use a consistent verb structure.' },
-    { id: 'sample-2', category: 'Grammar', priority: 'Medium', original: 'Maintained records and was assisting the team with monthly reporting.', replacement: 'Maintained records and assisted the team with monthly reporting.', explanation: 'Keep the verbs parallel so the sentence is easier to read.' },
-    { id: 'sample-3', category: 'Clarity', priority: 'Low', original: 'Worked with different teams to make sure project deadlines were being met.', replacement: 'Collaborated across teams to help meet project deadlines.', explanation: 'Use fewer words to describe the same contribution without inventing an outcome.' },
-    { id: 'sample-4', category: 'Grammar', priority: 'High', original: 'Created weekly updates for managers, this kept everyone informed.', replacement: 'Created weekly updates for managers to keep everyone informed.', explanation: 'Connect the purpose to the action and fix the comma splice.' },
-    { id: 'sample-5', category: 'Grammar', priority: 'Medium', original: 'Helped new staff learn the scheduling system and answer their questions.', replacement: 'Helped new staff learn the scheduling system and answered their questions.', explanation: 'Make it clear that you both helped staff learn the system and answered their questions.' }
-  ],
-  nextSteps: ['If you can verify them, add specific workload details such as the number of schedules or records you handled. Do not estimate or invent metrics.', 'Name the scheduling system if you used it confidently and it is relevant to the target role.', 'Add a target job description to get feedback tailored to that role.']
-};
-
-function loadSample() {
-  if (importing) return toast('Let the import finish before loading a sample.');
-  if (input.value.trim() && input.value !== sampleResume && !window.confirm('Replace your current draft with the sample resume? Download your draft first if you want to keep it.')) return;
-  input.value = sampleResume;
-  roleInput.value = 'Operations Coordinator';
-  jobInput.value = '';
-  applicationInput.value = 'private'; detailsInput.value = ''; pageBreaks.clear();
-  saveDraft();
-  showReview(sampleReview, true);
-  toast('Sample review loaded. This example was prepared in advance; it is not a live AI result.');
-}
-for (const id of ['sample-top', 'sample-sidebar', 'sample-empty']) $(id).addEventListener('click', loadSample);
 
 function saveDownload(blob, filename) {
   const url = URL.createObjectURL(blob);
@@ -513,7 +461,7 @@ $('clear-cancel').addEventListener('click', () => $('clear-dialog').close());
 $('clear-confirm').addEventListener('click', () => {
   input.value = ''; roleInput.value = ''; jobInput.value = '';
   detailsInput.value = ''; applicationInput.value = 'private'; pageBreaks.clear();
-  state.review = null; state.applied.clear(); state.history = []; state.stale = false; state.sample = false;
+  state.review = null; state.applied.clear(); state.history = []; state.stale = false;
   $('review-empty').hidden = false;
   $('review-results').hidden = true;
   $('sidebar-count').textContent = '0';
@@ -558,7 +506,7 @@ initWorkspace({
     if (Object.hasOwn(papers, draft.paper)) $('resume-paper').value = draft.paper;
     $('reflow-lines').checked = draft.reflow !== false;
     pageBreaks.clear(); if (Array.isArray(draft.pageBreaks)) for (const id of draft.pageBreaks.slice(0,100)) if (typeof id === 'string') pageBreaks.add(id);
-    state.review = null; state.applied.clear(); state.history = []; state.stale = false; state.sample = false;
+    state.review = null; state.applied.clear(); state.history = []; state.stale = false;
     $('review-empty').hidden = false; $('review-results').hidden = true; $('sidebar-count').textContent = '0';
     syncApplicationType(); setTab('resume', false); refreshDraft(); saveDraft();
   },

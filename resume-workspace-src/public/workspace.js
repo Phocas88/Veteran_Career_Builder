@@ -1,5 +1,5 @@
-import { fillBackground, readBackground } from './background-form.js';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases } from './payments.js';
+import { fillBackground, readBackground } from './background-form.js?v=20261018-branches';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases } from './payments.js?v=20261018-branches';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js';
 import { connectFirebase } from './firebase-client.js';

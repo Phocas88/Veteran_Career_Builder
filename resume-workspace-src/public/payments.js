@@ -1,5 +1,6 @@
 // Checkout never receives resume content. Private server-owned build records make
 // paid results recoverable without trusting redirect flags or browser storage.
+import {runRecoverableBuild} from './build-recovery.js?v=20261019-recovery';
 const $=id=>document.getElementById(id);
 const endpoint='https://vcp-proxy.vercel.app/api/claude';
 let config,active=null,generation=0;
@@ -10,12 +11,22 @@ async function api(action,extra={},signal){
  if(!owner)throw new Error('Sign in to your free resume-program account first.');
  const version=generation;const token=await owner.getIdToken();
  if(c.auth.currentUser?.uid!==owner.uid||version!==generation)throw new Error('Account changed. Try again.');
- const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','X-VCP-Firebase-Token':token},body:JSON.stringify({workspace:true,action,...extra}),signal});
- const data=await response.json();
+ signal?.throwIfAborted();
+ let response,data;
+ try{
+  response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','X-VCP-Firebase-Token':token},body:JSON.stringify({workspace:true,action,...extra}),signal});
+  data=await response.json();
+ }catch(error){
+  signal?.throwIfAborted();
+  if(c.auth.currentUser?.uid!==owner.uid||version!==generation)throw new Error('Account changed. Result discarded.');
+  throw Object.assign(new Error('Connection interrupted. Your existing build is still recoverable from purchase history; no second payment is needed.'),{recoverable:true});
+ }
  if(c.auth.currentUser?.uid!==owner.uid||version!==generation)throw new Error('Account changed. Result discarded.');
- if(!response.ok)throw Object.assign(new Error(data.error||'The purchase service could not complete this action.'),{status:response.status});
+ const status=data.httpStatus||response.status;
+ if(!response.ok||status>=400)throw Object.assign(new Error(data.error||'The purchase service could not complete this action.'),{status,errorCode:data.errorCode,recoverable:status>=500&&!data.errorCode});
  return data;
 }
+const runBuild=(id,signal)=>runRecoverableBuild(api,id,{signal,onRecover:()=>{msg('Reconnecting to your existing build…');$('loading-message').textContent='Reconnecting and checking your saved result. No second payment is needed.';}});
 export function resetPayments(){generation++;active=null;$('purchase-list').replaceChildren();msg('');}
 async function openBuild(id){
  const build=await api('get',{buildId:id});
@@ -40,7 +51,7 @@ export async function refreshPurchases(){
   const build=await openBuild(id);
   if(params.get('checkout')==='success' && build && !build.review) {
     msg('Checking payment and preparing your resume…');
-    await config.adapter.recoverReview(async signal => (await api('run',{buildId:id,consent:true},signal)).review);
+    await config.adapter.recoverReview(signal => runBuild(id,signal));
   } else if(params.get('checkout')==='canceled') msg('Checkout canceled. Your draft is restored. You can continue whenever you’re ready.');
  }
  }catch(e){msg(e.message);}
@@ -48,7 +59,7 @@ export async function refreshPurchases(){
 export function initPayments(c){config=c; $('refresh-purchases').onclick=()=>refreshPurchases();}
 export async function requestPaidReview(payload,signal){
  if(active&&sameInput(active.input,payload)){
-  try{const result=await api('run',{buildId:active.id,consent:true},signal);refreshPurchases();return result.review;}catch(e){if(e.status!==402)throw e;}
+  try{const review=await runBuild(active.id,signal);refreshPurchases();return review;}catch(e){if(e.status!==402)throw e;}
  }
  const build=await api('prepare',{input:payload,consent:true,storageConsent:true},signal);
  active={...build,input:payload};
@@ -56,6 +67,6 @@ export async function requestPaidReview(payload,signal){
   const url=new URL(build.url);if(url.origin!=='https://checkout.stripe.com')throw new Error('Checkout URL could not be verified.');
   location.assign(url.href);throw Object.assign(new Error('Opening secure Stripe checkout.'),{handled:true});
  }
- const result=build.review?build:await api('run',{buildId:build.id,consent:true},signal);
- refreshPurchases();return result.review;
+ const review=build.review||await runBuild(build.id,signal);
+ refreshPurchases();return review;
 }

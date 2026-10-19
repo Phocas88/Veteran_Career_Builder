@@ -60,3 +60,11 @@ test('desktop uses the website header and horizontal workspace navigation, with 
  await expect(page.locator('.optional-page-breaks')).toContainText('Leave this alone to use automatic page breaks');await expect(page.locator('label[for="page-break-target"]')).toContainText('Move this section or job');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+
+test('changing to a federal target cannot apply an update generated for the original private-sector context',async({page})=>{
+ await installAccount(page,'registered');await start(page);
+ await page.route('https://vcp-proxy.vercel.app/api/claude',route=>{const body=route.request().postDataJSON();return route.fulfill({json:paidResponse(body)||(body.action==='run'?{review}:{builds:[]})});});
+ await page.locator('#resume-input').fill(fixtureResume);await checkout(page);await agreements(page);await page.locator('#review-button').click();await expect(page.locator('#review-results')).toBeVisible();
+ await page.locator('.steps [data-tab="resume"]').click();await page.locator('#checkout-back').click();await page.locator('#application-type').selectOption('federal');await page.locator('.steps [data-tab="review"]').click();
+ await page.locator('#answer-finding-0').fill('40 hours per week.');await page.locator('#answers-consent').check();await expect(page.locator('#apply-answers')).toBeDisabled();await expect(page.locator('#answers-status')).toContainText('job details changed');
+});

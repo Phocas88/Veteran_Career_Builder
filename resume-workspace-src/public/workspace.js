@@ -1,6 +1,6 @@
-import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261019-product';
-import { fillBackground, readBackground } from './background-form.js?v=20261019-product';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild } from './payments.js?v=20261019-product';
+import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261019-clarifications';
+import { fillBackground, readBackground } from './background-form.js?v=20261019-clarifications';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild } from './payments.js?v=20261019-clarifications';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js';
 import { connectFirebase } from './firebase-client.js';

@@ -1,10 +1,10 @@
-import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261019-product';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261019-product';
+import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261019-clarifications';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261019-clarifications';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';
 import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js';
-import { hasPaidBuild, includedUpdateAvailable, refinePaidReview } from './payments.js?v=20261019-product';
+import { hasPaidBuild, includedUpdateAvailable, refinePaidReview } from './payments.js?v=20261019-clarifications';
 
 const $ = id => document.getElementById(id);
 const input = $('resume-input');
@@ -266,12 +266,13 @@ function syncAnswerAction(){
   const answers=collectAnswers();
   const size=answers.reduce((n,a)=>n+a.answer.length,0);
   $('answer-budget').textContent=`${answers.length} answered · ${size.toLocaleString()} answer characters. Keep answers concise; combined verified details have a 4,000-character limit.`;
-  $('apply-answers').disabled=!answers.length||!$('answers-consent').checked||!includedUpdateAvailable()||!!state.controller||answers.some(a=>a.id.startsWith('extra-')&&!a.context);
+  $('apply-answers').disabled=!answers.length||!$('answers-consent').checked||!includedUpdateAvailable()||!!state.controller||state.rewriteInvalid||answers.some(a=>a.id.startsWith('extra-')&&!a.context);
+  if(state.rewriteInvalid)$('answers-status').textContent='The job details changed after this review. Reopen this purchase to answer questions for its original job details, or start a new AI build for a different target.';
 }
 $('answers-consent').addEventListener('change',syncAnswerAction);
 $('add-review-fact').addEventListener('click',addReviewFact);
 $('apply-answers').addEventListener('click',async()=>{
-  const answers=collectAnswers();if(!answers.length||!$('answers-consent').checked||!includedUpdateAvailable()||state.controller)return;
+  const answers=collectAnswers();if(!answers.length||!$('answers-consent').checked||!includedUpdateAvailable()||state.controller||state.rewriteInvalid)return;
   if(input.value!==state.submittedResume&&!confirm('This AI update uses your submitted resume and these answers. Save any manual edits first; you can inspect the new draft before applying it. Continue?'))return;
   const controller=new AbortController();state.controller=controller;syncAnswerAction();
   $('loading-message').textContent='Updating your resume with your verified answers. This update is included in your purchase.';$('loading').hidden=false;
@@ -346,6 +347,7 @@ input.addEventListener('input', () => {
 for (const field of [roleInput, jobInput, detailsInput]) field.addEventListener('input', () => {
   if (state.review) { state.stale = true; state.rewriteInvalid = true; refreshDraft(); }
   refreshFederalGuidance();
+  syncAnswerAction();
   saveDraft();
 });
 
@@ -357,6 +359,7 @@ function syncApplicationType() {
     $('resume-arrangement').value = 'professional';
   }
   if (state.review) { state.stale = true; state.rewriteInvalid = true; }
+  syncAnswerAction();
   refreshDraft(); saveDraft();
 }
 applicationInput.addEventListener('change', syncApplicationType);

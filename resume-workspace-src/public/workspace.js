@@ -1,6 +1,6 @@
-import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261019-clarifications';
-import { fillBackground, readBackground } from './background-form.js?v=20261019-clarifications';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild } from './payments.js?v=20261019-clarifications';
+import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261019-purchase-reuse';
+import { fillBackground, readBackground } from './background-form.js?v=20261019-purchase-reuse';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild } from './payments.js?v=20261019-purchase-reuse';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js';
 import { connectFirebase } from './firebase-client.js';
@@ -226,7 +226,7 @@ export function initWorkspace(adapter) {
 
 export async function requestVeteranReview(payload, signal) {
   if (!$('ai-consent').checked) { $('ai-consent').focus(); throw new Error('Agree to sending this draft for AI processing before requesting a build.'); }
-  if (!$('purchase-consent').checked) { $('purchase-consent').focus(); throw new Error('Agree to purchase recovery storage before continuing to checkout.'); }
+  if (!$('purchase-consent').checked) { $('purchase-consent').focus(); throw new Error('Agree to save your paid build for recovery before starting AI review. No additional payment is needed.'); }
   const c = await ensureGuest();
   if (c.auth.currentUser && !guest(c.auth.currentUser) && $('save-submitted').checked) {
     await store.save(callback.getDraft(), payload.role ? payload.role + ' · submitted resume' : 'Submitted resume');

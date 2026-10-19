@@ -1,7 +1,8 @@
 export function paidResponse(body,id='a'.repeat(64)){
  if(body.action==='purchase')return {id,status:'paid',prepaid:true,entryMode:body.entryMode,requestId:body.requestId,input:null};
  if(body.action==='verify')return {id:body.buildId,status:'paid',prepaid:true};
- if(body.action==='bind')return {id:body.buildId,status:'paid',prepaid:true,input:body.input};
+ // Match the server's validateInput: resume text is preserved; optional text is trimmed.
+ if(body.action==='bind')return {id:body.buildId,status:'paid',prepaid:true,input:{...body.input,role:(body.input.role||'').trim(),jobDescription:(body.input.jobDescription||'').trim(),applicationType:body.input.applicationType??'private',additionalDetails:(body.input.additionalDetails||'').trim()}};
  return null;
 }
 export async function unlockEntry(page){

@@ -1,10 +1,14 @@
 // Checkout never receives resume content. Private server-owned build records make
 // paid results recoverable without trusting redirect flags or browser storage.
-import {runRecoverableBuild} from './build-recovery.js?v=20261019-clarifications';
+import {runRecoverableBuild} from './build-recovery.js?v=20261019-purchase-reuse';
 const $=id=>document.getElementById(id);
 const endpoint='https://vcp-proxy.vercel.app/api/claude';
 let config,active=null,generation=0;
-const sameInput=(a,b)=>['resume','role','jobDescription','applicationType','additionalDetails'].every(k=>(a?.[k]||'')===(b?.[k]||''));
+// Match server validation: preserve resume content exactly and trim only optional
+// job details. Formatting cleanup must never turn a verified purchase into a new one.
+const sameInput=(a,b)=>!!a&&!!b&&a.resume===b.resume
+ &&(a.applicationType??'private')===(b.applicationType??'private')
+ &&['role','jobDescription','additionalDetails'].every(k=>(a[k]||'').trim()===(b[k]||'').trim());
 const msg=t=>{$('purchase-status').textContent=t;};
 async function api(action,extra={},signal){
  const c=await config.ensureConnection();const owner=c.auth.currentUser;
@@ -110,8 +114,9 @@ export async function requestPaidReview(payload,signal){
  if(!hasPaidBuild()){choosePaidEntry('edit');throw Object.assign(new Error('Complete checkout before building your resume.'),{handled:true});}
  if(active.prepaid&&!active.input){const bound=await api('bind',{buildId:active.id,input:payload,consent:true,storageConsent:true},signal);active={...active,...bound,verified:true};}
  if(!sameInput(active.input,payload)){
-  forgetActiveBuild();choosePaidEntry('edit');
-  throw Object.assign(new Error('A changed resume or target is a new build. Complete checkout to continue.'),{handled:true});
+  // Keep the verified purchase available for retry/recovery. Only an explicit
+  // new-build action may start another checkout.
+  throw new Error('This purchase is linked to the resume and job details you first submitted. Restore those details or reopen this build from purchase history to retry without paying again.');
  }
  const review=await runBuild(active.id,signal);active.review=review;active.refinementCount=review.refinementCount||0;changed();refreshPurchases();return review;
 }

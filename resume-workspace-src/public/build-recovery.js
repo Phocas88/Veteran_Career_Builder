@@ -10,11 +10,12 @@ function pause(ms,signal){
   signal?.addEventListener('abort',abort,{once:true});
  });
 }
-export async function runRecoverableBuild(api,buildId,{signal,onRecover=()=>{},wait=pause,now=Date.now}={}){
+export async function runRecoverableBuild(api,buildId,{signal,onRecover=()=>{},wait=pause,now=Date.now,action='run',extra={}}={}){
  const deadline=now()+220000;
- try{return (await api('run',{buildId,consent:true,keepAlive:true},signal)).review;}
+ try{return (await api(action,{buildId,consent:true,keepAlive:true,...extra},signal)).review;}
  catch(error){
   signal?.throwIfAborted();
+  if(error.errorCode==='CLARIFICATION_UPDATE_USED')throw error;
   if(!error.recoverable&&error.status!==409)throw error;
  }
  onRecover();
@@ -28,8 +29,8 @@ export async function runRecoverableBuild(api,buildId,{signal,onRecover=()=>{},w
    if(!error.recoverable)throw error;
    await wait(3000,signal);continue;
   }
-  if(build.review)return build.review;
   if(build.lastError)throw Object.assign(new Error(build.lastError.error),{status:build.lastError.status,errorCode:build.lastError.errorCode});
+  if(build.review&&(action!=='refine'||build.refinementCount>=1))return build.review;
   if(build.status==='running')idleReads=0;
   else if(++idleReads>=3)throw new Error(recoveryMessage);
   await wait(3000,signal);

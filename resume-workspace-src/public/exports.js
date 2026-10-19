@@ -117,6 +117,8 @@ export function federalChecks(model, announcement = '') {
   const contact = model.nodes.filter(x => ['name', 'contact'].includes(x.type)).map(x => x.text).join('\n');
   if (!/@/u.test(contact) || !/(?:\+?\d{1,3}[ .-]?)?(?:\(\d{3}\)|\d{3})[ .-]?\d{3}[ .-]?\d{4}/u.test(contact)) checks.push('Confirm your name, email address, and phone number are present.');
   if (!announcement.trim()) checks.push('Paste the job announcement so specialized experience and required qualifications can be reviewed.');
+  if (/\b(?:degree|education|transcripts?|bachelor|master)\b/iu.test(announcement) && !model.nodes.some(x=>x.type==='heading'&&/education|academic/iu.test(x.text))) checks.push('The announcement mentions education. Add the relevant school, degree or coursework, completion status, and dates if required.');
+  if (/\b(?:certification|certified|license|licensure)\b/iu.test(announcement) && !/certification|certified|licen[cs]e|credential/iu.test(all)) checks.push('The announcement mentions a credential. Identify any required license or certification you hold, its issuer and current status. Do not claim a credential you do not have.');
   if (!jobs.length) checks.push('Check each relevant job for title, employer, start/end month and year, and hours per week.');
   for (let i = 0; i < jobs.length; i++) {
     const { node, index } = jobs[i];

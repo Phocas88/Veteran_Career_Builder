@@ -4,6 +4,16 @@ import {runRecoverableBuild} from '../public/build-recovery.js';
 const review={score:85,revisedResume:'Fictional revised resume',suggestions:[]};
 const dropped=()=>Object.assign(new Error('Connection interrupted'),{recoverable:true});
 
+test('a disconnected clarification update waits for its new result rather than returning the first review',async()=>{
+ let reads=0;const updated={...review,refinementCount:1};
+ const result=await runRecoverableBuild(async(action,body)=>{
+  if(action==='refine'){assert.deepEqual(body.answers,[{id:'step-0',answer:'Verified fact'}]);throw dropped();}
+  return ++reads===1?{status:'running',refinementCount:0,review}:{status:'complete',refinementCount:1,review:updated};
+ },'existing',{action:'refine',extra:{answers:[{id:'step-0',answer:'Verified fact'}]},wait:async()=>{}});
+ assert.deepEqual(result,updated);assert.equal(reads,2);
+ await assert.rejects(runRecoverableBuild(async()=>{throw Object.assign(new Error('Update already used'),{status:409,errorCode:'CLARIFICATION_UPDATE_USED'});},'existing',{action:'refine'}),/already used/);
+});
+
 test('a dropped review reads the same saved build without a second run or checkout',async()=>{
  const actions=[];let reads=0,notifications=0;
  const result=await runRecoverableBuild(async(action,body)=>{

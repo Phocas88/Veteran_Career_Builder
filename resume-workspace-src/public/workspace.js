@@ -1,6 +1,6 @@
-import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261018-opsec';
-import { fillBackground, readBackground } from './background-form.js?v=20261018-opsec';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases } from './payments.js?v=20261018-opsec';
+import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261019-promos';
+import { fillBackground, readBackground } from './background-form.js?v=20261019-promos';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases } from './payments.js?v=20261019-promos';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js';
 import { connectFirebase } from './firebase-client.js';

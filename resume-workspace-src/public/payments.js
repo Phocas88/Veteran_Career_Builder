@@ -21,14 +21,14 @@ async function openBuild(id){
  const build=await api('get',{buildId:id});
  if(config.adapter.getDraft().resume.trim()&&!sameInput(build.input,config.adapter.getDraft())&&!confirm('Open this purchase’s original draft? Save or download your current work first.'))return;
  active=build; $('account-dialog').close(); config.adapter.loadDraft(build.input);
- if(build.review){config.adapter.loadReview(build.review);msg('Paid build reopened. Formatting and downloads are included.');}
+ if(build.review){config.adapter.loadReview(build.review);msg('Build reopened. Formatting and downloads are included.');}
  else { config.adapter.showCheckout(); msg(build.status==='running'?'This build is running. Reopen it shortly to recover the result.':'Your draft is restored. Continue from checkout to finish this build.'); }
  return build;
 }
 export async function refreshPurchases(){
  try{
  const {builds}=await api('list');const list=$('purchase-list');list.replaceChildren();
- for(const build of builds){const row=document.createElement('li');const text=document.createElement('span');text.textContent=new Date(build.createdAt).toLocaleDateString()+' · $1.99 · '+({complete:'Ready',paid:'Paid — retry available',running:'Building',awaiting_payment:'Checkout started — payment not yet verified'}[build.status]||build.status);
+ for(const build of builds){const amount=Number.isInteger(build.amount)?build.amount:199;const price=amount===0&&build.discountAmount>0?'Free · promo code':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(amount/100);const row=document.createElement('li');const text=document.createElement('span');text.textContent=new Date(build.createdAt).toLocaleDateString()+' · '+price+' · '+({complete:'Ready',paid:'Ready — retry available',running:'Building',awaiting_payment:'Checkout started — payment not yet verified'}[build.status]||build.status);
  const open=document.createElement('button');open.type='button';open.className='text-button';open.textContent=build.status==='complete'?'Open result':'Continue / recover';open.onclick=()=>openBuild(build.id).catch(e=>msg(e.message));
  const remove=document.createElement('button');remove.type='button';remove.className='text-button danger';remove.textContent='Delete data';remove.onclick=async()=>{if(!confirm('Delete the input and AI result for this build? This does not cancel a payment or issue a refund. A minimal purchase record is retained for accounting.'))return;try{await api('delete',{buildId:build.id});if(active?.id===build.id)active=null;await refreshPurchases();msg('Build input and result deleted from the active database.');}catch(e){msg(e.message);}};
  row.append(text,open,remove);list.append(row);}

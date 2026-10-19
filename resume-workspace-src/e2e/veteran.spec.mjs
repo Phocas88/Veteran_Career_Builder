@@ -35,8 +35,30 @@ test('account users can explicitly save the exact resume they submit for review'
 test('successful checkout return verifies and builds automatically without a second payment or checkbox puzzle',async({page})=>{
  await installAccount(page,'registered');let calls=0;const id='c'.repeat(64);await page.route('https://vcp-proxy.vercel.app/api/claude',route=>{const body=route.request().postDataJSON();if(body.action==='run')calls++;return route.fulfill({json:body.action==='list'?{builds:[]}:body.action==='get'?{id,status:'paid',input:{resume},review:null}:{review}});});await page.goto('/?build='+id+'&checkout=success');await expect(page.locator('#review-summary')).toHaveText(review.summary);expect(calls).toBe(1);await expect(page.locator('#welcome-dialog')).not.toBeVisible();
 });
+test('checkout explains where to redeem a free code and history shows the verified discounted price',async({page})=>{
+ await installAccount(page,'registered');
+ await page.route('https://vcp-proxy.vercel.app/api/claude',route=>route.fulfill({json:{builds:[
+  {id:'d'.repeat(64),createdAt:Date.now(),status:'complete',amount:0,discountAmount:199},
+  {id:'e'.repeat(64),createdAt:Date.now(),status:'complete',amount:100,discountAmount:99},
+  {id:'f'.repeat(64),createdAt:Date.now(),status:'complete',amount:199,discountAmount:0}
+ ]}}));
+ await start(page);await page.locator('#resume-input').fill(resume);await checkout(page);
+ await expect(page.locator('#checkout-promo-note')).toContainText('Add promotion code');
+ await expect(page.locator('#checkout-promo-note')).toContainText('no card required');
+ await page.locator('#account-open').click();await page.locator('#purchase-history').evaluate(el=>el.open=true);
+ await expect(page.locator('#purchase-list li')).toHaveCount(3);
+ await expect(page.locator('#purchase-list li').nth(0)).toContainText('Free · promo code');
+ await expect(page.locator('#purchase-list li').nth(1)).toContainText('$1.00');
+ await expect(page.locator('#purchase-list li').nth(2)).toContainText('$1.99');
+});
+test('a free checkout return builds automatically and restores the same result without purchasing twice',async({page})=>{
+ await installAccount(page,'registered');let executions=0,prepares=0;const id='a'.repeat(64);
+ await page.route('https://vcp-proxy.vercel.app/api/claude',route=>{const body=route.request().postDataJSON();if(body.action==='prepare')prepares++;if(body.action==='run')executions++;return route.fulfill({json:body.action==='list'?{builds:[]} : body.action==='get'?{id,status:'awaiting_payment',amount:199,input:{resume},review:null}:{id,review}});});
+ await page.goto('/?build='+id+'&checkout=success');await expect(page.locator('#review-summary')).toHaveText(review.summary);
+ expect(executions).toBe(1);expect(prepares).toBe(0);
+});
 test('switching accounts clears the previous resume, background and device copy',async({page})=>{
- await installAccount(page,'registered');await start(page,'build');await page.locator('#builder-name').fill('ALEX PRIVATE');await page.evaluate(async()=>{const {setFlow}=await import('/guided-flow.js?v=20261018-opsec');setFlow('edit');});await page.locator('#resume-paste-mode').click();await page.locator('#resume-input').fill(resume);await page.locator('#remember-draft').check();await page.evaluate(()=>window.__switchAuth('veteran-b'));await expect(page.locator('#resume-input')).toHaveValue('');await expect(page.locator('#builder-name')).toHaveValue('');expect(await page.evaluate(()=>localStorage.getItem('resume-studio-draft-v1'))).toBeNull();
+ await installAccount(page,'registered');await start(page,'build');await page.locator('#builder-name').fill('ALEX PRIVATE');await page.evaluate(async()=>{const {setFlow}=await import('/guided-flow.js?v=20261019-recovery');setFlow('edit');});await page.locator('#resume-paste-mode').click();await page.locator('#resume-input').fill(resume);await page.locator('#remember-draft').check();await page.evaluate(()=>window.__switchAuth('veteran-b'));await expect(page.locator('#resume-input')).toHaveValue('');await expect(page.locator('#builder-name')).toHaveValue('');expect(await page.evaluate(()=>localStorage.getItem('resume-studio-draft-v1'))).toBeNull();
 });
 test('an import finishing after an account change cannot restore another account data',async({page})=>{
  await installAccount(page,'registered');await start(page);let begin,release;const started=new Promise(r=>begin=r),gate=new Promise(r=>release=r);await page.route('**/vendor/mammoth.mjs',async route=>{begin();await gate;await route.fulfill({response:await page.request.get('http://127.0.0.1:3000/vendor/mammoth.mjs')});});await page.locator('#resume-file').setInputFiles(fileURLToPath(new URL('./fixtures/resume.docx',import.meta.url)));await started;await page.evaluate(()=>window.__switchAuth('veteran-b'));release();await expect(page.locator('#import-resume')).toBeEnabled();await expect(page.locator('#resume-input')).toHaveValue('');

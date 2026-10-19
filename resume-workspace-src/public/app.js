@@ -1,5 +1,5 @@
-import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261019-promos';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261019-promos';
+import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261019-recovery';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261019-recovery';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';
@@ -352,6 +352,7 @@ async function requestReview(recover) {
   }
   const controller = new AbortController();
   state.controller = controller;
+  $('loading-message').textContent = 'Reviewing and rewriting your resume. This can take a couple of minutes. Your result will be saved with this build.';
   $('loading').hidden = false;
   $('review-button').disabled = true;
   const submitted = input.value;
@@ -366,7 +367,7 @@ async function requestReview(recover) {
     toast('Your review is ready. Every edit is your decision.');
   } catch (error) {
     if (controller.signal.aborted) {
-      if (controller.signal.reason === 'timeout') showError('The review took too long. Your draft is unchanged; please try again.');
+      if (controller.signal.reason === 'timeout') showError('The review is taking longer than expected. Reopen this build from purchase history to recover the result; no second payment is needed.');
       else toast('Review canceled. Your draft is unchanged.');
     } else if (!error.handled) showError(error.message || 'The review could not complete. Please try again.');
   } finally {

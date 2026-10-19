@@ -1,6 +1,6 @@
 // Checkout never receives resume content. Private server-owned build records make
 // paid results recoverable without trusting redirect flags or browser storage.
-import {runRecoverableBuild} from './build-recovery.js?v=20261019-recovery';
+import {runRecoverableBuild} from './build-recovery.js?v=20261019-product';
 const $=id=>document.getElementById(id);
 const endpoint='https://vcp-proxy.vercel.app/api/claude';
 let config,active=null,generation=0;
@@ -26,47 +26,97 @@ async function api(action,extra={},signal){
  if(!response.ok||status>=400)throw Object.assign(new Error(data.error||'The purchase service could not complete this action.'),{status,errorCode:data.errorCode,recoverable:status>=500&&!data.errorCode});
  return data;
 }
-const runBuild=(id,signal)=>runRecoverableBuild(api,id,{signal,onRecover:()=>{msg('Reconnecting to your existing build…');$('loading-message').textContent='Reconnecting and checking your saved result. No second payment is needed.';}});
-export function resetPayments(){generation++;active=null;$('purchase-list').replaceChildren();msg('');}
+let entryMode='edit',requestId=null;
+const changed=()=>document.dispatchEvent(new Event('resume:payment-changed'));
+export const hasPaidBuild=()=>!!active?.verified;
+export const includedUpdateAvailable=()=>hasPaidBuild()&&(active.refinementCount||0)<1;
+export function forgetActiveBuild(){active=null;requestId=null;changed();}
+const runBuild=(id,signal,action='run',extra={})=>runRecoverableBuild(api,id,{signal,action,extra,onRecover:()=>{msg('Reconnecting to your existing build…');$('loading-message').textContent='Reconnecting and checking your saved result. No second payment is needed.';}});
+export function resetPayments(){generation++;forgetActiveBuild();$('purchase-list').replaceChildren();msg('');}
+function redirectCheckout(value){
+ const url=new URL(value);if(url.origin!=='https://checkout.stripe.com')throw new Error('Checkout URL could not be verified.');
+ location.assign(url.href);
+}
+export function choosePaidEntry(mode){
+ entryMode=mode;
+ if(hasPaidBuild()&&!active.input){config.adapter.openEntry(mode);return;}
+ const newBuild=hasPaidBuild()&&!!active.input;
+ if(newBuild)forgetActiveBuild();
+ config.adapter.showPayment();
+ $('purchase-path').textContent=mode==='build'?'Build a new resume':'Improve an existing resume';
+ $('purchase-start-status').textContent=newBuild?'This starts a new resume build. Your previous purchase and result remain in purchase history.':'';
+}
+async function unlock(build){
+ const verified=await api('verify',{buildId:build.id});
+ active={...build,...verified,verified:true};requestId=active.requestId||null;changed();return active;
+}
+export async function beginPurchase(){
+ const button=$('purchase-start');
+ if(!$('upfront-consent').checked){$('purchase-start-status').textContent='Agree to the purchase and recovery terms to continue.';$('upfront-consent').focus();return;}
+ button.disabled=true;
+ try{
+  await config.ensureGuest();requestId ||= crypto.randomUUID();
+  const build=await api('purchase',{entryMode,requestId,storageConsent:true});active={...build,entryMode,requestId,verified:false};changed();
+  if(build.url){redirectCheckout(build.url);return;}
+  await unlock(active);config.adapter.openEntry(active.entryMode||entryMode);
+ }catch(error){$('purchase-start-status').textContent=error.message;}
+ finally{button.disabled=false;}
+}
 async function openBuild(id){
- const build=await api('get',{buildId:id});
- if(config.adapter.getDraft().resume.trim()&&!sameInput(build.input,config.adapter.getDraft())&&!confirm('Open this purchase’s original draft? Save or download your current work first.'))return;
- active=build; $('account-dialog').close(); config.adapter.loadDraft(build.input);
- if(build.review){config.adapter.loadReview(build.review);msg('Build reopened. Formatting and downloads are included.');}
- else { config.adapter.showCheckout(); msg(build.status==='running'?'This build is running. Reopen it shortly to recover the result.':'Your draft is restored. Continue from checkout to finish this build.'); }
+ let build=await api('get',{buildId:id});
+ if(build.input&&config.adapter.getDraft().resume.trim()&&!sameInput(build.input,config.adapter.getDraft())&&!confirm('Open this purchase’s original draft? Save or download your current work first.'))return;
+ active={...build,verified:false};entryMode=build.entryMode||'edit';requestId=build.requestId||null;
+ $('account-dialog').close();
+ try{build=await unlock(build);}catch(error){
+  if(error.status!==402)throw error;
+  if(build.prepaid){choosePaidEntry(entryMode);$('purchase-start-status').textContent='Complete your existing checkout to unlock the builder.';return build;}
+  config.adapter.showPayment();$('purchase-start-status').textContent=error.message;return build;
+ }
+ if(build.input)config.adapter.loadDraft(build.input);
+ if(build.review){config.adapter.loadReview(build.review,build.input?.resume);msg(build.lastError?.error||'Build reopened. Formatting and downloads are included.');}
+ else if(build.input){config.adapter.showCheckout();msg('Your paid draft is restored. Finish this build without another payment.');}
+ else{config.adapter.openEntry(build.entryMode||'edit');msg('Payment verified. Your resume build is unlocked.');}
  return build;
 }
 export async function refreshPurchases(){
  try{
- const {builds}=await api('list');const list=$('purchase-list');list.replaceChildren();
- for(const build of builds){const amount=Number.isInteger(build.amount)?build.amount:199;const price=amount===0&&build.discountAmount>0?'Free · promo code':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(amount/100);const row=document.createElement('li');const text=document.createElement('span');text.textContent=new Date(build.createdAt).toLocaleDateString()+' · '+price+' · '+({complete:'Ready',paid:'Ready — retry available',running:'Building',awaiting_payment:'Checkout started — payment not yet verified'}[build.status]||build.status);
- const open=document.createElement('button');open.type='button';open.className='text-button';open.textContent=build.status==='complete'?'Open result':'Continue / recover';open.onclick=()=>openBuild(build.id).catch(e=>msg(e.message));
- const remove=document.createElement('button');remove.type='button';remove.className='text-button danger';remove.textContent='Delete data';remove.onclick=async()=>{if(!confirm('Delete the input and AI result for this build? This does not cancel a payment or issue a refund. A minimal purchase record is retained for accounting.'))return;try{await api('delete',{buildId:build.id});if(active?.id===build.id)active=null;await refreshPurchases();msg('Build input and result deleted from the active database.');}catch(e){msg(e.message);}};
- row.append(text,open,remove);list.append(row);}
- $('purchase-empty').hidden=builds.length>0;
- const params=new URLSearchParams(location.search);const id=params.get('build');
- if(id&&/^[a-f0-9]{64}$/.test(id)){
-  $('purchase-history').open = true;
-  history.replaceState(null,'',location.pathname+location.hash);
-  const build=await openBuild(id);
-  if(params.get('checkout')==='success' && build && !build.review) {
-    msg('Checking payment and preparing your resume…');
-    await config.adapter.recoverReview(signal => runBuild(id,signal));
-  } else if(params.get('checkout')==='canceled') msg('Checkout canceled. Your draft is restored. You can continue whenever you’re ready.');
- }
- }catch(e){msg(e.message);}
+  const {builds}=await api('list');const list=$('purchase-list');list.replaceChildren();
+  for(const build of builds){
+   const amount=Number.isInteger(build.amount)?build.amount:199;
+   const price=amount===0&&build.discountAmount>0?'Free · promo code':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(amount/100);
+   const row=document.createElement('li'),text=document.createElement('span');
+   text.textContent=new Date(build.createdAt).toLocaleDateString()+' · '+price+' · '+({complete:'Ready',paid:'Paid — continue building',running:'Building',awaiting_payment:'Checkout started — payment not yet verified'}[build.status]||build.status);
+   const open=document.createElement('button');open.type='button';open.className='text-button';open.textContent=build.status==='complete'?'Open result':'Continue / recover';open.onclick=()=>openBuild(build.id).catch(e=>msg(e.message));
+   const remove=document.createElement('button');remove.type='button';remove.className='text-button danger';remove.textContent='Delete data';remove.onclick=async()=>{
+    if(!confirm('Delete this build’s input, answers and AI result? This does not cancel payment or issue a refund. A minimal purchase record is retained for accounting.'))return;
+    try{await api('delete',{buildId:build.id});if(active?.id===build.id)forgetActiveBuild();await refreshPurchases();msg('Build input and result deleted from the active database.');}catch(e){msg(e.message);}
+   };
+   row.append(text,open,remove);list.append(row);
+  }
+  $('purchase-empty').hidden=builds.length>0;
+  const params=new URLSearchParams(location.search),id=params.get('build');
+  if(id&&/^[a-f0-9]{64}$/.test(id)){
+   $('purchase-history').open=true;history.replaceState(null,'',location.pathname+location.hash);
+   const build=await openBuild(id);
+   if(params.get('checkout')==='success'&&build?.verified&&build.input&&!build.review){
+    msg('Payment verified. Preparing your resume…');
+    await config.adapter.recoverReview(async signal=>{const review=await runBuild(id,signal);active.review=review;active.refinementCount=review.refinementCount||0;return review;});
+   }else if(params.get('checkout')==='canceled')msg('Checkout canceled. You can resume it from purchase history.');
+  }
+ }catch(error){msg(error.message);}
 }
-export function initPayments(c){config=c; $('refresh-purchases').onclick=()=>refreshPurchases();}
+export function initPayments(c){config=c;$('refresh-purchases').onclick=()=>refreshPurchases();$('purchase-start').onclick=beginPurchase;}
 export async function requestPaidReview(payload,signal){
- if(active&&sameInput(active.input,payload)){
-  try{const review=await runBuild(active.id,signal);refreshPurchases();return review;}catch(e){if(e.status!==402)throw e;}
+ if(!hasPaidBuild()){choosePaidEntry('edit');throw Object.assign(new Error('Complete checkout before building your resume.'),{handled:true});}
+ if(active.prepaid&&!active.input){const bound=await api('bind',{buildId:active.id,input:payload,consent:true,storageConsent:true},signal);active={...active,...bound,verified:true};}
+ if(!sameInput(active.input,payload)){
+  forgetActiveBuild();choosePaidEntry('edit');
+  throw Object.assign(new Error('A changed resume or target is a new build. Complete checkout to continue.'),{handled:true});
  }
- const build=await api('prepare',{input:payload,consent:true,storageConsent:true},signal);
- active={...build,input:payload};
- if(build.url){
-  const url=new URL(build.url);if(url.origin!=='https://checkout.stripe.com')throw new Error('Checkout URL could not be verified.');
-  location.assign(url.href);throw Object.assign(new Error('Opening secure Stripe checkout.'),{handled:true});
- }
- const review=build.review||await runBuild(build.id,signal);
- refreshPurchases();return review;
+ const review=await runBuild(active.id,signal);active.review=review;active.refinementCount=review.refinementCount||0;changed();refreshPurchases();return review;
+}
+export async function refinePaidReview(answers,signal){
+ if(!active?.review||!includedUpdateAvailable())throw new Error('Reopen your purchased review to use its included clarification update.');
+ const review=await runBuild(active.id,signal,'refine',{answers});
+ active.review=review;active.refinementCount=review.refinementCount||1;changed();return review;
 }

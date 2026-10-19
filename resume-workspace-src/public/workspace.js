@@ -1,6 +1,6 @@
-import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261019-recovery';
-import { fillBackground, readBackground } from './background-form.js?v=20261019-recovery';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases } from './payments.js?v=20261019-recovery';
+import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261019-product';
+import { fillBackground, readBackground } from './background-form.js?v=20261019-product';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild } from './payments.js?v=20261019-product';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js';
 import { connectFirebase } from './firebase-client.js';
@@ -128,7 +128,10 @@ export const draftOwnerId = () => user?.uid || null;
 
 export function initWorkspace(adapter) {
   callback = adapter; fillProfile({});
-  initGuidedFlow({showResume:adapter.showResume,openAccount:()=>openAccount()});
+  initGuidedFlow({showResume:adapter.showResume,openAccount:()=>openAccount(),canUse:hasPaidBuild,startEntry:choosePaidEntry,newResume:()=>{
+    if(callback.getDraft().resume.trim()&&!confirm('Start a new paid build? Save or download your current work first. Your previous purchases remain in purchase history.'))return false;
+    callback.clearAccountDraft();forgetActiveBuild();return true;
+  }});
   $('welcome-create').onclick = () => openAccount('create');
   $('welcome-signin').onclick = () => openAccount('signin');
   $('welcome-guest').onclick = continueGuest;
@@ -141,9 +144,10 @@ export function initWorkspace(adapter) {
   $('auth-switch').onclick = () => mode(authMode === 'create' ? 'signin' : 'create');
   $('checkout-create').onclick = () => openAccount('create');
   if (!choice() && !new URLSearchParams(location.search).has('build')) $('welcome-dialog').showModal();
-  initPayments({ ensureConnection, adapter });
+  initPayments({ ensureConnection, ensureGuest, adapter });
   $('background-builder').addEventListener('input', () => { profileDirty = true; });
   $('build-draft').addEventListener('click', () => {
+    if(!hasPaidBuild()){choosePaidEntry('build');return;}
     try {
       const text = profileToResume(readProfile());
       if (callback.getDraft().resume.trim() && !confirm('Replace the current draft with your service background? Save or download your existing work first.')) return;

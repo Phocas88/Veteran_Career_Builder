@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-import {installAccount,start,checkout,agreements} from './helpers/workspace.mjs';
+import {installAccount,start,checkout,agreements,paidResponse} from './helpers/workspace.mjs';
 import {fixtureResume,fixtureReview} from './helpers/review-fixture.mjs';
 const id='e'.repeat(64),review={...fixtureReview,revisedResume:fixtureResume,rewriteNotes:[]};
 
@@ -17,18 +17,18 @@ test('an uploaded resume recovers after a lost review connection, with one run a
  await uploadedResume(page,async route=>{
   const body=route.request().postDataJSON();actions.push(body.action);
   if(body.action==='run'){expect(body.keepAlive).toBe(true);return route.abort('connectionreset');}
-  return route.fulfill({json:body.action==='prepare'?{id,status:'paid'}:body.action==='get'?(++reads===1?{id,status:'running'}:{id,status:'complete',review}):{builds:[]}});
+  return route.fulfill({json:paidResponse(body)||(body.action==='get'?(++reads===1?{id,status:'running'}:{id,status:'complete',review}):{builds:[]})});
  });
  await expect(page.locator('#loading-message')).toContainText('Reconnecting');
  await expect(page.locator('#review-results')).toBeVisible();
- expect(actions.filter(a=>a==='run')).toHaveLength(1);expect(actions.filter(a=>a==='prepare')).toHaveLength(1);
+ expect(actions.filter(a=>a==='run')).toHaveLength(1);expect(actions.filter(a=>a==='bind')).toHaveLength(1);
  await expect(page.locator('#error-banner')).toBeHidden();
 });
 
 test('a streamed provider error remains actionable instead of becoming Failed to fetch',async({page})=>{
  await uploadedResume(page,async route=>{
   const body=route.request().postDataJSON();
-  return route.fulfill({contentType:'application/json',body:body.action==='run'?' \n'+JSON.stringify({httpStatus:503,error:'AI connection could not authenticate. Support code: AI_AUTHENTICATION.',errorCode:'AI_AUTHENTICATION'}):JSON.stringify(body.action==='prepare'?{id,status:'paid'}:{builds:[]})});
+  return route.fulfill({contentType:'application/json',body:body.action==='run'?' \n'+JSON.stringify({httpStatus:503,error:'AI connection could not authenticate. Support code: AI_AUTHENTICATION.',errorCode:'AI_AUTHENTICATION'}):JSON.stringify(paidResponse(body)||{builds:[]})});
  });
  await expect(page.locator('#error-banner')).toContainText('AI_AUTHENTICATION');
  await expect(page.locator('#review-results')).toBeHidden();
@@ -40,7 +40,7 @@ test('cancel stops recovery and prevents a late saved result from being applied'
   const body=route.request().postDataJSON();
   if(body.action==='run')return route.abort('connectionreset');
   if(body.action==='get')reads++;
-  return route.fulfill({json:body.action==='prepare'?{id,status:'paid'}:body.action==='get'?{id,status:'running'}:{builds:[]}});
+  return route.fulfill({json:paidResponse(body)||(body.action==='get'?{id,status:'running'}:{builds:[]})});
  });
  await expect.poll(()=>reads).toBe(1);
  await page.locator('#cancel-review').click();

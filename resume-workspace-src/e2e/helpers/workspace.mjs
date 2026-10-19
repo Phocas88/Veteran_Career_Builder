@@ -1,3 +1,12 @@
+export function paidResponse(body,id='a'.repeat(64)){
+ if(body.action==='purchase')return {id,status:'paid',prepaid:true,entryMode:body.entryMode,requestId:body.requestId,input:null};
+ if(body.action==='verify')return {id:body.buildId,status:'paid',prepaid:true};
+ if(body.action==='bind')return {id:body.buildId,status:'paid',prepaid:true,input:body.input};
+ return null;
+}
+export async function unlockEntry(page){
+ if(await page.locator('#flow-payment').isVisible()){await page.locator('#upfront-consent').check();await page.locator('#purchase-start').click();}
+}
 export async function installAccount(page,kind='none') {
  await page.addInitScript(({kind})=>{
   const listeners=[];window.__writes=[];window.__deleted=[];window.__records={};
@@ -16,12 +25,13 @@ export async function installAccount(page,kind='none') {
   const firebaseAuth=()=>auth;firebaseAuth.Auth={Persistence:{LOCAL:'local',SESSION:'session'}};firebaseAuth.EmailAuthProvider={credential:(email,password)=>({email,password})};
   const db={collection:name=>ref(name)};window.firebase={apps:[{name:'vcp-resume-program',auth:()=>auth,firestore:()=>db}],auth:firebaseAuth,firestore:()=>db};
  },{kind});
- await page.route('https://vcp-proxy.vercel.app/api/claude',route=>route.fulfill({json:route.request().postDataJSON().action==='guest'?{token:'fixture-custom-token'}:{builds:[]}}));
+ await page.route('https://vcp-proxy.vercel.app/api/claude',route=>{const body=route.request().postDataJSON();return route.fulfill({json:body.action==='guest'?{token:'fixture-custom-token'}:paidResponse(body)||{builds:[]}});});
 }
 export async function start(page,path='edit') {
  await page.goto('/');
  if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();
  await page.locator(path==='build'?'#choose-build':'#choose-import').click();
+ await unlockEntry(page);
  if(path!=='build')await page.locator('#resume-paste-mode').click();
  else await page.locator('#background-fields > details').evaluateAll(nodes=>nodes.forEach(n=>n.open=true));
 }

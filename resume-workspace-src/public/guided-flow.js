@@ -24,12 +24,13 @@ function sourceModeTo(mode, focus = false) {
   if (focus) $('resume-input').focus({preventScroll:true});
 }
 
-const labels = { start:'Choose how to start', build:'1 of 3 · Add your background', edit:'1 of 3 · Check your resume', job:'2 of 3 · Add job details', checkout:'3 of 3 · Review & checkout' };
+const labels = { start:'Choose how to start', payment:'First · Unlock your resume build', build:'1 of 3 · Add your background', edit:'1 of 3 · Check your resume', job:'2 of 3 · Add job details', checkout:'3 of 3 · Review & build' };
 export function setFlow(stage, scroll = true) {
   if (!Object.hasOwn(labels, stage)) return;
+  if (!['start','payment'].includes(stage) && adapter && !adapter.canUse()) stage='payment';
   current = stage;
   $('resume-start').hidden = stage !== 'start';
-  $('opsec-notice').hidden = stage === 'start';
+  $('opsec-notice').hidden = ['start','payment'].includes(stage);
   for (const node of document.querySelectorAll('[data-flow]')) node.hidden = node.dataset.flow !== stage;
   $('flow-progress').textContent = labels[stage];
   $('flow-back').hidden = stage === 'start';
@@ -47,13 +48,13 @@ function updateCheckoutSummary() {
 }
 export function initGuidedFlow(options) {
   adapter = options;
-  $('choose-import').onclick = () => { sourceModeTo('upload'); setFlow('edit'); };
+  $('choose-import').onclick = () => { sourceModeTo('upload'); options.startEntry('edit'); };
   $('resume-upload-mode').onclick = () => sourceModeTo('upload');
   $('resume-paste-mode').onclick = () => sourceModeTo('paste', true);
   $('replace-resume').onclick = () => $('resume-file').click();
-  $('choose-build').onclick = () => setFlow('build');
+  $('choose-build').onclick = () => options.startEntry('build');
   $('change-start').onclick = () => setFlow('start');
-  $('flow-back').onclick = () => setFlow(({ build:'start', edit:'start', job:'edit', checkout:'job' })[current] || 'start');
+  $('flow-back').onclick = () => setFlow(({ payment:'start',build:'start', edit:'start', job:'edit', checkout:'job' })[current] || 'start');
   $('back-edit').onclick = () => setFlow('edit');
   $('checkout-back').onclick = () => setFlow('job');
   $('next-job').onclick = () => {
@@ -66,7 +67,7 @@ export function initGuidedFlow(options) {
   $('next-checkout').onclick = () => setFlow('checkout');
   $('start-saved').onclick = options.openAccount;
   $('save-progress').onclick = options.openAccount;
-  $('account-new-resume').onclick = () => { $('account-dialog').close(); setFlow('start'); };
+  $('account-new-resume').onclick = () => { if(!options.newResume())return; $('account-dialog').close(); setFlow('start'); };
   document.addEventListener('resume:draft-ready', () => setFlow('edit'));
   for (const id of ['resume-input','target-role','application-type']) $(id).addEventListener('input', updateCheckoutSummary);
   setFlow($('resume-input').value.trim() ? 'edit' : 'start', false);

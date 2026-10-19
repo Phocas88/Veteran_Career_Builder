@@ -1,4 +1,4 @@
-import { installAccount, start } from './helpers/workspace.mjs';
+import { installAccount, start, unlockEntry } from './helpers/workspace.mjs';
 import { test, expect } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
 import { readFile } from 'node:fs/promises';
@@ -61,7 +61,7 @@ test('canceling replacement keeps the existing draft', async ({ page }) => {
 
 
 test('existing resume starts with a clear file choice without opening the keyboard',async({page})=>{
- await page.goto('/');if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();await page.locator('#choose-import').click();
+ await page.goto('/');if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();await page.locator('#choose-import').click();await unlockEntry(page);
  await expect(page.locator('#import-resume')).toHaveText(/Import your resume/);await expect(page.locator('#import-resume')).toBeVisible();await expect(page.locator('#resume-text-editor')).toBeHidden();await expect(page.locator('#next-job')).toBeDisabled();
  expect(await page.evaluate(()=>document.activeElement.id)).not.toBe('resume-input');
  const chooser=page.waitForEvent('filechooser');await page.locator('#import-resume').click();await (await chooser).setFiles(fixture('resume.pdf'));

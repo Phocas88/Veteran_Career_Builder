@@ -1,9 +1,10 @@
-import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261019-recovery';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261019-recovery';
+import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261019-product';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261019-product';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';
 import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js';
+import { hasPaidBuild, includedUpdateAvailable, refinePaidReview } from './payments.js?v=20261019-product';
 
 const $ = id => document.getElementById(id);
 const input = $('resume-input');
@@ -55,6 +56,12 @@ function startPagePreview(model) {
 }
 
 function refreshExport() {
+  if(!hasPaidBuild()){
+    ++previewVersion;previewKey='';clearTimeout(previewTimer);clearPdfCache();
+    $('export-preview').replaceChildren();$('pdf-pages').replaceChildren();$('print-content').replaceChildren();
+    $('export-preview').hidden=true;$('preview-stage').hidden=true;$('export-empty').hidden=false;
+    return;
+  }
   const model = currentDocument();
   renderResume($('export-preview'), model);
   $('export-preview').hidden = !input.value.trim();
@@ -111,7 +118,8 @@ function refreshDraft() {
   const latest = state.history.at(-1);
   $('undo-last').disabled = !latest || latest.after !== text;
   $('undo-review').disabled = !latest || latest.after !== text;
-  for (const id of ['download-pdf', 'download-word', 'download-resume', 'print-resume', 'copy-resume']) $(id).disabled = !text.trim() || exporting;
+  for (const id of ['download-pdf', 'download-word', 'download-resume', 'print-resume', 'copy-resume']) $(id).disabled = !hasPaidBuild() || !text.trim() || exporting;
+  refreshFederalGuidance();
   if (state.review) {
     const remaining = state.review.suggestions.filter(s => !state.applied.has(s.id) && canApply(text, s.original));
     $('sidebar-count').textContent = remaining.length;
@@ -124,6 +132,7 @@ function refreshDraft() {
 
 function setTab(tab, scroll = true) {
   if (!['resume', 'review', 'export'].includes(tab)) return;
+  if(tab==='export'&&!hasPaidBuild()){setFlow('payment');return;}
   if (tab !== 'export') { ++previewVersion; clearTimeout(previewTimer); previewKey = ''; }
   for (const name of ['resume', 'review', 'export']) {
     $(`${name}-panel`).hidden = name !== tab;
@@ -189,7 +198,7 @@ function renderSuggestions() {
   refreshDraft();
 }
 
-function showReview(review) {
+function showReview(review, submittedSource) {
   state.review = review;
   state.applied.clear();
   state.history = [];
@@ -203,23 +212,80 @@ function showReview(review) {
   $('review-summary').textContent = review.summary;
   listItems('strength-list', review.strengths);
   $('strength-list').closest('.strengths-card').hidden = !review.strengths.length;
-  listItems('next-steps', review.nextSteps);
-  $('next-steps-card').hidden = !review.nextSteps.length;
+  renderReviewQuestions(review);
   const findings = review.findings ?? [];
   $('findings-card').hidden = !findings.length;
   $('review-findings').replaceChildren(...findings.map(item => {
     const card = element('article', 'review-finding');
-    card.append(element('span', 'category-tag', `${item.priority} priority`), element('h3', '', item.title), element('p', 'finding-evidence', item.evidence), element('p', '', item.action));
+    card.append(element('span', 'category-tag', `${item.priority} priority`), element('h3', '', item.title), element('p', 'finding-evidence', item.evidence), element('p', '', item.action), answerField(`finding-${findings.indexOf(item)}`, 'Your answer or clarification'));
     return card;
   }));
   const notes = review.rewriteNotes ?? [];
   $('rewrite-card').hidden = !review.revisedResume && !notes.length;
-  $('rewrite-original').textContent = input.value;
+  state.submittedResume=review.submittedResume || submittedSource || input.value;
+  $('rewrite-original').value = state.submittedResume;
+  $('rewrite-proposed').value = review.revisedResume || '';
   $('rewrite-draft').value = review.revisedResume ?? '';
   $('rewrite-draft').hidden = !review.revisedResume;
   listItems('rewrite-notes', notes);
   renderSuggestions();
+  syncAnswerAction();
   setTab('review');
+}
+
+function answerField(id,label){
+  const group=element('div','review-answer');
+  const name=element('label','field-label',label);name.htmlFor=`answer-${id}`;
+  const field=element('textarea','answer-input');field.id=`answer-${id}`;field.dataset.answerId=id;field.maxLength=1000;field.rows=3;
+  field.placeholder='Add only facts you can verify. Include the related job or dates where needed.';
+  field.addEventListener('input',syncAnswerAction);group.append(name,field);return group;
+}
+function addReviewFact(){
+  const index=$('additional-facts').children.length;if(index>=3)return;
+  const group=element('div','extra-fact');
+  const label=element('label','field-label','Job, school or section');label.htmlFor=`context-extra-${index}`;
+  const context=element('input','field-input');context.id=`context-extra-${index}`;context.maxLength=160;context.placeholder='e.g. Supply specialist · Navy · 2020–2024';context.addEventListener('input',syncAnswerAction);
+  group.append(label,context,answerField(`extra-${index}`,'Verified detail to include'));$('additional-facts').append(group);
+  $('add-review-fact').disabled=index>=2;
+}
+function renderReviewQuestions(review){
+  $('next-steps-card').hidden=false;$('answers-consent').checked=false;
+  $('next-steps').replaceChildren(...review.nextSteps.map((question,index)=>{
+    const item=element('li','review-question');item.append(element('h3','',question),answerField(`step-${index}`,'Your answer'));return item;
+  }));
+  $('additional-facts').replaceChildren();addReviewFact();
+  $('answers-status').textContent=(review.refinementCount||0)>=1?'Your included AI update has been used. You can keep editing the revised draft and download it at no extra charge.':'One AI clarification update is included in your paid build. Answers stay in this tab until you submit them.';
+  syncAnswerAction();
+}
+function collectAnswers(){
+  return [...document.querySelectorAll('[data-answer-id]')].filter(field=>field.value.trim()).map(field=>{
+    const id=field.dataset.answerId;return {id,answer:field.value.trim(),...(id.startsWith('extra-')?{context:$(`context-${id}`).value.trim()}: {})};
+  });
+}
+function syncAnswerAction(){
+  const answers=collectAnswers();
+  const size=answers.reduce((n,a)=>n+a.answer.length,0);
+  $('answer-budget').textContent=`${answers.length} answered · ${size.toLocaleString()} answer characters. Keep answers concise; combined verified details have a 4,000-character limit.`;
+  $('apply-answers').disabled=!answers.length||!$('answers-consent').checked||!includedUpdateAvailable()||!!state.controller||answers.some(a=>a.id.startsWith('extra-')&&!a.context);
+}
+$('answers-consent').addEventListener('change',syncAnswerAction);
+$('add-review-fact').addEventListener('click',addReviewFact);
+$('apply-answers').addEventListener('click',async()=>{
+  const answers=collectAnswers();if(!answers.length||!$('answers-consent').checked||!includedUpdateAvailable()||state.controller)return;
+  if(input.value!==state.submittedResume&&!confirm('This AI update uses your submitted resume and these answers. Save any manual edits first; you can inspect the new draft before applying it. Continue?'))return;
+  const controller=new AbortController();state.controller=controller;syncAnswerAction();
+  $('loading-message').textContent='Updating your resume with your verified answers. This update is included in your purchase.';$('loading').hidden=false;
+  const timeout=setTimeout(()=>controller.abort('timeout'),240000),source=state.submittedResume;
+  try{const review=await refinePaidReview(answers,controller.signal);if(controller.signal.aborted)return;showReview(review,source);toast('Your answers are incorporated. Compare and apply the updated draft.');}
+  catch(error){if(!controller.signal.aborted)showError(error.message);else if(controller.signal.reason==='timeout')showError('The update is taking longer than expected. Recover this build from purchase history; do not pay again.');}
+  finally{clearTimeout(timeout);if(state.controller===controller)state.controller=null;$('loading').hidden=true;syncAnswerAction();}
+});
+
+function refreshFederalGuidance(){
+  const federal=applicationInput.value==='federal';$('federal-input-checks').hidden=!federal;
+  if(!federal)return;
+  const checks=federalChecks(currentDocument(),jobInput.value);listItems('federal-input-check-list',checks);
+  $('federal-readiness-summary').textContent='Check these details now. Missing information will be flagged rather than guessed. USAJOBS generally requires two pages or fewer; the formatted page count is checked before download.';
 }
 
 function applyEdits(suggestions) {
@@ -254,7 +320,7 @@ function undoDraft() {
 }
 $('undo-last').addEventListener('click', undoDraft);
 $('undo-review').addEventListener('click', undoDraft);
-$('rewrite-draft').addEventListener('input', refreshDraft);
+$('rewrite-draft').addEventListener('input', () => {$('rewrite-proposed').value=$('rewrite-draft').value;refreshDraft();});
 $('apply-rewrite').addEventListener('click', () => {
   if (!state.review?.revisedResume || state.rewriteInvalid || input.value !== state.reviewSource) return;
   const after = $('rewrite-draft').value.trim();
@@ -279,6 +345,7 @@ input.addEventListener('input', () => {
 });
 for (const field of [roleInput, jobInput, detailsInput]) field.addEventListener('input', () => {
   if (state.review) { state.stale = true; state.rewriteInvalid = true; refreshDraft(); }
+  refreshFederalGuidance();
   saveDraft();
 });
 
@@ -363,7 +430,7 @@ async function requestReview(recover) {
     if (controller.signal.aborted) return;
     if (!Number.isFinite(data.score) || !Array.isArray(data.suggestions)) throw new Error('The review could not be read. Please try again.');
     if (submitted !== input.value || JSON.stringify(context) !== JSON.stringify({ role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value })) return toast('Your draft or application details changed during the review. Request a new review.');
-    showReview(data);
+    showReview(data,submitted);
     toast('Your review is ready. Every edit is your decision.');
   } catch (error) {
     if (controller.signal.aborted) {
@@ -394,7 +461,7 @@ function saveDownload(blob, filename) {
 }
 
 $('download-resume').addEventListener('click', () => {
-  if (!input.value.trim()) return;
+  if (!hasPaidBuild() || !input.value.trim()) return;
   saveDownload(new Blob([input.value], { type: 'text/plain;charset=utf-8' }), exportFilename(currentDocument(), 'txt'));
   toast('Your resume download is ready.');
 });
@@ -406,7 +473,7 @@ for (const [id, extension, generate] of [['download-pdf', 'pdf', async model => 
   return exportWord(model);
 }]]) {
   $(id).addEventListener('click', async () => {
-    if (exporting || !input.value.trim()) return;
+    if (!hasPaidBuild() || exporting || !input.value.trim()) return;
     const model = currentDocument();
     const exportAccount = draftOwnerId();
     exporting = true;
@@ -429,7 +496,10 @@ for (const [id, extension, generate] of [['download-pdf', 'pdf', async model => 
   });
 }
 
-document.querySelectorAll('[name="resume-design"], #resume-arrangement, #resume-paper').forEach(control => control.addEventListener('change', refreshExport));
+document.querySelectorAll('[name="resume-design"], #resume-arrangement, #resume-paper').forEach(control => control.addEventListener('change', () => {
+  if(control.name==='resume-design'&&control.value==='federal'&&applicationInput.value!=='federal'){applicationInput.value='federal';syncApplicationType();}
+  refreshExport();
+}));
 $('reflow-lines').addEventListener('change', refreshExport);
 $('add-page-break').addEventListener('click', () => {
   const id = $('page-break-target').value;
@@ -438,12 +508,13 @@ $('add-page-break').addEventListener('click', () => {
 });
 
 $('copy-resume').addEventListener('click', async () => {
-  if (!input.value.trim()) return;
+  if (!hasPaidBuild() || !input.value.trim()) return;
   try { await navigator.clipboard.writeText(input.value); toast('Resume copied.'); }
   catch { showError('Clipboard access is unavailable. Download the .txt file or copy the text directly from the editor.'); }
 });
 
 function preparePrint() {
+  if(!hasPaidBuild()){$('print-content').replaceChildren();return;}
   const model = currentDocument();
   const content = document.createElement('article');
   renderResume(content, model);
@@ -453,7 +524,7 @@ function preparePrint() {
 
 window.addEventListener('beforeprint', preparePrint);
 $('print-resume').addEventListener('click', () => {
-  if (!input.value.trim()) return;
+  if (!hasPaidBuild() || !input.value.trim()) return;
   preparePrint();
   window.print();
 });
@@ -494,6 +565,8 @@ setTab('resume', false);
 
 initWorkspace({
   showResume() { setTab('resume', false); },
+  showPayment() { setFlow('payment'); },
+  openEntry(mode) { setFlow(mode==='build'?'build':'edit'); },
   showCheckout() { setFlow('checkout', false); },
   recoverReview(run) { setFlow('checkout', false); return requestReview(run); },
   getDraft: () => ({ resume: input.value, role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value,
@@ -520,19 +593,21 @@ initWorkspace({
     $('review-empty').hidden = false; $('review-results').hidden = true; $('sidebar-count').textContent = '0';
     syncApplicationType(); setTab('resume', false); refreshDraft(); saveDraft(); setFlow('edit', false);
   },
-  loadReview(review) { showReview(review); },
+  loadReview(review,source) { showReview(review,source); },
   clearAccountDraft() {
     setResumeFilename('');
     state.controller?.abort('account-change'); input.value = ''; roleInput.value = ''; jobInput.value = ''; detailsInput.value = '';
     applicationInput.value = 'private'; pageBreaks.clear(); state.review = null; state.history = []; state.applied.clear(); state.stale = false;
     $('review-empty').hidden = false; $('review-results').hidden = true; $('sidebar-count').textContent = '0';
     state.reviewSource = ''; state.rewriteInvalid = true; clearPdfCache(); $('print-content').replaceChildren();
-    $('rewrite-draft').value = ''; $('rewrite-original').textContent = ''; $('review-summary').textContent = '';
+    $('rewrite-draft').value = ''; $('rewrite-original').value = ''; $('rewrite-proposed').value='';$('review-summary').textContent = '';state.submittedResume='';$('answers-consent').checked=false;
     $('remember-draft').checked = false; saveDraft(); setTab('resume', false); refreshDraft();
     $('import-status').textContent = ''; $('import-status').hidden = true;
     $('error-message').textContent = ''; $('error-banner').hidden = true;
     $('toast').textContent = ''; $('toast').hidden = true; clearTimeout(toastTimer);
     $('builder-status').textContent = ''; setFlow('start', false);
-    for (const id of ['review-findings','suggestion-list','strength-list','next-steps','rewrite-notes']) if ($(id)) $(id).replaceChildren();
+    for (const id of ['review-findings','suggestion-list','strength-list','next-steps','rewrite-notes','additional-facts']) if ($(id)) $(id).replaceChildren();
   }
 });
+document.addEventListener('resume:payment-changed',()=>{refreshDraft();syncAnswerAction();});
+$('purchase-history-open').addEventListener('click',()=>{$('account-open').click();$('purchase-history').open=true;});

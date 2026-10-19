@@ -1,5 +1,5 @@
-import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261018-opsec';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261018-opsec';
+import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261019-promos';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261019-promos';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';

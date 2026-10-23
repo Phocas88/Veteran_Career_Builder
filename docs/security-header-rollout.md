@@ -15,6 +15,17 @@ and file-import integrations without a production resource inventory.
 
 ## Finish the custom-domain connection
 
+The October 23 deploy was rejected by Google Service Usage: the existing Firebase
+deployment service account has Hosting permissions, but lacks
+`serviceusage.services.get`. In Google Cloud IAM for project
+`veteran-career-builder`, grant that existing service account **Service Usage
+Viewer** (`roles/serviceusage.serviceUsageViewer`), then rerun the failed Firebase
+deployment job. Do not create another key or grant Owner/Editor to work around it.
+
+Firebase's public HTTP certificate challenges are published under
+`/.well-known/acme-challenge/` on the current site. These are public domain proofs,
+not API keys. They let certificate validation proceed before the DNS cutover.
+
 1. Open the **Prepare secure website domains** workflow in GitHub Actions. Its
    summary lists Firebase's actual ownership and certificate-verification records
    for veterancareerpath.com and www.veterancareerpath.com. The workflow reuses the

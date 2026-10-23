@@ -69,6 +69,9 @@ function shouldCopy(relativePath, dirent) {
 
   const base = path.basename(normalized);
   if (excludedFiles.has(base)) return false;
+  // Public ACME proof files let Firebase validate TLS while GitHub Pages keeps
+  // serving the domain. Allow only this exact, bounded challenge path shape.
+  if (/^\.well-known\/acme-challenge\/[A-Za-z0-9_-]{1,256}$/.test(normalized)) return true;
   if (exactFiles.has(base)) return true;
 
   return allowedExtensions.has(path.extname(base).toLowerCase());

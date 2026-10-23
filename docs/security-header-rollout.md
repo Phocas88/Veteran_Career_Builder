@@ -22,9 +22,38 @@ deployment service account has Hosting permissions, but lacks
 Viewer** (`roles/serviceusage.serviceUsageViewer`), then rerun the failed Firebase
 deployment job. Do not create another key or grant Owner/Editor to work around it.
 
-Firebase's public HTTP certificate challenges are published under
-`/.well-known/acme-challenge/` on the current site. These are public domain proofs,
-not API keys. They let certificate validation proceed before the DNS cutover.
+Account: `firebase-adminsdk-fbsvc@veteran-career-builder.iam.gserviceaccount.com`.
+
+IAM: https://console.cloud.google.com/iam-admin/iam?project=veteran-career-builder
+
+The public HTTP proof files are present in the Pages artifact, but live checks
+return 404 for the ACME challenge paths. Use DNS verification instead of relying
+on those files. They are public domain proofs, not API keys.
+
+Add these **TXT** records in GoDaddy, leaving website routing and email records
+unchanged. These are the actual Firebase certificate values observed on October
+23, 2026. If Firebase later rotates a challenge, use the refreshed workflow summary.
+
+| GoDaddy name | Type | Value |
+| --- | --- | --- |
+| `_acme-challenge` | TXT | `3NP0HZzACVEAnzTbxZemBZHTCMGTwQaN-6Et9lJ5M-g` |
+| `_acme-challenge.www` | TXT | `3vvk9ofmr1xhxlzTjXadoxlQ33ufzv9L7YM8emdSzvY` |
+
+Keep the existing `hosting-site=veteran-career-builder` TXT record.
+
+After Firebase reports CERT_ACTIVE and HTTPS for both names is verified, its
+required website routing records are:
+
+| GoDaddy name | Type | Value |
+| --- | --- | --- |
+| `@` | A | `199.36.158.100` |
+| `www` | CNAME | `veteran-career-builder.web.app` |
+
+At that later cutover, replace the four GitHub Pages A records
+`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`,
+and replace the current `www` CNAME `phocas88.github.io`. Preserve MX and unrelated
+TXT/subdomain records. The required values come from Firebase's custom-domain API,
+not a generic hosting-IP guess.
 
 1. Open the **Prepare secure website domains** workflow in GitHub Actions. Its
    summary lists Firebase's actual ownership and certificate-verification records
@@ -33,8 +62,8 @@ not API keys. They let certificate validation proceed before the DNS cutover.
    resources and never edits DNS.
 2. In GoDaddy DNS, add the ownership/certificate verification records shown there.
    Keep the current website A and www CNAME records until the certificate is ready.
-   If Firebase supplies an HTTP challenge, its exact path and public verification
-   value are shown as an alternative to DNS certificate verification.
+   The DNS TXT certificate challenge is required for this rollout because the
+   current Pages ACME URLs return 404.
 3. Wait for **CERT_ACTIVE**, then verify HTTPS for each hostname against Firebase
    before switching traffic. A successful web.app check alone does not establish
    that the custom-domain certificate is ready.

@@ -80,10 +80,14 @@ export function instructionsForDomains(results) {
 if (process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     const results=await prepareHostingDomains();
+    // The account email is a public IAM principal identifier, not a credential.
+    // Print it so the owner can grant the one missing deployment permission.
+    const principal=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT).client_email;
+    console.log('HOSTING_DEPLOYMENT_PRINCIPAL '+principal);
     // Only public DNS / certificate verification instructions are emitted. Never
     // log the credential, OAuth assertion/token, or raw authentication responses.
     for (const result of results) console.log('HOSTING_DOMAIN '+JSON.stringify(result));
     const instructions=instructionsForDomains(results);
-    if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,instructions);
+    if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,`Deployment account: ${principal}\n\n`+instructions);
   } catch (error) { console.error(error.message); process.exitCode=1; }
 }

@@ -36,6 +36,9 @@ jobs:
           node --check scripts/build-hosting.mjs
           node --check scripts/apply-security-refactor.mjs
 
+      - name: Verify website security protections
+        run: node --test test/security-headers.test.mjs test/hosting-domains.test.mjs
+
       - name: Verify app.bundle.js + app.html are in sync with app.js
         run: |
           npm run build

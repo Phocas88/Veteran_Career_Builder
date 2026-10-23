@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { protectHtml } from './security-headers.mjs';
 
 const root = path.resolve(process.argv[2] || '.');
 const output = path.join(root, '.firebase-public');
@@ -13,6 +14,7 @@ const excludedDirs = new Set([
   'api',
   'reports',
   'scripts',
+  'test',
   'node_modules',
   'resume-workspace-src',
 ]);
@@ -85,7 +87,11 @@ function copyTree(sourceDir, targetDir, relativeBase = '') {
       copyTree(sourcePath, targetPath, relativePath);
     } else if (dirent.isFile()) {
       fs.mkdirSync(path.dirname(targetPath), { recursive: true });
-      fs.copyFileSync(sourcePath, targetPath);
+      if (path.extname(sourcePath).toLowerCase() === '.html') {
+        fs.writeFileSync(targetPath, protectHtml(fs.readFileSync(sourcePath, 'utf8')));
+      } else {
+        fs.copyFileSync(sourcePath, targetPath);
+      }
     }
   }
 }

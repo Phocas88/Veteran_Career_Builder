@@ -1,0 +1,26 @@
+name: Prepare secure website domains
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/prepare-hosting-domains.mjs
+      - .github/workflows/hosting-domains.yml
+
+permissions:
+  contents: read
+
+jobs:
+  prepare-domains:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare existing website domains without changing DNS
+        run: node scripts/prepare-hosting-domains.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

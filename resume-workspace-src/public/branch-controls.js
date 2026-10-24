@@ -1,5 +1,5 @@
 import { branchCatalog, additionalDuties } from './branch-catalog.js';
-import {findSpecialty,fullCodeMatchesBase} from './service-codes.js?v=20261024-service-profile';
+import {findSpecialty,fullCodeMatchesBase} from './service-codes.js?v=20261025-standalone-app';
 
 const refreshers = new WeakMap();
 const direct = (box, key) => box.querySelector(`:scope > label > [data-key="${key}"]`);

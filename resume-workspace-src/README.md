@@ -33,3 +33,11 @@ Conflicting labels for the same branch/type/code remain separate and visibly mar
 Service-profile setup now follows branch/rank/dates, MOS/specialty, additional qualifiers, then duties/results. Each service experience may include dated rank history and independent primary/current rank, base specialty, full recorded code (for example 88M02), and an optional explicitly supplied skill level. Full codes are never constructed from rank and no SQI/ASI is inferred from a suffix. Known full Army codes can look up their base specialty title without decoding qualifiers. Existing full Army codes in older single-code profiles are retained in the full-code field on load. Rank and grade choices in a historical entry are independent of current rank. Branch changes ask before clearing incompatible branch-specific values and preserve history dates/duties.
 
 All new fields and history normalize with the saved profile and feed the starting resume draft, so the paid AI process receives the user’s actual recorded information. Existing profiles remain readable. Library additions preserve compatible full codes; selecting a different specialty clears incompatible full-code/skill details after confirmation. New service-profile unit and browser tests exercise exact full-code preservation, multiple branches, history, qualifiers, profile save/load and paid draft generation.
+
+## Standalone app navigation
+
+VCP Resume is an independent app by Veteran Career Path. The Home screen starts or resumes work. Persistent horizontal navigation opens Resumes, Profile, Applications and Library as full screens; review and downloads stay within the selected resume workflow. Settings contains legal, storage, account and purchase-recovery controls. The main website marketing navigation and footer are not used in the app.
+
+The profile editor shows one category at a time while retaining all entered categories and branch-specific controls. Profile edits and library selections stay in memory unless the user explicitly saves them with account-storage consent. The existing independent Firebase session, data collections, upfront $1.99 payment and purchase recovery are unchanged.
+
+Run `npm run test:career-browser` for navigation, narrow-screen layout, profile persistence, purchase guards, library, application tracking and resume-version checks.

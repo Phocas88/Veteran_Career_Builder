@@ -3,6 +3,7 @@ let current = 'start';
 let adapter;
 let sourceMode = 'upload';
 let importedName = '';
+export const currentFlow=()=>current;
 export function syncResumeEditor() {
   const hasText = !!$('resume-input').value.trim();
   if (!hasText) importedName = '';
@@ -24,12 +25,12 @@ function sourceModeTo(mode, focus = false) {
   if (focus) $('resume-input').focus({preventScroll:true});
 }
 
-const labels = { start:'Choose how to start', payment:'First · Unlock your resume build', build:'1 of 3 · Add your background', edit:'1 of 3 · Check your resume', job:'2 of 3 · Add job details', checkout:'3 of 3 · Review & build' };
+const labels = { start:'Choose how to start', payment:'Unlock your resume build', build:'Add your background', edit:'Check your resume', job:'Add job details', checkout:'Confirm AI review' };
 export function setFlow(stage, scroll = true) {
   if (!Object.hasOwn(labels, stage)) return;
   if (!['start','payment'].includes(stage) && adapter && !adapter.canUse()) stage='payment';
   current = stage;
-  $('resume-start').hidden = stage !== 'start';
+  $('resume-start').hidden = false;
   $('opsec-notice').hidden = ['start','payment'].includes(stage);
   for (const node of document.querySelectorAll('[data-flow]')) node.hidden = node.dataset.flow !== stage;
   $('flow-progress').textContent = labels[stage];
@@ -65,8 +66,7 @@ export function initGuidedFlow(options) {
     setFlow('job'); $('target-role').focus();
   };
   $('next-checkout').onclick = () => setFlow('checkout');
-  $('start-saved').onclick = options.openAccount;
-  $('save-progress').onclick = options.openAccount;
+  $('save-progress').onclick = ()=>document.dispatchEvent(new CustomEvent('app:open-career',{detail:'versions'}));
   $('account-new-resume').onclick = () => { if(!options.newResume())return; $('account-dialog').close(); setFlow('start'); };
   document.addEventListener('resume:draft-ready', () => setFlow('edit'));
   for (const id of ['resume-input','target-role','application-type']) $(id).addEventListener('input', updateCheckoutSummary);

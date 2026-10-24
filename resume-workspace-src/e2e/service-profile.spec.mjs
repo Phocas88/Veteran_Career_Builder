@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
-import {installAccount,unlockEntry} from './helpers/workspace.mjs';
-async function profile(page){await installAccount(page,'registered');await page.goto('/');await page.locator('#career-home-open').click();await page.locator('#career-profile-slot [data-group="roles"]').first().evaluate(n=>n.open=true);return page.locator('#service-roles > fieldset').first();}
+import {agreeCloudSaving,selectProfileSection,installAccount,unlockEntry} from './helpers/workspace.mjs';
+async function profile(page){await installAccount(page,'registered');await page.goto('/');await page.locator('#career-home-open').click();await selectProfileSection(page,'roles');return page.locator('#service-roles > fieldset').first();}
 const field=(box,key)=>box.locator(':scope > label > [data-key="'+key+'"]');
 test('service profile records full MOS, rank history and branch qualifiers and reloads them without guessing levels',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));let box=await profile(page);
@@ -8,7 +8,7 @@ test('service profile records full MOS, rank history and branch qualifiers and r
  await field(box,'rank').selectOption('SSG');await expect(field(box,'fullCode')).toHaveValue('88M02');await expect(field(box,'skillLevel')).toHaveValue('');
  const history=box.locator(':scope > [data-group="rankHistory"]');await history.evaluate(n=>n.open=true);await history.locator(':scope > button').click();const past=history.locator('.builder-entries > fieldset').first();await past.locator('[data-library="history-ranks"]').selectOption('PFC');await expect(field(past,'payGrade')).toHaveValue('E-3');await field(past,'startDate').fill('2020-01');await field(past,'endDate').fill('2021-06');
  const quals=box.locator(':scope > [data-group="asi"]');await quals.evaluate(n=>n.open=true);await quals.locator(':scope > button').click();await quals.locator('[data-library="qualifications"]').selectOption({index:1});
- await page.locator('#career-storage-consent').check();await page.locator('#career-profile-save').click();await expect(page.locator('#career-status')).toContainText('profile saved');const saved=await page.evaluate(()=>window.__writes.at(-1).data.background);expect(saved.roles[0].fullCode).toBe('88M02');expect(saved.roles[0].skillLevel).toBe('');expect(saved.roles[0].rankHistory[0].rank).toBe('PFC');expect(saved.roles[0].asi).toHaveLength(1);
+ await agreeCloudSaving(page);await page.locator('#profile-save-bottom').click();await expect(page.locator('#career-status')).toContainText('profile saved');const saved=await page.evaluate(()=>window.__writes.at(-1).data.background);expect(saved.roles[0].fullCode).toBe('88M02');expect(saved.roles[0].skillLevel).toBe('');expect(saved.roles[0].rankHistory[0].rank).toBe('PFC');expect(saved.roles[0].asi).toHaveLength(1);
  await page.locator('#career-profile-load').click();box=page.locator('#service-roles > fieldset').first();await expect(field(box,'fullCode')).toHaveValue('88M02');await expect(field(box,'rank')).toHaveValue('SSG');expect(errors).toEqual([]);
 });
 test('multiple branches retain their own codes, ranks and qualification menus and fit a phone',async({page})=>{
@@ -16,7 +16,7 @@ test('multiple branches retain their own codes, ranks and qualification menus an
  await expect(field(box,'fullCode')).toHaveValue('88M02');await expect(navy.locator(':scope > [data-group="asi"] > summary')).toContainText('NEC');await expect(navy.locator(':scope > [data-group="sqi"] > summary')).toContainText('Warfare');expect(await page.locator('#career-dialog').evaluate(n=>n.scrollWidth<=n.clientWidth)).toBe(true);
 });
 test('full MOS and rank history feed the paid starting draft without another checkout',async({page})=>{
- const box=await profile(page);await page.locator('#career-profile-slot .personal-category').evaluate(n=>n.open=true);await page.locator('#builder-name').fill('EXAMPLE VETERAN');await field(box,'branch').selectOption('army');await field(box,'fullCode').fill('88M02');await field(box,'duties').fill('Operated assigned vehicles and maintained movement records.');await page.locator('#career-profile-build').click();await unlockEntry(page);await page.locator('#build-draft').click();await expect(page.locator('#resume-input')).toHaveValue(/Full specialty code \(as recorded\): 88M02/);
+ const box=await profile(page);await selectProfileSection(page,'personal');await page.locator('#builder-name').fill('EXAMPLE VETERAN');await selectProfileSection(page,'roles');await field(box,'branch').selectOption('army');await field(box,'fullCode').fill('88M02');await field(box,'duties').fill('Operated assigned vehicles and maintained movement records.');await page.locator('#profile-use-bottom').click();await unlockEntry(page);await page.locator('#build-draft').click();await expect(page.locator('#resume-input')).toHaveValue(/Full specialty code \(as recorded\): 88M02/);
 });
 test('branch changes require confirmation and clear incompatible codes while preserving rank-history dates',async({page})=>{
  const box=await profile(page);await field(box,'branch').selectOption('army');await field(box,'fullCode').fill('88M02');await field(box,'skillLevel').fill('Recorded level');

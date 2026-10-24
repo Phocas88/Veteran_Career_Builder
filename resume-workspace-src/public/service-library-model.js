@@ -1,5 +1,5 @@
-import {normalizeProfile,branches} from './veteran-profile.js?v=20261024-service-profile';
-import {fullCodeMatchesBase} from './service-codes.js?v=20261024-service-profile';
+import {normalizeProfile,branches} from './veteran-profile.js?v=20261025-standalone-app';
+import {fullCodeMatchesBase} from './service-codes.js?v=20261025-standalone-app';
 const compact=v=>String(v||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 export function searchServiceLibrary(data,{branch='',kind='specialty',query=''}={}){
  const terms=query.trim().toLowerCase().split(/\s+/).filter(Boolean),codeQuery=compact(query);

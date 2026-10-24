@@ -41,3 +41,6 @@ export async function checkout(page) {
 }
 export async function agreements(page) {await page.locator('#ai-consent').check();await page.locator('#purchase-consent').check();}
 export async function expandBackground(page){await page.locator('#background-builder .builder-group').evaluateAll(nodes=>nodes.forEach(n=>n.open=true));}
+
+export async function selectProfileSection(page,section){await page.locator('[data-profile-section]').selectOption(section);}
+export async function agreeCloudSaving(page){await page.locator('#career-storage').evaluate(n=>n.open=true);await page.locator('#career-storage-consent').check();}

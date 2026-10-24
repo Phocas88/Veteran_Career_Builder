@@ -1,0 +1,282 @@
+/* The standalone app uses one screen at a time and one persistent navigation. */
+.standalone-app{background:#091525;color:#eef3fa;font:15px/1.55 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--app-line:#2b4059;--app-muted:#adbed1;--app-surface:#102138;--app-accent:#f3c747}
+.standalone-app [hidden]{display:none!important}
+.standalone-app .app-shell{margin:0;min-height:100dvh;background:none}
+.standalone-app main{max-width:1040px;min-height:calc(100dvh - 145px);margin:0 auto;padding:28px 24px 112px;scroll-margin-top:80px}
+.standalone-app h1,.standalone-app h2,.standalone-app h3{color:#f6f8fc;letter-spacing:-.025em}
+.standalone-app h1{font-size:30px;line-height:1.2;margin:0 0 10px}
+.standalone-app h2{font-size:23px;line-height:1.3;margin:0 0 12px}
+.standalone-app p{line-height:1.65}
+.standalone-app .app-topbar{position:sticky;top:0;z-index:40;min-height:64px;height:64px;padding:8px max(24px,calc((100vw - 992px)/2));display:flex;flex-wrap:nowrap;justify-content:space-between;gap:12px;border-bottom:1px solid var(--app-line);background:#0b192b}
+.standalone-app .app-brand{display:flex;align-items:center;gap:9px;border:0;background:none;color:#f6f8fc;text-align:left;font-family:inherit;font-size:15px;line-height:1.25;font-weight:700;cursor:pointer;min-height:44px;padding:0}
+.standalone-app .app-brand>span{font-size:16px;font-weight:700;line-height:1.25;letter-spacing:-.2px}
+.standalone-app .app-brand small{display:block;font-size:10px;font-weight:400;color:var(--app-muted);margin-top:3px;letter-spacing:0}
+.standalone-app .app-header-actions{display:flex;align-items:center;gap:6px}
+.standalone-app .header-action{min-height:44px;min-width:44px;padding:9px;border:0;border-radius:9px;background:transparent;color:#c5d4e5;display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px}
+.standalone-app .header-action:hover{background:#1b304a;color:white}
+.standalone-app svg{flex-shrink:0}
+.standalone-app .header-action svg,.standalone-app .app-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.standalone-app .app-nav{display:flex;position:fixed;inset:auto 0 0;z-index:45;justify-content:center;align-items:stretch;padding:6px max(12px,calc((100vw - 700px)/2)) calc(6px + env(safe-area-inset-bottom));min-height:68px;background:#0b192bf5;border-top:1px solid var(--app-line);backdrop-filter:blur(12px)}
+.standalone-app .app-nav>button{flex:1;max-width:140px;min-width:0;min-height:52px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;margin:0;padding:5px 2px;border:0;border-radius:9px;background:transparent;color:#9db1c7;font-family:inherit;font-size:11px;line-height:1.3;font-weight:500;cursor:pointer}
+.standalone-app .app-nav>button span{font-size:11px;line-height:1.3}
+.standalone-app .app-nav>button.active{color:#ffdb71;background:#203248}
+.standalone-app .app-nav>button:hover{color:#fff;background:#1a2c42}
+.standalone-app .app-eyebrow{font-size:10px;letter-spacing:.14em;font-weight:650;color:#9bb1ca;margin:0 0 10px}
+.standalone-app .screen-heading>p:last-child{color:var(--app-muted);font-size:15px;max-width:600px;margin:0}
+.standalone-app #home-panel{max-width:720px;margin:12px auto}
+.standalone-app .app-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px;font-size:13px;color:#c7d4e4;margin:20px 0}
+.standalone-app .app-price strong{color:#f3c747;font-size:20px;font-weight:750;letter-spacing:-.5px}
+.standalone-app .app-price>span{font-size:12px;color:#9eb2c8;margin-left:3px}
+.standalone-app .home-start{padding:0;border:0;background:none;box-shadow:none}
+.standalone-app .start-options{display:grid;grid-template-columns:1fr;gap:10px;margin:0}
+.standalone-app .start-option{display:grid;grid-template-columns:38px minmax(0,1fr) 12px;align-items:center;gap:12px;min-height:86px;padding:16px;border:1px solid #3b5571;background:#12263e;border-radius:12px;text-align:left;color:#f4f7fb;cursor:pointer}
+.standalone-app .start-option>span{grid-row:auto;color:inherit;font-size:22px;line-height:1.4}
+.standalone-app .start-option .action-icon{display:grid;place-items:center;background:#213c53;color:#ffda6d;border-radius:10px;width:38px;height:42px;font-size:27px;font-weight:400}
+.standalone-app .start-option strong{display:block;font-size:16px;line-height:1.4;font-weight:650}
+.standalone-app .start-option small{display:block;font-size:12px;line-height:1.5;color:#a9bed4;margin:4px 0 0}
+.standalone-app .start-option:hover{border-color:#f3c747;background:#19334e}
+.standalone-app .home-purchase-note,.standalone-app .account-value{font-size:12px;color:var(--app-muted);line-height:1.6;margin:14px 2px}
+.standalone-app #start-saved{margin:0;min-height:40px}
+.standalone-app .home-how{display:flex;gap:16px;flex-wrap:wrap;margin:26px 0 0;padding-top:18px;border-top:1px solid var(--app-line);font-size:11px;color:#b5c7db}
+.standalone-app .home-how span{display:flex;align-items:center;gap:7px}
+.standalone-app .home-how b{font-size:10px;width:20px;height:20px;display:grid;place-items:center;background:#23384e;color:#f2cf6e;border-radius:50%}
+.standalone-app .current-work{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 16px;margin:18px 0;border:1px solid #5c6248;border-radius:10px;background:#1c2c37}
+.standalone-app .current-work strong{font-size:14px;overflow-wrap:anywhere}
+.standalone-app .current-work p{font-size:12px;color:var(--app-muted);margin:3px 0 0}
+.standalone-app .current-work .button{flex-shrink:0;font-size:13px;padding:10px 14px}
+.standalone-app .button{min-height:44px;border-radius:9px;padding:11px 17px;font-size:14px;line-height:1.5;white-space:normal;letter-spacing:0;box-shadow:none;cursor:pointer}
+.standalone-app .button-primary{background:#f3c747;color:#101c2b;border-color:#f3c747;font-weight:700;box-shadow:none}
+.standalone-app .button-primary:hover{background:#ffda73;color:#0b1829}
+.standalone-app .button-secondary{background:#19314c;color:#e6effa;border:1px solid #47617d}
+.standalone-app .text-button{min-height:44px;padding:8px 0;font-size:13px;line-height:1.5;color:#f4d477}
+.standalone-app button:disabled{cursor:default;opacity:.55}
+.standalone-app button:focus-visible,.standalone-app a:focus-visible,.standalone-app summary:focus-visible{outline:3px solid #ffda73;outline-offset:3px}
+.standalone-app .field-input,.standalone-app .export-select,.standalone-app input:not([type=checkbox]):not([type=radio]),.standalone-app select,.standalone-app textarea{max-width:100%;font-family:inherit;font-size:16px;color:#edf4fc;background:#0b1a2d;border:1px solid #4b6580;border-radius:8px;box-sizing:border-box;min-height:44px}
+.standalone-app input:not([type=checkbox]):not([type=radio]),.standalone-app select{height:46px;padding:10px 12px}
+.standalone-app textarea{padding:12px;line-height:1.6}
+.standalone-app .field-label,.standalone-app .field-hint{font-size:13px;line-height:1.6}
+.standalone-app .field-label{margin:18px 0 7px;color:#d5e2f0}
+.standalone-app .field-hint{color:var(--app-muted)}
+.standalone-app .checkbox-label{font-size:13px!important;line-height:1.6!important;color:#c8d7e8}
+.standalone-app input[type=checkbox]{width:18px;height:18px;min-height:18px;accent-color:#f3c747;vertical-align:middle;margin-right:8px}
+.standalone-app #career-dialog{width:100%;max-width:none;max-height:none;overflow:visible;padding:0;border:0;border-radius:0;background:none;color:inherit;margin:0}
+.standalone-app #career-dialog>.dialog-heading{display:block;position:relative;margin:0 0 8px;min-height:0}
+.standalone-app #career-close{font-size:12px;min-height:36px;margin-bottom:12px}
+.standalone-app #career-title{font-size:28px;margin:0;line-height:1.3}
+.standalone-app #career-dialog p{font-size:14px;line-height:1.65;color:#b7cadf}
+.standalone-app #career-tool-help{border:0;padding:0;margin:8px 0 22px;font-size:14px;max-width:680px}
+.standalone-app #career-dialog [data-career-panel]>h3:first-child,.standalone-app #career-dialog [data-career-panel]>h3:first-child+p{display:none}
+.standalone-app #career-dialog h3{font-size:20px;margin:18px 0 10px}
+.standalone-app #career-dialog h4{font-size:16px;line-height:1.5}
+.standalone-app .career-tabs.document-tools{display:flex;gap:4px;flex-wrap:nowrap;border:0;border-radius:9px;background:#12263e;padding:4px;margin:18px 0;overflow-x:auto}
+.standalone-app .document-tools button{flex:1;white-space:normal;font-size:12px;padding:9px 8px;min-height:44px;border:0;border-radius:6px;background:transparent;color:#b9cbdf}
+.standalone-app .document-tools button[aria-pressed=true]{background:#2a4056;color:#ffe09a;font-weight:600}
+.standalone-app .career-storage{padding:0 14px;margin:14px 0 20px;background:#101f32;border:1px solid var(--app-line);border-radius:8px}
+.standalone-app .career-storage summary,.standalone-app .version-save-details summary,.standalone-app .account-data summary{font-size:13px;min-height:44px;padding:12px 0;color:#c9d8ea;cursor:pointer}
+.standalone-app .career-storage[open]{padding-bottom:12px}
+.standalone-app .career-storage p{font-size:12px!important;margin:5px 0 12px}
+.standalone-app #career-status{margin:12px 0;padding:10px 12px;font-size:13px;line-height:1.55}
+.standalone-app #career-profile-slot{margin:0}
+.standalone-app .profile-section-bar{display:flex;align-items:center;gap:12px;margin:0 0 20px;padding:12px 14px;background:#12263e;border:1px solid var(--app-line);border-radius:10px}
+.standalone-app .profile-section-bar label{display:flex;align-items:center;gap:12px;width:100%;font-size:12px;font-weight:600;color:#b6c9df;white-space:nowrap}
+.standalone-app .profile-section-bar select{flex:1;min-width:0;margin:0}
+.standalone-app .profile-section-title{font-size:20px!important;margin:14px 0!important}
+.standalone-app [data-profile-category]{margin:0!important;border:0!important;background:none!important;padding:0!important;box-shadow:none!important;overflow:visible!important}
+.standalone-app [data-profile-category]>.category-summary{display:none!important}
+.standalone-app [data-profile-category]>.builder-entries{padding:0!important}
+.standalone-app [data-profile-category]>#builder-personal{margin:0!important;max-width:100%!important}
+.standalone-app [data-profile-category]>.button{margin:12px 0!important;max-width:100%!important}
+.standalone-app .profile-section-actions{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--app-line);margin-top:22px;padding-top:12px}
+.standalone-app .profile-save-actions{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin:24px 0 0;border-top:1px solid var(--app-line);padding-top:16px}
+.standalone-app [data-career-panel=profile]>.career-actions{margin-bottom:16px}
+.standalone-app #career-profile-save,.standalone-app #career-profile-build{display:none}
+.standalone-app .service-role{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:18px;margin:16px 0;border:1px solid var(--app-line);border-radius:10px;background:#0e1e32;min-width:0}
+.standalone-app .service-role legend{font-size:13px;color:#e4c66b}
+.standalone-app .service-role>label{font-size:13px;gap:7px;color:#c8d7e8;min-width:0}
+.standalone-app .service-role label:has(textarea),.standalone-app .service-role>.builder-group,.standalone-app .service-role>.service-setup-heading{grid-column:1/-1}
+.standalone-app .service-role>.service-setup-heading{font-size:13px;padding:9px 12px;margin:8px 0 0;border-left:2px solid #d1b052;background:#192d43}
+.standalone-app .builder-group.resume-category{box-shadow:none;background:#12263b;border:1px solid var(--app-line);border-radius:9px}
+.standalone-app .builder-group>.category-summary,.standalone-app .background-builder .resume-category>.category-summary{display:grid;grid-template-columns:30px minmax(0,1fr) 14px;min-height:62px;gap:3px 10px;padding:10px 12px}
+.standalone-app .builder-group>.category-summary h3{font-size:14px!important;margin:0!important;line-height:1.4}
+.standalone-app .category-icon,.standalone-app .background-builder .category-icon{width:30px;height:32px;border-radius:7px;background:#1c3a53;box-shadow:none}
+.standalone-app .category-icon svg{width:21px;height:21px}
+.standalone-app .category-hint{font-size:11px;line-height:1.45}
+.standalone-app .full-specialty-help{font-size:12px;line-height:1.6;margin:0}
+.standalone-app .career-grid{gap:16px}
+.standalone-app .career-grid>label,.standalone-app .career-form>label{font-size:13px}
+.standalone-app .career-actions{gap:10px;margin:16px 0}
+.standalone-app .career-actions .button{width:auto;font-size:13px}
+.standalone-app .career-result{padding:16px;margin:10px 0;background:#102138;border-color:var(--app-line);border-radius:9px}
+.standalone-app .career-result p{margin:8px 0}
+.standalone-app .career-badge{font-size:11px;padding:3px 8px}
+.standalone-app .resume-list-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0}
+.standalone-app .version-save-details{padding:0 14px;margin:18px 0;border:1px solid var(--app-line);border-radius:8px}
+.standalone-app .version-save-details .field-input{width:100%}
+.standalone-app #career-versions-empty,.standalone-app #career-jobs-empty{padding:24px 16px;border:1px dashed #3d5571;border-radius:10px;text-align:center}
+.standalone-app .library-filters{grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.standalone-app .library-filters label{font-size:12px}
+.standalone-app .library-search-label{grid-column:1/-1}
+.standalone-app .library-results{gap:10px}
+.standalone-app .library-result{padding:14px;border-color:var(--app-line);border-radius:9px;background:#102138;gap:5px}
+.standalone-app .library-code{font-size:18px}
+.standalone-app .library-result strong{font-size:14px}
+.standalone-app .library-result-note{font-size:11px}
+.standalone-app .library-detail{padding:18px;margin:18px 0;background:#102138;border-color:#4a6481}
+.standalone-app .library-caution{font-size:12px!important}
+.standalone-app .library-manual{border-top:1px solid var(--app-line);padding-top:10px}
+.standalone-app .career-kit-controls{background:#172a3d;border-color:#5a5940;border-radius:9px;padding:0 16px 12px}
+.standalone-app .career-kit-controls summary{font-size:13px;padding:12px 0;min-height:44px}
+.standalone-app #career-kit-title{font-size:18px}
+.standalone-app .steps{margin:0 0 18px;gap:0;min-height:0}
+.standalone-app .steps li{flex:1;padding-bottom:12px;border-width:2px}
+.standalone-app .steps button{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;min-height:44px;font-size:12px;padding:0 4px}
+.standalone-app .step-number{width:22px;height:22px;font-size:11px}
+.standalone-app .flow-heading{margin:0 0 12px;gap:14px;min-height:0}
+.standalone-app .flow-heading p{font-size:12px}
+.standalone-app .card{border-radius:12px;border:1px solid var(--app-line);background:#102138;padding:24px;box-shadow:none}
+.standalone-app .card-description{font-size:14px;margin-bottom:18px}
+.standalone-app .section-kicker{font-size:10px;line-height:1.5;letter-spacing:.12em;margin-bottom:10px}
+.standalone-app .upfront-payment{max-width:680px;margin:0 auto}
+.standalone-app .upfront-payment>p{font-size:14px;line-height:1.65}
+.standalone-app .upfront-payment .upfront-price{font-size:32px;color:#f3c747;margin:16px 0}
+.standalone-app .upfront-payment .checkbox-label{margin:20px 0}
+.standalone-app .opsec-notice{margin:12px 0 18px;padding:12px;gap:10px;border-radius:8px}
+.standalone-app .opsec-notice svg{width:20px;height:20px}
+.standalone-app .opsec-notice h2{font-size:12px;margin:0 0 4px}
+.standalone-app .opsec-notice p,.standalone-app .opsec-notice summary,.standalone-app .opsec-notice a{font-size:12px;line-height:1.6}
+.standalone-app .opsec-notice p{margin:0 0 7px}
+.standalone-app .background-builder>summary{margin-bottom:12px}
+.standalone-app .background-builder>summary strong{font-size:23px}
+.standalone-app .background-builder>p{font-size:13px;color:#b7cadf;line-height:1.6}
+.standalone-app .background-builder>.category-guide{display:none}
+.standalone-app .resume-entry-switch{margin:16px 0}
+.standalone-app .resume-upload-area{padding:18px;border-radius:10px}
+.standalone-app #import-resume{min-height:58px;padding:12px 18px}
+.standalone-app #import-resume strong{font-size:16px}
+.standalone-app #import-resume small{font-size:12px}
+.standalone-app .resume-format-badges{gap:8px;margin:14px 0}
+.standalone-app .resume-format-badges li{padding:9px 8px}
+.standalone-app .resume-format-label,.standalone-app .resume-file-limit,.standalone-app .resume-local-note,.standalone-app .resume-older-word{font-size:12px!important}
+.standalone-app .editor-card #resume-input{height:320px;min-height:240px;font-size:15px!important;line-height:1.65;border:1px solid #4b6580;border-radius:8px}
+.standalone-app .context-column{max-width:none;grid-template-columns:1fr 1fr;gap:16px}
+.standalone-app .stage-intro{margin:8px 0 20px}
+.standalone-app .stage-intro h2{font-size:24px}
+.standalone-app .context-card>.small-icon,.standalone-app .context-card>h2,.standalone-app .context-card>p:first-of-type{display:none}
+.standalone-app .context-card>.field-label:first-of-type{margin-top:0}
+.standalone-app .job-input{height:160px;min-height:100px;font-size:15px}
+.standalone-app .flow-actions{margin:18px 0;gap:12px}
+.standalone-app .final-build-card{max-width:700px;margin:auto}
+.standalone-app .empty-state{padding:36px 24px;min-height:0}
+.standalone-app .empty-icon{font-size:40px;margin:0 0 14px}
+.standalone-app .empty-state h2{font-size:23px;margin-bottom:12px}
+.standalone-app .empty-state p{font-size:14px;max-width:460px;margin:0 auto 22px}
+.standalone-app .review-overview{gap:16px;margin-bottom:18px}
+.standalone-app .strengths-card,.standalone-app .findings-card,.standalone-app .rewrite-card,.standalone-app .next-steps{padding:22px;margin:18px 0;border-radius:12px}
+.standalone-app .strengths-card p,.standalone-app .summary-card p,.standalone-app .review-finding>p{font-size:14px;line-height:1.7}
+.standalone-app .suggestions-heading{margin:28px 0 18px}
+.standalone-app .suggestions-heading h2{font-size:24px}
+.standalone-app .suggestion-card{padding:22px;border-radius:12px;margin-bottom:16px}
+.standalone-app .export-grid{gap:20px}
+.standalone-app .export-tools{padding:22px}
+.standalone-app .export-tools>p{font-size:14px}
+.standalone-app .design-option{padding:12px;min-height:126px;border-radius:9px}
+.standalone-app .design-swatch{transform:scale(.75);margin:-9px auto}
+.standalone-app .design-option strong{font-size:13px}
+.standalone-app .design-option small{font-size:11px}
+.standalone-app .resume-extras{display:flex;align-items:center;gap:16px;border-top:1px solid var(--app-line);margin-top:24px;padding-top:12px}
+.standalone-app #settings-panel{max-width:720px;margin:0 auto}
+.standalone-app .settings-list{display:grid;border:1px solid var(--app-line);border-radius:11px;overflow:hidden;margin:20px 0}
+.standalone-app .settings-list>button,.standalone-app .settings-list>a{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:14px 16px;text-align:left;border:0;border-bottom:1px solid var(--app-line);border-radius:0;background:#102138;color:#e3ecf8;font-family:inherit;font-size:14px;line-height:1.5;font-weight:400;cursor:pointer;text-decoration:none}
+.standalone-app .settings-list>:last-child{border-bottom:0}
+.standalone-app .settings-list>button:hover,.standalone-app .settings-list>a:hover{background:#1a304a}
+.standalone-app .settings-list span{color:#9fb6cf}
+.standalone-app .app-about{border-top:1px solid var(--app-line);margin-top:24px;padding-top:12px;color:#acbfd4;font-size:12px}
+.standalone-app .app-about summary{min-height:44px;cursor:pointer;font-size:13px;color:#cfdded;padding:10px 0}
+.standalone-app .app-about a{color:#ead18c;text-decoration:underline}
+.standalone-app .storage-notice{display:block;padding:14px;margin:20px 0;background:#11263c;border-radius:10px;border-color:var(--app-line)}
+.standalone-app .storage-notice h2{font-size:16px}
+.standalone-app .storage-notice p{font-size:13px}
+.standalone-app .storage-notice .button{margin-top:12px}
+.standalone-app dialog{padding:24px;border-radius:14px;border:1px solid #4b6580;background:#102138;max-height:90dvh;width:min(520px,calc(100vw - 28px));color:#eef3fa}
+.standalone-app dialog::backdrop{background:#030a14bb;backdrop-filter:blur(3px)}
+.standalone-app dialog h2{font-size:24px}
+.standalone-app dialog p{font-size:13px;color:#b9cbe0}
+.standalone-app #welcome-dialog{padding:24px;max-width:440px}
+.standalone-app #welcome-title{font-size:26px;margin:16px 0 10px}
+.standalone-app .welcome-brand{margin-bottom:16px;font-size:10px;gap:10px}
+.standalone-app .welcome-brand img{width:34px;height:34px}
+.standalone-app .account-benefits{font-size:13px;line-height:1.6;margin:14px 0 20px}
+.standalone-app .account-benefits li{margin:4px 0}
+.standalone-app #welcome-dialog>.button{min-height:46px;margin:10px 0}
+.standalone-app #welcome-dialog>.field-hint{font-size:11px}
+.standalone-app #account-dialog{max-width:520px}
+.standalone-app #account-dialog .field-label{margin-top:14px}
+.standalone-app #account-dialog .field-input{width:100%}
+.standalone-app #account-dialog #account-benefits{font-size:13px}
+.standalone-app #account-dialog .purchase-history{margin-top:20px;border-top:1px solid var(--app-line);padding-top:6px}
+.standalone-app #account-dialog .purchase-history summary{font-size:13px;cursor:pointer;padding:12px 0}
+.standalone-app #account-dialog .purchase-history p{font-size:12px}
+.standalone-app .toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);max-width:min(560px,calc(100vw - 32px));padding:12px 18px;font-size:13px;background:#24443c;color:#f1faf7;border:1px solid #527d68;border-radius:10px;z-index:85}
+.standalone-app .error-banner{bottom:88px;left:50%;max-width:660px;width:calc(100% - 32px);padding:16px 44px 16px 16px;font-size:13px;line-height:1.6;border-radius:10px}
+.standalone-app .loading-card{max-width:440px;padding:28px}
+.standalone-app .loading-card h2{font-size:23px}
+@media(max-width:760px){
+ .standalone-app main{padding:22px 16px 100px}
+ .standalone-app .app-topbar{height:60px;min-height:60px;padding:7px 16px;gap:8px}
+ .standalone-app .app-brand>span{font-size:15px}
+ .standalone-app #account-label{font-size:11px}
+ .standalone-app .header-action{padding:9px;gap:6px}
+ .standalone-app #home-panel{margin:4px auto}
+ .standalone-app h1{font-size:27px}
+ .standalone-app .screen-heading>p:last-child{font-size:14px;max-width:330px}
+ .standalone-app .app-price{margin:16px 0 18px;gap:4px;font-size:12px}
+ .standalone-app .app-price>span{font-size:11px}
+ .standalone-app .start-option{padding:14px 12px;min-height:84px;gap:10px;grid-template-columns:34px minmax(0,1fr) 12px}
+ .standalone-app .start-option .action-icon{width:34px;height:38px;font-size:25px}
+ .standalone-app .start-option strong{font-size:15px}
+ .standalone-app .start-option small{font-size:11px}
+ .standalone-app .home-how{gap:10px;margin-top:20px;font-size:10px;padding-top:16px}
+ .standalone-app .home-how b{width:18px;height:18px}
+ .standalone-app #career-title{font-size:25px}
+ .standalone-app #career-tool-help{font-size:13px;margin-bottom:18px}
+ .standalone-app #career-close{margin-bottom:10px}
+ .standalone-app .career-grid,.standalone-app .service-role,.standalone-app .context-column{grid-template-columns:1fr}
+ .standalone-app .service-role{padding:14px 12px;gap:14px}
+ .standalone-app .profile-section-bar{padding:10px;gap:10px}
+ .standalone-app .profile-section-bar label{display:flex;align-items:center;gap:12px;width:100%;font-size:11px}
+ .standalone-app .profile-section-title{font-size:18px!important}
+ .standalone-app .profile-save-actions{flex-direction:column;gap:8px}
+ .standalone-app .profile-save-actions .button{width:100%}
+ .standalone-app .profile-save-actions .button-secondary{order:1}
+ .standalone-app .career-actions .button{flex:1 1 auto}
+ .standalone-app .library-filters{grid-template-columns:1fr 1fr;gap:12px}
+ .standalone-app .library-results{grid-template-columns:1fr}
+ .standalone-app .library-detail{padding:14px}
+ .standalone-app .card{padding:20px 16px}
+ .standalone-app .steps button{font-size:10px;gap:6px}
+ .standalone-app .step-number{width:19px;height:19px;font-size:10px}
+ .standalone-app .empty-state{padding:30px 18px}
+ .standalone-app .context-column{gap:16px}
+ .standalone-app .flow-actions{gap:10px}
+ .standalone-app .flow-actions .button-secondary{font-size:12px}
+ .standalone-app .current-work{padding:12px;gap:10px}
+ .standalone-app .current-work .button{padding:9px 12px;font-size:12px}
+ .standalone-app .resume-extras{flex-direction:column;gap:0;align-items:flex-start}
+ .standalone-app .export-tools{padding:20px 16px}
+ .standalone-app .strengths-card,.standalone-app .findings-card,.standalone-app .rewrite-card,.standalone-app .next-steps,.standalone-app .suggestion-card{padding:20px 16px}
+}
+@media(prefers-reduced-motion:reduce){.standalone-app *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+@media print{.standalone-app .app-shell,.standalone-app .app-nav,.standalone-app dialog,.standalone-app .toast,.standalone-app .error-banner{display:none!important}.standalone-app{background:#fff}}
+
+/* Screen headings already identify these tools. Keep the working area focused. */
+.standalone-app .library-heading>h3,.standalone-app .library-heading>p{display:none}
+.standalone-app .library-heading .career-badge{margin:0}
+.standalone-app #career-dialog .career-opsec{font-size:12px;padding:10px 12px;line-height:1.6;margin:14px 0}
+.standalone-app #career-dialog #career-profile-summary{font-size:12px;line-height:1.5;margin:12px 0}
+.standalone-app .profile-section-bar{scroll-margin-top:80px}
+
+.standalone-app #career-profile-slot{padding:0;margin:0;background:none;border:0}
+.standalone-app [data-career-panel=profile]>.career-actions{margin:4px 0 14px}
+.standalone-app #career-profile-load{font-size:12px;padding:6px 0;min-height:36px}
+.standalone-app .profile-section-bar{margin-bottom:16px}
+.standalone-app .profile-section-title{margin:12px 0!important}

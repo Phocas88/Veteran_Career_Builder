@@ -1,6 +1,6 @@
 // Checkout never receives resume content. Private server-owned build records make
 // paid results recoverable without trusting redirect flags or browser storage.
-import {runRecoverableBuild} from './build-recovery.js?v=20261024-service-profile';
+import {runRecoverableBuild} from './build-recovery.js?v=20261025-standalone-app';
 const $=id=>document.getElementById(id);
 const endpoint='https://vcp-proxy.vercel.app/api/claude';
 let config,active=null,generation=0;

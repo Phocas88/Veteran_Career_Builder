@@ -1,10 +1,10 @@
-import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261024-career-tools';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261024-career-tools';
+import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261024-service-library';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261024-service-library';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';
 import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js';
-import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext } from './payments.js?v=20261024-career-tools';
+import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext } from './payments.js?v=20261024-service-library';
 
 const $ = id => document.getElementById(id);
 const input = $('resume-input');

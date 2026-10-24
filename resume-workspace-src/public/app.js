@@ -1,6 +1,6 @@
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261025-standalone-app';
 import {showAppView} from './app-shell.js?v=20261025-standalone-app';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261025-standalone-app';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261026-profile-setup';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';

@@ -1,9 +1,10 @@
-import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261024-service-profile';
-import { fillBackground, readBackground } from './background-form.js?v=20261024-service-profile';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261024-service-profile';
-import { initCareerTools } from './career-tools.js?v=20261024-service-profile';
-import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261024-service-profile';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261024-service-profile';
+import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261025-standalone-app';
+import { fillBackground, readBackground } from './background-form.js?v=20261025-standalone-app';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261025-standalone-app';
+import { initCareerTools } from './career-tools.js?v=20261025-standalone-app';
+import {initAppShell} from './app-shell.js?v=20261025-standalone-app';
+import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261025-standalone-app';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261025-standalone-app';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -37,20 +38,19 @@ function openAccount(value) {
 }
 function continueGuest() {
   rememberChoice('guest'); $('welcome-dialog').close(); $('account-dialog').close();
-  $('account-label').textContent = user && !guest(user) ? 'My resumes' : 'Save progress';
+  $('account-label').textContent = user && !guest(user) ? 'My account' : 'Account';
 }
 function updateUser(next) {
   ++accountVersion;
   if (user && user.uid !== next?.uid) resetPrivateState();
   user = next;
   const registered = !!next && !guest(next);
-  $('account-label').textContent = registered ? 'My resumes' : choice() === 'guest' || guest(next) ? 'Save progress' : 'Sign in';
+  $('account-label').textContent = registered ? 'My account' : 'Account';
   $('account-email').textContent = registered ? next.email : '';
   $('account-signed-in').hidden = !registered; $('account-form').hidden = registered;
-  $('cloud-signed-in').hidden = !registered; $('cloud-signed-out').hidden = registered;
   $('start-saved').hidden = !registered; $('save-submitted-row').hidden = !registered; $('guest-checkout-note').hidden = registered;
   $('auth-guest').hidden = registered; $('guest-end').hidden = !guest(next);
-  $('account-value').textContent = registered ? 'Your saved resumes are in My resumes. Reopen one to update it, or start a new resume.' : 'Guest work is limited to this browser session. A free account lets you save and return later.';
+  $('account-value').textContent = registered ? 'Save a version in Resumes to keep your work.' : 'Guest session · Sign in to save across devices.';
   status(registered ? 'Save a version here, then reopen it whenever you want to make updates.' : 'A free account lets you keep resumes and background details for later.');
   if (registered || guest(next)) { rememberChoice(registered ? 'account' : 'guest'); $('welcome-dialog').close(); }
   if (next) { callback?.restoreDeviceDraft(next.uid); if (registered) refreshSaved(); refreshPurchases(); }
@@ -83,8 +83,8 @@ const readProfile = readBackground;
 function fillProfile(profile) { fillBackground(profile); profileDirty = false; }
 function resetPrivateState() {
   careerUI?.reset();
-  saved = []; renderSaved(); fillProfile({}); $('cloud-consent').checked = false;
-  $('save-title').value = ''; $('auth-email').value = ''; $('auth-password').value = ''; $('ai-consent').checked = false; $('purchase-consent').checked = false; $('save-submitted').checked = false;
+  saved = []; fillProfile({});
+  $('auth-email').value = ''; $('auth-password').value = ''; $('ai-consent').checked = false; $('purchase-consent').checked = false; $('save-submitted').checked = false;
   callback?.clearAccountDraft();
   resetPayments();
 }
@@ -97,30 +97,14 @@ async function ensureConnection() {
 }
 async function refreshSaved() {
   const version = accountVersion;
-  try { const items = await store.list(); if (version !== accountVersion) return []; saved = items; renderSaved(); return items; }
-  catch { status('Saved resumes could not load. Your local draft is unchanged. Try Refresh saved resumes.'); }
-}
-function renderSaved() {
-  const list = $('saved-resumes'); list.replaceChildren();
-  for (const item of saved) {
-    const row = document.createElement('li'); const title = document.createElement('span'); title.textContent = item.title || 'Saved resume';
-    const open = document.createElement('button'); open.className = 'text-button'; open.textContent = 'Open';
-    open.addEventListener('click', () => openSavedVersion(item).catch(error=>status(error.message)));
-    const remove = document.createElement('button'); remove.className = 'text-button danger'; remove.textContent = 'Delete';
-    remove.addEventListener('click', async () => {
-      if (!confirm('Delete this resume from your account? Downloaded copies and the current editor are not deleted.')) return;
-      remove.disabled = true;
-      try { await store.remove(item.id); await refreshSaved(); status('Saved resume deleted from the active account database.'); }
-      catch (error) { status(errorText(error)); remove.disabled = false; }
-    }); row.append(title, open, remove); list.append(row);
-  }
-  $('saved-empty').hidden = saved.length > 0;
+  try { const items = await store.list(); if (version !== accountVersion) return []; saved = items; return items; }
+  catch { status('Saved resumes could not load. Your local draft is unchanged. Open Resumes and try Refresh.'); }
 }
 async function cloudAction(action) {
   try {
     await ensureConnection();
     if (!connection.auth.currentUser || guest(connection.auth.currentUser)) { openAccount('create'); return; }
-    if (!$('cloud-consent').checked) { openAccount(); $('cloud-details').open = true; status('Check the cloud storage agreement before saving. You can continue working without saving.'); $('cloud-consent').focus(); return; }
+    if (!$('career-storage-consent').checked) { careerUI.open('profile'); $('career-storage').open = true; status('Agree to private account storage before saving.'); $('career-storage-consent').focus(); return; }
     await action();
   } catch (error) { status(errorText(error)); }
 }
@@ -136,7 +120,7 @@ async function openSavedVersion(item) {
 async function careerStore(write=false) {
  await ensureConnection();
  if(!user?.email)throw new Error('Create a free account or sign in to save and reopen career tools across devices.');
- if(write&&!$('career-storage-consent').checked)throw new Error('Check the private account storage agreement before saving.');
+ if(write&&!$('career-storage-consent').checked){$('career-storage').open=true;$('career-storage-consent').focus();throw new Error('Agree to private account storage before saving.');}
  return store;
 }
 
@@ -144,7 +128,7 @@ export function initWorkspace(adapter) {
   callback = adapter; fillProfile({});
   careerUI=initCareerTools({
    user:()=>user,openAccount:()=>openAccount(),getProfile:readProfile,getDraft:()=>callback.getDraft(),
-   applyProfile:profile=>{fillProfile(profile);profileDirty=true;},
+   applyProfile:profile=>{fillProfile(profile);profileDirty=true;const select=document.querySelector('[data-profile-section]');select.value='roles';select.dispatchEvent(new Event('change'));},
    saveProfile:async()=>{const s=await careerStore(true);await s.saveProfile(readProfile());profileDirty=false;},
    loadProfile:async()=>{const s=await careerStore();if(profileDirty&&!confirm('Replace your unsaved career profile with the saved profile?'))return;const version=accountVersion;const data=await s.profile();if(version===accountVersion)fillProfile(profileFromWebsite(data));},
    buildProfile:()=>choosePaidEntry('build'),
@@ -167,6 +151,7 @@ export function initWorkspace(adapter) {
    },
    openPurchases:()=>{openAccount();$('purchase-history').open=true;},returnReview:()=>callback.showReviewTab()
   });
+  initAppShell({openCareer:careerUI.open,openAccount:()=>openAccount(),getDraft:()=>callback.getDraft(),hasPaidBuild,continueResume:()=>callback.continueResume()});
   initGuidedFlow({showResume:adapter.showResume,openAccount:()=>openAccount(),canUse:hasPaidBuild,startEntry:choosePaidEntry,newResume:()=>{
     if(callback.getDraft().resume.trim()&&!confirm('Start a new paid build? Save or download your current work first. Your previous purchases remain in purchase history.'))return false;
     callback.clearAccountDraft();forgetActiveBuild();return true;
@@ -232,7 +217,6 @@ export function initWorkspace(adapter) {
     if (!confirm('Sign out and clear this workspace on this device? Save or download any work you need first.')) return;
     try { $('account-dialog').close(); await connection.auth.signOut(); rememberChoice(null); $('welcome-dialog').showModal(); } catch { $('auth-status').textContent = 'Sign-out failed. Try again before leaving a shared device.'; }
   });
-  $('save-cloud').addEventListener('click', () => cloudAction(async () => { const item=await store.save(callback.getDraft(), $('save-title').value);callback.markVersion(item);await refreshSaved();status('Resume saved as a new version. Earlier versions remain available.'); }));
   $('save-profile').addEventListener('click', () => cloudAction(async () => { await store.saveProfile(readProfile()); profileDirty = false; status('Program background saved. Main-site profile and subscriptions are separate.'); }));
   $('load-profile').addEventListener('click', async () => {
     try {
@@ -242,7 +226,6 @@ export function initWorkspace(adapter) {
       $('account-dialog').close(); fillProfile(profileFromWebsite(data)); setFlow('build'); $('background-builder').open = true; status('Account background loaded. Check the details before building a draft.');
     } catch (error) { status(errorText(error)); }
   });
-  $('refresh-saved').addEventListener('click', () => { if (store && user) refreshSaved(); });
   $('delete-background').addEventListener('click', async () => {
     if (!user || !confirm('Delete the service background saved by this workspace? Your original website profile, resumes, and downloaded files are unchanged.')) return;
     try { const uid = connection.auth.currentUser.uid; await store.removeProfile(); if (user?.uid === uid) status('Workspace service background deleted from the active database.'); }

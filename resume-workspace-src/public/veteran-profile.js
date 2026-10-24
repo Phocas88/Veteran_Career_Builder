@@ -1,4 +1,4 @@
-import { personalFields, groups } from './profile-fields.js?v=20261024-service-profile';
+import { personalFields, groups } from './profile-fields.js?v=20261025-standalone-app';
 export const branches = {
   army: { name: 'U.S. Army', code: 'MOS', example: '92Y' },
   navy: { name: 'U.S. Navy', code: 'Rating / NEC', example: 'LS / NEC, if applicable' },

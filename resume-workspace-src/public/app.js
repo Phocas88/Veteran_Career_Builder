@@ -1,10 +1,11 @@
-import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261024-service-profile';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261024-service-profile';
+import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261025-standalone-app';
+import {showAppView} from './app-shell.js?v=20261025-standalone-app';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261025-standalone-app';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';
 import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js';
-import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext } from './payments.js?v=20261024-service-profile';
+import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext } from './payments.js?v=20261025-standalone-app';
 
 const $ = id => document.getElementById(id);
 const input = $('resume-input');
@@ -121,6 +122,8 @@ function refreshDraft() {
   $('undo-review').disabled = !latest || latest.after !== text;
   for (const id of ['download-pdf', 'download-word', 'download-resume', 'print-resume', 'copy-resume']) $(id).disabled = !hasPaidBuild() || !text.trim() || exporting;
   refreshFederalGuidance();
+  $('resume-extras').hidden=!state.review;
+  document.dispatchEvent(new Event('resume:draft-changed'));
   if (state.review) {
     const remaining = state.review.suggestions.filter(s => !state.applied.has(s.id) && canApply(text, s.original));
     $('sidebar-count').textContent = remaining.length;
@@ -145,6 +148,8 @@ function setTab(tab, scroll = true) {
     else button.removeAttribute('aria-current');
   });
   $('breadcrumb-current').textContent = { resume: 'Your resume', review: 'Review & improve', export: 'Export resume' }[tab];
+  showAppView(tab==='resume'&&currentFlow()==='start'?'home':'workspace',{scroll:false});
+  document.querySelector('.steps').hidden=tab==='resume'&&currentFlow()==='payment';
   refreshDraft();
   if (scroll) window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
 }
@@ -570,6 +575,7 @@ setTab('resume', false);
 initWorkspace({
   showResume() { setTab('resume', false); },
   showReviewTab() { setTab('review', false); },
+  continueResume() {if(state.review)setTab('review');else setFlow(currentFlow()==='start'?'edit':currentFlow());},
   showPayment() { setFlow('payment'); },
   openEntry(mode) { setFlow(mode==='build'?'build':'edit'); },
   showCheckout() { setFlow('checkout', false); },

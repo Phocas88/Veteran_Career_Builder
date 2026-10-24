@@ -1,16 +1,18 @@
-import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261024-service-profile';
-import { savedResumeToDraft } from './cloud-store.js?v=20261024-service-profile';
-import { careerBuildContext, requestCareerKit } from './payments.js?v=20261024-service-profile';
-import { exportLetter } from './letter-exports.js?v=20261024-service-profile';
-import {initServiceLibrary} from './service-library.js?v=20261024-service-profile';
+import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261025-standalone-app';
+import { savedResumeToDraft } from './cloud-store.js?v=20261025-standalone-app';
+import { careerBuildContext, requestCareerKit } from './payments.js?v=20261025-standalone-app';
+import { exportLetter } from './letter-exports.js?v=20261025-standalone-app';
+import {initServiceLibrary} from './service-library.js?v=20261025-standalone-app';
+import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261025-standalone-app';
 
 const $=id=>document.getElementById(id);
 const node=(tag,content,className)=>{const el=document.createElement(tag);if(content)el.textContent=content;if(className)el.className=className;return el;};
 const button=(label,run)=>{const b=node('button',label,'text-button');b.type='button';b.addEventListener('click',()=>Promise.resolve().then(run).catch(e=>status(e.message)));return b;};
-const status=message=>{$('career-status').textContent=message;};
+const status=message=>{$('career-status').textContent=message;if(message)document.dispatchEvent(new CustomEvent('app:notice',{detail:message}));};
 export function initCareerTools(api){
  let tab='profile',generation=0,jobs=[],versions=[],letters=[],editingJob=null,kitController,letterBuildId='',letterRole='',letterRevision=-1,busy=false;
  const kits=new Map();
+ let returnView='home';
  const field=name=>$('career-job-form').elements.namedItem(name);
  const fieldNames=['role','company','url','applicationType','status','appliedDate','interviewDate','followUpDate','contact','description','notes','resumeVersionId'];
  const readJob=()=>normalizeJob(Object.fromEntries(fieldNames.map(k=>[k,field(k).value])));
@@ -18,7 +20,7 @@ export function initCareerTools(api){
  const profileBefore=$('background-fields').nextSibling;
  const library=initServiceLibrary({getProfile:api.getProfile,applyProfile:api.applyProfile,showProfile:()=>select('profile')});
  function restoreProfile(){profileHome.insertBefore($('background-fields'),profileBefore);}
- function updateProfile(){ $('career-profile-summary').textContent=profileSummary(api.getProfile()); }
+ function updateProfile(){const profile=api.getProfile();$('career-profile-summary').textContent=profileSummary(profile);$('career-profile-summary').hidden=!['roles','jobs','educationEntries','certifications','skillsEntries'].some(key=>profile[key]?.some(entry=>Object.values(entry).some(v=>typeof v==='string'&&v.trim())));}
  function account(){
   const registered=!!api.user()?.email;
   $('career-account-note').textContent=registered?'Your account saves are private. Choose Save when you want to keep changes.':'Guests can use the included AI kit. Create a free account to save profiles, versions, applications and edited cover letters across devices.';
@@ -38,26 +40,30 @@ export function initCareerTools(api){
   for(const el of document.querySelectorAll('[data-career-tab]'))el.setAttribute('aria-pressed',String(el.dataset.careerTab===tab));
   $('career-kit-controls').hidden=!['match','skills','letter'].includes(tab);
   $('career-storage').hidden=tab==='library';
-  $('career-tool-help').textContent=({profile:'Prepare · Save your background once and reuse it for future resumes.',library:'Prepare · Browse freely, verify your service details, then add them to your profile.',jobs:'Organize · Keep job announcements, application stages and follow-up dates together.',versions:'Organize · Save snapshots so you can compare changes and return to earlier drafts.',match:'Improve · Use a completed resume build to compare your evidence with the announcement.',skills:'Improve · Translate duties you actually performed into civilian language.',letter:'Improve · Prepare a cover letter for the same resume and target job.'})[tab]||'';
+  $('career-title').textContent=({profile:'My profile',jobs:'Applications',library:'Service library',versions:'My resumes',match:'Job match',skills:'Translate skills',letter:'Cover letter'})[tab];
+  document.querySelector('.document-tools').hidden=!['match','skills','letter'].includes(tab);
+  $('career-tool-help').textContent=({profile:'Your background, ready to reuse.',library:'Find codes and qualifications for every branch.',jobs:'Your job search, one application at a time.',versions:'Saved versions and your current work.',match:'See how your experience fits the job.',skills:'Civilian wording grounded in your actual service.',letter:'A cover letter for this resume and job.'})[tab]||'';
   $('career-kit-checks').hidden=!['match','skills','letter'].includes(tab)||!$('career-checks').children.length;
   if(tab==='profile'){$('career-profile-slot').append($('background-fields'));updateProfile();}
   if(tab==='library')library.open();
   if(['match','skills','letter'].includes(tab))kitContext();letterSource();
+  showAppView(tab==='jobs'?'applications':tab);
+  syncAppSummary();
  }
  function open(next='profile'){
   if($('account-dialog').open)$('account-dialog').close();
-  if(!$('career-dialog').open)$('career-dialog').showModal();
+  if(!isCareerView())returnView=getAppView();
   status('');account();select(next);
-  if(api.user()?.email)refresh().catch(e=>status(e.message));
+  if(api.user()?.email&&['jobs','versions','letter'].includes(next))refresh().catch(e=>{if(tab===next)status(e.message);});
  }
- function close(){ $('career-dialog').close();restoreProfile(); }
- $('career-close').onclick=close;$('career-dialog').addEventListener('close',restoreProfile);
- $('career-open').onclick=()=>open();$('career-home-open').onclick=()=>open();$('career-results-open').onclick=()=>open('match');
- $('service-library-open').onclick=()=>open('library');
- for(const el of document.querySelectorAll('[data-career-tab]'))el.onclick=()=>select(el.dataset.careerTab);
- $('career-signin').onclick=()=>{close();api.openAccount();};
- $('career-storage-consent').onchange=()=>{$('cloud-consent').checked=$('career-storage-consent').checked;};
- $('cloud-consent').addEventListener('change',()=>{$('career-storage-consent').checked=$('cloud-consent').checked;});
+ function close(){ $('career-dialog').hidden=true;restoreProfile();if(isCareerView())showAppView(returnView==='workspace'?'workspace':'home'); }
+ $('career-close').onclick=close;
+ document.addEventListener('app:view-changed',event=>{if(!isCareerView())restoreProfile();});
+ $('career-results-open').onclick=()=>open('match');
+ document.addEventListener('app:open-career',event=>open(event.detail));
+ for(const b of document.querySelectorAll('[data-career-launch]'))b.onclick=()=>open(b.dataset.careerLaunch);
+ for(const el of document.querySelectorAll('[data-career-tab]'))el.onclick=()=>open(el.dataset.careerTab);
+ $('career-signin').onclick=()=>api.openAccount();
  $('background-fields').addEventListener('input',updateProfile);
  async function guarded(run,message){const version=generation;try{await run();if(version===generation&&message)status(message);}catch(e){if(version===generation)status(e.message);}}
  $('career-profile-save').onclick=()=>guarded(()=>api.saveProfile(),'Career profile saved. Reuse it when you start your next resume.');
@@ -100,18 +106,21 @@ export function initCareerTools(api){
    const dates=[job.appliedDate&&'Applied: '+job.appliedDate,job.interviewDate&&'Interview: '+job.interviewDate,job.followUpDate&&'Follow up: '+job.followUpDate].filter(Boolean);
    if(dates.length)li.append(node('p',dates.join(' · ')));
    if(job.resumeVersionId)li.append(node('p','Submitted resume: '+(job.resumeVersionLabel||'Saved version')));
-   const actions=node('div',null,'career-actions');actions.append(button('Edit',()=>{fillJob(job);$('career-job-form').scrollIntoView({block:'start'});}),button('Use job for resume',()=>tailor(job)),button('Delete',async()=>{if(!confirm('Delete this application record? Saved resume versions remain.'))return;await api.removeJob(job.id);await refresh();if(editingJob===job.id)fillJob();status('Application deleted.');}));
+   const actions=node('div',null,'career-actions');actions.append(button('Edit',()=>{fillJob(job);$('career-job-form').hidden=false;$('career-job-form').scrollIntoView({block:'start'});}),button('Use job for resume',()=>tailor(job)),button('Delete',async()=>{if(!confirm('Delete this application record? Saved resume versions remain.'))return;await api.removeJob(job.id);await refresh();if(editingJob===job.id)fillJob();status('Application deleted.');}));
    if(job.url){const link=node('a','Open job posting ↗');link.href=job.url;link.target='_blank';link.rel='noopener noreferrer';actions.append(link);}li.append(actions);return li;
   }));
  }
  async function refresh(){
-  const version=generation;const values=await Promise.all([api.listJobs(),api.listVersions(),api.listLetters()]);if(version!==generation)return;
-  [jobs,versions,letters]=values;renderJobs();renderVersions();renderLetters();
+  const version=generation,requested=tab;
+  if(requested==='jobs'){const values=await Promise.all([api.listJobs(),api.listVersions()]);if(version!==generation)return;[jobs,versions]=values;renderJobs();renderVersions();}
+  else if(requested==='versions'){const values=await api.listVersions();if(version!==generation)return;versions=values;renderVersions();}
+  else if(requested==='letter'){const values=await api.listLetters();if(version!==generation)return;letters=values;renderLetters();}
  }
- $('career-job-filter').onchange=renderJobs;$('career-job-new').onclick=()=>{fillJob();field('role').focus();};
+ $('career-job-cancel').onclick=()=>{$('career-job-form').hidden=true;fillJob();$('career-job-new').focus();};
+ $('career-job-filter').onchange=renderJobs;$('career-job-new').onclick=()=>{fillJob();$('career-job-form').hidden=false;field('role').focus();};
  $('career-job-refresh').onclick=()=>guarded(refresh,'Applications refreshed.');
  $('career-job-form').onsubmit=async event=>{event.preventDefault();const job=readJob();const selected=versions.find(v=>v.id===job.resumeVersionId);job.resumeVersionLabel=selected?.title||jobs.find(j=>j.id===editingJob)?.resumeVersionLabel||'';
-  $('career-job-save').disabled=true;await guarded(async()=>{const saved=await api.saveJob(job,editingJob||undefined);await refresh();fillJob(saved);},'Application saved.');$('career-job-save').disabled=false;
+  $('career-job-save').disabled=true;await guarded(async()=>{const saved=await api.saveJob(job,editingJob||undefined);await refresh();fillJob(saved);$('career-job-form').hidden=true;},'Application saved.');$('career-job-save').disabled=false;
  };
  async function tailor(job){
   if(!job.role){status('Add the target job title first.');return;}
@@ -149,7 +158,7 @@ export function initCareerTools(api){
   $('career-letters').replaceChildren(...letters.map(letter=>{const li=node('li',null,'career-result');li.append(node('strong',letter.title||'Cover letter'));const actions=node('div',null,'career-actions');actions.append(button('Open',()=>{if($('career-cover-letter').value.trim()&&!confirm('Replace the current cover letter? Save or download any unsaved edits first.'))return;$('career-cover-letter').value=letter.content;letterBuildId=letter.buildId;letterRole=letter.title;letterRevision=-1;letterSource();}),button('Delete',async()=>{if(!confirm('Delete this saved cover letter? The original career kit and downloaded copies remain.'))return;await api.removeLetter(letter.id);await refresh();status('Saved cover letter deleted.');}));li.append(actions);return li;}));
  }
  $('career-letter-save').onclick=()=>guarded(async()=>{if(!letterBuildId)throw new Error('Open a completed build and create its career kit first.');await api.saveLetter(letterBuildId,$('career-cover-letter').value,letterRole?letterRole+' · cover letter':'Cover letter');await refresh();},'Your edited cover letter is saved to your account.');
- document.addEventListener('resume:payment-changed',()=>{if($('career-dialog').open&&['match','skills','letter'].includes(tab))kitContext();});
+ document.addEventListener('resume:payment-changed',()=>{if(!$('career-dialog').hidden&&['match','skills','letter'].includes(tab))kitContext();});
  fillJob();
- return {open,accountChanged:account,reset(){library.reset();generation++;kitController?.abort();busy=false;jobs=[];versions=[];letters=[];kits.clear();editingJob=null;letterBuildId='';letterRole='';letterRevision=-1;$('career-cover-letter').value='';$('career-current-text').value='';$('career-version-text').value='';$('career-version-comparison').hidden=true;$('career-version-title').value='';$('career-storage-consent').checked=false;$('career-ai-consent').checked=false;$('career-checks').replaceChildren();$('career-kit-checks').hidden=true;$('career-matches').replaceChildren();$('career-translations').replaceChildren();$('career-match-summary').textContent='';letterSource();status('');fillJob();renderJobs();renderVersions();renderLetters();if($('career-dialog').open)close();}};
+ return {open,accountChanged(){account();if(api.user()?.email&&isCareerView()&&['jobs','versions','letter'].includes(tab))refresh().catch(e=>status(e.message));},reset(){library.reset();generation++;kitController?.abort();busy=false;jobs=[];versions=[];letters=[];kits.clear();editingJob=null;letterBuildId='';letterRole='';letterRevision=-1;$('career-cover-letter').value='';$('career-current-text').value='';$('career-version-text').value='';$('career-version-comparison').hidden=true;$('career-version-title').value='';$('career-storage-consent').checked=false;$('career-ai-consent').checked=false;$('career-checks').replaceChildren();$('career-kit-checks').hidden=true;$('career-matches').replaceChildren();$('career-translations').replaceChildren();$('career-match-summary').textContent='';letterSource();status('');fillJob();$('career-job-form').hidden=true;renderJobs();renderVersions();renderLetters();if(!$('career-dialog').hidden)close();}};
 }

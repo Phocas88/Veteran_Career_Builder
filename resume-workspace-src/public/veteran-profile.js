@@ -1,4 +1,4 @@
-import { personalFields, groups } from './profile-fields.js';
+import { personalFields, groups } from './profile-fields.js?v=20261024-service-profile';
 export const branches = {
   army: { name: 'U.S. Army', code: 'MOS', example: '92Y' },
   navy: { name: 'U.S. Navy', code: 'Rating / NEC', example: 'LS / NEC, if applicable' },
@@ -22,7 +22,7 @@ function normalizeEntries(value, spec) {
  return (Array.isArray(value) ? value : []).slice(0,12).map(v => normalizeEntry(typeof v === 'string' ? {name:v} : v,spec));
 }
 export function normalizeProfile(input = {}) {
- const p={schemaVersion:2,...Object.fromEntries(personalFields.map(f=>[f.key,clean(input[f.key],f.type==='textarea'?2400:250)]))};
+ const p={schemaVersion:3,...Object.fromEntries(personalFields.map(f=>[f.key,clean(input[f.key],f.type==='textarea'?2400:250)]))};
  for (const [key,spec] of Object.entries(groups)) p[key]=normalizeEntries(input[key],spec);
  for(const role of p.roles){if(!Object.hasOwn(branches,role.branch))role.branch='';if(!components.includes(role.component))role.component='';}
  for(const [key,max] of [['contact',500],['civilian',4000],['education',2000],['skills',1800]])p[key]=clean(input[key],max);
@@ -35,8 +35,9 @@ function extras(r){return [r.hours&&'Hours per week: '+r.hours,r.duties,r.achiev
 export function profileToResume(input) {
  const p=normalizeProfile(input); const sections=[p.name,join(p.email,p.phone,join(p.city,p.state,p.country),p.linkedin,p.portfolio,p.contact),p.summary&&'PROFESSIONAL SUMMARY\n'+p.summary];
  if(p.roles.some(r=>(r.title||r.duties||r.mosRoles.some(x=>x.keyDuty))&&!r.branch))throw new Error('Choose a branch for each service experience.');
- const military=p.roles.filter(r=>r.title||r.duties||r.code||r.mosRoles.some(x=>x.title)).map(r=>[
- join(r.title||r.mosTitle,dates(r)),join(branches[r.branch]?.name,r.component,r.serviceType,r.organization,r.location),join(r.rank&&'Military rank: '+r.rank,r.payGrade&&'Pay grade: '+r.payGrade,r.code&&(branches[r.branch]?.code||'Specialty code')+': '+r.code,r.mosTitle,r.tos&&'Time in service: '+r.tos),...extras(r),
+ const military=p.roles.filter(r=>r.title||r.duties||r.code||r.fullCode||r.rankHistory.some(x=>x.rank)||r.mosRoles.some(x=>x.title)).map(r=>[
+ join(r.title||r.mosTitle,dates(r)),join(branches[r.branch]?.name,r.component,r.serviceType,r.organization,r.location),join(r.rank&&'Military rank: '+r.rank,r.payGrade&&'Pay grade: '+r.payGrade,r.code&&(branches[r.branch]?.code||'Specialty code')+': '+r.code,r.fullCode&&'Full specialty code (as recorded): '+r.fullCode,r.skillLevel&&'Skill level / specialty grade (as recorded): '+r.skillLevel,r.mosTitle,r.tos&&'Time in service: '+r.tos),...extras(r),
+ ...r.rankHistory.filter(x=>x.rank||x.payGrade).map(x=>join(x.rank&&'Rank history: '+x.rank,x.payGrade&&'Pay grade: '+x.payGrade,dates(x))),
  ...r.mosRoles.map(x=>join('Position: '+x.title,x.rankAtRole,[x.fromYear,x.toYear].filter(Boolean).join(' – '),x.keyDuty,x.achievements)),
  ...['asi','sqi'].flatMap(k=>r[k].map(x=>join(k==='asi'?'Additional qualification':'Special designator',x.code,x.desc))),
  ...r.additionalDuties.map(x=>join('Additional duty: '+x.name,dates(x),x.duties)),

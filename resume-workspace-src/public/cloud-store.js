@@ -1,6 +1,6 @@
 // Firebase rules remain the security boundary. Every operation derives its path
 // from the current authenticated UID; caller-supplied owner IDs are never accepted.
-import { normalizeJob } from './career-model.js?v=20261024-service-library';
+import { normalizeJob } from './career-model.js?v=20261024-service-profile';
 export function savedResumeToDraft(item = {}) {
   if (item.workspace && typeof item.workspace.resume === 'string') return {...item.workspace, versionFamily:item.familyId || item.id, versionId:item.id, versionTitle:item.title || 'Saved resume'};
   let data = item.resumeData;

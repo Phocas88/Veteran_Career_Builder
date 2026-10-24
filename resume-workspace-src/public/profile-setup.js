@@ -70,7 +70,7 @@ export function initProfileSetup(api){
  $('profile-setup-next').onclick=()=>advance('next');$('profile-setup-skip').onclick=()=>advance('skip');$('profile-setup-later').onclick=()=>advance('later');
  $('profile-setup-back').onclick=()=>{const index=profileSteps.indexOf(selected());if(index>0){state.section=profileSteps[index-1].key;selectProfileSection(state.section);render();focusPrompt();}};
  $('profile-setup-cloud').onchange=()=>{$('career-storage-consent').checked=$('profile-setup-cloud').checked;render();};
- $('career-storage-consent').addEventListener('change',()=>{$('profile-setup-cloud').checked=$('career-storage-consent').checked;render();});
+ $('career-storage-consent').addEventListener('change',()=>{if(!$('career-storage-consent').checked)$('profile-setup-cloud').checked=false;render();});
  $('profile-setup-done').onclick=api.goHome;
  $('profile-setup-build').onclick=()=>api.useProfile();
  document.addEventListener('profile:section-changed',()=>{if(running){if(state.section!==selected().key)lastSaved=false;state.section=selected().key;render();focusPrompt();}});

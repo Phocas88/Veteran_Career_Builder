@@ -1,0 +1,6 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({
+ testDir:'./e2e',testMatch:'career.spec.mjs',timeout:40000,workers:1,
+ use:{baseURL:'http://127.0.0.1:3000',viewport:{width:390,height:844},launchOptions:{channel:'chromium'}},
+ webServer:{command:'node server.mjs',url:'http://127.0.0.1:3000',reuseExistingServer:!process.env.CI}
+});

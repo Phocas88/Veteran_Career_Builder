@@ -52,6 +52,12 @@ jobs:
       - name: Build veteran resume workspace
         run: node scripts/build-resume-workspace.mjs
 
+      - name: Verify career tools in a mobile browser
+        working-directory: resume-workspace-src
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:career-browser
+
       - name: Build Firebase hosting directory
         run: node scripts/build-hosting.mjs
 

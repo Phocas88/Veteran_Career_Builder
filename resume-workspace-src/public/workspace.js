@@ -1,9 +1,9 @@
-import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261024-career-tools';
-import { fillBackground, readBackground } from './background-form.js?v=20261024-career-tools';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261024-career-tools';
-import { initCareerTools } from './career-tools.js?v=20261024-career-tools';
+import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261024-service-library';
+import { fillBackground, readBackground } from './background-form.js?v=20261024-service-library';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261024-service-library';
+import { initCareerTools } from './career-tools.js?v=20261024-service-library';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261024-career-tools';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261024-service-library';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -144,6 +144,7 @@ export function initWorkspace(adapter) {
   callback = adapter; fillProfile({});
   careerUI=initCareerTools({
    user:()=>user,openAccount:()=>openAccount(),getProfile:readProfile,getDraft:()=>callback.getDraft(),
+   applyProfile:profile=>{fillProfile(profile);profileDirty=true;},
    saveProfile:async()=>{const s=await careerStore(true);await s.saveProfile(readProfile());profileDirty=false;},
    loadProfile:async()=>{const s=await careerStore();if(profileDirty&&!confirm('Replace your unsaved career profile with the saved profile?'))return;const version=accountVersion;const data=await s.profile();if(version===accountVersion)fillProfile(profileFromWebsite(data));},
    buildProfile:()=>choosePaidEntry('build'),

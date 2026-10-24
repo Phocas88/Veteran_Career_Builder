@@ -9,15 +9,17 @@
   },
   "scripts": {
     "build": "node scripts/build-imports.mjs && node scripts/build-exports.mjs",
-    "test": "node --test test/veteran.test.mjs test/interface.test.mjs test/career.test.mjs test/service-library.test.mjs test/service-library-content.test.mjs test/service-profile.test.mjs",
+    "test": "node --test test/veteran.test.mjs test/interface.test.mjs test/career.test.mjs test/service-library.test.mjs test/service-library-content.test.mjs test/service-profile.test.mjs test/exports.test.mjs",
     "test:career-browser": "playwright test --config=playwright.career.config.mjs",
     "check": "node --check public/workspace.js && node --check public/app.js && npm test"
   },
   "dependencies": {
+    "@fontsource/lato": "5.3.0",
+    "@fontsource/source-serif-4": "5.3.1",
     "docx": "9.12.0",
     "mammoth": "1.13.0",
-    "pdfmake": "0.3.12",
-    "pdfjs-dist": "6.4.299"
+    "pdfjs-dist": "6.4.299",
+    "pdfmake": "0.3.12"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",

@@ -1,4 +1,4 @@
-import { exportPdf } from './exports.js';
+import { exportPdf } from './exports.js?v=20261027-resume-studio';
 
 let cache;
 export function clearPdfCache() { cache = null; }
@@ -26,7 +26,7 @@ export async function preparePdf(model) {
 export function checkFederalDownload(model, prepared) {
   if (model.applicationType !== 'federal') return;
   if (model.paper !== 'letter') throw new Error('Federal USAJOBS resumes should use US Letter paper. Select US Letter, then check the page preview.');
-  if (prepared.pageCount > 2) throw new Error(`This federal resume is ${prepared.pageCount} pages. USAJOBS generally requires two pages or fewer. Use the rewritten draft or shorten less relevant details, then check the page preview. Nothing has been cut automatically.`);
+  if (prepared.pageCount > 2) throw new Error(`This federal resume is ${prepared.pageCount} pages. USAJOBS requires two pages or fewer. Use the rewritten draft or shorten less relevant details, then check the page preview. Nothing has been cut automatically.`);
   if (prepared.blob.size > 5 * 1024 * 1024) throw new Error('This federal PDF exceeds the USAJOBS 5 MB file limit. Shorten the resume and generate it again.');
 }
 

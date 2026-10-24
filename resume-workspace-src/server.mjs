@@ -5,7 +5,7 @@ import path from 'node:path';
 import { reviewResume, ReviewError } from './lib/review.mjs';
 
 const root = fileURLToPath(new URL('./public/', import.meta.url));
-const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json', '.wasm': 'application/wasm', '.ttf': 'font/ttf', '.txt': 'text/plain; charset=utf-8' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json', '.wasm': 'application/wasm', '.woff': 'font/woff', '.ttf': 'font/ttf', '.txt': 'text/plain; charset=utf-8' };
 export function makeServer({ apiKey = process.env.OPENAI_API_KEY, model = process.env.OPENAI_MODEL, review = reviewResume } = {}) {
   const limits = new Map();
   return createServer(async (req, res) => {
@@ -56,7 +56,7 @@ export function makeServer({ apiKey = process.env.OPENAI_API_KEY, model = proces
       }
       if (url.pathname.startsWith('/api/')) return send(404, { error: 'Page not found.' });
       if (!['GET', 'HEAD'].includes(req.method)) { res.setHeader('Allow', 'GET, HEAD'); return send(405, 'Method not allowed.', 'text/plain'); }
-      const routes = new Set(['/', '/index.html', '/app.js', '/app-shell.js', '/profile-setup.js', '/profile-steps.js', '/app-shell.css', '/corrections.js', '/imports.js', '/exports.js', '/page-preview.js', '/styles.css', '/resume.css', '/icon.svg', '/manifest.webmanifest', '/workspace.js', '/cloud-store.js', '/firebase-client.js', '/veteran-profile.js', '/veteran.css', '/privacy.html', '/brand.svg', '/guided-flow.js', '/branch-controls.js', '/branch-catalog.js', '/background-form.js', '/profile-fields.js', '/payments.js', '/build-recovery.js', '/cookies.html', '/terms.html']);
+      const routes = new Set(['/', '/index.html', '/app.js', '/app-shell.js', '/profile-setup.js', '/profile-steps.js', '/app-shell.css', '/corrections.js', '/imports.js', '/exports.js', '/resume-designs.js', '/design-editor.js', '/page-preview.js', '/styles.css', '/resume.css', '/icon.svg', '/manifest.webmanifest', '/workspace.js', '/cloud-store.js', '/firebase-client.js', '/veteran-profile.js', '/veteran.css', '/privacy.html', '/brand.svg', '/guided-flow.js', '/branch-controls.js', '/branch-catalog.js', '/background-form.js', '/profile-fields.js', '/payments.js', '/build-recovery.js', '/cookies.html', '/terms.html']);
       for (const file of ['career-tools.js','career-model.js','career.css','letter-exports.js']) routes.add('/'+file);
       for (const file of ['service-library.js','service-library-model.js','service-library-data.json']) routes.add('/'+file);
       routes.add('/service-codes.js');

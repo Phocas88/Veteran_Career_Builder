@@ -53,3 +53,33 @@
   #print-content{display:block!important;margin:0!important;padding:0!important;white-space:normal!important;font:inherit!important}
   #print-content>.resume-document{width:auto;min-height:0;padding:0;box-shadow:none;transform:none!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 }
+
+/* Self-hosted fonts match the PDF font families. No remote font requests. */
+@font-face{font-family:ResumeSans;src:url('./vendor/Roboto-Italic.ttf') format('truetype');font-style:italic;font-display:swap}
+@font-face{font-family:ResumeSans;src:url('./vendor/Roboto-MediumItalic.ttf') format('truetype');font-weight:700;font-style:italic;font-display:swap}
+@font-face{font-family:ResumeLato;src:url('./vendor/Lato-normal.woff') format('woff');font-display:swap}
+@font-face{font-family:ResumeLato;src:url('./vendor/Lato-bold.woff') format('woff');font-weight:700;font-display:swap}
+@font-face{font-family:ResumeLato;src:url('./vendor/Lato-italics.woff') format('woff');font-style:italic;font-display:swap}
+@font-face{font-family:ResumeLato;src:url('./vendor/Lato-bolditalics.woff') format('woff');font-weight:700;font-style:italic;font-display:swap}
+@font-face{font-family:ResumeSerif;src:url('./vendor/SourceSerif-normal.woff') format('woff');font-display:swap}
+@font-face{font-family:ResumeSerif;src:url('./vendor/SourceSerif-bold.woff') format('woff');font-weight:700;font-display:swap}
+@font-face{font-family:ResumeSerif;src:url('./vendor/SourceSerif-italics.woff') format('woff');font-style:italic;font-display:swap}
+@font-face{font-family:ResumeSerif;src:url('./vendor/SourceSerif-bolditalics.woff') format('woff');font-weight:700;font-style:italic;font-display:swap}
+.resume-document{font-family:var(--resume-font,ResumeSans,Arial,sans-serif);padding:var(--margin-top,44pt) var(--margin-right,44pt) var(--margin-bottom,44pt) var(--margin-left,44pt);text-align:var(--body-align,left)}
+.resume-document .resume-contact,.resume-document .resume-metadata{font-size:var(--small-size,9.5pt)}
+.resume-document .resume-columns{display:grid;grid-template-columns:1fr;gap:18pt}
+.resume-document .columns-left{grid-template-columns:29fr 71fr}.resume-document .columns-right{grid-template-columns:71fr 29fr}
+.resume-document .resume-header{display:flex;align-items:center;justify-content:space-between;gap:12pt;margin-bottom:8pt}
+.resume-document .resume-header>div{flex:1;min-width:0}
+.resume-document .resume-header.header-band{background:var(--accent);color:#fff;padding:10pt}
+.resume-document .resume-header.header-band .resume-name,.resume-document .resume-header.header-band .resume-contact{color:#fff}
+.resume-document .resume-header.header-card{background:#eef2f5;padding:10pt}
+.resume-document .resume-photo{width:58pt;height:58pt;object-fit:cover}
+.resume-document .header-plain~.resume-columns .resume-heading{border:0;padding:0}
+.resume-document .header-bar~.resume-columns .resume-heading{background:#eef2f5;padding:4pt 6pt;border:0}
+.resume-document .resume-side .resume-heading{font-size:var(--heading-size)}
+.resume-document .resume-main,.resume-document .resume-side{min-width:0}
+#resume-proof,.studio-text-editor{scroll-margin-top:80px}
+@media print{#print-content.print-studio{page:resume-studio-page}#print-content>.resume-document{padding:0}.resume-document .resume-header{break-inside:avoid}.resume-document .resume-heading{break-after:avoid}.resume-document .resume-columns{display:block;position:relative}.resume-document .columns-left,.resume-document .columns-right{display:grid}}
+
+.resume-document.design-patriot .resume-header{border-bottom:2pt solid #9a7118}

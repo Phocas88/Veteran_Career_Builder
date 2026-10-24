@@ -1,5 +1,5 @@
 import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261025-standalone-app';
-import { savedResumeToDraft } from './cloud-store.js?v=20261025-standalone-app';
+import { savedResumeToDraft } from './cloud-store.js?v=20261026-profile-setup';
 import { careerBuildContext, requestCareerKit } from './payments.js?v=20261025-standalone-app';
 import { exportLetter } from './letter-exports.js?v=20261025-standalone-app';
 import {initServiceLibrary} from './service-library.js?v=20261025-standalone-app';

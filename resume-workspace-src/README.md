@@ -41,3 +41,9 @@ VCP Resume is an independent app by Veteran Career Path. The Home screen starts 
 The profile editor shows one category at a time while retaining all entered categories and branch-specific controls. Profile edits and library selections stay in memory unless the user explicitly saves them with account-storage consent. The existing independent Firebase session, data collections, upfront $1.99 payment and purchase recovery are unchanged.
 
 Run `npm run test:career-browser` for navigation, narrow-screen layout, profile persistence, purchase guards, library, application tracking and resume-version checks.
+
+## Guided profile setup
+
+After creating or linking a new app account, users are guided through the nine profile sections with specific prompts, optional tips, Back, Skip and Finish later. The section picker still works. Skipping never clears existing facts and finishing the walkthrough does not buy or generate a resume. Existing users and guests can start the walkthrough from Profile.
+
+Private guided saving is off by default. With explicit opt-in, Next, Skip and Finish later save the current profile and bounded setup metadata together in the owner’s existing `resumeProgram/background` document. Home offers to resume an unfinished setup after sign-in; loading it confirms before replacing unsaved fields. Without saving, progress stays in the current tab. Account changes clear the guide and pending responses are discarded.

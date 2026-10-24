@@ -8,11 +8,11 @@ export function paidResponse(body,id='a'.repeat(64)){
 export async function unlockEntry(page){
  if(await page.locator('#flow-payment').isVisible()){await page.locator('#upfront-consent').check();await page.locator('#purchase-start').click();}
 }
-export async function installAccount(page,kind='none') {
- await page.addInitScript(({kind})=>{
-  let docSequence=0;const listeners=[];window.__writes=[];window.__deleted=[];window.__records={};
+export async function installAccount(page,kind='none',options={}) {
+ await page.addInitScript(({kind,uid,records})=>{
+  let docSequence=0;const listeners=[];window.__writes=[];window.__deleted=[];window.__records=records||{};
   const makeUser=(uid,email)=>({uid,email,getIdToken:async()=> 'firebase-'+uid,async linkWithCredential(credential){this.email=credential.email;window.__switchAuth(this);return {user:this};}});
-  const auth={currentUser:kind==='registered'?makeUser('veteran-a','alex@example.com'):kind==='guest'?makeUser('resumeGuest_fixture',null):null,
+  const auth={currentUser:kind==='registered'?makeUser(uid||'veteran-a','alex@example.com'):kind==='guest'?makeUser('resumeGuest_fixture',null):null,
    onAuthStateChanged(fn){listeners.push(fn);queueMicrotask(()=>fn(auth.currentUser));},async setPersistence(){},async signOut(){window.__switchAuth(null);},
    async signInWithCustomToken(token){if(token!=='fixture-custom-token')throw new Error('Unexpected custom token');window.__switchAuth(makeUser('resumeGuest_fixture',null));return {user:auth.currentUser};},
    async createUserWithEmailAndPassword(email){window.__switchAuth(makeUser('registered-new',email));return {user:auth.currentUser};},
@@ -20,12 +20,12 @@ export async function installAccount(page,kind='none') {
   };
   window.__switchAuth=value=>{auth.currentUser=typeof value==='string'?makeUser(value,value+'@example.com'):value;listeners.forEach(fn=>fn(auth.currentUser));};
   function ref(path){return {path,id:path.split('/').at(-1),collection:name=>ref(path+'/'+name),doc:(id=(++docSequence===1?'saved-new':'saved-new-'+docSequence))=>ref(path+'/'+id),orderBy(){return this;},limit(){return this;},
-   async set(data,options){window.__writes.push({path,data,options});window.__records[path]=data;},async delete(){window.__deleted.push(path);delete window.__records[path];},
+   async set(data,options){if(window.__failProfileSave&&path.endsWith('/resumeProgram/background'))throw new Error('Fixture save failure');window.__writes.push({path,data,options});window.__records[path]=options?.merge?{...window.__records[path],...data}:data;},async delete(){window.__deleted.push(path);delete window.__records[path];},
    async get(){if(/\/(resumeProgramResumes|resumeProgramJobs|resumeProgramLetters)$/.test(path))return {docs:Object.entries(window.__records).filter(([key])=>key.startsWith(path+'/')).map(([key,data])=>({id:key.split('/').at(-1),data:()=>data}))};if(path in window.__records)return {exists:true,data:()=>window.__records[path]};return {exists:path.endsWith('/background'),data:()=>({background:{name:'ALEX VETERAN',roles:[{branch:'navy',code:'LS',title:'Supply technician',duties:'Maintained equipment records.'}]}})};}
   };}
   const firebaseAuth=()=>auth;firebaseAuth.Auth={Persistence:{LOCAL:'local',SESSION:'session'}};firebaseAuth.EmailAuthProvider={credential:(email,password)=>({email,password})};
   const db={collection:name=>ref(name)};window.firebase={apps:[{name:'vcp-resume-program',auth:()=>auth,firestore:()=>db}],auth:firebaseAuth,firestore:()=>db};
- },{kind});
+ },{kind,...options});
  await page.route('https://vcp-proxy.vercel.app/api/claude',route=>{const body=route.request().postDataJSON();return route.fulfill({json:body.action==='guest'?{token:'fixture-custom-token'}:paidResponse(body)||{builds:[]}});});
 }
 export async function start(page,path='edit') {

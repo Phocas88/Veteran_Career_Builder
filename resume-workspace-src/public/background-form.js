@@ -1,3 +1,4 @@
+import {profileSteps} from './profile-steps.js?v=20261026-profile-setup';
 import { wireServiceBranchChoices, wireNestedBranchChoices } from './branch-controls.js?v=20261025-standalone-app';
 import { branches, normalizeProfile } from './veteran-profile.js?v=20261025-standalone-app';
 import { personalFields, groups } from './profile-fields.js?v=20261025-standalone-app';
@@ -80,7 +81,7 @@ export function fillBackground(input={}){
  const root=$('background-fields'),previous=root.querySelector('[data-profile-section]')?.value||'personal',p=normalizeProfile(input);root.replaceChildren();
  const nav=document.createElement('div');nav.className='profile-section-bar';
  const label=document.createElement('label');label.textContent='Profile section';const select=document.createElement('select');select.dataset.profileSection='true';select.id='profile-section';select.setAttribute('aria-label','Profile section');
- const titles={personal:'Personal & contact',roles:'Service, ranks & specialties',jobs:'Civilian & government jobs',educationEntries:'Education',certifications:'Licenses & certifications',training:'Training & military schools',skillsEntries:'Skills & tools',languages:'Languages',projects:'Projects & volunteering'};
+ const titles=Object.fromEntries(profileSteps.map(step=>[step.key,step.title]));
  for(const [key,title]of Object.entries(titles))select.add(new Option(title,key));label.append(select);nav.append(label);root.append(nav);
  const heading=document.createElement('h3');heading.className='profile-section-title';heading.tabIndex=-1;root.append(heading);
  const personal=document.createElement('fieldset');personal.className='service-role';personal.id='builder-personal';const legend=document.createElement('legend');legend.textContent='Personal & contact information';personal.append(legend);
@@ -91,7 +92,10 @@ export function fillBackground(input={}){
  }
  for(const key of ['contact','civilian','education','skills'])if(p[key]){const label=control({key,label:'Previously saved '+key+' — retained for compatibility; move into the fields above when ready',type:'textarea'},p[key]);label.dataset.legacy=key;root.append(label);}
  const actions=document.createElement('div');actions.className='profile-section-actions';const back=document.createElement('button'),next=document.createElement('button');for(const button of [back,next]){button.type='button';button.className='button button-secondary';}back.textContent='Previous section';next.textContent='Next section →';actions.append(back,next);root.append(actions);
- const keys=Object.keys(titles);function show(focus=false){for(const category of root.querySelectorAll(':scope > [data-profile-category]')){category.hidden=category.dataset.profileCategory!==select.value;category.open=!category.hidden;}heading.textContent=titles[select.value];const index=keys.indexOf(select.value);back.disabled=index===0;next.disabled=index===keys.length-1;if(focus){heading.focus({preventScroll:true});nav.scrollIntoView({block:'start'});}}
- select.value=keys.includes(previous)?previous:'personal';select.onchange=()=>show(true);back.onclick=()=>{select.value=keys[Math.max(0,keys.indexOf(select.value)-1)];show(true);};next.onclick=()=>{select.value=keys[Math.min(keys.length-1,keys.indexOf(select.value)+1)];show(true);};show();
+ const keys=Object.keys(titles);function show(focus=false){for(const category of root.querySelectorAll(':scope > [data-profile-category]')){category.hidden=category.dataset.profileCategory!==select.value;category.open=!category.hidden;}heading.textContent=titles[select.value];const index=keys.indexOf(select.value);back.disabled=index===0;next.disabled=index===keys.length-1;if(focus){heading.focus({preventScroll:true});nav.scrollIntoView({block:'start'});}document.dispatchEvent(new CustomEvent('profile:section-changed',{detail:{section:select.value}}));}
+ select.value=keys.includes(previous)?previous:'personal';select.onchange=()=>show(true);back.onclick=()=>{select.value=keys[Math.max(0,keys.indexOf(select.value)-1)];show(true);};next.onclick=()=>{select.value=keys[Math.min(keys.length-1,keys.indexOf(select.value)+1)];show(true);};show();document.dispatchEvent(new Event('profile:rendered'));
 }
 export function readBackground(){const root=$('background-fields');const p=readBox($('builder-personal'));for(const g of root.querySelectorAll(':scope > .builder-group'))p[g.dataset.group]=readGroup(g);for(const label of root.querySelectorAll(':scope > label[data-legacy]'))p[label.dataset.legacy]=label.querySelector('[data-key]').value;return normalizeProfile(p);}
+
+export const getProfileSection=()=>document.querySelector('[data-profile-section]')?.value||'personal';
+export function selectProfileSection(section){const select=document.querySelector('[data-profile-section]');if(select&&[...select.options].some(o=>o.value===section)){select.value=section;select.onchange();}}

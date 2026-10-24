@@ -1,3 +1,4 @@
+import {normalizeProfileSetup} from './profile-steps.js?v=20261026-profile-setup';
 // Firebase rules remain the security boundary. Every operation derives its path
 // from the current authenticated UID; caller-supplied owner IDs are never accepted.
 import { normalizeJob } from './career-model.js?v=20261025-standalone-app';
@@ -36,8 +37,8 @@ export function createCloudStore({ db, auth }) {
   return {
     async getJob(id) {const {uid,ref}=owner();const snap=await ref.collection('resumeProgramJobs').doc(validId(id)).get();assertOwner(uid);if(!snap.exists)throw new Error('This saved job was deleted. Choose another application.');return {...normalizeJob(snap.data()),id};},
     async getVersion(id) {const {uid,ref}=owner();const snap=await ref.collection('resumeProgramResumes').doc(validId(id)).get();assertOwner(uid);if(!snap.exists)throw new Error('This saved resume version was deleted. Open another version.');return {...snap.data(),id};},
-    async profile() { const { uid, ref } = owner(); const snap = await ref.collection('resumeProgram').doc('background').get(); assertOwner(uid); return snap.exists ? {resumeWorkspaceProfile: snap.data().background} : {}; },
-    async saveProfile(profile) { const { uid, ref } = owner(); await ref.collection('resumeProgram').doc('background').set({ background: profile, updatedAt: Date.now() }, { merge: true }); assertOwner(uid); },
+    async profile() { const { uid, ref } = owner(); const snap = await ref.collection('resumeProgram').doc('background').get(); assertOwner(uid); return snap.exists ? {resumeWorkspaceProfile: snap.data().background,profileSetup:normalizeProfileSetup(snap.data().profileSetup)} : {}; },
+    async saveProfile(profile,setup) { const {uid,ref}=owner();const entry={background:profile,updatedAt:Date.now()};if(setup!==undefined)entry.profileSetup=normalizeProfileSetup(setup);await ref.collection('resumeProgram').doc('background').set(entry,{merge:true});assertOwner(uid); },
     async removeProfile() { const {uid,ref} = owner(); await ref.collection('resumeProgram').doc('background').delete(); assertOwner(uid); },
     async list() { const { uid, ref } = owner(); const snap = await ref.collection('resumeProgramResumes').orderBy('createdAt', 'desc').limit(50).get(); assertOwner(uid); return snap.docs.map(doc => ({ ...doc.data(), id: doc.id })); },
     async save(draft, title) {

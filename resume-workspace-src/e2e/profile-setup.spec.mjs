@@ -1,0 +1,41 @@
+import {test,expect} from '@playwright/test';
+import {installAccount,selectProfileSection} from './helpers/workspace.mjs';
+import {profileSteps} from '../public/profile-steps.js';
+async function createAccount(page){
+ await installAccount(page);await page.goto('/');await page.locator('#welcome-create').click();await page.locator('#auth-email').fill('example-veteran@example.com');await page.locator('#auth-password').fill('Example-fixture-password');await page.locator('#account-terms').check();await page.locator('#auth-submit').click();await expect(page.locator('#profile-setup-panel')).toBeVisible();
+}
+test('new accounts enter the optional walkthrough and get a distinct prompt for all nine profile sections',async({page})=>{
+ const requests=[],errors=[];page.on('request',r=>{if(r.url().includes('/api/claude'))requests.push(r.postDataJSON());});page.on('pageerror',e=>errors.push(e.message));await createAccount(page);
+ await page.locator('#builder-name').fill('EXAMPLE VETERAN');
+ for(const [index,step]of profileSteps.entries()){
+  await expect(page.locator('#profile-setup-question')).toHaveText(step.question);await expect(page.locator('#profile-setup-progress')).toContainText(`Step ${index+1} of 9`);await expect(page.locator('[data-profile-section]')).toHaveValue(step.key);
+  await page.locator('#profile-setup-skip').click();
+ }
+ await expect(page.locator('#profile-setup-finished')).toBeVisible();await expect(page.locator('#profile-setup-panel')).toBeHidden();await selectProfileSection(page,'personal');await expect(page.locator('#builder-name')).toHaveValue('EXAMPLE VETERAN');
+ expect(await page.evaluate(()=>window.__writes)).toEqual([]);expect(requests.some(r=>['purchase','run','career'].includes(r.action))).toBe(false);expect(errors).toEqual([]);
+});
+test('opted-in profile and setup progress save together and resume after a later sign-in',async({page,context})=>{
+ await createAccount(page);await page.locator('#builder-name').fill('EXAMPLE SAVED VETERAN');await page.locator('#profile-setup-cloud').check();await page.locator('#profile-setup-next').click();await expect(page.locator('[data-profile-section]')).toHaveValue('roles');
+ const box=page.locator('#service-roles > fieldset').first();await box.locator(':scope > label > [data-key="branch"]').selectOption('army');await box.locator(':scope > label > [data-key="fullCode"]').fill('88M02');await page.locator('#profile-setup-later').click();await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('#home-profile-setup-note')).toContainText('Saved to your account');
+ const saved=await page.evaluate(()=>window.__records['profiles/registered-new/resumeProgram/background']);expect(saved.profileSetup).toMatchObject({status:'paused',section:'roles'});expect(saved.background.roles[0].fullCode).toBe('88M02');
+ const later=await context.newPage();await installAccount(later,'registered',{uid:'registered-new',records:{'profiles/registered-new/resumeProgram/background':saved}});await later.goto('/');await expect(later.locator('#home-profile-setup')).toBeVisible();expect(await later.evaluate(()=>window.__writes)).toEqual([]);await later.locator('#home-profile-setup-continue').click();await expect(later.locator('[data-profile-section]')).toHaveValue('roles');await expect(later.locator('#service-roles [data-key="fullCode"]')).toHaveValue('88M02');await expect(later.locator('#builder-name')).toHaveValue('EXAMPLE SAVED VETERAN');await expect(later.locator('#profile-setup-cloud')).not.toBeChecked();
+});
+test('a save failure keeps the current step and all fields available for retry',async({page})=>{
+ await createAccount(page);await page.locator('#builder-name').fill('UNSAVED EXAMPLE');await page.locator('#profile-setup-cloud').check();await page.evaluate(()=>{window.__failProfileSave=true;});await page.locator('#profile-setup-next').click();await expect(page.locator('#profile-setup-status')).toContainText('could not be saved');await expect(page.locator('[data-profile-section]')).toHaveValue('personal');await expect(page.locator('#builder-name')).toHaveValue('UNSAVED EXAMPLE');
+ await page.evaluate(()=>{window.__failProfileSave=false;});await page.locator('#profile-setup-next').click();await expect(page.locator('[data-profile-section]')).toHaveValue('roles');expect((await page.evaluate(()=>window.__writes)).at(-1).data.background.name).toBe('UNSAVED EXAMPLE');
+});
+test('direct section jumps, Back and Skip keep existing facts and update the prompt',async({page})=>{
+ await createAccount(page);await page.locator('#builder-name').fill('EXAMPLE NAVIGATION');await selectProfileSection(page,'educationEntries');await expect(page.locator('#profile-setup-question')).toHaveText(profileSteps[3].question);await page.locator('#profile-setup-back').click();await expect(page.locator('[data-profile-section]')).toHaveValue('jobs');await page.locator('#profile-setup-skip').click();await expect(page.locator('[data-profile-section]')).toHaveValue('educationEntries');await selectProfileSection(page,'personal');await expect(page.locator('#builder-name')).toHaveValue('EXAMPLE NAVIGATION');await expect(page.locator('#profile-setup-back')).toBeDisabled();
+ await page.setViewportSize({width:360,height:800});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'/tmp/profile-setup-mobile.png'});
+});
+test('existing accounts choose the guide, and switching accounts clears setup and private fields',async({page})=>{
+ await installAccount(page,'registered');await page.goto('/');await expect(page.locator('#home-panel')).toBeVisible();await page.locator('#career-home-open').click();await expect(page.locator('#profile-setup-panel')).toBeHidden();await page.locator('#builder-name').fill('PRIVATE EXAMPLE');await page.locator('#career-storage').evaluate(n=>n.open=true);await page.locator('#career-storage-consent').check();await page.locator('#profile-setup-offer-button').click();await expect(page.locator('#profile-setup-cloud')).not.toBeChecked();await expect(page.locator('#profile-setup-panel')).toBeVisible();await expect(page.locator('#builder-name')).toHaveValue('PRIVATE EXAMPLE');await page.locator('#profile-setup-cloud').check();
+ await page.evaluate(()=>window.__switchAuth('other-account'));await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('#home-profile-setup')).toBeHidden();await page.locator('#career-home-open').click();await expect(page.locator('#builder-name')).toHaveValue('');await expect(page.locator('#profile-setup-panel')).toBeHidden();await expect(page.locator('#profile-setup-cloud')).not.toBeChecked();
+});
+test('linking a guest account starts guidance without clearing the existing service profile',async({page})=>{
+ await installAccount(page,'guest');await page.goto('/');await page.locator('#career-home-open').click();await page.locator('#builder-name').fill('EXAMPLE GUEST');await selectProfileSection(page,'roles');const box=page.locator('#service-roles > fieldset').first();await box.locator(':scope > label > [data-key="branch"]').selectOption('army');await box.locator(':scope > label > [data-key="fullCode"]').fill('88M02');
+ await page.locator('#account-open').click();await page.locator('#auth-email').fill('linked@example.com');await page.locator('#auth-password').fill('Example-fixture-password');await page.locator('#account-terms').check();await page.locator('#auth-submit').click();await expect(page.locator('#profile-setup-panel')).toBeVisible();await expect(page.locator('#builder-name')).toHaveValue('EXAMPLE GUEST');await selectProfileSection(page,'roles');await expect(page.locator('#service-roles [data-key="fullCode"]')).toHaveValue('88M02');
+});
+test('Finish later without saving clearly leaves work in this tab and never writes to the account',async({page})=>{
+ await createAccount(page);await page.locator('#builder-name').fill('SESSION EXAMPLE');await page.locator('#profile-setup-later').click();await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('#home-profile-setup-note')).toContainText('this tab only');expect(await page.evaluate(()=>window.__writes)).toEqual([]);await page.locator('#home-profile-setup-continue').click();await expect(page.locator('#builder-name')).toHaveValue('SESSION EXAMPLE');
+});

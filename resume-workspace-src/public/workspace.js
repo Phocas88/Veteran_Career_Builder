@@ -1,10 +1,12 @@
+import {initProfileSetup} from './profile-setup.js?v=20261026-profile-setup';
+import {showAppView} from './app-shell.js?v=20261025-standalone-app';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261025-standalone-app';
-import { fillBackground, readBackground } from './background-form.js?v=20261025-standalone-app';
+import { fillBackground, readBackground } from './background-form.js?v=20261026-profile-setup';
 import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261025-standalone-app';
-import { initCareerTools } from './career-tools.js?v=20261025-standalone-app';
+import { initCareerTools } from './career-tools.js?v=20261026-profile-setup';
 import {initAppShell} from './app-shell.js?v=20261025-standalone-app';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261025-standalone-app';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261025-standalone-app';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261026-profile-setup';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -15,7 +17,7 @@ let callback;
 let profileDirty = false;
 let authReady;
 let authMode = 'signin';
-let careerUI;
+let careerUI, profileSetup;
 const guest = account => !!account && !account.email;
 function choice() { try { return sessionStorage.getItem('vcp_resume_entry'); } catch { return null; } }
 function rememberChoice(value) { try { if(value)sessionStorage.setItem('vcp_resume_entry',value);else sessionStorage.removeItem('vcp_resume_entry'); } catch {} }
@@ -54,7 +56,7 @@ function updateUser(next) {
   status(registered ? 'Save a version here, then reopen it whenever you want to make updates.' : 'A free account lets you keep resumes and background details for later.');
   if (registered || guest(next)) { rememberChoice(registered ? 'account' : 'guest'); $('welcome-dialog').close(); }
   if (next) { callback?.restoreDeviceDraft(next.uid); if (registered) refreshSaved(); refreshPurchases(); }
-  careerUI?.accountChanged();
+  careerUI?.accountChanged();profileSetup?.accountChanged();
 }
 async function ensureGuest() {
   const c = await ensureConnection();
@@ -82,7 +84,7 @@ function errorText(error) {
 const readProfile = readBackground;
 function fillProfile(profile) { fillBackground(profile); profileDirty = false; }
 function resetPrivateState() {
-  careerUI?.reset();
+  profileSetup?.reset();careerUI?.reset();
   saved = []; fillProfile({});
   $('auth-email').value = ''; $('auth-password').value = ''; $('ai-consent').checked = false; $('purchase-consent').checked = false; $('save-submitted').checked = false;
   callback?.clearAccountDraft();
@@ -129,8 +131,8 @@ export function initWorkspace(adapter) {
   careerUI=initCareerTools({
    user:()=>user,openAccount:()=>openAccount(),getProfile:readProfile,getDraft:()=>callback.getDraft(),
    applyProfile:profile=>{fillProfile(profile);profileDirty=true;const select=document.querySelector('[data-profile-section]');select.value='roles';select.dispatchEvent(new Event('change'));},
-   saveProfile:async()=>{const s=await careerStore(true);await s.saveProfile(readProfile());profileDirty=false;},
-   loadProfile:async()=>{const s=await careerStore();if(profileDirty&&!confirm('Replace your unsaved career profile with the saved profile?'))return;const version=accountVersion;const data=await s.profile();if(version===accountVersion)fillProfile(profileFromWebsite(data));},
+   saveProfile:async()=>{const s=await careerStore(true);await s.saveProfile(readProfile(),profileSetup?.snapshot()||undefined);profileDirty=false;},
+   loadProfile:async()=>{const s=await careerStore();if(profileDirty&&!confirm('Replace your unsaved career profile with the saved profile?'))return;const version=accountVersion;const data=await s.profile();if(version===accountVersion){fillProfile(profileFromWebsite(data));profileSetup?.loaded(data);}},
    buildProfile:()=>choosePaidEntry('build'),
    listVersions:async()=>{const s=await careerStore();return s.list();},
    saveVersion:async title=>{const s=await careerStore(true);const item=await s.save(callback.getDraft(),title);callback.markVersion(item);await refreshSaved();return item;},
@@ -151,6 +153,7 @@ export function initWorkspace(adapter) {
    },
    openPurchases:()=>{openAccount();$('purchase-history').open=true;},returnReview:()=>callback.showReviewTab()
   });
+  profileSetup=initProfileSetup({user:()=>user,getProfile:readProfile,isDirty:()=>profileDirty,fillProfile,markClean:()=>{profileDirty=false;},openProfile:()=>careerUI.open('profile'),goHome:()=>showAppView('home'),useProfile:()=>choosePaidEntry('build'),load:async()=>(await careerStore()).profile(),save:async(profile,setup)=>(await careerStore(true)).saveProfile(profile,setup)});
   initAppShell({openCareer:careerUI.open,openAccount:()=>openAccount(),getDraft:()=>callback.getDraft(),hasPaidBuild,continueResume:()=>callback.continueResume()});
   initGuidedFlow({showResume:adapter.showResume,openAccount:()=>openAccount(),canUse:hasPaidBuild,startEntry:choosePaidEntry,newResume:()=>{
     if(callback.getDraft().resume.trim()&&!confirm('Start a new paid build? Save or download your current work first. Your previous purchases remain in purchase history.'))return false;
@@ -205,6 +208,7 @@ export function initWorkspace(adapter) {
         await c.auth.signInWithEmailAndPassword($('auth-email').value.trim(), $('auth-password').value);
       }
       rememberChoice('account'); $('welcome-dialog').close(); $('auth-password').value = ''; $('account-dialog').close();
+      if(button.value==='create')profileSetup.newAccount();
     } catch (error) { $('auth-status').textContent = error.message?.startsWith('Agree to') ? error.message : errorText(error); }
     finally { button.disabled = false; }
   });
@@ -217,7 +221,7 @@ export function initWorkspace(adapter) {
     if (!confirm('Sign out and clear this workspace on this device? Save or download any work you need first.')) return;
     try { $('account-dialog').close(); await connection.auth.signOut(); rememberChoice(null); $('welcome-dialog').showModal(); } catch { $('auth-status').textContent = 'Sign-out failed. Try again before leaving a shared device.'; }
   });
-  $('save-profile').addEventListener('click', () => cloudAction(async () => { await store.saveProfile(readProfile()); profileDirty = false; status('Program background saved. Main-site profile and subscriptions are separate.'); }));
+  $('save-profile').addEventListener('click', () => cloudAction(async () => { await store.saveProfile(readProfile(),profileSetup?.snapshot()||undefined); profileDirty = false; status('Program background saved. Main-site profile and subscriptions are separate.'); }));
   $('load-profile').addEventListener('click', async () => {
     try {
       await ensureConnection(); if (!user || guest(user)) { openAccount('create'); return; }
@@ -228,7 +232,7 @@ export function initWorkspace(adapter) {
   });
   $('delete-background').addEventListener('click', async () => {
     if (!user || !confirm('Delete the service background saved by this workspace? Your original website profile, resumes, and downloaded files are unchanged.')) return;
-    try { const uid = connection.auth.currentUser.uid; await store.removeProfile(); if (user?.uid === uid) status('Workspace service background deleted from the active database.'); }
+    try { const uid = connection.auth.currentUser.uid; await store.removeProfile(); if(user?.uid===uid){profileSetup?.reset();status('Workspace service background deleted from the active database.');} }
     catch (error) { status(errorText(error)); }
   });
   $('export-account').addEventListener('click', async () => {

@@ -56,7 +56,7 @@ export function makeServer({ apiKey = process.env.OPENAI_API_KEY, model = proces
       }
       if (url.pathname.startsWith('/api/')) return send(404, { error: 'Page not found.' });
       if (!['GET', 'HEAD'].includes(req.method)) { res.setHeader('Allow', 'GET, HEAD'); return send(405, 'Method not allowed.', 'text/plain'); }
-      const routes = new Set(['/', '/index.html', '/app.js', '/app-shell.js', '/app-shell.css', '/corrections.js', '/imports.js', '/exports.js', '/page-preview.js', '/styles.css', '/resume.css', '/icon.svg', '/manifest.webmanifest', '/workspace.js', '/cloud-store.js', '/firebase-client.js', '/veteran-profile.js', '/veteran.css', '/privacy.html', '/brand.svg', '/guided-flow.js', '/branch-controls.js', '/branch-catalog.js', '/background-form.js', '/profile-fields.js', '/payments.js', '/build-recovery.js', '/cookies.html', '/terms.html']);
+      const routes = new Set(['/', '/index.html', '/app.js', '/app-shell.js', '/profile-setup.js', '/profile-steps.js', '/app-shell.css', '/corrections.js', '/imports.js', '/exports.js', '/page-preview.js', '/styles.css', '/resume.css', '/icon.svg', '/manifest.webmanifest', '/workspace.js', '/cloud-store.js', '/firebase-client.js', '/veteran-profile.js', '/veteran.css', '/privacy.html', '/brand.svg', '/guided-flow.js', '/branch-controls.js', '/branch-catalog.js', '/background-form.js', '/profile-fields.js', '/payments.js', '/build-recovery.js', '/cookies.html', '/terms.html']);
       for (const file of ['career-tools.js','career-model.js','career.css','letter-exports.js']) routes.add('/'+file);
       for (const file of ['service-library.js','service-library-model.js','service-library-data.json']) routes.add('/'+file);
       routes.add('/service-codes.js');

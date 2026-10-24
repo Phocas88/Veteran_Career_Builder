@@ -25,7 +25,7 @@ function sourceModeTo(mode, focus = false) {
   if (focus) $('resume-input').focus({preventScroll:true});
 }
 
-const labels = { start:'Choose how to start', payment:'First · Unlock your resume build', build:'1 of 3 · Add your background', edit:'1 of 3 · Check your resume', job:'2 of 3 · Add job details', checkout:'3 of 3 · Review & build' };
+const labels = { start:'Choose how to start', payment:'Unlock your resume build', build:'Add your background', edit:'Check your resume', job:'Add job details', checkout:'Confirm AI review' };
 export function setFlow(stage, scroll = true) {
   if (!Object.hasOwn(labels, stage)) return;
   if (!['start','payment'].includes(stage) && adapter && !adapter.canUse()) stage='payment';

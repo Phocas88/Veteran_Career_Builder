@@ -1,4 +1,5 @@
-import {normalizeProfile,branches} from './veteran-profile.js';
+import {normalizeProfile,branches} from './veteran-profile.js?v=20261024-service-profile';
+import {fullCodeMatchesBase} from './service-codes.js?v=20261024-service-profile';
 const compact=v=>String(v||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 export function searchServiceLibrary(data,{branch='',kind='specialty',query=''}={}){
  const terms=query.trim().toLowerCase().split(/\s+/).filter(Boolean),codeQuery=compact(query);
@@ -22,6 +23,8 @@ export function addReferenceToProfile(input,entry,target='new'){
   role=profile.roles[index];if(role.branch!==entry.branch)throw new Error('This reference belongs to a different branch. Choose a matching service experience or create a new one.');
  }
  if(entry.kind==='specialty'){
+  if(!role.fullCode&&role.code!==entry.code&&fullCodeMatchesBase(role.code,entry.code))role.fullCode=role.code;
+  if(!fullCodeMatchesBase(role.fullCode,entry.code)){role.fullCode='';role.skillLevel='';}
   role.code=entry.code;role.mosTitle=entry.title;
  }else{
   const key=entry.kind==='qualification'?'asi':'sqi';

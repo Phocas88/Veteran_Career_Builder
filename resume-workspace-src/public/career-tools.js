@@ -1,8 +1,8 @@
-import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261024-service-library';
-import { savedResumeToDraft } from './cloud-store.js?v=20261024-service-library';
-import { careerBuildContext, requestCareerKit } from './payments.js?v=20261024-service-library';
-import { exportLetter } from './letter-exports.js?v=20261024-service-library';
-import {initServiceLibrary} from './service-library.js?v=20261024-service-library';
+import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261024-service-profile';
+import { savedResumeToDraft } from './cloud-store.js?v=20261024-service-profile';
+import { careerBuildContext, requestCareerKit } from './payments.js?v=20261024-service-profile';
+import { exportLetter } from './letter-exports.js?v=20261024-service-profile';
+import {initServiceLibrary} from './service-library.js?v=20261024-service-profile';
 
 const $=id=>document.getElementById(id);
 const node=(tag,content,className)=>{const el=document.createElement(tag);if(content)el.textContent=content;if(className)el.className=className;return el;};

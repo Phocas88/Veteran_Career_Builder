@@ -59,6 +59,7 @@ export function makeServer({ apiKey = process.env.OPENAI_API_KEY, model = proces
       const routes = new Set(['/', '/index.html', '/app.js', '/corrections.js', '/imports.js', '/exports.js', '/page-preview.js', '/styles.css', '/resume.css', '/icon.svg', '/manifest.webmanifest', '/workspace.js', '/cloud-store.js', '/firebase-client.js', '/veteran-profile.js', '/veteran.css', '/privacy.html', '/brand.svg', '/guided-flow.js', '/branch-controls.js', '/branch-catalog.js', '/background-form.js', '/profile-fields.js', '/payments.js', '/build-recovery.js', '/cookies.html', '/terms.html']);
       for (const file of ['career-tools.js','career-model.js','career.css','letter-exports.js']) routes.add('/'+file);
       for (const file of ['service-library.js','service-library-model.js','service-library-data.json']) routes.add('/'+file);
+      routes.add('/service-codes.js');
       if (!routes.has(url.pathname) && !url.pathname.startsWith('/vendor/')) return send(404, 'Page not found.', 'text/plain');
       const file = url.pathname === '/' ? 'index.html' : url.pathname.slice(1);
       const fullPath = path.resolve(root, file);

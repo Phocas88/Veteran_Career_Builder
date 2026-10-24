@@ -1,9 +1,9 @@
-import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261024-service-library';
-import { fillBackground, readBackground } from './background-form.js?v=20261024-service-library';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261024-service-library';
-import { initCareerTools } from './career-tools.js?v=20261024-service-library';
-import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261024-service-library';
+import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261024-service-profile';
+import { fillBackground, readBackground } from './background-form.js?v=20261024-service-profile';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261024-service-profile';
+import { initCareerTools } from './career-tools.js?v=20261024-service-profile';
+import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261024-service-profile';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261024-service-profile';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);

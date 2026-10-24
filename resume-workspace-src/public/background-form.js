@@ -1,6 +1,6 @@
-import { wireServiceBranchChoices, wireNestedBranchChoices } from './branch-controls.js?v=20261018-categories';
-import { branches, normalizeProfile } from './veteran-profile.js';
-import { personalFields, groups } from './profile-fields.js';
+import { wireServiceBranchChoices, wireNestedBranchChoices } from './branch-controls.js?v=20261024-service-profile';
+import { branches, normalizeProfile } from './veteran-profile.js?v=20261024-service-profile';
+import { personalFields, groups } from './profile-fields.js?v=20261024-service-profile';
 const $ = id => document.getElementById(id);
 // Generic line icons describe resume sections; no military branch emblems.
 const iconPaths = {
@@ -14,6 +14,7 @@ const iconPaths = {
  languages:['M21 11a8 8 0 0 1-8 8H6l-4 3V7a5 5 0 0 1 5-5h9a5 5 0 0 1 5 5z','M6 8h11M6 12h8'],
  projects:['M3 5h7l2 3h9v12H3z','m8 14 3 3 5-6'],
  mosRoles:['m12 3 9 5-9 5-9-5z','m3 12 9 5 9-5M3 16l9 5 9-5'],
+ rankHistory:['m12 3 9 5-9 5-9-5z','m3 12 9 5 9-5M3 16l9 5 9-5'],
  asi:['M2 9 12 4l10 5-10 5z','M6 11v6c4 3 8 3 12 0v-6M22 9v8'],
  sqi:['M3 3h8l10 10-8 8L3 11z','M7 7h.01'],
  additionalDuties:['m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z'],
@@ -22,9 +23,9 @@ const iconPaths = {
  chevron:['m9 5 7 7-7 7']
 };
 const categoryHints = {
- personal:'Your name, contact details and career goal',roles:'Branch, ranks, specialties and service history',jobs:'Employers, responsibilities and achievements',educationEntries:'Schools, degrees and relevant coursework',certifications:'Credentials, licenses and completion status',training:'PME, courses and professional development',skillsEntries:'Technical abilities, leadership and tools',languages:'Languages and verified proficiency',projects:'Projects, community service and results',mosRoles:'Roles, dates and responsibilities',asi:'Skills, qualifications and identifiers',sqi:'Designators and specialty identifiers',additionalDuties:'Extra responsibilities you actually held',awards:'Recognition and verified achievements',deployments:'Dates and releasable experience only'
+ personal:'Your name, contact details and career goal',roles:'Branch, ranks, specialties and service history',jobs:'Employers, responsibilities and achievements',educationEntries:'Schools, degrees and relevant coursework',certifications:'Credentials, licenses and completion status',training:'PME, courses and professional development',skillsEntries:'Technical abilities, leadership and tools',languages:'Languages and verified proficiency',projects:'Projects, community service and results',rankHistory:'Ranks and pay grades you actually held, with dates',mosRoles:'Roles, dates and responsibilities',asi:'Skills, qualifications and identifiers',sqi:'Designators and specialty identifiers',additionalDuties:'Extra responsibilities you actually held',awards:'Recognition and verified achievements',deployments:'Dates and releasable experience only'
 };
-const categoryTitles = {roles:'Service experience',jobs:'Civilian & government jobs',training:'Training & military schools',skillsEntries:'Skills & tools',projects:'Projects & volunteering'};
+ const categoryTitles = {roles:'Service experience',jobs:'Civilian & government jobs',training:'Training & military schools',skillsEntries:'Skills & tools',projects:'Projects & volunteering'};
 function icon(key) {
  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
  for(const [name,value]of Object.entries({viewBox:'0 0 24 24',fill:'none',stroke:'currentColor','stroke-width':'1.7','stroke-linecap':'round','stroke-linejoin':'round','aria-hidden':'true',focusable:'false'}))svg.setAttribute(name,value);
@@ -58,6 +59,18 @@ function entry(group,spec,value={}){
  for(const f of spec.fields)box.append(control(f,value[f.key]));
  if(value.dates&&!value.startDate&&!value.endDate)box.append(control({key:'dates',label:'Previously saved dates (verify / split above)',type:'text'},value.dates));
  for(const [key,nested]of Object.entries(spec.nested||{}))box.append(makeGroup(key,nested,value[key]||[]));
+ if(group.dataset.group==='roles'){
+  const field=key=>box.querySelector(':scope > label > [data-key="'+key+'"]').closest('label');
+  const heading=(text,before)=>{const h=document.createElement('h4');h.className='service-setup-heading';h.textContent=text;box.insertBefore(h,before);};
+  heading('1 · Service, rank & dates',field('branch'));
+  const anchor=field('code');
+  for(const key of ['startDate','endDate','current'])box.insertBefore(field(key),anchor);
+  const history=box.querySelector(':scope > [data-group="rankHistory"]');box.insertBefore(history,anchor);
+  heading('2 · MOS or specialty',anchor);
+  const experience=field('title');heading('3 · Additional qualifiers',experience);
+  for(const key of ['asi','sqi'])box.insertBefore(box.querySelector(':scope > [data-group="'+key+'"]'),experience);
+  heading('4 · Assignments, duties & results',experience);
+ }
  const current=box.querySelector(':scope > label > [data-key="current"]');const end=box.querySelector(':scope > label > [data-key="endDate"]');if(current&&end){const toggle=()=>{end.disabled=current.checked;};current.addEventListener('change',toggle);toggle();}
  const rm=document.createElement('button');rm.type='button';rm.className='text-button danger';rm.textContent='Remove this '+spec.add;rm.onclick=()=>{box.remove();group.querySelector(':scope > button').disabled=false;group.dispatchEvent(new Event('input',{bubbles:true}));};box.append(rm);entries.append(box);group.querySelector(':scope > button').disabled=entries.children.length>=12;
  if(group.dataset.group==='roles')wireServiceBranchChoices(box);else{const service=group.closest('[data-service-role]');if(service)wireNestedBranchChoices(box,group.dataset.group,service);}

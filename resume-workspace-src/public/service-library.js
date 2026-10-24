@@ -1,4 +1,4 @@
-import {searchServiceLibrary,addReferenceToProfile} from './service-library-model.js?v=20261024-service-library';
+import {searchServiceLibrary,addReferenceToProfile} from './service-library-model.js?v=20261024-service-profile';
 const $=id=>document.getElementById(id);
 const el=(tag,text,className)=>{const n=document.createElement(tag);if(text)n.textContent=text;if(className)n.className=className;return n;};
 const kindName={specialty:'Specialties',qualification:'Qualifications',designator:'Special qualifications / designators'};
@@ -50,7 +50,7 @@ export function initServiceLibrary(api){
   if(loading)return loading;
   const version=generation;controller=new AbortController();message('Loading the website service library…');$('library-retry').hidden=true;
   loading=(async()=>{
-   try{const r=await fetch('./service-library-data.json?v=20261024-service-library',{signal:controller.signal});if(!r.ok)throw new Error();const next=await r.json();if(!Array.isArray(next.entries)||!next.branches)throw new Error();if(version!==generation)return;data=next;render();message('Browse freely. Adding an entry updates your draft profile only; saving to your account is a separate choice.');}
+   try{const r=await fetch('./service-library-data.json?v=20261024-service-profile',{signal:controller.signal});if(!r.ok)throw new Error();const next=await r.json();if(!Array.isArray(next.entries)||!next.branches)throw new Error();if(version!==generation)return;data=next;render();message('Browse freely. Adding an entry updates your draft profile only; saving to your account is a separate choice.');}
    catch(error){if(version===generation&&error.name!=='AbortError'){message('The library could not load. Your profile is unchanged. Try again or use the manual fields in your career profile.');$('library-retry').hidden=false;}}
    finally{if(version===generation)loading=null;}
   })();return loading;
@@ -64,7 +64,7 @@ export function initServiceLibrary(api){
   if(!selected||!$('library-confirm').checked)return;
   const title=$('library-use-title').value.trim();if(!title){message('Enter the verified description for this code.');$('library-use-title').focus();return;}
   const profile=api.getProfile(),target=$('library-target').value,role=target==='new'?null:profile.roles[Number(target)];
-  if(selected.kind==='specialty'&&role&&(role.code||role.mosTitle)&&(role.code!==selected.code||role.mosTitle!==title)&&!confirm('Replace this experience’s specialty code and official specialty title? Your actual duty title, dates, responsibilities and achievements will stay in place.'))return;
+  if(selected.kind==='specialty'&&role&&(role.code||role.mosTitle||role.fullCode)&&(role.code!==selected.code||role.mosTitle!==title)&&!confirm('Replace this experience’s base specialty and official specialty title? An incompatible full specialty code and skill level will be cleared. Your rank, actual duty title, dates, responsibilities and achievements stay in place.'))return;
   try{const next=addReferenceToProfile(profile,{...selected,title},target);api.applyProfile(next);message('Added to your draft career profile. Review the details there, then choose Save career profile to keep them in your account.');$('library-confirm').checked=false;$('library-apply').disabled=true;targets();$('library-view-profile').hidden=false;}
   catch(error){message(error.message);}
  };

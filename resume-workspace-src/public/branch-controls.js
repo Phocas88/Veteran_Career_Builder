@@ -1,4 +1,5 @@
 import { branchCatalog, additionalDuties } from './branch-catalog.js';
+import {findSpecialty,fullCodeMatchesBase} from './service-codes.js?v=20261024-service-profile';
 
 const refreshers = new WeakMap();
 const direct = (box, key) => box.querySelector(`:scope > label > [data-key="${key}"]`);
@@ -90,27 +91,57 @@ export function wireNestedBranchChoices(box, key, service) {
     // never copies a current rank into earlier positions automatically.
     picker(box, 'position-ranks', () => (catalog()?.name || 'Branch') + ' rank for this position',
       () => Object.values(catalog()?.ranks || {}).flat().map(r => ({ value: r.abbr, label: `${r.grade} · ${r.title} (${r.abbr})` })), value => { input.value = value; });
+  } else if(key==='rankHistory'){
+    picker(box,'history-ranks',()=>(catalog()?.name||'Branch')+' rank held',
+      ()=>Object.values(catalog()?.ranks||{}).flat().map(r=>({value:r.abbr,label:`${r.grade} · ${r.title} (${r.abbr})`})),
+      value=>{const rank=Object.values(catalog()?.ranks||{}).flat().find(r=>r.abbr===value);direct(box,'rank').value=rank.abbr;direct(box,'payGrade').value=rank.grade;});
   }
 }
 
 export function wireServiceBranchChoices(service) {
   service.dataset.serviceRole = 'true';
   const branch = direct(service, 'branch'); const code = direct(service, 'code'); const title = direct(service, 'mosTitle');
+  const fullCode=direct(service,'fullCode'),skillLevel=direct(service,'skillLevel');
   const refreshRank = rankDropdown(service);
   let previous = branch.value;
   let lastAutoTitle = '';
   picker(service, 'specialties', () => (catalogFor(service)?.name || 'Branch') + ' ' + ({army:'MOS',navy:'ratings / NEC',marines:'MOS',airforce:'AFSC',coastguard:'ratings',spaceforce:'SFSC / AFSC'}[branch.value] || 'specialty codes'),
     () => (catalogFor(service)?.specialties || []).map(v => ({ value: v.code, label: v.code + ' · ' + v.title })),
-    value => { const item = catalogFor(service).specialties.find(v => v.code === value); code.value = item.code; title.value = item.title; lastAutoTitle = item.title; });
+    value => {
+      const item=catalogFor(service).specialties.find(v=>v.code===value);
+      if(fullCode.value&&!fullCodeMatchesBase(fullCode.value,item.code)){
+        if(!confirm('Changing the base specialty clears the full specialty code and skill level for this experience. Your rank, dates, duties and other qualifications stay in place. Continue?')){refreshers.get(service)();return;}
+        fullCode.value='';skillLevel.value='';
+      }
+      code.value=item.code;title.value=item.title;lastAutoTitle=item.title;updateFullCodeHint();
+    });
   code.addEventListener('input', () => {
-    const match = catalogFor(service)?.specialties.find(v => v.code.toLowerCase() === code.value.trim().toLowerCase());
+    const match=findSpecialty(catalogFor(service),code.value,branch.value);
     if (match) { title.value = match.title; lastAutoTitle = match.title; }
     else if (lastAutoTitle && title.value === lastAutoTitle) { title.value = ''; lastAutoTitle = ''; }
   });
-  const hint = document.createElement('p'); hint.className = 'branch-choice-note'; hint.textContent = 'Choose your branch to browse its ranks, specialties, qualifications and awards. Select only what you actually held. Unlisted and historical entries can be entered manually.';
+  fullCode.addEventListener('input',()=>{
+    const match=findSpecialty(catalogFor(service),fullCode.value,branch.value);
+    // Lookup the title/family only. Never derive a grade, skill level, SQI or ASI.
+    if(match&&!code.value.trim()){code.value=match.code;if(!title.value.trim()){title.value=match.title;lastAutoTitle=match.title;}}
+    updateFullCodeHint();
+  });
+  const fullHint=document.createElement('small');fullHint.className='full-specialty-help';fullHint.dataset.fullCodeHelp='true';fullCode.closest('label').append(fullHint);
+  function updateFullCodeHint(){
+    fullHint.textContent=fullCode.value&&!fullCodeMatchesBase(fullCode.value,code.value)?'Check that the base and full specialty codes refer to the same specialty. Your values are unchanged.':branch.value==='army'?'Copy the full code from your service records. For example, 88M02 stays exactly as entered; rank does not determine its skill level or qualifiers.':'Copy the full specialty code from your service records. Skill levels and qualifiers are recorded separately and are never guessed from rank.';
+  }
+  code.addEventListener('input',updateFullCodeHint);
+  // Older saved profiles may have kept a full Army MOS in the single code field.
+  const legacy=findSpecialty(catalogFor(service),code.value,branch.value);
+  if(legacy&&legacy.code.toUpperCase()!==code.value.trim().toUpperCase()&&!fullCode.value){fullCode.value=code.value;code.value=legacy.code;if(!title.value)title.value=legacy.title;}
+  const hint = document.createElement('p'); hint.className = 'branch-choice-note'; hint.textContent = 'Set up each service experience: choose your branch and rank, select your MOS or specialty, then add the qualifications you actually held. Use separate experiences for other services or specialties. Historical and unlisted entries can be entered manually.';
   service.append(hint);
   const refresh = () => {
-    code.closest('label').querySelector('span').textContent = ({army:'MOS',navy:'Rating / NEC',marines:'MOS',airforce:'AFSC',coastguard:'Rating',spaceforce:'SFSC / former AFSC'}[branch.value] || 'Specialty code');
+    code.closest('label').querySelector('span').textContent = ({army:'Base MOS',navy:'Rating / specialty',marines:'MOS',airforce:'Base AFSC',coastguard:'Rating',spaceforce:'SFSC / former AFSC'}[branch.value] || 'Base specialty code');
+    fullCode.closest('label').querySelector('span').textContent=({army:'Full MOS code / grade (as recorded, e.g. 88M02)',airforce:'Full AFSC, including skill level / shredout (as recorded)',spaceforce:'Full SFSC / AFSC (as recorded)',navy:'Full rating / specialty code (as recorded)',coastguard:'Full rating / specialty code (as recorded)',marines:'Full MOS code (as recorded)'}[branch.value]||'Full specialty code (as recorded)');
+    fullCode.placeholder=branch.value==='army'?'e.g. 88M02 — exactly as recorded':'Copy the full code from your service records';
+    skillLevel.closest('label').querySelector('span').textContent=branch.value==='army'?'MOS skill level (as recorded, optional)':'Skill / qualification level (as recorded, optional)';
+    updateFullCodeHint();
     code.placeholder = branch.value ? 'Choose a code below or enter an unlisted code' : 'Choose a branch first';
     refreshRank(); refreshers.get(service)();
     for (const [key, titleKey] of [['asi', 'label'], ['sqi', 'sqiLabel']]) {
@@ -124,15 +155,16 @@ export function wireServiceBranchChoices(service) {
     }
   };
   branch.addEventListener('change', () => {
-    const specific = ['rank','payGrade','code','mosTitle'].some(k => direct(service, k).value) || ['asi','sqi','awards'].some(k => [...service.querySelectorAll(`:scope > [data-group="${k}"] [data-key]`)].some(el => el.value)) || [...service.querySelectorAll('[data-group="mosRoles"] [data-key="rankAtRole"]')].some(el => el.value);
+    const specific = ['rank','payGrade','code','mosTitle','fullCode','skillLevel'].some(k => direct(service, k).value) || ['asi','sqi','awards','rankHistory'].some(k => [...service.querySelectorAll(`:scope > [data-group="${k}"] [data-key]`)].some(el => el.value)) || [...service.querySelectorAll('[data-group="mosRoles"] [data-key="rankAtRole"]')].some(el => el.value);
     if (previous && previous !== branch.value && specific) {
-      if (!confirm('Changing this branch clears its rank, pay grade, specialty, qualifications and awards. Your duties, dates and other experience stay in place. Continue?')) { branch.value = previous; return; }
-      for (const key of ['rank','payGrade','code','mosTitle']) direct(service,key).value = '';
+      if (!confirm('Changing this branch clears branch-specific ranks, pay grades, specialty codes, qualifications and awards. Rank-history dates, duties and other experience stay in place. Continue?')) { branch.value = previous; return; }
+      for (const key of ['rank','payGrade','code','mosTitle','fullCode','skillLevel']) direct(service,key).value = '';
       service.querySelector('[data-rank-custom]').value = '';
       for (const key of ['asi','sqi','awards']) { const group=service.querySelector(`:scope > [data-group="${key}"]`); group.querySelector(':scope > .builder-entries').replaceChildren(); group.querySelector(':scope > button').disabled=false; }
       // Position titles/duties remain; a rank selected for the former branch must
       // be reconfirmed in the new branch rather than carried across services.
       for (const rank of service.querySelectorAll('[data-group="mosRoles"] [data-key="rankAtRole"]')) rank.value = '';
+      for(const field of service.querySelectorAll('[data-group="rankHistory"] [data-key="rank"], [data-group="rankHistory"] [data-key="payGrade"]'))field.value='';
       lastAutoTitle = '';
     }
     previous = branch.value; refresh();

@@ -10,7 +10,7 @@ export async function unlockEntry(page){
 }
 export async function installAccount(page,kind='none') {
  await page.addInitScript(({kind})=>{
-  const listeners=[];window.__writes=[];window.__deleted=[];window.__records={};
+  let docSequence=0;const listeners=[];window.__writes=[];window.__deleted=[];window.__records={};
   const makeUser=(uid,email)=>({uid,email,getIdToken:async()=> 'firebase-'+uid,async linkWithCredential(credential){this.email=credential.email;window.__switchAuth(this);return {user:this};}});
   const auth={currentUser:kind==='registered'?makeUser('veteran-a','alex@example.com'):kind==='guest'?makeUser('resumeGuest_fixture',null):null,
    onAuthStateChanged(fn){listeners.push(fn);queueMicrotask(()=>fn(auth.currentUser));},async setPersistence(){},async signOut(){window.__switchAuth(null);},
@@ -19,9 +19,9 @@ export async function installAccount(page,kind='none') {
    async signInWithEmailAndPassword(email){window.__switchAuth(makeUser('veteran-a',email));return {user:auth.currentUser};}
   };
   window.__switchAuth=value=>{auth.currentUser=typeof value==='string'?makeUser(value,value+'@example.com'):value;listeners.forEach(fn=>fn(auth.currentUser));};
-  function ref(path){return {path,collection:name=>ref(path+'/'+name),doc:(id='saved-new')=>ref(path+'/'+id),orderBy(){return this;},limit(){return this;},
+  function ref(path){return {path,id:path.split('/').at(-1),collection:name=>ref(path+'/'+name),doc:(id=(++docSequence===1?'saved-new':'saved-new-'+docSequence))=>ref(path+'/'+id),orderBy(){return this;},limit(){return this;},
    async set(data,options){window.__writes.push({path,data,options});window.__records[path]=data;},async delete(){window.__deleted.push(path);delete window.__records[path];},
-   async get(){if(path.endsWith('/resumeProgramResumes'))return {docs:Object.entries(window.__records).filter(([key])=>key.startsWith(path+'/')).map(([key,data])=>({id:key.split('/').at(-1),data:()=>data}))};return {exists:true,data:()=>({background:{name:'ALEX VETERAN',roles:[{branch:'navy',code:'LS',title:'Supply technician',duties:'Maintained equipment records.'}]}})};}
+   async get(){if(/\/(resumeProgramResumes|resumeProgramJobs|resumeProgramLetters)$/.test(path))return {docs:Object.entries(window.__records).filter(([key])=>key.startsWith(path+'/')).map(([key,data])=>({id:key.split('/').at(-1),data:()=>data}))};if(path in window.__records)return {exists:true,data:()=>window.__records[path]};return {exists:path.endsWith('/background'),data:()=>({background:{name:'ALEX VETERAN',roles:[{branch:'navy',code:'LS',title:'Supply technician',duties:'Maintained equipment records.'}]}})};}
   };}
   const firebaseAuth=()=>auth;firebaseAuth.Auth={Persistence:{LOCAL:'local',SESSION:'session'}};firebaseAuth.EmailAuthProvider={credential:(email,password)=>({email,password})};
   const db={collection:name=>ref(name)};window.firebase={apps:[{name:'vcp-resume-program',auth:()=>auth,firestore:()=>db}],auth:firebaseAuth,firestore:()=>db};

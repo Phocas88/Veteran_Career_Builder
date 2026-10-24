@@ -1,10 +1,10 @@
-import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261019-purchase-reuse';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261019-purchase-reuse';
+import { setFlow, syncResumeEditor, setResumeFilename } from './guided-flow.js?v=20261024-career-tools';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261024-career-tools';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';
 import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js';
-import { hasPaidBuild, includedUpdateAvailable, refinePaidReview } from './payments.js?v=20261019-purchase-reuse';
+import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext } from './payments.js?v=20261024-career-tools';
 
 const $ = id => document.getElementById(id);
 const input = $('resume-input');
@@ -21,6 +21,7 @@ const pageBreaks = new Set();
 let previewVersion = 0;
 let previewTimer;
 let previewKey = '';
+let versionContext = {};
 
 function currentDocument() {
   return createResumeDocument(input.value, { design: document.querySelector('[name="resume-design"]:checked').value, arrangement: $('resume-arrangement').value, paper: $('resume-paper').value, applicationType: applicationInput.value, reflow: $('reflow-lines').checked, pageBreaks: [...pageBreaks] });
@@ -568,11 +569,12 @@ setTab('resume', false);
 
 initWorkspace({
   showResume() { setTab('resume', false); },
+  showReviewTab() { setTab('review', false); },
   showPayment() { setFlow('payment'); },
   openEntry(mode) { setFlow(mode==='build'?'build':'edit'); },
   showCheckout() { setFlow('checkout', false); },
   recoverReview(run) { setFlow('checkout', false); return requestReview(run); },
-  getDraft: () => ({ resume: input.value, role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value,
+  getDraft: () => ({ ...versionContext, buildId:careerBuildContext()?.id || '', resume: input.value, role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value,
     design: document.querySelector('[name="resume-design"]:checked').value, arrangement: $('resume-arrangement').value, paper: $('resume-paper').value, reflow: $('reflow-lines').checked, pageBreaks: [...pageBreaks] }),
   restoreDeviceDraft(uid) {
     try { const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
@@ -580,6 +582,7 @@ initWorkspace({
     } catch { /* Ignore unavailable or malformed device copies. */ }
   },
   loadDraft(draft) {
+    versionContext = {versionFamily:draft.versionFamily || '',versionId:draft.versionId || '',versionTitle:draft.versionTitle || ''};
     setResumeFilename('');
     state.controller?.abort('draft-change');
     input.value = typeof draft.resume === 'string' ? draft.resume.slice(0, 20000) : '';
@@ -597,7 +600,10 @@ initWorkspace({
     syncApplicationType(); setTab('resume', false); refreshDraft(); saveDraft(); setFlow('edit', false);
   },
   loadReview(review,source) { showReview(review,source); },
+  markVersion(item) {versionContext={versionFamily:item.familyId || item.id,versionId:item.id,versionTitle:item.title};},
+  setJob(job) {roleInput.value=job.role;jobInput.value=job.description;applicationInput.value=job.applicationType;syncApplicationType();if(state.review){state.stale=true;state.rewriteInvalid=true;}refreshDraft();saveDraft();},
   clearAccountDraft() {
+    versionContext = {};
     setResumeFilename('');
     state.controller?.abort('account-change'); input.value = ''; roleInput.value = ''; jobInput.value = ''; detailsInput.value = '';
     applicationInput.value = 'private'; pageBreaks.clear(); state.review = null; state.history = []; state.applied.clear(); state.stale = false;

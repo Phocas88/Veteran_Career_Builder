@@ -1,8 +1,9 @@
-import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261019-purchase-reuse';
-import { fillBackground, readBackground } from './background-form.js?v=20261019-purchase-reuse';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild } from './payments.js?v=20261019-purchase-reuse';
+import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261024-career-tools';
+import { fillBackground, readBackground } from './background-form.js?v=20261024-career-tools';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261024-career-tools';
+import { initCareerTools } from './career-tools.js?v=20261024-career-tools';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261024-career-tools';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -13,6 +14,7 @@ let callback;
 let profileDirty = false;
 let authReady;
 let authMode = 'signin';
+let careerUI;
 const guest = account => !!account && !account.email;
 function choice() { try { return sessionStorage.getItem('vcp_resume_entry'); } catch { return null; } }
 function rememberChoice(value) { try { if(value)sessionStorage.setItem('vcp_resume_entry',value);else sessionStorage.removeItem('vcp_resume_entry'); } catch {} }
@@ -52,6 +54,7 @@ function updateUser(next) {
   status(registered ? 'Save a version here, then reopen it whenever you want to make updates.' : 'A free account lets you keep resumes and background details for later.');
   if (registered || guest(next)) { rememberChoice(registered ? 'account' : 'guest'); $('welcome-dialog').close(); }
   if (next) { callback?.restoreDeviceDraft(next.uid); if (registered) refreshSaved(); refreshPurchases(); }
+  careerUI?.accountChanged();
 }
 async function ensureGuest() {
   const c = await ensureConnection();
@@ -79,6 +82,7 @@ function errorText(error) {
 const readProfile = readBackground;
 function fillProfile(profile) { fillBackground(profile); profileDirty = false; }
 function resetPrivateState() {
+  careerUI?.reset();
   saved = []; renderSaved(); fillProfile({}); $('cloud-consent').checked = false;
   $('save-title').value = ''; $('auth-email').value = ''; $('auth-password').value = ''; $('ai-consent').checked = false; $('purchase-consent').checked = false; $('save-submitted').checked = false;
   callback?.clearAccountDraft();
@@ -93,7 +97,7 @@ async function ensureConnection() {
 }
 async function refreshSaved() {
   const version = accountVersion;
-  try { const items = await store.list(); if (version !== accountVersion) return; saved = items; renderSaved(); }
+  try { const items = await store.list(); if (version !== accountVersion) return []; saved = items; renderSaved(); return items; }
   catch { status('Saved resumes could not load. Your local draft is unchanged. Try Refresh saved resumes.'); }
 }
 function renderSaved() {
@@ -101,10 +105,7 @@ function renderSaved() {
   for (const item of saved) {
     const row = document.createElement('li'); const title = document.createElement('span'); title.textContent = item.title || 'Saved resume';
     const open = document.createElement('button'); open.className = 'text-button'; open.textContent = 'Open';
-    open.addEventListener('click', () => {
-      if (callback.getDraft().resume.trim() && !confirm('Replace the current draft with this saved resume? Download or save your current work first.')) return;
-      $('account-dialog').close(); callback.loadDraft(savedResumeToDraft(item)); status('Saved resume opened. Changes are not saved automatically.');
-    });
+    open.addEventListener('click', () => openSavedVersion(item).catch(error=>status(error.message)));
     const remove = document.createElement('button'); remove.className = 'text-button danger'; remove.textContent = 'Delete';
     remove.addEventListener('click', async () => {
       if (!confirm('Delete this resume from your account? Downloaded copies and the current editor are not deleted.')) return;
@@ -125,9 +126,46 @@ async function cloudAction(action) {
 }
 
 export const draftOwnerId = () => user?.uid || null;
+async function openSavedVersion(item) {
+  if(callback.getDraft().resume.trim()&&!confirm('Replace the current draft with this saved version? Save or download your current work first.'))return false;
+  const draft=savedResumeToDraft(item),version=accountVersion;
+  if(draft.buildId)await unlockSavedBuild(draft.buildId);
+  if(version!==accountVersion)throw new Error('Your account changed. Reopen this version.');
+  $('account-dialog').close();callback.loadDraft(draft);status('Saved version opened. Save again to create another snapshot.');return true;
+}
+async function careerStore(write=false) {
+ await ensureConnection();
+ if(!user?.email)throw new Error('Create a free account or sign in to save and reopen career tools across devices.');
+ if(write&&!$('career-storage-consent').checked)throw new Error('Check the private account storage agreement before saving.');
+ return store;
+}
 
 export function initWorkspace(adapter) {
   callback = adapter; fillProfile({});
+  careerUI=initCareerTools({
+   user:()=>user,openAccount:()=>openAccount(),getProfile:readProfile,getDraft:()=>callback.getDraft(),
+   saveProfile:async()=>{const s=await careerStore(true);await s.saveProfile(readProfile());profileDirty=false;},
+   loadProfile:async()=>{const s=await careerStore();if(profileDirty&&!confirm('Replace your unsaved career profile with the saved profile?'))return;const version=accountVersion;const data=await s.profile();if(version===accountVersion)fillProfile(profileFromWebsite(data));},
+   buildProfile:()=>choosePaidEntry('build'),
+   listVersions:async()=>{const s=await careerStore();return s.list();},
+   saveVersion:async title=>{const s=await careerStore(true);const item=await s.save(callback.getDraft(),title);callback.markVersion(item);await refreshSaved();return item;},
+   openVersion:openSavedVersion,removeVersion:async id=>(await careerStore()).remove(id),
+   listJobs:async()=>(await careerStore()).jobs(),saveJob:async(job,id)=>(await careerStore(true)).saveJob(job,id),removeJob:async id=>(await careerStore()).removeJob(id),
+   listLetters:async()=>(await careerStore()).letters(),saveLetter:async(id,content,title)=>(await careerStore(true)).saveLetter(id,content,title),removeLetter:async id=>(await careerStore()).removeLetter(id),
+   chooseJob:async job=>{
+    const context=careerBuildContext(),draft=callback.getDraft();
+    if(context?.completed&&draft.role.trim()===job.role.trim()&&draft.jobDescription.trim()===(job.description||'').trim()&&draft.applicationType===job.applicationType){callback.showResume();setFlow('job');return;}
+    if(context?.bound&&!confirm('Tailoring to a different job starts a new $1.99 AI build. Your current result remains in purchase history. Save or download any unsaved edits first. Continue to the new build?'))return false;
+    if(context&&!context.bound){callback.setJob(job);choosePaidEntry('edit');return;}
+    // Save a private snapshot and job before redirecting to Stripe. Checkout
+    // carries only opaque IDs; the user's resume never goes to Stripe.
+    const s=await careerStore(true),savedJob=await s.saveJob(job,job.id||undefined);
+    const version=draft.resume.trim()?await s.save(draft,job.role+' · source for tailoring'):null;
+    if(version)callback.markVersion(version);
+    callback.setJob(job);choosePaidEntry('edit',{jobId:savedJob.id,resumeVersionId:version?.id||''});
+   },
+   openPurchases:()=>{openAccount();$('purchase-history').open=true;},returnReview:()=>callback.showReviewTab()
+  });
   initGuidedFlow({showResume:adapter.showResume,openAccount:()=>openAccount(),canUse:hasPaidBuild,startEntry:choosePaidEntry,newResume:()=>{
     if(callback.getDraft().resume.trim()&&!confirm('Start a new paid build? Save or download your current work first. Your previous purchases remain in purchase history.'))return false;
     callback.clearAccountDraft();forgetActiveBuild();return true;
@@ -144,8 +182,13 @@ export function initWorkspace(adapter) {
   $('auth-switch').onclick = () => mode(authMode === 'create' ? 'signin' : 'create');
   $('checkout-create').onclick = () => openAccount('create');
   if (!choice() && !new URLSearchParams(location.search).has('build')) $('welcome-dialog').showModal();
-  initPayments({ ensureConnection, ensureGuest, adapter });
-  $('background-builder').addEventListener('input', () => { profileDirty = true; });
+  initPayments({ ensureConnection, ensureGuest, adapter,restoreEntryContext:async context=>{
+    await ensureConnection();const version=accountVersion;
+    const [job,resume]=await Promise.all([store.getJob(context.jobId),context.resumeVersionId?store.getVersion(context.resumeVersionId):null]);
+    if(version!==accountVersion)throw new Error('Your account changed. Open this purchase again.');
+    if(resume)callback.loadDraft(savedResumeToDraft(resume));callback.setJob(job);
+  } });
+  $('background-fields').addEventListener('input', () => { profileDirty = true; });
   $('build-draft').addEventListener('click', () => {
     if(!hasPaidBuild()){choosePaidEntry('build');return;}
     try {
@@ -188,7 +231,7 @@ export function initWorkspace(adapter) {
     if (!confirm('Sign out and clear this workspace on this device? Save or download any work you need first.')) return;
     try { $('account-dialog').close(); await connection.auth.signOut(); rememberChoice(null); $('welcome-dialog').showModal(); } catch { $('auth-status').textContent = 'Sign-out failed. Try again before leaving a shared device.'; }
   });
-  $('save-cloud').addEventListener('click', () => cloudAction(async () => { await store.save(callback.getDraft(), $('save-title').value); await refreshSaved(); status('Resume saved to your resume-program account.'); }));
+  $('save-cloud').addEventListener('click', () => cloudAction(async () => { const item=await store.save(callback.getDraft(), $('save-title').value);callback.markVersion(item);await refreshSaved();status('Resume saved as a new version. Earlier versions remain available.'); }));
   $('save-profile').addEventListener('click', () => cloudAction(async () => { await store.saveProfile(readProfile()); profileDirty = false; status('Program background saved. Main-site profile and subscriptions are separate.'); }));
   $('load-profile').addEventListener('click', async () => {
     try {
@@ -207,10 +250,10 @@ export function initWorkspace(adapter) {
   $('export-account').addEventListener('click', async () => {
     try {
       if (!user) return; const version = accountVersion;
-      const [profile, resumes] = await Promise.all([store.profile(), store.list()]); if (version !== accountVersion) return;
-      const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), profile, resumes }, null, 2)], { type: 'application/json' });
+      const [profile, resumes, applications, coverLetters] = await Promise.all([store.profile(), store.list(), store.jobs(), store.letters()]); if (version !== accountVersion) return;
+      const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), profile, resumes, applications, coverLetters }, null, 2)], { type: 'application/json' });
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'veteran-career-path-account.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-      status('Downloaded your profile and up to 50 most recent saved resumes. Contact support for a full account export.');
+      status('Downloaded your profile, up to 50 resume versions, 100 applications and 100 cover letters. Contact support for a full account export.');
     } catch (error) { status(errorText(error)); }
   });
   $('cookie-settings').addEventListener('click', () => $('storage-dialog').showModal());

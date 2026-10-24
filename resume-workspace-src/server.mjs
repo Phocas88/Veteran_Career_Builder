@@ -57,6 +57,7 @@ export function makeServer({ apiKey = process.env.OPENAI_API_KEY, model = proces
       if (url.pathname.startsWith('/api/')) return send(404, { error: 'Page not found.' });
       if (!['GET', 'HEAD'].includes(req.method)) { res.setHeader('Allow', 'GET, HEAD'); return send(405, 'Method not allowed.', 'text/plain'); }
       const routes = new Set(['/', '/index.html', '/app.js', '/corrections.js', '/imports.js', '/exports.js', '/page-preview.js', '/styles.css', '/resume.css', '/icon.svg', '/manifest.webmanifest', '/workspace.js', '/cloud-store.js', '/firebase-client.js', '/veteran-profile.js', '/veteran.css', '/privacy.html', '/brand.svg', '/guided-flow.js', '/branch-controls.js', '/branch-catalog.js', '/background-form.js', '/profile-fields.js', '/payments.js', '/build-recovery.js', '/cookies.html', '/terms.html']);
+      for (const file of ['career-tools.js','career-model.js','career.css','letter-exports.js']) routes.add('/'+file);
       if (!routes.has(url.pathname) && !url.pathname.startsWith('/vendor/')) return send(404, 'Page not found.', 'text/plain');
       const file = url.pathname === '/' ? 'index.html' : url.pathname.slice(1);
       const fullPath = path.resolve(root, file);

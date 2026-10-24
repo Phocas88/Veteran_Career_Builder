@@ -1,6 +1,6 @@
 // Checkout never receives resume content. Private server-owned build records make
 // paid results recoverable without trusting redirect flags or browser storage.
-import {runRecoverableBuild} from './build-recovery.js?v=20261019-purchase-reuse';
+import {runRecoverableBuild} from './build-recovery.js?v=20261024-career-tools';
 const $=id=>document.getElementById(id);
 const endpoint='https://vcp-proxy.vercel.app/api/claude';
 let config,active=null,generation=0;
@@ -30,22 +30,33 @@ async function api(action,extra={},signal){
  if(!response.ok||status>=400)throw Object.assign(new Error(data.error||'The purchase service could not complete this action.'),{status,errorCode:data.errorCode,recoverable:status>=500&&!data.errorCode});
  return data;
 }
-let entryMode='edit',requestId=null;
+let entryMode='edit',requestId=null,entryContext=null;
 const changed=()=>document.dispatchEvent(new Event('resume:payment-changed'));
 export const hasPaidBuild=()=>!!active?.verified;
+export const careerBuildContext=()=>active?.verified?{id:active.id,completed:!!active.review,bound:!!active.input,role:active.input?.role||'',jobDescription:active.input?.jobDescription||'',refinementCount:active.refinementCount||0}:null;
+export async function requestCareerKit(signal){
+ if(!active?.verified||!active.review)throw new Error('Open a completed resume build from purchase history first.');
+ const result=await api('career',{buildId:active.id,consent:true,keepAlive:true},signal);return result.kit;
+}
+export async function unlockSavedBuild(id){
+ if(typeof id!=='string'||!/^[a-f0-9]{64}$/.test(id))throw new Error('Open the original purchase from purchase history to unlock this older saved resume.');
+ if(active?.id===id&&active.verified)return;
+ const build=await api('get',{buildId:id});await unlock(build);
+}
 export const includedUpdateAvailable=()=>hasPaidBuild()&&(active.refinementCount||0)<1;
-export function forgetActiveBuild(){active=null;requestId=null;changed();}
+export function forgetActiveBuild(){active=null;requestId=null;entryContext=null;changed();}
 const runBuild=(id,signal,action='run',extra={})=>runRecoverableBuild(api,id,{signal,action,extra,onRecover:()=>{msg('Reconnecting to your existing build…');$('loading-message').textContent='Reconnecting and checking your saved result. No second payment is needed.';}});
 export function resetPayments(){generation++;forgetActiveBuild();$('purchase-list').replaceChildren();msg('');}
 function redirectCheckout(value){
  const url=new URL(value);if(url.origin!=='https://checkout.stripe.com')throw new Error('Checkout URL could not be verified.');
  location.assign(url.href);
 }
-export function choosePaidEntry(mode){
+export function choosePaidEntry(mode,context=null){
  entryMode=mode;
  if(hasPaidBuild()&&!active.input){config.adapter.openEntry(mode);return;}
  const newBuild=hasPaidBuild()&&!!active.input;
  if(newBuild)forgetActiveBuild();
+ entryContext=context;
  config.adapter.showPayment();
  $('purchase-path').textContent=mode==='build'?'Build a new resume':'Improve an existing resume';
  $('purchase-start-status').textContent=newBuild?'This starts a new resume build. Your previous purchase and result remain in purchase history.':'';
@@ -60,9 +71,9 @@ export async function beginPurchase(){
  button.disabled=true;
  try{
   await config.ensureGuest();requestId ||= crypto.randomUUID();
-  const build=await api('purchase',{entryMode,requestId,storageConsent:true});active={...build,entryMode,requestId,verified:false};changed();
+  const build=await api('purchase',{entryMode,requestId,storageConsent:true,...(entryContext?{entryContext}: {})});active={...build,entryMode,requestId,entryContext,verified:false};changed();
   if(build.url){redirectCheckout(build.url);return;}
-  await unlock(active);config.adapter.openEntry(active.entryMode||entryMode);
+  await unlock(active);if(active.entryContext)await config.restoreEntryContext(active.entryContext);config.adapter.openEntry(active.entryMode||entryMode);
  }catch(error){$('purchase-start-status').textContent=error.message;}
  finally{button.disabled=false;}
 }
@@ -79,7 +90,7 @@ async function openBuild(id){
  if(build.input)config.adapter.loadDraft(build.input);
  if(build.review){config.adapter.loadReview(build.review,build.input?.resume);msg(build.lastError?.error||'Build reopened. Formatting and downloads are included.');}
  else if(build.input){config.adapter.showCheckout();msg('Your paid draft is restored. Finish this build without another payment.');}
- else{config.adapter.openEntry(build.entryMode||'edit');msg('Payment verified. Your resume build is unlocked.');}
+ else{if(build.entryContext)await config.restoreEntryContext(build.entryContext);config.adapter.openEntry(build.entryMode||'edit');msg('Payment verified. Your resume build is unlocked.');}
  return build;
 }
 export async function refreshPurchases(){

@@ -1,3 +1,4 @@
+import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
 import {initProfileSetup} from './profile-setup.js?v=20261026-profile-setup';
 import {showAppView} from './app-shell.js?v=20261025-standalone-app';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261025-standalone-app';
@@ -17,7 +18,7 @@ let callback;
 let profileDirty = false;
 let authReady;
 let authMode = 'signin';
-let careerUI, profileSetup;
+let careerUI,profileSetup,googleReady=false,googleBusy=false,emailBusy=false,persistenceEpoch=0;
 const guest = account => !!account && !account.email;
 function choice() { try { return sessionStorage.getItem('vcp_resume_entry'); } catch { return null; } }
 function rememberChoice(value) { try { if(value)sessionStorage.setItem('vcp_resume_entry',value);else sessionStorage.removeItem('vcp_resume_entry'); } catch {} }
@@ -30,7 +31,7 @@ function mode(value) {
   $('account-terms').closest('label').hidden = value !== 'create';
   $('auth-switch').textContent = value === 'create' ? 'Already have an account? Sign in' : 'New here? Create a free account';
   $('guest-link-note').hidden = !guest(user);
-  $('auth-status').textContent = '';
+  $('auth-status').textContent='';$('google-existing-choice').hidden=true;
 }
 function openAccount(value) {
   $('welcome-dialog').close();
@@ -43,20 +44,21 @@ function continueGuest() {
   $('account-label').textContent = user && !guest(user) ? 'My account' : 'Account';
 }
 function updateUser(next) {
-  ++accountVersion;
+  ++accountVersion;const previousUser=user;
   if (user && user.uid !== next?.uid) resetPrivateState();
   user = next;
   const registered = !!next && !guest(next);
   $('account-label').textContent = registered ? 'My account' : 'Account';
   $('account-email').textContent = registered ? next.email : '';
-  $('account-signed-in').hidden = !registered; $('account-form').hidden = registered;
+  $('account-signed-in').hidden=!registered;$('account-form').hidden=registered;$('google-signin-box').hidden=registered;$('auth-remember-row').hidden=registered;
+  $('account-link-google').hidden=!registered||!!next.providerData?.some(provider=>provider.providerId==='google.com');
   $('start-saved').hidden = !registered; $('save-submitted-row').hidden = !registered; $('guest-checkout-note').hidden = registered;
   $('auth-guest').hidden = registered; $('guest-end').hidden = !guest(next);
   $('account-value').textContent = registered ? 'Save a version in Resumes to keep your work.' : 'Guest session · Sign in to save across devices.';
   status(registered ? 'Save a version here, then reopen it whenever you want to make updates.' : 'A free account lets you keep resumes and background details for later.');
   if (registered || guest(next)) { rememberChoice(registered ? 'account' : 'guest'); $('welcome-dialog').close(); }
   if (next) { callback?.restoreDeviceDraft(next.uid); if (registered) refreshSaved(); refreshPurchases(); }
-  careerUI?.accountChanged();profileSetup?.accountChanged();
+  careerUI?.accountChanged();profileSetup?.accountChanged();syncGoogleButtons();if(previousUser?.email&&!next?.email)prepareGooglePersistence();
 }
 async function ensureGuest() {
   const c = await ensureConnection();
@@ -84,8 +86,8 @@ function errorText(error) {
 const readProfile = readBackground;
 function fillProfile(profile) { fillBackground(profile); profileDirty = false; }
 function resetPrivateState() {
-  profileSetup?.reset();careerUI?.reset();
-  saved = []; fillProfile({});
+  profileSetup?.reset();careerUI?.reset();$('google-existing-choice').hidden=true;
+  saved=[];fillProfile({});$('keep-signed-in').checked=false;
   $('auth-email').value = ''; $('auth-password').value = ''; $('ai-consent').checked = false; $('purchase-consent').checked = false; $('save-submitted').checked = false;
   callback?.clearAccountDraft();
   resetPayments();
@@ -96,6 +98,42 @@ async function ensureConnection() {
   let ready; authReady = new Promise(resolve => { ready = resolve; });
   c.auth.onAuthStateChanged(next => { updateUser(next); ready(); });
   await authReady; return c;
+}
+function syncGoogleButtons(){
+ const busy=googleBusy||emailBusy;
+ for(const id of ['auth-google','welcome-google','account-link-google','google-switch-account'])$(id).disabled=!googleReady||busy;
+ $('welcome-google-status').textContent=!googleReady?'Preparing Google sign-in…':'';
+ $('auth-submit').disabled=busy;$('keep-signed-in').disabled=busy;
+ for(const id of ['auth-guest','guest-end','account-signout','auth-switch'])$(id).disabled=busy;
+ for(const id of ['auth-google','welcome-google','account-link-google'])$(id).setAttribute('aria-busy',String(googleBusy));
+}
+async function prepareGooglePersistence(){
+ if(!connection)return;const epoch=++persistenceEpoch;googleReady=false;syncGoogleButtons();
+ try{await authReady;if(!connection.auth.currentUser?.email)await connection.auth.setPersistence($('keep-signed-in').checked&&!guest(connection.auth.currentUser)?connection.firebase.auth.Auth.Persistence.LOCAL:connection.firebase.auth.Auth.Persistence.SESSION);if(epoch===persistenceEpoch){googleReady=true;syncGoogleButtons();}}
+ catch{if(epoch===persistenceEpoch){googleReady=false;syncGoogleButtons();$('auth-status').textContent='Account services could not prepare Google sign-in. Try opening Account again, or use email sign-in.';}}
+}
+function googleSignIn({linkCurrent=false,switchFromGuest=false}={}){
+ if(!googleReady||googleBusy||emailBusy)return;
+ const before=connection.auth.currentUser,guestBefore=guest(before)?before.uid:null,remember=$('keep-signed-in').checked;
+ if(switchFromGuest&&!confirm('Switch to your existing Google account? This ends the guest session and may lose access to its purchases. Finish or download guest results first. Cancel to keep the guest session or link a different Google account.'))return;
+ googleBusy=true;syncGoogleButtons();$('google-existing-choice').hidden=true;
+ let operation;
+ try{operation=beginGooglePopup(connection,{linkCurrent,switchFromGuest});}catch(error){operation=Promise.reject(error);}
+ $('welcome-dialog').close();if(!$('account-dialog').open)$('account-dialog').showModal();$('auth-status').textContent=linkCurrent?'Linking Google…':'Connecting to Google…';
+ Promise.resolve(operation).then(async result=>{
+  if(connection.auth.currentUser?.uid!==result.user.uid)throw Object.assign(new Error('Account changed'),{code:'auth/user-mismatch'});
+  let persistenceWarning=false;if(!linkCurrent){try{await connection.auth.setPersistence(remember?connection.firebase.auth.Auth.Persistence.LOCAL:connection.firebase.auth.Auth.Persistence.SESSION);}catch{persistenceWarning=true;}}
+  if(connection.auth.currentUser?.uid!==result.user.uid)return;
+  updateUser(result.user);rememberChoice('account');$('auth-password').value='';$('auth-status').textContent='';$('account-dialog').close();
+  if(!linkCurrent&&startsProfileSetup(result,guestBefore))profileSetup.newAccount();
+  document.dispatchEvent(new CustomEvent('app:notice',{detail:linkCurrent?'Google is linked to this account. You can use either sign-in method.':persistenceWarning?'Signed in with Google. This browser could not save your sign-in preference.':'Signed in with Google.'}));
+ }).catch(error=>{
+  $('auth-status').textContent=googleErrorMessage(error);
+  if(guest(connection.auth.currentUser)&&error?.code==='auth/credential-already-in-use')$('google-existing-choice').hidden=false;
+  if(error?.code==='auth/account-exists-with-different-credential'){
+   mode('signin');$('auth-status').textContent=googleErrorMessage(error);const email=error.email||error.customData?.email;if(typeof email==='string'&&email.length<=254)$('auth-email').value=email;
+  }
+ }).finally(()=>{googleBusy=false;syncGoogleButtons();});
 }
 async function refreshSaved() {
   const version = accountVersion;
@@ -188,11 +226,13 @@ export function initWorkspace(adapter) {
       setFlow('edit'); $('resume-input').focus();
     } catch (error) { $('builder-status').textContent = error.message; }
   });
-  $('account-open').addEventListener('click', () => openAccount());
+  $('auth-google').onclick=()=>googleSignIn();$('welcome-google').onclick=()=>googleSignIn();$('account-link-google').onclick=()=>googleSignIn({linkCurrent:true});$('google-switch-account').onclick=()=>googleSignIn({switchFromGuest:true});$('google-keep-guest').onclick=()=>{$('google-existing-choice').hidden=true;$('auth-status').textContent='Your guest session is unchanged. You can continue working or try a different Google account.';};
+  $('keep-signed-in').addEventListener('change',prepareGooglePersistence);
+  $('account-open').addEventListener('click',()=>{openAccount();if(!googleReady)ensureConnection().then(prepareGooglePersistence).catch(()=>{});});
   $('account-close').addEventListener('click', () => { $('account-dialog').close(); if(!choice())$('welcome-dialog').showModal(); });
   $('account-form').addEventListener('submit', async event => {
     event.preventDefault(); $('auth-status').textContent = '';
-    const button = event.submitter; button.disabled = true;
+    if(googleBusy||emailBusy)return;const button=event.submitter;emailBusy=true;syncGoogleButtons();
     try {
       const c = await ensureConnection();
       await c.auth.setPersistence($('keep-signed-in').checked ? c.firebase.auth.Auth.Persistence.LOCAL : c.firebase.auth.Auth.Persistence.SESSION);
@@ -210,7 +250,7 @@ export function initWorkspace(adapter) {
       rememberChoice('account'); $('welcome-dialog').close(); $('auth-password').value = ''; $('account-dialog').close();
       if(button.value==='create')profileSetup.newAccount();
     } catch (error) { $('auth-status').textContent = error.message?.startsWith('Agree to') ? error.message : errorText(error); }
-    finally { button.disabled = false; }
+    finally{emailBusy=false;syncGoogleButtons();}
   });
   $('reset-password').addEventListener('click', async () => {
     if (!$('auth-email').validity.valid || !$('auth-email').value) { $('auth-status').textContent = 'Enter your account email first.'; return; }
@@ -252,7 +292,7 @@ export function initWorkspace(adapter) {
   });
   try { $('storage-notice').hidden = localStorage.getItem('vcp_workspace_storage_choice') === 'essential'; } catch { /* Show explanation without persistence. */ }
   // Restore only this program’s named Firebase session. No offline disk cache.
-  ensureConnection().catch(() => status('Account services could not load. You can still edit and export without cloud storage.'));
+  ensureConnection().then(prepareGooglePersistence).catch(()=>{$('welcome-google-status').textContent='Google sign-in could not load. Try email sign-in or continue as guest.';status('Account services could not load. You can still edit and export without cloud storage.');});
 }
 
 export async function requestVeteranReview(payload, signal) {

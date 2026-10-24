@@ -47,3 +47,20 @@ Run `npm run test:career-browser` for navigation, narrow-screen layout, profile 
 After creating or linking a new app account, users are guided through the nine profile sections with specific prompts, optional tips, Back, Skip and Finish later. The section picker still works. Skipping never clears existing facts and finishing the walkthrough does not buy or generate a resume. Existing users and guests can start the walkthrough from Profile.
 
 Private guided saving is off by default. With explicit opt-in, Next, Skip and Finish later save the current profile and bounded setup metadata together in the owner’s existing `resumeProgram/background` document. Home offers to resume an unfinished setup after sign-in; loading it confirms before replacing unsaved fields. Without saving, progress stays in the current tab. Account changes clear the guide and pending responses are discarded.
+
+## Resume design studio
+
+The studio provides 24 original templates, including three guarded federal presets. Templates, formatting and section editing are included in the existing build price. Choose Templates, Formatting or Sections; preview the generated PDF before downloading. Supported controls include three self-hosted font families, body/name/heading sizes, spacing, margins, color, alignment, US Letter/A4, custom headings and section order, reversible exclusions, custom sections, manual text editing and optional photos in selected civilian layouts. Save a version to preserve settings; device drafts remain opt-in.
+
+All formatted outputs derive from the same parsed document model. PDF embeds its fonts and provides the authoritative page preview. Word and browser-print pagination may vary; verify them before submission. User-controlled section exclusions affect downloads but retain the source for restoration. Nothing is cut automatically to meet a page limit. Two-column templates put supporting sections in their side column; prefer simple templates for online applications.
+
+Federal defaults follow current USAJOBS/OPM guidance, checked October 24, 2026: single column, sans-serif body at least 10 pt, headings at least 14 pt, half-inch minimum margins, US Letter, no photo, PDF up to 5 MB and a two-page limit. The file-size and page guards run before PDF/Word downloads and the app Print button; Word's actual pagination still requires a separate check. Required information is checked per relevant job (employer, month/year dates, hours/week); education, credentials and supporting documents depend on the announcement. A template does not establish eligibility or agency acceptance. NIST's specific restriction on AI-generated resume text is surfaced when its name appears in an announcement.
+
+Primary sources:
+- https://usajobshelp.opm.gov/hc/en-us/articles/52839989720851-How-do-I-write-a-resume-for-a-federal-job (updated October 21, 2026)
+- https://www.opm.gov/policy-data-oversight/hiring-information/merit-hiring-plan-resources/applicant-guidance-on-the-two-page-resume-limit/
+- https://www.nist.gov/careers/application-tips/section-5-what-not-include-your-application
+
+Competitor screenshots supplied by the user showed template browsing, font/color/spacing controls, headings/order, margins, paper sizes, preview and print. These are covered by the studio. The existing veteran differentiators remain branch-aware career profiles and qualification libraries, factual AI editing, job matching, cover letters, private saved versions and application tracking. These observed capabilities are the comparison scope; no unsupported claim of universal competitor or ATS superiority is made.
+
+Validation includes actual PDFs from all 24 templates, Word text in each layout family, source-fact preservation, reversible exclusions, saved design restoration, photo handling, overlength federal guards, and multi-page browser print. Font files and their OFL licenses are packaged locally from pinned Fontsource packages; browser formatting never fetches third-party fonts or sends optional photos to the AI service.

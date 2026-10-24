@@ -1,10 +1,11 @@
+import {initDesignEditor} from './design-editor.js?v=20261027-resume-studio';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261025-standalone-app';
 import {showAppView} from './app-shell.js?v=20261025-standalone-app';
 import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261026-profile-setup';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
-import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks } from './exports.js';
-import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js';
+import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';
+import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js?v=20261027-resume-studio';
 import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext } from './payments.js?v=20261025-standalone-app';
 
 const $ = id => document.getElementById(id);
@@ -23,9 +24,10 @@ let previewVersion = 0;
 let previewTimer;
 let previewKey = '';
 let versionContext = {};
+let designEditor;
 
 function currentDocument() {
-  return createResumeDocument(input.value, { design: document.querySelector('[name="resume-design"]:checked').value, arrangement: $('resume-arrangement').value, paper: $('resume-paper').value, applicationType: applicationInput.value, reflow: $('reflow-lines').checked, pageBreaks: [...pageBreaks] });
+  return createResumeDocument(input.value, {exportSettings:designEditor?.getSettings(),design: document.querySelector('[name="resume-design"]:checked').value, arrangement: $('resume-arrangement').value, paper: $('resume-paper').value, applicationType: applicationInput.value, reflow: $('reflow-lines').checked, pageBreaks: [...pageBreaks] });
 }
 
 function startPagePreview(model) {
@@ -64,7 +66,9 @@ function refreshExport() {
     $('export-preview').hidden=true;$('preview-stage').hidden=true;$('export-empty').hidden=false;
     return;
   }
-  const model = currentDocument();
+  const model=currentDocument();
+  document.querySelector(`[name="resume-design"][value="${model.design}"]`).checked=true;
+  designEditor?.sync(model);
   renderResume($('export-preview'), model);
   $('export-preview').hidden = !input.value.trim();
   $('preview-stage').hidden = !input.value.trim();
@@ -81,7 +85,8 @@ function refreshExport() {
     return button;
   }));
   $('federal-checks').hidden = applicationInput.value !== 'federal';
-  if (applicationInput.value === 'federal') listItems('federal-check-list', federalChecks(model, jobInput.value));
+  if(applicationInput.value==='federal'){const checks=federalChecks(model,jobInput.value);listItems('federal-check-list',checks);$('federal-export-summary').textContent=`${checks.length} items to verify · PDF pages are checked before download.`;}
+  $('agency-writing-note').hidden=applicationInput.value!=='federal'||!/\b(?:NIST|National Institute of Standards and Technology)\b/i.test(jobInput.value);
   if (input.value.trim() && !$('export-panel').hidden) startPagePreview(model);
   if (!input.value.trim()) { ++previewVersion; previewKey = ''; clearTimeout(previewTimer); $('pdf-pages').replaceChildren(); $('page-preview-status').textContent = ''; }
 }
@@ -100,7 +105,7 @@ function showError(message) {
 
 function saveDraft() {
   try {
-    if ($('remember-draft').checked) localStorage.setItem(storageKey, JSON.stringify({ ownerUid: draftOwnerId(), resume: input.value, role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value }));
+    if ($('remember-draft').checked) localStorage.setItem(storageKey, JSON.stringify({ ownerUid: draftOwnerId(), resume: input.value, role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails:detailsInput.value,design:document.querySelector('[name="resume-design"]:checked').value,arrangement:$('resume-arrangement').value,paper:$('resume-paper').value,exportSettings:designEditor?.getSettings(),reflow:$('reflow-lines').checked,pageBreaks:[...pageBreaks]}));
     else localStorage.removeItem(storageKey);
   } catch {
     $('remember-draft').checked = false;
@@ -358,9 +363,9 @@ for (const field of [roleInput, jobInput, detailsInput]) field.addEventListener(
 });
 
 function syncApplicationType() {
-  $('application-help').textContent = applicationInput.value === 'federal' ? 'U.S. federal: generally two pages maximum. Include verified hours/week and month/year dates for each relevant job. Paste the announcement above.' : applicationInput.value === 'government' ? 'State/local requirements vary. Paste the announcement, qualifications, and any required resume details.' : 'Review and rewrite for a conventional professional resume.';
+  $('application-help').textContent = applicationInput.value === 'federal' ? 'U.S. federal: two pages maximum for USAJOBS. Include verified hours/week and month/year dates for each relevant job. Paste the announcement above.' : applicationInput.value === 'government' ? 'State/local requirements vary. Paste the announcement, qualifications, and any required resume details.' : 'Review and rewrite for a conventional professional resume.';
   if (applicationInput.value === 'federal') {
-    document.querySelector('[name="resume-design"][value="federal"]').checked = true;
+    const selected=document.querySelector('[name="resume-design"]:checked');if(!designs[selected?.value]?.federal)document.querySelector('[name="resume-design"][value="federal"]').checked=true;
     $('resume-paper').value = 'letter';
     $('resume-arrangement').value = 'professional';
   }
@@ -471,7 +476,7 @@ function saveDownload(blob, filename) {
 
 $('download-resume').addEventListener('click', () => {
   if (!hasPaidBuild() || !input.value.trim()) return;
-  saveDownload(new Blob([input.value], { type: 'text/plain;charset=utf-8' }), exportFilename(currentDocument(), 'txt'));
+  saveDownload(new Blob([plainTextForModel(currentDocument())], { type: 'text/plain;charset=utf-8' }), exportFilename(currentDocument(), 'txt'));
   toast('Your resume download is ready.');
 });
 
@@ -505,10 +510,7 @@ for (const [id, extension, generate] of [['download-pdf', 'pdf', async model => 
   });
 }
 
-document.querySelectorAll('[name="resume-design"], #resume-arrangement, #resume-paper').forEach(control => control.addEventListener('change', () => {
-  if(control.name==='resume-design'&&control.value==='federal'&&applicationInput.value!=='federal'){applicationInput.value='federal';syncApplicationType();}
-  refreshExport();
-}));
+for(const id of ['resume-arrangement','resume-paper'])$(id).addEventListener('change',()=>{if(id==='resume-arrangement')designEditor?.resetOrder();refreshExport();saveDraft();});
 $('reflow-lines').addEventListener('change', refreshExport);
 $('add-page-break').addEventListener('click', () => {
   const id = $('page-break-target').value;
@@ -518,7 +520,7 @@ $('add-page-break').addEventListener('click', () => {
 
 $('copy-resume').addEventListener('click', async () => {
   if (!hasPaidBuild() || !input.value.trim()) return;
-  try { await navigator.clipboard.writeText(input.value); toast('Resume copied.'); }
+  try { await navigator.clipboard.writeText(plainTextForModel(currentDocument())); toast('Resume copied.'); }
   catch { showError('Clipboard access is unavailable. Download the .txt file or copy the text directly from the editor.'); }
 });
 
@@ -528,15 +530,15 @@ function preparePrint() {
   const content = document.createElement('article');
   renderResume(content, model);
   $('print-content').replaceChildren(content);
-  $('print-content').className = `print-${model.paper}${model.design === 'federal' ? '-federal' : model.design === 'compact' ? '-compact' : ''}`;
+  $('print-content').className='print-studio';
+  const m=model.style.margins;
+  const sheet=[...document.styleSheets].find(s=>s.href&&new URL(s.href).pathname.endsWith('/resume.css'));
+  if(sheet){for(let i=sheet.cssRules.length-1;i>=0;i--)if(sheet.cssRules[i].name==='resume-studio-page')sheet.deleteRule(i);sheet.insertRule(`@page resume-studio-page{size:${model.page.width}pt ${model.page.height}pt;margin:${m.top}pt ${m.right}pt ${m.bottom}pt ${m.left}pt}`,sheet.cssRules.length);}
+
 }
 
 window.addEventListener('beforeprint', preparePrint);
-$('print-resume').addEventListener('click', () => {
-  if (!hasPaidBuild() || !input.value.trim()) return;
-  preparePrint();
-  window.print();
-});
+$('print-resume').addEventListener('click',async()=>{if(!hasPaidBuild()||!input.value.trim())return;try{const model=currentDocument();if(model.applicationType==='federal')checkFederalDownload(model,await preparePdf(model));preparePrint();window.print();}catch(error){showError(error.message);}});
 
 $('privacy-open').addEventListener('click', () => $('privacy-dialog').showModal());
 $('privacy-close').addEventListener('click', () => $('privacy-dialog').close());
@@ -545,7 +547,7 @@ $('clear-resume').addEventListener('click', () => {
 });
 $('clear-cancel').addEventListener('click', () => $('clear-dialog').close());
 $('clear-confirm').addEventListener('click', () => {
-  input.value = ''; roleInput.value = ''; jobInput.value = '';
+  designEditor?.reset();input.value = ''; roleInput.value = ''; jobInput.value = '';
   detailsInput.value = ''; applicationInput.value = 'private'; pageBreaks.clear();
   state.review = null; state.applied.clear(); state.history = []; state.stale = false;
   $('review-empty').hidden = false;
@@ -559,6 +561,8 @@ $('clear-confirm').addEventListener('click', () => {
   toast('Draft cleared, including any copy saved in this browser.');
 });
 
+designEditor=initDesignEditor({getSource:()=>input.value,owner:draftOwnerId,error:showError,editSource:text=>{input.value=text;input.dispatchEvent(new Event('input'));},change:()=>{refreshExport();saveDraft();},designChanged:id=>{if(designs[id].federal&&applicationInput.value!=='federal'){applicationInput.value='federal';syncApplicationType();}else{refreshExport();saveDraft();}}});
+
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
   if (saved && !saved.ownerUid && typeof saved.resume === 'string' && saved.resume.length <= 20000) {
@@ -567,7 +571,8 @@ try {
     jobInput.value = typeof saved.jobDescription === 'string' ? saved.jobDescription.slice(0, 8000) : '';
     applicationInput.value = ['private', 'federal', 'government'].includes(saved.applicationType) ? saved.applicationType : 'private';
     detailsInput.value = typeof saved.additionalDetails === 'string' ? saved.additionalDetails.slice(0, 4000) : '';
-    $('remember-draft').checked = true;
+    designEditor.load(saved.exportSettings);if(Object.hasOwn(designs,saved.design))document.querySelector(`[name="resume-design"][value="${saved.design}"]`).checked=true;if(Object.hasOwn(arrangements,saved.arrangement))$('resume-arrangement').value=saved.arrangement;if(Object.hasOwn(papers,saved.paper))$('resume-paper').value=saved.paper;
+    $('reflow-lines').checked=saved.reflow!==false;if(Array.isArray(saved.pageBreaks))for(const id of saved.pageBreaks.slice(0,100))if(typeof id==='string')pageBreaks.add(id);$('remember-draft').checked=true;
   }
 } catch { /* Private browsing or unavailable storage still permits a session-only draft. */ }
 setTab('resume', false);
@@ -581,13 +586,14 @@ initWorkspace({
   showCheckout() { setFlow('checkout', false); },
   recoverReview(run) { setFlow('checkout', false); return requestReview(run); },
   getDraft: () => ({ ...versionContext, buildId:careerBuildContext()?.id || '', resume: input.value, role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value,
-    design: document.querySelector('[name="resume-design"]:checked').value, arrangement: $('resume-arrangement').value, paper: $('resume-paper').value, reflow: $('reflow-lines').checked, pageBreaks: [...pageBreaks] }),
+    exportSettings:designEditor.getSettings(),design: document.querySelector('[name="resume-design"]:checked').value, arrangement: $('resume-arrangement').value, paper: $('resume-paper').value, reflow: $('reflow-lines').checked, pageBreaks: [...pageBreaks] }),
   restoreDeviceDraft(uid) {
     try { const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
       if (saved?.ownerUid === uid && !input.value.trim()) { this.loadDraft(saved); $('remember-draft').checked = true; saveDraft(); }
     } catch { /* Ignore unavailable or malformed device copies. */ }
   },
   loadDraft(draft) {
+    designEditor.load(draft.exportSettings);
     versionContext = {versionFamily:draft.versionFamily || '',versionId:draft.versionId || '',versionTitle:draft.versionTitle || ''};
     setResumeFilename('');
     state.controller?.abort('draft-change');
@@ -609,7 +615,8 @@ initWorkspace({
   markVersion(item) {versionContext={versionFamily:item.familyId || item.id,versionId:item.id,versionTitle:item.title};},
   setJob(job) {roleInput.value=job.role;jobInput.value=job.description;applicationInput.value=job.applicationType;syncApplicationType();if(state.review){state.stale=true;state.rewriteInvalid=true;}refreshDraft();saveDraft();},
   clearAccountDraft() {
-    versionContext = {};
+    versionContext={};designEditor.reset();
+    document.querySelector('[name="resume-design"][value="classic"]').checked=true;
     setResumeFilename('');
     state.controller?.abort('account-change'); input.value = ''; roleInput.value = ''; jobInput.value = ''; detailsInput.value = '';
     applicationInput.value = 'private'; pageBreaks.clear(); state.review = null; state.history = []; state.applied.clear(); state.stale = false;

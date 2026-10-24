@@ -307,3 +307,67 @@
 .standalone-app .profile-setup-finished h2{font-size:20px}
 .standalone-app.profile-setup-active[data-app-view=profile] #career-tool-help,.standalone-app.profile-setup-active[data-app-view=profile] #career-profile-summary,.standalone-app.profile-setup-active[data-app-view=profile] [data-career-panel=profile]>.career-actions,.standalone-app.profile-setup-active[data-app-view=profile] .profile-section-actions,.standalone-app.profile-setup-active[data-app-view=profile] .profile-save-actions,.standalone-app.profile-setup-active[data-app-view=profile] #career-storage{display:none}
 @media(max-width:480px){.standalone-app .profile-setup-panel{padding:14px}.standalone-app #profile-setup-question{font-size:20px}.standalone-app .profile-setup-actions{gap:8px}.standalone-app .profile-setup-actions .button{font-size:13px;padding:10px 12px}.standalone-app .profile-setup-actions .text-button{font-size:12px}.standalone-app .profile-setup-actions .button-primary{min-width:115px}.standalone-app #home-profile-setup .text-button{flex-shrink:0}}
+
+/* Resume studio: one editing panel at a time, with a direct path to page proof. */
+.standalone-app .export-layout{grid-template-columns:minmax(0,1fr) 390px;gap:20px}
+.standalone-app .studio-tools>p{font-size:13px;margin-bottom:14px}
+.standalone-app .studio-quick-actions{display:flex;align-items:center;gap:14px;margin:16px 0}
+.standalone-app .studio-quick-actions .button{padding:10px 12px;font-size:13px}
+.standalone-app .studio-tabs{display:flex;gap:4px;padding:4px;border-radius:9px;background:#1a3046;margin:18px 0}
+.standalone-app .studio-tabs button{flex:1;min-height:44px;padding:10px 7px;font-size:12px;color:#b7cbe0;background:none;border-radius:6px}
+.standalone-app .studio-tabs button[aria-pressed=true]{background:#2d465b;color:#ffe297;font-weight:650}
+.standalone-app .studio-tools details{border-top:1px solid #354e68;margin:16px 0 0;padding-top:4px}
+.standalone-app .studio-tools details summary{min-height:44px;padding:12px 0;font-size:13px;color:#f1d482;cursor:pointer}
+.standalone-app .selected-template strong{display:block;font-size:19px;color:#f4f7fb}
+.standalone-app .selected-template p{font-size:12px;line-height:1.65;color:#b2c6db;margin:6px 0}
+.standalone-app .studio-filter{display:grid;gap:7px;margin:12px 0 16px}
+.standalone-app .studio-filter label{font-size:12px;color:#bdd0e3}
+.standalone-app .studio-filter input,.standalone-app .studio-filter select{width:100%;margin:0 0 8px}
+.standalone-app .studio-template{padding:12px 8px!important;min-height:150px;gap:7px;cursor:pointer}
+.standalone-app .studio-template strong{font-size:12px!important;line-height:1.4}
+.standalone-app .studio-template small{font-size:10px!important;line-height:1.4}
+.standalone-app .studio-template:has(input:disabled){opacity:.45;cursor:default}
+.standalone-app .studio-swatch{position:relative;display:block;width:62px;height:80px;background:white;border:1px solid #dce1e9;box-shadow:0 2px 5px #0002;padding:10px 7px}
+.standalone-app .studio-swatch>b{display:block;background:var(--swatch-accent);height:4px;width:75%;margin-bottom:8px}
+.standalone-app .studio-swatch>span{display:grid;gap:4px}
+.standalone-app .studio-swatch i{display:block;background:#aab1bb;height:2px}
+.standalone-app .studio-swatch i:nth-child(3n){width:65%}
+.standalone-app .studio-swatch.header-band>b{height:15px;width:calc(100% + 14px);margin:-10px -7px 8px;border-bottom:5px solid #e0e6ec}
+.standalone-app .studio-swatch.header-card>b{background:#dce3ea;height:12px;margin:-3px -2px 7px;width:calc(100% + 4px)}
+.standalone-app .studio-swatch.header-plain>b{width:60%}
+.standalone-app .studio-swatch.layout-left>span{margin-left:15px}
+.standalone-app .studio-swatch.layout-right>span{margin-right:15px}
+.standalone-app .studio-swatch>em{position:absolute;top:27px;bottom:10px;width:11px;display:grid;gap:4px;align-content:start;background:#edf1f5;padding:3px 2px}
+.standalone-app .studio-swatch.layout-left>em{left:5px}.standalone-app .studio-swatch.layout-right>em{right:5px}
+.standalone-app .studio-swatch>em i{background:var(--swatch-accent);opacity:.65;height:2px}
+.standalone-app #template-count{font-size:12px;color:#b9cde0;margin:12px 0 0}
+.standalone-app .studio-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px}
+.standalone-app .studio-fields label{display:grid;gap:7px;align-content:start;font-size:12px;color:#c4d6e9;min-width:0}
+.standalone-app .studio-fields .field-input{width:100%;min-width:0;font-size:15px;padding:10px}
+.standalone-app .studio-tools #format-federal-note,.standalone-app .studio-tools #agency-writing-note{font-size:12px;line-height:1.65;padding:12px;border-left:3px solid #d2b35a;background:#23333e;margin:16px 0}
+.standalone-app .studio-tools .federal-checks{padding:14px;background:#142d3b;border:1px solid #526849;color:#e6f3f5}
+.standalone-app .studio-tools .federal-checks h3{font-size:16px;margin:0 0 8px}
+.standalone-app .studio-tools .federal-checks p,.standalone-app .studio-tools .federal-checks li{font-size:12px;line-height:1.65;color:#bfd3e4}
+.standalone-app .studio-tools .federal-checks summary{font-size:12px;line-height:1.5}
+.standalone-app .studio-tools .federal-checks a,.standalone-app #agency-writing-note a{color:#f6dc8d}
+.standalone-app .studio-section-list{padding:0;list-style:none;display:grid;gap:12px;margin:16px 0}
+.standalone-app .studio-section{display:grid;grid-template-columns:1fr auto;gap:10px;padding:12px;border:1px solid #3c5570;border-radius:9px;background:#11263c;min-width:0}
+.standalone-app .studio-section>input{grid-column:1/-1;width:100%;font-size:15px}
+.standalone-app .studio-section .checkbox-label{font-size:11px!important}
+.standalone-app .section-order-actions{display:flex;gap:5px}
+.standalone-app .section-order-actions .button{min-width:40px;min-height:42px;padding:7px 10px;font-size:16px}
+.standalone-app .studio-text-editor{padding:16px;margin:0!important;border-bottom:1px solid #dce2ea;color:#1c3047;background:#eef2f7}
+.standalone-app .studio-text-editor summary{min-height:44px;color:#1c3b5c;font-size:14px;cursor:pointer}
+.standalone-app .studio-text-editor .field-label,.standalone-app .studio-text-editor .field-hint{color:#3d536b}
+.standalone-app #studio-source-text{display:block;width:100%;font:14px/1.7 inherit;min-height:340px;padding:14px;background:#fff;color:#192c43}
+.standalone-app #resume-photo-input{width:100%;height:auto;padding:10px;font-size:12px}
+.standalone-app #resume-photo-status{font-size:12px}
+@media(max-width:1000px){.standalone-app .export-layout{grid-template-columns:1fr;grid-template-areas:'tools' 'preview';gap:20px}.standalone-app .export-layout>.export-tools{display:block}}
+@media(min-width:1001px){.standalone-app .export-layout{grid-template-areas:'preview tools'}.standalone-app .studio-tools{padding:20px}}
+
+.standalone-app .paper-card .paper-toolbar{background:#13283f;color:#d0dfef;border-bottom:1px solid #354d65}
+.standalone-app .paper-card .preview-label,.standalone-app .paper-card .preview-help,.standalone-app .paper-card .pdf-page-label{color:#b9cee2}
+.standalone-app .studio-text-editor{background:#13283f;color:#c6d9eb}
+.standalone-app .studio-text-editor summary,.standalone-app .studio-text-editor .field-label{color:#d0e2f4}
+.standalone-app .studio-text-editor .field-hint{color:#b8cce0}
+.standalone-app #pdf-pages[aria-busy=true]{opacity:.4}

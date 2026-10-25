@@ -44,7 +44,7 @@ test('an imported Word resume can be edited and downloaded as text', async ({ pa
   await expect(page.locator('#import-status')).toContainText('Imported resume.docx.');
   const text = await page.locator('#resume-input').inputValue();
   await page.locator('#resume-input').fill(text + '\nAdditional verified skill: Excel');
-  await page.locator('.mobile-nav [data-tab="export"]').click();
+  await page.locator('.steps [data-tab="export"]').click();
   const pending = page.waitForEvent('download');
   await page.locator('#download-resume').click();
   const download = await pending;

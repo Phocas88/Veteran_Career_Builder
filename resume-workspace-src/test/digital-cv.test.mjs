@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {profileToCv,selectCv,cvDefaults,cvSlug,safeCvLink} from '../public/digital-cv-model.js';
+import {profileToCv,resumeToCv,selectCv,cvDefaults,cvSlug,safeCvLink} from '../public/digital-cv-model.js';
 import {createCloudStore} from '../public/cloud-store.js';
 const profile={name:'Example Applicant',email:'example@example.com',phone:'555-0100',city:'Example City',summary:'Verified professional summary.',includeClearance:true,clearanceLevel:'SECRET_MARKER',ssn:'PRIVATE_MARKER',medical:'PRIVATE_MARKER',roles:[{branch:'army',rank:'SGT',mosTitle:'Motor Transport Operator',fullCode:'88M02',duties:'Coordinated vehicle schedules.',includeClearance:true,polygraph:'PRIVATE_MARKER'}],jobs:[{jobTitle:'Coordinator',employer:'Example Employer',supervisorPhone:'PRIVATE_MARKER',duties:'Kept schedules.'}],certifications:[{name:'Example Certification',issuer:'Example Institute',status:'Expired',credentialId:'PRIVATE_MARKER'}],educationEntries:[{degree:'BA',status:'In progress',institution:'Example College',gpa:'PRIVATE_MARKER'}],skillsEntries:[{name:'Scheduling'}],languages:[{name:'Spanish'}]};
 test('only chosen public fields are published and all contact defaults to hidden',()=>{const cv=selectCv(profileToCv(profile));assert.deepEqual(cv.contact,{});assert.equal(cv.location,'');assert.equal(cv.noindex,true);assert.equal(cv.military[0].branch,'U.S. Army');assert.equal(cv.military[0].mosTitle,'Motor Transport Operator');assert.equal(cv.skills.certs,'Example Certification — Example Institute — Expired');assert.equal(cv.education[0].degree,'BA · In progress');assert.doesNotMatch(JSON.stringify(cv),/PRIVATE_MARKER|SECRET_MARKER|includeClearance|fullCode|credentialId|ssn|supervisorPhone/);const options={...cvDefaults(),military:false,email:true,location:true,certifications:false};const chosen=selectCv(profileToCv(profile),options);assert.deepEqual(chosen.military,[]);assert.equal(chosen.contact.email,profile.email);assert.equal(chosen.location,profile.city);assert.equal(chosen.skills.certs,'');});
@@ -10,4 +10,9 @@ test('an account switch during slug creation cannot write into either owner’s 
  const db={collection:()=>({doc:()=>({set:async()=>{writes++;}})})};
  const store=createCloudStore({auth,db});const pending=store.publishDigitalCv(selectCv(profileToCv(profile)));
  auth.currentUser={uid:'owner-b'};await assert.rejects(pending,/account changed/);assert.equal(writes,0);
+});
+
+test('an updated resume supplies a fresh CV without retaining stale profile entries or private contacts',()=>{
+ const resume='EXAMPLE UPDATED APPLICANT\nupdated@example.com\n\nPROFESSIONAL SUMMARY\nUpdated verified summary.\n\nEXPERIENCE\nOperations Lead | New Example Employer | Jan 2022 – Present\n• Maintained schedules.\n\nEDUCATION\nBachelor of Science | Example University | 2020\n\nSKILLS\nScheduling, Spreadsheets';
+ const cv=selectCv(resumeToCv(resume));assert.equal(cv.name,'EXAMPLE UPDATED APPLICANT');assert.equal(cv.summary,'Updated verified summary.');assert.equal(cv.civilian[0].employer,'New Example Employer');assert.match(cv.skills.technical,/Spreadsheets/);assert.deepEqual(cv.contact,{});assert.doesNotMatch(JSON.stringify(cv),/Old Employer|updated@example.com/);
 });

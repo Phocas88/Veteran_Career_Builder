@@ -2,12 +2,12 @@ import {initReviewFlow} from './review-flow.js?v=20261029-clear-flow';
 import {initDesignEditor} from './design-editor.js?v=20261031-template-switch';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261025-standalone-app';
 import {showAppView} from './app-shell.js?v=20261031-digital-cv';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261031-profile-import';
+import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261101-finished-resumes';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';
 import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js?v=20261027-resume-studio';
-import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext } from './payments.js?v=20261025-standalone-app';
+import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext, canUseTemplate, finishTemplate } from './payments.js?v=20261101-finished-resumes';
 
 const $ = id => document.getElementById(id);
 const input = $('resume-input');
@@ -32,6 +32,9 @@ const reviewFlow=initReviewFlow({finish(useRewrite=true){
   if(useRewrite&&!$('apply-rewrite').disabled){$('apply-rewrite').click();return;}
   setTab('export');
 }});
+
+function currentDraft(){return ({ ...versionContext, buildId:careerBuildContext()?.id || '', resume: input.value, role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value,
+    exportSettings:designEditor.getSettings(),design: document.querySelector('[name="resume-design"]:checked').value, arrangement: $('resume-arrangement').value, paper: $('resume-paper').value, reflow: $('reflow-lines').checked, pageBreaks: [...pageBreaks] });}
 
 function currentDocument() {
   return createResumeDocument(input.value, {exportSettings:designEditor?.getSettings(),design: document.querySelector('[name="resume-design"]:checked').value, arrangement: $('resume-arrangement').value, paper: $('resume-paper').value, applicationType: applicationInput.value, reflow: $('reflow-lines').checked, pageBreaks: [...pageBreaks] });
@@ -76,6 +79,14 @@ function refreshExport() {
   const model=currentDocument();
   document.querySelector(`[name="resume-design"][value="${model.design}"]`).checked=true;
   designEditor?.sync(model);
+  const owned=canUseTemplate(model.design),context=careerBuildContext();
+  for(const id of ['download-pdf','download-word','download-resume','print-resume','copy-resume'])$(id).disabled=!owned||!input.value.trim()||exporting;
+  $('template-finish').textContent=owned?'Save finished resume':context?.includedTemplate?'Get '+designs[model.design].name+' template · $1.00':'Finish & save '+designs[model.design].name+' · included';
+  $('template-finish').disabled=exporting||!input.value.trim();
+  $('template-entitlement').textContent=owned?'This template is yours. Repeat downloads and printing are included. Save again to keep your edits.':context?.includedTemplate?'Your purchase includes '+designs[context.includedTemplate]?.name+'. This additional template costs $1.00. Examples remain free to browse.':'Your $1.99 build includes one template. Browse the fictional examples, then finish your choice to unlock your personal preview and downloads.';
+  if(!owned){++previewVersion;previewKey='';clearTimeout(previewTimer);$('export-preview').replaceChildren();$('pdf-pages').replaceChildren();$('print-content').replaceChildren();$('preview-stage').hidden=true;$('export-empty').hidden=false;$('export-empty').textContent='Finish your chosen template to see your personal resume here. Preview the fictional examples while choosing.';return;}
+  $('export-empty').textContent='Your resume will appear here once you add it.';
+
   renderResume($('export-preview'), model);
   $('export-preview').hidden = !input.value.trim();
   $('preview-stage').hidden = !input.value.trim();
@@ -132,7 +143,7 @@ function refreshDraft() {
   const latest = state.history.at(-1);
   $('undo-last').disabled = !latest || latest.after !== text;
   $('undo-review').disabled = !latest || latest.after !== text;
-  for (const id of ['download-pdf', 'download-word', 'download-resume', 'print-resume', 'copy-resume']) $(id).disabled = !hasPaidBuild() || !text.trim() || exporting;
+  for (const id of ['download-pdf', 'download-word', 'download-resume', 'print-resume', 'copy-resume']) $(id).disabled = !canUseTemplate(document.querySelector('[name="resume-design"]:checked').value) || !text.trim() || exporting;
   refreshFederalGuidance();
   $('resume-extras').hidden=!state.review;
   document.dispatchEvent(new Event('resume:draft-changed'));
@@ -349,7 +360,7 @@ $('apply-rewrite').addEventListener('click', () => {
   input.value = after;
   state.applied = new Set(['rewrite']); state.stale = true;
   saveDraft(); renderSuggestions(); setTab('export');
-  toast('Rewritten draft applied. Check the PDF pages; Undo restores the original.');
+  toast('Updated resume is in the studio. Finish & save your template to keep it in My resumes and update your digital CV.');
 });
 
 input.addEventListener('input', () => {
@@ -473,6 +484,19 @@ $('review-button').addEventListener('click', requestReview);
 $('cancel-review').addEventListener('click', () => state.controller?.abort('user'));
 $('error-dismiss').addEventListener('click', () => { $('error-banner').hidden = true; });
 
+$('template-finish').addEventListener('click',async()=>{
+ if(exporting||!hasPaidBuild()||!input.value.trim())return;
+ const owner=draftOwnerId(),model=currentDocument();exporting=true;refreshDraft();
+ $('finished-status').textContent='Saving your finished resume…';
+ try{
+  if(model.applicationType==='federal')checkFederalDownload(model,await preparePdf(model));
+  const result=await finishTemplate(currentDraft());if(!result||owner!==draftOwnerId())return;
+  try{const saved=await saveFinishedResume(result);if(owner!==draftOwnerId())return;$('finished-status').textContent=saved?'Saved in My resumes in your account. Open it anytime, or use it for your digital CV below.':'Finished resume saved with this purchase. Create an account to keep it across devices.';}
+  catch(error){$('finished-status').textContent='Finished resume is safe in purchase history. Saving to My resumes failed. Press Save finished resume to retry; no payment is needed.';}
+  $('finished-actions').hidden=false;
+ }catch(error){if(owner===draftOwnerId()){$('finished-status').textContent=error.message;showError(error.message);}}
+ finally{exporting=false;refreshDraft();}
+});
 function saveDownload(blob, filename) {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
@@ -485,7 +509,7 @@ function saveDownload(blob, filename) {
 }
 
 $('download-resume').addEventListener('click', () => {
-  if (!hasPaidBuild() || !input.value.trim()) return;
+  if (!canUseTemplate(currentDocument().design) || !input.value.trim()) return;
   saveDownload(new Blob([plainTextForModel(currentDocument())], { type: 'text/plain;charset=utf-8' }), exportFilename(currentDocument(), 'txt'));
   toast('Your resume download is ready.');
 });
@@ -497,7 +521,7 @@ for (const [id, extension, generate] of [['download-pdf', 'pdf', async model => 
   return exportWord(model);
 }]]) {
   $(id).addEventListener('click', async () => {
-    if (!hasPaidBuild() || exporting || !input.value.trim()) return;
+    if (!canUseTemplate(currentDocument().design) || exporting || !input.value.trim()) return;
     const model = currentDocument();
     const exportAccount = draftOwnerId();
     exporting = true;
@@ -529,13 +553,13 @@ $('add-page-break').addEventListener('click', () => {
 });
 
 $('copy-resume').addEventListener('click', async () => {
-  if (!hasPaidBuild() || !input.value.trim()) return;
+  if (!canUseTemplate(currentDocument().design) || !input.value.trim()) return;
   try { await navigator.clipboard.writeText(plainTextForModel(currentDocument())); toast('Resume copied.'); }
   catch { showError('Clipboard access is unavailable. Download the .txt file or copy the text directly from the editor.'); }
 });
 
 function preparePrint() {
-  if(!hasPaidBuild()){$('print-content').replaceChildren();return;}
+  if(!canUseTemplate(currentDocument().design)){$('print-content').replaceChildren();return;}
   const model = currentDocument();
   const content = document.createElement('article');
   renderResume(content, model);
@@ -548,7 +572,7 @@ function preparePrint() {
 }
 
 window.addEventListener('beforeprint', preparePrint);
-$('print-resume').addEventListener('click',async()=>{if(!hasPaidBuild()||!input.value.trim())return;try{const model=currentDocument();if(model.applicationType==='federal')checkFederalDownload(model,await preparePdf(model));preparePrint();window.print();}catch(error){showError(error.message);}});
+$('print-resume').addEventListener('click',async()=>{if(!canUseTemplate(currentDocument().design)||!input.value.trim())return;try{const model=currentDocument();if(model.applicationType==='federal')checkFederalDownload(model,await preparePdf(model));preparePrint();window.print();}catch(error){showError(error.message);}});
 
 $('privacy-open').addEventListener('click', () => $('privacy-dialog').showModal());
 $('privacy-close').addEventListener('click', () => $('privacy-dialog').close());
@@ -595,8 +619,8 @@ initWorkspace({
   openEntry(mode) { setFlow(mode==='build'?'build':'edit'); },
   showCheckout() { setFlow('checkout', false); },
   recoverReview(run) { setFlow('checkout', false); return requestReview(run); },
-  getDraft: () => ({ ...versionContext, buildId:careerBuildContext()?.id || '', resume: input.value, role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value,
-    exportSettings:designEditor.getSettings(),design: document.querySelector('[name="resume-design"]:checked').value, arrangement: $('resume-arrangement').value, paper: $('resume-paper').value, reflow: $('reflow-lines').checked, pageBreaks: [...pageBreaks] }),
+  getDraft: currentDraft,
+  showExport(){setTab('export');},
   restoreDeviceDraft(uid) {
     try { const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
       if (saved?.ownerUid === uid && !input.value.trim()) { this.loadDraft(saved); $('remember-draft').checked = true; saveDraft(); }
@@ -626,7 +650,7 @@ initWorkspace({
   markVersion(item) {versionContext={versionFamily:item.familyId || item.id,versionId:item.id,versionTitle:item.title};},
   setJob(job) {roleInput.value=job.role;jobInput.value=job.description;applicationInput.value=job.applicationType;syncApplicationType();if(state.review){state.stale=true;state.rewriteInvalid=true;}refreshDraft();saveDraft();},
   clearAccountDraft() {
-    versionContext={};lastNonFederalApplicationType='private';designEditor.reset();reviewFlow.reset();
+    $('finished-actions').hidden=true;$('finished-status').textContent='';versionContext={};lastNonFederalApplicationType='private';designEditor.reset();reviewFlow.reset();
     document.querySelector('[name="resume-design"][value="classic"]').checked=true;
     setResumeFilename('');
     state.controller?.abort('account-change'); input.value = ''; roleInput.value = ''; jobInput.value = ''; detailsInput.value = '';

@@ -1,8 +1,8 @@
-import {initDigitalCv} from './digital-cv.js?v=20261031-digital-cv';
+import {initDigitalCv} from './digital-cv.js?v=20261101-finished-resumes';
 import {selectProfileSection} from './background-form.js?v=20261030-visible-gallery';
 import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261025-standalone-app';
-import { savedResumeToDraft } from './cloud-store.js?v=20261031-digital-cv';
-import { careerBuildContext, requestCareerKit } from './payments.js?v=20261025-standalone-app';
+import { savedResumeToDraft } from './cloud-store.js?v=20261101-finished-resumes';
+import { careerBuildContext, requestCareerKit } from './payments.js?v=20261101-finished-resumes';
 import { exportLetter } from './letter-exports.js?v=20261025-standalone-app';
 import {initServiceLibrary} from './service-library.js?v=20261030-visible-gallery';
 import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261031-digital-cv';
@@ -20,7 +20,7 @@ export function initCareerTools(api){
  const readJob=()=>normalizeJob(Object.fromEntries(fieldNames.map(k=>[k,field(k).value])));
  const profileHome=$('background-fields').parentElement;
  const profileBefore=$('background-fields').nextSibling;
- const digitalCv=initDigitalCv({user:api.user,getProfile:api.getProfile,ready:api.profileReady,load:api.loadDigitalCv,publish:api.publishDigitalCv,unpublish:api.unpublishDigitalCv,openAccount:api.openAccount,openProfile:()=>open('profile')});
+ const digitalCv=initDigitalCv({user:api.user,getProfile:api.getProfile,getDraft:api.getDraft,listVersions:api.listVersions,ready:api.profileReady,load:api.loadDigitalCv,publish:api.publishDigitalCv,unpublish:api.unpublishDigitalCv,openAccount:api.openAccount,openProfile:()=>open('profile')});
  const library=initServiceLibrary({getProfile:api.getProfile,applyProfile:api.applyProfile,showProfile:()=>{select('profile');selectProfileSection('roles');},user:api.user,saveProfile:api.saveProfile,openAccount:api.openAccount});
  function restoreProfile(){profileHome.insertBefore($('background-fields'),profileBefore);}
  function updateProfile(){const profile=api.getProfile();$('career-profile-summary').textContent=profileSummary(profile);$('career-profile-summary').hidden=!['roles','jobs','educationEntries','certifications','skillsEntries'].some(key=>profile[key]?.some(entry=>Object.values(entry).some(v=>typeof v==='string'&&v.trim())));}
@@ -64,6 +64,7 @@ export function initCareerTools(api){
  function close(){ $('career-dialog').hidden=true;restoreProfile();if(isCareerView())showAppView(returnView==='workspace'?'workspace':'home'); }
  $('career-close').onclick=close;
  document.addEventListener('app:view-changed',event=>{if(!isCareerView())restoreProfile();});
+ $('finished-cv').onclick=()=>{open('digital-cv');digitalCv.useResume(api.getDraft().resume,'Finished resume in editor').catch(error=>status(error.message));};
  $('career-results-open').onclick=()=>open('match');
  document.addEventListener('app:open-career',event=>open(event.detail));
  for(const b of document.querySelectorAll('[data-career-launch]'))b.onclick=()=>open(b.dataset.careerLaunch);
@@ -87,7 +88,7 @@ export function initCareerTools(api){
    for(const item of group){const row=node('article',null,'career-result');
     const type={private:'Civilian',federal:'Federal',government:'State / local'}[item.workspace?.applicationType]||'Resume';
     row.append(node('h5',item.title||'Saved resume'),node('p',`${type} · ${new Date(item.createdAt).toLocaleString()}`));
-    const actions=node('div',null,'career-actions');actions.append(button('Open version',async()=>{if(await api.openVersion(item)!==false)close();}),button('Compare',()=>{
+    const actions=node('div',null,'career-actions');actions.append(button('Open version',async()=>{if(await api.openVersion(item)!==false)close();}),button('Use for digital CV',async()=>{open('digital-cv');await digitalCv.useResume(savedResumeToDraft(item).resume,item.title||'Saved resume');}),button('Compare',()=>{
      $('career-current-text').value=api.getDraft().resume;$('career-version-text').value=savedResumeToDraft(item).resume;$('career-version-comparison').hidden=false;$('career-version-comparison').open=true;
     }),button('Delete',async()=>{if(!confirm('Delete this saved version? Other versions, linked purchase results and downloaded copies stay available.'))return;await api.removeVersion(item.id);await refresh();status('Saved version deleted.');}));
     row.append(actions);section.append(row);

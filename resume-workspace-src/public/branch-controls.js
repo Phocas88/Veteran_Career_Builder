@@ -25,7 +25,7 @@ function picker(box, kind, getLabel, getItems, onChoose) {
     const values=fields.map(f=>f.value.trim()).filter(Boolean);
     status.textContent=values.length?'✓ Included in this draft: '+values.join(' · '):'Nothing added yet. Choose an item, or use “Enter my own”.';
     status.classList.toggle('has-value',values.length>0);
-    fields.forEach(field=>field.closest('label').hidden=!manualMode&&!values.length);
+    fields.forEach(field=>field.closest('label').hidden=!manualMode);
     browse.setAttribute('aria-pressed',String(!manualMode));manual.setAttribute('aria-pressed',String(manualMode));library.hidden=manualMode;
   }
   const render=()=>{

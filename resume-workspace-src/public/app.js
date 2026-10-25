@@ -1,5 +1,5 @@
 import {initReviewFlow} from './review-flow.js?v=20261029-clear-flow';
-import {initDesignEditor} from './design-editor.js?v=20261030-visible-gallery';
+import {initDesignEditor} from './design-editor.js?v=20261031-template-switch';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261025-standalone-app';
 import {showAppView} from './app-shell.js?v=20261031-digital-cv';
 import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261031-profile-import';
@@ -26,6 +26,7 @@ let previewTimer;
 let previewKey = '';
 let versionContext = {};
 let designEditor;
+let lastNonFederalApplicationType='private';
 const reviewFlow=initReviewFlow({finish(useRewrite=true){
   if(collectAnswers().length&&!(state.review?.refinementCount>=1)&&!confirm('Your answers have not been used in an AI update yet. Continue with the current resume? Your answers stay in this tab.'))return;
   if(useRewrite&&!$('apply-rewrite').disabled){$('apply-rewrite').click();return;}
@@ -370,6 +371,7 @@ for (const field of [roleInput, jobInput, detailsInput]) field.addEventListener(
 });
 
 function syncApplicationType() {
+  if(applicationInput.value!=='federal')lastNonFederalApplicationType=applicationInput.value;
   $('application-help').textContent = applicationInput.value === 'federal' ? 'U.S. federal: two pages maximum for USAJOBS. Include verified hours/week and month/year dates for each relevant job. Paste the announcement above.' : applicationInput.value === 'government' ? 'State/local requirements vary. Paste the announcement, qualifications, and any required resume details.' : 'Review and rewrite for a conventional professional resume.';
   if (applicationInput.value === 'federal') {
     const selected=document.querySelector('[name="resume-design"]:checked');if(!designs[selected?.value]?.federal)document.querySelector('[name="resume-design"][value="federal"]').checked=true;
@@ -569,7 +571,7 @@ $('clear-confirm').addEventListener('click', () => {
   toast('Draft cleared, including any copy saved in this browser.');
 });
 
-designEditor=initDesignEditor({getSource:()=>input.value,owner:draftOwnerId,error:showError,editSource:text=>{input.value=text;input.dispatchEvent(new Event('input'));},change:()=>{refreshExport();saveDraft();},designChanged:id=>{if(designs[id].federal&&applicationInput.value!=='federal'){applicationInput.value='federal';syncApplicationType();}else{refreshExport();saveDraft();}}});
+designEditor=initDesignEditor({getSource:()=>input.value,owner:draftOwnerId,error:showError,editSource:text=>{input.value=text;input.dispatchEvent(new Event('input'));},change:()=>{refreshExport();saveDraft();},designChanged:id=>{if(designs[id].federal&&applicationInput.value!=='federal'){lastNonFederalApplicationType=applicationInput.value;applicationInput.value='federal';syncApplicationType();}else if(!designs[id].federal&&applicationInput.value==='federal'){applicationInput.value=lastNonFederalApplicationType;syncApplicationType();toast('Switched to '+(lastNonFederalApplicationType==='government'?'state/local':'civilian')+' formatting. Choose a federal template for USAJOBS formatting.');}else{refreshExport();saveDraft();}}});
 
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
@@ -610,6 +612,7 @@ initWorkspace({
     jobInput.value = typeof draft.jobDescription === 'string' ? draft.jobDescription.slice(0, 8000) : '';
     detailsInput.value = typeof draft.additionalDetails === 'string' ? draft.additionalDetails.slice(0, 4000) : '';
     applicationInput.value = ['private','federal','government'].includes(draft.applicationType) ? draft.applicationType : 'private';
+    lastNonFederalApplicationType=applicationInput.value==='government'?'government':'private';
     if (Object.hasOwn(designs, draft.design)) document.querySelector(`[name="resume-design"][value="${draft.design}"]`).checked = true;
     if (Object.hasOwn(arrangements, draft.arrangement)) $('resume-arrangement').value = draft.arrangement;
     if (Object.hasOwn(papers, draft.paper)) $('resume-paper').value = draft.paper;
@@ -623,7 +626,7 @@ initWorkspace({
   markVersion(item) {versionContext={versionFamily:item.familyId || item.id,versionId:item.id,versionTitle:item.title};},
   setJob(job) {roleInput.value=job.role;jobInput.value=job.description;applicationInput.value=job.applicationType;syncApplicationType();if(state.review){state.stale=true;state.rewriteInvalid=true;}refreshDraft();saveDraft();},
   clearAccountDraft() {
-    versionContext={};designEditor.reset();reviewFlow.reset();
+    versionContext={};lastNonFederalApplicationType='private';designEditor.reset();reviewFlow.reset();
     document.querySelector('[name="resume-design"][value="classic"]').checked=true;
     setResumeFilename('');
     state.controller?.abort('account-change'); input.value = ''; roleInput.value = ''; jobInput.value = ''; detailsInput.value = '';

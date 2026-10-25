@@ -1,12 +1,12 @@
 import {designs,fontFamilies,accentColors,normalizeExportSettings} from './resume-designs.js?v=20261027-resume-studio';
-import {initTemplateExamples} from './template-examples.js?v=20261030-visible-gallery';
+import {initTemplateExamples} from './template-examples.js?v=20261031-template-switch';
 const $=id=>document.getElementById(id);
 const node=(tag,text,className)=>{const el=document.createElement(tag);if(text)el.textContent=text;if(className)el.className=className;return el;};
 const ownSectionSettings=settings=>Object.fromEntries(Object.entries(settings).filter(([key])=>['sectionOrder','headings','hiddenSections','photo'].includes(key)));
 export function initDesignEditor(api){
  let settings={},shown=24,sectionKey='',lastFederal=false,revision=0;
  const change=()=>{settings=normalizeExportSettings(settings);api.change();};
- const examples=initTemplateExamples({canUse:key=>!lastFederal||!!designs[key].federal,choose(key){const radio=document.querySelector('[name="resume-design"][value="'+key+'"]');radio.checked=true;radio.dispatchEvent(new Event('change',{bubbles:true}));}});
+ const examples=initTemplateExamples({canUse:()=>true,useLabel:key=>'Use '+designs[key].name+(lastFederal&&!designs[key].federal?' · switch to civilian':''),choose(key){const radio=document.querySelector('[name="resume-design"][value="'+key+'"]');radio.checked=true;radio.dispatchEvent(new Event('change',{bubbles:true}));}});
  $('preview-selected-template').onclick=()=>examples.open(document.querySelector('[name="resume-design"]:checked').value);
  const gallery=$('design-gallery');gallery.replaceChildren();
  for(const [key,design]of Object.entries(designs)){
@@ -58,8 +58,8 @@ export function initDesignEditor(api){
   document.body.classList.toggle('browsing-templates',!document.querySelector('[data-studio-panel="design"]').hidden);
   const s=model.style,federal=model.applicationType==='federal';$('selected-template-name').textContent=designs[model.design].name;$('selected-template-note').textContent=designs[model.design].description;
   $('studio-layout-note').textContent=federal?'Federal: one column, no photo, readable text. Check every requirement in the announcement.':s.layout==='single'?'Simple layouts are a good starting point for online applications.':'Two-column layout: education, skills and credentials appear in the side column. Ordering applies within each column.';
-  for(const radio of document.querySelectorAll('[name="resume-design"]'))radio.disabled=federal&&!designs[radio.value].federal;
-  if(federal!==lastFederal){$('template-category').value=federal?'federal':'';shown=24;lastFederal=federal;}filter();
+  for(const radio of document.querySelectorAll('[name="resume-design"]'))radio.disabled=false;
+  if(federal!==lastFederal){shown=24;lastFederal=federal;}filter();
   for(const opt of $('format-font').options)opt.disabled=federal&&opt.value==='SourceSerif';
   for(const opt of [...$('format-color').options])if(opt.dataset.templateColor)opt.remove();if(![...$('format-color').options].some(o=>o.value===s.color)){const opt=new Option('Template color',s.color);opt.dataset.templateColor='true';$('format-color').add(opt);}
   for(const field of document.querySelectorAll('[data-format-key]')){const key=field.dataset.formatKey;field.value=key==='nameAlignment'?s.alignment:key==='textAlignment'?s.textAlignment:s[key];if(field.type==='number')field.min=key==='fontSize'&&federal?10:key==='headingSize'&&federal?14:field.dataset.min||field.min;}

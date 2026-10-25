@@ -468,3 +468,68 @@
  .standalone-app .example-footer{align-items:stretch;flex-direction:column;gap:8px}.standalone-app .example-footer .button{width:100%}
  .standalone-app .question-navigation{bottom:74px}.standalone-app .question-navigation .button{font-size:13px;padding:10px 12px}
 }
+
+/* Visible sample pages, rather than a wall of template names. */
+.standalone-app.browsing-templates .export-layout{grid-template-columns:minmax(0,1fr);grid-template-areas:'tools' 'preview'}
+.standalone-app #template-library{margin-top:24px;border-top:1px solid #3d5671;padding-top:20px}
+.standalone-app #template-library>h3{font-size:20px;margin-bottom:8px}
+.standalone-app #design-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.standalone-app .studio-template{padding:9px!important;gap:7px;background:#152c43!important;min-width:0}
+.standalone-app .studio-template .template-page-image{display:block;width:100%;height:auto;aspect-ratio:430/557;object-fit:contain;background:#fff;box-shadow:0 2px 8px #0005;border-radius:2px}
+.standalone-app .studio-template input{top:auto;bottom:12px;right:10px}
+.standalone-app .studio-template strong{font-size:15px!important;margin-top:6px}
+.standalone-app .studio-template small{font-size:12px!important}
+.standalone-app .studio-template .template-preview-button{font-size:12px;min-height:40px;margin-right:22px}
+.standalone-app .studio-filter{max-width:600px}
+.standalone-app .profile-save-state{border:1px solid #3d5872;background:#10283c;border-radius:10px;padding:14px;margin:14px 0}
+.standalone-app #profile-persistence-status{font-size:14px;font-weight:600;margin:0}
+.standalone-app #profile-persistence-status[data-state=saved]{color:#b9e5ca}
+.standalone-app #profile-persistence-status[data-state=unsaved],.standalone-app #profile-persistence-status[data-state$=error]{color:#ffe095}
+.standalone-app .profile-save-state .field-hint{font-size:12px;margin:8px 0 0}
+.standalone-app .profile-save-actions{position:sticky;bottom:76px;z-index:3;background:#0b1e30;padding:10px;border:1px solid #385571;border-radius:10px}
+.standalone-app .home-tool-button{display:grid;grid-template-columns:1fr auto;gap:6px 14px;text-align:left;color:#ecf3fa;background:#142b42;border:1px solid #415d77;border-radius:11px;padding:18px;width:100%;margin:20px 0}
+.standalone-app .home-tool-button strong{font-size:17px}
+.standalone-app .home-tool-button span{font-size:13px;line-height:1.6;color:#bdd1e3}
+.standalone-app .home-tool-button b{grid-column:2;grid-row:1/3;align-self:center;font-size:24px;color:#f5ce62}
+.standalone-app .letter-start{padding:18px;border:1px solid #415d77;border-radius:10px;background:#112b42;margin-bottom:22px}
+.standalone-app .letter-start .button{white-space:normal;margin:5px 6px 5px 0}
+.standalone-app .library-steps{display:flex;gap:6px;list-style:none;padding:5px;background:#11283e;border:1px solid #3c5570;border-radius:10px;margin:18px 0}
+.standalone-app .library-steps li{flex:1;text-align:center;font-size:13px;color:#c4d5e6;padding:12px 5px;border-radius:6px}
+.standalone-app .library-steps li[aria-current=step]{color:#ffe294;background:#2e485e;font-weight:650}
+.standalone-app [data-library-stage] h4{font-size:21px;margin:18px 0 10px}
+.standalone-app [data-library-stage]>p{font-size:14px;color:#c1d4e5;line-height:1.7}
+.standalone-app .library-choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+.standalone-app .library-kind-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+.standalone-app .library-choice{display:flex;flex-direction:column;justify-content:center;text-align:left;padding:20px;border:1px solid #4c6884;background:#15324b;color:#f5f8fc;border-radius:10px;min-height:100px;gap:8px}
+.standalone-app .library-choice:hover,.standalone-app .library-choice:focus-visible{border-color:#f5ce62;background:#213f56}
+.standalone-app .library-choice strong{font-size:17px}
+.standalone-app .library-choice span{font-size:13px;line-height:1.5;color:#c3d5e7}
+.standalone-app .library-context{display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px;border-bottom:1px solid #3a5570;margin-bottom:20px;padding-bottom:12px}
+.standalone-app .library-context p{width:100%;margin:0;font-weight:600;color:#e4edf7}
+.standalone-app .library-search-label{display:grid;gap:9px;font-size:14px;margin:18px 0}
+.standalone-app .library-search-label input{font-size:16px}
+.standalone-app #library-change-filters{margin:12px 0 20px}
+.standalone-app #library-change-filters>summary{min-height:44px;color:#f4d47f;cursor:pointer;padding:12px 0}
+.standalone-app .library-success{padding:22px;border:1px solid #71a78b;border-radius:12px;background:#12342f;margin:18px 0}
+.standalone-app .library-success .career-actions{display:flex;flex-wrap:wrap;gap:12px}
+.standalone-app .library-success .button{white-space:normal}
+@media(max-width:1000px){.standalone-app #design-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.standalone-app #design-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.standalone-app .library-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.standalone-app .library-kind-grid{grid-template-columns:1fr}.standalone-app .library-choice{padding:16px;min-height:96px}.standalone-app .library-steps li{font-size:12px}.standalone-app .library-success .career-actions{display:grid}.standalone-app .studio-template small{font-size:11px!important}}
+.standalone-app #career-profile-save{display:inline-flex}
+.standalone-app.browsing-templates .studio-quick-actions,.standalone-app [data-career-panel=profile]>.career-actions{position:sticky;top:70px;z-index:5;padding:10px;background:#10253b;border:1px solid #3b5570;border-radius:9px}
+/* Keep the actual example pages near the top of the template screen. */
+.standalone-app.browsing-templates .studio-tools>.section-kicker,.standalone-app.browsing-templates .studio-tools>p,.standalone-app.browsing-templates .selected-template{display:none}
+.standalone-app.browsing-templates .studio-quick-actions{margin:8px 0;padding:5px;border:0}
+.standalone-app.browsing-templates .studio-tabs{margin:10px 0}
+.standalone-app.browsing-templates #template-library{margin-top:12px;padding-top:12px}
+.standalone-app.browsing-templates #template-library>h3{font-size:19px}
+.standalone-app.browsing-templates #template-library>.field-hint{font-size:12px;line-height:1.55;margin-bottom:12px}
+.standalone-app .studio-filter{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 12px;margin:10px 0 14px}
+.standalone-app .studio-filter>label:first-child{grid-column:1;grid-row:1}
+.standalone-app .studio-filter>select{grid-column:1;grid-row:2}
+.standalone-app .studio-filter>label:nth-of-type(2){grid-column:2;grid-row:1}
+.standalone-app .studio-filter>input{grid-column:2;grid-row:2}
+.standalone-app .studio-filter input,.standalone-app .studio-filter select{min-width:0;font-size:13px}
+/* Guided setup also offers an explicit save, independently of opt-in step saves. */
+.standalone-app.profile-setup-active[data-app-view=profile] [data-career-panel=profile]>.career-actions{display:flex}
+.standalone-app.profile-setup-active .profile-setup-panel{scroll-margin-top:135px}

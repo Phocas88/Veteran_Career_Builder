@@ -10,7 +10,7 @@ const legacy = path.join(root, 'resume-workspace');
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const library=spawnSync(process.execPath,[path.join(root,'scripts/build-service-library.mjs')],{cwd:root,stdio:'inherit'});
 if(library.status!==0)throw new Error('Service library build failed.');
-for (const args of [['ci', '--include=dev', '--no-audit', '--no-fund'], ['run', 'check'], ['run', 'build']]) {
+for (const args of [['ci', '--include=dev', '--no-audit', '--no-fund'], ['run', 'check'], ['run', 'build'], ['exec', '--', 'playwright', 'install', '--with-deps', 'chromium'], ['run', 'build:previews']]) {
   const result = spawnSync(npm, args, { cwd: source, stdio: 'inherit', shell: process.platform === 'win32' });
   if (result.status !== 0) throw new Error('Resume workspace build failed.');
 }

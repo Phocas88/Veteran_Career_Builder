@@ -1,8 +1,9 @@
+import {selectProfileSection} from './background-form.js?v=20261030-visible-gallery';
 import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261025-standalone-app';
 import { savedResumeToDraft } from './cloud-store.js?v=20261026-profile-setup';
 import { careerBuildContext, requestCareerKit } from './payments.js?v=20261025-standalone-app';
 import { exportLetter } from './letter-exports.js?v=20261025-standalone-app';
-import {initServiceLibrary} from './service-library.js?v=20261025-standalone-app';
+import {initServiceLibrary} from './service-library.js?v=20261030-visible-gallery';
 import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261025-standalone-app';
 
 const $=id=>document.getElementById(id);
@@ -18,7 +19,7 @@ export function initCareerTools(api){
  const readJob=()=>normalizeJob(Object.fromEntries(fieldNames.map(k=>[k,field(k).value])));
  const profileHome=$('background-fields').parentElement;
  const profileBefore=$('background-fields').nextSibling;
- const library=initServiceLibrary({getProfile:api.getProfile,applyProfile:api.applyProfile,showProfile:()=>select('profile')});
+ const library=initServiceLibrary({getProfile:api.getProfile,applyProfile:api.applyProfile,showProfile:()=>{select('profile');selectProfileSection('roles');},user:api.user,saveProfile:api.saveProfile,openAccount:api.openAccount});
  function restoreProfile(){profileHome.insertBefore($('background-fields'),profileBefore);}
  function updateProfile(){const profile=api.getProfile();$('career-profile-summary').textContent=profileSummary(profile);$('career-profile-summary').hidden=!['roles','jobs','educationEntries','certifications','skillsEntries'].some(key=>profile[key]?.some(entry=>Object.values(entry).some(v=>typeof v==='string'&&v.trim())));}
  function account(){
@@ -26,19 +27,20 @@ export function initCareerTools(api){
   $('career-account-note').textContent=registered?'Your account saves are private. Choose Save when you want to keep changes.':'Guests can use the included AI kit. Create a free account to save profiles, versions, applications and edited cover letters across devices.';
   $('career-signin').hidden=registered;
  }
- function letterSource(){ const hasLetter=!!$('career-cover-letter').value.trim();for(const id of ['career-letter-save','career-letter-pdf','career-letter-word','career-letter-text'])$(id).disabled=!hasLetter;$('cover-letter-step').textContent=hasLetter?'2 · Check and edit your letter, then download below':'1 · Create your included cover letter above'; $('career-letter-source').textContent=letterBuildId?'Letter in this editor: '+(letterRole||'General application')+(letterBuildId!==careerBuildContext()?.id?' · from another saved build':''):''; }
+ function letterSource(){ const hasLetter=!!$('career-cover-letter').value.trim();$('cover-letter-editor').hidden=!hasLetter&&!careerBuildContext()?.completed;for(const id of ['career-letter-save','career-letter-pdf','career-letter-word','career-letter-text'])$(id).disabled=!hasLetter;$('cover-letter-step').textContent=hasLetter?'2 · Check and edit your letter, then download below':'1 · Create your included cover letter above'; $('career-letter-source').textContent=letterBuildId?'Letter in this editor: '+(letterRole||'General application')+(letterBuildId!==careerBuildContext()?.id?' · from another saved build':''):''; }
  function kitContext(){
   const build=careerBuildContext(),ready=!!build?.completed;
   $('career-kit-context').textContent=ready?`For this build: ${build.role || 'General resume'}${build.jobDescription?' · job announcement included':' · no announcement supplied'}`:'Open a completed build from purchase history, or finish your current review first.';
-  $('career-kit-generate').disabled=busy||!ready;$('career-kit-generate').textContent=tab==='letter'?'Create / reopen my cover letter · included':'Open or create my included career kit';
+  $('cover-letter-start').hidden=ready||!!$('career-cover-letter').value.trim();if(tab==='letter')$('career-kit-controls').hidden=!ready;$('cover-letter-step').hidden=!ready&&!$('career-cover-letter').value.trim();$('career-kit-generate').disabled=busy||!ready;$('career-kit-generate').textContent=tab==='letter'?'Generate cover letter · included':'Open or create my included career kit';
   const key=build?build.id+':'+build.refinementCount:'';
   const current=kits.get(key);if(current)renderKit(current,build);
   else if(!busy){$('career-match-summary').textContent='Create your included career kit to see evidence and missing details.';$('career-matches').replaceChildren();$('career-translations').replaceChildren();$('career-kit-checks').hidden=true;}
  }
+ $('letter-start-resume').onclick=()=>showAppView('home');$('letter-start-purchase').onclick=()=>api.openPurchases();
  function select(next){
   tab=next;for(const el of document.querySelectorAll('[data-career-panel]'))el.hidden=el.dataset.careerPanel!==tab;
   for(const el of document.querySelectorAll('[data-career-tab]'))el.setAttribute('aria-pressed',String(el.dataset.careerTab===tab));
-  $('career-kit-controls').hidden=!['match','skills','letter'].includes(tab);
+  $('career-kit-controls').hidden=!['match','skills','letter'].includes(tab);$('career-kit-title').textContent=tab==='letter'?'Generate your cover letter':'Tools for your completed build';$('career-kit-details').querySelector('summary').textContent=tab==='letter'?'Create or reopen your included cover letter':'Create or reopen your included AI kit';
   $('career-storage').hidden=tab==='library';
   $('career-title').textContent=({profile:'My profile',jobs:'Applications',library:'Service library',versions:'My resumes',match:'Job match',skills:'Translate skills',letter:'Cover letter'})[tab];
   document.querySelector('.document-tools').hidden=!['match','skills','letter'].includes(tab);
@@ -65,9 +67,9 @@ export function initCareerTools(api){
  for(const el of document.querySelectorAll('[data-career-tab]'))el.onclick=()=>open(el.dataset.careerTab);
  $('career-signin').onclick=()=>api.openAccount();
  $('background-fields').addEventListener('input',updateProfile);
- async function guarded(run,message){const version=generation;try{await run();if(version===generation&&message)status(message);}catch(e){if(version===generation)status(e.message);}}
+ async function guarded(run,message){const version=generation;try{const result=await run();if(result!==false&&version===generation&&message)status(message);}catch(e){if(version===generation)status(e.message);}}
  $('career-profile-save').onclick=()=>guarded(()=>api.saveProfile(),'Career profile saved. Reuse it when you start your next resume.');
- $('career-profile-load').onclick=()=>guarded(async()=>{await api.loadProfile();updateProfile();},'Saved career profile loaded. Your editor is unchanged.');
+ $('career-profile-load').onclick=()=>guarded(async()=>{const loaded=await api.loadProfile();updateProfile();return loaded;},'Saved career profile loaded. Your editor is unchanged.');
  $('career-profile-build').onclick=()=>{close();api.buildProfile();};
  function updateVersionOptions(){
   const selected=field('resumeVersionId').value;const select=field('resumeVersionId');select.replaceChildren(new Option('Not selected',''));

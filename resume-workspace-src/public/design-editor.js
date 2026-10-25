@@ -1,10 +1,10 @@
 import {designs,fontFamilies,accentColors,normalizeExportSettings} from './resume-designs.js?v=20261027-resume-studio';
-import {initTemplateExamples} from './template-examples.js?v=20261029-clear-flow';
+import {initTemplateExamples} from './template-examples.js?v=20261030-visible-gallery';
 const $=id=>document.getElementById(id);
 const node=(tag,text,className)=>{const el=document.createElement(tag);if(text)el.textContent=text;if(className)el.className=className;return el;};
 const ownSectionSettings=settings=>Object.fromEntries(Object.entries(settings).filter(([key])=>['sectionOrder','headings','hiddenSections','photo'].includes(key)));
 export function initDesignEditor(api){
- let settings={},shown=6,sectionKey='',lastFederal=false,revision=0;
+ let settings={},shown=24,sectionKey='',lastFederal=false,revision=0;
  const change=()=>{settings=normalizeExportSettings(settings);api.change();};
  const examples=initTemplateExamples({canUse:key=>!lastFederal||!!designs[key].federal,choose(key){const radio=document.querySelector('[name="resume-design"][value="'+key+'"]');radio.checked=true;radio.dispatchEvent(new Event('change',{bubbles:true}));}});
  $('preview-selected-template').onclick=()=>examples.open(document.querySelector('[name="resume-design"]:checked').value);
@@ -12,12 +12,12 @@ export function initDesignEditor(api){
  for(const [key,design]of Object.entries(designs)){
   const card=node('label',null,'design-option studio-template');card.dataset.category=design.category;card.dataset.search=(design.name+' '+design.description).toLowerCase();
   const input=node('input');input.type='radio';input.name='resume-design';input.value=key;input.checked=key==='classic';
-  card.dataset.photo=String(!!design.photo);const preview=node('button','Preview example','text-button template-preview-button');preview.type='button';preview.dataset.previewTemplate=key;preview.setAttribute('aria-label','Preview '+design.name+' example resume');preview.onclick=event=>{event.preventDefault();event.stopPropagation();examples.open(key);};card.append(input,node('strong',design.name),node('small',design.description),node('small',design.federal?'Federal · no photo':design.photo?'Civilian · photo optional':design.layout==='single'?'One column':'Two columns'),preview);gallery.append(card);
+  card.dataset.photo=String(!!design.photo);const preview=node('button','Preview example','text-button template-preview-button');preview.type='button';preview.dataset.previewTemplate=key;preview.setAttribute('aria-label','Preview '+design.name+' example resume');preview.onclick=event=>{event.preventDefault();event.stopPropagation();examples.open(key);};const image=node('img');image.src=new URL('./template-previews/'+key+'.jpg',import.meta.url).href;image.alt=design.name+' complete example resume'+(design.photo?' with an AI-generated fictional portrait':'');image.loading='lazy';image.width=430;image.height=557;image.className='template-page-image';card.append(input,image,node('strong',design.name),node('small',design.description),node('small',design.federal?'Federal · no photo':design.photo?'Civilian · photo optional':design.layout==='single'?'One column':'Two columns'),preview);gallery.append(card);
  }
- gallery.addEventListener('change',event=>{if(event.target.name==='resume-design'){settings=ownSectionSettings(settings);shown=6;api.designChanged(event.target.value);}});
+ gallery.addEventListener('change',event=>{if(event.target.name==='resume-design'){settings=ownSectionSettings(settings);shown=24;api.designChanged(event.target.value);}});
  function filter(){const category=$('template-category').value,search=$('template-search').value.trim().toLowerCase();let count=0,visible=0;for(const card of gallery.children){const match=(!category||card.dataset.category===category||category==='photo'&&card.dataset.photo==='true')&&(!search||card.dataset.search.includes(search));if(match)count++;card.hidden=!match||visible>=shown;if(match&&visible<shown)visible++;}$('template-count').textContent=`${visible} of ${count} templates`;$('template-more').hidden=visible>=count;}
- $('template-category').onchange=()=>{shown=6;filter();};$('template-search').oninput=()=>{shown=6;filter();};$('template-more').onclick=()=>{shown+=6;filter();};
- for(const b of document.querySelectorAll('[data-studio-tab]'))b.onclick=()=>{for(const panel of document.querySelectorAll('[data-studio-panel]'))panel.hidden=panel.dataset.studioPanel!==b.dataset.studioTab;for(const tab of document.querySelectorAll('[data-studio-tab]'))tab.setAttribute('aria-pressed',String(tab===b));};
+ $('template-category').onchange=()=>{shown=24;filter();};$('template-search').oninput=()=>{shown=24;filter();};$('template-more').onclick=()=>{shown+=6;filter();};
+ for(const b of document.querySelectorAll('[data-studio-tab]'))b.onclick=()=>{document.body.classList.toggle('browsing-templates',b.dataset.studioTab==='design');for(const panel of document.querySelectorAll('[data-studio-panel]'))panel.hidden=panel.dataset.studioPanel!==b.dataset.studioTab;for(const tab of document.querySelectorAll('[data-studio-tab]'))tab.setAttribute('aria-pressed',String(tab===b));};
  for(const [key,font]of Object.entries(fontFamilies))$('format-font').add(new Option(font.name,key));
  for(const [key,color]of Object.entries(accentColors))$('format-color').add(new Option(key[0].toUpperCase()+key.slice(1),color));
  function readFormat(){
@@ -55,10 +55,11 @@ export function initDesignEditor(api){
  };
  $('resume-photo-remove').onclick=()=>{delete settings.photo;change();};
  function sync(model){
+  document.body.classList.toggle('browsing-templates',!document.querySelector('[data-studio-panel="design"]').hidden);
   const s=model.style,federal=model.applicationType==='federal';$('selected-template-name').textContent=designs[model.design].name;$('selected-template-note').textContent=designs[model.design].description;
   $('studio-layout-note').textContent=federal?'Federal: one column, no photo, readable text. Check every requirement in the announcement.':s.layout==='single'?'Simple layouts are a good starting point for online applications.':'Two-column layout: education, skills and credentials appear in the side column. Ordering applies within each column.';
   for(const radio of document.querySelectorAll('[name="resume-design"]'))radio.disabled=federal&&!designs[radio.value].federal;
-  if(federal!==lastFederal){$('template-category').value=federal?'federal':'';shown=6;lastFederal=federal;}filter();
+  if(federal!==lastFederal){$('template-category').value=federal?'federal':'';shown=24;lastFederal=federal;}filter();
   for(const opt of $('format-font').options)opt.disabled=federal&&opt.value==='SourceSerif';
   for(const opt of [...$('format-color').options])if(opt.dataset.templateColor)opt.remove();if(![...$('format-color').options].some(o=>o.value===s.color)){const opt=new Option('Template color',s.color);opt.dataset.templateColor='true';$('format-color').add(opt);}
   for(const field of document.querySelectorAll('[data-format-key]')){const key=field.dataset.formatKey;field.value=key==='nameAlignment'?s.alignment:key==='textAlignment'?s.textAlignment:s[key];if(field.type==='number')field.min=key==='fontSize'&&federal?10:key==='headingSize'&&federal?14:field.dataset.min||field.min;}
@@ -70,5 +71,5 @@ export function initDesignEditor(api){
   $('resume-photo-status').textContent=settings.photo?(photoAllowed?'Photo added. It appears only in photo-enabled civilian designs.':'This draft retains a photo in its design settings, but this layout excludes it. Remove it below if you do not want to keep that copy.'):'Optional. Your photo is never sent for AI review.';
   if(document.activeElement!==$('studio-source-text'))$('studio-source-text').value=api.getSource();renderSections(model);
  }
- filter();return{sync,getSettings:()=>normalizeExportSettings(settings),load(value){revision++;settings=normalizeExportSettings(value);sectionKey='';},reset(){revision++;examples.reset();settings={};sectionKey='';shown=6;lastFederal=false;$('template-search').value='';$('template-category').value='';filter();$('resume-photo-input').value='';$('resume-photo-preview').removeAttribute('src');$('resume-photo-preview').hidden=true;$('studio-source-text').value='';$('custom-section-title').value='';$('custom-section-text').value='';$('studio-section-list').replaceChildren();$('studio-text-editor').open=false;$('template-library').open=false;$('resume-photo-controls').open=false;document.querySelector('.studio-add-section').open=false;},resetOrder(){delete settings.sectionOrder;sectionKey='';}};
+ filter();return{sync,getSettings:()=>normalizeExportSettings(settings),load(value){revision++;settings=normalizeExportSettings(value);sectionKey='';},reset(){revision++;examples.reset();settings={};sectionKey='';shown=24;lastFederal=false;$('template-search').value='';$('template-category').value='';filter();$('resume-photo-input').value='';$('resume-photo-preview').removeAttribute('src');$('resume-photo-preview').hidden=true;$('studio-source-text').value='';$('custom-section-title').value='';$('custom-section-text').value='';$('studio-section-list').replaceChildren();$('studio-text-editor').open=false;$('template-library').open=false;$('resume-photo-controls').open=false;document.querySelector('.studio-add-section').open=false;},resetOrder(){delete settings.sectionOrder;sectionKey='';}};
 }

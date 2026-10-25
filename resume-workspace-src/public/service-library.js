@@ -3,8 +3,10 @@ const $=id=>document.getElementById(id);
 const el=(tag,text,className)=>{const n=document.createElement(tag);if(text)n.textContent=text;if(className)n.className=className;return n;};
 const kindName={specialty:'Specialties',qualification:'Qualifications',designator:'Special qualifications / designators'};
 export function initServiceLibrary(api){
- let data,loading,selected=null,limit=20,generation=0,initial=true,controller;
+ let data,loading,selected=null,limit=20,generation=0,initial=true,controller,stage='branch';
  const message=text=>{$('library-status').textContent=text;};
+ function setStage(value,focus=true){stage=value;for(const panel of document.querySelectorAll('[data-library-stage]'))panel.hidden=panel.dataset.libraryStage!==value;for(const step of document.querySelectorAll('[data-library-step]'))step.setAttribute('aria-current',step.dataset.libraryStep===(['detail','success'].includes(value)?'search':value)?'step':'false');if(focus){const heading=document.querySelector('[data-library-stage="'+value+'"] h4')||$('service-library-title');heading.tabIndex=-1;heading.focus({preventScroll:true});$('service-library-title').scrollIntoView({block:'start',behavior:'instant'});}}
+ function chooseBranch(branch){$('library-branch').value=branch;$('library-search').value='';hideDetail();limit=20;render();setStage('kind');}
  function targets(){
   const select=$('library-target'),previous=select.value,profile=api.getProfile();
   select.replaceChildren(new Option('New service experience','new'));
@@ -15,7 +17,7 @@ export function initServiceLibrary(api){
  function render(){
   if(!data)return;
   const branch=$('library-branch').value,kind=$('library-kind').value,query=$('library-search').value;
-  const meta=data.branches[branch];
+  const meta=data.branches[branch];$('library-branch-summary').textContent=meta?.name||'All branches';$('library-current-context').textContent=(meta?.name||'All branches')+' · '+kindName[kind];$('library-qualification-label').textContent=(meta?.qualificationLabel||'Additional qualifications')+' →';$('library-designator-label').textContent=(meta?.designatorLabel||'Special identifiers')+' →';$('library-save-profile').textContent=api.user()?.email?'Save profile':'Create an account to save';
   $('library-kind').options[1].textContent=meta?.qualificationLabel||'Qualifications (ASI / NEC / branch identifiers)';
   $('library-kind').options[2].textContent=meta?.designatorLabel||'Special qualifications / designators';
   const found=searchServiceLibrary(data,{branch,kind,query});
@@ -29,7 +31,7 @@ export function initServiceLibrary(api){
  }
  function linked(label,url){const a=el('a',label+' ↗');a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;}
  function show(entry){
-  selected=entry;$('library-detail').hidden=false;$('library-reference-details').open=false;$('library-selected-title').textContent=entry.code+' · '+entry.title;
+  selected=entry;setStage('detail');$('library-detail').hidden=false;$('library-reference-details').open=false;$('library-selected-title').textContent=entry.code+' · '+entry.title;
   $('library-selected-meta').textContent=data.branches[entry.branch].name+' · '+kindName[entry.kind];
   $('library-variant-note').hidden=!entry.ambiguous;
   $('library-variant-note').textContent='The website sources use more than one label for this code. Some names may be historical or inconsistent. Confirm the code and exact description in your own service records before adding it.';
@@ -45,8 +47,8 @@ export function initServiceLibrary(api){
   $('library-selected-title').focus({preventScroll:true});$('library-detail').scrollIntoView({block:'start',behavior:'instant'});
  }
  async function open(){
-  if(initial){$('library-branch').value=api.getProfile().roles.find(r=>r.branch)?.branch||'army';initial=false;}
-  if(data){render();return;}
+  if(initial){$('library-branch').value=api.getProfile().roles.find(r=>r.branch)?.branch||'';initial=false;setStage('branch',false);}
+  if(data){if(['success','detail'].includes(stage)){hideDetail();setStage('search',false);}render();return;}
   if(loading)return loading;
   const version=generation;controller=new AbortController();message('Loading the service library…');$('library-retry').hidden=true;
   loading=(async()=>{
@@ -55,19 +57,23 @@ export function initServiceLibrary(api){
    finally{if(version===generation)loading=null;}
   })();return loading;
  }
- const filter=()=>{limit=20;hideDetail();render();message('');};
- for(const id of ['library-branch','library-kind'])$(id).onchange=filter;
+ const filter=()=>{limit=20;hideDetail();render();message('');setStage('search',false);};
+ for(const button of document.querySelectorAll('[data-library-branch]'))button.onclick=()=>chooseBranch(button.dataset.libraryBranch);
+ for(const button of document.querySelectorAll('[data-library-kind]'))button.onclick=()=>{$('library-kind').value=button.dataset.libraryKind;$('library-search').value='';filter();};
+ $('library-kind-back').onclick=$('library-change-branch').onclick=()=>setStage('branch');$('library-change-kind').onclick=()=>setStage('kind');$('library-add-another').onclick=()=>{hideDetail();setStage('search');render();};
+ $('library-save-profile').onclick=async()=>{if(!api.user()?.email){api.openAccount();return;}$('library-save-profile').disabled=true;try{if(await api.saveProfile()!==false)message('Your profile is saved to your account. You can return to it after signing in.');}catch{message('Your profile could not be saved. Your entries are still here. Open Profile to check the save status and retry.');}finally{$('library-save-profile').disabled=false;}};
+ for(const id of ['library-branch','library-kind'])$(id).onchange=()=>{$('library-search').value='';filter();};
  $('library-search').oninput=filter;$('library-more').onclick=()=>{limit+=20;render();};$('library-retry').onclick=open;
- $('library-detail-back').onclick=()=>{hideDetail();$('library-results').scrollIntoView({block:'start'});$('library-search').focus({preventScroll:true});};
+ $('library-detail-back').onclick=()=>{hideDetail();setStage('search');$('library-results').scrollIntoView({block:'start'});$('library-search').focus({preventScroll:true});};
  $('library-confirm').onchange=()=>{$('library-apply').disabled=!$('library-confirm').checked;};
  $('library-apply').onclick=()=>{
   if(!selected||!$('library-confirm').checked)return;
   const title=$('library-use-title').value.trim();if(!title){message('Enter the verified description for this code.');$('library-use-title').focus();return;}
   const profile=api.getProfile(),target=$('library-target').value,role=target==='new'?null:profile.roles[Number(target)];
   if(selected.kind==='specialty'&&role&&(role.code||role.mosTitle||role.fullCode)&&(role.code!==selected.code||role.mosTitle!==title)&&!confirm('Replace this experience’s base specialty and official specialty title? An incompatible full specialty code and skill level will be cleared. Your rank, actual duty title, dates, responsibilities and achievements stay in place.'))return;
-  try{const next=addReferenceToProfile(profile,{...selected,title},target);api.applyProfile(next);message('Added to your draft career profile. Review the details there, then choose Save profile to keep them in your account.');$('library-confirm').checked=false;$('library-apply').disabled=true;targets();$('library-view-profile').hidden=false;}
+  try{const next=addReferenceToProfile(profile,{...selected,title},target);api.applyProfile(next);message('Added to your draft career profile. Review the details there, then choose Save profile to keep them in your account.');$('library-confirm').checked=false;$('library-apply').disabled=true;targets();$('library-view-profile').hidden=false;$('library-added-item').textContent=selected.code+' · '+title;setStage('success');}
   catch(error){message(error.message);}
  };
  $('library-view-profile').onclick=()=>api.showProfile();$('library-manual').onclick=()=>api.showProfile();
- return {open,reset(){generation++;controller?.abort();loading=null;selected=null;initial=true;limit=20;$('library-search').value='';$('library-kind').value='specialty';$('library-target').replaceChildren();$('library-use-title').value='';$('library-view-profile').hidden=true;hideDetail();message('');}};
+ setStage('branch',false);return {open,reset(){generation++;controller?.abort();loading=null;selected=null;initial=true;limit=20;$('library-search').value='';$('library-kind').value='specialty';$('library-target').replaceChildren();$('library-use-title').value='';$('library-view-profile').hidden=true;hideDetail();setStage('branch',false);message('');}};
 }

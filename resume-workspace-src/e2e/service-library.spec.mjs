@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {agreeCloudSaving,selectProfileSection,installAccount} from './helpers/workspace.mjs';
 async function library(page,account='none'){
- await installAccount(page,account);await page.goto('/');if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();await page.locator('#service-library-open').click();await expect(page.locator('#library-results .library-result').first()).toBeVisible();
+ await installAccount(page,account);await page.goto('/');if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();await page.locator('#service-library-open').click();await page.locator('[data-library-branch="army"]').click();await page.locator('#library-choose-specialty').click();await page.locator('#library-change-filters').evaluate(n=>n.open=true);await expect(page.locator('#library-results .library-result').first()).toBeVisible();
 }
 test('free library includes all website branches, qualifications, conflict flags and branch-correct guide links',async({page})=>{
  const calls=[];page.on('request',r=>{if(r.url().includes('/api/claude'))calls.push(r.postDataJSON());});await library(page);

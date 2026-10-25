@@ -44,7 +44,7 @@ export function initProfileSetup(api){
    let wrote=false;
    if(canSave()){
     $('profile-setup-status').textContent='Saving your profile…';
-    const profile=api.getProfile();await api.save(profile,candidate);
+    const profile=api.getProfile();if(await api.save(profile,candidate)===false)return;
     if(token!==generation||api.user()?.uid!==uid)return;
     if(JSON.stringify(profile)===JSON.stringify(api.getProfile()))api.markClean();
     wrote=true;
@@ -62,8 +62,7 @@ export function initProfileSetup(api){
  async function accountChanged(){
   const next=api.user(),key=next?.uid||'';if(key===owner){render();return;}owner=key;reset();
   if(!next?.email)return;
-  const token=generation;
-  try{const data=await api.load();if(token!==generation||api.user()?.uid!==key)return;loaded(data);}catch{/* A profile load failure must never prevent account setup or editing. */}
+
  }
  function loaded(data){const saved=normalizeProfileSetup(data?.profileSetup);if(!saved)return;state=saved;savedProfile=data.resumeWorkspaceProfile||{};needsRestore=true;lastSaved=true;running=false;render();}
  $('profile-setup-offer-button').onclick=resume;$('home-profile-setup-continue').onclick=resume;

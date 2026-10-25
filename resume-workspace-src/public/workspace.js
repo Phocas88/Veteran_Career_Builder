@@ -1,14 +1,14 @@
 import {createProfileStorage} from './profile-storage.js?v=20261030-visible-gallery';
 import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
 import {initProfileSetup} from './profile-setup.js?v=20261030-visible-gallery';
-import {showAppView} from './app-shell.js?v=20261025-standalone-app';
+import {showAppView} from './app-shell.js?v=20261031-digital-cv';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261025-standalone-app';
 import { fillBackground, readBackground } from './background-form.js?v=20261029-clear-flow';
 import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261025-standalone-app';
-import { initCareerTools } from './career-tools.js?v=20261030-visible-gallery';
-import {initAppShell} from './app-shell.js?v=20261025-standalone-app';
+import { initCareerTools } from './career-tools.js?v=20261031-digital-cv';
+import {initAppShell} from './app-shell.js?v=20261031-digital-cv';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261025-standalone-app';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261026-profile-setup';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261031-digital-cv';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -173,6 +173,10 @@ export function initWorkspace(adapter) {
    applyProfile:profile=>{fillProfile(profile);profileDirty=true;profileStorage?.dirty();const select=document.querySelector('[data-profile-section]');select.value='roles';select.dispatchEvent(new Event('change'));},
    saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),
    loadProfile:()=>profileStorage.reload(),
+   profileReady:()=>profileStorage.accountChanged(),
+   loadDigitalCv:async()=>(await careerStore()).digitalCv(),
+   publishDigitalCv:async cv=>(await careerStore()).publishDigitalCv(cv),
+   unpublishDigitalCv:async()=>(await careerStore()).unpublishDigitalCv(),
    buildProfile:()=>choosePaidEntry('build'),
    listVersions:async()=>{const s=await careerStore();return s.list();},
    saveVersion:async title=>{const s=await careerStore(true);const item=await s.save(callback.getDraft(),title);callback.markVersion(item);await refreshSaved();return item;},
@@ -278,8 +282,8 @@ export function initWorkspace(adapter) {
   $('export-account').addEventListener('click', async () => {
     try {
       if (!user) return; const version = accountVersion;
-      const [profile, resumes, applications, coverLetters] = await Promise.all([store.profile(), store.list(), store.jobs(), store.letters()]); if (version !== accountVersion) return;
-      const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), profile, resumes, applications, coverLetters }, null, 2)], { type: 'application/json' });
+      const [profile, resumes, applications, coverLetters, digitalCv] = await Promise.all([store.profile(), store.list(), store.jobs(), store.letters(), store.digitalCv()]); if (version !== accountVersion) return;
+      const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), profile, resumes, applications, coverLetters, digitalCv }, null, 2)], { type: 'application/json' });
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'veteran-career-path-account.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
       status('Downloaded your profile, up to 50 resume versions, 100 applications and 100 cover letters. Contact support for a full account export.');
     } catch (error) { status(errorText(error)); }

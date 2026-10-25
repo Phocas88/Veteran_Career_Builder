@@ -1,5 +1,5 @@
 const $=id=>document.getElementById(id);
-const careerViews=new Set(['profile','applications','library','versions','match','skills','letter']);
+const careerViews=new Set(['profile','applications','library','versions','match','skills','letter','digital-cv']);
 let view='home',config;
 let noticeTimer;
 let replaying=false;
@@ -12,7 +12,7 @@ export function showAppView(next,{scroll=true}={}){
  $('home-panel').hidden=next!=='home';$('document-workspace').hidden=next!=='workspace';$('career-dialog').hidden=!careerViews.has(next);$('settings-panel').hidden=next!=='settings';
  document.body.dataset.appView=next;
  if(config&&previous!==next&&!replaying)history.pushState({appView:next},'',location.pathname+location.search+'#'+next);
- const active=['workspace','versions','match','skills','letter'].includes(next)?'resumes':next;
+ const active=next==='digital-cv'?'profile':['workspace','versions','match','skills','letter'].includes(next)?'resumes':next;
  for(const b of document.querySelectorAll('[data-app-route]')){b.classList.toggle('active',b.dataset.appRoute===active);if(b.dataset.appRoute===active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}
  document.dispatchEvent(new CustomEvent('app:view-changed',{detail:{view:next,previous}}));
  if(scroll&&previous!==next){window.scrollTo({top:0,behavior:'instant'});const heading=(careerViews.has(next)?$('career-title'):next==='home'?$('home-title'):next==='settings'?$('settings-title'):null);heading?.focus({preventScroll:true});}

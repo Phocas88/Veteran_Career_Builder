@@ -1,3 +1,4 @@
+import {cvSlug} from './digital-cv-model.js?v=20261031-digital-cv';
 import {normalizeProfileSetup} from './profile-steps.js?v=20261026-profile-setup';
 // Firebase rules remain the security boundary. Every operation derives its path
 // from the current authenticated UID; caller-supplied owner IDs are never accepted.
@@ -35,6 +36,19 @@ export function createCloudStore({ db, auth }) {
   }
   function validId(id) {if(typeof id!=='string'||!/^[\w-]{1,160}$/.test(id))throw new Error('Choose a saved item.');return id;}
   return {
+    async digitalCv() {
+      const {uid}=owner(),slug=await cvSlug(uid);assertOwner(uid);
+      const snap=await db.collection('publicProfiles').doc(slug).get();assertOwner(uid);
+      const cv=snap.exists?snap.data():null;
+      if(cv&&(cv.uid!==uid||cv.source!=='vcp-resume-program'))throw new Error('This public link belongs to another profile.');
+      return {slug,cv:cv?.published===false?null:cv};
+    },
+    async publishDigitalCv(cv) {
+      const {uid}=owner(),slug=await cvSlug(uid);assertOwner(uid);
+      if(!cv||cv.source!=='vcp-resume-program'||typeof cv.name!=='string'||!cv.name.trim()||cv.name.length>120)throw new Error('Add your name before publishing.');
+      await db.collection('publicProfiles').doc(slug).set({...cv,uid,slug,published:true,updatedAt:Date.now()});assertOwner(uid);return {slug};
+    },
+    async unpublishDigitalCv() {const {uid}=owner(),slug=await cvSlug(uid);assertOwner(uid);await db.collection('publicProfiles').doc(slug).delete();assertOwner(uid);},
     async getJob(id) {const {uid,ref}=owner();const snap=await ref.collection('resumeProgramJobs').doc(validId(id)).get();assertOwner(uid);if(!snap.exists)throw new Error('This saved job was deleted. Choose another application.');return {...normalizeJob(snap.data()),id};},
     async getVersion(id) {const {uid,ref}=owner();const snap=await ref.collection('resumeProgramResumes').doc(validId(id)).get();assertOwner(uid);if(!snap.exists)throw new Error('This saved resume version was deleted. Open another version.');return {...snap.data(),id};},
     async profile() { const { uid, ref } = owner(); const snap = await ref.collection('resumeProgram').doc('background').get(); assertOwner(uid); return snap.exists ? {resumeWorkspaceProfile: snap.data().background,profileSetup:normalizeProfileSetup(snap.data().profileSetup)} : {}; },

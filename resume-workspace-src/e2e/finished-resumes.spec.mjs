@@ -28,3 +28,9 @@ test('returning from the $1 checkout restores and saves the new template without
  await page.goto('/?build='+id+'&template=modern&checkout=success');await expect(page.locator('#preview-label')).toContainText('Modern');await expect(page.locator('#download-pdf')).toBeEnabled();await expect.poll(()=>page.evaluate(()=>window.__writes.filter(w=>w.data.finished).length)).toBe(1);
  const saved=(await page.evaluate(()=>window.__writes.filter(w=>w.data.finished)))[0];expect(saved.data.workspace.design).toBe('modern');expect(saved.data.workspace.resume).toBe(resume);expect(requests.filter(r=>r.action==='purchase'||r.action==='template-finish')).toHaveLength(0);expect(requests.filter(r=>r.action==='template-verify')).toHaveLength(1);
 });
+test('an account switch while loading a finished CV source cannot place the old resume in the new account preview',async({page})=>{
+ await installAccount(page,'registered',{templateEntitlements:[]});await start(page);await page.locator('#resume-input').fill(resume);await page.locator('.steps [data-tab="export"]').click();await page.locator('#template-finish').click();await expect(page.locator('#finished-status')).toContainText('Saved in My resumes');
+ await page.evaluate(()=>{window.__cvReadDelayMs=1200;window.__cvReads=0;});await page.locator('#finished-cv').click();await expect.poll(()=>page.evaluate(()=>window.__cvReads)).toBeGreaterThan(0);
+ await page.evaluate(()=>{window.__switchAuth('owner-b');window.__cvReadDelayMs=0;});await page.locator('#home-digital-cv').click();await expect(page.locator('#cv-editor')).toBeVisible();await page.waitForTimeout(1400);
+ await expect(page.locator('#cv-preview')).not.toContainText('EXAMPLE UPDATED APPLICANT');await expect(page.locator('#cv-preview')).not.toContainText('New Example Employer');expect(await page.evaluate(()=>window.__writes.filter(w=>w.path.startsWith('publicProfiles/')))).toHaveLength(0);
+});

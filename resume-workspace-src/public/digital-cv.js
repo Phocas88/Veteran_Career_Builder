@@ -37,7 +37,7 @@ export function initDigitalCv(api){
   $('cv-source-help').textContent=sources.length?'Choose the updated resume below, load it, check every section, then publish to update the same link.':'No resume is available yet. Finish and save a resume, or use your career profile below.';controls();
  }
  async function useResume(text,title='Selected resume'){
-  await open();if(!loaded||busy)return;
+  const uid=api.user()?.uid;await open();if(uid!==api.user()?.uid||!loaded||busy)return;
   fill(resumeToCv(text),{...options(),military:true,civilian:true,education:true,skills:true,certifications:true,languages:true});$('cv-source-state').textContent='Private preview from: '+title+'.';
   message('Resume loaded into this private CV preview. Check parsed names, jobs and dates, choose what to share, then '+(published?'Update published CV':'Publish my digital CV')+'. Your live page has not changed.');
  }

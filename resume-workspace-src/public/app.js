@@ -2,7 +2,7 @@ import {initReviewFlow} from './review-flow.js?v=20261029-clear-flow';
 import {initDesignEditor} from './design-editor.js?v=20261031-template-switch';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261025-standalone-app';
 import {showAppView} from './app-shell.js?v=20261031-digital-cv';
-import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261101-finished-resumes';
+import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261101-account-guard';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';

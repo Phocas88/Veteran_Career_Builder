@@ -1,8 +1,12 @@
-export function paidResponse(body,id='a'.repeat(64)){
- if(body.action==='purchase')return {id,status:'paid',prepaid:true,entryMode:body.entryMode,requestId:body.requestId,input:null};
- if(body.action==='verify')return {id:body.buildId,status:'paid',prepaid:true};
+// Rendering regressions use an account that already owns every design. Payment tests
+// pass templateEntitlements:[] to exercise a fresh one-template purchase.
+const allTemplates='classic modern compact federal executive minimal heritage technical scholar horizon atlas signal patriot leadership consultant civic folio graduate industrial contemporary manager creative federal-concise federal-experience'.split(' ');
+export function paidResponse(body,id='a'.repeat(64),templates=allTemplates){
+ const entitlements={templates:[...templates],includedTemplate:templates[0]||null};
+ if(body.action==='purchase')return {...entitlements,id,status:'paid',prepaid:true,entryMode:body.entryMode,requestId:body.requestId,input:null};
+ if(body.action==='verify')return {...entitlements,id:body.buildId,status:'paid',prepaid:true};
  // Match the server's validateInput: resume text is preserved; optional text is trimmed.
- if(body.action==='bind')return {id:body.buildId,status:'paid',prepaid:true,input:{...body.input,role:(body.input.role||'').trim(),jobDescription:(body.input.jobDescription||'').trim(),applicationType:body.input.applicationType??'private',additionalDetails:(body.input.additionalDetails||'').trim()}};
+ if(body.action==='bind')return {...entitlements,id:body.buildId,status:'paid',prepaid:true,input:{...body.input,role:(body.input.role||'').trim(),jobDescription:(body.input.jobDescription||'').trim(),applicationType:body.input.applicationType??'private',additionalDetails:(body.input.additionalDetails||'').trim()}};
  return null;
 }
 export async function unlockEntry(page){
@@ -26,7 +30,14 @@ export async function installAccount(page,kind='none',options={}) {
   const firebaseAuth=()=>auth;firebaseAuth.GoogleAuthProvider=class{setCustomParameters(value){this.parameters=value;}};firebaseAuth.Auth={Persistence:{LOCAL:'local',SESSION:'session'}};firebaseAuth.EmailAuthProvider={credential:(email,password)=>({email,password})};
   const db={collection:name=>ref(name)};window.firebase={apps:[{name:'vcp-resume-program',auth:()=>auth,firestore:()=>db}],auth:firebaseAuth,firestore:()=>db};
  },{kind,...options});
- await page.route('https://vcp-proxy.vercel.app/api/claude',route=>{const body=route.request().postDataJSON();return route.fulfill({json:body.action==='guest'?{token:'fixture-custom-token'}:paidResponse(body)||{builds:[]}});});
+ let owned=[...(options.templateEntitlements??allTemplates)],included=owned[0]||null;
+ await page.route('https://vcp-proxy.vercel.app/api/claude',route=>{const body=route.request().postDataJSON();
+  if(body.action==='template-finish'){
+   if(!included||owned.includes(body.document.design)){included ||= body.document.design;owned=[...new Set([...owned,body.document.design])];return route.fulfill({json:{templates:owned,includedTemplate:included,document:{...body.document,buildId:body.buildId}}});}
+   return route.fulfill({json:{url:'https://checkout.stripe.com/c/pay/fixture-template'}});
+  }
+  return route.fulfill({json:body.action==='guest'?{token:'fixture-custom-token'}:paidResponse(body,undefined,owned)||{builds:[]}});
+ });
 }
 export async function start(page,path='edit') {
  await page.goto('/');

@@ -1,4 +1,4 @@
-import {profileToCv,selectCv,optionsFromCv,cvDefaults,cvUrl,safeCvLink} from './digital-cv-model.js?v=20261031-digital-cv';
+import {profileToCv,resumeToCv,selectCv,optionsFromCv,cvDefaults,cvUrl,safeCvLink} from './digital-cv-model.js?v=20261101-finished-resumes';
 const $=id=>document.getElementById(id);
 const node=(tag,text)=>{const el=document.createElement(tag);if(text)el.textContent=text;return el;};
 const optionNames=Object.keys(cvDefaults());
@@ -15,12 +15,12 @@ export function renderCvPreview(root,cv){
  section('Contact',contact);
 }
 export function initDigitalCv(api){
- let base={},published=null,slug='',generation=0,busy=false,loaded=false,loadFailed=false;
+ let sources=[],base={},published=null,slug='',generation=0,busy=false,loaded=false,loadFailed=false;
  const message=text=>{$('cv-status').textContent=text;};
  const fields=()=>Object.fromEntries(['name','headline','summary'].map(k=>[k,$('cv-'+k).value]));
  const options=()=>Object.fromEntries(optionNames.map(k=>[k,$('cv-include-'+k).checked]));
  const draft=()=>selectCv(base,options(),fields());
- function controls(){const registered=!!api.user()?.email;$('cv-account').hidden=registered;$('cv-editor').hidden=!registered||!loaded;$('cv-published').hidden=!published;$('cv-publish').disabled=busy||!loaded||loadFailed;$('cv-refresh').disabled=busy||!loaded;for(const id of ['cv-copy','cv-share','cv-unpublish'])$(id).disabled=busy;$('cv-publish').textContent=published?'Update published CV':'Publish my digital CV';$('cv-state').textContent=published?'Published · anyone with the link can view this CV.':'Private · your CV has not been published.';}
+ function controls(){const registered=!!api.user()?.email;$('cv-account').hidden=registered;$('cv-editor').hidden=!registered||!loaded;$('cv-published').hidden=!published;$('cv-publish').disabled=busy||!loaded||loadFailed;$('cv-refresh').disabled=busy||!loaded;$('cv-use-resume').disabled=busy||!loaded||!sources.length;for(const id of ['cv-copy','cv-share','cv-unpublish'])$(id).disabled=busy;$('cv-publish').textContent=published?'Update published CV':'Publish my digital CV';$('cv-state').textContent=published?'Published · anyone with the link can view this CV.':'Private · your CV has not been published.';}
  function preview(){renderCvPreview($('cv-preview'),draft());}
  function fill(source,opts){base=source;for(const k of ['name','headline','summary'])$('cv-'+k).value=source[k]||'';for(const k of optionNames)$('cv-include-'+k).checked=!!opts[k];$('cv-consent').checked=false;preview();}
  const changed=()=>{$('cv-consent').checked=false;preview();if(published)message('Changes are private until you choose Update published CV.');};
@@ -28,19 +28,33 @@ export function initDigitalCv(api){
  for(const k of optionNames)$('cv-include-'+k).addEventListener('change',changed);
  $('cv-account-signin').onclick=api.openAccount;
  $('cv-edit-profile').onclick=api.openProfile;
+ async function refreshSources(){
+  const token=generation,uid=api.user()?.uid;
+  const current=api.getDraft();const saved=await api.listVersions().catch(()=>[]);
+  if(token!==generation||uid!==api.user()?.uid)return;
+  sources=[...(current.resume?.trim()?[{title:'Current resume in editor',resume:current.resume}]:[]),...saved.map(item=>({title:item.title||'Saved resume',resume:item.workspace?.resume||item.content||''})).filter(x=>x.resume.trim())];
+  $('cv-resume-source').replaceChildren(...sources.map((item,index)=>new Option(item.title,String(index))));
+  $('cv-source-help').textContent=sources.length?'Choose the updated resume below, load it, check every section, then publish to update the same link.':'No resume is available yet. Finish and save a resume, or use your career profile below.';controls();
+ }
+ async function useResume(text,title='Selected resume'){
+  await open();if(!loaded||busy)return;
+  fill(resumeToCv(text),{...options(),military:true,civilian:true,education:true,skills:true,certifications:true,languages:true});$('cv-source-state').textContent='Private preview from: '+title+'.';
+  message('Resume loaded into this private CV preview. Check parsed names, jobs and dates, choose what to share, then '+(published?'Update published CV':'Publish my digital CV')+'. Your live page has not changed.');
+ }
+ $('cv-use-resume').onclick=()=>{const source=sources[Number($('cv-resume-source').value)];if(source)useResume(source.resume,source.title).catch(error=>message(error.message));};
  async function open(){
-  if(loaded&&!loadFailed){controls();return;}
+  if(loaded&&!loadFailed){await refreshSources();controls();return;}
   const token=++generation,uid=api.user()?.uid;busy=true;loaded=false;loadFailed=false;published=null;controls();message('');
   if(!api.user()?.email){busy=false;controls();return;}
   message('Loading your digital CV…');
   try{await api.ready();const result=await api.load();if(token!==generation||uid!==api.user()?.uid)return;slug=result.slug;published=result.cv;loaded=true;
    fill(published||profileToCv(api.getProfile()),published?optionsFromCv(published):cvDefaults());$('cv-link').value=cvUrl(slug);$('cv-open').href=cvUrl(slug);
-   message(published?'Showing your published snapshot. To use newer profile details, choose Refresh from my profile.':'Choose your sections and check the preview. Nothing is public until you publish.');
+   $('cv-source-state').textContent=published?'Showing the published snapshot. Resume updates are not public yet.':'Private preview from your career profile.';message('Load your updated resume below to match your CV to it. Nothing changes on the public page until you publish.');await refreshSources();
   }catch{if(token===generation){loadFailed=true;message('Your digital CV could not load. Try again before replacing an existing published CV.');}}
   finally{if(token===generation){busy=false;controls();$('cv-retry').hidden=!loadFailed;}}
  }
  $('cv-retry').onclick=open;
- $('cv-refresh').onclick=()=>{if(!confirm('Replace this CV draft with your current profile details? Your public link will stay unchanged until you publish the update.'))return;fill(profileToCv(api.getProfile()),options());message('Profile details refreshed in this private preview. Check every section before publishing.');};
+ $('cv-refresh').onclick=()=>{if(!confirm('Replace this CV draft with your current profile details? Your public link will stay unchanged until you publish the update.'))return;fill(profileToCv(api.getProfile()),options());$('cv-source-state').textContent='Private preview from your current career profile.';message('Profile details refreshed in this private preview. Check every section before publishing.');};
  $('cv-form').addEventListener('submit',async event=>{
   event.preventDefault();if(busy||!loaded||loadFailed)return;
   if(!$('cv-consent').checked){message('Check the public preview, then agree to publish the selected details.');$('cv-consent').focus();return;}
@@ -54,6 +68,6 @@ export function initDigitalCv(api){
  $('cv-copy').onclick=async()=>{const token=generation;try{await navigator.clipboard.writeText(cvUrl(slug));if(token===generation)message('Link copied. Share it with an employer or add it to an application.');}catch{if(token===generation){$('cv-link').focus();$('cv-link').select();message('Select and copy the link in the box above.');}}};
  $('cv-share').hidden=!navigator.share;
  $('cv-share').onclick=async()=>{try{await navigator.share({title:'My digital CV',url:cvUrl(slug)});}catch(error){if(error.name!=='AbortError')message('Sharing could not open. Use Copy link instead.');}};
- function reset(){generation++;base={};published=null;slug='';busy=false;loaded=false;loadFailed=false;fill({},cvDefaults());$('cv-link').value='';$('cv-open').removeAttribute('href');$('cv-retry').hidden=true;message('');controls();}
- reset();return {open,reset};
+ function reset(){generation++;sources=[];$('cv-resume-source').replaceChildren();$('cv-source-state').textContent='';base={};published=null;slug='';busy=false;loaded=false;loadFailed=false;fill({},cvDefaults());$('cv-link').value='';$('cv-open').removeAttribute('href');$('cv-retry').hidden=true;message('');controls();}
+ reset();return {open,reset,useResume};
 }

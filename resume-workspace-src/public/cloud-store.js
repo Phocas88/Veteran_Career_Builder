@@ -1,4 +1,4 @@
-import {cvSlug} from './digital-cv-model.js?v=20261031-digital-cv';
+import {cvSlug} from './digital-cv-model.js?v=20261101-finished-resumes';
 import {normalizeProfileSetup} from './profile-steps.js?v=20261026-profile-setup';
 // Firebase rules remain the security boundary. Every operation derives its path
 // from the current authenticated UID; caller-supplied owner IDs are never accepted.
@@ -66,6 +66,13 @@ export function createCloudStore({ db, auth }) {
         preview: draft.resume.slice(0, 120), format: 'workspace', source: 'vcp-resume-workspace',
         workspace: draft };
       await doc.set(entry); assertOwner(uid); return entry;
+    },
+    async saveFinished(draft) {
+      const {uid,ref}=owner();
+      if(!/^[a-f0-9]{64}$/.test(draft.buildId||'')||!/^[a-z-]{1,40}$/.test(draft.design||'')||!draft.resume?.trim())throw new Error('Finish this paid template before saving it.');
+      const id='finished-'+draft.buildId+'-'+draft.design;
+      const entry={id,familyId:draft.buildId,title:(draft.role||'My resume')+' · '+draft.design,content:draft.resume,createdAt:new Date().toISOString(),preview:draft.resume.slice(0,120),format:'workspace',source:'vcp-resume-workspace',finished:true,workspace:draft};
+      await ref.collection('resumeProgramResumes').doc(id).set(entry);assertOwner(uid);return entry;
     },
     async remove(id) { const { uid, ref } = owner(); if (typeof id !== 'string' || !id || id.includes('/')) throw new Error('Choose a saved resume.'); await ref.collection('resumeProgramResumes').doc(id).delete(); assertOwner(uid); },
     async jobs() { const {uid,ref}=owner(); const snap=await ref.collection('resumeProgramJobs').orderBy('updatedAt','desc').limit(100).get(); assertOwner(uid); return snap.docs.map(doc=>({...normalizeJob(doc.data()),id:doc.id,updatedAt:doc.data().updatedAt})); },

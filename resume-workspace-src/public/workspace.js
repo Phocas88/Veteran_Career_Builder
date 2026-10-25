@@ -5,11 +5,11 @@ import {initProfileSetup} from './profile-setup.js?v=20261030-visible-gallery';
 import {showAppView} from './app-shell.js?v=20261031-digital-cv';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261025-standalone-app';
 import { fillBackground, readBackground } from './background-form.js?v=20261029-clear-flow';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261025-standalone-app';
-import { initCareerTools } from './career-tools.js?v=20261031-digital-cv';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261101-finished-resumes';
+import { initCareerTools } from './career-tools.js?v=20261101-finished-resumes';
 import {initAppShell} from './app-shell.js?v=20261031-digital-cv';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261025-standalone-app';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261031-digital-cv';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261101-finished-resumes';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -167,6 +167,13 @@ async function careerStore(write=false) {
  return store;
 }
 
+export async function saveFinishedResume(draft){
+ if(!user?.email)return null;
+ await ensureConnection();const version=accountVersion;
+ const item=await store.saveFinished(draft);
+ if(version!==accountVersion)throw new Error('Your account changed while saving. Reopen your finished resume.');
+ callback.markVersion(item);await refreshSaved();return item;
+}
 export function initWorkspace(adapter) {
   callback = adapter; fillProfile({});
   careerUI=initCareerTools({
@@ -175,6 +182,7 @@ export function initWorkspace(adapter) {
    saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),
    loadProfile:()=>profileStorage.reload(),
    profileReady:()=>profileStorage.accountChanged(),
+   saveFinished:saveFinishedResume,
    loadDigitalCv:async()=>(await careerStore()).digitalCv(),
    publishDigitalCv:async cv=>(await careerStore()).publishDigitalCv(cv),
    unpublishDigitalCv:async()=>(await careerStore()).unpublishDigitalCv(),
@@ -222,7 +230,7 @@ export function initWorkspace(adapter) {
   $('auth-switch').onclick = () => mode(authMode === 'create' ? 'signin' : 'create');
   $('checkout-create').onclick = () => openAccount('create');
   if (!choice() && !new URLSearchParams(location.search).has('build')) $('welcome-dialog').showModal();
-  initPayments({ ensureConnection, ensureGuest, adapter,restoreEntryContext:async context=>{
+  initPayments({saveFinished:saveFinishedResume, ensureConnection, ensureGuest, adapter,restoreEntryContext:async context=>{
     await ensureConnection();const version=accountVersion;
     const [job,resume]=await Promise.all([store.getJob(context.jobId),context.resumeVersionId?store.getVersion(context.resumeVersionId):null]);
     if(version!==accountVersion)throw new Error('Your account changed. Open this purchase again.');

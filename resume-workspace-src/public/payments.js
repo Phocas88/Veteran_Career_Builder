@@ -33,7 +33,7 @@ async function api(action,extra={},signal){
 let entryMode='edit',requestId=null,entryContext=null;
 const changed=()=>document.dispatchEvent(new Event('resume:payment-changed'));
 export const hasPaidBuild=()=>!!active?.verified;
-export const careerBuildContext=()=>active?.verified?{id:active.id,completed:!!active.review,bound:!!active.input,role:active.input?.role||'',jobDescription:active.input?.jobDescription||'',refinementCount:active.refinementCount||0}:null;
+export const careerBuildContext=()=>active?.verified?{id:active.id,completed:!!active.review,bound:!!active.input,role:active.input?.role||'',jobDescription:active.input?.jobDescription||'',refinementCount:active.refinementCount||0,templates:active.templates||[],includedTemplate:active.includedTemplate||null}:null;
 export async function requestCareerKit(signal){
  if(!active?.verified||!active.review)throw new Error('Open a completed resume build from purchase history first.');
  const result=await api('career',{buildId:active.id,consent:true,keepAlive:true},signal);return result.kit;
@@ -42,6 +42,13 @@ export async function unlockSavedBuild(id){
  if(typeof id!=='string'||!/^[a-f0-9]{64}$/.test(id))throw new Error('Open the original purchase from purchase history to unlock this older saved resume.');
  if(active?.id===id&&active.verified)return;
  const build=await api('get',{buildId:id});await unlock(build);
+}
+export const canUseTemplate=design=>hasPaidBuild()&&(active.templates||[]).includes(design);
+export async function finishTemplate(document){
+ if(!hasPaidBuild())throw new Error('Reopen your paid build first.');
+ const result=await api('template-finish',{buildId:active.id,document,storageConsent:true});
+ if(result.url){redirectCheckout(result.url);return null;}
+ active={...active,templates:result.templates,includedTemplate:result.includedTemplate};changed();return result.document;
 }
 export const includedUpdateAvailable=()=>hasPaidBuild()&&(active.refinementCount||0)<1;
 export function forgetActiveBuild(){active=null;requestId=null;entryContext=null;changed();}
@@ -88,9 +95,10 @@ async function openBuild(id){
   config.adapter.showPayment();$('purchase-start-status').textContent=error.message;return build;
  }
  if(build.input)config.adapter.loadDraft(build.input);
- if(build.review){config.adapter.loadReview(build.review,build.input?.resume);msg(build.lastError?.error||'Build reopened. Formatting and downloads are included.');}
+ if(build.review){config.adapter.loadReview(build.review,build.input?.resume);msg(build.lastError?.error||'Build reopened. Your selected template and repeat downloads are included.');}
  else if(build.input){config.adapter.showCheckout();msg('Your paid draft is restored. Finish this build without another payment.');}
  else{if(build.entryContext)await config.restoreEntryContext(build.entryContext);config.adapter.openEntry(build.entryMode||'edit');msg('Payment verified. Your resume build is unlocked.');}
+ if(build.includedTemplate){const result=await api('template-open',{buildId:id,design:build.includedTemplate});config.adapter.loadDraft({...result.document,buildId:id});config.adapter.showExport();}
  return build;
 }
 export async function refreshPurchases(){
@@ -106,13 +114,18 @@ export async function refreshPurchases(){
     if(!confirm('Delete this build’s input, answers and AI result? This does not cancel payment or issue a refund. A minimal purchase record is retained for accounting.'))return;
     try{await api('delete',{buildId:build.id});if(active?.id===build.id)forgetActiveBuild();await refreshPurchases();msg('Build input and result deleted from the active database.');}catch(e){msg(e.message);}
    };
-   row.append(text,open,remove);list.append(row);
+   row.append(text,open);for(const design of build.templates||[]){const use=document.createElement('button');use.type='button';use.className='text-button';use.textContent='Open saved '+design;use.onclick=async()=>{try{await openBuild(build.id);const result=await api('template-open',{buildId:build.id,design});config.adapter.loadDraft(result.document);config.adapter.showExport();}catch(e){msg(e.message);}};row.append(use);}row.append(remove);list.append(row);
   }
   $('purchase-empty').hidden=builds.length>0;
   const params=new URLSearchParams(location.search),id=params.get('build');
   if(id&&/^[a-f0-9]{64}$/.test(id)){
    $('purchase-history').open=true;history.replaceState(null,'',location.pathname+location.hash);
    const build=await openBuild(id);
+   if(params.has('template')&&build?.verified){
+    const design=params.get('template');
+    if(params.get('checkout')==='canceled'){msg('Template checkout canceled. Your original template remains available. Choose the same new template to resume checkout.');return;}
+    const result=await api('template-verify',{buildId:id,design,storageConsent:true});active={...active,templates:result.templates,includedTemplate:result.includedTemplate};changed();config.adapter.loadDraft(result.document);config.adapter.showExport();try{await config.saveFinished(result.document);msg('New template verified and saved in My resumes. Repeat downloads are included.');}catch{msg('Template payment verified. Your finished resume is safe in purchase history. Press Save finished resume to retry the My resumes save without paying again.');}return;
+   }
    if(params.get('checkout')==='success'&&build?.verified&&build.input&&!build.review){
     msg('Payment verified. Preparing your resume…');
     await config.adapter.recoverReview(async signal=>{const review=await runBuild(id,signal);active.review=review;active.refinementCount=review.refinementCount||0;return review;});

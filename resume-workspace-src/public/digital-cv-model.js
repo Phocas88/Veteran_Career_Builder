@@ -1,3 +1,4 @@
+import {parseProfileResume} from './profile-import-model.js?v=20261031-profile-import';
 // Deliberate public allowlist. Never serialize an entire profile or resume here.
 const text=(v,max=1000)=>typeof v==='string'?v.trim().slice(0,max):'';
 const rows=v=>Array.isArray(v)?v.filter(x=>x&&typeof x==='object').slice(0,30):[];
@@ -11,6 +12,10 @@ export function profileToCv(p={}){
  education:rows(p.educationEntries).filter(e=>e.institution||e.degree).map(e=>({degree:[text(e.degree,160),text(e.status,40)].filter(Boolean).join(' · '),field:text(e.field,200),institution:text(e.institution,200),year:text(e.year||e.endDate,30)})),
  skills:{technical:rows(p.skillsEntries).map(e=>text(e.name,120)).filter(Boolean).join(', '),leadership:'',certs:rows(p.certifications).map(e=>[text(e.name,150),text(e.issuer,120),text(e.status,40)].filter(Boolean).join(' — ')).filter(Boolean).join(', '),languages:rows(p.languages).map(e=>text(e.name,120)).filter(Boolean).join(', ')},
  contact:{email:text(p.email,254),phone:text(p.phone,60),linkedin:safeCvLink(p.linkedin)}};
+}
+export function resumeToCv(resume){
+ const {data}=parseProfileResume(resume);
+ return profileToCv({...data.personal,...Object.fromEntries(Object.entries(data).filter(([key])=>key!=='personal'))});
 }
 export function selectCv(base={},options=cvDefaults(),fields={}){
  const contact={};for(const key of ['email','phone','linkedin'])if(options[key]&&base.contact?.[key])contact[key]=key==='linkedin'?safeCvLink(base.contact[key]):text(base.contact[key],254);

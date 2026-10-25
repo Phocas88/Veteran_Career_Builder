@@ -6,7 +6,7 @@ import {showAppView} from './app-shell.js?v=20261031-digital-cv';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261025-standalone-app';
 import { fillBackground, readBackground } from './background-form.js?v=20261029-clear-flow';
 import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261101-finished-resumes';
-import { initCareerTools } from './career-tools.js?v=20261101-finished-resumes';
+import { initCareerTools } from './career-tools.js?v=20261101-account-guard';
 import {initAppShell} from './app-shell.js?v=20261031-digital-cv';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261025-standalone-app';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261101-finished-resumes';
@@ -169,7 +169,8 @@ async function careerStore(write=false) {
 
 export async function saveFinishedResume(draft){
  if(!user?.email)return null;
- await ensureConnection();const version=accountVersion;
+ const uid=user.uid,version=accountVersion;await ensureConnection();
+ if(uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Reopen your finished resume.');
  const item=await store.saveFinished(draft);
  if(version!==accountVersion)throw new Error('Your account changed while saving. Reopen your finished resume.');
  callback.markVersion(item);await refreshSaved();return item;
@@ -184,8 +185,8 @@ export function initWorkspace(adapter) {
    profileReady:()=>profileStorage.accountChanged(),
    saveFinished:saveFinishedResume,
    loadDigitalCv:async()=>(await careerStore()).digitalCv(),
-   publishDigitalCv:async cv=>(await careerStore()).publishDigitalCv(cv),
-   unpublishDigitalCv:async()=>(await careerStore()).unpublishDigitalCv(),
+   publishDigitalCv:async cv=>{const uid=user?.uid,version=accountVersion;const s=await careerStore();if(uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Review your CV again.');return s.publishDigitalCv(cv);},
+   unpublishDigitalCv:async()=>{const uid=user?.uid,version=accountVersion;const s=await careerStore();if(uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Open your CV again.');return s.unpublishDigitalCv();},
    buildProfile:()=>choosePaidEntry('build'),
    listVersions:async()=>{const s=await careerStore();return s.list();},
    saveVersion:async title=>{const s=await careerStore(true);const item=await s.save(callback.getDraft(),title);callback.markVersion(item);await refreshSaved();return item;},

@@ -1,4 +1,4 @@
-import {initDigitalCv} from './digital-cv.js?v=20261101-finished-resumes';
+import {initDigitalCv} from './digital-cv.js?v=20261101-account-guard';
 import {selectProfileSection} from './background-form.js?v=20261030-visible-gallery';
 import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261025-standalone-app';
 import { savedResumeToDraft } from './cloud-store.js?v=20261101-finished-resumes';

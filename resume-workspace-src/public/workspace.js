@@ -1,3 +1,4 @@
+import {initProfileImport} from './profile-import.js?v=20261031-profile-import';
 import {createProfileStorage} from './profile-storage.js?v=20261030-visible-gallery';
 import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
 import {initProfileSetup} from './profile-setup.js?v=20261030-visible-gallery';
@@ -13,7 +14,7 @@ import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
 const website = /(^|\.)veterancareerpath\.com$/i.test(location.hostname);
-let connection, store, user = null, accountVersion = 0;
+let connection, store, user = null, accountVersion = 0, profileImport;
 let saved = [];
 let callback;
 let profileDirty = false;
@@ -60,7 +61,7 @@ function updateUser(next) {
   status(registered ? 'Save a version here, then reopen it whenever you want to make updates.' : 'A free account lets you keep resumes and background details for later.');
   if (registered || guest(next)) { rememberChoice(registered ? 'account' : 'guest'); $('welcome-dialog').close(); }
   if (next) { callback?.restoreDeviceDraft(next.uid); if (registered) refreshSaved(); refreshPurchases(); }
-  careerUI?.accountChanged();profileSetup?.accountChanged();profileStorage?.accountChanged();syncGoogleButtons();if(previousUser?.email&&!next?.email)prepareGooglePersistence();
+  profileImport?.accountChanged();careerUI?.accountChanged();profileSetup?.accountChanged();profileStorage?.accountChanged();syncGoogleButtons();if(previousUser?.email&&!next?.email)prepareGooglePersistence();
 }
 async function ensureGuest() {
   const c = await ensureConnection();
@@ -88,7 +89,7 @@ function errorText(error) {
 const readProfile = readBackground;
 function fillProfile(profile) { fillBackground(profile); profileDirty = false; }
 function resetPrivateState() {
-  profileStorage?.reset();profileSetup?.reset();careerUI?.reset();$('google-existing-choice').hidden=true;
+  profileImport?.reset();profileStorage?.reset();profileSetup?.reset();careerUI?.reset();$('google-existing-choice').hidden=true;
   saved=[];fillProfile({});$('keep-signed-in').checked=false;
   $('auth-email').value = ''; $('auth-password').value = ''; $('ai-consent').checked = false; $('purchase-consent').checked = false; $('save-submitted').checked = false;
   callback?.clearAccountDraft();
@@ -202,6 +203,7 @@ export function initWorkspace(adapter) {
     $('profile-persistence-status').textContent=text;$('profile-persistence-status').dataset.state=kind;$('profile-load-retry').hidden=!retry;
     for(const id of ['career-profile-save','profile-save-bottom','save-profile'])$(id).disabled=busy;
   }});
+  profileImport=initProfileImport({user:()=>user,getProfile:readProfile,getResume:()=>callback.getDraft().resume,ready:async()=>{await ensureConnection();await profileStorage.accountChanged();},applyProfile:profile=>{fillProfile(profile);profileDirty=true;profileStorage.dirty();},saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),openProfile:()=>careerUI.open('profile'),openAccount:()=>openAccount('create')});
   $('profile-load-retry').onclick=()=>profileStorage.reload();
   initAppShell({openCareer:careerUI.open,openAccount:()=>openAccount(),getDraft:()=>callback.getDraft(),hasPaidBuild,continueResume:()=>callback.continueResume()});
   initGuidedFlow({showResume:adapter.showResume,openAccount:()=>openAccount(),canUse:hasPaidBuild,startEntry:choosePaidEntry,newResume:()=>{

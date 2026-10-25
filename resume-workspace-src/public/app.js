@@ -2,7 +2,7 @@ import {initReviewFlow} from './review-flow.js?v=20261029-clear-flow';
 import {initDesignEditor} from './design-editor.js?v=20261030-visible-gallery';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261025-standalone-app';
 import {showAppView} from './app-shell.js?v=20261031-digital-cv';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261031-digital-cv';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261031-profile-import';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';
@@ -413,6 +413,7 @@ $('resume-file').addEventListener('change', async event => {
     document.dispatchEvent(new Event('resume:draft-ready'));
     $('import-status').textContent = `Imported ${file.name}. Check the extracted text below before requesting a review.`;
     setTab('resume', false);
+    document.dispatchEvent(new Event('resume:file-imported'));
     toast('Resume imported. You can edit the text before reviewing it.');
   } catch (error) {
     if (importAccount !== draftOwnerId()) return;

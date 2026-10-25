@@ -18,3 +18,13 @@ test('updated resume becomes a private CV preview and replaces the published sna
  let writes=await page.evaluate(()=>window.__writes.filter(w=>w.path.startsWith('publicProfiles/')));expect(writes).toHaveLength(1);expect(JSON.stringify(writes[0].data)).toContain('Old Employer');
  await page.locator('#cv-consent').check();await page.locator('#cv-publish').click();await expect.poll(()=>page.evaluate(()=>window.__writes.filter(w=>w.path.startsWith('publicProfiles/')).length)).toBe(2);expect(await page.locator('#cv-link').inputValue()).toBe(link);writes=await page.evaluate(()=>window.__writes.filter(w=>w.path.startsWith('publicProfiles/')));expect(JSON.stringify(writes[1].data)).toContain('New Example Employer');expect(JSON.stringify(writes[1].data)).not.toContain('Old Employer');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+test('returning from the $1 checkout restores and saves the new template without a second charge',async({page})=>{
+ await installAccount(page,'registered');const id='b'.repeat(64),requests=[];
+ const initial={id,status:'complete',prepaid:true,entryMode:'edit',templates:['classic'],includedTemplate:'classic',input:{resume,applicationType:'private'},review:{score:80,summary:'Verified source.',strengths:[],findings:[],nextSteps:[],suggestions:[],revisedResume:resume,rewriteNotes:[]}};
+ await page.route('https://vcp-proxy.vercel.app/api/claude',route=>{const body=route.request().postDataJSON();requests.push(body);
+ const document={resume,applicationType:'private',design:body.action==='template-open'?'classic':'modern',buildId:id};
+ return route.fulfill({json:body.action==='list'?{builds:[]}:body.action==='get'||body.action==='verify'?initial:body.action==='template-open'?{document,templates:['classic'],includedTemplate:'classic'}:body.action==='template-verify'?{document,templates:['classic','modern'],includedTemplate:'classic'}:{error:'Unexpected request'}});
+ });
+ await page.goto('/?build='+id+'&template=modern&checkout=success');await expect(page.locator('#preview-label')).toContainText('Modern');await expect(page.locator('#download-pdf')).toBeEnabled();await expect.poll(()=>page.evaluate(()=>window.__writes.filter(w=>w.data.finished).length)).toBe(1);
+ const saved=(await page.evaluate(()=>window.__writes.filter(w=>w.data.finished)))[0];expect(saved.data.workspace.design).toBe('modern');expect(saved.data.workspace.resume).toBe(resume);expect(requests.filter(r=>r.action==='purchase'||r.action==='template-finish')).toHaveLength(0);expect(requests.filter(r=>r.action==='template-verify')).toHaveLength(1);
+});

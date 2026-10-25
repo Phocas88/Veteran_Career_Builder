@@ -1,5 +1,5 @@
 import {profileSteps} from './profile-steps.js?v=20261026-profile-setup';
-import { wireServiceBranchChoices, wireNestedBranchChoices } from './branch-controls.js?v=20261025-standalone-app';
+import { wireServiceBranchChoices, wireNestedBranchChoices } from './branch-controls.js?v=20261029-clear-flow';
 import { branches, normalizeProfile } from './veteran-profile.js?v=20261025-standalone-app';
 import { personalFields, groups } from './profile-fields.js?v=20261025-standalone-app';
 const $ = id => document.getElementById(id);
@@ -37,6 +37,7 @@ function categorySummary(key,title) {
  const badge=document.createElement('span');badge.className='category-icon';badge.append(icon(key));
  const heading=document.createElement('h3');heading.textContent=categoryTitles[key]||title;
  const hint=document.createElement('span');hint.className='category-hint';hint.textContent=categoryHints[key]||'Add the details you want to include';
+ const count=document.createElement('span');count.className='category-count';count.setAttribute('aria-live','polite');summary.append(count);
  const arrow=document.createElement('span');arrow.className='category-chevron';arrow.append(icon('chevron'));
  summary.append(badge,heading,hint,arrow);return summary;
 }
@@ -73,8 +74,14 @@ function entry(group,spec,value={}){
   heading('4 · Assignments, duties & results',experience);
  }
  const current=box.querySelector(':scope > label > [data-key="current"]');const end=box.querySelector(':scope > label > [data-key="endDate"]');if(current&&end){const toggle=()=>{end.disabled=current.checked;};current.addEventListener('change',toggle);toggle();}
- const rm=document.createElement('button');rm.type='button';rm.className='text-button danger';rm.textContent='Remove this '+spec.add;rm.onclick=()=>{box.remove();group.querySelector(':scope > button').disabled=false;group.dispatchEvent(new Event('input',{bubbles:true}));};box.append(rm);entries.append(box);group.querySelector(':scope > button').disabled=entries.children.length>=12;
+ const rm=document.createElement('button');rm.type='button';rm.className='text-button danger';rm.textContent='Remove this '+spec.add;rm.onclick=()=>{box.remove();updateGroupSummary(group);group.querySelector(':scope > button').disabled=false;group.dispatchEvent(new Event('input',{bubbles:true}));};box.append(rm);entries.append(box);group.querySelector(':scope > button').disabled=entries.children.length>=12;
+ box.addEventListener('input',()=>updateGroupSummary(group));updateGroupSummary(group);
  if(group.dataset.group==='roles')wireServiceBranchChoices(box);else{const service=group.closest('[data-service-role]');if(service)wireNestedBranchChoices(box,group.dataset.group,service);}
+}
+function updateGroupSummary(group){
+ const entries=[...group.querySelector(':scope > .builder-entries').children];let count=0;
+ for(const box of entries){const data=readBox(box);const keys=group.dataset.group==='roles'?['branch','fullCode','code','rank']:['code','name','rank','title','institution','employer'];const values=keys.map(k=>typeof data[k]==='string'?data[k].trim():'').filter(Boolean);if(values.length)count++;const legend=box.querySelector(':scope > legend');if(values.length)legend.textContent=values.join(' · ').slice(0,150);}
+ const badge=group.querySelector(':scope > summary > .category-count');if(badge)badge.textContent=count?count+' added to draft':'Optional';
 }
 function makeGroup(key,spec,values=[]){const group=document.createElement('details');group.className='builder-group resume-category';group.open=false;group.dataset.group=key;const entries=document.createElement('div');entries.className='builder-entries';const add=document.createElement('button');add.type='button';add.className='button button-secondary';add.textContent='+ Add '+spec.add;add.onclick=()=>{entry(group,spec);group.dispatchEvent(new Event('input',{bubbles:true}));};const summary=categorySummary(key,spec.title);group.append(summary,entries,add);for(const value of values)entry(group,spec,value);return group;}
 export function fillBackground(input={}){

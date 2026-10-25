@@ -5,7 +5,7 @@ const kindName={specialty:'Specialties',qualification:'Qualifications',designato
 export function initServiceLibrary(api){
  let data,loading,selected=null,limit=20,generation=0,initial=true,controller,stage='branch';
  const message=text=>{$('library-status').textContent=text;};
- function setStage(value,focus=true){stage=value;for(const panel of document.querySelectorAll('[data-library-stage]'))panel.hidden=panel.dataset.libraryStage!==value;for(const step of document.querySelectorAll('[data-library-step]'))step.setAttribute('aria-current',step.dataset.libraryStep===(['detail','success'].includes(value)?'search':value)?'step':'false');if(focus)$('service-library-title').scrollIntoView({block:'start',behavior:'instant'});}
+ function setStage(value,focus=true){stage=value;for(const panel of document.querySelectorAll('[data-library-stage]'))panel.hidden=panel.dataset.libraryStage!==value;for(const step of document.querySelectorAll('[data-library-step]'))step.setAttribute('aria-current',step.dataset.libraryStep===(['detail','success'].includes(value)?'search':value)?'step':'false');if(focus){const heading=document.querySelector('[data-library-stage="'+value+'"] h4')||$('service-library-title');heading.tabIndex=-1;heading.focus({preventScroll:true});$('service-library-title').scrollIntoView({block:'start',behavior:'instant'});}}
  function chooseBranch(branch){$('library-branch').value=branch;$('library-search').value='';hideDetail();limit=20;render();setStage('kind');}
  function targets(){
   const select=$('library-target'),previous=select.value,profile=api.getProfile();
@@ -59,10 +59,10 @@ export function initServiceLibrary(api){
  }
  const filter=()=>{limit=20;hideDetail();render();message('');setStage('search',false);};
  for(const button of document.querySelectorAll('[data-library-branch]'))button.onclick=()=>chooseBranch(button.dataset.libraryBranch);
- for(const button of document.querySelectorAll('[data-library-kind]'))button.onclick=()=>{$('library-kind').value=button.dataset.libraryKind;filter();};
+ for(const button of document.querySelectorAll('[data-library-kind]'))button.onclick=()=>{$('library-kind').value=button.dataset.libraryKind;$('library-search').value='';filter();};
  $('library-kind-back').onclick=$('library-change-branch').onclick=()=>setStage('branch');$('library-change-kind').onclick=()=>setStage('kind');$('library-add-another').onclick=()=>{hideDetail();setStage('search');render();};
  $('library-save-profile').onclick=async()=>{if(!api.user()?.email){api.openAccount();return;}$('library-save-profile').disabled=true;try{if(await api.saveProfile()!==false)message('Your profile is saved to your account. You can return to it after signing in.');}catch{message('Your profile could not be saved. Your entries are still here. Open Profile to check the save status and retry.');}finally{$('library-save-profile').disabled=false;}};
- for(const id of ['library-branch','library-kind'])$(id).onchange=filter;
+ for(const id of ['library-branch','library-kind'])$(id).onchange=()=>{$('library-search').value='';filter();};
  $('library-search').oninput=filter;$('library-more').onclick=()=>{limit+=20;render();};$('library-retry').onclick=open;
  $('library-detail-back').onclick=()=>{hideDetail();setStage('search');$('library-results').scrollIntoView({block:'start'});$('library-search').focus({preventScroll:true});};
  $('library-confirm').onchange=()=>{$('library-apply').disabled=!$('library-confirm').checked;};

@@ -80,6 +80,7 @@ function refreshExport() {
   document.querySelector(`[name="resume-design"][value="${model.design}"]`).checked=true;
   designEditor?.sync(model);
   const owned=canUseTemplate(model.design),context=careerBuildContext();
+  for(const id of ['download-pdf','download-word','download-resume','print-resume','copy-resume'])$(id).disabled=!owned||!input.value.trim()||exporting;
   $('template-finish').textContent=owned?'Save finished resume':context?.includedTemplate?'Get '+designs[model.design].name+' template · $1.00':'Finish & save '+designs[model.design].name+' · included';
   $('template-finish').disabled=exporting||!input.value.trim();
   $('template-entitlement').textContent=owned?'This template is yours. Repeat downloads and printing are included. Save again to keep your edits.':context?.includedTemplate?'Your purchase includes '+designs[context.includedTemplate]?.name+'. This additional template costs $1.00. Examples remain free to browse.':'Your $1.99 build includes one template. Browse the fictional examples, then finish your choice to unlock your personal preview and downloads.';

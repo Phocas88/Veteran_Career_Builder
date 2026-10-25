@@ -64,6 +64,7 @@ export function initCareerTools(api){
  function close(){ $('career-dialog').hidden=true;restoreProfile();if(isCareerView())showAppView(returnView==='workspace'?'workspace':'home'); }
  $('career-close').onclick=close;
  document.addEventListener('app:view-changed',event=>{if(!isCareerView())restoreProfile();});
+ $('finished-cv').onclick=()=>{open('digital-cv');digitalCv.useResume(api.getDraft().resume,'Finished resume in editor').catch(error=>status(error.message));};
  $('career-results-open').onclick=()=>open('match');
  document.addEventListener('app:open-career',event=>open(event.detail));
  for(const b of document.querySelectorAll('[data-career-launch]'))b.onclick=()=>open(b.dataset.careerLaunch);

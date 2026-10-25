@@ -1,10 +1,10 @@
 import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
-import {initProfileSetup} from './profile-setup.js?v=20261026-profile-setup';
+import {initProfileSetup} from './profile-setup.js?v=20261029-clear-flow';
 import {showAppView} from './app-shell.js?v=20261025-standalone-app';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261025-standalone-app';
-import { fillBackground, readBackground } from './background-form.js?v=20261026-profile-setup';
+import { fillBackground, readBackground } from './background-form.js?v=20261029-clear-flow';
 import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261025-standalone-app';
-import { initCareerTools } from './career-tools.js?v=20261026-profile-setup';
+import { initCareerTools } from './career-tools.js?v=20261029-clear-flow';
 import {initAppShell} from './app-shell.js?v=20261025-standalone-app';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261025-standalone-app';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261026-profile-setup';

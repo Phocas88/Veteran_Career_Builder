@@ -1,7 +1,8 @@
-import {initDesignEditor} from './design-editor.js?v=20261027-resume-studio';
+import {initReviewFlow} from './review-flow.js?v=20261029-clear-flow';
+import {initDesignEditor} from './design-editor.js?v=20261029-clear-flow';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261025-standalone-app';
 import {showAppView} from './app-shell.js?v=20261025-standalone-app';
-import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261028-google-signin';
+import { initWorkspace, requestVeteranReview, draftOwnerId } from './workspace.js?v=20261029-clear-flow';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';
@@ -25,6 +26,11 @@ let previewTimer;
 let previewKey = '';
 let versionContext = {};
 let designEditor;
+const reviewFlow=initReviewFlow({finish(useRewrite=true){
+  if(collectAnswers().length&&!(state.review?.refinementCount>=1)&&!confirm('Your answers have not been used in an AI update yet. Continue with the current resume? Your answers stay in this tab.'))return;
+  if(useRewrite&&!$('apply-rewrite').disabled){$('apply-rewrite').click();return;}
+  setTab('export');
+}});
 
 function currentDocument() {
   return createResumeDocument(input.value, {exportSettings:designEditor?.getSettings(),design: document.querySelector('[name="resume-design"]:checked').value, arrangement: $('resume-arrangement').value, paper: $('resume-paper').value, applicationType: applicationInput.value, reflow: $('reflow-lines').checked, pageBreaks: [...pageBreaks] });
@@ -241,6 +247,7 @@ function showReview(review, submittedSource) {
   listItems('rewrite-notes', notes);
   renderSuggestions();
   syncAnswerAction();
+  reviewFlow.refresh(review);
   setTab('review');
 }
 
@@ -615,7 +622,7 @@ initWorkspace({
   markVersion(item) {versionContext={versionFamily:item.familyId || item.id,versionId:item.id,versionTitle:item.title};},
   setJob(job) {roleInput.value=job.role;jobInput.value=job.description;applicationInput.value=job.applicationType;syncApplicationType();if(state.review){state.stale=true;state.rewriteInvalid=true;}refreshDraft();saveDraft();},
   clearAccountDraft() {
-    versionContext={};designEditor.reset();
+    versionContext={};designEditor.reset();reviewFlow.reset();
     document.querySelector('[name="resume-design"][value="classic"]').checked=true;
     setResumeFilename('');
     state.controller?.abort('account-change'); input.value = ''; roleInput.value = ''; jobInput.value = ''; detailsInput.value = '';

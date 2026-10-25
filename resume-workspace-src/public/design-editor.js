@@ -1,18 +1,21 @@
 import {designs,fontFamilies,accentColors,normalizeExportSettings} from './resume-designs.js?v=20261027-resume-studio';
+import {initTemplateExamples} from './template-examples.js?v=20261029-clear-flow';
 const $=id=>document.getElementById(id);
 const node=(tag,text,className)=>{const el=document.createElement(tag);if(text)el.textContent=text;if(className)el.className=className;return el;};
 const ownSectionSettings=settings=>Object.fromEntries(Object.entries(settings).filter(([key])=>['sectionOrder','headings','hiddenSections','photo'].includes(key)));
 export function initDesignEditor(api){
  let settings={},shown=6,sectionKey='',lastFederal=false,revision=0;
  const change=()=>{settings=normalizeExportSettings(settings);api.change();};
+ const examples=initTemplateExamples({canUse:key=>!lastFederal||!!designs[key].federal,choose(key){const radio=document.querySelector('[name="resume-design"][value="'+key+'"]');radio.checked=true;radio.dispatchEvent(new Event('change',{bubbles:true}));}});
+ $('preview-selected-template').onclick=()=>examples.open(document.querySelector('[name="resume-design"]:checked').value);
  const gallery=$('design-gallery');gallery.replaceChildren();
  for(const [key,design]of Object.entries(designs)){
   const card=node('label',null,'design-option studio-template');card.dataset.category=design.category;card.dataset.search=(design.name+' '+design.description).toLowerCase();
   const input=node('input');input.type='radio';input.name='resume-design';input.value=key;input.checked=key==='classic';
-  const swatch=node('span',null,'studio-swatch layout-'+design.layout+' header-'+design.header);swatch.setAttribute('aria-hidden','true');swatch.style.setProperty('--swatch-accent','#'+design.color);const head=node('b');const body=node('span');for(let i=0;i<6;i++)body.append(node('i'));swatch.append(head,body);if(design.layout!=='single'){const side=node('em');for(let i=0;i<4;i++)side.append(node('i'));swatch.append(side);}card.append(input,swatch,node('strong',design.name),node('small',design.federal?'Federal · single column':design.layout==='single'?'Simple · single column':'Designed · two columns'));gallery.append(card);
+  card.dataset.photo=String(!!design.photo);const preview=node('button','Preview example','text-button template-preview-button');preview.type='button';preview.dataset.previewTemplate=key;preview.setAttribute('aria-label','Preview '+design.name+' example resume');preview.onclick=event=>{event.preventDefault();event.stopPropagation();examples.open(key);};card.append(input,node('strong',design.name),node('small',design.description),node('small',design.federal?'Federal · no photo':design.photo?'Civilian · photo optional':design.layout==='single'?'One column':'Two columns'),preview);gallery.append(card);
  }
  gallery.addEventListener('change',event=>{if(event.target.name==='resume-design'){settings=ownSectionSettings(settings);shown=6;api.designChanged(event.target.value);}});
- function filter(){const category=$('template-category').value,search=$('template-search').value.trim().toLowerCase();let count=0,visible=0;for(const card of gallery.children){const match=(!category||card.dataset.category===category)&&(!search||card.dataset.search.includes(search));if(match)count++;card.hidden=!match||visible>=shown;if(match&&visible<shown)visible++;}$('template-count').textContent=`${visible} of ${count} templates`;$('template-more').hidden=visible>=count;}
+ function filter(){const category=$('template-category').value,search=$('template-search').value.trim().toLowerCase();let count=0,visible=0;for(const card of gallery.children){const match=(!category||card.dataset.category===category||category==='photo'&&card.dataset.photo==='true')&&(!search||card.dataset.search.includes(search));if(match)count++;card.hidden=!match||visible>=shown;if(match&&visible<shown)visible++;}$('template-count').textContent=`${visible} of ${count} templates`;$('template-more').hidden=visible>=count;}
  $('template-category').onchange=()=>{shown=6;filter();};$('template-search').oninput=()=>{shown=6;filter();};$('template-more').onclick=()=>{shown+=6;filter();};
  for(const b of document.querySelectorAll('[data-studio-tab]'))b.onclick=()=>{for(const panel of document.querySelectorAll('[data-studio-panel]'))panel.hidden=panel.dataset.studioPanel!==b.dataset.studioTab;for(const tab of document.querySelectorAll('[data-studio-tab]'))tab.setAttribute('aria-pressed',String(tab===b));};
  for(const [key,font]of Object.entries(fontFamilies))$('format-font').add(new Option(font.name,key));
@@ -40,6 +43,7 @@ export function initDesignEditor(api){
  $('studio-source-text').oninput=()=>api.editSource($('studio-source-text').value);
  $('studio-edit').onclick=()=>{$('studio-text-editor').open=true;$('studio-text-editor').scrollIntoView({block:'start'});$('studio-source-text').focus({preventScroll:true});};
  $('studio-preview').onclick=()=>$('resume-proof').scrollIntoView({block:'start',behavior:'instant'});
+ $('resume-photo-upload').onclick=()=>$('resume-photo-input').click();
  $('resume-photo-input').onchange=async event=>{
   const file=event.target.files?.[0];if(!file)return;const owner=api.owner(),token=++revision;
   try{
@@ -62,8 +66,9 @@ export function initDesignEditor(api){
   for(const side of ['top','right','bottom','left']){$('margin-'+side).value=(s.margins[side]/72).toFixed(2);$('margin-'+side).min=federal?'.5':'.35';}
   $('format-federal-note').hidden=!federal;$('resume-paper').disabled=federal;
   const photoAllowed=!federal&&!!designs[model.design].photo;$('resume-photo-controls').hidden=!photoAllowed&&!settings.photo;$('resume-photo-input').disabled=!photoAllowed;$('resume-photo-remove').hidden=!settings.photo;
+  $('resume-photo-upload').disabled=!photoAllowed;$('resume-photo-upload').textContent=settings.photo?'Change photo':'Upload a photo';$('resume-photo-controls').open=photoAllowed||!!settings.photo;$('resume-photo-preview').hidden=!settings.photo;if(settings.photo)$('resume-photo-preview').src=settings.photo;else $('resume-photo-preview').removeAttribute('src');
   $('resume-photo-status').textContent=settings.photo?(photoAllowed?'Photo added. It appears only in photo-enabled civilian designs.':'This draft retains a photo in its design settings, but this layout excludes it. Remove it below if you do not want to keep that copy.'):'Optional. Your photo is never sent for AI review.';
   if(document.activeElement!==$('studio-source-text'))$('studio-source-text').value=api.getSource();renderSections(model);
  }
- filter();return{sync,getSettings:()=>normalizeExportSettings(settings),load(value){revision++;settings=normalizeExportSettings(value);sectionKey='';},reset(){revision++;settings={};sectionKey='';shown=6;lastFederal=false;$('template-search').value='';$('template-category').value='';filter();$('resume-photo-input').value='';$('studio-source-text').value='';$('custom-section-title').value='';$('custom-section-text').value='';$('studio-section-list').replaceChildren();$('studio-text-editor').open=false;$('template-library').open=false;$('resume-photo-controls').open=false;document.querySelector('.studio-add-section').open=false;},resetOrder(){delete settings.sectionOrder;sectionKey='';}};
+ filter();return{sync,getSettings:()=>normalizeExportSettings(settings),load(value){revision++;settings=normalizeExportSettings(value);sectionKey='';},reset(){revision++;examples.reset();settings={};sectionKey='';shown=6;lastFederal=false;$('template-search').value='';$('template-category').value='';filter();$('resume-photo-input').value='';$('resume-photo-preview').removeAttribute('src');$('resume-photo-preview').hidden=true;$('studio-source-text').value='';$('custom-section-title').value='';$('custom-section-text').value='';$('studio-section-list').replaceChildren();$('studio-text-editor').open=false;$('template-library').open=false;$('resume-photo-controls').open=false;document.querySelector('.studio-add-section').open=false;},resetOrder(){delete settings.sectionOrder;sectionKey='';}};
 }

@@ -26,11 +26,11 @@ export function initCareerTools(api){
   $('career-account-note').textContent=registered?'Your account saves are private. Choose Save when you want to keep changes.':'Guests can use the included AI kit. Create a free account to save profiles, versions, applications and edited cover letters across devices.';
   $('career-signin').hidden=registered;
  }
- function letterSource(){ $('career-letter-source').textContent=letterBuildId?'Letter in this editor: '+(letterRole||'General application')+(letterBuildId!==careerBuildContext()?.id?' · from another saved build':''):''; }
+ function letterSource(){ const hasLetter=!!$('career-cover-letter').value.trim();for(const id of ['career-letter-save','career-letter-pdf','career-letter-word','career-letter-text'])$(id).disabled=!hasLetter;$('cover-letter-step').textContent=hasLetter?'2 · Check and edit your letter, then download below':'1 · Create your included cover letter above'; $('career-letter-source').textContent=letterBuildId?'Letter in this editor: '+(letterRole||'General application')+(letterBuildId!==careerBuildContext()?.id?' · from another saved build':''):''; }
  function kitContext(){
   const build=careerBuildContext(),ready=!!build?.completed;
   $('career-kit-context').textContent=ready?`For this build: ${build.role || 'General resume'}${build.jobDescription?' · job announcement included':' · no announcement supplied'}`:'Open a completed build from purchase history, or finish your current review first.';
-  $('career-kit-generate').disabled=busy||!ready;
+  $('career-kit-generate').disabled=busy||!ready;$('career-kit-generate').textContent=tab==='letter'?'Create / reopen my cover letter · included':'Open or create my included career kit';
   const key=build?build.id+':'+build.refinementCount:'';
   const current=kits.get(key);if(current)renderKit(current,build);
   else if(!busy){$('career-match-summary').textContent='Create your included career kit to see evidence and missing details.';$('career-matches').replaceChildren();$('career-translations').replaceChildren();$('career-kit-checks').hidden=true;}
@@ -46,7 +46,7 @@ export function initCareerTools(api){
   $('career-kit-checks').hidden=!['match','skills','letter'].includes(tab)||!$('career-checks').children.length;
   if(tab==='profile'){$('career-profile-slot').append($('background-fields'));updateProfile();}
   if(tab==='library')library.open();
-  if(['match','skills','letter'].includes(tab))kitContext();letterSource();
+  if(['match','skills','letter'].includes(tab))kitContext();letterSource();if(tab==='letter')$('career-kit-details').open=!$('career-cover-letter').value.trim();
   showAppView(tab==='jobs'?'applications':tab);
   syncAppSummary();
  }
@@ -146,7 +146,7 @@ export function initCareerTools(api){
   if(letterBuildId&&(letterBuildId!==build.id||letterRevision!==build.refinementCount)&&$('career-cover-letter').value.trim()&&!confirm('Opening tools for this build will replace the cover letter in this tab. Save or download your edits first. Continue?'))return;
   if(letterBuildId!==build.id||letterRevision!==build.refinementCount){letterBuildId='';$('career-cover-letter').value='';}
   const version=generation;kitController=new AbortController();busy=true;kitContext();status('Preparing your included career kit. This can take a couple of minutes. No additional payment is needed.');
-  try{const kit=await requestCareerKit(AbortSignal.any([kitController.signal,AbortSignal.timeout(145000)]));if(version!==generation||careerBuildContext()?.id!==build.id)return;kits.set(build.id+':'+build.refinementCount,kit);renderKit(kit,build);status('Your career kit is ready. Check every fact before applying.');}
+  try{const kit=await requestCareerKit(AbortSignal.any([kitController.signal,AbortSignal.timeout(145000)]));if(version!==generation||careerBuildContext()?.id!==build.id)return;kits.set(build.id+':'+build.refinementCount,kit);renderKit(kit,build);if(tab==='letter'){$('career-kit-details').open=false;$('cover-letter-step').scrollIntoView({block:'start'});$('career-cover-letter').focus({preventScroll:true});}status('Your career kit is ready. Check every fact before applying.');}
   catch(e){if(version===generation)status(e.name==='TimeoutError'?'The career kit is taking longer than expected. Reopen this purchase and retry the same kit; do not pay again.':e.message);}
   finally{if(version===generation){busy=false;kitContext();}}
  };
@@ -157,6 +157,7 @@ export function initCareerTools(api){
  function renderLetters(){
   $('career-letters').replaceChildren(...letters.map(letter=>{const li=node('li',null,'career-result');li.append(node('strong',letter.title||'Cover letter'));const actions=node('div',null,'career-actions');actions.append(button('Open',()=>{if($('career-cover-letter').value.trim()&&!confirm('Replace the current cover letter? Save or download any unsaved edits first.'))return;$('career-cover-letter').value=letter.content;letterBuildId=letter.buildId;letterRole=letter.title;letterRevision=-1;letterSource();}),button('Delete',async()=>{if(!confirm('Delete this saved cover letter? The original career kit and downloaded copies remain.'))return;await api.removeLetter(letter.id);await refresh();status('Saved cover letter deleted.');}));li.append(actions);return li;}));
  }
+ $('career-cover-letter').addEventListener('input',letterSource);
  $('career-letter-save').onclick=()=>guarded(async()=>{if(!letterBuildId)throw new Error('Open a completed build and create its career kit first.');await api.saveLetter(letterBuildId,$('career-cover-letter').value,letterRole?letterRole+' · cover letter':'Cover letter');await refresh();},'Your edited cover letter is saved to your account.');
  document.addEventListener('resume:payment-changed',()=>{if(!$('career-dialog').hidden&&['match','skills','letter'].includes(tab))kitContext();});
  fillJob();

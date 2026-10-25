@@ -74,3 +74,11 @@ Guests link the Google credential to their existing Firebase UID, preserving pur
 Session persistence is the default. Longer-lived account storage requires Keep me signed in. Guest identities remain session-only if Google linking fails or is cancelled. Cancellation, popup blocking, unsupported browsers, provider/domain configuration and different-credential conflicts have specific recovery messages. In-app browsers may require opening Chrome/Safari; users are told to save/download guest work before changing browsers.
 
 References: https://firebase.google.com/docs/auth/web/google-signin and https://firebase.google.com/docs/auth/web/redirect-best-practices (popup alternative).
+
+### Guided review and complete template examples
+
+The review starts with the editable revised resume. Its summary, strengths and individual text edits are in an optional disclosure. Follow-up findings and questions appear one at a time, with Previous/Next navigation; switching questions preserves all answers. Additional facts and the single included AI update are the final question step. Continuing to design with unsubmitted answers requires confirmation. A refinement returns to the revised draft for inspection before applying it. No review-navigation action creates another payment.
+
+Every template offers a full PDF example with a fictional applicant, generated through the real export pipeline. Fit-page and full-size reading views, previous/next examples and an explicit Use button separate browsing from changing a user's design. Example content is never copied to the user's resume, purchase or AI request. Photo-enabled templates expose upload/change/remove controls and a selected-image preview. JPG/PNG uploads are limited to 2 MB, normalized to a square image, excluded from AI requests and all federal layouts, and cleared on an account change.
+
+Military pickers put library search before the values it supplies. Find in library and Enter my own are distinct modes; either path shows an Included in this draft confirmation, and categories count populated entries. These are draft changes, not automatic cloud saves. Saved full MOS codes, independent skill levels, branch-specific qualifiers and historical entries retain the existing data model.

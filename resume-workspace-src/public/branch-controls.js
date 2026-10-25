@@ -7,35 +7,46 @@ const changed = input => input.dispatchEvent(new Event('input', { bubbles: true 
 const catalogFor = service => branchCatalog[direct(service, 'branch').value];
 
 function picker(box, kind, getLabel, getItems, onChoose) {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'branch-picker';
-  const searchLabel = document.createElement('label');
-  const searchCaption = document.createElement('span');
-  const search = document.createElement('input'); search.type = 'search'; search.maxLength = 120;
-  search.dataset.librarySearch = kind;
-  searchLabel.append(searchCaption, search);
-  const label = document.createElement('label');
-  const caption = document.createElement('span');
-  const select = document.createElement('select'); select.dataset.library = kind;
-  label.append(caption, select); wrapper.append(searchLabel, label);
-  const codeField = direct(box, 'code');
-  if (kind === 'specialties' && codeField) codeField.closest('label').after(wrapper);
-  else box.insertBefore(wrapper, box.querySelector(':scope > label'));
-  const render = () => {
-    const previous = select.value;
-    const title = getLabel(); caption.textContent = title;
-    searchCaption.textContent = 'Search ' + title.toLowerCase();
-    select.replaceChildren(new Option('Choose from the list (or enter your own below)', ''));
-    const query = search.value.trim().toLowerCase();
-    for (const item of getItems()) if ((item.value + ' ' + item.label).toLowerCase().includes(query)) select.add(new Option(item.label, item.value));
-    if ([...select.options].some(o => o.value === previous)) select.value = previous;
-    const enabled = getItems().length > 0;
-    select.disabled = !enabled; search.disabled = !enabled;
+  const wrapper=document.createElement('div');wrapper.className='branch-picker';wrapper.dataset.picker=kind;
+  const modes=document.createElement('div');modes.className='picker-modes';
+  const browse=document.createElement('button'),manual=document.createElement('button');
+  for(const b of [browse,manual]){b.type='button';b.className='button button-secondary';}
+  browse.textContent='Find in library';manual.textContent='Enter my own';modes.append(browse,manual);
+  const library=document.createElement('div');library.className='picker-library';
+  const searchLabel=document.createElement('label'),searchCaption=document.createElement('span'),search=document.createElement('input');search.type='search';search.maxLength=120;search.placeholder='Search by code or name';search.dataset.librarySearch=kind;searchLabel.append(searchCaption,search);
+  const label=document.createElement('label'),caption=document.createElement('span'),select=document.createElement('select');select.dataset.library=kind;label.append(caption,select);library.append(searchLabel,label);
+  const status=document.createElement('p');status.className='picker-included';status.dataset.pickerIncluded=kind;status.setAttribute('role','status');status.setAttribute('aria-live','polite');
+  wrapper.append(modes,library,status);
+  const fieldKeys=kind==='specialties'?['code','mosTitle']:kind==='position-ranks'?['rankAtRole']:kind==='history-ranks'?['rank','payGrade']:['qualifications','designators'].includes(kind)?['code','desc']:['name'];
+  const fields=fieldKeys.map(key=>direct(box,key)).filter(Boolean);let manualMode=false;
+  // Library search precedes its selected values, including the specialty code.
+  box.insertBefore(wrapper,fields[0]?.closest('label')||box.querySelector(':scope > label'));
+  function included(){
+    const values=fields.map(f=>f.value.trim()).filter(Boolean);
+    status.textContent=values.length?'✓ Included in this draft: '+values.join(' · '):'Nothing added yet. Choose an item, or use “Enter my own”.';
+    status.classList.toggle('has-value',values.length>0);
+    fields.forEach(field=>field.closest('label').hidden=!manualMode);
+    browse.setAttribute('aria-pressed',String(!manualMode));manual.setAttribute('aria-pressed',String(manualMode));library.hidden=manualMode;
+  }
+  const render=()=>{
+    const previous=select.value,title=getLabel();caption.textContent='Choose '+title.toLowerCase();searchCaption.textContent='Find '+title.toLowerCase();
+    const items=getItems(),query=search.value.trim().toLowerCase();
+    select.replaceChildren(new Option(items.length?'Choose an item — it is added to this draft':'Choose a branch first',''));
+    for(const item of items)if((item.value+' '+item.label).toLowerCase().includes(query))select.add(new Option(item.label,item.value));
+    if([...select.options].some(o=>o.value===previous))select.value=previous;
+    select.disabled=search.disabled=!items.length;
+    if(items.length&&select.options.length===1)select.options[0].textContent='No matches — try another search or enter your own';
+    included();
   };
-  search.addEventListener('input', render);
-  select.addEventListener('change', () => { if (select.value) { onChoose(select.value); changed(select); } });
-  const refresh = () => { search.value = ''; select.value = ''; render(); };
-  refreshers.set(box, refresh); refresh();
+  browse.onclick=()=>{manualMode=false;included();search.focus({preventScroll:true});};
+  manual.onclick=()=>{manualMode=true;included();fields[0]?.focus({preventScroll:true});};
+  search.addEventListener('input',render);
+  select.addEventListener('change',()=>{if(select.value){onChoose(select.value);included();changed(select);}});
+  for(const field of fields)field.addEventListener('input',()=>{select.value='';included();});
+  // Related fields (e.g. a full MOS) can fill the base code without a synthetic
+  // input event. Always refresh the confirmation after the service input settles.
+  box.addEventListener('input',()=>queueMicrotask(included));
+  const refresh=()=>{search.value='';select.value='';render();};refreshers.set(box,refresh);refresh();
 }
 
 function rankDropdown(service) {
@@ -142,7 +153,7 @@ export function wireServiceBranchChoices(service) {
     fullCode.placeholder=branch.value==='army'?'e.g. 88M02 — exactly as recorded':'Copy the full code from your service records';
     skillLevel.closest('label').querySelector('span').textContent=branch.value==='army'?'MOS skill level (as recorded, optional)':'Skill / qualification level (as recorded, optional)';
     updateFullCodeHint();
-    code.placeholder = branch.value ? 'Choose a code below or enter an unlisted code' : 'Choose a branch first';
+    code.placeholder = branch.value ? 'Selected code, or enter your own' : 'Choose a branch first';
     refreshRank(); refreshers.get(service)();
     for (const [key, titleKey] of [['asi', 'label'], ['sqi', 'sqiLabel']]) {
       const group = service.querySelector(`:scope > [data-group="${key}"]`);

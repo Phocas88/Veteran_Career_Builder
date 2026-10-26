@@ -3,6 +3,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import {fileURLToPath} from 'node:url';
 import {branchCatalog,additionalDuties} from '../resume-workspace-src/public/branch-catalog.js';
+import {describeReference} from '../resume-workspace-src/public/service-descriptions.js';
 import {guideReference} from './service-library-content.mjs';
 
 // Rebuild from the website's own reference sources, rather than maintaining a
@@ -47,6 +48,7 @@ function add(branch,kind,code,title,source){
    }
   }
  }
+ if(!entry.intro)entry.intro=describeReference(entry);
  entries.set(key,entry);
 }
 for(const [branch,catalog]of Object.entries(branchCatalog)){

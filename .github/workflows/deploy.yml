@@ -54,7 +54,7 @@ jobs:
 
       - name: Verify simplified resume journeys
         working-directory: resume-workspace-src
-        run: npx playwright test --config=playwright.career.config.mjs clear-journey.spec.mjs --max-failures=1
+        run: npx playwright test --config=playwright.career.config.mjs clear-journey.spec.mjs career-extras.spec.mjs --max-failures=1
 
       - name: Upload fictional app screenshots
         if: always()

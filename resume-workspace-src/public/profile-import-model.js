@@ -1,5 +1,5 @@
-import {personalFields,groups} from './profile-fields.js?v=20261025-standalone-app';
-import {normalizeProfile} from './veteran-profile.js?v=20261025-standalone-app';
+import {personalFields,groups} from './profile-fields.js?v=20261026-career-tools';
+import {normalizeProfile} from './veteran-profile.js?v=20261026-career-tools';
 // Local suggestions, never inferred credentials. Ambiguous text remains available
 // beside the fields for the user to classify, edit and explicitly approve.
 export const importSections=[['personal','Personal & contact'],['roles','Military service'],['jobs','Civilian & government jobs'],['educationEntries','Education'],['certifications','Licenses & certifications'],['training','Training & military schools'],['skillsEntries','Skills & tools'],['languages','Languages'],['projects','Projects & volunteering']];

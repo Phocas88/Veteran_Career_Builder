@@ -1,4 +1,4 @@
-import {cvSlug} from './digital-cv-model.js?v=20261101-finished-resumes';
+import {cvSlug} from './digital-cv-model.js?v=20261026-career-tools';
 import {normalizeProfileSetup} from './profile-steps.js?v=20261026-profile-setup';
 // Firebase rules remain the security boundary. Every operation derives its path
 // from the current authenticated UID; caller-supplied owner IDs are never accepted.

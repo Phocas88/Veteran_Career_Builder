@@ -3,7 +3,7 @@ import {agreeCloudSaving,selectProfileSection,installAccount} from './helpers/wo
 async function library(page,account='none'){
  await installAccount(page,account);await page.goto('/');if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();await page.locator('#service-library-open').click();await page.locator('[data-library-branch="army"]').click();await page.locator('#library-choose-specialty').click();await page.locator('#library-change-filters').evaluate(n=>n.open=true);await expect(page.locator('#library-results .library-result').first()).toBeVisible();
 }
-test('free library includes all website branches, qualifications, conflict flags and branch-correct guide links',async({page})=>{
+test('service library includes all website branches, qualifications, conflict flags and branch-correct guide links',async({page})=>{
  const calls=[];page.on('request',r=>{if(r.url().includes('/api/claude'))calls.push(r.postDataJSON());});await library(page);
  const r=await page.request.get('/service-library-data.json'),data=await r.json();expect(Object.keys(data.branches)).toHaveLength(6);
  for(const branch of Object.keys(data.branches))for(const kind of ['specialty','qualification','designator'])expect(data.entries.some(e=>e.branch===branch&&e.kind===kind)).toBe(true);
@@ -25,6 +25,6 @@ test('qualifications stay branch-specific, additions remain in profile and empty
  expect(await page.locator('#service-roles [data-key="branch"]').first().inputValue()).toBe('navy');await page.locator('[data-app-route="library"]').click();await page.locator('#library-search').fill('no such qualification xyz');await expect(page.locator('#library-empty')).toBeVisible();await page.locator('#library-manual').click();await expect(page.locator('[data-career-panel="profile"]')).toBeVisible();
 });
 test('grouped menus and paginated references fit a narrow phone and clear private selections on account switch',async({page})=>{
- await page.setViewportSize({width:360,height:800});const errors=[];page.on('pageerror',e=>errors.push(e.message));await library(page,'registered');await expect(page.locator('[data-app-route]')).toHaveCount(5);await expect(page.locator('#library-results .library-result')).toHaveCount(20);await page.locator('#library-more').click();await expect(page.locator('#library-results .library-result')).toHaveCount(40);
+ await page.setViewportSize({width:360,height:800});const errors=[];page.on('pageerror',e=>errors.push(e.message));await library(page,'registered');await expect(page.locator('[data-app-route]')).toHaveCount(6);await expect(page.locator('#library-results .library-result')).toHaveCount(20);await page.locator('#library-more').click();await expect(page.locator('#library-results .library-result')).toHaveCount(40);
  expect(await page.locator('#career-dialog').evaluate(n=>n.scrollWidth<=n.clientWidth)).toBe(true);await page.locator('#library-search').fill('92Y');await page.locator('#library-results .library-result').first().click();await page.locator('#library-use-title').fill('Private draft description');await page.evaluate(()=>window.__switchAuth('other-account'));await expect(page.locator('#career-dialog')).not.toBeVisible();expect(await page.locator('#library-use-title').inputValue()).toBe('');expect(errors).toEqual([]);
 });

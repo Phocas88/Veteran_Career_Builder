@@ -1,14 +1,15 @@
+import {initAppResources} from './app-resources.js?v=20261026-career-tools';
 import {initResumeDelivery} from './resume-delivery.js?v=20261026-clear-journey';
 import {initReviewFlow} from './review-flow.js?v=20261026-clear-journey';
 import {initDesignEditor} from './design-editor.js?v=20261026-clear-journey';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261026-clear-journey';
-import {showAppView} from './app-shell.js?v=20261026-clear-journey';
-import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261026-clear-journey';
+import {showAppView} from './app-shell.js?v=20261026-career-tools';
+import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261026-career-tools';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';
 import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js?v=20261027-resume-studio';
-import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext, canUseTemplate, finishTemplate } from './payments.js?v=20261026-clear-journey';
+import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext, canUseTemplate, finishTemplate } from './payments.js?v=20261026-career-tools';
 
 const $ = id => document.getElementById(id);
 const input = $('resume-input');
@@ -624,6 +625,7 @@ try {
 } catch { /* Private browsing or unavailable storage still permits a session-only draft. */ }
 setTab('resume', false);
 
+initAppResources();
 delivery=initResumeDelivery({edit(){setTab('resume');setFlow('edit');}});
 
 initWorkspace({

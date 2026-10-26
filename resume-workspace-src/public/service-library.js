@@ -1,4 +1,5 @@
-import {searchServiceLibrary,addReferenceToProfile} from './service-library-model.js?v=20261025-standalone-app';
+import {describeReference} from './service-descriptions.js?v=20261026-career-tools';
+import {searchServiceLibrary,addReferenceToProfile} from './service-library-model.js?v=20261026-career-tools';
 const $=id=>document.getElementById(id);
 const el=(tag,text,className)=>{const n=document.createElement(tag);if(text)n.textContent=text;if(className)n.className=className;return n;};
 const kindName={specialty:'Specialties',qualification:'Qualifications',designator:'Special qualifications / designators'};
@@ -36,6 +37,7 @@ export function initServiceLibrary(api){
   $('library-variant-note').hidden=!entry.ambiguous;
   $('library-variant-note').textContent='The website sources use more than one label for this code. Some names may be historical or inconsistent. Confirm the code and exact description in your own service records before adding it.';
   const body=$('library-detail-body');body.replaceChildren();
+  $('library-code-description').textContent=describeReference(entry);
   if(entry.intro)body.append(el('p',entry.intro));
   if(entry.capabilities?.length){body.append(el('h5','Experience to reflect on'));const list=el('ul');for(const capability of entry.capabilities)list.append(el('li',capability));body.append(list,el('p','These are general reference topics. Describe only the duties and training you personally completed.'));}
   if(entry.paths?.length){body.append(el('h5','Civilian directions to explore'));for(const p of entry.paths){const card=el('article',null,'library-path');card.append(el('h6',p.name),el('p',p.why));if(p.bridge)card.append(el('p','What to check: '+p.bridge));if(p.url)card.append(linked('Explore this career guide',p.url));body.append(card);}}
@@ -52,7 +54,7 @@ export function initServiceLibrary(api){
   if(loading)return loading;
   const version=generation;controller=new AbortController();message('Loading the service library…');$('library-retry').hidden=true;
   loading=(async()=>{
-   try{const r=await fetch('./service-library-data.json?v=20261025-standalone-app',{signal:controller.signal});if(!r.ok)throw new Error();const next=await r.json();if(!Array.isArray(next.entries)||!next.branches)throw new Error();if(version!==generation)return;data=next;render();message('');}
+   try{const r=await fetch('./service-library-data.json?v=20261026-career-tools',{signal:controller.signal});if(!r.ok)throw new Error();const next=await r.json();if(!Array.isArray(next.entries)||!next.branches)throw new Error();if(version!==generation)return;data=next;render();message('');}
    catch(error){if(version===generation&&error.name!=='AbortError'){message('The library could not load. Your profile is unchanged. Try again or use the manual fields in your career profile.');$('library-retry').hidden=false;}}
    finally{if(version===generation)loading=null;}
   })();return loading;

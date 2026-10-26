@@ -1,16 +1,16 @@
 import {purchasedResumeItems,mergeResumeItems} from './resume-list-model.js?v=20261026-clear-journey';
-import {initProfileImport} from './profile-import.js?v=20261031-profile-import';
+import {initProfileImport} from './profile-import.js?v=20261026-career-tools';
 import {createProfileStorage} from './profile-storage.js?v=20261030-visible-gallery';
 import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
-import {initProfileSetup} from './profile-setup.js?v=20261030-visible-gallery';
-import {showAppView} from './app-shell.js?v=20261026-clear-journey';
+import {initProfileSetup} from './profile-setup.js?v=20261026-career-tools';
+import {showAppView} from './app-shell.js?v=20261026-career-tools';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261026-clear-journey';
-import { fillBackground, readBackground } from './background-form.js?v=20261026-clear-journey';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261026-clear-journey';
-import { initCareerTools } from './career-tools.js?v=20261026-clear-journey';
-import {initAppShell} from './app-shell.js?v=20261026-clear-journey';
-import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261025-standalone-app';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261026-clear-journey';
+import { fillBackground, readBackground } from './background-form.js?v=20261026-career-tools';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261026-career-tools';
+import { initCareerTools } from './career-tools.js?v=20261026-career-tools';
+import {initAppShell} from './app-shell.js?v=20261026-career-tools';
+import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261026-career-tools';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261026-career-tools';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -90,6 +90,7 @@ function errorText(error) {
 const readProfile = readBackground;
 function fillProfile(profile) { fillBackground(profile); profileDirty = false; }
 function resetPrivateState() {
+  document.dispatchEvent(new Event('app:account-cleared'));
   profileImport?.reset();profileStorage?.reset();profileSetup?.reset();careerUI?.reset();$('google-existing-choice').hidden=true;
   saved=[];fillProfile({});$('keep-signed-in').checked=false;
   $('auth-email').value = ''; $('auth-password').value = ''; $('ai-consent').checked = false; $('purchase-consent').checked = false; $('save-submitted').checked = false;

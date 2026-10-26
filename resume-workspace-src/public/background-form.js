@@ -1,7 +1,8 @@
+import {profilePhotoControl} from './profile-media.js?v=20261026-career-tools';
 import {profileSteps} from './profile-steps.js?v=20261026-profile-setup';
-import { wireServiceBranchChoices, wireNestedBranchChoices } from './branch-controls.js?v=20261029-clear-flow';
-import { branches, normalizeProfile } from './veteran-profile.js?v=20261025-standalone-app';
-import { personalFields, groups } from './profile-fields.js?v=20261025-standalone-app';
+import { wireServiceBranchChoices, wireNestedBranchChoices } from './branch-controls.js?v=20261026-career-tools';
+import { branches, normalizeProfile } from './veteran-profile.js?v=20261026-career-tools';
+import { personalFields, groups } from './profile-fields.js?v=20261026-career-tools';
 const $ = id => document.getElementById(id);
 // Generic line icons describe resume sections; no military branch emblems.
 const iconPaths = {
@@ -43,6 +44,7 @@ function categorySummary(key,title) {
 }
 
 function control(spec, value) {
+ if(spec.type==='photo')return profilePhotoControl(value);
  const label = document.createElement('label'); label.className='builder-field';
  const caption = document.createElement('span'); caption.textContent=spec.label;
  const select = spec.type === 'select' || spec.type === 'branch';

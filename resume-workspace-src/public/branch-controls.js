@@ -1,3 +1,4 @@
+import {describeReference} from './service-descriptions.js?v=20261026-career-tools';
 import { branchCatalog, additionalDuties } from './branch-catalog.js';
 import {findSpecialty,fullCodeMatchesBase} from './service-codes.js?v=20261025-standalone-app';
 
@@ -16,7 +17,7 @@ function picker(box, kind, getLabel, getItems, onChoose) {
   const searchLabel=document.createElement('label'),searchCaption=document.createElement('span'),search=document.createElement('input');search.type='search';search.maxLength=120;search.placeholder='Search by code or name';search.dataset.librarySearch=kind;searchLabel.append(searchCaption,search);
   const label=document.createElement('label'),caption=document.createElement('span'),select=document.createElement('select');select.dataset.library=kind;label.append(caption,select);library.append(searchLabel,label);
   const status=document.createElement('p');status.className='picker-included';status.dataset.pickerIncluded=kind;status.setAttribute('role','status');status.setAttribute('aria-live','polite');
-  wrapper.append(modes,library,status);
+  const explanation=document.createElement('p');explanation.className='picker-explanation';wrapper.append(modes,library,status,explanation);
   const fieldKeys=kind==='specialties'?['code','mosTitle']:kind==='position-ranks'?['rankAtRole']:kind==='history-ranks'?['rank','payGrade']:['qualifications','designators'].includes(kind)?['code','desc']:['name'];
   const fields=fieldKeys.map(key=>direct(box,key)).filter(Boolean);let manualMode=false;
   // Library search precedes its selected values, including the specialty code.
@@ -25,6 +26,7 @@ function picker(box, kind, getLabel, getItems, onChoose) {
     const values=fields.map(f=>f.value.trim()).filter(Boolean);
     status.textContent=values.length?'✓ Included in this draft: '+values.join(' · '):'Nothing added yet. Choose an item, or use “Enter my own”.';
     status.classList.toggle('has-value',values.length>0);
+    const explained=['specialties','qualifications','designators','additional-duties'].includes(kind);explanation.hidden=!explained||!values.length;explanation.textContent=explained&&values.length?describeReference({title:values.at(-1),kind:kind==='specialties'?'specialty':kind==='additional-duties'?'duty':'qualification'}):'';
     fields.forEach(field=>field.closest('label').hidden=!manualMode);
     browse.setAttribute('aria-pressed',String(!manualMode));manual.setAttribute('aria-pressed',String(manualMode));library.hidden=manualMode;
   }

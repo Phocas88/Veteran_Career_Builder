@@ -81,7 +81,11 @@ export function createCloudStore({ db, auth }) {
       await ref.collection('resumeProgramResumes').doc(id).set(entry);assertOwner(uid);await ref.collection('resumeProgramResumes').doc('draft-'+draft.buildId).delete();assertOwner(uid);return entry;
     },
     async remove(id) { const { uid, ref } = owner(); if (typeof id !== 'string' || !id || id.includes('/')) throw new Error('Choose a saved resume.'); await ref.collection('resumeProgramResumes').doc(id).delete(); assertOwner(uid); },
-    async jobs() { const {uid,ref}=owner(); const snap=await ref.collection('resumeProgramJobs').orderBy('updatedAt','desc').limit(100).get(); assertOwner(uid); return snap.docs.map(doc=>({...normalizeJob(doc.data()),id:doc.id,updatedAt:doc.data().updatedAt})); },
+    async jobs({after=null,all=false}={}) {
+      const {uid,ref}=owner(),items=[];let cursor=after,more=false;
+      do{assertOwner(uid);let query=ref.collection('resumeProgramJobs').orderBy('updatedAt','desc').limit(100);if(cursor)query=query.startAfter(cursor);const snap=await query.get();assertOwner(uid);items.push(...snap.docs.map(doc=>({...normalizeJob(doc.data()),id:doc.id,updatedAt:doc.data().updatedAt})));more=snap.docs.length===100;cursor=more?snap.docs.at(-1):null;}while(all&&more);
+      Object.defineProperties(items,{cursor:{value:cursor},hasMore:{value:more}});return items;
+    },
     async saveJob(value, id) {
       const {uid,ref}=owner(); if(id!==undefined&&(typeof id!=='string'||!id||!/^[\w-]{1,160}$/.test(id)))throw new Error('Choose a saved application.');
       const data=normalizeJob(value); if(!data.role||!data.company)throw new Error('Add a job title and employer before saving.');

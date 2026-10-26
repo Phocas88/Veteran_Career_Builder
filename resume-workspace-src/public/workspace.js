@@ -205,7 +205,7 @@ export function initWorkspace(adapter) {
    downloadVersion:async item=>{if(await openSavedVersion(item)!==false)callback.downloadPdf();},
    saveVersion:async title=>{const s=await careerStore(true);const item=await s.save(callback.getDraft(),title);callback.markVersion(item);await refreshSaved();return item;},
    openVersion:openSavedVersion,removeVersion:async id=>(await careerStore()).remove(id),
-   listJobs:async()=>(await careerStore()).jobs(),saveJob:async(job,id)=>(await careerStore(true)).saveJob(job,id),removeJob:async id=>(await careerStore()).removeJob(id),
+   listJobs:async options=>(await careerStore()).jobs(options),saveJob:async(job,id)=>(await careerStore(true)).saveJob(job,id),removeJob:async id=>(await careerStore()).removeJob(id),
    listLetters:async()=>(await careerStore()).letters(),saveLetter:async(id,content,title)=>(await careerStore(true)).saveLetter(id,content,title),removeLetter:async id=>(await careerStore()).removeLetter(id),
    chooseJob:async job=>{
     const context=careerBuildContext(),draft=callback.getDraft();

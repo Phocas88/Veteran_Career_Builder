@@ -70,7 +70,6 @@ jobs:
       - name: Verify career tools in a mobile browser
         working-directory: resume-workspace-src
         run: |
-          npx playwright install --with-deps chromium
           npm run test:career-browser
 
       - name: Build Firebase hosting directory

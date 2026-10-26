@@ -1,9 +1,10 @@
-import {profileToCv,resumeToCv,selectCv,optionsFromCv,cvDefaults,cvUrl,safeCvLink} from './digital-cv-model.js?v=20261101-finished-resumes';
+import {safeProfilePhoto} from './profile-media.js?v=20261026-career-tools';
+import {profileToCv,resumeToCv,selectCv,optionsFromCv,cvDefaults,cvUrl,safeCvLink} from './digital-cv-model.js?v=20261026-career-tools';
 const $=id=>document.getElementById(id);
 const node=(tag,text)=>{const el=document.createElement(tag);if(text)el.textContent=text;return el;};
 const optionNames=Object.keys(cvDefaults());
 export function renderCvPreview(root,cv){
- root.replaceChildren();root.append(node('h2',cv.name||'Your name'),node('p',cv.headline||'Your professional headline'));
+ root.replaceChildren();if(safeProfilePhoto(cv.photo)){const photo=node('img');photo.src=cv.photo;photo.alt='Profile photo';photo.className='cv-profile-photo';photo.width=104;photo.height=104;root.append(photo);}root.append(node('h2',cv.name||'Your name'),node('p',cv.headline||'Your professional headline'));
  if(cv.location)root.append(node('p',cv.location));
  const section=(title,children)=>{if(!children.length)return;const s=node('section');s.append(node('h3',title),...children);root.append(s);};
  if(cv.summary)section('Summary',[node('p',cv.summary)]);
@@ -11,7 +12,7 @@ export function renderCvPreview(root,cv){
  section('Military service',experience(cv.military||[]));section('Civilian experience',experience(cv.civilian||[]));
  section('Education',(cv.education||[]).map(e=>{const p=node('p');p.append(node('strong',[e.degree,e.field].filter(Boolean).join(' · ')),node('br'),document.createTextNode([e.institution,e.year].filter(Boolean).join(' · ')));return p;}));
  for(const [key,title]of [['technical','Skills'],['leadership','Leadership'],['certs','Certifications'],['languages','Languages']])if(cv.skills?.[key])section(title,[node('p',cv.skills[key])]);
- const contact=[];for(const [key,label]of [['email','Email'],['phone','Phone'],['linkedin','LinkedIn']])if(cv.contact?.[key]){const a=node('a',label+': '+cv.contact[key]);const value=cv.contact[key];a.href=key==='email'?'mailto:'+encodeURIComponent(value):key==='phone'?'tel:'+value.replace(/[^+\d]/g,''):safeCvLink(value);a.rel='noopener noreferrer';a.target='_blank';contact.push(a);}
+ const contact=[];for(const [key,label]of [['email','Email'],['phone','Phone'],['linkedin','LinkedIn'],['portfolio','Portfolio'],['github','GitHub'],['website','Website']])if(cv.contact?.[key]){const a=node('a',label+': '+cv.contact[key]);const value=cv.contact[key];a.href=key==='email'?'mailto:'+encodeURIComponent(value):key==='phone'?'tel:'+value.replace(/[^+\d]/g,''):safeCvLink(value);a.rel='noopener noreferrer';a.target='_blank';contact.push(a);}
  section('Contact',contact);
 }
 export function initDigitalCv(api){
@@ -46,7 +47,8 @@ export function initDigitalCv(api){
  }
  async function useResume(text,title='Selected resume'){
   const uid=api.user()?.uid;await open();if(uid!==api.user()?.uid||!loaded||busy)return;
-  fill(resumeToCv(text),{...options(),military:true,civilian:true,education:true,skills:true,certifications:true,languages:true});previewReady=true;$('cv-source-state').textContent='Resume: '+title;message('Check the preview and choose what to share. Publishing updates your existing CV link.');show('preview');
+  const source=resumeToCv(text),profile=profileToCv(api.getProfile());source.photo=profile.photo;for(const key of ['portfolio','github','website'])source.contact[key] ||= profile.contact[key];
+  fill(source,{...options(),military:true,civilian:true,education:true,skills:true,certifications:true,languages:true});previewReady=true;$('cv-source-state').textContent='Resume: '+title;message('Check the preview and choose what to share. Publishing updates your existing CV link.');show('preview');
  }
  $('cv-use-resume').onclick=async()=>{
   if(busy)return;const source=sources[Number($('cv-resume-source').value)];if(!source)return;

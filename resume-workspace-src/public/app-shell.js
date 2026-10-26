@@ -7,15 +7,15 @@ const requestedView=location.hash.slice(1);
 export const getAppView=()=>view;
 export const isCareerView=()=>careerViews.has(view);
 export function showAppView(next,{scroll=true}={}){
- if(!['home','workspace','settings',...careerViews].includes(next))return;
+ if(!['home','workspace','settings','calculator',...careerViews].includes(next))return;
  const previous=view;view=next;
- $('home-panel').hidden=next!=='home';$('document-workspace').hidden=next!=='workspace';$('career-dialog').hidden=!careerViews.has(next);$('settings-panel').hidden=next!=='settings';
+ $('home-panel').hidden=next!=='home';$('document-workspace').hidden=next!=='workspace';$('career-dialog').hidden=!careerViews.has(next);$('settings-panel').hidden=next!=='settings';$('calculator-panel').hidden=next!=='calculator';
  document.body.dataset.appView=next;
  if(config&&previous!==next&&!replaying)history.pushState({appView:next},'',location.pathname+location.search+'#'+next);
- const active=next==='digital-cv'?'profile':['workspace','versions','match','skills','letter'].includes(next)?'resumes':next;
+ const active=next==='digital-cv'?'profile':['workspace','versions','match','skills'].includes(next)?'resumes':next;
  for(const b of document.querySelectorAll('[data-app-route]')){b.classList.toggle('active',b.dataset.appRoute===active);if(b.dataset.appRoute===active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}
  document.dispatchEvent(new CustomEvent('app:view-changed',{detail:{view:next,previous}}));
- if(scroll&&previous!==next){window.scrollTo({top:0,behavior:'instant'});const heading=(careerViews.has(next)?$('career-title'):next==='home'?$('home-title'):next==='settings'?$('settings-title'):null);heading?.focus({preventScroll:true});}
+ if(scroll&&previous!==next){window.scrollTo({top:0,behavior:'instant'});const heading=(careerViews.has(next)?$('career-title'):next==='home'?$('home-title'):next==='settings'?$('settings-title'):next==='calculator'?$('calculator-title'):null);heading?.focus({preventScroll:true});}
 }
 export function initAppShell(options){
  config=options;
@@ -24,6 +24,7 @@ export function initAppShell(options){
   if(target==='resumes')options.openCareer('versions');
   else if(target==='profile')options.openCareer('profile');
   else if(target==='applications')options.openCareer('jobs');
+  else if(target==='letter')options.openCareer('letter');
   else if(target==='library')options.openCareer('library');
   else showAppView(target);
  };
@@ -37,13 +38,13 @@ export function initAppShell(options){
  $('start-saved').onclick=()=>options.openCareer('versions');
  window.addEventListener('popstate',()=>{
   const target=location.hash.slice(1)||'home';replaying=true;
-  try{if(careerViews.has(target))options.openCareer(target==='applications'?'jobs':target);else showAppView(['home','workspace','settings'].includes(target)?target:'home');}
+  try{if(careerViews.has(target))options.openCareer(target==='applications'?'jobs':target);else showAppView(['home','workspace','settings','calculator'].includes(target)?target:'home');}
   finally{replaying=false;}
  });
  document.addEventListener('app:notice',event=>{const t=$('toast');t.textContent=event.detail;t.hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{t.hidden=true;},4500);});
  document.addEventListener('resume:payment-changed',syncAppSummary);
  document.addEventListener('resume:draft-changed',syncAppSummary);
- if(requestedView&&!new URLSearchParams(location.search).has('build'))queueMicrotask(()=>{if(view!=='home')return;replaying=true;try{if(careerViews.has(requestedView))options.openCareer(requestedView==='applications'?'jobs':requestedView);else if(requestedView==='settings')showAppView('settings');}finally{replaying=false;}});
+ if(requestedView&&!new URLSearchParams(location.search).has('build'))queueMicrotask(()=>{if(view!=='home')return;replaying=true;try{if(careerViews.has(requestedView))options.openCareer(requestedView==='applications'?'jobs':requestedView);else if(['settings','calculator'].includes(requestedView))showAppView(requestedView);}finally{replaying=false;}});
  syncAppSummary();
 }
 export function syncAppSummary(){

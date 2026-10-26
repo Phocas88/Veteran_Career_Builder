@@ -1,4 +1,5 @@
-import { personalFields, groups } from './profile-fields.js?v=20261025-standalone-app';
+import {safeProfilePhoto} from './profile-media.js?v=20261026-career-tools';
+import { personalFields, groups } from './profile-fields.js?v=20261026-career-tools';
 export const branches = {
   army: { name: 'U.S. Army', code: 'MOS', example: '92Y' },
   navy: { name: 'U.S. Navy', code: 'Rating / NEC', example: 'LS / NEC, if applicable' },
@@ -22,7 +23,7 @@ function normalizeEntries(value, spec) {
  return (Array.isArray(value) ? value : []).slice(0,12).map(v => normalizeEntry(typeof v === 'string' ? {name:v} : v,spec));
 }
 export function normalizeProfile(input = {}) {
- const p={schemaVersion:3,...Object.fromEntries(personalFields.map(f=>[f.key,clean(input[f.key],f.type==='textarea'?2400:250)]))};
+ const p={schemaVersion:3,...Object.fromEntries(personalFields.map(f=>[f.key,f.type==='photo'?safeProfilePhoto(input[f.key]):clean(input[f.key],f.type==='textarea'?2400:250)]))};
  for (const [key,spec] of Object.entries(groups)) p[key]=normalizeEntries(input[key],spec);
  for(const role of p.roles){if(!Object.hasOwn(branches,role.branch))role.branch='';if(!components.includes(role.component))role.component='';}
  for(const [key,max] of [['contact',500],['civilian',4000],['education',2000],['skills',1800]])p[key]=clean(input[key],max);
@@ -33,7 +34,7 @@ const dates = r => [r.startDate,r.current?'Present':r.endDate].filter(Boolean).j
 function clearance(r){return r.includeClearance && r.clearanceLevel && r.clearanceLevel!=='None' ? join('Clearance: '+r.clearanceLevel,'Status: '+(r.clearanceStatus||'Unknown'),r.sciAccess&&'SCI access (verified)',r.polygraph&&r.polygraph!=='None'&&r.polygraph) : '';}
 function extras(r){return [r.hours&&'Hours per week: '+r.hours,r.duties,r.achievements,r.tools&&'Tools / systems: '+r.tools,r.teamSize&&'Team supervised: '+r.teamSize,r.budget&&'Budget / assets: '+r.budget,clearance(r)].filter(Boolean);}
 export function profileToResume(input) {
- const p=normalizeProfile(input); const sections=[p.name,join(p.email,p.phone,join(p.city,p.state,p.country),p.linkedin,p.portfolio,p.contact),p.summary&&'PROFESSIONAL SUMMARY\n'+p.summary];
+ const p=normalizeProfile(input); const sections=[p.name,join(p.email,p.phone,join(p.city,p.state,p.country),p.linkedin,p.portfolio,p.github,p.website,p.contact),p.summary&&'PROFESSIONAL SUMMARY\n'+p.summary];
  if(p.roles.some(r=>(r.title||r.duties||r.mosRoles.some(x=>x.keyDuty))&&!r.branch))throw new Error('Choose a branch for each service experience.');
  const military=p.roles.filter(r=>r.title||r.duties||r.code||r.fullCode||r.rankHistory.some(x=>x.rank)||r.mosRoles.some(x=>x.title)).map(r=>[
  join(r.title||r.mosTitle,dates(r)),join(branches[r.branch]?.name,r.component,r.serviceType,r.organization,r.location),join(r.rank&&'Military rank: '+r.rank,r.payGrade&&'Pay grade: '+r.payGrade,r.code&&(branches[r.branch]?.code||'Specialty code')+': '+r.code,r.fullCode&&'Full specialty code (as recorded): '+r.fullCode,r.skillLevel&&'Skill level / specialty grade (as recorded): '+r.skillLevel,r.mosTitle,r.tos&&'Time in service: '+r.tos),...extras(r),

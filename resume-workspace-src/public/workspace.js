@@ -1,16 +1,16 @@
 import {purchasedResumeItems,mergeResumeItems} from './resume-list-model.js?v=20261026-clear-journey';
-import {initProfileImport} from './profile-import.js?v=20261031-profile-import';
+import {initProfileImport} from './profile-import.js?v=20261026-career-tools';
 import {createProfileStorage} from './profile-storage.js?v=20261030-visible-gallery';
 import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
-import {initProfileSetup} from './profile-setup.js?v=20261030-visible-gallery';
-import {showAppView} from './app-shell.js?v=20261026-clear-journey';
+import {initProfileSetup} from './profile-setup.js?v=20261026-career-tools';
+import {showAppView} from './app-shell.js?v=20261026-career-tools';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261026-clear-journey';
-import { fillBackground, readBackground } from './background-form.js?v=20261026-clear-journey';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261026-clear-journey';
-import { initCareerTools } from './career-tools.js?v=20261026-clear-journey';
-import {initAppShell} from './app-shell.js?v=20261026-clear-journey';
-import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261025-standalone-app';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261026-clear-journey';
+import { fillBackground, readBackground } from './background-form.js?v=20261026-career-tools';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261026-career-tools';
+import { initCareerTools } from './career-tools.js?v=20261026-career-tools';
+import {initAppShell} from './app-shell.js?v=20261026-career-tools';
+import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261026-career-tools';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261026-career-tools';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -90,6 +90,7 @@ function errorText(error) {
 const readProfile = readBackground;
 function fillProfile(profile) { fillBackground(profile); profileDirty = false; }
 function resetPrivateState() {
+  document.dispatchEvent(new Event('app:account-cleared'));
   profileImport?.reset();profileStorage?.reset();profileSetup?.reset();careerUI?.reset();$('google-existing-choice').hidden=true;
   saved=[];fillProfile({});$('keep-signed-in').checked=false;
   $('auth-email').value = ''; $('auth-password').value = ''; $('ai-consent').checked = false; $('purchase-consent').checked = false; $('save-submitted').checked = false;
@@ -204,7 +205,7 @@ export function initWorkspace(adapter) {
    downloadVersion:async item=>{if(await openSavedVersion(item)!==false)callback.downloadPdf();},
    saveVersion:async title=>{const s=await careerStore(true);const item=await s.save(callback.getDraft(),title);callback.markVersion(item);await refreshSaved();return item;},
    openVersion:openSavedVersion,removeVersion:async id=>(await careerStore()).remove(id),
-   listJobs:async()=>(await careerStore()).jobs(),saveJob:async(job,id)=>(await careerStore(true)).saveJob(job,id),removeJob:async id=>(await careerStore()).removeJob(id),
+   listJobs:async options=>(await careerStore()).jobs(options),saveJob:async(job,id)=>(await careerStore(true)).saveJob(job,id),removeJob:async id=>(await careerStore()).removeJob(id),
    listLetters:async()=>(await careerStore()).letters(),saveLetter:async(id,content,title)=>(await careerStore(true)).saveLetter(id,content,title),removeLetter:async id=>(await careerStore()).removeLetter(id),
    chooseJob:async job=>{
     const context=careerBuildContext(),draft=callback.getDraft();
@@ -222,7 +223,7 @@ export function initWorkspace(adapter) {
   });
   profileSetup=initProfileSetup({user:()=>user,getProfile:readProfile,isDirty:()=>profileDirty,fillProfile,markClean:()=>{profileDirty=false;},openProfile:()=>careerUI.open('profile'),goHome:()=>showAppView('home'),useProfile:()=>choosePaidEntry('build'),load:async()=>(await careerStore()).profile(),save:(profile,setup)=>profileStorage.save(profile,setup)});
   profileStorage=createProfileStorage({user:()=>user,read:readProfile,isDirty:()=>profileDirty,fill:data=>fillProfile(profileFromWebsite(data)),clean:()=>{profileDirty=false;},loaded:data=>profileSetup.loaded(data),store:()=>careerStore(),openAccount:()=>openAccount('create'),confirm:message=>confirm(message),status:({kind,text,busy,retry})=>{
-    $('profile-persistence-status').textContent=text;$('profile-persistence-status').dataset.state=kind;$('profile-load-retry').hidden=!retry;
+    $('profile-save-feedback').textContent=text;$('profile-persistence-status').textContent=text;$('profile-persistence-status').dataset.state=kind;$('profile-load-retry').hidden=!retry;
     for(const id of ['career-profile-save','profile-save-bottom','save-profile'])$(id).disabled=busy;
   }});
   profileImport=initProfileImport({user:()=>user,getProfile:readProfile,getResume:()=>callback.getDraft().resume,ready:async()=>{await ensureConnection();await profileStorage.accountChanged();},applyProfile:profile=>{fillProfile(profile);profileDirty=true;profileStorage.dirty();},saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),openProfile:()=>careerUI.open('profile'),openAccount:()=>openAccount('create')});

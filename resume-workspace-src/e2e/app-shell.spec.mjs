@@ -6,7 +6,7 @@ test('compact home shows both starting choices on a narrow phone with a single a
  await page.setViewportSize({width:360,height:800});await guestHome(page);
  await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('.app-nav button')).toHaveCount(5);
  for(const id of ['choose-build','choose-import']){const b=await page.locator('#'+id).boundingBox();expect(b.y+b.height).toBeLessThan(700);expect(b.width).toBeGreaterThan(280);}
- await expect(page.locator('.app-price')).toContainText('$1.99');await expect(page.locator('#choose-import')).toContainText('PDF, Word (.docx) or text');
+ await expect(page.locator('.app-price')).toContainText('$1.99');await expect(page.locator('#choose-import')).toContainText('PDF, Word (.docx) or TXT');
  await expect(page.locator('.site-navigation,.main-footer,.career-entry,.price-banner,.sidebar')).toHaveCount(0);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.screenshot({path:'/tmp/app-home-mobile.png'});

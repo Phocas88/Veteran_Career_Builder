@@ -84,9 +84,9 @@ function refreshExport() {
   const owned=canUseTemplate(model.design),context=careerBuildContext();
   delivery?.refresh(owned);
   for(const id of ['download-pdf','download-word','download-resume','print-resume','copy-resume'])$(id).disabled=!owned||!input.value.trim()||exporting;
-  $('template-finish').textContent=owned?'Save changes & continue':context?.includedTemplate?'Get '+designs[model.design].name+' template · $1.00':'Use '+designs[model.design].name+' & save resume · included';
+  $('template-finish').textContent=owned?'Save changes & continue':context?.includedTemplate?'Get '+designs[model.design].name+' template · $1.00':'Save '+designs[model.design].name+' · included';
   $('template-finish').disabled=exporting||!input.value.trim();
-  $('template-entitlement').textContent=owned?'This design is already purchased. Save your changes, then download your finished document.':context?.includedTemplate?'Your purchase includes '+designs[context.includedTemplate]?.name+'. This additional template costs $1.00. Examples remain free to browse.':'Your purchase includes one design. Choose below, then press Use design & save resume. Additional designs cost $1.00.';
+  $('template-entitlement').textContent=owned?'This design is already purchased. Save your changes, then download your finished document.':context?.includedTemplate?'Your purchase includes '+designs[context.includedTemplate]?.name+'. This additional template costs $1.00. Examples remain free to browse.':'One design is included. Additional designs cost $1.00 each.';
   if(!owned){++previewVersion;previewKey='';clearTimeout(previewTimer);$('export-preview').replaceChildren();$('pdf-pages').replaceChildren();$('print-content').replaceChildren();$('preview-stage').hidden=true;$('export-empty').hidden=false;$('export-empty').textContent='Finish your chosen template to see your personal resume here. Preview the fictional examples while choosing.';return;}
   $('export-empty').textContent='Your resume will appear here once you add it.';
 

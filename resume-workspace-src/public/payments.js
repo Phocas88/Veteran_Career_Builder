@@ -68,8 +68,9 @@ function redirectCheckout(value){
 }
 export function choosePaidEntry(mode,context=null){
  entryMode=mode;
- if(hasPaidBuild()&&!active.input){config.adapter.openEntry(mode);return;}
- const newBuild=hasPaidBuild()&&!!active.input;
+ const started=!!active?.input||!!active?.templates?.length;
+ if(hasPaidBuild()&&!started){config.adapter.openEntry(mode);return;}
+ const newBuild=hasPaidBuild()&&started;
  if(newBuild)forgetActiveBuild();
  entryContext=context;
  config.adapter.showPayment();

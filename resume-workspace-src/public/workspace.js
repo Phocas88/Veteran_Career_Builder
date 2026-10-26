@@ -1,15 +1,16 @@
+import {purchasedResumeItems,mergeResumeItems} from './resume-list-model.js?v=20261026-clear-journey';
 import {initProfileImport} from './profile-import.js?v=20261031-profile-import';
 import {createProfileStorage} from './profile-storage.js?v=20261030-visible-gallery';
 import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
 import {initProfileSetup} from './profile-setup.js?v=20261030-visible-gallery';
-import {showAppView} from './app-shell.js?v=20261031-digital-cv';
-import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261025-standalone-app';
-import { fillBackground, readBackground } from './background-form.js?v=20261029-clear-flow';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext } from './payments.js?v=20261101-finished-resumes';
-import { initCareerTools } from './career-tools.js?v=20261101-account-guard';
-import {initAppShell} from './app-shell.js?v=20261031-digital-cv';
+import {showAppView} from './app-shell.js?v=20261026-clear-journey';
+import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261026-clear-journey';
+import { fillBackground, readBackground } from './background-form.js?v=20261026-clear-journey';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261026-clear-journey';
+import { initCareerTools } from './career-tools.js?v=20261026-clear-journey';
+import {initAppShell} from './app-shell.js?v=20261026-clear-journey';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261025-standalone-app';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261101-finished-resumes';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261026-clear-journey';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -154,8 +155,12 @@ async function cloudAction(action) {
 
 export const draftOwnerId = () => user?.uid || null;
 async function openSavedVersion(item) {
-  if(callback.getDraft().resume.trim()&&!confirm('Replace the current draft with this saved version? Save or download your current work first.'))return false;
+  if(!item.finished&&!item.purchased&&callback.getDraft().resume.trim()&&!confirm('Replace the current draft with this saved version? Save or download your current work first.'))return false;
   const draft=savedResumeToDraft(item),version=accountVersion;
+  const buildId=item.buildId||draft.buildId,design=item.design||draft.design;
+  if(item.finished&&buildId&&callback.getDraft().resume.trim()&&((callback.getDraft().buildId&&callback.getDraft().buildId!==buildId)||(draft.resume&&callback.getDraft().resume!==draft.resume))&&!confirm('Open this purchased resume? Unsaved changes in your current editor will be replaced.'))return false;
+  if(item.finished&&buildId){$('account-dialog').close();await openPurchasedResume(buildId,design);return true;}
+  if(item.purchased&&!draft.resume&&buildId){await openBuild(buildId,{confirmReplace:false});return true;}
   if(draft.buildId)await unlockSavedBuild(draft.buildId);
   if(version!==accountVersion)throw new Error('Your account changed. Reopen this version.');
   $('account-dialog').close();callback.loadDraft(draft);status('Saved version opened. Save again to create another snapshot.');return true;
@@ -188,7 +193,15 @@ export function initWorkspace(adapter) {
    publishDigitalCv:async cv=>{const uid=user?.uid,version=accountVersion;const s=await careerStore();if(uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Review your CV again.');return s.publishDigitalCv(cv);},
    unpublishDigitalCv:async()=>{const uid=user?.uid,version=accountVersion;const s=await careerStore();if(uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Open your CV again.');return s.unpublishDigitalCv();},
    buildProfile:()=>choosePaidEntry('build'),
-   listVersions:async()=>{const s=await careerStore();return s.list();},
+   listVersions:async()=>{
+    const uid=user?.uid,version=accountVersion,s=await careerStore();
+    const values=await Promise.allSettled([s.list(),listPurchasedResumes()]);
+    if(version!==accountVersion||uid!==user?.uid)throw new Error('Your account changed. Open My resumes again.');
+    if(values.every(value=>value.status==='rejected'))throw new Error('Your resumes could not load. Try again; your purchases are still recoverable.');
+    return mergeResumeItems(values[0].status==='fulfilled'?values[0].value:[],purchasedResumeItems(values[1].status==='fulfilled'?values[1].value:[]));
+   },
+   resolveVersion:async item=>item.finished&&(item.buildId||item.workspace?.buildId)?readPurchasedResume(item.buildId||item.workspace.buildId,item.design||item.workspace.design):savedResumeToDraft(item),
+   downloadVersion:async item=>{if(await openSavedVersion(item)!==false)callback.downloadPdf();},
    saveVersion:async title=>{const s=await careerStore(true);const item=await s.save(callback.getDraft(),title);callback.markVersion(item);await refreshSaved();return item;},
    openVersion:openSavedVersion,removeVersion:async id=>(await careerStore()).remove(id),
    listJobs:async()=>(await careerStore()).jobs(),saveJob:async(job,id)=>(await careerStore(true)).saveJob(job,id),removeJob:async id=>(await careerStore()).removeJob(id),
@@ -213,9 +226,16 @@ export function initWorkspace(adapter) {
     for(const id of ['career-profile-save','profile-save-bottom','save-profile'])$(id).disabled=busy;
   }});
   profileImport=initProfileImport({user:()=>user,getProfile:readProfile,getResume:()=>callback.getDraft().resume,ready:async()=>{await ensureConnection();await profileStorage.accountChanged();},applyProfile:profile=>{fillProfile(profile);profileDirty=true;profileStorage.dirty();},saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),openProfile:()=>careerUI.open('profile'),openAccount:()=>openAccount('create')});
+  document.addEventListener('resume:save-working',async()=>{
+    if(!user?.email){$('draft-save-status').textContent='Create an account to save this draft across visits.';openAccount('create');return;}
+    const uid=user.uid,version=accountVersion;$('save-progress').disabled=true;$('draft-save-status').textContent='Saving your draft…';
+    try{await ensureConnection();if(version!==accountVersion||uid!==user?.uid)return;const item=await store.saveWorking(callback.getDraft());if(version!==accountVersion)return;callback.markVersion(item);$('draft-save-status').textContent='Draft saved in My resumes. Finish your design when you are ready to download.';}
+    catch(error){if(version===accountVersion)$('draft-save-status').textContent='This draft could not be saved. Keep this tab open and try again.';}
+    finally{if(version===accountVersion)$('save-progress').disabled=false;}
+  });
   $('profile-load-retry').onclick=()=>profileStorage.reload();
   initAppShell({openCareer:careerUI.open,openAccount:()=>openAccount(),getDraft:()=>callback.getDraft(),hasPaidBuild,continueResume:()=>callback.continueResume()});
-  initGuidedFlow({showResume:adapter.showResume,openAccount:()=>openAccount(),canUse:hasPaidBuild,startEntry:choosePaidEntry,newResume:()=>{
+  initGuidedFlow({showResume:adapter.showResume,manualFinish:()=>adapter.showExport(),openAccount:()=>openAccount(),canUse:hasPaidBuild,startEntry:choosePaidEntry,newResume:()=>{
     if(callback.getDraft().resume.trim()&&!confirm('Start a new paid build? Save or download your current work first. Your previous purchases remain in purchase history.'))return false;
     callback.clearAccountDraft();forgetActiveBuild();return true;
   }});
@@ -244,9 +264,9 @@ export function initWorkspace(adapter) {
       const text = profileToResume(readProfile());
       if (callback.getDraft().resume.trim() && !confirm('Replace the current draft with your service background? Save or download your existing work first.')) return;
       callback.loadDraft({ ...callback.getDraft(), resume: text });
-      $('builder-status').textContent = 'Your starting draft is ready. Check the text, then continue to job details.';
+      $('builder-status').textContent = 'Your starting draft is ready. Check the text, then choose AI review or design and download.';
       setFlow('edit'); $('resume-input').focus();
-    } catch (error) { $('builder-status').textContent = error.message; }
+    } catch (error) { $('builder-status').textContent = error.message;$('builder-status').scrollIntoView({block:'center',behavior:'instant'}); }
   });
   $('auth-google').onclick=()=>googleSignIn();$('welcome-google').onclick=()=>googleSignIn();$('account-link-google').onclick=()=>googleSignIn({linkCurrent:true});$('google-switch-account').onclick=()=>googleSignIn({switchFromGuest:true});$('google-keep-guest').onclick=()=>{$('google-existing-choice').hidden=true;$('auth-status').textContent='Your guest session is unchanged. You can continue working or try a different Google account.';};
   $('keep-signed-in').addEventListener('change',prepareGooglePersistence);

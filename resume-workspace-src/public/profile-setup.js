@@ -1,5 +1,5 @@
 import {profileSteps,normalizeProfileSetup} from './profile-steps.js?v=20261026-profile-setup';
-import {selectProfileSection,getProfileSection} from './background-form.js?v=20261029-clear-flow';
+import {selectProfileSection,getProfileSection} from './background-form.js?v=20261026-clear-journey';
 const $=id=>document.getElementById(id);
 const notice=message=>document.dispatchEvent(new CustomEvent('app:notice',{detail:message}));
 export function initProfileSetup(api){

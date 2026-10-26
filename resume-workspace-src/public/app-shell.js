@@ -52,6 +52,6 @@ export function syncAppSummary(){
  $('home-current').hidden=!paid&&!hasText;$('resume-current').hidden=!paid&&!hasText;
  $('home-current-title').textContent=hasText?(draft.role||'Your current resume'):'Your unlocked resume build';
  $('home-current-note').textContent=paid?'Continue where you left off.':'Your draft is on this device. Open purchase history if you already paid.';
- $('resume-current-title').textContent=hasText?(draft.role||'Current draft'):'Paid build · ready to continue';
+ $('resume-current-title').textContent=hasText?(draft.role||'Resume open in editor'):'Paid build · ready to continue';
  $('version-save-details').hidden=!hasText;
 }

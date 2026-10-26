@@ -52,6 +52,21 @@ jobs:
       - name: Build veteran resume workspace
         run: node scripts/build-resume-workspace.mjs
 
+      - name: Verify simplified resume journeys
+        working-directory: resume-workspace-src
+        run: npx playwright test --config=playwright.career.config.mjs clear-journey.spec.mjs --max-failures=1
+
+      - name: Upload fictional app screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-ux-previews
+          path: |
+            /tmp/vcp-ux-previews
+            resume-workspace-src/test-results
+          retention-days: 3
+          if-no-files-found: ignore
+
       - name: Verify career tools in a mobile browser
         working-directory: resume-workspace-src
         run: |

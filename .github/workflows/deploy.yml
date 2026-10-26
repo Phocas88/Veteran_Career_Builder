@@ -61,7 +61,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-ux-previews
-          path: /tmp/vcp-ux-previews
+          path: |
+            /tmp/vcp-ux-previews
+            resume-workspace-src/test-results
           retention-days: 3
           if-no-files-found: ignore
 

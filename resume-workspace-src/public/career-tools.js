@@ -2,7 +2,7 @@ import {designs} from './resume-designs.js?v=20261027-resume-studio';
 import {initDigitalCv} from './digital-cv.js?v=20261026-clear-journey';
 import {selectProfileSection} from './background-form.js?v=20261026-clear-journey';
 import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261025-standalone-app';
-import { savedResumeToDraft } from './cloud-store.js?v=20261101-finished-resumes';
+import { savedResumeToDraft } from './cloud-store.js?v=20261026-clear-journey';
 import { careerBuildContext, requestCareerKit } from './payments.js?v=20261026-clear-journey';
 import { exportLetter } from './letter-exports.js?v=20261025-standalone-app';
 import {initServiceLibrary} from './service-library.js?v=20261030-visible-gallery';
@@ -96,8 +96,7 @@ export function initCareerTools(api){
     if(!item.purchased||item.content)more.append(button('Compare text',()=>{$('career-current-text').value=api.getDraft().resume;$('career-version-text').value=savedResumeToDraft(item).resume;$('career-version-comparison').hidden=false;$('career-version-comparison').open=true;}));
     if(!item.purchased)more.append(button('Delete saved copy',async()=>{if(!confirm('Delete this saved version? Purchased results remain in your account.'))return;await api.removeVersion(item.id);await refresh();status('Saved version deleted.');}));
     else more.append(button('Purchase & recovery details',()=>api.openPurchases()));
-    row.append(more);
-    row.append(actions);section.append(row);
+    row.append(actions,more);section.append(row);
    }return section;
   }));updateVersionOptions();
  }

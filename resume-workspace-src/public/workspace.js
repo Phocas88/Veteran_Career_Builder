@@ -10,7 +10,7 @@ import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPa
 import { initCareerTools } from './career-tools.js?v=20261026-clear-journey';
 import {initAppShell} from './app-shell.js?v=20261026-clear-journey';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261025-standalone-app';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261101-finished-resumes';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261026-clear-journey';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -158,8 +158,9 @@ async function openSavedVersion(item) {
   if(!item.finished&&!item.purchased&&callback.getDraft().resume.trim()&&!confirm('Replace the current draft with this saved version? Save or download your current work first.'))return false;
   const draft=savedResumeToDraft(item),version=accountVersion;
   const buildId=item.buildId||draft.buildId,design=item.design||draft.design;
+  if(item.finished&&buildId&&callback.getDraft().resume.trim()&&((callback.getDraft().buildId&&callback.getDraft().buildId!==buildId)||(draft.resume&&callback.getDraft().resume!==draft.resume))&&!confirm('Open this purchased resume? Unsaved changes in your current editor will be replaced.'))return false;
   if(item.finished&&buildId){$('account-dialog').close();await openPurchasedResume(buildId,design);return true;}
-  if(item.purchased&&buildId){await openBuild(buildId,{confirmReplace:false});return true;}
+  if(item.purchased&&!draft.resume&&buildId){await openBuild(buildId,{confirmReplace:false});return true;}
   if(draft.buildId)await unlockSavedBuild(draft.buildId);
   if(version!==accountVersion)throw new Error('Your account changed. Reopen this version.');
   $('account-dialog').close();callback.loadDraft(draft);status('Saved version opened. Save again to create another snapshot.');return true;
@@ -225,6 +226,13 @@ export function initWorkspace(adapter) {
     for(const id of ['career-profile-save','profile-save-bottom','save-profile'])$(id).disabled=busy;
   }});
   profileImport=initProfileImport({user:()=>user,getProfile:readProfile,getResume:()=>callback.getDraft().resume,ready:async()=>{await ensureConnection();await profileStorage.accountChanged();},applyProfile:profile=>{fillProfile(profile);profileDirty=true;profileStorage.dirty();},saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),openProfile:()=>careerUI.open('profile'),openAccount:()=>openAccount('create')});
+  document.addEventListener('resume:save-working',async()=>{
+    if(!user?.email){$('draft-save-status').textContent='Create an account to save this draft across visits.';openAccount('create');return;}
+    const uid=user.uid,version=accountVersion;$('save-progress').disabled=true;$('draft-save-status').textContent='Saving your draft…';
+    try{await ensureConnection();if(version!==accountVersion||uid!==user?.uid)return;const item=await store.saveWorking(callback.getDraft());if(version!==accountVersion)return;callback.markVersion(item);$('draft-save-status').textContent='Draft saved in My resumes. Finish your design when you are ready to download.';}
+    catch(error){if(version===accountVersion)$('draft-save-status').textContent='This draft could not be saved. Keep this tab open and try again.';}
+    finally{if(version===accountVersion)$('save-progress').disabled=false;}
+  });
   $('profile-load-retry').onclick=()=>profileStorage.reload();
   initAppShell({openCareer:careerUI.open,openAccount:()=>openAccount(),getDraft:()=>callback.getDraft(),hasPaidBuild,continueResume:()=>callback.continueResume()});
   initGuidedFlow({showResume:adapter.showResume,manualFinish:()=>adapter.showExport(),openAccount:()=>openAccount(),canUse:hasPaidBuild,startEntry:choosePaidEntry,newResume:()=>{

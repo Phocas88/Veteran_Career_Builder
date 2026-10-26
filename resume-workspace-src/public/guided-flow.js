@@ -70,7 +70,7 @@ export function initGuidedFlow(options) {
   };
   $('manual-finish').onclick=()=>{if($('resume-input').value.trim().length>=100)options.manualFinish();};
   $('next-checkout').onclick = () => setFlow('checkout');
-  $('save-progress').onclick = ()=>document.dispatchEvent(new CustomEvent('app:open-career',{detail:'versions'}));
+  $('save-progress').onclick = ()=>document.dispatchEvent(new Event('resume:save-working'));
   $('account-new-resume').onclick = () => { if(!options.newResume())return; $('account-dialog').close(); setFlow('start'); };
   document.addEventListener('resume:draft-ready', () => setFlow('edit'));
   for (const id of ['resume-input','target-role','application-type']) $(id).addEventListener('input', updateCheckoutSummary);

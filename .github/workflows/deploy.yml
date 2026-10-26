@@ -52,11 +52,9 @@ jobs:
       - name: Build veteran resume workspace
         run: node scripts/build-resume-workspace.mjs
 
-      - name: Verify career tools in a mobile browser
+      - name: Verify simplified resume journeys
         working-directory: resume-workspace-src
-        run: |
-          npx playwright install --with-deps chromium
-          npm run test:career-browser
+        run: npx playwright test --config=playwright.career.config.mjs clear-journey.spec.mjs --max-failures=1
 
       - name: Upload fictional app screenshots
         if: always()
@@ -66,6 +64,12 @@ jobs:
           path: /tmp/vcp-ux-previews
           retention-days: 3
           if-no-files-found: ignore
+
+      - name: Verify career tools in a mobile browser
+        working-directory: resume-workspace-src
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:career-browser
 
       - name: Build Firebase hosting directory
         run: node scripts/build-hosting.mjs

@@ -1,3 +1,4 @@
+import {confirmCvSections} from './helpers/workspace.mjs';
 import {test,expect} from '@playwright/test';import {fileURLToPath} from 'node:url';
 import {installAccount,start} from './helpers/workspace.mjs';
 const fixture=name=>fileURLToPath(new URL('./fixtures/'+name,import.meta.url));
@@ -47,4 +48,18 @@ test('guest imports stay in the session, corrections survive moving between sect
 });
 test('service updates add verified qualifiers and retain rank-independent fields and existing qualifications',async({page})=>{
  await installAccount(page,'registered',{records:{[path]:{background:{roles:[{branch:'army',title:'Transport Supervisor',startDate:'2018-01',fullCode:'88M02',skillLevel:'Previously verified level',asi:[{code:'4A',desc:'Keep this qualification'}]}]}}}});await page.goto('/');await profileFile(page);await page.locator('#pi-step').selectOption('1');await expect(page.locator('[data-pi-target]')).toHaveValue('-1');await page.locator('[data-pi-target]').selectOption('0');await page.locator('#pi-apply').click();await expect(page.locator('#pi-title')).toHaveText('Civilian & government jobs');const record=await page.evaluate(path=>window.__records[path],path);expect(record.background.roles).toHaveLength(1);expect(record.background.roles[0].fullCode).toBe('88M02');expect(record.background.roles[0].skillLevel).toBe('Previously verified level');expect(record.background.roles[0].asi.map(x=>x.code)).toEqual(['4A','8R']);
+});
+
+test('confirmation advances visibly, saves each approved section, and leads into Virtual CV review',async({page})=>{
+ await page.setViewportSize({width:360,height:800});await installAccount(page,'registered');await page.goto('/');await profileFile(page);
+ await expect(page.locator('#pi-progress')).toContainText('0 confirmed');await page.locator('#pi-apply').click();
+ await expect(page.locator('#pi-title')).toHaveText('Military service');await expect(page.locator('#pi-confirmation')).toContainText('Personal & contact saved to your profile');await expect(page.locator('#pi-progress')).toContainText('1 confirmed');
+ expect(await page.locator('.pi-scroll').evaluate(n=>n.scrollTop)).toBe(0);await expect(page.locator('#pi-step option').first()).toHaveText('✓ Personal & contact');
+ for(let n=1;n<9;n++)await page.locator('#pi-skip').click();
+ await expect(page.locator('#pi-finished')).toBeVisible();await expect(page.locator('#pi-results')).toContainText('Personal & contact · saved');await expect(page.locator('#pi-results')).toContainText('Military service · not changed');
+ expect(await page.evaluate(()=>window.__writes.filter(w=>w.path.startsWith('publicProfiles/')).length)).toBe(0);
+ await page.locator('#pi-update-cv').click();await expect(page.locator('#profile-import-dialog')).toBeHidden();await expect(page.locator('[data-app-route="digital-cv"]')).toHaveAttribute('aria-current','page');await expect(page.locator('#cv-name')).toHaveValue('ALEX IMPORT EXAMPLE');
+ await confirmCvSections(page);await expect(page.locator('#cv-status')).toContainText('All 6 sections confirmed');await expect(page.locator('#cv-consent')).not.toBeChecked();
+ expect(await page.evaluate(()=>window.__writes.filter(w=>w.path.startsWith('publicProfiles/')).length)).toBe(0);
+ await page.screenshot({path:'/tmp/vcp-ux-previews/profile-to-virtual-cv.png',fullPage:true});
 });

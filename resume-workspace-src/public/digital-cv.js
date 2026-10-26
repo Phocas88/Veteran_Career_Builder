@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const node=(tag,text)=>{const el=document.createElement(tag);if(text)el.textContent=text;return el;};
 const optionNames=Object.keys(cvDefaults());
 export function renderCvPreview(root,cv){
- root.replaceChildren();if(safeProfilePhoto(cv.photo)){const photo=node('img');photo.src=cv.photo;photo.alt='Profile photo';photo.className='cv-profile-photo';photo.width=104;photo.height=104;root.append(photo);}root.append(node('h2',cv.name||'Your name'),node('p',cv.headline||'Your professional headline'));
+ root.replaceChildren();if(safeProfilePhoto(cv.photo)){const photo=node('img');photo.src=cv.photo;photo.alt='Profile photo';photo.className='cv-profile-photo';photo.width=104;photo.height=104;root.append(photo);}root.append(node('h2',cv.name||'Your name'));if(cv.headline)root.append(node('p',cv.headline));
  if(cv.location)root.append(node('p',cv.location));
  const section=(title,children)=>{if(!children.length)return;const s=node('section');s.append(node('h3',title),...children);root.append(s);};
  if(cv.summary)section('Summary',[node('p',cv.summary)]);
@@ -16,7 +16,9 @@ export function renderCvPreview(root,cv){
  section('Contact',contact);
 }
 export function initDigitalCv(api){
- let base={},published=null,slug='',generation=0,busy=false,loaded=false,loadFailed=false,sources=[],stage='source',previewReady=false;
+ let base={},published=null,slug='',generation=0,busy=false,loaded=false,loadFailed=false,sources=[],stage='source',previewReady=false,reviewStep=null;
+ const reviewSections=[['about','Introduction'],['military','Military service'],['civilian','Civilian & government jobs'],['education','Education'],['skills','Skills & qualifications'],['contact','Contact & visibility']];
+ let confirmed=new Set();
  const message=text=>{$('cv-status').textContent=text;};
  const fields=()=>Object.fromEntries(['name','headline','summary'].map(k=>[k,$('cv-'+k).value]));
  const options=()=>Object.fromEntries(optionNames.map(k=>[k,$('cv-include-'+k).checked]));
@@ -24,16 +26,24 @@ export function initDigitalCv(api){
  function controls(){
   const registered=!!api.user()?.email;$('cv-account').hidden=registered;
   $('cv-workflow').hidden=!registered||!loaded;$('cv-source-panel').hidden=!registered||!loaded||stage!=='source';$('cv-editor').hidden=!registered||!loaded||stage!=='preview';$('cv-published').hidden=!published||stage!=='share';$('cv-source-state').hidden=stage!=='preview';
-  $('cv-publish').disabled=busy||!loaded||loadFailed;$('cv-refresh').disabled=busy||!loaded;$('cv-use-resume').disabled=busy||!loaded||!sources.length;
+  $('cv-publish').disabled=busy||!loaded||loadFailed||reviewStep!==null;$('cv-refresh').disabled=busy||!loaded;$('cv-use-resume').disabled=busy||!loaded||!sources.length;
   for(const id of ['cv-copy','cv-share','cv-unpublish','cv-start-update'])$(id).disabled=busy;
-  $('cv-step-preview').disabled=busy||!previewReady;$('cv-step-share').disabled=busy||!published;$('cv-step-source').disabled=busy;
+  $('cv-step-preview').disabled=busy||!previewReady||reviewStep!==null;$('cv-step-share').disabled=busy||!published||reviewStep!==null;$('cv-step-source').disabled=busy;
   for(const [id,key]of [['cv-step-source','source'],['cv-step-preview','preview'],['cv-step-share','share']])$(id).setAttribute('aria-current',stage===key?'step':'false');
-  $('cv-publish').textContent=published?'Publish CV update':'Publish my digital CV';$('cv-state').textContent=stage==='share'?'Live · your shareable CV link':stage==='preview'?'Step 2 · Check your public preview':'Step 1 · Choose a resume';
+  $('cv-publish').textContent=published?'Publish CV update':'Publish my digital CV';$('cv-state').textContent=reviewStep!==null&&stage==='preview'?'Step 2 · Review each section':stage==='share'?'Live · your shareable CV link':stage==='preview'?'Step 2 · Check your public preview':'Step 1 · Choose a resume';
  }
- function show(next){stage=next;controls();window.scrollTo({top:0,behavior:'instant'});}
- function preview(){renderCvPreview($('cv-preview'),draft());}
+ function show(next){stage=next;controls();reviewControls();window.scrollTo({top:0,behavior:'instant'});}
+ function reviewControls(){
+  const guided=reviewStep!==null;document.body.classList.toggle('cv-reviewing',guided&&stage==='preview');$('cv-section-guide').hidden=!guided;$('cv-review-actions').hidden=!guided;$('cv-preview-help').hidden=guided;document.querySelector('.cv-preview-column').hidden=guided;document.querySelector('.cv-publish-box').hidden=guided;
+  for(const section of document.querySelectorAll('[data-cv-review-section]'))section.hidden=guided&&section.dataset.cvReviewSection!==reviewSections[reviewStep][0];
+  if(!guided)return;const title=reviewSections[reviewStep][1];$('cv-options').open=true;$('cv-review-title').textContent=title;$('cv-review-progress').textContent=`Section ${reviewStep+1} of ${reviewSections.length} · ${confirmed.size} confirmed`;$('cv-review-meter').value=confirmed.size;$('cv-review-back').disabled=busy||reviewStep===0;$('cv-review-next').disabled=busy;$('cv-review-next').textContent=reviewStep===reviewSections.length-1?'Confirm & see complete preview →':'Confirm & next →';
+ }
+ function startReview(){reviewStep=0;confirmed.clear();$('cv-review-confirmation').textContent='Start with your introduction. Confirm each section to continue.';show('preview');$('cv-review-title').focus({preventScroll:true});}
+ $('cv-review-next').onclick=()=>{if(busy||reviewStep===null)return;if(reviewStep===0&&!$('cv-name').value.trim()){message('Enter the name to display before continuing.');$('cv-name').focus();return;}const title=reviewSections[reviewStep][1];confirmed.add(reviewStep);if(reviewStep<reviewSections.length-1){reviewStep++;reviewControls();$('cv-review-confirmation').textContent='✓ '+title+' confirmed. Next: '+reviewSections[reviewStep][1]+'.';window.scrollTo({top:0,behavior:'instant'});$('cv-review-title').focus({preventScroll:true});message('');}else{reviewStep=null;$('cv-options').open=false;show('preview');message('✓ All 6 sections confirmed. Check the complete preview, then publish to update your public page.');$('cv-state').focus({preventScroll:true});}};
+ $('cv-review-back').onclick=()=>{if(busy||reviewStep===null||reviewStep===0)return;reviewStep--;reviewControls();$('cv-review-confirmation').textContent='Reviewing '+reviewSections[reviewStep][1]+'.';window.scrollTo({top:0,behavior:'instant'});$('cv-review-title').focus({preventScroll:true});};
+ function preview(){for(const key of ['location','email','phone','linkedin','portfolio','github','website']){const label=$('cv-include-'+key).closest('label');let value=label.querySelector('.cv-private-value');if(!value){value=node('span');value.className='cv-private-value';label.append(value);}value.textContent=(key==='location'?base.location:base.contact?.[key])||'Not in this source';}const cv=draft();renderCvPreview($('cv-preview'),cv);for(const section of document.querySelectorAll('[data-cv-section-preview]')){const key=section.dataset.cvSectionPreview;const parts={...cv,military:[],civilian:[],education:[],skills:{},contact:{},summary:'',photo:''};parts[key]=cv[key];if(key==='contact')parts.location=cv.location;const holder=node('div');renderCvPreview(holder,parts);section.replaceChildren(...holder.querySelectorAll('section'));if(!section.children.length)section.append(node('p',key==='contact'?'No contact details selected. Your CV can be shared without them.':'No details to share in this section. You can continue or update your private profile later.'));}}
  function fill(source,opts){base=source;for(const k of ['name','headline','summary'])$('cv-'+k).value=source[k]||'';for(const k of optionNames)$('cv-include-'+k).checked=!!opts[k];$('cv-consent').checked=false;preview();}
- const changed=()=>{$('cv-consent').checked=false;preview();if(published)message('Check this preview, then Publish CV update to replace the page at your existing link.');};
+ const changed=()=>{if(reviewStep!==null){confirmed.delete(reviewStep);reviewControls();}$('cv-consent').checked=false;preview();if(published)message('Check this preview, then Publish CV update to replace the page at your existing link.');};
  for(const k of ['name','headline','summary'])$('cv-'+k).addEventListener('input',changed);
  for(const k of optionNames)$('cv-include-'+k).addEventListener('change',changed);
  $('cv-account-signin').onclick=api.openAccount;$('cv-edit-profile').onclick=api.openProfile;
@@ -48,8 +58,9 @@ export function initDigitalCv(api){
  async function useResume(text,title='Selected resume'){
   const uid=api.user()?.uid;await open();if(uid!==api.user()?.uid||!loaded||busy)return;
   const source=resumeToCv(text),profile=profileToCv(api.getProfile());source.photo=profile.photo;for(const key of ['portfolio','github','website'])source.contact[key] ||= profile.contact[key];
-  fill(source,{...options(),military:true,civilian:true,education:true,skills:true,certifications:true,languages:true});previewReady=true;$('cv-source-state').textContent='Resume: '+title;message('Check the preview and choose what to share. Publishing updates your existing CV link.');show('preview');
+  fill(source,{...options(),military:true,civilian:true,education:true,skills:true,certifications:true,languages:true});previewReady=true;$('cv-source-state').textContent='Resume: '+title;message('Check the preview and choose what to share. Publishing updates your existing CV link.');startReview();
  }
+ async function useProfile(){const uid=api.user()?.uid;await open();if(uid!==api.user()?.uid||!loaded||busy)return;fill(profileToCv(api.getProfile()),options());previewReady=true;$('cv-source-state').textContent='Source: your approved profile details';message('');startReview();}
  $('cv-use-resume').onclick=async()=>{
   if(busy)return;const source=sources[Number($('cv-resume-source').value)];if(!source)return;
   const uid=api.user()?.uid,token=generation;busy=true;controls();message('Opening the selected resume…');
@@ -68,9 +79,9 @@ export function initDigitalCv(api){
   finally{if(token===generation){busy=false;controls();$('cv-retry').hidden=!loadFailed;}}
  }
  $('cv-retry').onclick=open;$('cv-start-update').onclick=async()=>{await refreshSources();message('Choose the updated resume, then continue to the public preview.');show('source');};
- $('cv-refresh').onclick=()=>{fill(profileToCv(api.getProfile()),options());previewReady=true;$('cv-source-state').textContent='Resume source: career profile';message('Check your profile details below before publishing.');show('preview');};
+ $('cv-refresh').onclick=()=>useProfile().catch(()=>message('Your profile could not load. Try again.'));
  $('cv-form').addEventListener('submit',async event=>{
-  event.preventDefault();if(busy||!loaded||loadFailed||stage!=='preview')return;
+  event.preventDefault();if(busy||!loaded||loadFailed||stage!=='preview'||reviewStep!==null)return;
   if(!$('cv-consent').checked){message('Confirm that the details in this preview may be public.');$('cv-consent').focus();return;}
   const cv=draft();if(!cv.name){message('Enter your name before publishing.');$('cv-name').focus();return;}
   const token=generation;busy=true;controls();message('Publishing your CV…');
@@ -83,6 +94,6 @@ export function initDigitalCv(api){
  $('cv-unpublish').onclick=async()=>{if(busy||!published||!confirm('Unpublish your digital CV? The link will stop displaying it after a short cache refresh.'))return;const token=generation;busy=true;controls();try{await api.unpublish();if(token!==generation)return;published=null;show('source');message('Your digital CV is unpublished. Your resumes are still saved privately.');}catch{if(token===generation)message('Unpublishing failed. Your CV may still be public. Try again.');}finally{if(token===generation){busy=false;controls();}}};
  $('cv-copy').onclick=async()=>{const token=generation;try{await navigator.clipboard.writeText(cvUrl(slug));if(token===generation)message('Link copied. You can share it with an employer.');}catch{if(token===generation){$('cv-link').focus();$('cv-link').select();message('Select and copy your link above.');}}};
  $('cv-share').hidden=!navigator.share;$('cv-share').onclick=async()=>{try{await navigator.share({title:'My digital CV',url:cvUrl(slug)});}catch(error){if(error.name!=='AbortError')message('Use Copy link to share your CV.');}};
- function reset(){generation++;base={};published=null;slug='';busy=false;loaded=false;loadFailed=false;sources=[];stage='source';previewReady=false;$('cv-resume-source').replaceChildren();fill({},cvDefaults());$('cv-source-state').textContent='';$('cv-link').value='';$('cv-open').removeAttribute('href');$('cv-retry').hidden=true;message('');controls();}
- reset();return {open,reset,useResume};
+ function reset(){generation++;base={};published=null;slug='';busy=false;loaded=false;loadFailed=false;sources=[];stage='source';previewReady=false;reviewStep=null;confirmed.clear();$('cv-review-confirmation').textContent='';reviewControls();$('cv-resume-source').replaceChildren();fill({},cvDefaults());$('cv-source-state').textContent='';$('cv-link').value='';$('cv-open').removeAttribute('href');$('cv-retry').hidden=true;message('');controls();}
+ reset();return {open,reset,useResume,useProfile};
 }

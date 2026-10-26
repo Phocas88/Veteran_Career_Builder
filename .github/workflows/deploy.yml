@@ -56,6 +56,11 @@ jobs:
         working-directory: resume-workspace-src
         run: npx playwright test --config=playwright.career.config.mjs clear-journey.spec.mjs career-extras.spec.mjs --max-failures=1
 
+      - name: Verify career tools in a mobile browser
+        working-directory: resume-workspace-src
+        run: |
+          npm run test:career-browser
+
       - name: Upload fictional app screenshots
         if: always()
         uses: actions/upload-artifact@v4
@@ -66,11 +71,6 @@ jobs:
             resume-workspace-src/test-results
           retention-days: 3
           if-no-files-found: ignore
-
-      - name: Verify career tools in a mobile browser
-        working-directory: resume-workspace-src
-        run: |
-          npm run test:career-browser
 
       - name: Build Firebase hosting directory
         run: node scripts/build-hosting.mjs

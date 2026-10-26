@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const node=(tag,text)=>{const el=document.createElement(tag);if(text)el.textContent=text;return el;};
 const optionNames=Object.keys(cvDefaults());
 export function renderCvPreview(root,cv){
- root.replaceChildren();if(safeProfilePhoto(cv.photo)){const photo=node('img');photo.src=cv.photo;photo.alt='Profile photo';photo.className='cv-profile-photo';photo.width=104;photo.height=104;root.append(photo);}root.append(node('h2',cv.name||'Your name'),node('p',cv.headline||'Your professional headline'));
+ root.replaceChildren();if(safeProfilePhoto(cv.photo)){const photo=node('img');photo.src=cv.photo;photo.alt='Profile photo';photo.className='cv-profile-photo';photo.width=104;photo.height=104;root.append(photo);}root.append(node('h2',cv.name||'Your name'));if(cv.headline)root.append(node('p',cv.headline));
  if(cv.location)root.append(node('p',cv.location));
  const section=(title,children)=>{if(!children.length)return;const s=node('section');s.append(node('h3',title),...children);root.append(s);};
  if(cv.summary)section('Summary',[node('p',cv.summary)]);

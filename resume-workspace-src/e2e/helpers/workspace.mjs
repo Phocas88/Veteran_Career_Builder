@@ -3,6 +3,7 @@
 const allTemplates='classic modern compact federal executive minimal heritage technical scholar horizon atlas signal patriot leadership consultant civic folio graduate industrial contemporary manager creative federal-concise federal-experience'.split(' ');
 export function paidResponse(body,id='a'.repeat(64),templates=allTemplates){
  const entitlements={templates:[...templates],includedTemplate:templates[0]||null};
+ if(body.action==='template-finish')return {...entitlements,document:{...body.document,buildId:body.buildId}};
  if(body.action==='purchase')return {...entitlements,id,status:'paid',prepaid:true,entryMode:body.entryMode,requestId:body.requestId,input:null};
  if(body.action==='verify')return {...entitlements,id:body.buildId,status:'paid',prepaid:true};
  // Match the server's validateInput: resume text is preserved; optional text is trimmed.
@@ -24,7 +25,7 @@ export async function installAccount(page,kind='none',options={}) {
   };
   window.__switchAuth=value=>{auth.currentUser=typeof value==='string'?makeUser(value,value+'@example.com'):value;listeners.forEach(fn=>fn(auth.currentUser));};
   function ref(path){return {path,id:path.split('/').at(-1),collection:name=>ref(path+'/'+name),doc:(id=(++docSequence===1?'saved-new':'saved-new-'+docSequence))=>ref(path+'/'+id),orderBy(){return this;},limit(){return this;},
-   async set(data,options){if(window.__failProfileSave&&path.endsWith('/resumeProgram/background'))throw new Error('Fixture save failure');window.__writes.push({path,data,options});window.__records[path]=options?.merge?{...window.__records[path],...data}:data;},async delete(){window.__deleted.push(path);delete window.__records[path];},
+   async set(data,options){if(window.__failFinishedSave&&path.includes('/resumeProgramResumes/'))throw new Error('Fixture library save failure');if(window.__failProfileSave&&path.endsWith('/resumeProgram/background'))throw new Error('Fixture save failure');window.__writes.push({path,data,options});window.__records[path]=options?.merge?{...window.__records[path],...data}:data;},async delete(){window.__deleted.push(path);delete window.__records[path];},
    async get(){if(path.startsWith('publicProfiles/')){window.__cvReads=(window.__cvReads||0)+1;if(window.__cvReadDelayMs)await new Promise(r=>setTimeout(r,window.__cvReadDelayMs));}if(path.endsWith('/resumeProgram/background')){if(window.__profileLoadDelayMs)await new Promise(r=>setTimeout(r,window.__profileLoadDelayMs));if(window.__failProfileLoad)throw new Error('Fixture profile read failure');}if(/\/(resumeProgramResumes|resumeProgramJobs|resumeProgramLetters)$/.test(path))return {docs:Object.entries(window.__records).filter(([key])=>key.startsWith(path+'/')).map(([key,data])=>({id:key.split('/').at(-1),data:()=>data}))};if(path in window.__records)return {exists:true,data:()=>window.__records[path]};return {exists:false,data:()=>undefined};}
   };}
   const firebaseAuth=()=>auth;firebaseAuth.GoogleAuthProvider=class{setCustomParameters(value){this.parameters=value;}};firebaseAuth.Auth={Persistence:{LOCAL:'local',SESSION:'session'}};firebaseAuth.EmailAuthProvider={credential:(email,password)=>({email,password})};

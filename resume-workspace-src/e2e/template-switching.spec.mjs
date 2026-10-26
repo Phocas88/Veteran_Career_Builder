@@ -4,7 +4,7 @@ const source='EXAMPLE TEMPLATE APPLICANT\nexample@example.com · 202-555-0144\n\
 async function openStudio(page,type='private'){
  await installAccount(page,'registered');await start(page);await page.locator('#resume-input').fill(source);
  if(type!=='private'){await page.locator('#next-job').click();await page.locator('#application-type').selectOption(type);}
- await page.locator('.steps [data-tab="export"]').click();await page.locator('#template-library').evaluate(n=>n.open=true);
+ await page.locator('.steps [data-tab="export"]').click();await page.locator('#template-library').evaluate(n=>n.open=true);await page.locator('#template-more').click();
 }
 const radio=(page,key)=>page.locator('[name="resume-design"][value="'+key+'"]');
 const choose=(page,key)=>radio(page,key).locator('..').click();
@@ -19,5 +19,5 @@ test('federal mode can preview other themes and explicitly apply one without cha
  await page.locator('[data-preview-template="federal"]').click();await expect(page.locator('#application-type')).toHaveValue('private');await page.locator('#template-example-use').click();await expect(page.locator('#application-type')).toHaveValue('federal');await page.locator('[data-studio-tab="format"]').click();await expect(page.locator('#resume-paper')).toBeDisabled();await expect(page.locator('#format-color')).toBeDisabled();await expect(page.locator('#resume-photo-input')).toBeDisabled();await expect(page.locator('#resume-input')).toHaveValue(source);
 });
 test('returning from federal restores state/local mode and leaves explicit gallery filters under user control',async({page})=>{
- await openStudio(page,'government');await choose(page,'federal');await expect(page.locator('#application-type')).toHaveValue('federal');await page.locator('#template-category').selectOption('photo');await expect(page.locator('#design-gallery > label:visible')).toHaveCount(2);await choose(page,'creative');await expect(page.locator('#application-type')).toHaveValue('government');await expect(page.locator('#template-category')).toHaveValue('photo');await expect(page.locator('#resume-photo-upload')).toBeEnabled();await page.locator('#template-category').selectOption('');await expect(page.locator('#design-gallery > label:visible')).toHaveCount(24);
+ await openStudio(page,'government');await choose(page,'federal');await expect(page.locator('#application-type')).toHaveValue('federal');await page.locator('#template-category').selectOption('photo');await expect(page.locator('#design-gallery > label:visible')).toHaveCount(2);await choose(page,'creative');await expect(page.locator('#application-type')).toHaveValue('government');await expect(page.locator('#template-category')).toHaveValue('photo');await expect(page.locator('#resume-photo-upload')).toBeEnabled();await page.locator('#template-category').selectOption('');await page.locator('#template-more').click();await expect(page.locator('#design-gallery > label:visible')).toHaveCount(24);
 });

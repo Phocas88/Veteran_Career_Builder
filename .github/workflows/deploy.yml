@@ -58,6 +58,15 @@ jobs:
           npx playwright install --with-deps chromium
           npm run test:career-browser
 
+      - name: Upload fictional app screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-ux-previews
+          path: /tmp/vcp-ux-previews
+          retention-days: 3
+          if-no-files-found: ignore
+
       - name: Build Firebase hosting directory
         run: node scripts/build-hosting.mjs
 

@@ -1,13 +1,14 @@
-import {initReviewFlow} from './review-flow.js?v=20261029-clear-flow';
-import {initDesignEditor} from './design-editor.js?v=20261031-template-switch';
-import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261025-standalone-app';
-import {showAppView} from './app-shell.js?v=20261031-digital-cv';
-import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261101-account-guard';
+import {initResumeDelivery} from './resume-delivery.js?v=20261026-clear-journey';
+import {initReviewFlow} from './review-flow.js?v=20261026-clear-journey';
+import {initDesignEditor} from './design-editor.js?v=20261026-clear-journey';
+import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261026-clear-journey';
+import {showAppView} from './app-shell.js?v=20261026-clear-journey';
+import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261026-clear-journey';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';
 import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js?v=20261027-resume-studio';
-import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext, canUseTemplate, finishTemplate } from './payments.js?v=20261101-finished-resumes';
+import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext, canUseTemplate, finishTemplate } from './payments.js?v=20261026-clear-journey';
 
 const $ = id => document.getElementById(id);
 const input = $('resume-input');
@@ -26,6 +27,7 @@ let previewTimer;
 let previewKey = '';
 let versionContext = {};
 let designEditor;
+let delivery;
 let lastNonFederalApplicationType='private';
 const reviewFlow=initReviewFlow({finish(useRewrite=true){
   if(collectAnswers().length&&!(state.review?.refinementCount>=1)&&!confirm('Your answers have not been used in an AI update yet. Continue with the current resume? Your answers stay in this tab.'))return;
@@ -80,10 +82,11 @@ function refreshExport() {
   document.querySelector(`[name="resume-design"][value="${model.design}"]`).checked=true;
   designEditor?.sync(model);
   const owned=canUseTemplate(model.design),context=careerBuildContext();
+  delivery?.refresh(owned);
   for(const id of ['download-pdf','download-word','download-resume','print-resume','copy-resume'])$(id).disabled=!owned||!input.value.trim()||exporting;
-  $('template-finish').textContent=owned?'Save finished resume':context?.includedTemplate?'Get '+designs[model.design].name+' template · $1.00':'Finish & save '+designs[model.design].name+' · included';
+  $('template-finish').textContent=owned?'Save changes & continue':context?.includedTemplate?'Get '+designs[model.design].name+' template · $1.00':'Use '+designs[model.design].name+' & save resume · included';
   $('template-finish').disabled=exporting||!input.value.trim();
-  $('template-entitlement').textContent=owned?'This template is yours. Repeat downloads and printing are included. Save again to keep your edits.':context?.includedTemplate?'Your purchase includes '+designs[context.includedTemplate]?.name+'. This additional template costs $1.00. Examples remain free to browse.':'Your $1.99 build includes one template. Browse the fictional examples, then finish your choice to unlock your personal preview and downloads.';
+  $('template-entitlement').textContent=owned?'This design is already purchased. Save your changes, then download your finished document.':context?.includedTemplate?'Your purchase includes '+designs[context.includedTemplate]?.name+'. This additional template costs $1.00. Examples remain free to browse.':'Your purchase includes one design. Choose below, then press Use design & save resume. Additional designs cost $1.00.';
   if(!owned){++previewVersion;previewKey='';clearTimeout(previewTimer);$('export-preview').replaceChildren();$('pdf-pages').replaceChildren();$('print-content').replaceChildren();$('preview-stage').hidden=true;$('export-empty').hidden=false;$('export-empty').textContent='Finish your chosen template to see your personal resume here. Preview the fictional examples while choosing.';return;}
   $('export-empty').textContent='Your resume will appear here once you add it.';
 
@@ -491,12 +494,19 @@ $('template-finish').addEventListener('click',async()=>{
  try{
   if(model.applicationType==='federal')checkFederalDownload(model,await preparePdf(model));
   const result=await finishTemplate(currentDraft());if(!result||owner!==draftOwnerId())return;
-  try{const saved=await saveFinishedResume(result);if(owner!==draftOwnerId())return;$('finished-status').textContent=saved?'Saved in My resumes in your account. Open it anytime, or use it for your digital CV below.':'Finished resume saved with this purchase. Create an account to keep it across devices.';}
-  catch(error){$('finished-status').textContent='Finished resume is safe in purchase history. Saving to My resumes failed. Press Save finished resume to retry; no payment is needed.';}
-  $('finished-actions').hidden=false;
+  try{const saved=await saveFinishedResume(result);if(owner!==draftOwnerId())return;$('finished-status').textContent=saved?'Saved in My resumes. Your purchased resume is ready to download below.':'Finished resume saved with this purchase. Create an account to keep it across devices.';}
+  catch(error){$('finished-status').textContent='Saved with your purchase. My resumes can reopen this document even though the account-library copy did not sync.';}
+  $('finished-actions').hidden=false;delivery.show(true,true);
  }catch(error){if(owner===draftOwnerId()){$('finished-status').textContent=error.message;showError(error.message);}}
  finally{exporting=false;refreshDraft();}
 });
+async function persistPurchasedDocument(document=currentDraft()){
+ const owner=draftOwnerId(),result=await finishTemplate(document);
+ if(!result||owner!==draftOwnerId())throw new Error('Your account changed. Reopen this purchased resume.');
+ try{await saveFinishedResume(result);}catch{if(owner!==draftOwnerId())throw new Error('Your account changed. Reopen your resume.');}
+ if(owner!==draftOwnerId())throw new Error('Your account changed. Reopen your resume.');
+ $('finished-status').textContent='Saved in My resumes with your purchased design.';
+}
 function saveDownload(blob, filename) {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
@@ -508,8 +518,9 @@ function saveDownload(blob, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
-$('download-resume').addEventListener('click', () => {
+$('download-resume').addEventListener('click', async () => {
   if (!canUseTemplate(currentDocument().design) || !input.value.trim()) return;
+  try{await persistPurchasedDocument();}catch(error){showError(error.message);return;}
   saveDownload(new Blob([plainTextForModel(currentDocument())], { type: 'text/plain;charset=utf-8' }), exportFilename(currentDocument(), 'txt'));
   toast('Your resume download is ready.');
 });
@@ -523,6 +534,7 @@ for (const [id, extension, generate] of [['download-pdf', 'pdf', async model => 
   $(id).addEventListener('click', async () => {
     if (!canUseTemplate(currentDocument().design) || exporting || !input.value.trim()) return;
     const model = currentDocument();
+    const exportDraft=structuredClone(currentDraft());
     const exportAccount = draftOwnerId();
     exporting = true;
     $(id).setAttribute('aria-busy', 'true');
@@ -530,6 +542,7 @@ for (const [id, extension, generate] of [['download-pdf', 'pdf', async model => 
     toast(`Preparing your ${extension === 'pdf' ? 'PDF' : 'Word document'}…`);
     try {
       const blob = await generate(model);
+      await persistPurchasedDocument(exportDraft);
       if (exportAccount !== draftOwnerId()) return;
       saveDownload(blob, exportFilename(model, extension));
       toast('Your formatted resume download is ready.');
@@ -572,7 +585,7 @@ function preparePrint() {
 }
 
 window.addEventListener('beforeprint', preparePrint);
-$('print-resume').addEventListener('click',async()=>{if(!canUseTemplate(currentDocument().design)||!input.value.trim())return;try{const model=currentDocument();if(model.applicationType==='federal')checkFederalDownload(model,await preparePdf(model));preparePrint();window.print();}catch(error){showError(error.message);}});
+$('print-resume').addEventListener('click',async()=>{if(!canUseTemplate(currentDocument().design)||!input.value.trim())return;try{const model=currentDocument();if(model.applicationType==='federal')checkFederalDownload(model,await preparePdf(model));await persistPurchasedDocument();preparePrint();window.print();}catch(error){showError(error.message);}});
 
 $('privacy-open').addEventListener('click', () => $('privacy-dialog').showModal());
 $('privacy-close').addEventListener('click', () => $('privacy-dialog').close());
@@ -595,7 +608,7 @@ $('clear-confirm').addEventListener('click', () => {
   toast('Draft cleared, including any copy saved in this browser.');
 });
 
-designEditor=initDesignEditor({getSource:()=>input.value,owner:draftOwnerId,error:showError,editSource:text=>{input.value=text;input.dispatchEvent(new Event('input'));},change:()=>{refreshExport();saveDraft();},designChanged:id=>{if(designs[id].federal&&applicationInput.value!=='federal'){lastNonFederalApplicationType=applicationInput.value;applicationInput.value='federal';syncApplicationType();}else if(!designs[id].federal&&applicationInput.value==='federal'){applicationInput.value=lastNonFederalApplicationType;syncApplicationType();toast('Switched to '+(lastNonFederalApplicationType==='government'?'state/local':'civilian')+' formatting. Choose a federal template for USAJOBS formatting.');}else{refreshExport();saveDraft();}}});
+designEditor=initDesignEditor({getSource:()=>input.value,owner:draftOwnerId,error:showError,editSource:text=>{input.value=text;input.dispatchEvent(new Event('input'));},change:()=>{refreshExport();saveDraft();},designChanged:id=>{delivery?.show(false);if(designs[id].federal&&applicationInput.value!=='federal'){lastNonFederalApplicationType=applicationInput.value;applicationInput.value='federal';syncApplicationType();}else if(!designs[id].federal&&applicationInput.value==='federal'){applicationInput.value=lastNonFederalApplicationType;syncApplicationType();toast('Switched to '+(lastNonFederalApplicationType==='government'?'state/local':'civilian')+' formatting. Choose a federal template for USAJOBS formatting.');}else{refreshExport();saveDraft();}}});
 
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
@@ -611,16 +624,19 @@ try {
 } catch { /* Private browsing or unavailable storage still permits a session-only draft. */ }
 setTab('resume', false);
 
+delivery=initResumeDelivery({edit(){setTab('resume');setFlow('edit');}});
+
 initWorkspace({
   showResume() { setTab('resume', false); },
   showReviewTab() { setTab('review', false); },
-  continueResume() {if(state.review)setTab('review');else setFlow(currentFlow()==='start'?'edit':currentFlow());},
+  continueResume() {if(delivery.ready){setTab('export');delivery.show(true);return;}if(state.review)setTab('review');else setFlow(currentFlow()==='start'?'edit':currentFlow());},
   showPayment() { setFlow('payment'); },
   openEntry(mode) { setFlow(mode==='build'?'build':'edit'); },
   showCheckout() { setFlow('checkout', false); },
   recoverReview(run) { setFlow('checkout', false); return requestReview(run); },
   getDraft: currentDraft,
-  showExport(){setTab('export');},
+  showExport({ready=false}={}){setTab('export');delivery.show(ready,true);},
+  downloadPdf(){$('download-pdf').click();},
   restoreDeviceDraft(uid) {
     try { const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
       if (saved?.ownerUid === uid && !input.value.trim()) { this.loadDraft(saved); $('remember-draft').checked = true; saveDraft(); }
@@ -650,7 +666,7 @@ initWorkspace({
   markVersion(item) {versionContext={versionFamily:item.familyId || item.id,versionId:item.id,versionTitle:item.title};},
   setJob(job) {roleInput.value=job.role;jobInput.value=job.description;applicationInput.value=job.applicationType;syncApplicationType();if(state.review){state.stale=true;state.rewriteInvalid=true;}refreshDraft();saveDraft();},
   clearAccountDraft() {
-    $('finished-actions').hidden=true;$('finished-status').textContent='';versionContext={};lastNonFederalApplicationType='private';designEditor.reset();reviewFlow.reset();
+    delivery.reset();$('finished-actions').hidden=true;$('finished-status').textContent='';versionContext={};lastNonFederalApplicationType='private';designEditor.reset();reviewFlow.reset();
     document.querySelector('[name="resume-design"][value="classic"]').checked=true;
     setResumeFilename('');
     state.controller?.abort('account-change'); input.value = ''; roleInput.value = ''; jobInput.value = ''; detailsInput.value = '';

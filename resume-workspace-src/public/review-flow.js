@@ -6,8 +6,8 @@ const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text)n.textCont
 export function initReviewFlow(api){
  let stage='draft',index=0;
  const root=$('review-results'),nav=el('nav',null,'review-task-nav');nav.setAttribute('aria-label','Review steps');
- for(const [key,text]of [['draft','1 · Revised resume'],['details','2 · Add details']]){const b=el('button',text);b.type='button';b.dataset.reviewStage=key;b.onclick=()=>show(key);nav.append(b);}
- const finish=el('button','3 · Design & download');finish.type='button';finish.dataset.reviewFinish='true';finish.onclick=()=>api.finish();nav.append(finish);
+ for(const [key,text]of [['draft','Revised resume'],['details','Questions · optional']]){const b=el('button',text);b.type='button';b.dataset.reviewStage=key;b.onclick=()=>show(key);nav.append(b);}
+ const finish=el('button','Continue to design →');finish.type='button';finish.dataset.reviewFinish='true';finish.onclick=()=>api.finish();nav.append(finish);
  const title=el('h2','Review your revised resume');title.id='review-task-title';title.tabIndex=-1;
  const intro=el('p','Check the draft first. Add optional details if something is missing, then choose a design.','review-task-intro');
  const draft=el('section');draft.id='review-draft-stage';

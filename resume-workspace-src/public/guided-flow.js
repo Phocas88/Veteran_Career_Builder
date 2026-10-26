@@ -16,6 +16,8 @@ export function syncResumeEditor() {
   $('resume-heading').textContent = hasText ? 'Check your resume' : 'Add your resume';
   $('resume-text-label').textContent = hasText ? 'Review & edit your resume text' : 'Paste your resume';
   $('resume-text-help').textContent = importedName ? 'Check that names, dates, and bullet points were read correctly. You can edit the text below.' : 'Include your experience, education, and skills. You can make changes here.';
+  $('manual-finish').hidden=!hasText;
+  $('manual-finish').disabled=$('resume-input').value.trim().length<100;
   $('next-job').disabled = $('resume-input').value.trim().length < 100 || $('resume-input').readOnly;
   $('save-progress').hidden = !hasText;
 }
@@ -33,7 +35,8 @@ export function setFlow(stage, scroll = true) {
   $('resume-start').hidden = false;
   $('opsec-notice').hidden = ['start','payment'].includes(stage);
   for (const node of document.querySelectorAll('[data-flow]')) node.hidden = node.dataset.flow !== stage;
-  $('flow-progress').textContent = labels[stage];
+  const numbers={payment:0,build:1,edit:1,job:2,checkout:2};
+  $('flow-progress').textContent = (numbers[stage]?'Step '+numbers[stage]+' of 3 · ':'')+labels[stage];
   $('flow-back').hidden = stage === 'start';
   if (stage === 'build') $('background-builder').open = true;
   syncResumeEditor();
@@ -65,6 +68,7 @@ export function initGuidedFlow(options) {
     }
     setFlow('job'); $('target-role').focus();
   };
+  $('manual-finish').onclick=()=>{if($('resume-input').value.trim().length>=100)options.manualFinish();};
   $('next-checkout').onclick = () => setFlow('checkout');
   $('save-progress').onclick = ()=>document.dispatchEvent(new CustomEvent('app:open-career',{detail:'versions'}));
   $('account-new-resume').onclick = () => { if(!options.newResume())return; $('account-dialog').close(); setFlow('start'); };

@@ -223,7 +223,7 @@ export function initWorkspace(adapter) {
   });
   profileSetup=initProfileSetup({user:()=>user,getProfile:readProfile,isDirty:()=>profileDirty,fillProfile,markClean:()=>{profileDirty=false;},openProfile:()=>careerUI.open('profile'),goHome:()=>showAppView('home'),useProfile:()=>choosePaidEntry('build'),load:async()=>(await careerStore()).profile(),save:(profile,setup)=>profileStorage.save(profile,setup)});
   profileStorage=createProfileStorage({user:()=>user,read:readProfile,isDirty:()=>profileDirty,fill:data=>fillProfile(profileFromWebsite(data)),clean:()=>{profileDirty=false;},loaded:data=>profileSetup.loaded(data),store:()=>careerStore(),openAccount:()=>openAccount('create'),confirm:message=>confirm(message),status:({kind,text,busy,retry})=>{
-    $('profile-persistence-status').textContent=text;$('profile-persistence-status').dataset.state=kind;$('profile-load-retry').hidden=!retry;
+    $('profile-save-feedback').textContent=text;$('profile-persistence-status').textContent=text;$('profile-persistence-status').dataset.state=kind;$('profile-load-retry').hidden=!retry;
     for(const id of ['career-profile-save','profile-save-bottom','save-profile'])$(id).disabled=busy;
   }});
   profileImport=initProfileImport({user:()=>user,getProfile:readProfile,getResume:()=>callback.getDraft().resume,ready:async()=>{await ensureConnection();await profileStorage.accountChanged();},applyProfile:profile=>{fillProfile(profile);profileDirty=true;profileStorage.dirty();},saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),openProfile:()=>careerUI.open('profile'),openAccount:()=>openAccount('create')});

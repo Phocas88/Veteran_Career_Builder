@@ -264,9 +264,9 @@ export function initWorkspace(adapter) {
       const text = profileToResume(readProfile());
       if (callback.getDraft().resume.trim() && !confirm('Replace the current draft with your service background? Save or download your existing work first.')) return;
       callback.loadDraft({ ...callback.getDraft(), resume: text });
-      $('builder-status').textContent = 'Your starting draft is ready. Check the text, then continue to job details.';
+      $('builder-status').textContent = 'Your starting draft is ready. Check the text, then choose AI review or design and download.';
       setFlow('edit'); $('resume-input').focus();
-    } catch (error) { $('builder-status').textContent = error.message; }
+    } catch (error) { $('builder-status').textContent = error.message;$('builder-status').scrollIntoView({block:'center',behavior:'instant'}); }
   });
   $('auth-google').onclick=()=>googleSignIn();$('welcome-google').onclick=()=>googleSignIn();$('account-link-google').onclick=()=>googleSignIn({linkCurrent:true});$('google-switch-account').onclick=()=>googleSignIn({switchFromGuest:true});$('google-keep-guest').onclick=()=>{$('google-existing-choice').hidden=true;$('auth-status').textContent='Your guest session is unchanged. You can continue working or try a different Google account.';};
   $('keep-signed-in').addEventListener('change',prepareGooglePersistence);

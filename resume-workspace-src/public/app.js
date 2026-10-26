@@ -3,7 +3,7 @@ import {initResumeDelivery} from './resume-delivery.js?v=20261026-clear-journey'
 import {initReviewFlow} from './review-flow.js?v=20261026-clear-journey';
 import {initDesignEditor} from './design-editor.js?v=20261026-clear-journey';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261026-clear-journey';
-import {showAppView} from './app-shell.js?v=20261026-career-tools';
+import {showAppView} from './app-shell.js?v=20261026-guided-updates';
 import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261026-career-tools';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';

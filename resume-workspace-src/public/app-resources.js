@@ -1,4 +1,4 @@
-import {showAppView} from './app-shell.js?v=20261026-career-tools';
+import {showAppView} from './app-shell.js?v=20261026-guided-updates';
 import {combinedRating,compensation} from './va-calculator-model.js?v=20261026-career-tools';
 const $=id=>document.getElementById(id);
 const el=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};

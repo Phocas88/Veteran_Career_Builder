@@ -1,3 +1,4 @@
+import {expect} from '@playwright/test';
 // Rendering regressions use an account that already owns every design. Payment tests
 // pass templateEntitlements:[] to exercise a fresh one-template purchase.
 const allTemplates='classic modern compact federal executive minimal heritage technical scholar horizon atlas signal patriot leadership consultant civic folio graduate industrial contemporary manager creative federal-concise federal-experience'.split(' ');
@@ -56,3 +57,9 @@ export async function expandBackground(page){await page.locator('#background-bui
 
 export async function selectProfileSection(page,section){await page.locator('[data-profile-section]').selectOption(section);}
 export async function agreeCloudSaving(page){await page.locator('#career-storage').evaluate(n=>n.open=true);await page.locator('#career-storage-consent').check();}
+
+export async function confirmCvSections(page){
+ await expect(page.locator('#cv-section-guide')).toBeVisible();
+ for(let index=0;index<6;index++){await expect(page.locator('#cv-review-progress')).toContainText(`Section ${index+1} of 6`);await page.locator('#cv-review-next').click();}
+ await expect(page.locator('#cv-section-guide')).toBeHidden();await expect(page.locator('#cv-consent')).toBeVisible();
+}

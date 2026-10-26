@@ -1,7 +1,7 @@
 /* App chrome only. Resume documents, PDF canvases and public CV previews retain
    their document colors; the separately hosted digital CV is unchanged. */
 :root{--bg:#050505;--paper:#101010;--ink:#f5f5f3;--muted:#b6b6b3;--line:#30302e;--purple:#efc64b;--purple-soft:#262115;--gold:#efc64b;--green:#b9d1bd;color-scheme:dark}
-body.standalone-app{background:#050505;color:#f5f5f3}
+body.standalone-app{background:#050505;color:#f5f5f3;--app-line:#30302e;--app-muted:#bdbdb7;--app-surface:#101010;--app-accent:#efc64b}
 body.standalone-app .app-shell,body.standalone-app .app-header,body.standalone-app .app-nav,body.standalone-app .topbar{background:#050505!important;color:#f5f5f3;border-color:#292927;box-shadow:none}
 body.standalone-app .app-brand span,body.standalone-app .brand-name,body.standalone-app .screen-heading h1{color:#fff}
 body.standalone-app .card,body.standalone-app .current-work,body.standalone-app .start-option,body.standalone-app .home-tool-button,body.standalone-app .settings-list,body.standalone-app .settings-list>*{background:#101010!important;color:#f5f5f3;border-color:#30302e;box-shadow:none;border-radius:12px}
@@ -22,7 +22,7 @@ body.standalone-app .button:disabled,body.standalone-app button:disabled{opacity
 body.standalone-app :is(button,a,input,select,textarea):focus-visible{outline:3px solid #efc64b;outline-offset:3px}
 body.standalone-app .app-nav button{background:transparent;color:#b6b6b0}
 body.standalone-app .app-nav button.active{background:#211e14;color:#efc64b}
-body.standalone-app .app-price{color:#eee;border-color:#393326;background:#13120d}
+body.standalone-app .app-price{color:#eee;border-color:#393326;background:transparent}
 body.standalone-app .app-price strong,body.standalone-app .upfront-price,body.standalone-app .action-icon{color:#efc64b}
 body.standalone-app .category-icon,body.standalone-app .category-chevron{background:#201e17;border-color:#49402b}
 body.standalone-app .design-option{background:#171715!important;color:#fff;border-color:#45453f}
@@ -39,7 +39,7 @@ body.standalone-app .home-tools-title{font-size:17px;margin:30px 0 14px;color:#f
 .home-tools-title span{font-size:12px;font-weight:400;color:#bdbdb7}
 body.standalone-app .home-how{display:none}
 body.standalone-app .home-tool-button{padding:16px 18px;margin:10px 0;min-height:90px}
-body.standalone-app .start-option{padding:20px;min-height:116px}
+body.standalone-app .start-option{padding:16px;min-height:92px}
 body.standalone-app .flow-heading{margin-bottom:16px}
 body.standalone-app .flow-progress,body.standalone-app #flow-progress{color:#efc64b}
 body.standalone-app .builder-step-guidance{font-size:14px;line-height:1.7;padding:14px 0;margin:0}
@@ -72,3 +72,6 @@ body.standalone-app .toast{background:#20201b;color:#fff;border-color:#706137}
 body.standalone-app .resume-document :is(h1,h2,h3){color:inherit}
 body.standalone-app .profile-section-bar{scroll-margin-top:100px}
 #draft-save-status{color:#efc64b;font-size:13px;margin-top:12px}
+
+body.standalone-app .start-option .action-icon,body.standalone-app .home-how b{background:#252116;color:#efc64b}
+body.standalone-app .app-brand small,body.standalone-app .header-action,body.standalone-app .home-purchase-note,body.standalone-app .app-about{color:#bdbdb7}

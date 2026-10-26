@@ -10,7 +10,8 @@ export function parsePosting(text,url=''){
  const combined=lines[0]?.match(/^(.{2,180}?)\s+at\s+(.{2,180})$/i);
  const link=safeJobUrl(url)||safeJobUrl(structured?.url)||safeJobUrl(source.match(/https?:\/\/[^\s<>"']+/)?.[0]||'');
  const employer=typeof structured?.hiringOrganization==='string'?structured.hiringOrganization:structured?.hiringOrganization?.name;
- return normalizeJob({role:plain(structured?.title)||labeled('job title|position title|role|position')||combined?.[1]||'',company:plain(employer)||labeled('company|employer|organization|agency|department')||combined?.[2]||'',url:link,description:plain(structured?.description)||source,contact:labeled('recruiter|contact|hiring contact'),applicationType:/https?:\/\/(?:www\.)?usajobs\.gov\b/i.test(link)||/\b(?:GS-\d|federal government|USAJOBS)\b/i.test(source)?'federal':'private'});
+ const description=plain(structured?.description)||source;if(description.length>8000)throw new Error('This posting exceeds 8,000 characters. Shorten it to the relevant job requirements, then review again.');
+ return normalizeJob({role:plain(structured?.title)||labeled('job title|position title|role|position')||combined?.[1]||'',company:plain(employer)||labeled('company|employer|organization|agency|department')||combined?.[2]||'',url:link,description,contact:labeled('recruiter|contact|hiring contact'),applicationType:/https?:\/\/(?:www\.)?usajobs\.gov\b/i.test(link)||/\b(?:GS-\d|federal government|USAJOBS)\b/i.test(source)?'federal':'private'});
 }
 export function csvRows(source){
  if(typeof source!=='string'||source.length>limit)throw new Error('Choose a CSV file up to 1 MB.');
@@ -30,7 +31,10 @@ export function parseApplicationCsv(source){
  const map=Object.fromEntries(Object.entries(aliases).map(([field,names])=>[field,headers.findIndex(h=>names.includes(h))]));
  if(map.role<0||map.company<0)throw new Error('The CSV needs Job title and Company columns. Download the sample CSV to see supported columns.');
  if(!rows.length)throw new Error('The CSV has no application rows.');
- return rows.map((row,index)=>{const raw=Object.fromEntries(Object.entries(map).filter(([,i])=>i>=0).map(([k,i])=>[k,row[i]||'']));raw.status=({saved:'Saved',preparing:'Preparing',applied:'Applied',interview:'Interview',offer:'Offer',closed:'Closed'})[raw.status?.toLowerCase()]||'Saved';return {row:index+2,selected:!!raw.role?.trim()&&!!raw.company?.trim(),job:normalizeJob(raw)};});
+ return rows.map((row,index)=>{const raw=Object.fromEntries(Object.entries(map).filter(([,i])=>i>=0).map(([k,i])=>[k,row[i]||'']));raw.status=({saved:'Saved',preparing:'Preparing',applied:'Applied',interview:'Interview',interviewing:'Interview',offer:'Offer',closed:'Closed',rejected:'Closed',withdrawn:'Closed'})[raw.status?.toLowerCase()]||'Saved';
+ for(const key of ['appliedDate','interviewDate','followUpDate']){const match=raw[key]?.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(match)raw[key]=match[3]+'-'+match[1].padStart(2,'0')+'-'+match[2].padStart(2,'0');}
+ const job=normalizeJob(raw),warnings=[];for(const key of ['appliedDate','interviewDate','followUpDate'])if(raw[key]&&!job[key])warnings.push('A '+key.replace(/([A-Z])/g,' $1').toLowerCase()+' could not be read and will be left blank.');if(raw.url&&!job.url)warnings.push('The posting link is not a valid HTTP or HTTPS address and will be left blank.');for(const key of ['description','notes','role','company'])if(raw[key]&&raw[key].trim().length>job[key].length)warnings.push(key+' exceeds the supported length; review the shortened value.');
+ return {row:index+2,selected:!warnings.length&&!!job.role&&!!job.company,job,warnings};});
 }
-export function applicationKey(job){return job.url?'url:'+job.url.replace(/\/$/,'').toLowerCase():[job.company,job.role,job.appliedDate||''].map(v=>v.trim().toLowerCase()).join('|');}
+export function applicationKey(job){return job.url?'url:'+job.url.replace(/\/$/,''):[job.company,job.role,job.appliedDate||''].map(v=>v.trim().toLowerCase()).join('|');}
 export const applicationCsvExample='Job title,Company,URL,Status,Date applied,Contact,Notes\nOperations Coordinator,Example Company,https://example.com/jobs/123,Saved,,Recruiting team,"Review requirements, then apply"\n';

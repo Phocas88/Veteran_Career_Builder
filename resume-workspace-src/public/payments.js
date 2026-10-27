@@ -33,12 +33,12 @@ async function api(action,extra={},signal){
 let entryMode='edit',requestId=null,entryContext=null;
 const changed=()=>document.dispatchEvent(new Event('resume:payment-changed'));
 export const hasPaidBuild=()=>!!active?.verified;
-export const careerBuildContext=()=>active?.verified?{id:active.id,completed:!!active.review,bound:!!active.input,role:active.input?.role||'',jobDescription:active.input?.jobDescription||'',refinementCount:active.refinementCount||0,templates:active.templates||[],includedTemplate:active.includedTemplate||null,matches:active.review?.careerMatches??active.careerMatches}:null;
+export const careerBuildContext=()=>active?.verified?{id:active.id,completed:!!active.review,bound:!!active.input,role:active.input?.role||'',jobDescription:active.input?.jobDescription||'',refinementCount:active.refinementCount||0,templates:active.templates||[],includedTemplate:active.includedTemplate||null,matches:active.careerMatches??active.review?.careerMatches}:null;
 export async function requestCareerAssessment(signal,source){
  if(source?.resumeId)return api('career-assess-saved',{resumeId:source.resumeId,consent:true,keepAlive:true},signal);
  const id=source?.buildId||active?.id;
  if(!id||!source&&!active?.verified)throw new Error('Choose a saved resume first.');
- const result=await api('career-assess',{buildId:id,...(source?.design?{design:source.design}:{}),consent:true,keepAlive:true},signal);
+ const result=await api('career-assess',{buildId:id,...(source?.design?{design:source.design}:{}),expand:true,consent:true,keepAlive:true},signal);
  if(!source){if(active?.id!==id)throw new Error('Another resume was opened. Open the assessed purchase to see its careers.');active={...active,careerMatches:result.matches};changed();}
  return result;
 }
@@ -50,6 +50,13 @@ export async function unlockSavedBuild(id){
  if(typeof id!=='string'||!/^[a-f0-9]{64}$/.test(id))throw new Error('Open the original purchase from purchase history to unlock this older saved resume.');
  if(active?.id===id&&active.verified)return;
  const build=await api('get',{buildId:id});await unlock(build);
+}
+export async function deletePurchasedResume(item){
+ const buildId=item.buildId||item.workspace?.buildId,design=item.design||item.workspace?.design;
+ if(!buildId)throw new Error('Choose a saved resume first.');
+ await api(item.finished?'resume-delete':'delete',{buildId,...(item.finished?{design}:{})});
+ if(active?.id===buildId)forgetActiveBuild();
+ document.dispatchEvent(new Event('resume:library-changed'));
 }
 export async function listPurchasedResumes(){const result=await api('list');return result.builds||[];}
 export async function readPurchasedResume(buildId,design){const result=await api('template-open',{buildId,design});return {...result.document,buildId};}
@@ -115,7 +122,7 @@ export async function openBuild(id,{confirmReplace=true}={}){
  if(build.review){config.adapter.loadReview(build.review,build.input?.resume);msg(build.lastError?.error||'Build reopened. Your selected template and repeat downloads are included.');}
  else if(build.input){config.adapter.showCheckout();msg('Your paid draft is restored. Finish this build without another payment.');}
  else{if(build.entryContext)await config.restoreEntryContext(build.entryContext);config.adapter.openEntry(build.entryMode||'edit');msg('Payment verified. Your resume build is unlocked.');}
- if(build.includedTemplate){const result=await api('template-open',{buildId:id,design:build.includedTemplate});config.adapter.loadDraft({...result.document,buildId:id});config.adapter.showExport({ready:true});}
+ if(build.includedTemplate&&!(build.deletedTemplates||[]).includes(build.includedTemplate)){const result=await api('template-open',{buildId:id,design:build.includedTemplate});config.adapter.loadDraft({...result.document,buildId:id});config.adapter.showExport({ready:true});}
  return build;
 }
 export async function refreshPurchases(){
@@ -131,7 +138,7 @@ export async function refreshPurchases(){
     if(!confirm('Delete this build’s input, answers and AI result? This does not cancel payment or issue a refund. A minimal purchase record is retained for accounting.'))return;
     try{await api('delete',{buildId:build.id});if(active?.id===build.id)forgetActiveBuild();await refreshPurchases();msg('Build input and result deleted from the active database.');}catch(e){msg(e.message);}
    };
-   row.append(text,open);for(const design of build.templates||[]){const use=document.createElement('button');use.type='button';use.className='text-button';use.textContent='Open saved '+design;use.onclick=async()=>{try{await openBuild(build.id);const result=await api('template-open',{buildId:build.id,design});config.adapter.loadDraft(result.document);config.adapter.showExport({ready:true});}catch(e){msg(e.message);}};row.append(use);}row.append(remove);list.append(row);
+   row.append(text,open);for(const design of (build.templates||[]).filter(value=>!(build.deletedTemplates||[]).includes(value))){const use=document.createElement('button');use.type='button';use.className='text-button';use.textContent='Open saved '+design;use.onclick=async()=>{try{await openBuild(build.id);const result=await api('template-open',{buildId:build.id,design});config.adapter.loadDraft(result.document);config.adapter.showExport({ready:true});}catch(e){msg(e.message);}};row.append(use);}row.append(remove);list.append(row);
   }
   $('purchase-empty').hidden=builds.length>0;
   const params=new URLSearchParams(location.search),id=params.get('build');

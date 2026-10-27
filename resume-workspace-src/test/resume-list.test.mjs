@@ -8,3 +8,9 @@ test('explicit draft saves update one private paid-build copy and finishing reta
  const records=new Map(),auth={currentUser:{uid:'owner-a'}};const ref=path=>({collection:key=>ref(path+'/'+key),doc:key=>ref(path+'/'+key),async set(value){records.set(path,value);},async delete(){records.delete(path);}});const store=createCloudStore({auth,db:{collection:key=>ref(key)}}),buildId='a'.repeat(64);
  await store.saveWorking({resume:'Original working resume',buildId});await store.saveWorking({resume:'Updated working resume',buildId});assert.equal(records.size,1);assert.equal([...records.values()][0].content,'Updated working resume');await store.saveFinished({resume:'Finished resume',buildId,design:'modern',exportSettings:{fontSize:12}});assert.equal(records.size,1);assert.equal([...records.values()][0].finished,true);assert.equal([...records.values()][0].workspace.exportSettings.fontSize,12);
 });
+
+test('deleting one purchased design hides only that document and never recreates a fallback draft',()=>{
+ const build={id:'paid-build',status:'complete',createdAt:1,templates:['classic','modern'],deletedTemplates:['classic']};
+ assert.deepEqual(purchasedResumeItems([build]).map(r=>r.design),['modern']);
+ assert.deepEqual(purchasedResumeItems([{...build,deletedTemplates:['classic','modern']}]),[]);
+});

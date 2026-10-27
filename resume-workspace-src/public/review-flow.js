@@ -1,4 +1,4 @@
-import {occupation,validResumeMatches} from './interest-model.js?v=20261027-saved-careers';
+import {occupation,validResumeMatches} from './interest-model.js?v=20261027-career-fields';
 const $=id=>document.getElementById(id);
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text)n.textContent=text;if(cls)n.className=cls;return n;};
 

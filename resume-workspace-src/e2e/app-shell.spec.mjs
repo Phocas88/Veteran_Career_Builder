@@ -53,3 +53,12 @@ test('all seven menu options remain visible and tappable on a small phone',async
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.screenshot({path:'/tmp/vcp-ux-previews/virtual-cv-menu-phone.png'});
 });
+
+test('privacy and security is available before sign-in, from home and from settings without losing the workspace',async({page})=>{
+ await page.setViewportSize({width:360,height:800});await installAccount(page);await page.goto('/');await expect(page.locator('#welcome-dialog')).toBeVisible();
+ const [info]=await Promise.all([page.waitForEvent('popup'),page.locator('.welcome-privacy a').click()]);
+ await expect(info).toHaveURL(/\/security\.html$/);await expect(info.locator('h1')).toContainText('Your information.');await expect(info.locator('.trust-facts')).toBeVisible();await expect(info.locator('a[href*=server-side-encryption]')).toBeVisible();
+ await info.getByText('How I delete or export my information',{exact:true}).click();await expect(info.locator('details[open]')).toContainText('My resumes → Delete resume');await expect(info.locator('details[open]')).toContainText('Virtual CV → Unpublish');expect(await info.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await info.screenshot({path:'/tmp/vcp-ux-previews/privacy-security-phone.png',fullPage:true});await info.close();
+ await expect(page.locator('#welcome-dialog')).toBeVisible();await page.locator('#welcome-guest').click();await expect(page.locator('#home-privacy')).toBeVisible();expect(await page.evaluate(()=>window.__writes)).toEqual([]);
+ await page.locator('#app-settings').click();const [settingsInfo]=await Promise.all([page.waitForEvent('popup'),page.locator('#settings-security-link').click()]);await expect(settingsInfo.locator('h1')).toContainText('Your information.');await settingsInfo.close();await expect(page.locator('#settings-title')).toBeVisible();expect(await page.evaluate(()=>window.__writes)).toEqual([]);
+});

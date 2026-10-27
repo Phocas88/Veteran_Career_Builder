@@ -1,4 +1,4 @@
-import {normalizeAnswers} from './interest-model.js?v=20261027-careers';
+import {normalizeAnswers} from './interest-model.js?v=20261027-saved-careers';
 import {cvSlug} from './digital-cv-model.js?v=20261026-career-tools';
 import {normalizeProfileSetup} from './profile-steps.js?v=20261026-profile-setup';
 // Firebase rules remain the security boundary. Every operation derives its path

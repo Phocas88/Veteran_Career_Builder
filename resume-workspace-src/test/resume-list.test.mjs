@@ -14,3 +14,10 @@ test('deleting one purchased design hides only that document and never recreates
  assert.deepEqual(purchasedResumeItems([build]).map(r=>r.design),['modern']);
  assert.deepEqual(purchasedResumeItems([{...build,deletedTemplates:['classic','modern']}]),[]);
 });
+
+test('the server source-availability flag survives an older finished library copy',()=>{
+ const paid=purchasedResumeItems([{id:'paid-build',status:'complete',createdAt:1,templates:['classic'],hasSubmittedResume:true}]);const merged=mergeResumeItems([{id:paid[0].id,hasSubmittedResume:false,workspace:{resume:'Tailored result'}}],paid);assert.equal(merged[0].hasSubmittedResume,true);
+});
+test('workspace reset markers are owner scoped and ignore malformed timestamps',async()=>{
+ let uid='owner-a',path='',value=1000;const auth={get currentUser(){return {uid}}},ref=p=>({collection:k=>ref(p+'/'+k),doc:k=>ref(p+'/'+k),async get(){path=p;return {exists:true,data:()=>({resetAt:value})}}});const store=createCloudStore({auth,db:{collection:k=>ref(k)}});assert.equal(await store.workspaceReset(),1000);assert.equal(path,'profiles/owner-a/resumeProgram/workspaceState');value='bad';assert.equal(await store.workspaceReset(),0);uid='owner-b';await store.workspaceReset();assert.equal(path,'profiles/owner-b/resumeProgram/workspaceState');
+});

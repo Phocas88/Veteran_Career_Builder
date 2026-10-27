@@ -33,7 +33,7 @@ async function api(action,extra={},signal){
 let entryMode='edit',requestId=null,entryContext=null;
 const changed=()=>document.dispatchEvent(new Event('resume:payment-changed'));
 export const hasPaidBuild=()=>!!active?.verified;
-export const careerBuildContext=()=>active?.verified?{id:active.id,completed:!!active.review,bound:!!active.input,role:active.input?.role||'',jobDescription:active.input?.jobDescription||'',refinementCount:active.refinementCount||0,templates:active.templates||[],includedTemplate:active.includedTemplate||null,matches:active.careerMatches??active.review?.careerMatches}:null;
+export const careerBuildContext=()=>active?.verified?{id:active.id,completed:!!active.review,bound:!!active.input,role:active.input?.role||'',jobDescription:active.input?.jobDescription||'',refinementCount:active.refinementCount||0,templates:active.templates||[],includedTemplate:active.includedTemplate||null,matches:active.careerMatches,preliminaryMatches:active.review?.careerMatches}:null;
 export async function requestCareerAssessment(signal,source){
  if(source?.resumeId)return api('career-assess-saved',{resumeId:source.resumeId,consent:true,keepAlive:true},signal);
  const id=source?.buildId||active?.id;

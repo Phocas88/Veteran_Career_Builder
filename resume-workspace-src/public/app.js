@@ -1,15 +1,15 @@
-import {initAppResources} from './app-resources.js?v=20261027-career-fields';
+import {initAppResources} from './app-resources.js?v=20261027-whole-background';
 import {initResumeDelivery} from './resume-delivery.js?v=20261026-clear-journey';
-import {initReviewFlow} from './review-flow.js?v=20261027-career-fields';
+import {initReviewFlow} from './review-flow.js?v=20261027-whole-background';
 import {initDesignEditor} from './design-editor.js?v=20261026-clear-journey';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261026-clear-journey';
-import {showAppView} from './app-shell.js?v=20261027-career-fields';
-import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261027-career-fields';
+import {showAppView} from './app-shell.js?v=20261027-whole-background';
+import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261027-whole-background';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';
 import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js?v=20261027-resume-studio';
-import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext, canUseTemplate, finishTemplate } from './payments.js?v=20261027-career-fields';
+import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext, canUseTemplate, finishTemplate } from './payments.js?v=20261027-whole-background';
 
 const $ = id => document.getElementById(id);
 const input = $('resume-input');
@@ -127,7 +127,7 @@ function showError(message) {
 
 function saveDraft() {
   try {
-    if ($('remember-draft').checked) localStorage.setItem(storageKey, JSON.stringify({ ownerUid: draftOwnerId(), resume: input.value, role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails:detailsInput.value,design:document.querySelector('[name="resume-design"]:checked').value,arrangement:$('resume-arrangement').value,paper:$('resume-paper').value,exportSettings:designEditor?.getSettings(),reflow:$('reflow-lines').checked,pageBreaks:[...pageBreaks]}));
+    if ($('remember-draft').checked) localStorage.setItem(storageKey, JSON.stringify({ savedAt:Date.now(),ownerUid: draftOwnerId(), resume: input.value, role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails:detailsInput.value,design:document.querySelector('[name="resume-design"]:checked').value,arrangement:$('resume-arrangement').value,paper:$('resume-paper').value,exportSettings:designEditor?.getSettings(),reflow:$('reflow-lines').checked,pageBreaks:[...pageBreaks]}));
     else localStorage.removeItem(storageKey);
   } catch {
     $('remember-draft').checked = false;
@@ -639,8 +639,9 @@ initWorkspace({
   getDraft: currentDraft,
   showExport({ready=false}={}){setTab('export');delivery.show(ready,true);},
   downloadPdf(){$('download-pdf').click();},
-  restoreDeviceDraft(uid) {
+  restoreDeviceDraft(uid,resetAt=0) {
     try { const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+      if(saved?.ownerUid===uid&&resetAt&&(!Number.isSafeInteger(saved.savedAt)||saved.savedAt<=resetAt)){localStorage.removeItem(storageKey);this.clearAccountDraft();return;}
       if (saved?.ownerUid === uid && !input.value.trim()) { this.loadDraft(saved); $('remember-draft').checked = true; saveDraft(); }
     } catch { /* Ignore unavailable or malformed device copies. */ }
   },

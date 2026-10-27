@@ -1,15 +1,15 @@
-import {initAppResources} from './app-resources.js?v=20261026-guided-updates';
+import {initAppResources} from './app-resources.js?v=20261027-careers';
 import {initResumeDelivery} from './resume-delivery.js?v=20261026-clear-journey';
-import {initReviewFlow} from './review-flow.js?v=20261026-clear-journey';
+import {initReviewFlow} from './review-flow.js?v=20261027-careers';
 import {initDesignEditor} from './design-editor.js?v=20261026-clear-journey';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261026-clear-journey';
-import {showAppView} from './app-shell.js?v=20261026-guided-updates';
-import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261026-guided-updates';
+import {showAppView} from './app-shell.js?v=20261027-careers';
+import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261027-careers';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';
 import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js?v=20261027-resume-studio';
-import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext, canUseTemplate, finishTemplate } from './payments.js?v=20261026-career-tools';
+import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext, canUseTemplate, finishTemplate } from './payments.js?v=20261027-careers';
 
 const $ = id => document.getElementById(id);
 const input = $('resume-input');
@@ -263,7 +263,7 @@ function showReview(review, submittedSource) {
   listItems('rewrite-notes', notes);
   renderSuggestions();
   syncAnswerAction();
-  reviewFlow.refresh(review);
+  reviewFlow.refresh(review);document.dispatchEvent(new Event('resume:review-assessed'));
   setTab('review');
 }
 

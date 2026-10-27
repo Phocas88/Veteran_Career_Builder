@@ -3,14 +3,14 @@ import {initProfileImport} from './profile-import.js?v=20261026-guided-updates';
 import {createProfileStorage} from './profile-storage.js?v=20261030-visible-gallery';
 import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
 import {initProfileSetup} from './profile-setup.js?v=20261026-career-tools';
-import {showAppView} from './app-shell.js?v=20261026-guided-updates';
+import {showAppView} from './app-shell.js?v=20261027-careers';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261026-clear-journey';
 import { fillBackground, readBackground } from './background-form.js?v=20261026-career-tools';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261026-career-tools';
-import { initCareerTools } from './career-tools.js?v=20261026-guided-updates';
-import {initAppShell} from './app-shell.js?v=20261026-guided-updates';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261027-careers';
+import { initCareerTools } from './career-tools.js?v=20261027-careers';
+import {initAppShell} from './app-shell.js?v=20261027-careers';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261026-career-tools';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261026-career-tools';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261027-careers';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -187,6 +187,7 @@ export function initWorkspace(adapter) {
    user:()=>user,openAccount:()=>openAccount(),getProfile:readProfile,getDraft:()=>callback.getDraft(),
    applyProfile:profile=>{fillProfile(profile);profileDirty=true;profileStorage?.dirty();const select=document.querySelector('[data-profile-section]');select.value='roles';select.dispatchEvent(new Event('change'));},
    saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),
+   loadInterest:async()=>(await careerStore()).interest(),saveInterest:async value=>(await careerStore()).saveInterest(value),removeInterest:async()=>(await careerStore()).removeInterest(),
    loadProfile:()=>profileStorage.reload(),
    profileReady:()=>profileStorage.accountChanged(),
    saveFinished:saveFinishedResume,
@@ -314,8 +315,8 @@ export function initWorkspace(adapter) {
   $('export-account').addEventListener('click', async () => {
     try {
       if (!user) return; const version = accountVersion;
-      const [profile, resumes, applications, coverLetters, digitalCv] = await Promise.all([store.profile(), store.list(), store.jobs(), store.letters(), store.digitalCv()]); if (version !== accountVersion) return;
-      const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), profile, resumes, applications, coverLetters, digitalCv }, null, 2)], { type: 'application/json' });
+      const [profile, resumes, applications, coverLetters, digitalCv, careerInterests] = await Promise.all([store.profile(), store.list(), store.jobs(), store.letters(), store.digitalCv(), store.interest()]); if (version !== accountVersion) return;
+      const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), profile, resumes, applications, coverLetters, digitalCv, careerInterests }, null, 2)], { type: 'application/json' });
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'veteran-career-path-account.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
       status('Downloaded your profile, up to 50 resume versions, 100 applications and 100 cover letters. Contact support for a full account export.');
     } catch (error) { status(errorText(error)); }

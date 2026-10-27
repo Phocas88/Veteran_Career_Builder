@@ -1,3 +1,4 @@
+import {normalizeAnswers} from './interest-model.js?v=20261027-careers';
 import {cvSlug} from './digital-cv-model.js?v=20261026-career-tools';
 import {normalizeProfileSetup} from './profile-steps.js?v=20261026-profile-setup';
 // Firebase rules remain the security boundary. Every operation derives its path
@@ -36,6 +37,9 @@ export function createCloudStore({ db, auth }) {
   }
   function validId(id) {if(typeof id!=='string'||!/^[\w-]{1,160}$/.test(id))throw new Error('Choose a saved item.');return id;}
   return {
+    async interest() {const {uid,ref}=owner();const snap=await ref.collection('resumeProgram').doc('interests').get();assertOwner(uid);return snap.exists?{version:1,answers:normalizeAnswers(snap.data().answers)}:null;},
+    async saveInterest(value) {const {uid,ref}=owner();if(value?.version!==1||!Array.isArray(value.answers)||value.answers.length!==30||value.answers.some(a=>a!==null&&(!Number.isInteger(a)||a<0||a>4)))throw new Error('Choose valid interest responses before saving.');await ref.collection('resumeProgram').doc('interests').set({version:1,answers:[...value.answers],updatedAt:Date.now()});assertOwner(uid);},
+    async removeInterest() {const {uid,ref}=owner();await ref.collection('resumeProgram').doc('interests').delete();assertOwner(uid);},
     async digitalCv() {
       const {uid}=owner(),slug=await cvSlug(uid);assertOwner(uid);
       const snap=await db.collection('publicProfiles').doc(slug).get();assertOwner(uid);

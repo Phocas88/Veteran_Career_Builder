@@ -154,3 +154,20 @@ body.standalone-app .career-idea h3{font-size:19px;margin:0 0 12px}.career-idea>
 body.standalone-app[data-app-view=careers] .toast{display:none!important}#interest-more{margin:18px 0}#interest-save-area{scroll-margin-top:85px}
 
 #explore-resume-source{display:block;width:100%}#explore-resume-refresh{margin:6px 0 12px}#explore-source-caption{overflow-wrap:anywhere}
+
+/* Career fields remain compact until opened; each count describes real results. */
+body.standalone-app #interest-careers{display:block}
+.career-category{border:1px solid #383838;border-radius:10px;margin:12px 0;overflow:hidden;background:#101010}
+.career-category>summary{display:flex;align-items:center;gap:12px;min-height:58px;padding:16px;cursor:pointer;font-size:16px;font-weight:700;color:#fff;list-style:none}
+.career-category>summary::-webkit-details-marker{display:none}
+.career-category>summary::after{content:'+';color:#efc64b;font-size:24px;font-weight:400;flex:none}
+.career-category[open]>summary::after{content:'−'}
+.career-category>summary>span:first-child{flex:1;min-width:0}
+.career-category-count{border:1px solid #514a30;border-radius:20px;min-width:28px;text-align:center;padding:3px 7px;font-size:12px;color:#efc64b}
+.career-category[open]>summary{border-bottom:1px solid #303030}
+.career-category-items{padding:12px;display:grid;gap:12px}
+body.standalone-app .career-category-items .career-result{margin:0;padding:16px;background:#080808}
+.career-result-tools{margin:22px 0 12px}.career-result-tools .career-actions{margin:6px 0}.career-result-tools .field-hint{margin:0}
+.career-next-steps{border-left:3px solid #efc64b;padding:4px 0 4px 16px;margin:24px 0}.career-next-steps h3{font-size:18px}.career-next-steps ul{padding-left:18px}.career-next-steps li{margin:12px 0;font-size:14px;line-height:1.6}
+.resume-delete{color:#f0a8a8!important}.resume-delete:disabled{opacity:.6}
+@media(min-width:800px){.career-category-items{grid-template-columns:repeat(2,minmax(0,1fr))}}

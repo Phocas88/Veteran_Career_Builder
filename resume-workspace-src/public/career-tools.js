@@ -1,14 +1,14 @@
-import {initCareerExplorer} from './career-explorer.js?v=20261027-saved-careers';
+import {initCareerExplorer} from './career-explorer.js?v=20261027-career-fields';
 import {initApplicationImport} from './application-import.js?v=20261026-career-tools';
 import {designs} from './resume-designs.js?v=20261027-resume-studio';
-import {initDigitalCv} from './digital-cv.js?v=20261027-saved-careers';
+import {initDigitalCv} from './digital-cv.js?v=20261027-career-fields';
 import {selectProfileSection} from './background-form.js?v=20261026-career-tools';
 import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261025-standalone-app';
-import { savedResumeToDraft } from './cloud-store.js?v=20261027-saved-careers';
-import { careerBuildContext, requestCareerKit } from './payments.js?v=20261027-saved-careers';
+import { savedResumeToDraft } from './cloud-store.js?v=20261027-career-fields';
+import { careerBuildContext, requestCareerKit } from './payments.js?v=20261027-career-fields';
 import { exportLetter } from './letter-exports.js?v=20261025-standalone-app';
 import {initServiceLibrary} from './service-library.js?v=20261026-career-tools';
-import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261027-saved-careers';
+import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261027-career-fields';
 
 const $=id=>document.getElementById(id);
 const node=(tag,content,className)=>{const el=document.createElement(tag);if(content)el.textContent=content;if(className)el.className=className;return el;};
@@ -102,8 +102,13 @@ export function initCareerTools(api){
     actions.append(button('Assess careers',async()=>{open('careers');await careerExplorer.useSource(item);}));
     const more=node('details',null,'resume-more'),summary=node('summary','More options');more.append(summary);
     if(!item.purchased||item.content)more.append(button('Compare text',()=>{$('career-current-text').value=api.getDraft().resume;$('career-version-text').value=savedResumeToDraft(item).resume;$('career-version-comparison').hidden=false;$('career-version-comparison').open=true;}));
-    if(!item.purchased)more.append(button('Delete saved copy',async()=>{if(!confirm('Delete this saved version? Purchased results remain in your account.'))return;await api.removeVersion(item.id);await refresh();status('Saved version deleted.');}));
-    else more.append(button('Purchase & recovery details',()=>api.openPurchases()));
+    if(item.purchased)more.append(button('Purchase & recovery details',()=>api.openPurchases()));
+    const remove=button('Delete resume',async()=>{
+     const note=item.finished&&(item.buildId||item.workspace?.buildId)?'Delete this saved template and its career matches? Other templates, the submitted resume, and the payment receipt remain in purchase history. Your profile and Virtual CV are unchanged.':item.purchased?'Delete this resume build, its submitted text, review, and saved copies? The payment receipt is kept; this does not issue a refund. Your profile and Virtual CV are unchanged.':'Delete this saved resume and its career matches? Your profile, Virtual CV, and other saved documents are unchanged.';
+     if(!confirm(note))return;const owner=api.user()?.uid;remove.disabled=true;remove.textContent='Deleting…';
+     try{await api.removeVersion(item);if(owner!==api.user()?.uid)return;await refresh();status('Resume deleted from My resumes.');}
+     finally{remove.disabled=false;remove.textContent='Delete resume';}
+    });remove.classList.add('resume-delete');actions.append(remove);
     row.append(actions,more);section.append(row);
    }return section;
   }));updateVersionOptions();

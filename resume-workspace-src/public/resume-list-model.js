@@ -4,7 +4,7 @@ export function purchasedResumeItems(builds=[]){
  return builds.flatMap(build=>{
   if(!build||!['paid','complete','running'].includes(build.status))return [];
   const designs=Array.isArray(build.templates)?build.templates:[];
-  if(designs.length)return designs.map(design=>({id:'finished-'+build.id+'-'+design,familyId:build.id,title:'My resume',createdAt:new Date(build.createdAt).toISOString(),finished:true,purchased:true,buildId:build.id,design,workspace:{buildId:build.id,design}}));
+  if(designs.length)return designs.filter(design=>!(build.deletedTemplates||[]).includes(design)).map(design=>({id:'finished-'+build.id+'-'+design,familyId:build.id,title:'My resume',createdAt:new Date(build.createdAt).toISOString(),finished:true,purchased:true,buildId:build.id,design,workspace:{buildId:build.id,design}}));
   return [{id:'draft-'+build.id,familyId:build.id,title:'Resume build',createdAt:new Date(build.createdAt).toISOString(),purchased:true,buildId:build.id,stage:build.status==='complete'?'review':'draft',workspace:{buildId:build.id}}];
  });
 }

@@ -1,16 +1,16 @@
-import {purchasedResumeItems,mergeResumeItems} from './resume-list-model.js?v=20261026-clear-journey';
+import {purchasedResumeItems,mergeResumeItems} from './resume-list-model.js?v=20261027-career-fields';
 import {initProfileImport} from './profile-import.js?v=20261026-guided-updates';
 import {createProfileStorage} from './profile-storage.js?v=20261030-visible-gallery';
 import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
 import {initProfileSetup} from './profile-setup.js?v=20261026-career-tools';
-import {showAppView} from './app-shell.js?v=20261027-saved-careers';
+import {showAppView} from './app-shell.js?v=20261027-career-fields';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261026-clear-journey';
 import { fillBackground, readBackground } from './background-form.js?v=20261026-career-tools';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261027-saved-careers';
-import { initCareerTools } from './career-tools.js?v=20261027-saved-careers';
-import {initAppShell} from './app-shell.js?v=20261027-saved-careers';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, deletePurchasedResume, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261027-career-fields';
+import { initCareerTools } from './career-tools.js?v=20261027-career-fields';
+import {initAppShell} from './app-shell.js?v=20261027-career-fields';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261026-career-tools';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261027-saved-careers';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261027-career-fields';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -205,7 +205,14 @@ export function initWorkspace(adapter) {
    resolveVersion:async item=>item.finished&&(item.buildId||item.workspace?.buildId)?readPurchasedResume(item.buildId||item.workspace.buildId,item.design||item.workspace.design):savedResumeToDraft(item),
    downloadVersion:async item=>{if(await openSavedVersion(item)!==false)callback.downloadPdf();},
    saveVersion:async title=>{const s=await careerStore(true);const item=await s.save(callback.getDraft(),title);callback.markVersion(item);await refreshSaved();return item;},
-   openVersion:openSavedVersion,removeVersion:async id=>(await careerStore()).remove(id),
+   openVersion:openSavedVersion,removeVersion:async item=>{
+    const uid=user?.uid,version=accountVersion,s=await careerStore();
+    if(uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Open My resumes again.');
+    if(item.purchased||item.finished&&(item.buildId||item.workspace?.buildId))await deletePurchasedResume(item);
+    else await s.remove(item.id);
+    if(uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Open My resumes again.');
+    await refreshSaved();document.dispatchEvent(new Event('resume:library-changed'));
+   },
    listJobs:async options=>(await careerStore()).jobs(options),saveJob:async(job,id)=>(await careerStore(true)).saveJob(job,id),removeJob:async id=>(await careerStore()).removeJob(id),
    listLetters:async()=>(await careerStore()).letters(),saveLetter:async(id,content,title)=>(await careerStore(true)).saveLetter(id,content,title),removeLetter:async id=>(await careerStore()).removeLetter(id),
    chooseJob:async job=>{

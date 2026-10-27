@@ -1,0 +1,21 @@
+name: Inspect authorized app account
+on:
+  push:
+    branches: [codex/authorized-resume-reset-20261027]
+    paths: ['scripts/inspect-authorized-app-account.cjs', '.github/workflows/authorized-app-account.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm install --prefix /tmp/vcp-reset --no-audit --no-fund firebase-admin@13.0.0
+      - name: Verify app account identity without changing data
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node scripts/inspect-authorized-app-account.cjs

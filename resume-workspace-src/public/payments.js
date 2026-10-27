@@ -33,7 +33,13 @@ async function api(action,extra={},signal){
 let entryMode='edit',requestId=null,entryContext=null;
 const changed=()=>document.dispatchEvent(new Event('resume:payment-changed'));
 export const hasPaidBuild=()=>!!active?.verified;
-export const careerBuildContext=()=>active?.verified?{id:active.id,completed:!!active.review,bound:!!active.input,role:active.input?.role||'',jobDescription:active.input?.jobDescription||'',refinementCount:active.refinementCount||0,templates:active.templates||[],includedTemplate:active.includedTemplate||null}:null;
+export const careerBuildContext=()=>active?.verified?{id:active.id,completed:!!active.review,bound:!!active.input,role:active.input?.role||'',jobDescription:active.input?.jobDescription||'',refinementCount:active.refinementCount||0,templates:active.templates||[],includedTemplate:active.includedTemplate||null,matches:active.review?.careerMatches??active.careerMatches}:null;
+export async function requestCareerAssessment(signal){
+ if(!active?.verified)throw new Error('Open a purchased resume first.');
+ const id=active.id,result=await api('career-assess',{buildId:id,consent:true,keepAlive:true},signal);
+ if(active?.id!==id)throw new Error('Another resume was opened. Open the assessed purchase to see its careers.');
+ active={...active,careerMatches:result.matches};changed();return result;
+}
 export async function requestCareerKit(signal){
  if(!active?.verified||!active.review)throw new Error('Open a completed resume build from purchase history first.');
  const result=await api('career',{buildId:active.id,consent:true,keepAlive:true},signal);return result.kit;

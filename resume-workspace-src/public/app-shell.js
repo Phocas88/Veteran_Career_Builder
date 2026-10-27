@@ -1,5 +1,5 @@
 const $=id=>document.getElementById(id);
-const careerViews=new Set(['profile','applications','library','versions','match','skills','letter','digital-cv']);
+const careerViews=new Set(['profile','applications','library','versions','match','skills','letter','digital-cv','careers']);
 let view='home',config;
 let noticeTimer;
 let replaying=false;

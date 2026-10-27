@@ -1,3 +1,4 @@
+import {occupation,validResumeMatches} from './interest-model.js?v=20261027-careers';
 const $=id=>document.getElementById(id);
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text)n.textContent=text;if(cls)n.className=cls;return n;};
 
@@ -7,6 +8,7 @@ export function initReviewFlow(api){
  let stage='draft',index=0;
  const root=$('review-results'),nav=el('nav',null,'review-task-nav');nav.setAttribute('aria-label','Review steps');
  for(const [key,text]of [['draft','Revised resume'],['details','Questions · optional']]){const b=el('button',text);b.type='button';b.dataset.reviewStage=key;b.onclick=()=>show(key);nav.append(b);}
+ const careerButton=el('button','Career matches');careerButton.type='button';careerButton.onclick=()=>{document.dispatchEvent(new Event('careers:show-resume'));document.dispatchEvent(new CustomEvent('app:open-career',{detail:'careers'}));};careerButton.id='review-explore-careers';careerButton.className='text-button';
  const finish=el('button','Continue to design →');finish.type='button';finish.dataset.reviewFinish='true';finish.onclick=()=>api.finish();nav.append(finish);
  const title=el('h2','Review your revised resume');title.id='review-task-title';title.tabIndex=-1;
  const intro=el('p','Check the draft first. Add optional details if something is missing, then choose a design.','review-task-intro');
@@ -29,7 +31,7 @@ export function initReviewFlow(api){
  const current=el('button','Keep my current resume & choose a design →','text-button');current.type='button';current.id='review-keep-current';current.onclick=()=>api.finish(false);
  draftActions.append(ask,current);
  const oldActions=root.querySelector('.results-actions');oldActions?.remove();
- draft.append($('rewrite-card'),draftActions,notes);root.replaceChildren(nav,title,intro,draft,details);
+ const careerSummary=el('section',null,'review-career-summary');careerSummary.id='review-career-summary';draft.append(careerSummary,$('rewrite-card'),draftActions,notes);root.replaceChildren(nav,title,intro,draft,details);
  function questions(){return [...$('review-findings').children,...$('next-steps').children];}
  function renderQuestion(focus=false){
   const all=questions();index=Math.max(0,Math.min(index,all.length));
@@ -45,5 +47,5 @@ export function initReviewFlow(api){
  }
  function show(value,focus=true){stage=value;draft.hidden=value!=='draft';details.hidden=value!=='details';for(const b of nav.querySelectorAll('[data-review-stage]'))b.setAttribute('aria-current',b.dataset.reviewStage===value?'step':'false');title.textContent=value==='draft'?'Review your revised resume':'Add details only you can provide';intro.hidden=value==='details';renderQuestion();if(focus){title.focus({preventScroll:true});root.scrollIntoView({block:'start',behavior:'instant'});}}
  root.addEventListener('input',()=>renderQuestion());
- return {refresh(review){index=0;ask.textContent=`Something missing? Answer ${questions().length} follow-up ${questions().length===1?'question':'questions'}`;intro.textContent=review.refinementCount?'Your answers have been incorporated. Check the updated draft, then use it for your download.':'Check the draft first. Add optional details if something is missing, then choose a design.';notes.open=!review.revisedResume;show('draft',false);},reset(){index=0;notes.open=false;show('draft',false);},show,get stage(){return stage;}};
+ return {refresh(review){const matches=validResumeMatches(review.careerMatches);careerSummary.replaceChildren();careerSummary.hidden=false;careerSummary.append(el('h3',matches.length?'Career ideas from your resume':'Explore your career options'));if(matches.length){const list=el('ul');list.append(...matches.slice(0,5).map(m=>el('li',occupation(m.code).title)));careerSummary.append(list);}else careerSummary.append(el('p','Open Career explorer for resume-based ideas and the optional interest check.'));careerButton.textContent=matches.length?'See career evidence & requirements →':'Open Career explorer →';careerSummary.append(careerButton);index=0;ask.textContent=`Something missing? Answer ${questions().length} follow-up ${questions().length===1?'question':'questions'}`;intro.textContent=review.refinementCount?'Your answers have been incorporated. Check the updated draft, then use it for your download.':'Check the draft first. Add optional details if something is missing, then choose a design.';notes.open=!review.revisedResume;show('draft',false);},reset(){careerSummary.replaceChildren();careerSummary.hidden=true;careerButton.textContent='Career matches';index=0;notes.open=false;show('draft',false);},show,get stage(){return stage;}};
 }

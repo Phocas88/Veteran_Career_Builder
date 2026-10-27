@@ -37,7 +37,7 @@ test('My resumes provides a direct career assessment action for a previously bui
 test('many interest careers are grouped, collapsible and searchable without losing the result set',async({page})=>{
  await installAccount(page,'registered');await page.goto('/');await interests(page);await page.locator('#interest-start').click();await answer(page);
  const groups=page.locator('#interest-careers > .career-category');expect(await groups.count()).toBeGreaterThan(3);expect(await page.locator('#interest-careers .career-idea').count()).toBeGreaterThan(20);
- await expect(page.locator('#interest-next-steps')).toContainText('supervised workshop');await page.locator('#interest-careers-collapse').click();expect(await groups.evaluateAll(nodes=>nodes.every(n=>!n.open))).toBe(true);
+ await expect(page.locator('#interest-next-steps')).toContainText('supervised workshop');await expect(page.locator('#interest-next-steps-list li')).toHaveCount(1);await expect(page.locator('#interest-next-steps')).not.toContainText('Investigating:');await page.locator('#interest-careers-collapse').click();expect(await groups.evaluateAll(nodes=>nodes.every(n=>!n.open))).toBe(true);
  await groups.first().locator(':scope > summary').click();expect(await groups.first().evaluate(n=>n.open)).toBe(true);
  await page.locator('#interest-careers-expand').click();expect(await groups.evaluateAll(nodes=>nodes.every(n=>n.open))).toBe(true);
  await page.locator('#interest-careers-filter').fill('aircraft');await expect(page.locator('#interest-careers .career-idea')).toHaveCount(2);await expect(page.locator('#interest-careers')).toContainText('Aircraft maintenance technician');await expect(page.locator('#interest-careers')).toContainText('Commercial pilot');

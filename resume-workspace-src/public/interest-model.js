@@ -77,3 +77,8 @@ export function groupCareers(values,{search=''}={}){
  }
  return [...groups.values()];
 }
+
+export function interestActions(value){
+ const result=scoreAssessment(value);if(result.flat||result.low)return [];
+ return result.areas.filter(area=>area.score>5).slice(0,2).map(area=>({...area,nextStep:nextSteps[area.key]}));
+}

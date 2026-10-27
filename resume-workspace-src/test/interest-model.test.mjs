@@ -24,3 +24,10 @@ test('earlier answers retain their question version rather than being silently a
  const db={collection:path=>({doc:id=>({collection:name=>({doc:key=>({get:async()=>({exists:true,data:()=>records[path+'/'+id+'/'+name+'/'+key]})})})})})};
  const store=createCloudStore({auth:{currentUser:{uid:'owner'}},db});assert.equal((await store.interest()).version,1);assert.equal(records['profiles/owner/resumeProgram/interests'].version,1);
 });
+
+test('next steps reflect expressed interests and never recommend a disliked, flat or uniformly low area',async()=>{
+ const {interestActions}=await import('../public/interest-model.js');
+ const handsOn=questions.map(q=>q.area==='R'?4:0);assert.deepEqual(interestActions(handsOn).map(a=>a.key),['R']);
+ assert.deepEqual(interestActions(Array(30).fill(2)),[]);assert.deepEqual(interestActions(Array(30).fill(1)),[]);
+ const mixed=questions.map(q=>q.area==='E'?4:q.area==='C'?3:0);assert.deepEqual(interestActions(mixed).map(a=>a.key),['E','C']);
+});

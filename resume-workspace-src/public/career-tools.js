@@ -1,14 +1,14 @@
-import {initCareerExplorer} from './career-explorer.js?v=20261027-careers';
+import {initCareerExplorer} from './career-explorer.js?v=20261027-saved-careers';
 import {initApplicationImport} from './application-import.js?v=20261026-career-tools';
 import {designs} from './resume-designs.js?v=20261027-resume-studio';
-import {initDigitalCv} from './digital-cv.js?v=20261027-careers';
+import {initDigitalCv} from './digital-cv.js?v=20261027-saved-careers';
 import {selectProfileSection} from './background-form.js?v=20261026-career-tools';
 import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261025-standalone-app';
-import { savedResumeToDraft } from './cloud-store.js?v=20261027-careers';
-import { careerBuildContext, requestCareerKit } from './payments.js?v=20261027-careers';
+import { savedResumeToDraft } from './cloud-store.js?v=20261027-saved-careers';
+import { careerBuildContext, requestCareerKit } from './payments.js?v=20261027-saved-careers';
 import { exportLetter } from './letter-exports.js?v=20261025-standalone-app';
 import {initServiceLibrary} from './service-library.js?v=20261026-career-tools';
-import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261027-careers';
+import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261027-saved-careers';
 
 const $=id=>document.getElementById(id);
 const node=(tag,content,className)=>{const el=document.createElement(tag);if(content)el.textContent=content;if(className)el.className=className;return el;};
@@ -99,6 +99,7 @@ export function initCareerTools(api){
     const actions=node('div',null,'career-actions');
     if(item.finished){const download=button('Download PDF',async()=>{await api.downloadVersion(item);});download.className='button button-primary';actions.append(download);}
     actions.append(button(item.finished?'Open finished resume':item.stage==='review'?'Continue to design':'Continue editing',async()=>{await api.openVersion(item);}));if(item.finished||item.workspace?.resume)actions.append(button('Update digital CV',async()=>{const owner=api.user()?.uid;const draft=await api.resolveVersion(item);if(owner!==api.user()?.uid)return;open('digital-cv');await digitalCv.useResume(draft.resume,item.title||'Saved resume');}));
+    actions.append(button('Assess careers',async()=>{open('careers');await careerExplorer.useSource(item);}));
     const more=node('details',null,'resume-more'),summary=node('summary','More options');more.append(summary);
     if(!item.purchased||item.content)more.append(button('Compare text',()=>{$('career-current-text').value=api.getDraft().resume;$('career-version-text').value=savedResumeToDraft(item).resume;$('career-version-comparison').hidden=false;$('career-version-comparison').open=true;}));
     if(!item.purchased)more.append(button('Delete saved copy',async()=>{if(!confirm('Delete this saved version? Purchased results remain in your account.'))return;await api.removeVersion(item.id);await refresh();status('Saved version deleted.');}));

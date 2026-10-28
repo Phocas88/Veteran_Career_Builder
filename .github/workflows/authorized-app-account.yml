@@ -1,4 +1,4 @@
-name: Verify live full-background careers
+name: Reset authorized app resumes and verify careers
 on:
   push:
     branches: [codex/authorized-resume-reset-20261027]
@@ -19,6 +19,10 @@ jobs:
       - name: Verify owner-scoped reset logic with fictional accounts
         run: node --test scripts/app-account-maintenance/cleanup.test.cjs
       - run: npm install --prefix /tmp/vcp-reset --no-audit --no-fund firebase-admin@13.0.0
+      - name: Reset only the previously verified owner's app resume data
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node scripts/app-account-maintenance/execute.cjs
       - name: Verify live career breadth using a disposable fictional account
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

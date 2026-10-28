@@ -12,5 +12,6 @@ const uid='EB2pJNb1p7Ra33HHlchA6V0qdM72',slug='vcp-resume-815b82f2047852dc5a96e5
  admin.initializeApp({credential:admin.credential.cert(credentials),projectId:credentials.project_id});
  const user=await admin.auth().getUser(uid);if(!user.email)throw new Error('The previously verified account no longer has a login email.');
  const result=await resetAppResumes({db:admin.firestore(),uid,slug});
- await admin.auth().getUser(uid);console.log('APP_RESET_VERIFIED '+JSON.stringify({...result,signInPreserved:true}));await admin.app().delete();
+ await admin.auth().getUser(uid);console.log('APP_RESET_VERIFIED '+JSON.stringify({...result,signInPreserved:true}));
+ const response=await fetch('https://profiles.veterancareerpath.com/veteran/'+slug+'?reset='+result.resetAt,{headers:{'Cache-Control':'no-cache'},signal:AbortSignal.timeout(20000)});if(response.status!==404)throw new Error('The removed public CV has not yet returned 404.');console.log('PUBLIC_CV_REMOVAL_VERIFIED HTTP 404');await admin.app().delete();
 })().catch(error=>{console.error('Authorized app reset could not finish. Code: '+(error.code||error.message));process.exitCode=1;});

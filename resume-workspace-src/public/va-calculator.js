@@ -8,7 +8,7 @@ const typeNames={unspecified:'Type not specified',primary:'Primary',secondary:'S
 
 export function initVaCalculator(){
  const form=$('va-form'),editor=$('va-condition-editor'),preset=$('va-condition-preset');
- let conditions=[],editing=null,sequence=0,step=1,lastEstimate=null;
+ let conditions=[],editing=null,sequence=0,step=1,lastEstimate=null,exportGeneration=0;
  const focus=id=>{const n=$(id);n.focus({preventScroll:true});n.scrollIntoView({block:'start',behavior:'instant'});};
  for(const item of CONDITION_CATEGORIES)$('va-condition-category').add(new Option(item.label,item.id));
  for(const id of ['va-condition-rating','va-official'])for(let n=0;n<=100;n+=10)$(id).add(new Option(n+'%',String(n)));
@@ -139,10 +139,39 @@ export function initVaCalculator(){
    $('va-math-details').hidden=combined.official;$('va-print-status').textContent='';showStep(3,{moveFocus});return true;
   }catch(e){error(e.message);return false;}
  }
+ async function downloadEstimate(){
+  if(!lastEstimate)return;
+  const button=$('va-download-pdf'),generation=exportGeneration,snapshot=lastEstimate;
+  const detail=Array.from($('va-input-summary').querySelectorAll('li')).map(item=>item.textContent);
+  const content=[
+   {text:'Veteran Career Path · VCP Resume',fontSize:10,color:'#555555'},
+   {text:'VA compensation estimate',fontSize:22,bold:true,margin:[0,12,0,8]},
+   {text:rateYear(snapshot.result.year).label,fontSize:13,bold:true,margin:[0,0,0,18]},
+   {text:'Combined rating: '+snapshot.combined.rating+'%',margin:[0,0,0,8]},
+   {text:money(snapshot.result.monthly)+' / month',fontSize:19,bold:true},
+   {text:money(snapshot.result.annual)+' / year',margin:[0,4,0,12]},
+   {text:$('va-pay-basis').textContent,margin:[0,0,0,12]},
+  ];
+  if(snapshot.result.projected)content.push({text:$('va-cola-comparison').textContent,margin:[0,0,0,14]});
+  content.push({text:'Monthly payment breakdown',fontSize:14,bold:true,margin:[0,14,0,8]},...snapshot.result.breakdown.map(item=>({text:item.label+': '+money(item.amount),margin:[0,0,0,6]})),{text:'Conditions & family details used',fontSize:14,bold:true,margin:[0,16,0,8]},{ul:detail,margin:[0,0,0,14]});
+  if(!snapshot.combined.official)content.push({text:'Combined-rating math',fontSize:14,bold:true,margin:[0,12,0,8]},{ol:Array.from($('va-math').children).map(item=>item.textContent),margin:[0,0,0,14]});
+  content.push({text:snapshot.result.projected?'2027 projection: each 2026 VA table amount is multiplied by 1.036 and rounded to cents. VA has not yet published 2027 dollar tables. Final figures and rounding may differ.':'Published 2026 VA rates, effective December 1, 2025.',margin:[0,14,0,10]},{text:$('calculator-panel').querySelector('.va-footer p').textContent,fontSize:9,margin:[0,0,0,12]},{text:'Sources checked October 28, 2026',fontSize:11,bold:true,margin:[0,12,0,8]},...Array.from(document.querySelectorAll('.va-year-panel a')).map(link=>({text:link.href,link:link.href,fontSize:9,margin:[0,0,0,8]})));
+  button.disabled=true;button.textContent='Preparing PDF…';$('va-print-status').textContent='Preparing your estimate as a PDF on this device.';
+  try{
+   const {pdfMake}=await import('./vendor/pdf-export.mjs');
+   const blob=await pdfMake.createPdf({pageSize:'LETTER',pageMargins:[48,48,48,48],defaultStyle:{font:'Roboto',fontSize:11,lineHeight:1.3},info:{title:'VA compensation estimate',author:'Veteran Career Path'},content}).getBlob();
+   if(generation!==exportGeneration||!lastEstimate)return;
+   const link=node('a');link.href=URL.createObjectURL(blob);link.download='vcp-va-estimate-'+snapshot.result.year+'.pdf';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),60000);
+   $('va-print-status').textContent='PDF downloaded. Check your device’s downloads.';
+  }catch{
+   if(generation===exportGeneration)$('va-print-status').textContent='The PDF could not be prepared. Try again, or use Print to open a printer view.';
+  }finally{if(generation===exportGeneration){button.disabled=false;button.textContent='Download PDF';}}
+ }
  function printEstimate(){
   if(!lastEstimate)return;
   const popup=window.open('','_blank');
-  if(!popup){$('va-print-status').textContent='Your browser blocked the print window. Allow pop-ups for this site, then press Print / save PDF again.';return;}
+  if(!popup){$('va-print-status').textContent='Your browser blocked the print window. Use Download PDF, or allow pop-ups to print.';return;}
+  if(typeof popup.print!=='function'){popup.close();$('va-print-status').textContent='Printing is not available in this browser. Use Download PDF to save your estimate.';return;}
   // Build with text nodes so a manually entered condition can never become HTML.
   const d=popup.document;d.title='VA compensation estimate';const style=d.createElement('style');
   style.textContent='body{font:12pt Arial,sans-serif;color:#111;background:#fff;max-width:800px;margin:32px auto;padding:0 22px;line-height:1.6}h1{font-size:24pt}h2{font-size:17pt;margin-top:24px}li{margin:8px 0}a{overflow-wrap:anywhere;color:#111}@media print{button{display:none}@page{margin:18mm}}';d.head.append(style);
@@ -161,7 +190,7 @@ export function initVaCalculator(){
   $('va-print-status').textContent='Print view opened. Choose a printer or Save as PDF in your browser.';
  }
  function reset(){
-  conditions=[];editing=null;sequence=0;lastEstimate=null;form.reset();$('va-rate-year').value='2027';
+  conditions=[];editing=null;sequence=0;lastEstimate=null;exportGeneration++;$('va-download-pdf').disabled=false;$('va-download-pdf').textContent='Download PDF';form.reset();$('va-rate-year').value='2027';
   $('va-condition-category').value='';resetEditor();setEditor(true,{moveFocus:false});renderConditions();
   $('va-condition-status').textContent='';$('va-spouse-aa-wrap').hidden=true;$('va-individual').hidden=false;$('va-official-wrap').hidden=true;
   $('va-extra-awards').open=false;$('va-print-status').textContent='';
@@ -181,6 +210,6 @@ export function initVaCalculator(){
  form.addEventListener('input',clearErrors);
  $('va-next-family').onclick=nextFamily;$('va-back-conditions').onclick=()=>showStep(1);$('va-edit-conditions').onclick=()=>showStep(1);$('va-edit-family').onclick=()=>showStep(2);
  form.onsubmit=event=>{event.preventDefault();if(step===1){if(!editor.hidden&&$('va-rating-mode').value==='individual')addCondition();else nextFamily();}else calculate();};
- $('va-print').onclick=printEstimate;$('va-clear').onclick=()=>{reset();focus('va-conditions-title');};
+ $('va-download-pdf').onclick=downloadEstimate;$('va-print').onclick=printEstimate;$('va-clear').onclick=()=>{reset();focus('va-conditions-title');};
  document.addEventListener('app:account-cleared',reset);reset();
 }

@@ -45,7 +45,7 @@ export function initVaCalculator(){
   if(selected){
    $('va-condition-info-name').textContent=selected.name;$('va-condition-description').textContent=selected.description;
    $('va-condition-evaluation').textContent=selected.evaluation;$('va-condition-source').href=selected.source;
-  }
+  }else{for(const id of ['va-condition-info-name','va-condition-description','va-condition-evaluation'])$(id).textContent='';$('va-condition-source').removeAttribute('href');}
  }
  function resetEditor(){
   editing=null;$('va-condition-search').value='';$('va-condition-name').value='';$('va-condition-rating').value='';$('va-condition-type').value='unspecified';
@@ -164,7 +164,9 @@ export function initVaCalculator(){
   conditions=[];editing=null;sequence=0;lastEstimate=null;form.reset();$('va-rate-year').value='2027';
   $('va-condition-category').value='';resetEditor();setEditor(true,{moveFocus:false});renderConditions();
   $('va-condition-status').textContent='';$('va-spouse-aa-wrap').hidden=true;$('va-individual').hidden=false;$('va-official-wrap').hidden=true;
-  $('va-extra-awards').open=false;$('va-print-status').textContent='';rateNotice();showStep(1,{moveFocus:false});
+  $('va-extra-awards').open=false;$('va-print-status').textContent='';
+  for(const id of ['va-combined-result','va-pay-result','va-annual-result','va-result-year','va-pay-basis','va-cola-comparison','va-breakdown','va-input-summary','va-math'])$(id).replaceChildren();
+  rateNotice();showStep(1,{moveFocus:false});
  }
  $('va-rate-year').onchange=()=>{rateNotice();if(step===3)calculate({moveFocus:false});};
  $('va-condition-category').onchange=()=>{clearErrors();$('va-condition-search').value='';$('va-condition-name').value='';fillPresets();};

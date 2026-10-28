@@ -1,7 +1,7 @@
 import {navigateApp} from './helpers/workspace.mjs';
 import {confirmCvSections} from './helpers/workspace.mjs';
 import {test,expect} from '@playwright/test';
-import {mkdir} from 'node:fs/promises';
+import {mkdir,readFile} from 'node:fs/promises';
 import {installAccount} from './helpers/workspace.mjs';
 const shots='/tmp/vcp-ux-previews';
 async function shot(page,name){await mkdir(shots,{recursive:true});await page.screenshot({path:shots+'/'+name+'.png',fullPage:true});}
@@ -54,4 +54,8 @@ test('older applications remain reachable and CSV duplicates are checked beyond 
 
 test('account clearing removes calculator entries, prior results and displayed descriptions',async({page})=>{
  await installAccount(page,'guest');await page.goto('/');await page.locator('#home-va-calculator').click();await addVaCondition(page,'PTSD',50);await page.locator('#va-next-family').click();await page.locator('#va-children').fill('2');await page.locator('#va-form button[type=submit]').click();await expect(page.locator('#va-input-summary')).toContainText('PTSD');await page.evaluate(()=>document.dispatchEvent(new Event('app:account-cleared')));await expect(page.locator('#va-rating-rows')).toBeEmpty();await expect(page.locator('#va-input-summary')).toBeEmpty();await expect(page.locator('#va-condition-description')).toBeEmpty();await expect(page.locator('#va-children')).toHaveValue('0');await expect(page.locator('#va-step-conditions')).toBeVisible();await expect(page.locator('#va-result')).toBeHidden();
+});
+
+test('VA estimates download a real PDF directly on a phone without sending calculator input anywhere',async({page})=>{
+ await installAccount(page,'guest');const actions=[];page.on('request',request=>{if(request.url().includes('/api/claude'))actions.push(request.postDataJSON().action);});await page.goto('/');await page.locator('#home-va-calculator').click();await page.locator('#va-rating-mode').selectOption('official');await page.locator('#va-official').selectOption('70');await page.locator('#va-next-family').click();await page.locator('#va-form button[type=submit]').click();const waiting=page.waitForEvent('download');await page.locator('#va-download-pdf').click();const download=await waiting;expect(download.suggestedFilename()).toBe('vcp-va-estimate-2027.pdf');const data=await readFile(await download.path());expect(data.subarray(0,5).toString()).toBe('%PDF-');expect(data.length).toBeGreaterThan(4000);await expect(page.locator('#va-print-status')).toContainText('PDF downloaded');await expect(page.locator('#va-download-pdf')).toBeEnabled();expect(await page.evaluate(()=>window.__writes)).toEqual([]);expect(actions.filter(action=>action!=='list')).toEqual([]);
 });

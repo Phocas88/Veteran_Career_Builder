@@ -15,6 +15,6 @@ When VA publishes its 2027 dollar tables, replace the projection with explicit v
 
 Common-condition names come from the main VCP calculator. The app adds searchable categories and plain-language descriptions, not automatic medical ratings. All percentages must be supplied by the user. Unlisted conditions can be entered manually. Condition type describes the user's recorded connection; it does not alter the rating math or establish eligibility. Do not infer awards or eligibility from a condition name.
 
-Calculator state stays in memory in its current tab. No medical entries go to Firebase, AI, analytics, browser persistent storage, or resume/profile records. An explicit print action opens a local document, created with text nodes, for the browser's print/save-PDF menu. Account clearing resets all calculator inputs.
+Calculator state stays in memory in its current tab. No medical entries go to Firebase, AI, analytics, browser persistent storage, or resume/profile records. An explicit PDF download uses the existing self-hosted document engine to prepare a local PDF. A separate print action opens a local document, created with text nodes, for the browser's print menu. Downloads in progress are discarded if calculator/account state clears. Account clearing resets all calculator inputs.
 
 Tests cover published examples, dependent arithmetic, projection labeling/rounding, zero-percent awards, SMC-S replacement, additive SMC-K, VA-awarded TDIU, category coverage, manual input, pending-edit confirmation, results focus, printing and no account writes.

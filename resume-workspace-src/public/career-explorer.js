@@ -7,7 +7,7 @@ export function initCareerExplorer(api){
  const message=t=>{$('explore-status').textContent=t;};
  const resultValue=()=>selection?selectedMatches:careerBuildContext()?.matches;
  function stageControls(){const complete=Array.isArray(resultValue())&&!forceSetup&&!busy;$('explore-resume-setup').hidden=busy||complete;$('explore-resume-working').hidden=!busy;$('explore-resume-finished').hidden=!complete;$('explore-resume-panel').setAttribute('aria-busy',String(busy));}
- function focusStage(id){if(document.body.dataset.appView!=='careers')return;$(id).scrollIntoView({block:'start',behavior:'instant'});$(id).focus({preventScroll:true});}
+ function focusStage(id){if(document.body.dataset.appView!=='careers'||$('explore-resume-panel').hidden)return;$(id).scrollIntoView({block:'start',behavior:'instant'});$(id).focus({preventScroll:true});}
  $('explore-change-resume').onclick=()=>{forceSetup=true;controls();message('Choose a resume, then press Find my career options. Your previous results are kept until you run another analysis.');focusStage('explore-setup-title');};
  const registered=()=>!!api.user()?.email;
  const answered=()=>answers.filter(a=>a!==null).length;
@@ -60,7 +60,7 @@ export function initCareerExplorer(api){
   for(const action of ['expand','collapse'])$(prefix+'-'+action).onclick=()=>{for(const details of $(containerId).querySelectorAll(':scope > .career-category'))details.open=action==='expand';};
  }
  function showPanel(value){$('explore-resume-panel').hidden=value!=='resume';$('explore-interests-panel').hidden=value!=='interests';for(const key of ['resume','interests']){$('explore-tab-'+key).setAttribute('aria-selected',String(value===key));$('explore-tab-'+key).tabIndex=value===key?0:-1;}}
- $('explore-tab-resume').onclick=()=>showPanel('resume');$('explore-tab-interests').onclick=()=>showPanel('interests');
+ $('explore-tab-resume').onclick=()=>{showPanel('resume');if(Array.isArray(resultValue())&&!forceSetup&&!busy)focusStage('explore-results-title');};$('explore-tab-interests').onclick=()=>showPanel('interests');
  for(const id of ['explore-tab-resume','explore-tab-interests'])$(id).onkeydown=event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const value=event.key==='Home'?'resume':event.key==='End'?'interests':id==='explore-tab-resume'?'interests':'resume';showPanel(value);$('explore-tab-'+value).focus();}};
  document.addEventListener('careers:show-resume',()=>showPanel('resume'));
  $('interest-retry-load').onclick=()=>{loadFailed=false;loadedOwner=null;open();};
@@ -76,7 +76,7 @@ export function initCareerExplorer(api){
   const token=generation,requestedSource=selection?{...selection}:null;controller=new AbortController();busy=true;forceSetup=false;controls();message('');focusStage('explore-working-title');let done=false,failed=false;
   try{const result=await requestCareerAssessment(AbortSignal.any([controller.signal,AbortSignal.timeout(145000)]),requestedSource);if(token!==generation||requestedSource?.key!==selection?.key)return;if(requestedSource)selectedMatches=validResumeMatches(result.matches);renderResume();done=true;}
   catch(error){if(token===generation&&requestedSource?.key===selection?.key){forceSetup=true;message(error.message);failed=true;}}
-  finally{if(token===generation){busy=false;controller=null;controls();if(done)focusStage('explore-results-title');else if(failed)focusStage('explore-status');}}
+  finally{if(token===generation){busy=false;controller=null;controls();if(done){if($('explore-resume-panel').hidden)message('Your resume analysis is ready. Choose From your resume above to see your career ideas.');else focusStage('explore-results-title');}else if(failed)focusStage('explore-status');}}
  };
 
  async function open(){refreshSources();renderResume();if(!registered()||loadedOwner===api.user()?.uid||loading)return;const token=generation,uid=api.user().uid;loading=true;loadFailed=false;owner=uid;controls();try{const saved=await api.loadInterest();if(token!==generation||uid!==api.user()?.uid)return;loadedOwner=uid;if(saved?.version===interestVersion&&saved.questionSet===interestQuestionSet&&!answered()){answers=normalizeAnswers(saved.answers);if(answered()===30)renderResults();else controls();}else if(saved&&!answered())message('The interest check has new VCP questions. Start this edition to explore your next mission. Earlier saved answers are kept until you choose to save new answers or delete the saved check.');}catch{if(token===generation){loadFailed=true;message('Saved interest answers could not load. Try again before replacing a saved check.');}}finally{if(token===generation){loading=false;controls();}}}

@@ -29,7 +29,7 @@ export function initDigitalCv(api){
  const options=()=>Object.fromEntries(optionNames.map(k=>[k,$('cv-include-'+k).checked]));
  const draft=()=>selectCv(base,options(),fields());
  const previewSize=()=>{const root=$('cv-preview'),sheet=root.querySelector('.cv-preview-sheet');if(!sheet||!root.clientWidth)return;const expanded=root.dataset.expanded==='true',scale=expanded?1:Math.min(1,root.clientWidth/1120);sheet.style.transform='scale('+scale+')';root.style.height=expanded?'min(70vh,900px)':Math.ceil(sheet.scrollHeight*scale)+'px';root.style.overflow=expanded?'auto':'hidden';};
- const resize=new ResizeObserver(()=>previewSize());resize.observe($('cv-preview').parentElement);
+ const resize=new ResizeObserver(()=>requestAnimationFrame(previewSize));resize.observe($('cv-preview').parentElement);
  $('cv-preview-size').onclick=()=>{const expanded=$('cv-preview').dataset.expanded!=='true';$('cv-preview').dataset.expanded=String(expanded);$('cv-preview-size').setAttribute('aria-pressed',String(expanded));$('cv-preview-size').textContent=expanded?'Fit preview to screen':'Enlarge preview';previewSize();};
  function controls(){
   const registered=!!api.user()?.email;$('cv-account').hidden=registered;

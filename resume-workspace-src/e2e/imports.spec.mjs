@@ -18,7 +18,7 @@ for (const name of ['resume.pdf', 'resume.docx', 'resume.txt']) {
     page.on('request', request => { if (request.url().includes('/api/review')) reviewRequests.push(request.url()); });
     page.on('pageerror', error => errors.push(error.message));
     await upload(page, name);
-    await expect(page.locator('#import-status')).toContainText(`Imported ${name}.`);
+    await expect(page.locator('#import-status')).toContainText(`Your file is ready: ${name}.`);
     await expect(page.locator('#resume-input')).toHaveValue(/ALEX MORGAN/);
     await expect(page.locator('#resume-input')).toHaveValue(/Managed weekly schedules/);
     await expect(page.locator('#review-button')).toBeEnabled();
@@ -41,7 +41,7 @@ for (const [name, expected] of [['scanned.pdf', 'No readable text'], ['locked.pd
 
 test('an imported Word resume can be edited and downloaded as text', async ({ page }) => {
   await upload(page, 'resume.docx');
-  await expect(page.locator('#import-status')).toContainText('Imported resume.docx.');
+  await expect(page.locator('#import-status')).toContainText('Your file is ready: resume.docx.');
   const text = await page.locator('#resume-input').inputValue();
   await page.locator('#resume-input').fill(text + '\nAdditional verified skill: Excel');
   await page.locator('.steps [data-tab="export"]').click();

@@ -1,21 +1,25 @@
-name: Inspect authorized app account
+name: Verify live full-background careers
 on:
   push:
     branches: [codex/authorized-resume-reset-20261027]
-    paths: ['scripts/inspect-authorized-app-account.cjs', '.github/workflows/authorized-app-account.yml']
+    paths: ['scripts/app-account-maintenance/**', '.github/workflows/authorized-app-account.yml']
 permissions:
   contents: read
 jobs:
-  inspect:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
+      - name: Verify owner-scoped reset logic with fictional accounts
+        run: node --test scripts/app-account-maintenance/cleanup.test.cjs
       - run: npm install --prefix /tmp/vcp-reset --no-audit --no-fund firebase-admin@13.0.0
-      - name: Verify app account identity without changing data
+      - name: Verify live career breadth using a disposable fictional account
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: node scripts/inspect-authorized-app-account.cjs
+        run: node scripts/app-account-maintenance/verify-live.cjs

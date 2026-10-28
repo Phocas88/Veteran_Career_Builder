@@ -1,10 +1,11 @@
+import {navigateApp} from './helpers/workspace.mjs';
 import {test,expect} from '@playwright/test';
 import {installAccount,selectProfileSection} from './helpers/workspace.mjs';
 async function guestHome(page){await installAccount(page);await page.goto('/');await page.locator('#welcome-guest').click();}
 const appRoute=(page,name)=>page.locator('[data-app-route="'+name+'"]');
 test('compact home shows both starting choices on a narrow phone with a single app navigation',async({page})=>{
  await page.setViewportSize({width:360,height:800});await guestHome(page);
- await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('.app-nav button')).toHaveCount(7);
+ await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('.app-nav button:visible')).toHaveCount(4);
  for(const id of ['choose-build','choose-import']){const b=await page.locator('#'+id).boundingBox();expect(b.y+b.height).toBeLessThan(700);expect(b.width).toBeGreaterThan(280);}
  await expect(page.locator('.app-price')).toContainText('$1.99');await expect(page.locator('#choose-import')).toContainText('PDF, Word (.docx) or TXT');
  await expect(page.locator('.site-navigation,.main-footer,.career-entry,.price-banner,.sidebar')).toHaveCount(0);
@@ -14,14 +15,14 @@ test('compact home shows both starting choices on a narrow phone with a single a
 test('primary destinations are normal screens and browser Back restores the last screen',async({page})=>{
  await guestHome(page);
  for(const [route,title,view] of [['digital-cv','Virtual CV','digital-cv'],['profile','My profile','profile'],['applications','Applications','applications'],['library','Service library','library'],['resumes','My resumes','versions']]){
-  await appRoute(page,route).click();await expect(page.locator('#career-title')).toHaveText(title);await expect(appRoute(page,route)).toHaveAttribute('aria-current','page');await expect(page.locator('#home-panel')).toBeHidden();await expect(page.locator('#document-workspace')).toBeHidden();await expect(page.locator('#career-dialog')).toBeVisible();await expect(page.locator('dialog#career-dialog')).toHaveCount(0);await expect(page).toHaveURL(new RegExp('#'+view+'$'));
+  await navigateApp(page,route);await expect(page.locator('#career-title')).toHaveText(title);await expect(appRoute(page,route)).toHaveAttribute('aria-current','page');await expect(page.locator('#home-panel')).toBeHidden();await expect(page.locator('#document-workspace')).toBeHidden();await expect(page.locator('#career-dialog')).toBeVisible();await expect(page.locator('dialog#career-dialog')).toHaveCount(0);await expect(page).toHaveURL(new RegExp('#'+view+'$'));
  }
- await page.goBack();await expect(page.locator('#career-title')).toHaveText('Service library');await appRoute(page,'home').click();await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('#career-dialog')).toBeHidden();
+ await page.goBack();await expect(page.locator('#career-title')).toHaveText('Service library');await navigateApp(page,'home');await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('#career-dialog')).toBeHidden();
 });
 test('profile sections preserve service and contact entries across navigation without cloud writes',async({page})=>{
- await guestHome(page);await appRoute(page,'profile').click();await page.locator('#builder-name').fill('EXAMPLE VETERAN');
+ await guestHome(page);await navigateApp(page,'profile');await page.locator('#builder-name').fill('EXAMPLE VETERAN');
  await selectProfileSection(page,'roles');await expect(page.locator('#builder-personal')).toBeHidden();const role=page.locator('#service-roles > fieldset').first();await role.locator(':scope > label > [data-key="branch"]').selectOption('army');await role.locator(':scope > label > [data-key="fullCode"]').fill('88M02');
- await appRoute(page,'library').click();await appRoute(page,'profile').click();await expect(role.locator('[data-key="fullCode"]')).toHaveValue('88M02');await selectProfileSection(page,'personal');await expect(page.locator('#builder-name')).toHaveValue('EXAMPLE VETERAN');expect(await page.evaluate(()=>window.__writes)).toEqual([]);
+ await navigateApp(page,'library');await navigateApp(page,'profile');await expect(role.locator('[data-key="fullCode"]')).toHaveValue('88M02');await selectProfileSection(page,'personal');await expect(page.locator('#builder-name')).toHaveValue('EXAMPLE VETERAN');expect(await page.evaluate(()=>window.__writes)).toEqual([]);
  await page.screenshot({path:'/tmp/app-profile-mobile.png'});
 });
 test('new builds pay before entry and the unlocked workflow has no website marketing',async({page})=>{
@@ -43,13 +44,13 @@ test('desktop has horizontal app navigation and direct Library links reopen corr
 });
 
 test('application entry opens on demand, can be cancelled, and does not save without an explicit action',async({page})=>{
- await guestHome(page);await appRoute(page,'applications').click();await expect(page.locator('#career-job-form')).toBeHidden();await page.locator('#career-job-new').click();await page.locator('[name="role"]').fill('Example role');await page.locator('#career-job-cancel').click();await expect(page.locator('#career-job-form')).toBeHidden();await page.locator('#career-job-new').click();await expect(page.locator('[name="role"]')).toHaveValue('');expect(await page.evaluate(()=>window.__writes)).toEqual([]);
+ await guestHome(page);await navigateApp(page,'applications');await expect(page.locator('#career-job-form')).toBeHidden();await page.locator('#career-job-new').click();await page.locator('[name="role"]').fill('Example role');await page.locator('#career-job-cancel').click();await expect(page.locator('#career-job-form')).toBeHidden();await page.locator('#career-job-new').click();await expect(page.locator('[name="role"]')).toHaveValue('');expect(await page.evaluate(()=>window.__writes)).toEqual([]);
 });
 
 test('all seven menu options remain visible and tappable on a small phone',async({page})=>{
  await page.setViewportSize({width:320,height:740});await guestHome(page);
  for(const button of await page.locator('.app-nav>button').all()){const b=await button.boundingBox();expect(b.width).toBeGreaterThanOrEqual(44);expect(b.x).toBeGreaterThanOrEqual(0);expect(b.x+b.width).toBeLessThanOrEqual(320);}
- await appRoute(page,'digital-cv').click();await expect(appRoute(page,'digital-cv')).toHaveAttribute('aria-current','page');await expect(appRoute(page,'profile')).not.toHaveAttribute('aria-current','page');
+ await navigateApp(page,'digital-cv');await expect(appRoute(page,'digital-cv')).toHaveAttribute('aria-current','page');await expect(appRoute(page,'profile')).not.toHaveAttribute('aria-current','page');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.screenshot({path:'/tmp/vcp-ux-previews/virtual-cv-menu-phone.png'});
 });
@@ -61,4 +62,8 @@ test('privacy and security is available before sign-in, from home and from setti
  await info.getByText('How I delete or export my information',{exact:true}).click();await expect(info.locator('details[open]')).toContainText('My resumes → Delete resume');await expect(info.locator('details[open]')).toContainText('Virtual CV → Unpublish');expect(await info.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await info.screenshot({path:'/tmp/vcp-ux-previews/privacy-security-phone.png',fullPage:true});await info.close();
  await expect(page.locator('#welcome-dialog')).toBeVisible();await page.locator('#welcome-guest').click();await expect(page.locator('#home-privacy')).toBeVisible();expect(await page.evaluate(()=>window.__writes)).toEqual([]);
  await page.locator('#app-settings').click();const [settingsInfo]=await Promise.all([page.waitForEvent('popup'),page.locator('#settings-security-link').click()]);await expect(settingsInfo.locator('h1')).toContainText('Your information.');await settingsInfo.close();await expect(page.locator('#settings-title')).toBeVisible();expect(await page.evaluate(()=>window.__writes)).toEqual([]);
+});
+
+test('phone navigation uses readable primary actions and a labeled menu for other tools',async({page})=>{
+ await page.setViewportSize({width:360,height:800});await guestHome(page);for(const id of ['home','resumes','profile']){const button=appRoute(page,id);await expect(button).toBeVisible();expect((await button.boundingBox()).height).toBeGreaterThanOrEqual(44);}await page.locator('#app-menu-open').click();await expect(page.locator('#app-menu-dialog')).toBeVisible();await expect(page.locator('#app-menu-links')).toContainText('Cover letters');await expect(page.locator('#app-menu-links')).toContainText('Virtual CV');await expect(page.locator('#app-menu-links')).toContainText('Job tracker');await page.screenshot({path:'/tmp/vcp-ux-previews/readable-app-menu-phone.png'});await navigateApp(page,'digital-cv');await expect(page.locator('#app-menu-dialog')).toBeHidden();await expect(page.locator('#career-title')).toBeFocused();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });

@@ -1,15 +1,15 @@
-import {initAppResources} from './app-resources.js?v=20261027-whole-background';
-import {initResumeDelivery} from './resume-delivery.js?v=20261026-clear-journey';
-import {initReviewFlow} from './review-flow.js?v=20261027-whole-background';
+import {initAppResources} from './app-resources.js?v=20261028-guided';
+import {initResumeDelivery} from './resume-delivery.js?v=20261028-guided';
+import {initReviewFlow} from './review-flow.js?v=20261028-guided';
 import {initDesignEditor} from './design-editor.js?v=20261026-clear-journey';
-import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261026-clear-journey';
-import {showAppView} from './app-shell.js?v=20261027-whole-background';
-import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261027-whole-background';
+import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261028-guided';
+import {showAppView} from './app-shell.js?v=20261028-guided';
+import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261028-guided';
 import { canApply, applyCorrections } from './corrections.js';
-import { importResumeFile } from './imports.js';
+import { importResumeFile } from './imports.js?v=20261028-guided';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';
 import { preparePdf, renderPdfPages, checkFederalDownload, pdfKey, clearPdfCache } from './page-preview.js?v=20261027-resume-studio';
-import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext, canUseTemplate, finishTemplate } from './payments.js?v=20261027-whole-background';
+import { hasPaidBuild, includedUpdateAvailable, refinePaidReview, careerBuildContext, canUseTemplate, finishTemplate } from './payments.js?v=20261028-guided';
 
 const $ = id => document.getElementById(id);
 const input = $('resume-input');
@@ -428,7 +428,7 @@ $('resume-file').addEventListener('change', async event => {
     setResumeFilename(file.name);
     input.dispatchEvent(new Event('input'));
     document.dispatchEvent(new Event('resume:draft-ready'));
-    $('import-status').textContent = `Imported ${file.name}. Check the extracted text below before requesting a review.`;
+    $('import-status').textContent = `Your file is ready: ${file.name}. Check the text below, then press Next to continue.`;
     setTab('resume', false);
     document.dispatchEvent(new Event('resume:file-imported'));
     toast('Resume imported. You can edit the text before reviewing it.');

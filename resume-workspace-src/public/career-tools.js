@@ -1,14 +1,14 @@
-import {initCareerExplorer} from './career-explorer.js?v=20261027-whole-background';
+import {initCareerExplorer} from './career-explorer.js?v=20261028-guided';
 import {initApplicationImport} from './application-import.js?v=20261026-career-tools';
 import {designs} from './resume-designs.js?v=20261027-resume-studio';
-import {initDigitalCv} from './digital-cv.js?v=20261027-whole-background';
+import {initDigitalCv} from './digital-cv.js?v=20261028-guided';
 import {selectProfileSection} from './background-form.js?v=20261026-career-tools';
 import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261025-standalone-app';
-import { savedResumeToDraft } from './cloud-store.js?v=20261027-whole-background';
-import { careerBuildContext, requestCareerKit } from './payments.js?v=20261027-whole-background';
+import { savedResumeToDraft } from './cloud-store.js?v=20261028-guided';
+import { careerBuildContext, requestCareerKit } from './payments.js?v=20261028-guided';
 import { exportLetter } from './letter-exports.js?v=20261025-standalone-app';
 import {initServiceLibrary} from './service-library.js?v=20261026-career-tools';
-import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261027-whole-background';
+import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261028-guided';
 
 const $=id=>document.getElementById(id);
 const node=(tag,content,className)=>{const el=document.createElement(tag);if(content)el.textContent=content;if(className)el.className=className;return el;};

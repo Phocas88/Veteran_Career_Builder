@@ -1,7 +1,8 @@
+import {navigateApp} from './helpers/workspace.mjs';
 import {test,expect} from '@playwright/test';
 import {agreeCloudSaving,selectProfileSection,installAccount} from './helpers/workspace.mjs';
 async function library(page,account='none'){
- await installAccount(page,account);await page.goto('/');if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();await page.locator('#service-library-open').click();await page.locator('[data-library-branch="army"]').click();await page.locator('#library-choose-specialty').click();await page.locator('#library-change-filters').evaluate(n=>n.open=true);await expect(page.locator('#library-results .library-result').first()).toBeVisible();
+ await installAccount(page,account);await page.goto('/');if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();await navigateApp(page,'library');await page.locator('[data-library-branch="army"]').click();await page.locator('#library-choose-specialty').click();await page.locator('#library-change-filters').evaluate(n=>n.open=true);await expect(page.locator('#library-results .library-result').first()).toBeVisible();
 }
 test('service library includes all website branches, qualifications, conflict flags and branch-correct guide links',async({page})=>{
  const calls=[];page.on('request',r=>{if(r.url().includes('/api/claude'))calls.push(r.postDataJSON());});await library(page);
@@ -22,7 +23,7 @@ test('verified library selection adds only the chosen service fields and saves o
 test('qualifications stay branch-specific, additions remain in profile and empty search offers manual entry',async({page})=>{
  await library(page);await page.locator('#library-branch').selectOption('navy');await page.locator('#library-kind').selectOption('qualification');await expect(page.locator('#library-kind')).toHaveValue('qualification');await expect(page.locator('#library-count')).toContainText('Navy');
  const label=await page.locator('#library-results .library-result').first().textContent();expect(label).toContain('Navy');await page.locator('#library-results .library-result').first().click();await page.locator('#library-confirm').check();await page.locator('#library-apply').click();await page.locator('#library-view-profile').click();
- expect(await page.locator('#service-roles [data-key="branch"]').first().inputValue()).toBe('navy');await page.locator('[data-app-route="library"]').click();await page.locator('#library-search').fill('no such qualification xyz');await expect(page.locator('#library-empty')).toBeVisible();await page.locator('#library-manual').click();await expect(page.locator('[data-career-panel="profile"]')).toBeVisible();
+ expect(await page.locator('#service-roles [data-key="branch"]').first().inputValue()).toBe('navy');await navigateApp(page,'library');await page.locator('#library-search').fill('no such qualification xyz');await expect(page.locator('#library-empty')).toBeVisible();await page.locator('#library-manual').click();await expect(page.locator('[data-career-panel="profile"]')).toBeVisible();
 });
 test('grouped menus and paginated references fit a narrow phone and clear private selections on account switch',async({page})=>{
  await page.setViewportSize({width:360,height:800});const errors=[];page.on('pageerror',e=>errors.push(e.message));await library(page,'registered');await expect(page.locator('[data-app-route]')).toHaveCount(7);await expect(page.locator('#library-results .library-result')).toHaveCount(20);await page.locator('#library-more').click();await expect(page.locator('#library-results .library-result')).toHaveCount(40);

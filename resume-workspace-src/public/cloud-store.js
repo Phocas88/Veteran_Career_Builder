@@ -1,5 +1,5 @@
-import {normalizeAnswers,interestVersion,interestQuestionSet} from './interest-model.js?v=20261027-whole-background';
-import {cvSlug} from './digital-cv-model.js?v=20261026-career-tools';
+import {normalizeAnswers,interestVersion,interestQuestionSet} from './interest-model.js?v=20261028-guided';
+import {cvSlug} from './digital-cv-model.js?v=20261028-guided';
 import {normalizeProfileSetup} from './profile-steps.js?v=20261026-profile-setup';
 // Firebase rules remain the security boundary. Every operation derives its path
 // from the current authenticated UID; caller-supplied owner IDs are never accepted.

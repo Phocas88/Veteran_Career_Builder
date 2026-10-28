@@ -1,3 +1,4 @@
+import {cleanResumeText} from './resume-text.js?v=20261028-guided';
 export const MAX_FILE_BYTES = 10 * 1024 * 1024;
 export const MAX_TEXT_LENGTH = 20000;
 const MAX_PDF_PAGES = 20;
@@ -13,7 +14,7 @@ export function validateFile(file) {
 }
 
 export function normalizeImportedText(value) {
-  const text = value.replace(/\r\n?/g, '\n').replace(/\u00a0/g, ' ').replace(/\u200b/g, '').replace(/[ \t]+\n/g, '\n').replace(/\n{4,}/g, '\n\n\n').trim();
+  const text = cleanResumeText(value).replace(/\r\n?/g, '\n').replace(/\u00a0/g, ' ').replace(/\u200b/g, '').replace(/[ \t]+\n/g, '\n').replace(/\n{4,}/g, '\n\n\n').trim();
   if (!text) throw new Error('No readable text was found. For scanned PDFs, use a text-based PDF, Word document, or TXT file.');
   if (text.includes('\u0000') || /[\u0001-\u0008\u000b\u000c\u000e-\u001f]/.test(text)) throw new Error('That file does not contain readable resume text. Choose a PDF, Word (.docx), or TXT file.');
   if (text.length > MAX_TEXT_LENGTH) throw new Error('This resume contains more than 20,000 characters. Shorten it and import it again. Your current draft has not been replaced.');

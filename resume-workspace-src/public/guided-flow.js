@@ -32,17 +32,19 @@ export function setFlow(stage, scroll = true) {
   if (!Object.hasOwn(labels, stage)) return;
   if (!['start','payment'].includes(stage) && adapter && !adapter.canUse()) stage='payment';
   current = stage;
+  const instructions={start:'Choose Upload a resume or Build a new resume to begin.',payment:'Complete secure checkout once. Then we’ll bring you back to add your resume.',build:'Add one section at a time. Press Continue to move to the next section.',edit:'Check your resume text below. When it looks right, press Next to continue.',job:'Job details are optional. Add a role or job posting to tailor your resume, or continue without them.',checkout:'Check the two agreements below, then press Build my resume. Your revised resume will appear automatically.'};
+  $('flow-instruction').textContent=instructions[stage];$('flow-instruction').hidden=stage==='start';
   $('resume-start').hidden = false;
   $('opsec-notice').hidden = ['start','payment'].includes(stage);
   for (const node of document.querySelectorAll('[data-flow]')) node.hidden = node.dataset.flow !== stage;
-  const numbers={payment:0,build:1,edit:1,job:2,checkout:2};
+  const numbers={payment:0,build:1,edit:1,job:2,checkout:3};
   $('flow-progress').textContent = (numbers[stage]?'Step '+numbers[stage]+' of 3 · ':'')+labels[stage];
   $('flow-back').hidden = stage === 'start';
   if (stage === 'build') $('background-builder').open = true;
   syncResumeEditor();
   updateCheckoutSummary();
   adapter?.showResume();
-  if (scroll) $('resume-panel').scrollIntoView({ block:'start', behavior:'instant' });
+  if(scroll){$('resume-panel').scrollIntoView({block:'start',behavior:'instant'});$('flow-progress').tabIndex=-1;$('flow-progress').focus({preventScroll:true});}
 }
 function updateCheckoutSummary() {
   const count = $('resume-input').value.trim().split(/\s+/).filter(Boolean).length;

@@ -1,5 +1,5 @@
 import {parsePosting,parseApplicationCsv,applicationKey,applicationCsvExample} from './application-import-model.js?v=20261026-career-tools';
-import {importResumeFile} from './imports.js';
+import {importResumeFile} from './imports.js?v=20261028-guided';
 const $=id=>document.getElementById(id);
 const el=(tag,text)=>{const node=document.createElement(tag);if(text)node.textContent=text;return node;};
 export function initApplicationImport(api){

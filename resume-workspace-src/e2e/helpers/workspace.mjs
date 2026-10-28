@@ -63,3 +63,5 @@ export async function confirmCvSections(page){
  for(let index=0;index<6;index++){await expect(page.locator('#cv-review-progress')).toContainText(`Section ${index+1} of 6`);await page.locator('#cv-review-next').click();}
  await expect(page.locator('#cv-section-guide')).toBeHidden();await expect(page.locator('#cv-consent')).toBeVisible();
 }
+
+export async function navigateApp(page,route){const button=page.locator('[data-app-route="'+route+'"]');if(!await button.isVisible()){await page.locator('#app-menu-open').click();await expect(button).toBeVisible();}await button.click();}

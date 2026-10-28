@@ -59,7 +59,7 @@ test('confirmation advances visibly, saves each approved section, and leads into
  await expect(page.locator('#pi-finished')).toBeVisible();await expect(page.locator('#pi-results')).toContainText('Personal & contact · saved');await expect(page.locator('#pi-results')).toContainText('Military service · not changed');
  expect(await page.evaluate(()=>window.__writes.filter(w=>w.path.startsWith('publicProfiles/')).length)).toBe(0);
  await page.locator('#pi-update-cv').click();await expect(page.locator('#profile-import-dialog')).toBeHidden();await expect(page.locator('[data-app-route="digital-cv"]')).toHaveAttribute('aria-current','page');await expect(page.locator('#cv-name')).toHaveValue('ALEX IMPORT EXAMPLE');
- await confirmCvSections(page);await expect(page.locator('#cv-status')).toContainText('All 6 sections confirmed');await expect(page.locator('#cv-consent')).not.toBeChecked();
+ await confirmCvSections(page);await expect(page.locator('#cv-status')).toContainText('Your sections are checked');await expect(page.locator('#cv-consent')).not.toBeChecked();
  expect(await page.evaluate(()=>window.__writes.filter(w=>w.path.startsWith('publicProfiles/')).length)).toBe(0);
  await page.screenshot({path:'/tmp/vcp-ux-previews/profile-to-virtual-cv.png',fullPage:true});
 });

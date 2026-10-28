@@ -49,3 +49,28 @@ test('selective updates preserve unchecked fields, unrelated entries, nested qua
 test('year-only dates stay as recorded and ended work never inherits a currently-employed flag',()=>{const {data}=parseProfileResume('EXAMPLE APPLICANT\n\nWORK HISTORY\nCoordinator | Example Company | 2018 – 2022\n• Kept verified records.');assert.equal(data.jobs[0].dates,'2018 – 2022');assert.equal(data.jobs[0].startDate,undefined);assert.equal(data.jobs[0].endDate,undefined);assert.equal(data.jobs[0].current,false);const next=mergeProfileSection({jobs:[{jobTitle:'Coordinator',current:true}]},'jobs',[{target:0,values:data.jobs[0]}]);assert.equal(next.jobs[0].current,false);assert.equal(next.jobs[0].dates,'2018 – 2022');});
 test('multiple jobs remain separate, exact matches avoid accidental duplicates, and limits reject rather than cut information',()=>{const {data}=parseProfileResume('EXAMPLE APPLICANT\nWORK EXPERIENCE\nCoordinator | First Employer | Jan 2020 – Jan 2022\n• First duty\n\nAnalyst | Second Employer | Feb 2022 – Present\n• Second duty');assert.equal(data.jobs.length,2);assert.equal(data.jobs[0].employer,'First Employer');assert.equal(data.jobs[1].jobTitle,'Analyst');assert.equal(data.jobs[1].duties,'Second duty');const profile=normalizeProfile({jobs:data.jobs});assert.equal(matchingEntry('jobs',data.jobs[1],profile),1);assert.throws(()=>mergeProfileSection(profile,'jobs',[{target:0,values:{duties:'x'.repeat(2401)}}]),/2400/);assert.throws(()=>mergeProfileSection(profile,'jobs',[{target:5,values:{jobTitle:'Bad target'}}]),/existing entry/);const full=normalizeProfile({skillsEntries:Array.from({length:12},(_,i)=>({name:'Skill '+i}))});assert.throws(()=>mergeProfileSection(full,'skillsEntries',[{target:-1,values:{name:'One too many'}}]),/12 entries/);});
 test('unsupported private fields cannot be imported and missing facts stay missing',()=>{const result=parseProfileResume('EXAMPLE APPLICANT\nSSN: 000-00-0000\nDate of birth: 2000-01-01\nCERTIFICATIONS\nExample certificate');assert.equal(result.data.certifications[0].status,undefined);assert.equal(result.data.jobs.length,0);const next=mergeProfileSection({},'personal',[{values:{name:'Example Applicant',ssn:'000-00-0000',clearanceLevel:'Secret'}}]);assert.equal(next.ssn,undefined);assert.equal(next.clearanceLevel,undefined);assert.throws(()=>parseProfileResume('x'.repeat(20001)),/20,000/);assert.throws(()=>mergeProfileSection({},'payments',[]),/section/);});
+
+test('PDF headings keep skills and education out of the summary and remove only matching page labels',()=>{
+ const source=`ALEX MORGAN
+PROFESSIONAL SUMMARY
+Operations professional with experience in
+transportation, training and administration.
+
+TECHNICAL AND BUSINESS SKILLS
+Software & Development: JavaScript, SQL, GitHub
+Analytics & Reporting: Excel, Power BI
+Morgan 3/4
+PROFESSIONAL EXPERIENCE
+Operations supervisor | Example Services | Jan 2020 – Present
+• Trained employees on documented
+safety and inventory procedures.
+• Coordinated schedules for 20 people.
+Morgan 4/4
+EDUCATION
+Bachelor of Science in Business Administration | Example University | 2022
+Master of Science in Operations | Example College | Expected 2027
+CERTIFICATIONS
+OSHA 10/30
+`;
+ const parsed=parseProfileResume(source);assert.equal(parsed.data.personal.summary,'Operations professional with experience in transportation, training and administration.');assert.ok(parsed.data.skillsEntries.some(e=>e.name.includes('Power BI')));assert.equal(parsed.data.educationEntries.length,2);assert.match(parsed.data.jobs[0].duties,/Trained employees on documented safety and inventory procedures\./);assert.doesNotMatch(JSON.stringify(parsed.data),/Morgan [34]\/4/);assert.equal(parsed.data.certifications[0].name,'OSHA 10/30');
+});

@@ -1,16 +1,16 @@
-import {purchasedResumeItems,mergeResumeItems} from './resume-list-model.js?v=20261027-whole-background';
+import {purchasedResumeItems,mergeResumeItems} from './resume-list-model.js?v=20261028-guided';
 import {initProfileImport} from './profile-import.js?v=20261026-guided-updates';
 import {createProfileStorage} from './profile-storage.js?v=20261030-visible-gallery';
 import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
 import {initProfileSetup} from './profile-setup.js?v=20261026-career-tools';
-import {showAppView} from './app-shell.js?v=20261027-whole-background';
-import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261026-clear-journey';
+import {showAppView} from './app-shell.js?v=20261028-guided';
+import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261028-guided';
 import { fillBackground, readBackground } from './background-form.js?v=20261026-career-tools';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, deletePurchasedResume, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261027-whole-background';
-import { initCareerTools } from './career-tools.js?v=20261027-whole-background';
-import {initAppShell} from './app-shell.js?v=20261027-whole-background';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, deletePurchasedResume, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261028-guided';
+import { initCareerTools } from './career-tools.js?v=20261028-guided';
+import {initAppShell} from './app-shell.js?v=20261028-guided';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261026-career-tools';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261027-whole-background';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261028-guided';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -45,14 +45,14 @@ function openAccount(value) {
 }
 function continueGuest() {
   rememberChoice('guest'); $('welcome-dialog').close(); $('account-dialog').close();
-  $('account-label').textContent = user && !guest(user) ? 'My account' : 'Account';
+  $('account-label').textContent = 'Account';
 }
 function updateUser(next) {
   ++accountVersion;const previousUser=user;
   if (user && user.uid !== next?.uid) resetPrivateState();
   user = next;
   const registered = !!next && !guest(next);
-  $('account-label').textContent = registered ? 'My account' : 'Account';
+  $('account-label').textContent = 'Account';
   $('account-email').textContent = registered ? next.email : '';
   $('account-signed-in').hidden=!registered;$('account-form').hidden=registered;$('google-signin-box').hidden=registered;$('auth-remember-row').hidden=registered;
   $('account-link-google').hidden=!registered||!!next.providerData?.some(provider=>provider.providerId==='google.com');

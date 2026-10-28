@@ -1,16 +1,16 @@
-import {purchasedResumeItems,mergeResumeItems} from './resume-list-model.js?v=20261027-career-fields';
+import {purchasedResumeItems,mergeResumeItems} from './resume-list-model.js?v=20261027-whole-background';
 import {initProfileImport} from './profile-import.js?v=20261026-guided-updates';
 import {createProfileStorage} from './profile-storage.js?v=20261030-visible-gallery';
 import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
 import {initProfileSetup} from './profile-setup.js?v=20261026-career-tools';
-import {showAppView} from './app-shell.js?v=20261027-career-fields';
+import {showAppView} from './app-shell.js?v=20261027-whole-background';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261026-clear-journey';
 import { fillBackground, readBackground } from './background-form.js?v=20261026-career-tools';
-import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, deletePurchasedResume, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261027-career-fields';
-import { initCareerTools } from './career-tools.js?v=20261027-career-fields';
-import {initAppShell} from './app-shell.js?v=20261027-career-fields';
+import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, deletePurchasedResume, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261027-whole-background';
+import { initCareerTools } from './career-tools.js?v=20261027-whole-background';
+import {initAppShell} from './app-shell.js?v=20261027-whole-background';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261026-career-tools';
-import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261027-career-fields';
+import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261027-whole-background';
 import { connectFirebase } from './firebase-client.js';
 
 const $ = id => document.getElementById(id);
@@ -61,8 +61,14 @@ function updateUser(next) {
   $('account-value').textContent = registered ? 'Save a version in Resumes to keep your work.' : 'Guest session · Sign in to save across devices.';
   status(registered ? 'Save a version here, then reopen it whenever you want to make updates.' : 'A free account lets you keep resumes and background details for later.');
   if (registered || guest(next)) { rememberChoice(registered ? 'account' : 'guest'); $('welcome-dialog').close(); }
-  if (next) { callback?.restoreDeviceDraft(next.uid); if (registered) refreshSaved(); refreshPurchases(); }
+  if (next) { restoreAccountWorkspace(next,accountVersion); if (registered) refreshSaved(); refreshPurchases(); }
   profileImport?.accountChanged();careerUI?.accountChanged();profileSetup?.accountChanged();profileStorage?.accountChanged();syncGoogleButtons();if(previousUser?.email&&!next?.email)prepareGooglePersistence();
+}
+async function restoreAccountWorkspace(account,version){
+  // A server-side account reset must also retire the owner's older device draft.
+  // Read the marker before restoring; do not revive a cached copy after deletion.
+  try{const resetAt=account.email?await store.workspaceReset():0;if(user?.uid!==account.uid||version!==accountVersion)return;callback?.restoreDeviceDraft(account.uid,resetAt);}
+  catch{if(user?.uid===account.uid&&version===accountVersion)status('Your device draft could not be checked. Reopen Account to retry. Saved resumes remain in Resumes.');}
 }
 async function ensureGuest() {
   const c = await ensureConnection();

@@ -1,4 +1,4 @@
-import {normalizeAnswers,interestVersion,interestQuestionSet} from './interest-model.js?v=20261027-career-fields';
+import {normalizeAnswers,interestVersion,interestQuestionSet} from './interest-model.js?v=20261027-whole-background';
 import {cvSlug} from './digital-cv-model.js?v=20261026-career-tools';
 import {normalizeProfileSetup} from './profile-steps.js?v=20261026-profile-setup';
 // Firebase rules remain the security boundary. Every operation derives its path
@@ -37,6 +37,7 @@ export function createCloudStore({ db, auth }) {
   }
   function validId(id) {if(typeof id!=='string'||!/^[\w-]{1,160}$/.test(id))throw new Error('Choose a saved item.');return id;}
   return {
+    async workspaceReset() {const {uid,ref}=owner();const snap=await ref.collection('resumeProgram').doc('workspaceState').get();assertOwner(uid);const value=snap.exists?snap.data().resetAt:0;return Number.isSafeInteger(value)&&value>0?value:0;},
     async interest() {const {uid,ref}=owner();const snap=await ref.collection('resumeProgram').doc('interests').get();assertOwner(uid);if(!snap.exists)return null;const data=snap.data();return {version:data.version,questionSet:data.questionSet,answers:normalizeAnswers(data.answers)};},
     async saveInterest(value) {const {uid,ref}=owner();if(value?.version!==interestVersion||!Array.isArray(value.answers)||value.answers.length!==30||value.answers.some(a=>a!==null&&(!Number.isInteger(a)||a<0||a>4)))throw new Error('Choose valid interest responses before saving.');await ref.collection('resumeProgram').doc('interests').set({version:interestVersion,questionSet:interestQuestionSet,answers:[...value.answers],updatedAt:Date.now()});assertOwner(uid);},
     async removeInterest() {const {uid,ref}=owner();await ref.collection('resumeProgram').doc('interests').delete();assertOwner(uid);},

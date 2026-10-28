@@ -4,16 +4,20 @@ const $=id=>document.getElementById(id);
 const node=(tag,text)=>{const el=document.createElement(tag);if(text)el.textContent=text;return el;};
 const optionNames=Object.keys(cvDefaults());
 export function renderCvPreview(root,cv){
- root.replaceChildren();if(safeProfilePhoto(cv.photo)){const photo=node('img');photo.src=cv.photo;photo.alt='Profile photo';photo.className='cv-profile-photo';photo.width=104;photo.height=104;root.append(photo);}root.append(node('h2',cv.name||'Your name'));if(cv.headline)root.append(node('p',cv.headline));
- if(cv.location)root.append(node('p',cv.location));
- const section=(title,children)=>{if(!children.length)return;const s=node('section');s.append(node('h3',title),...children);root.append(s);};
+ root.replaceChildren();
+ const sheet=node('div');sheet.className='cv-preview-sheet';const header=node('header');header.className='cv-preview-heading';
+ if(safeProfilePhoto(cv.photo)){const photo=node('img');photo.src=cv.photo;photo.alt='Profile photo';photo.className='cv-profile-photo';photo.width=104;photo.height=104;header.append(photo);}
+ const introduction=node('div');introduction.append(node('h2',cv.name||'Your name'));if(cv.headline)introduction.append(node('p',cv.headline));if(cv.location)introduction.append(node('p',cv.location));header.append(introduction);
+ const body=node('div');body.className='cv-preview-body';const primary=node('div'),support=node('aside');primary.className='cv-preview-primary';support.className='cv-preview-support';support.setAttribute('aria-label','Education and qualifications');body.append(primary,support);sheet.append(header,body);root.append(sheet);
+ const section=(title,children,column=primary)=>{if(!children.length)return;const s=node('section');s.append(node('h3',title),...children);column.append(s);};
  if(cv.summary)section('Summary',[node('p',cv.summary)]);
  const experience=rows=>rows.map(e=>{const d=node('article');d.append(node('h4',e.title||[e.rank,e.mosTitle].filter(Boolean).join(' · ')||'Military service'),node('p',[e.employer||e.unit,e.branch,e.serviceType].filter(Boolean).join(' · ')),node('p',[e.startDate,e.current?'Present':e.endDate].filter(Boolean).join(' – ')));if(e.bullets?.length){const ul=node('ul');ul.append(...e.bullets.map(b=>node('li',b)));d.append(ul);}return d;});
- section('Military service',experience(cv.military||[]));section('Civilian experience',experience(cv.civilian||[]));
- section('Education',(cv.education||[]).map(e=>{const p=node('p');p.append(node('strong',[e.degree,e.field].filter(Boolean).join(' · ')),node('br'),document.createTextNode([e.institution,e.year].filter(Boolean).join(' · ')));return p;}));
- for(const [key,title]of [['technical','Skills'],['leadership','Leadership'],['certs','Certifications'],['languages','Languages']])if(cv.skills?.[key])section(title,[node('p',cv.skills[key])]);
+ section('Civilian experience',experience(cv.civilian||[]));section('Military service',experience(cv.military||[]));
+ section('Education',(cv.education||[]).map(e=>{const p=node('p');p.append(node('strong',[e.degree,e.field].filter(Boolean).join(' · ')),node('br'),document.createTextNode([e.institution,e.year].filter(Boolean).join(' · ')));return p;}),support);
+ for(const [key,title]of [['technical','Skills'],['leadership','Leadership'],['certs','Certifications'],['languages','Languages']])if(cv.skills?.[key])section(title,[node('p',cv.skills[key])],support);
  const contact=[];for(const [key,label]of [['email','Email'],['phone','Phone'],['linkedin','LinkedIn'],['portfolio','Portfolio'],['github','GitHub'],['website','Website']])if(cv.contact?.[key]){const a=node('a',label+': '+cv.contact[key]);const value=cv.contact[key];a.href=key==='email'?'mailto:'+encodeURIComponent(value):key==='phone'?'tel:'+value.replace(/[^+\d]/g,''):safeCvLink(value);a.rel='noopener noreferrer';a.target='_blank';contact.push(a);}
- section('Contact',contact);
+ section('Contact',contact,support);if(!primary.children.length||!support.children.length)body.classList.add('cv-preview-single');
+
 }
 export function initDigitalCv(api){
  let base={},published=null,slug='',generation=0,busy=false,loaded=false,loadFailed=false,sources=[],stage='source',previewReady=false,reviewStep=null;

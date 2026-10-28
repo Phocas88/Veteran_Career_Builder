@@ -1,4 +1,4 @@
-import {catalog,previousCareerIds} from './career-data.js?v=20261027-career-fields';
+import {catalog,previousCareerIds} from './career-data.js?v=20261027-whole-background';
 export const areas=[{key:'R',name:'Hands-on',description:'Working with tools, equipment, the outdoors, or practical tasks.'},{key:'I',name:'Investigating',description:'Understanding problems, analyzing information, and testing ideas.'},{key:'A',name:'Creating',description:'Designing, writing, making, or finding original ways to communicate.'},{key:'S',name:'Helping',description:'Teaching, supporting, caring for, and working directly with people.'},{key:'E',name:'Leading & influencing',description:'Organizing people, presenting ideas, negotiating, or making decisions.'},{key:'C',name:'Organizing',description:'Keeping records, following processes, and making information accurate.'}];
 // VCP Next Mission, question set 2. These original civilian scenarios ask about
 // preferred future work, without assuming a branch, combat role or prior rank.

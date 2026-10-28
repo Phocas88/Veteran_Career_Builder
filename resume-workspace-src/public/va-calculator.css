@@ -1,0 +1,97 @@
+/* Calculator only; document and public-CV colors remain independent. */
+body.standalone-app #calculator-panel{max-width:920px;margin:auto;font-size:16px;padding-bottom:24px}
+#calculator-panel .screen-heading{margin-bottom:22px}
+#calculator-panel .screen-heading h1{font-size:32px;line-height:1.2}
+#calculator-panel :is(p,li){line-height:1.65;overflow-wrap:anywhere}
+#calculator-panel :is(input,select,button){font:inherit}
+#calculator-panel :is(input:not([type=checkbox]),select){display:block;width:100%;min-width:0;max-width:100%;min-height:50px;padding:12px;margin:8px 0 0;font-size:16px}
+#calculator-panel label{display:block;font-size:16px;font-weight:600;line-height:1.45;margin:20px 0 8px}
+#calculator-panel .va-optional{font-size:13px;color:#bdbdb7;font-weight:400}
+#calculator-panel .button{font-size:16px;min-height:50px;white-space:normal;text-align:center;padding:12px 18px}
+#calculator-panel .text-button{font-size:15px;min-height:48px;padding:10px 0;white-space:normal}
+#calculator-panel a{display:inline-block;min-height:44px;text-decoration:underline;text-underline-offset:3px;color:#efc64b}
+#calculator-panel .va-year-panel{border:1px solid #5b4d26;border-radius:10px;padding:18px 22px;background:#17150e;margin:0 0 20px}
+#calculator-panel .va-year-panel>label{margin-top:0}
+#calculator-panel #va-rate-note{font-size:15px;margin:14px 0 0;color:#f2e7bd}
+#calculator-panel .va-source-details{margin:20px 0 0;border-top:1px solid #3e3e36;padding-top:8px}
+#calculator-panel .va-source-details>summary{cursor:pointer;color:#efc64b;min-height:48px;padding:12px 0;font-size:16px;font-weight:600;line-height:1.5}
+#calculator-panel .va-source-details p{font-size:15px;color:#d1d1c8;margin:8px 0 12px}
+#calculator-panel .va-source-details a{display:block;font-size:14px;padding:10px 0}
+#calculator-panel .va-steps{display:grid;grid-template-columns:1fr 1.3fr .8fr;list-style:none;gap:12px;padding:0;margin:22px 0 14px;border-bottom:1px solid #3e3e36}
+#calculator-panel .va-steps li{display:flex;align-items:center;gap:9px;font-size:15px;color:#bdbdb7;padding:12px 0 16px;border-bottom:3px solid transparent;margin-bottom:-1px}
+#calculator-panel .va-steps li>span{flex:none;border:1px solid #77776b;border-radius:50%;width:28px;height:28px;display:grid;place-items:center;font-size:14px}
+#calculator-panel .va-steps [aria-current=step]{color:#efc64b;font-weight:700;border-bottom-color:#efc64b}
+#calculator-panel .va-steps [aria-current=step]>span{background:#efc64b;color:#050505;border-color:#efc64b}
+#calculator-panel .va-steps .va-step-done>span{border-color:#efc64b;color:#efc64b}
+#calculator-panel .va-private-note{color:#bdbdb7;font-size:14px;margin:12px 0 24px}
+body.standalone-app #calculator-panel .va-form,body.standalone-app #calculator-panel .va-result{padding:24px;margin:0 0 20px;border-radius:10px;background:#101010;border:1px solid #383832}
+#calculator-panel .va-step-label{font-size:14px;color:#efc64b;margin:0 0 8px}
+#calculator-panel h2{font-size:25px;line-height:1.3;letter-spacing:-.5px;margin:0 0 12px}
+#calculator-panel h3{font-size:18px;line-height:1.4;margin:0 0 10px}
+#calculator-panel h4{font-size:17px;margin:0 0 8px;line-height:1.5}
+#calculator-panel :is(h2,h3):focus{outline:none}
+#calculator-panel :is(h2,h3,h4){scroll-margin-top:100px}
+#calculator-panel .field-hint{font-size:14px;margin:10px 0 0;line-height:1.65}
+#calculator-panel .va-condition-editor{margin:24px 0;background:#080808;border:1px solid #424239;border-radius:10px;padding:20px}
+#calculator-panel .va-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 20px;align-items:start}
+#calculator-panel .va-grid>div{min-width:0}
+#calculator-panel .va-condition-info{border-left:3px solid #efc64b;padding:14px 18px;background:#191910;margin:16px 0 0}
+#calculator-panel .va-condition-info p{font-size:15px;color:#d8d8cd;margin:6px 0 10px}
+#calculator-panel .va-condition-info a{font-size:14px;min-height:44px;display:flex;align-items:center}
+#calculator-panel .va-editor-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px 20px;margin-top:22px}
+#calculator-panel .va-condition-list-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:22px}
+#calculator-panel .va-condition-list-heading h3{margin:0}
+#calculator-panel .va-condition-row{padding:16px 0;border-bottom:1px solid #3e3e36}
+#calculator-panel .va-condition-row-heading{display:flex;gap:16px;align-items:start;justify-content:space-between}
+#calculator-panel .va-condition-row-heading h4{font-size:17px;font-weight:650;flex:1}
+#calculator-panel .va-condition-row-heading>strong{color:#efc64b;font-size:21px;flex:none;line-height:1.2}
+#calculator-panel .va-condition-row>p{font-size:14px;color:#bdbdb7;margin:0}
+#calculator-panel .va-condition-actions{display:flex;gap:30px;margin-top:4px}
+#calculator-panel .va-condition-actions>button:last-child{color:#f3b8ad}
+#calculator-panel .va-success{color:#d2e8c7;font-size:15px;margin:14px 0}
+#calculator-panel :is(.va-success,.va-error):empty{display:none}
+#calculator-panel .va-error{padding:14px;border:1px solid #af776a;border-radius:8px;background:#271511;color:#ffe4db;margin:18px 0 0;font-size:16px}
+#calculator-panel .va-next{display:flex;width:100%;margin-top:24px}
+#calculator-panel .va-dependent-fields{border:0;margin:26px 0 0;padding:0;min-width:0}
+#calculator-panel .va-dependent-fields legend{font-size:18px;font-weight:650;margin-bottom:4px;padding:0}
+#calculator-panel .checkbox-label{display:grid;grid-template-columns:22px minmax(0,1fr);align-items:start;gap:12px;padding:12px 0;min-height:50px;font-size:16px;font-weight:400;margin:4px 0}
+#calculator-panel input[type=checkbox]{width:20px;height:20px;min-height:20px;margin:2px 0 0}
+#calculator-panel .va-wizard-actions{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px;margin:26px 0 0;padding-top:20px;border-top:1px solid #383832}
+#calculator-panel .va-wizard-actions .button-primary{margin-left:auto}
+#calculator-panel .va-result{scroll-margin-top:100px}
+#calculator-panel .va-result-year{display:inline-block;margin:8px 0 22px;padding:6px 10px;color:#efc64b;border:1px solid #5b4d26;border-radius:6px;font-size:15px}
+#calculator-panel .va-result-totals{display:grid;grid-template-columns:1fr 1.6fr;gap:28px;border-bottom:1px solid #383832;padding-bottom:20px;margin-bottom:18px}
+#calculator-panel .va-result-totals h3{font-size:15px;font-weight:400;color:#bdbdb7}
+#calculator-panel #va-combined-result{font-size:44px;line-height:1.2;color:#efc64b;margin:8px 0 0}
+#calculator-panel #va-pay-result{font-size:29px;line-height:1.3;font-weight:700;margin:8px 0;color:#fff}
+#calculator-panel #va-annual-result{font-size:16px;margin:6px 0 0}
+#calculator-panel #va-pay-basis{font-size:15px;color:#d5d5cc;margin:18px 0}
+#calculator-panel .va-cola-comparison{padding:16px;border-left:3px solid #efc64b;background:#201d12;margin:20px 0 26px;font-size:16px}
+#calculator-panel #va-breakdown{padding:0;list-style:none;line-height:1.6;margin:12px 0 24px}
+#calculator-panel #va-breakdown li{display:flex;gap:20px;justify-content:space-between;padding:12px 0;border-bottom:1px solid #30302e;font-size:16px}
+#calculator-panel #va-breakdown li>strong{flex:none;font-weight:650;white-space:nowrap}
+#calculator-panel #va-input-summary ul,#calculator-panel #va-math{padding-left:22px;font-size:15px}
+#calculator-panel #va-input-summary li,#calculator-panel #va-math li{margin:10px 0}
+#calculator-panel .va-footer{border-top:1px solid #383832;padding-top:12px}
+#calculator-panel .va-footer p{font-size:14px;color:#bdbdb7;margin:12px 0}
+#calculator-panel .va-footer a{font-size:14px;padding:10px 0}
+@media(max-width:620px){
+ #calculator-panel .screen-heading h1{font-size:28px}
+ body.standalone-app #calculator-panel .va-form,body.standalone-app #calculator-panel .va-result{padding:20px 16px!important}
+ #calculator-panel .va-year-panel{padding:18px 16px}
+ #calculator-panel .va-grid{grid-template-columns:1fr}
+ #calculator-panel .va-condition-editor{padding:18px 14px}
+ #calculator-panel .va-steps{gap:8px}
+ #calculator-panel .va-steps li{font-size:13px;flex-direction:column;align-items:start;gap:7px}
+ #calculator-panel .va-steps li>span{width:26px;height:26px}
+ #calculator-panel .va-condition-info{padding:12px 14px}
+ #calculator-panel .va-editor-actions .button{width:100%}
+ #calculator-panel .va-result-totals{grid-template-columns:1fr;gap:24px}
+ #calculator-panel .va-result-totals>div:first-child{display:flex;justify-content:space-between;align-items:center;gap:12px}
+ #calculator-panel .va-result-totals>div:first-child h3{margin:0}
+ #calculator-panel #va-combined-result{font-size:36px;margin:0}
+ #calculator-panel .va-wizard-actions{display:grid;grid-template-columns:1fr}
+ #calculator-panel .va-wizard-actions .button-primary{margin-left:0;grid-row:1}
+ #calculator-panel .va-wizard-actions .text-button{padding-top:12px}
+ #calculator-panel #va-breakdown li{font-size:15px;gap:12px}
+}

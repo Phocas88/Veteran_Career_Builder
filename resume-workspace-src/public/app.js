@@ -1,4 +1,4 @@
-import {initAppResources} from './app-resources.js?v=20261028-guided';
+import {initAppResources} from './app-resources.js?v=20261028-va';
 import {initResumeDelivery} from './resume-delivery.js?v=20261028-guided';
 import {initReviewFlow} from './review-flow.js?v=20261028-guided';
 import {initDesignEditor} from './design-editor.js?v=20261026-clear-journey';

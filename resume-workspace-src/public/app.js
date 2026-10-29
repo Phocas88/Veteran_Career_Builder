@@ -1,3 +1,4 @@
+import {initUsageAnalytics,trackUsage} from './analytics.js?v=20261029-analytics';
 import {initAppResources} from './app-resources.js?v=20261028-va-pdf';
 import {initResumeDelivery} from './resume-delivery.js?v=20261028-guided';
 import {initReviewFlow} from './review-flow.js?v=20261028-guided';
@@ -430,10 +431,12 @@ $('resume-file').addEventListener('change', async event => {
     document.dispatchEvent(new Event('resume:draft-ready'));
     $('import-status').textContent = `Your file is ready: ${file.name}. Check the text below, then press Next to continue.`;
     setTab('resume', false);
+    trackUsage('vcp_resume_import_complete',{file_type:({pdf:'pdf',docx:'docx',txt:'txt'})[file.name.split('.').pop().toLowerCase()]||'other'});
     document.dispatchEvent(new Event('resume:file-imported'));
     toast('Resume imported. You can edit the text before reviewing it.');
   } catch (error) {
     if (importAccount !== draftOwnerId()) return;
+    trackUsage('vcp_resume_import_failed');
     $('import-status').textContent = 'Import failed. Your current draft is unchanged.';
     showError(error.message || 'We could not open that file. Choose a fresh PDF, Word, or TXT copy.');
   } finally {
@@ -456,6 +459,7 @@ async function requestReview(recover) {
     input.focus();
     return;
   }
+  trackUsage('vcp_resume_review_started',{kind:typeof recover==='function'?'recovery':'new'});
   const controller = new AbortController();
   state.controller = controller;
   $('loading-message').textContent = 'Reviewing and rewriting your resume. This can take a couple of minutes. Your result will be saved with this build.';
@@ -470,8 +474,10 @@ async function requestReview(recover) {
     if (!Number.isFinite(data.score) || !Array.isArray(data.suggestions)) throw new Error('The review could not be read. Please try again.');
     if (submitted !== input.value || JSON.stringify(context) !== JSON.stringify({ role: roleInput.value, jobDescription: jobInput.value, applicationType: applicationInput.value, additionalDetails: detailsInput.value })) return toast('Your draft or application details changed during the review. Request a new review.');
     showReview(data,submitted);
+    trackUsage('vcp_resume_review_complete',{kind:typeof recover==='function'?'recovery':'new'});
     toast('Your review is ready. Every edit is your decision.');
   } catch (error) {
+    trackUsage('vcp_resume_review_failed',{reason:controller.signal.aborted?(controller.signal.reason==='timeout'?'timeout':'canceled'):error.recoverable||error instanceof TypeError?'connection':String(error.errorCode||'').startsWith('AI_')?'provider':'other'});
     if (controller.signal.aborted) {
       if (controller.signal.reason === 'timeout') showError('The review is taking longer than expected. Reopen this build from purchase history to recover the result; no second payment is needed.');
       else toast('Review canceled. Your draft is unchanged.');
@@ -523,6 +529,7 @@ $('download-resume').addEventListener('click', async () => {
   if (!canUseTemplate(currentDocument().design) || !input.value.trim()) return;
   try{await persistPurchasedDocument();}catch(error){showError(error.message);return;}
   saveDownload(new Blob([plainTextForModel(currentDocument())], { type: 'text/plain;charset=utf-8' }), exportFilename(currentDocument(), 'txt'));
+  trackUsage('vcp_resume_download',{format:'txt',document:'resume'});
   toast('Your resume download is ready.');
 });
 
@@ -546,6 +553,7 @@ for (const [id, extension, generate] of [['download-pdf', 'pdf', async model => 
       await persistPurchasedDocument(exportDraft);
       if (exportAccount !== draftOwnerId()) return;
       saveDownload(blob, exportFilename(model, extension));
+      trackUsage('vcp_resume_download',{format:extension,document:'resume'});
       toast('Your formatted resume download is ready.');
     } catch (error) {
       if (exportAccount !== draftOwnerId()) return;
@@ -626,6 +634,7 @@ try {
 setTab('resume', false);
 
 initAppResources();
+try{initUsageAnalytics();}catch{/* Optional analytics cannot block the app. */}
 delivery=initResumeDelivery({edit(){setTab('resume');setFlow('edit');}});
 
 initWorkspace({

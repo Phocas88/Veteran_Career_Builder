@@ -43,13 +43,13 @@ test('paid subscriptions load, paginate without duplicates and remain readable o
  await page.locator('.subs-archive summary').click();await expect(page.locator('#subs-root')).toContainText('Past Example');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await mkdir('/tmp/vcp-ux-previews',{recursive:true});await page.screenshot({path:'/tmp/vcp-ux-previews/admin-billing-phone.png',fullPage:true});
 });
 test('billing errors offer a working retry and sign-out removes private records',async({page})=>{
- await fixture(page,(route,url,count)=>count===1?route.fulfill({status:503,json:{error:'billing_unavailable'}}):route.fulfill({json:{subscribers:[subscription()],nextCursor:null}}));
- await openBilling(page);await expect(page.locator('#subs-root [role=alert]')).toContainText('Retry');await expect(page.locator('#subs-root')).not.toContainText('No recurring subscriptions');await page.locator('#subs-retry').click();await expect(page.locator('#subs-root')).toContainText('Alex Example');
+ let unavailable=true;await fixture(page,route=>unavailable?route.fulfill({status:503,json:{error:'billing_unavailable'}}):route.fulfill({json:{subscribers:[subscription()],nextCursor:null}}));
+ await openBilling(page);await expect(page.locator('#subs-root [role=alert]')).toContainText('Retry');await expect(page.locator('#subs-root')).not.toContainText('No recurring subscriptions');unavailable=false;await page.locator('#subs-retry').click();await expect(page.locator('#subs-root')).toContainText('Alex Example');
  await page.locator('button[onclick="doLogout()"]').click();await expect(page.locator('#dashboard')).toBeHidden();await expect(page.locator('#subs-root')).toBeEmpty();
 });
 test('an expired admin token refreshes once and a later access denial clears billing data',async({page})=>{
- await fixture(page,(route,url,count)=>route.fulfill(count===1?{status:401,json:{error:'expired_token'}}:count===2?{json:{subscribers:[subscription()],nextCursor:null}}:{status:403,json:{error:'not_admin'}}));
- await openBilling(page);await expect(page.locator('#subs-root')).toContainText('Alex Example');expect(await page.evaluate(()=>window.__forcedTokens)).toBe(1);await page.locator('#subs-refresh').click();await expect(page.locator('#subs-root')).toContainText('does not have administrator access');await expect(page.locator('#subs-root')).not.toContainText('alex@example.com');
+ let denied=false;await fixture(page,(route,url,count)=>route.fulfill(count===1?{status:401,json:{error:'expired_token'}}:denied?{status:403,json:{error:'not_admin'}}:{json:{subscribers:[subscription()],nextCursor:null}}));
+ await openBilling(page);await expect(page.locator('#subs-root')).toContainText('Alex Example');expect(await page.evaluate(()=>window.__forcedTokens)).toBe(1);denied=true;await page.locator('#subs-refresh').click();await expect(page.locator('#subs-root')).toContainText('does not have administrator access');await expect(page.locator('#subs-root')).not.toContainText('alex@example.com');
 });
 test('Analytics offers working report links and scopes optional embedded GA reports to the app',async({page})=>{
  const {ga}=await fixture(page,route=>route.fulfill({json:{subscribers:[],nextCursor:null}}));

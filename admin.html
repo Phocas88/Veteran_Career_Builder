@@ -26,6 +26,8 @@
   }catch(e){ window.db=null; console.warn('Firebase not configured'); }
 </script>
 <link rel="stylesheet" href="/admin-resume-reviews.css">
+<link rel="stylesheet" href="/admin-billing.css?v=20261029-admin">
+<script defer src="/admin-billing.js?v=20261029-admin"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-height:100vh;}
@@ -203,7 +205,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
   <!-- PAID SUBSCRIBERS -->
   <div class="panel" id="panel-subscribers">
-    <div style="font-size:.85rem;color:rgba(192,216,240,.5);margin-bottom:1rem;">Active and past Stripe subscribers. Manage billing in the Stripe Dashboard.</div>
+    <div style="font-size:.85rem;color:rgba(192,216,240,.5);margin-bottom:1rem;">Recurring website subscriptions are shown here. VCP Resume uses one-time payments; find those in the Stripe Payments dashboard.</div>
     <div id="subs-root"><div class="loading">Loading subscribers…</div></div>
   </div>
 
@@ -273,6 +275,14 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
   <!-- ANALYTICS -->
   <div class="panel" id="panel-analytics">
+    <section class="admin-report-links" aria-labelledby="admin-reports-title">
+      <h3 id="admin-reports-title">Website &amp; VCP Resume analytics</h3>
+      <p>VCP Resume uses your existing Google Analytics property (G-CMFKLT321J). Open Google Analytics and look for page titles starting with “VCP Resume” or events starting with <strong>vcp_resume_</strong>.</p>
+      <div class="subs-actions"><a id="admin-open-ga" href="https://analytics.google.com/analytics/web/" target="_blank" rel="noopener noreferrer">Open Google Analytics ↗</a><a id="admin-app-report-guide" href="/resumereview/analytics-guide.html" target="_blank" rel="noopener noreferrer">App reporting guide ↗</a></div>
+      <p>App reports include visitors who allowed analytics. Stripe remains the source for billing totals.</p>
+    </section>
+    <details class="admin-report-advanced"><summary>Optional: show Google Analytics reports here</summary>
+    <label class="admin-report-scope">Report for<select id="ga-report-scope" onchange="if(gaToken)gaFetchAll()"><option value="app">VCP Resume app</option><option value="all">Website and app together</option><option value="website">Main website</option></select></label>
     <div class="ga-setup" id="ga-setup">
       <h3>Connect Google Analytics 4</h3>
       <p>View your site traffic, top pages, visitor locations, and more, pulled directly from GA4.<br>
@@ -340,6 +350,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
         <button style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(192,216,240,.6);padding:.45rem 1.2rem;border-radius:7px;font-size:.8rem;cursor:pointer;margin-left:.5rem;" onclick="gaDisconnect()">Disconnect</button>
       </div>
     </div>
+    </details>
   </div>
 
   <!-- ADD STORY -->
@@ -382,6 +393,7 @@ var adminReady = false;
 // the dashboard auto-admits without re-entering the PIN (fixes "logs me out").
 function setAdminReady(ok, failed) {
   adminReady = !!ok;
+  if(!ok&&window.clearSubscribers)window.clearSubscribers();
   onAdminAuth(ok, failed);
   if (ok) {
     if (!authed) {
@@ -402,6 +414,7 @@ document.addEventListener('DOMContentLoaded', function(){
     // below then auto-admits the verified admin without re-entering the PIN.
     firebase.auth().getRedirectResult().catch(function(){});
     firebase.auth().onAuthStateChanged(function(user){
+      if(!user&&window.clearSubscribers)window.clearSubscribers();
       if (user && !user.isAnonymous) {
         user.getIdTokenResult().then(function(res){ setAdminReady(!!(res.claims && res.claims.admin === true)); }).catch(function(){});
       }
@@ -500,6 +513,8 @@ function adminRefreshActive() {
 }
 
 function doLogout() {
+  if(window.clearSubscribers)window.clearSubscribers();
+  if(window.firebase&&firebase.auth)firebase.auth().signOut().catch(function(){});
   authed = false;
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
@@ -915,7 +930,7 @@ var gaPropertyId = null;
 
 // Restore saved settings
 (function(){
-  var saved = JSON.parse(localStorage.getItem('vcp_ga_settings')||'{}');
+  var saved={};try{saved=JSON.parse(localStorage.getItem('vcp_ga_settings')||'{}');}catch(e){}
   if(saved.clientId) document.addEventListener('DOMContentLoaded', function(){ var el=document.getElementById('ga-client-id'); if(el) el.value=saved.clientId; });
   if(saved.propertyId) document.addEventListener('DOMContentLoaded', function(){ var el=document.getElementById('ga-property-id'); if(el) el.value=saved.propertyId; });
 })();
@@ -923,7 +938,7 @@ var gaPropertyId = null;
 function gaConnect() {
   var clientId = document.getElementById('ga-client-id').value.trim();
   var propId = document.getElementById('ga-property-id').value.trim();
-  if(!clientId || !propId) { alert('Enter both your OAuth Client ID and GA4 Property ID.'); return; }
+  if(!clientId || !/^\d{1,20}$/.test(propId)) { alert('Enter your OAuth Client ID and a numeric GA4 Property ID.'); return; }
 
   // Save settings
   localStorage.setItem('vcp_ga_settings', JSON.stringify({clientId: clientId, propertyId: propId}));
@@ -971,6 +986,9 @@ function gaDisconnect() {
 }
 
 function gaRunReport(body) {
+  var scope=document.getElementById('ga-report-scope').value;
+  var appFilter={filter:{fieldName:'pagePath',stringFilter:{matchType:'BEGINS_WITH',value:'/resumereview/screen/'}}};
+  if(scope!=='all')body=Object.assign({},body,{dimensionFilter:scope==='app'?appFilter:{notExpression:appFilter}});
   return fetch('https://analyticsdata.googleapis.com/v1beta/properties/' + gaPropertyId + ':runReport', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + gaToken, 'Content-Type': 'application/json' },
@@ -987,28 +1005,24 @@ function gaFetchAll() {
   // 1. Sessions: today, 7d, 30d + unique users 30d
   gaRunReport({
     dateRanges: [
-      {startDate: 'today', endDate: 'today'},
-      {startDate: '7daysAgo', endDate: 'today'},
-      {startDate: '30daysAgo', endDate: 'today'}
+      {name:'today', startDate: 'today', endDate: 'today'},
+      {name:'week', startDate: '6daysAgo', endDate: 'today'},
+      {name:'month', startDate: '29daysAgo', endDate: 'today'}
     ],
     metrics: [{name: 'sessions'}, {name: 'totalUsers'}]
   }).then(function(data) {
-    // GA4 returns rows for each date range
-    var rows = data.rows || [];
-    // With multiple dateRanges, each row has metricValues for each range
-    // Actually, GA4 returns separate rows per dateRange when no dimensions
-    // Let's parse: rows[0] = today, rows[1] = 7d, rows[2] = 30d
-    if(rows.length >= 1) document.getElementById('ga-today').textContent = fmtNum(rows[0].metricValues[0].value);
-    if(rows.length >= 2) document.getElementById('ga-7d').textContent = fmtNum(rows[1].metricValues[0].value);
-    if(rows.length >= 3) {
-      document.getElementById('ga-30d').textContent = fmtNum(rows[2].metricValues[0].value);
-      document.getElementById('ga-users-30d').textContent = fmtNum(rows[2].metricValues[1].value);
-    }
+    var rows=data.rows||[],ranges={};
+    rows.forEach(function(row,index){var name=row.dimensionValues&&row.dimensionValues[0]&&row.dimensionValues[0].value;ranges[name||['today','week','month'][index]]=row.metricValues||[];});
+    function metric(name,index){var value=ranges[name]&&ranges[name][index];return value?value.value:0;}
+    document.getElementById('ga-today').textContent=fmtNum(metric('today',0));
+    document.getElementById('ga-7d').textContent=fmtNum(metric('week',0));
+    document.getElementById('ga-30d').textContent=fmtNum(metric('month',0));
+    document.getElementById('ga-users-30d').textContent=fmtNum(metric('month',1));
   }).catch(function(e) { console.error('Sessions error:', e); toast('GA4 error: ' + e.message, '#c0392b'); });
 
   // 2. Daily sessions chart (30 days)
   gaRunReport({
-    dateRanges: [{startDate: '30daysAgo', endDate: 'today'}],
+    dateRanges: [{startDate: '29daysAgo', endDate: 'today'}],
     dimensions: [{name: 'date'}],
     metrics: [{name: 'sessions'}],
     orderBys: [{dimension: {dimensionName: 'date'}, desc: false}]
@@ -1022,7 +1036,7 @@ function gaFetchAll() {
       var pct = Math.max(2, (v/maxVal)*100);
       var d = r.dimensionValues[0].value;
       var label = d.substring(4, 6)+'/'+d.substring(6, 8);
-      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;" title="'+label+': '+v+' sessions">' +
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;" title="'+admEsc(label)+': '+v+' sessions">' +
         '<div style="width:100%;background:linear-gradient(180deg,rgba(240,192,64,.8),rgba(240,192,64,.3));border-radius:2px 2px 0 0;height:'+pct+'%;min-height:2px;"></div>' +
         '</div>';
     }).join('');
@@ -1030,7 +1044,7 @@ function gaFetchAll() {
 
   // 3. Top pages
   gaRunReport({
-    dateRanges: [{startDate: '30daysAgo', endDate: 'today'}],
+    dateRanges: [{startDate: '29daysAgo', endDate: 'today'}],
     dimensions: [{name: 'pagePath'}],
     metrics: [{name: 'screenPageViews'}],
     orderBys: [{metric: {metricName: 'screenPageViews'}, desc: true}],
@@ -1040,13 +1054,13 @@ function gaFetchAll() {
     document.getElementById('ga-pages').innerHTML = rows.map(function(r) {
       var page = r.dimensionValues[0].value;
       if(page.length > 40) page = page.substring(0, 40) + '…';
-      return '<tr><td style="font-size:.75rem;">'+page+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
+      return '<tr><td style="font-size:.75rem;">'+admEsc(page)+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
     }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.6);">No data</td></tr>';
   }).catch(function(e) { console.error('Pages error:', e); });
 
   // 4. Traffic sources
   gaRunReport({
-    dateRanges: [{startDate: '30daysAgo', endDate: 'today'}],
+    dateRanges: [{startDate: '29daysAgo', endDate: 'today'}],
     dimensions: [{name: 'sessionDefaultChannelGroup'}],
     metrics: [{name: 'sessions'}],
     orderBys: [{metric: {metricName: 'sessions'}, desc: true}],
@@ -1054,13 +1068,13 @@ function gaFetchAll() {
   }).then(function(data) {
     var rows = data.rows || [];
     document.getElementById('ga-sources').innerHTML = rows.map(function(r) {
-      return '<tr><td>'+r.dimensionValues[0].value+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
+      return '<tr><td>'+admEsc(r.dimensionValues[0].value)+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
     }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.6);">No data</td></tr>';
   }).catch(function(e) { console.error('Sources error:', e); });
 
   // 5. Countries & cities
   gaRunReport({
-    dateRanges: [{startDate: '30daysAgo', endDate: 'today'}],
+    dateRanges: [{startDate: '29daysAgo', endDate: 'today'}],
     dimensions: [{name: 'country'}, {name: 'city'}],
     metrics: [{name: 'sessions'}],
     orderBys: [{metric: {metricName: 'sessions'}, desc: true}],
@@ -1071,13 +1085,13 @@ function gaFetchAll() {
       var city = r.dimensionValues[1].value;
       var country = r.dimensionValues[0].value;
       var loc = (city && city !== '(not set)') ? city + ', ' + country : country;
-      return '<tr><td>'+loc+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
+      return '<tr><td>'+admEsc(loc)+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
     }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.6);">No data</td></tr>';
   }).catch(function(e) { console.error('Geo error:', e); });
 
   // 6. Devices
   gaRunReport({
-    dateRanges: [{startDate: '30daysAgo', endDate: 'today'}],
+    dateRanges: [{startDate: '29daysAgo', endDate: 'today'}],
     dimensions: [{name: 'deviceCategory'}],
     metrics: [{name: 'sessions'}],
     orderBys: [{metric: {metricName: 'sessions'}, desc: true}]
@@ -1086,7 +1100,7 @@ function gaFetchAll() {
     document.getElementById('ga-devices').innerHTML = rows.map(function(r) {
       var device = r.dimensionValues[0].value;
       device = device.charAt(0).toUpperCase() + device.slice(1);
-      return '<tr><td>'+device+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
+      return '<tr><td>'+admEsc(device)+'</td><td>'+fmtNum(r.metricValues[0].value)+'</td></tr>';
     }).join('') || '<tr><td colspan="2" style="color:rgba(192,216,240,.6);">No data</td></tr>';
   }).catch(function(e) { console.error('Devices error:', e); });
 }
@@ -1120,6 +1134,10 @@ async function admFetch(path, opts){
   var headers = Object.assign({ 'Authorization':'Bearer '+tok }, opts.headers||{});
   var r = await fetch(ADM_PROXY+path, Object.assign({}, opts, { headers: headers }));
   var data = {}; try { data = await r.json(); } catch(e){}
+  if(r.status===401&&data.error==='expired_token'){
+    var user=firebase.auth().currentUser;
+    if(user){headers.Authorization='Bearer '+await user.getIdToken(true);r=await fetch(ADM_PROXY+path,Object.assign({},opts,{headers:headers}));try{data=await r.json();}catch(e){data={};}}
+  }
   if(!r.ok){ var e=new Error((data&&data.error)||('http_'+r.status)); e.status=r.status; throw e; }
   return data;
 }
@@ -1133,72 +1151,9 @@ function admRelabelStat(id, text){ var el=document.getElementById(id); if(!el) r
 function admRelabelCard(tbodyId, title){ var tb=document.getElementById(tbodyId); if(!tb) return; var card=tb.closest('.ga-card'); var t=card&&card.querySelector('.ga-card-title'); if(t) t.textContent=title; }
 function admFillTable(tbodyId, rows){ var tb=document.getElementById(tbodyId); if(!tb) return; tb.innerHTML = rows.length ? rows.map(function(r){ return '<tr><td>'+admEsc(r[0])+'</td><td style="text-align:right;">'+Number(r[1]).toLocaleString()+'</td></tr>'; }).join('') : '<tr><td colspan="2" style="color:rgba(192,216,240,.4);">No data yet</td></tr>'; }
 function loadAnalytics(){
-  var setup=document.getElementById('ga-setup'); if(setup) setup.style.display='none';
-  var widgets=document.getElementById('ga-widgets'); if(widgets) widgets.style.display='block';
-  admFetch('/api/admin-analytics?days=30').then(function(d){
-    var days=d.days||[];
-    var today = days.length ? days[days.length-1].total : 0;
-    var last7 = days.slice(-7).reduce(function(a,x){return a+x.total;},0);
-    admSetN('ga-today', today); admSetN('ga-7d', last7); admSetN('ga-30d', d.totalVisits||0);
-    admRelabelStat('ga-30d','Page Views (30d)');
-    var tu = d.toolUsage||{}; var toolTotal = Object.keys(tu).reduce(function(a,k){return a+tu[k];},0);
-    admSetN('ga-users-30d', toolTotal); admRelabelStat('ga-users-30d','AI Tool Uses (30d)');
-    var max = Math.max(1, Math.max.apply(null, days.map(function(x){return x.total;}).concat([0])));
-    var chart=document.getElementById('ga-chart');
-    if(chart){ chart.innerHTML = days.map(function(x){ var h=Math.max(2,Math.round((x.total/max)*90)); return '<div title="'+x.date+': '+x.total+' views" style="flex:1;min-width:3px;height:'+h+'px;background:linear-gradient(180deg,#f0c040,#c8960a);border-radius:2px 2px 0 0;"></div>'; }).join(''); }
-    admFillTable('ga-sources', (d.topSources||[]).map(function(s){return [s.key, s.count];})); admRelabelCard('ga-sources','Traffic Sources (30d)');
-    admFillTable('ga-geo', (d.topCountries||[]).map(function(s){return [s.key, s.count];})); admRelabelCard('ga-geo','Top Countries (30d)');
-    var toolRows = Object.keys(tu).map(function(k){return [k.replace(/_/g,' '), tu[k]];}).sort(function(a,b){return b[1]-a[1];});
-    admFillTable('ga-pages', toolRows); admRelabelCard('ga-pages','AI Tool Usage (30d)');
-    var dev=document.getElementById('ga-devices'); if(dev){ dev.innerHTML='<tr><td colspan="2" style="color:rgba(192,216,240,.4);">First-party analytics (privacy-light, aggregate only)</td></tr>'; admRelabelCard('ga-devices','About'); }
-  }).catch(function(e){ if(widgets) widgets.insertAdjacentHTML('afterbegin', admErrHtml(e)); });
-}
-
-/* ── Paid subscribers ── */
-function subsTable(list){
-  if(!list.length) return '<div style="color:rgba(192,216,240,.4);padding:.5rem .2rem;">None</div>';
-  var head=['Email','Name','Status','Plan','Started','Renews',''];
-  var html='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;"><thead><tr>'+head.map(function(h){return '<th style="text-align:left;padding:.5rem .6rem;color:#f0c040;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;">'+h+'</th>';}).join('')+'</tr></thead><tbody>';
-  list.forEach(function(s){
-    var sc=(s.status==='active'||s.status==='trialing')?'#50c878':(s.status==='past_due'?'#f0c040':'#ff8080');
-    html+='<tr style="border-top:1px solid rgba(255,255,255,.06);">'+
-      '<td style="padding:.5rem .6rem;color:#cfe0f5;">'+admEsc(s.email||'—')+'</td>'+
-      '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admEsc(s.name||'—')+'</td>'+
-      '<td style="padding:.5rem .6rem;color:'+sc+';">'+admEsc(s.status)+(s.cancelAtPeriodEnd?' (canceling)':'')+'</td>'+
-      '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admMoney(s.amount)+(s.interval?('/'+s.interval):'')+'</td>'+
-      '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admDate(s.created)+'</td>'+
-      '<td style="padding:.5rem .6rem;color:#9bb3d0;">'+admDate(s.currentPeriodEnd)+'</td>'+
-      '<td style="padding:.5rem .6rem;"><a href="https://dashboard.stripe.com/subscriptions/'+encodeURIComponent(s.id)+'" target="_blank" style="color:#4285f4;font-size:.75rem;">Stripe ↗</a></td>'+
-    '</tr>';
-  });
-  return html+'</tbody></table></div>';
-}
-function toggleArchive(){
-  var a=document.getElementById('subs-archive'), b=document.getElementById('subs-arch-btn');
-  if(!a||!b) return;
-  if(a.style.display==='none'){ a.style.display='block'; b.textContent='Hide archive ▴'; }
-  else { a.style.display='none'; b.textContent=b.getAttribute('data-label'); }
-}
-function loadSubscribers(){
-  var root=document.getElementById('subs-root'); root.innerHTML='<div class="loading">Loading subscribers…</div>';
-  admFetch('/api/admin-subscribers').then(function(d){
-    var subs=d.subscribers||[];
-    var ACTIVE={active:1,trialing:1,past_due:1};
-    var active=subs.filter(function(s){return ACTIVE[s.status];});
-    var archived=subs.filter(function(s){return !ACTIVE[s.status];});
-    admSetN('stat-sub-total', active.length);
-    var subEl=document.getElementById('stat-sub-sub'); if(subEl) subEl.textContent=(d.uniqueActiveEmails||active.length)+' unique active';
-    if(!subs.length){ root.innerHTML='<div class="empty"><h3>No subscribers yet</h3></div>'; return; }
-    var html='<div style="font-size:.95rem;color:#50c878;font-weight:700;margin-bottom:.5rem;">Active subscribers ('+active.length+')</div>'+subsTable(active);
-    if(archived.length){
-      var lbl='Show archive ('+archived.length+' past) ▾';
-      html+='<div style="margin-top:1.4rem;">'+
-        '<button id="subs-arch-btn" data-label="'+lbl+'" onclick="toggleArchive()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(192,216,240,.7);padding:.4rem .9rem;border-radius:7px;font-size:.8rem;cursor:pointer;">'+lbl+'</button>'+
-        '<div id="subs-archive" style="display:none;margin-top:.75rem;"><div style="font-size:.85rem;color:rgba(192,216,240,.5);font-weight:600;margin-bottom:.5rem;">Past / canceled subscriptions</div>'+subsTable(archived)+'</div>'+
-      '</div>';
-    }
-    root.innerHTML=html;
-  }).catch(function(e){ root.innerHTML=admErrHtml(e); });
+  var widgets=document.getElementById('ga-widgets');
+  if(widgets)widgets.style.display=gaToken&&gaPropertyId?'block':'none';
+  if(gaToken&&gaPropertyId)gaFetchAll();
 }
 
 /* ── Message center ── */

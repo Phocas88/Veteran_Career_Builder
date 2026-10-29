@@ -9,6 +9,7 @@ export function initCoverLetters(api){
  const read=()=>({resume:$('letter-resume').value,role:$('letter-role').value.trim(),company:$('letter-company').value.trim(),jobDescription:$('letter-posting').value.trim(),additionalDetails:$('letter-details').value.trim(),applicationType});
  function fill(input={}){for(const [id,key]of [['letter-resume','resume'],['letter-role','role'],['letter-company','company'],['letter-posting','jobDescription'],['letter-details','additionalDetails']])$(id).value=input[key]||'';applicationType=input.applicationType||'private';}
  function step(number,focus=true){
+  document.querySelector('.letter-intro').hidden=false;
   $('letter-create').hidden=false;$('letter-recovery').hidden=true;$('cover-letter-editor').hidden=true;
   for(const [i,id]of ['letter-source-step','letter-job-step','letter-pay-step'].entries())$(id).hidden=i+1!==number;
   for(const el of document.querySelectorAll('[data-letter-progress]')){if(Number(el.dataset.letterProgress)===number)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');}
@@ -17,12 +18,12 @@ export function initCoverLetters(api){
  }
  function setBusy(value){busy=value;for(const id of ['letter-pay','letter-resume-order','letter-new','letter-refresh','career-letter-save'])$(id).disabled=value;document.querySelector('[data-career-panel="letter"]').setAttribute('aria-busy',String(value));}
  async function guarded(run){if(busy)return;const version=generation;setBusy(true);try{await run(version);}catch(error){if(version===generation){status(error.name==='TimeoutError'||error.message==='Failed to fetch'?'The connection did not finish. Reopen this letter below and retry; do not pay again.':error.message);if(active&&!active.result)recovery(active);}}finally{if(version===generation)setBusy(false);}}
- function recovery(letter){active=letter;$('letter-create').hidden=true;$('cover-letter-editor').hidden=true;$('letter-recovery').hidden=false;$('letter-new').hidden=false;
+ function recovery(letter){document.querySelector('.letter-intro').hidden=true;active=letter;$('letter-create').hidden=true;$('cover-letter-editor').hidden=true;$('letter-recovery').hidden=false;$('letter-new').hidden=false;
   $('letter-recovery-title').textContent=letter.title||'Your cover letter purchase';
   const unpaid=letter.status==='awaiting_payment';$('letter-recovery-note').textContent=unpaid?'Checkout has not been verified yet. Continue the existing checkout for this letter.':'Your $1 checkout is verified. Create or retry this letter using the same purchase; no second payment is needed.';
   $('letter-resume-order').textContent=unpaid?'Resume checkout →':'Create / retry this purchased letter →';
  }
- function showResult(letter){active=letter;dirty=false;$('letter-create').hidden=true;$('letter-recovery').hidden=true;$('cover-letter-editor').hidden=false;$('letter-new').hidden=false;
+ function showResult(letter){document.querySelector('.letter-intro').hidden=true;active=letter;dirty=false;$('letter-create').hidden=true;$('letter-recovery').hidden=true;$('cover-letter-editor').hidden=false;$('letter-new').hidden=false;
   $('career-cover-letter').value=letter.result.coverLetter;$('career-letter-source').textContent=letter.title||'Cover letter';
   $('letter-edit-note').textContent=letter.legacy?'This previously generated letter remains available. Save edits to your account or download a copy.':'Saved privately with this purchase. Save edits before leaving. Repeat downloads are included.';
   $('letter-checks').replaceChildren(...(letter.result.checks||[]).map(text=>node('li',text)));$('letter-checks-details').hidden=!$('letter-checks').children.length;

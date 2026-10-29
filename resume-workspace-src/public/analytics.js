@@ -84,7 +84,7 @@ export function initUsageAnalytics(){
  window.addEventListener('message',event=>{
   if(event.origin!==BRIDGE_ORIGIN||event.source!==frame?.contentWindow||event.data?.protocol!==PROTOCOL_VERSION)return;
   if(event.data.type==='ready'){ready=true;configure();}
-  if(event.data.type==='blocked'){blocked=true;stop();$('analytics-choice-status').textContent='Your choice is saved. Analytics could not load; the app is still available.';}
+  if(['blocked','unconfigured'].includes(event.data.type)){blocked=true;stop();$('analytics-choice-status').textContent='Your choice is saved. Analytics could not load; the app is still available.';}
  });
  for(const button of document.querySelectorAll('[data-analytics-choice]'))button.addEventListener('click',()=>choose(button.dataset.analyticsChoice==='allow'));
  for(const id of ['welcome-dialog','account-dialog']){$(id)?.addEventListener('close',refreshNotice);if($(id))new MutationObserver(refreshNotice).observe($(id),{attributes:true,attributeFilter:['open']});}

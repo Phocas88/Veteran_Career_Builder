@@ -33,19 +33,21 @@ const join = (...v) => v.filter(Boolean).join(' · ');
 const dates = r => [r.startDate,r.current?'Present':r.endDate].filter(Boolean).join(' – ') || r.dates || '';
 function clearance(r){return r.includeClearance && r.clearanceLevel && r.clearanceLevel!=='None' ? join('Clearance: '+r.clearanceLevel,'Status: '+(r.clearanceStatus||'Unknown'),r.sciAccess&&'SCI access (verified)',r.polygraph&&r.polygraph!=='None'&&r.polygraph) : '';}
 function extras(r){return [r.hours&&'Hours per week: '+r.hours,r.duties,r.achievements,r.tools&&'Tools / systems: '+r.tools,r.teamSize&&'Team supervised: '+r.teamSize,r.budget&&'Budget / assets: '+r.budget,clearance(r)].filter(Boolean);}
-export function profileToResume(input) {
- const p=normalizeProfile(input); const sections=[p.name,join(p.email,p.phone,join(p.city,p.state,p.country),p.linkedin,p.portfolio,p.github,p.website,p.contact),p.summary&&'PROFESSIONAL SUMMARY\n'+p.summary];
- if(p.roles.some(r=>(r.title||r.duties||r.mosRoles.some(x=>x.keyDuty))&&!r.branch))throw new Error('Choose a branch for each service experience.');
- const military=p.roles.filter(r=>r.title||r.duties||r.code||r.fullCode||r.rankHistory.some(x=>x.rank)||r.mosRoles.some(x=>x.title)).map(r=>[
+function serviceLines(r){return [
  join(r.title||r.mosTitle,dates(r)),join(branches[r.branch]?.name,r.component,r.serviceType,r.organization,r.location),join(r.rank&&'Military rank: '+r.rank,r.payGrade&&'Pay grade: '+r.payGrade,r.code&&(branches[r.branch]?.code||'Specialty code')+': '+r.code,r.fullCode&&'Full specialty code (as recorded): '+r.fullCode,r.skillLevel&&'Skill level / specialty grade (as recorded): '+r.skillLevel,r.mosTitle,r.tos&&'Time in service: '+r.tos),...extras(r),
  ...r.rankHistory.filter(x=>x.rank||x.payGrade).map(x=>join(x.rank&&'Rank history: '+x.rank,x.payGrade&&'Pay grade: '+x.payGrade,dates(x))),
- ...r.mosRoles.map(x=>join('Position: '+x.title,x.rankAtRole,[x.fromYear,x.toYear].filter(Boolean).join(' – '),x.keyDuty,x.achievements)),
- ...['asi','sqi'].flatMap(k=>r[k].map(x=>join(k==='asi'?'Additional qualification':'Special designator',x.code,x.desc))),
- ...r.additionalDuties.map(x=>join('Additional duty: '+x.name,dates(x),x.duties)),
- ...r.awards.map(x=>join('Award: '+x.name,x.date,x.reason)),...r.deployments.map(x=>join('Deployment / operation: '+x.name,x.location,dates(x),x.duties))
- ].filter(Boolean).join('\n'));
+ ...r.mosRoles.filter(hasText).map(x=>join('Position: '+x.title,x.rankAtRole,[x.fromYear,x.toYear].filter(Boolean).join(' – '),x.keyDuty,x.achievements)),
+ ...['asi','sqi'].flatMap(k=>r[k].filter(hasText).map(x=>join(k==='asi'?'Additional qualification':'Special designator',x.code,x.desc))),
+ ...r.additionalDuties.filter(hasText).map(x=>join('Additional duty: '+x.name,dates(x),x.duties)),
+ ...r.awards.filter(hasText).map(x=>join('Award: '+x.name,x.date,x.reason)),...r.deployments.filter(hasText).map(x=>join('Deployment / operation: '+x.name,x.location,dates(x),x.duties))
+ ].filter(Boolean);}
+const hasText=entry=>Object.values(entry).some(value=>typeof value==='string'&&value.trim());
+const hasServiceWork=r=>r.duties||r.achievements||r.mosRoles.some(x=>x.keyDuty||x.achievements)||r.additionalDuties.some(x=>x.duties)||r.deployments.some(x=>x.duties);
+export function profileToResume(input) {
+ const p=normalizeProfile(input); const sections=[p.name,join(p.email,p.phone,join(p.city,p.state,p.country),p.linkedin,p.portfolio,p.github,p.website,p.contact),p.summary&&'PROFESSIONAL SUMMARY\n'+p.summary];
+ const military=p.roles.map(r=>{const lines=serviceLines(r);if(lines.length&&!r.branch)throw new Error('Choose a branch for each service experience.');return lines.join('\n');}).filter(Boolean);
  if(military.length)sections.push('MILITARY EXPERIENCE\n'+military.join('\n\n'));
- const civilian=p.jobs.filter(r=>r.employer||r.jobTitle||r.duties).map(r=>[join(r.jobTitle,dates(r)),join(r.employer,r.type,r.city,r.state,r.country),join(r.series&&'Federal series: '+r.series,r.grade&&'Pay plan / grade: '+r.grade),...extras(r),r.reasonLeaving&&'Reason for leaving: '+r.reasonLeaving,r.includeSupervisor&&join(r.supervisor&&'Supervisor: '+r.supervisor,r.supervisorPhone,r.contactPermission&&'Contact permission: '+r.contactPermission)].filter(Boolean).join('\n'));
+ const civilian=p.jobs.filter(r=>r.employer||r.jobTitle||r.duties||r.achievements).map(r=>[join(r.jobTitle,dates(r)),join(r.employer,r.type,r.city,r.state,r.country),join(r.series&&'Federal series: '+r.series,r.grade&&'Pay plan / grade: '+r.grade),...extras(r),r.reasonLeaving&&'Reason for leaving: '+r.reasonLeaving,r.includeSupervisor&&join(r.supervisor&&'Supervisor: '+r.supervisor,r.supervisorPhone,r.contactPermission&&'Contact permission: '+r.contactPermission)].filter(Boolean).join('\n'));
  if(civilian.length||p.civilian)sections.push('CIVILIAN EXPERIENCE\n'+[civilian.join('\n\n'),p.civilian].filter(Boolean).join('\n\n'));
  const edu=p.educationEntries.filter(x=>x.institution||x.degree).map(x=>[join(x.degree,x.field,x.minor&&'Minor: '+x.minor),join(x.institution,x.city,x.state,x.country),join(x.status,dates(x)||x.year,x.gpa&&'GPA: '+x.gpa+(x.gpaScale?'/'+x.gpaScale:''),x.credits&&x.credits+' '+x.creditType+' credits'),x.honors,x.coursework&&'Coursework: '+x.coursework,x.pme&&'Military schools / PME: '+x.pme].filter(Boolean).join('\n'));
  if(edu.length||p.education)sections.push('EDUCATION\n'+[...edu,p.education].filter(Boolean).join('\n\n'));
@@ -54,9 +56,9 @@ export function profileToResume(input) {
  const training=p.training.filter(x=>x.name).map(x=>join(x.name,x.institution,x.date,x.status,x.hours&&x.hours+' training hours',x.skills));if(training.length)sections.push('PROFESSIONAL TRAINING\n'+training.join('\n'));
  const skills=p.skillsEntries.filter(x=>x.name).map(x=>join(x.name,x.category,x.proficiency,x.evidence));if(skills.length||p.skills)sections.push('SKILLS\n'+[...skills,p.skills].filter(Boolean).join('\n'));
  const languages=p.languages.filter(x=>x.name).map(x=>join(x.name,x.speaking&&'Speaking: '+x.speaking,x.reading&&'Reading: '+x.reading,x.writing&&'Writing: '+x.writing,x.test));if(languages.length)sections.push('LANGUAGES\n'+languages.join('\n'));
- const projects=p.projects.filter(x=>x.name).map(x=>[join(x.name,x.title,dates(x)),x.duties,x.achievements,x.url].filter(Boolean).join('\n'));if(projects.length)sections.push('PROJECTS & VOLUNTEERING\n'+projects.join('\n\n'));
+ const projects=p.projects.filter(x=>x.name||x.title||x.duties||x.achievements).map(x=>[join(x.name,x.title,dates(x)),x.duties,x.achievements,x.url].filter(Boolean).join('\n'));if(projects.length)sections.push('PROJECTS & VOLUNTEERING\n'+projects.join('\n\n'));
  const resume=sections.filter(Boolean).join('\n\n');
- if(!p.name||!p.roles.some(r=>r.duties||r.achievements||r.mosRoles.some(x=>x.keyDuty))&&!p.jobs.some(r=>r.duties||r.achievements)&&!p.civilian&&!p.projects.some(r=>r.duties))throw new Error('Add your name and actual duties or civilian experience before building your draft.');
+ if(!p.name||!p.roles.some(hasServiceWork)&&!p.jobs.some(r=>r.duties||r.achievements)&&!p.civilian&&!p.projects.some(r=>r.duties))throw new Error('Add your name and actual duties or civilian experience before building your draft.');
  if(resume.length>20000)throw new Error('Your background exceeds the 20,000-character AI draft limit. Your fields are unchanged. Save your background, then shorten details to the experience relevant to this application.');
  return resume;
 }

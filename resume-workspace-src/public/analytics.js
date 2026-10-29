@@ -4,7 +4,8 @@ import {careerBuildContext} from './payments.js?v=20261028-guided';
 const $=id=>document.getElementById(id);
 const memory=new Map();
 const storage={getItem:key=>{try{return localStorage.getItem(key)??memory.get(key)??null;}catch{return memory.get(key)??null;}},setItem:(key,value)=>{memory.set(key,value);try{localStorage.setItem(key,value);}catch{}},removeItem:key=>{memory.delete(key);try{localStorage.removeItem(key);}catch{}}};
-let initialized=false,consent=null,frame=null,ready=false,configured=false,blocked=false,queue=[],identity=null,lastScreen=null,lastEventAt=0;
+let initialized=false,consent=null,frame=null,ready=false,configured=false,blocked=false,queue=[],identity=null,lastScreen=null,lastEventAt=0,awaitingChoice=false;
+export const privacyChoicePending=()=>awaitingChoice;
 const privacySignal=()=>navigator.globalPrivacyControl===true||navigator.doNotTrack==='1'||window.doNotTrack==='1';
 const privateScreen=()=>document.body.dataset.appView==='calculator'||$('emergency-help-dialog')?.open===true;
 const enabled=()=>consent===true&&!privacySignal()&&!privateScreen();
@@ -63,8 +64,13 @@ function pageChanged(){
  refreshNotice();
 }
 function refreshNotice(){
- const hasModal=$('welcome-dialog')?.open||$('account-dialog')?.open;
- $('usage-analytics-notice').hidden=consent!==null||privacySignal()||hasModal||document.body.dataset.appView!=='home';
+ const dialog=$('usage-analytics-notice'),needsChoice=consent===null&&!privacySignal();
+ if(needsChoice&&!privateScreen()&&!dialog.open&&!document.querySelector('dialog[open]')){
+  dialog.showModal();awaitingChoice=true;
+ }else if(!needsChoice){
+  const resumeEntry=awaitingChoice;awaitingChoice=false;if(dialog.open)dialog.close();
+  if(resumeEntry)document.dispatchEvent(new Event('app:privacy-ready'));
+ }
  const status=privacySignal()?'A browser privacy signal is active. Optional analytics stays off.':consent===true&&blocked?'Your choice is saved. Analytics could not load; the app is still available.':consent===true?'Optional usage analytics is on. You can turn it off at any time.':consent===false?'Essential only. Optional usage analytics is off.':'Optional usage analytics is off until you choose Allow.';
  $('analytics-choice-status').textContent=status;
  for(const button of document.querySelectorAll('[data-analytics-choice="allow"]'))button.disabled=privacySignal();
@@ -87,6 +93,7 @@ export function initUsageAnalytics(){
   if(['blocked','unconfigured'].includes(event.data.type)){blocked=true;stop();$('analytics-choice-status').textContent='Your choice is saved. Analytics could not load; the app is still available.';}
  });
  for(const button of document.querySelectorAll('[data-analytics-choice]'))button.addEventListener('click',()=>choose(button.dataset.analyticsChoice==='allow'));
+ $('usage-analytics-notice').addEventListener('cancel',event=>{event.preventDefault();choose(false);});
  for(const id of ['welcome-dialog','account-dialog']){$(id)?.addEventListener('close',refreshNotice);if($(id))new MutationObserver(refreshNotice).observe($(id),{attributes:true,attributeFilter:['open']});}
  document.addEventListener('app:view-changed',()=>{pageChanged();refreshNotice();});
  const observer=new MutationObserver(pageChanged);

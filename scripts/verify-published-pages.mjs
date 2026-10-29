@@ -1,12 +1,12 @@
 // Only public pages and an unauthenticated authorization check. No user records.
 const base='https://veterancareerpath.com';
 const checks=[
- ['/resumereview/','completion-dialog'],
+ ['/resumereview/','id="usage-analytics-description"'],
  ['/resumereview/analytics-guide.html','G-CMFKLT321J'],
  ['/admin.html','admin-billing.js?v=20261029-admin'],
  ['/admin-billing.js','/api/admin-subscribers'],
  ['/admin-resume.js','renderFeedback'],
- ['/resumereview/analytics.js','20261029-resume-reports'],
+ ['/resumereview/analytics.js','privacyChoicePending'],
  ['/resumereview/completion-prompt.js','feedback-submit'],
  ['/resumereview/completion-prompt.css','.completion-stars'],
 ];

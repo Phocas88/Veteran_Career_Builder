@@ -15,7 +15,9 @@ export async function unlockEntry(page){
  if(await page.locator('#flow-payment').isVisible()){await page.locator('#upfront-consent').check();await page.locator('#purchase-start').click();}
 }
 export async function installAccount(page,kind='none',options={}) {
- await page.addInitScript(({kind,uid,records})=>{
+ await page.addInitScript(({kind,uid,records,privacyPrompt})=>{
+  // Most journeys model a returning visitor. First-visit tests explicitly request an unanswered privacy choice.
+  if(!privacyPrompt&&!localStorage.getItem('vcp_resume_analytics_choice_v1'))localStorage.setItem('vcp_resume_analytics_choice_v1',JSON.stringify({version:1,enabled:false,updatedAt:Date.now()}));
   let docSequence=0;const listeners=[];window.__oauthCalls=[];window.__persistence=[];window.__googleResult={uid:'google-new',email:'google@example.com',isNewUser:true};window.__googleFailure=null;window.__writes=[];window.__deleted=[];window.__records=records||{};
   const makeUser=(uid,email,providerData=[])=>({uid,email,providerData,getIdToken:async()=> 'firebase-'+uid,async linkWithPopup(provider){window.__oauthCalls.push({action:'link',uid:this.uid,parameters:provider.parameters});if(window.__googleFailure)throw Object.assign(new Error('Fixture provider failure'),{code:window.__googleFailure,email:'google@example.com'});this.email=window.__googleResult.email;this.providerData=[{providerId:'google.com'}];window.__switchAuth(this);return {user:this,additionalUserInfo:{isNewUser:false}};},async linkWithCredential(credential){this.email=credential.email;window.__switchAuth(this);return {user:this};}});
   const auth={currentUser:kind==='registered'?makeUser(uid||'veteran-a','alex@example.com'):kind==='guest'?makeUser('resumeGuest_fixture',null):null,

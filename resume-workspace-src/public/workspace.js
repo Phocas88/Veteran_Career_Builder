@@ -10,7 +10,8 @@ import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPa
 import { initCareerTools } from './career-tools.js?v=20261029-completion';
 import {initCompletionPrompt} from './completion-prompt.js?v=20261029-completion2';
 import {initAppShell} from './app-shell.js?v=20261028-guided';
-import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261026-career-tools';
+import {privacyChoicePending} from './analytics.js?v=20261029-entry';
+import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261029-entry';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261028-guided';
 import { connectFirebase } from './firebase-client.js';
 
@@ -27,6 +28,7 @@ let careerUI,profileSetup,googleReady=false,googleBusy=false,emailBusy=false,per
 const guest = account => !!account && !account.email;
 function choice() { try { return sessionStorage.getItem('vcp_resume_entry'); } catch { return null; } }
 function rememberChoice(value) { try { if(value)sessionStorage.setItem('vcp_resume_entry',value);else sessionStorage.removeItem('vcp_resume_entry'); } catch {} }
+function showWelcome(){if(!privacyChoicePending()&&!document.querySelector('dialog[open]'))$('welcome-dialog').showModal();}
 function mode(value) {
   authMode = value;
   $('auth-title').textContent = value === 'create' ? 'Create your free account' : 'Welcome back';
@@ -276,7 +278,9 @@ export function initWorkspace(adapter) {
   $('welcome-dialog').addEventListener('cancel', event => { event.preventDefault(); continueGuest(); });
   $('auth-switch').onclick = () => mode(authMode === 'create' ? 'signin' : 'create');
   $('checkout-create').onclick = () => openAccount('create');
-  if (!choice() && !new URLSearchParams(location.search).has('build')) $('welcome-dialog').showModal();
+  const welcomeIfNeeded=()=>{if(!choice()&&!new URLSearchParams(location.search).has('build'))showWelcome();};
+  document.addEventListener('app:privacy-ready',welcomeIfNeeded);
+  welcomeIfNeeded();
   initPayments({saveFinished:saveFinishedResume, ensureConnection, ensureGuest, adapter,restoreEntryContext:async context=>{
     await ensureConnection();const version=accountVersion;
     const [job,resume]=await Promise.all([store.getJob(context.jobId),context.resumeVersionId?store.getVersion(context.resumeVersionId):null]);

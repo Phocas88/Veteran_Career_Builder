@@ -172,6 +172,8 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     </div>
   </div>
 
+  <div class="stat-card" style="margin-bottom:1rem;border-color:#f0c040"><div class="resume-admin-entry-actions"><button type="button" id="resume-admin-shortcut" class="resume-admin-shortcut"><div class="stat-n" id="stat-resume-purchases">—</div><div class="stat-l">VCP Resume purchases →</div><div class="stat-sub" id="stat-resume-purchase-period">All time purchases · open purchases and app activity</div></button><button type="button" id="resume-admin-activity-shortcut" class="tab">App activity →</button></div></div>
+
   <!-- Stats -->
   <div class="stats-row" id="stats-row">
     <div class="stat-card"><div class="stat-n" id="stat-email-total">,</div><div class="stat-l">Email Subscribers</div><div class="stat-sub">Newsletter signups</div></div>
@@ -185,10 +187,10 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <div class="stat-card" style="border-color:rgba(240,192,64,.25);"><div class="stat-n" id="stat-msg-unread">—</div><div class="stat-l">Messages</div><div class="stat-sub">unread</div></div>
   </div>
 
-  <div class="stat-card" style="margin-bottom:1rem;border-color:#f0c040"><button type="button" id="resume-admin-shortcut" class="resume-admin-shortcut"><div class="stat-n" id="stat-resume-purchases">—</div><div class="stat-l">VCP Resume purchases →</div><div class="stat-sub" id="stat-resume-purchase-period">All time purchases · open purchases and app activity</div></button></div>
+
 
   <!-- Tabs -->
-  <div class="tabs">
+  <div class="tabs" id="admin-sections">
     <button class="tab" id="resume-admin-tab" onclick="switchTab('vcp-resume',this)" style="border-color:#f0c040">VCP Resume</button>
     <button class="tab active" onclick="switchTab('emails',this)">📧 Subscribers</button>
     <button class="tab" onclick="switchTab('users',this)">👥 Users</button>
@@ -203,7 +205,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <button class="tab" id="rr-tab-btn" onclick="switchTab('resume-reviews',this)">📝 Resume Reviews <span id="rr-tab-badge" style="color:#f0c040;font-weight:700;display:none;"></span></button>
   </div>
 
-  <div class="panel" id="panel-vcp-resume"><div class="resume-admin-intro"><h2>VCP Resume</h2><p>See purchases, $0 promo checkouts, additional templates and app activity here.</p></div><div id="resume-admin-root"><p class="resume-admin-note">Open VCP Resume to load your reports.</p></div></div>
+  <div class="panel" id="panel-vcp-resume"><div class="resume-admin-intro"><p><a href="#admin-sections" style="color:#f0c040">← Admin menu</a></p><h2>VCP Resume</h2><p>See purchases, $0 promo checkouts, additional templates and app activity here.</p></div><div id="resume-admin-root"><p class="resume-admin-note">Open VCP Resume to load your reports.</p></div></div>
 
   <!-- RESUME REVIEWS -->
   <div class="panel" id="panel-resume-reviews">
@@ -540,7 +542,8 @@ function switchTab(name, btn) {
   btn.classList.add('active');
   document.getElementById('panel-' + name).classList.add('active');
   if (name === 'resume-reviews' && window.rrOnTabOpen) window.rrOnTabOpen();
-  if (name === 'vcp-resume' && window.loadResumeReport)window.loadResumeReport();
+  document.getElementById('stats-row').style.display=name==='vcp-resume'?'none':'';
+  if (name === 'vcp-resume' && window.loadResumeReport){window.loadResumeReport();requestAnimationFrame(function(){document.getElementById('panel-vcp-resume').scrollIntoView({block:'start'});});}
   if (name === 'analytics') loadAnalytics();
   if (name === 'subscribers') loadSubscribers();
   if (name === 'messages') loadMessages();

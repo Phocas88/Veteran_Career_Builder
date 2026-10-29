@@ -58,5 +58,6 @@
  }
  function clear(){generation++;orders=[];cursor=null;activity=null;ordersLoaded=false;loading=false;var root=document.getElementById('resume-admin-root');if(root)root.innerHTML='';var count=document.getElementById('stat-resume-purchases');if(count)count.textContent='—';}
  window.loadResumeReport=loadResumeReport;window.clearResumeReport=clear;
- document.addEventListener('DOMContentLoaded',function(){var shortcut=document.getElementById('resume-admin-shortcut');if(shortcut)shortcut.onclick=function(){switchTab('vcp-resume',document.getElementById('resume-admin-tab'));};});
+ window.openResumeAdmin=function(next){view=next==='activity'?'activity':'purchases';generation++;loading=false;switchTab('vcp-resume',document.getElementById('resume-admin-tab'));};
+ document.addEventListener('DOMContentLoaded',function(){var shortcut=document.getElementById('resume-admin-shortcut');if(shortcut)shortcut.onclick=function(){window.openResumeAdmin('purchases');};var activityShortcut=document.getElementById('resume-admin-activity-shortcut');if(activityShortcut)activityShortcut.onclick=function(){window.openResumeAdmin('activity');};});
 })();

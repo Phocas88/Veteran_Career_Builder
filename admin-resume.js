@@ -36,14 +36,14 @@
   root.querySelectorAll('[data-resume-admin-view]').forEach(function(button){button.onclick=function(){view=button.dataset.resumeAdminView;generation++;loading=false;render();loadResumeReport();};});
   document.getElementById('resume-admin-period').onchange=function(event){period=event.target.value;orders=[];cursor=null;ordersLoaded=false;activity=null;feedback=[];feedbackLoaded=false;feedbackCursor=null;loading=false;generation++;render();loadResumeReport();};
   document.getElementById('resume-admin-refresh').onclick=function(){loadResumeReport({refresh:true});};
-  var retry=document.getElementById('resume-admin-retry');if(retry)retry.onclick=function(){loadResumeReport({refresh:view==='feedback'?!feedbackCursor:!cursor,more:view==='feedback'?!!feedbackCursor:!!cursor});};
+  var retry=document.getElementById('resume-admin-retry');if(retry)retry.onclick=function(){var pageCursor=view==='feedback'?feedbackCursor:view==='purchases'?cursor:null;loadResumeReport({refresh:!pageCursor,more:!!pageCursor});};
   if(view==='purchases'){document.getElementById('resume-admin-search').oninput=renderOrders;document.getElementById('resume-admin-status').onchange=renderOrders;renderOrders();var more=document.getElementById('resume-admin-more');if(more)more.onclick=function(){loadResumeReport({more:true});};}
   var feedbackMore=document.getElementById('resume-admin-feedback-more');if(feedbackMore)feedbackMore.onclick=function(){loadResumeReport({more:true});};
  }
  async function loadResumeReport(options){
   options=options||{};if(loading)return;
   if(!options.refresh&&!options.more&&(view==='purchases'?ordersLoaded:view==='feedback'?feedbackLoaded:activity!==null)){render();return;}
-  var nextCursor=view==='feedback'?feedbackCursor:cursor;if(options.more&&!nextCursor)return;
+  var nextCursor=view==='feedback'?feedbackCursor:view==='purchases'?cursor:null;if(options.more&&!nextCursor)return;
   loading=true;var request=++generation,requestedView=view,requestedPeriod=period;
   var root=document.getElementById('resume-admin-root');if(!root){loading=false;return;}
   if(!options.more)root.innerHTML='<p class="resume-admin-note" role="status">Loading VCP Resume '+(view==='purchases'?'purchases from Stripe':view==='feedback'?'feedback':'activity')+'…</p>';

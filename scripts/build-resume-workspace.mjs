@@ -22,7 +22,7 @@ rmSync(output, { recursive: true, force: true });
 cpSync(path.join(source, 'public'), output, { recursive: true });
 const index = path.join(output, 'index.html');
 writeFileSync(index, readFileSync(index, 'utf8').replace('</head>', '<link rel="canonical" href="https://veterancareerpath.com/resumereview/">\n</head>'));
-for (const file of ['analytics-guide.html', 'analytics.js', 'analytics-model.js', 'analytics.css', 'index.html', 'workspace.js', 'privacy.html', 'service-library.js', 'service-library-model.js', 'service-library-data.json', 'vendor/pdf.mjs', 'vendor/pdf.worker.mjs', 'vendor/pdf-export.mjs', 'vendor/word-export.mjs']) {
+for (const file of ['completion-prompt.js', 'completion-prompt.css', 'analytics-guide.html', 'analytics.js', 'analytics-model.js', 'analytics.css', 'index.html', 'workspace.js', 'privacy.html', 'service-library.js', 'service-library-model.js', 'service-library-data.json', 'vendor/pdf.mjs', 'vendor/pdf.worker.mjs', 'vendor/pdf-export.mjs', 'vendor/word-export.mjs']) {
   if (!existsSync(path.join(output, file))) throw new Error(`Resume workspace is missing ${file}`);
 }
 // Keep old links, in-flight imports and existing Stripe return URLs working.

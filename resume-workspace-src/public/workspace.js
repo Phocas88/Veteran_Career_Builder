@@ -7,7 +7,8 @@ import {showAppView} from './app-shell.js?v=20261028-guided';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261028-guided';
 import { fillBackground, readBackground } from './background-form.js?v=20261026-career-tools';
 import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, deletePurchasedResume, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261028-guided';
-import { initCareerTools } from './career-tools.js?v=20261028-guided';
+import { initCareerTools } from './career-tools.js?v=20261029-completion';
+import {initCompletionPrompt} from './completion-prompt.js?v=20261029-completion';
 import {initAppShell} from './app-shell.js?v=20261028-guided';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261026-career-tools';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261028-guided';
@@ -190,7 +191,7 @@ export async function saveFinishedResume(draft){
 export function initWorkspace(adapter) {
   callback = adapter; fillProfile({});
   careerUI=initCareerTools({
-   user:()=>user,openAccount:()=>openAccount(),getProfile:readProfile,getDraft:()=>callback.getDraft(),
+   user:()=>user,openAccount:()=>openAccount(),reviewCurrent:()=>adapter.showCheckout(),getProfile:readProfile,getDraft:()=>callback.getDraft(),
    applyProfile:profile=>{fillProfile(profile);profileDirty=true;profileStorage?.dirty();const select=document.querySelector('[data-profile-section]');select.value='roles';select.dispatchEvent(new Event('change'));},
    saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),
    loadInterest:async()=>(await careerStore()).interest(),saveInterest:async value=>(await careerStore()).saveInterest(value),removeInterest:async()=>(await careerStore()).removeInterest(),
@@ -250,6 +251,16 @@ export function initWorkspace(adapter) {
   });
   $('profile-load-retry').onclick=()=>profileStorage.reload();
   initAppShell({openCareer:careerUI.open,openAccount:()=>openAccount(),getDraft:()=>callback.getDraft(),hasPaidBuild,continueResume:()=>callback.continueResume()});
+  initCompletionPrompt({owner:()=>user?.uid,build:careerBuildContext,openCv:()=>$('finished-cv').click(),openLetter:()=>careerUI.open('letter'),request:async(action,details,signal)=>{
+    const c=await ensureConnection(),owner=c.auth.currentUser,version=accountVersion;
+    if(!owner)throw new Error('Sign in again.');
+    const token=await owner.getIdToken();
+    if(owner.uid!==user?.uid||version!==accountVersion)throw new Error('Account changed.');
+    const response=await fetch('https://vcp-proxy.vercel.app/api/claude',{method:'POST',headers:{'Content-Type':'application/json','X-VCP-Firebase-Token':token},body:JSON.stringify({workspace:true,action,...details}),signal:signal||AbortSignal.timeout(12000)});
+    const result=await response.json();
+    if(owner.uid!==user?.uid||version!==accountVersion||!response.ok)throw new Error('Feedback could not be sent.');
+    return result;
+  }});
   initGuidedFlow({showResume:adapter.showResume,manualFinish:()=>adapter.showExport(),openAccount:()=>openAccount(),canUse:hasPaidBuild,startEntry:choosePaidEntry,newResume:()=>{
     if(callback.getDraft().resume.trim()&&!confirm('Start a new paid build? Save or download your current work first. Your previous purchases remain in purchase history.'))return false;
     callback.clearAccountDraft();forgetActiveBuild();return true;

@@ -5,7 +5,7 @@ import {initReviewFlow} from './review-flow.js?v=20261028-guided';
 import {initDesignEditor} from './design-editor.js?v=20261026-clear-journey';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261028-guided';
 import {showAppView} from './app-shell.js?v=20261028-guided';
-import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261028-guided';
+import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261029-completion';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js?v=20261028-guided';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';
@@ -496,7 +496,7 @@ $('error-dismiss').addEventListener('click', () => { $('error-banner').hidden = 
 
 $('template-finish').addEventListener('click',async()=>{
  if(exporting||!hasPaidBuild()||!input.value.trim())return;
- const owner=draftOwnerId(),model=currentDocument();exporting=true;refreshDraft();
+ const owner=draftOwnerId(),model=currentDocument(),firstFinish=!careerBuildContext()?.includedTemplate;exporting=true;refreshDraft();
  $('finished-status').textContent='Saving your finished resume…';
  try{
   if(model.applicationType==='federal')checkFederalDownload(model,await preparePdf(model));
@@ -504,6 +504,7 @@ $('template-finish').addEventListener('click',async()=>{
   try{const saved=await saveFinishedResume(result);if(owner!==draftOwnerId())return;$('finished-status').textContent=saved?'Saved in My resumes. Your purchased resume is ready to download below.':'Finished resume saved with this purchase. Create an account to keep it across devices.';}
   catch(error){$('finished-status').textContent='Saved with your purchase. My resumes can reopen this document even though the account-library copy did not sync.';}
   $('finished-actions').hidden=false;delivery.show(true,true);
+  if(firstFinish)document.dispatchEvent(new CustomEvent('resume:finished',{detail:{buildId:careerBuildContext()?.id}}));
  }catch(error){if(owner===draftOwnerId()){$('finished-status').textContent=error.message;showError(error.message);}}
  finally{exporting=false;refreshDraft();}
 });

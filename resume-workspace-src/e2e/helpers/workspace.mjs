@@ -66,4 +66,4 @@ export async function confirmCvSections(page){
  await expect(page.locator('#cv-section-guide')).toBeHidden();await expect(page.locator('#cv-consent')).toBeVisible();
 }
 
-export async function navigateApp(page,route){const button=page.locator('[data-app-route="'+route+'"]');if(!await button.isVisible()){await page.locator('#app-menu-open').click();await expect(button).toBeVisible();}await button.click();}
+export async function navigateApp(page,route){const button=page.locator('.app-nav [data-app-route="'+route+'"]');await expect(button).toBeVisible();await button.click();}

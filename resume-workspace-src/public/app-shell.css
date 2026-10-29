@@ -16,11 +16,23 @@
 .standalone-app .header-action:hover{background:#1b304a;color:white}
 .standalone-app svg{flex-shrink:0}
 .standalone-app .header-action svg,.standalone-app .app-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.standalone-app .app-nav{display:flex;position:fixed;inset:auto 0 0;z-index:45;justify-content:center;align-items:stretch;padding:6px max(12px,calc((100vw - 700px)/2)) calc(6px + env(safe-area-inset-bottom));min-height:68px;background:#0b192bf5;border-top:1px solid var(--app-line);backdrop-filter:blur(12px)}
-.standalone-app .app-nav>button{flex:1;max-width:140px;min-width:0;min-height:52px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;margin:0;padding:5px 2px;border:0;border-radius:9px;background:transparent;color:#9db1c7;font-family:inherit;font-size:11px;line-height:1.3;font-weight:500;cursor:pointer}
-.standalone-app .app-nav>button span{font-size:11px;line-height:1.3}
-.standalone-app .app-nav>button.active{color:#ffdb71;background:#203248}
-.standalone-app .app-nav>button:hover{color:#fff;background:#1a2c42}
+/* All tools are direct destinations on every screen. Phones use two rows. */
+:root{--app-nav-height:78px}
+.standalone-app .app-nav{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));position:fixed;inset:auto 0 0;z-index:45;align-items:stretch;gap:2px;padding:4px max(8px,calc((100vw - 1040px)/2)) calc(4px + env(safe-area-inset-bottom));background:#050505;border-top:1px solid var(--app-line)}
+.standalone-app .app-nav>button{min-width:0;min-height:64px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;margin:0;padding:5px 3px;border:0;border-radius:8px;background:transparent;color:#b6b6b0;font-family:inherit;font-size:12px;font-weight:500;line-height:1.3;cursor:pointer}
+.standalone-app .app-nav>button>span{font-family:inherit;font-size:12px;line-height:1.3;text-align:center;white-space:normal;overflow-wrap:normal;max-width:100%;min-height:2.6em;display:flex;align-items:center;justify-content:center}
+.standalone-app .app-nav>button.active{color:#efc64b;background:#211e14}
+.standalone-app .app-nav>button:hover{color:#fff;background:#1b1b19}
+@media(max-width:760px){
+ :root{--app-nav-height:148px}
+ .standalone-app .app-nav{grid-template-columns:repeat(10,minmax(0,1fr));padding-left:5px;padding-right:5px;gap:2px}
+ .standalone-app .app-nav>button{grid-column:span 2;padding:4px 2px;min-height:62px}
+ .standalone-app .app-nav>button:nth-child(6){grid-column:2/span 2}
+}
+@media(max-height:480px) and (min-width:560px){
+ .standalone-app .app-nav{grid-template-columns:repeat(9,minmax(0,1fr))}
+ .standalone-app .app-nav>button,.standalone-app .app-nav>button:nth-child(6){grid-column:auto}
+}
 .standalone-app .app-eyebrow{font-size:10px;letter-spacing:.14em;font-weight:650;color:#9bb1ca;margin:0 0 10px}
 .standalone-app .screen-heading>p:last-child{color:var(--app-muted);font-size:15px;max-width:600px;margin:0}
 .standalone-app #home-panel{max-width:720px;margin:12px auto}
@@ -546,3 +558,8 @@
 .profile-import-dialog[open]{display:flex;flex-direction:column;overflow:hidden;height:min(900px,calc(100dvh - 24px))}#pi-review:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}.profile-import-dialog .pi-scroll{flex:1;min-height:0;overflow:auto;padding-right:4px;scroll-behavior:auto}.profile-import-dialog .pi-actions{flex-shrink:0;border-top:1px solid #4b6580;margin:0;padding:12px 0 0}.profile-import-dialog .pi-input-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}.profile-import-dialog .pi-use{font-size:14px;align-items:center;margin-bottom:8px}.profile-import-dialog .pi-entry{margin:14px 0}.profile-import-dialog #pi-progress{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.profile-import-dialog .pi-privacy{font-size:14px;margin:8px 0}.profile-import-dialog #pi-source-details{font-size:14px}.profile-import-dialog #pi-status{font-size:14px;margin:10px 0}.profile-import-dialog #pi-session-note{font-size:13px;margin:8px 0 12px}.profile-import-dialog #pi-title{font-size:20px;margin:12px 0}
 
 .template-finish-box{padding:18px;margin:18px 0;border:1px solid var(--gold,#eec54b);border-radius:12px;background:rgba(238,197,75,.05)}.template-finish-box h3{margin-top:0}#cv-use-resume{margin:12px 0}#cv-source-state{font-size:.9rem}#cv-resume-source{width:100%}
+
+body.standalone-app main{padding-bottom:calc(var(--app-nav-height) + 28px)}
+html{scroll-padding-bottom:calc(var(--app-nav-height) + 16px)}
+body.standalone-app .toast,body.standalone-app .error-banner{bottom:calc(var(--app-nav-height) + 12px)}
+body.standalone-app .question-navigation{bottom:calc(var(--app-nav-height) + 8px)}

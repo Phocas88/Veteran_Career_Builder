@@ -8,7 +8,7 @@ import { savedResumeToDraft } from './cloud-store.js?v=20261028-guided';
 import { careerBuildContext, requestCareerKit } from './payments.js?v=20261028-guided';
 import {initCoverLetters} from './cover-letters.js?v=20261029-letters';
 import {initServiceLibrary} from './service-library.js?v=20261026-career-tools';
-import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261028-guided';
+import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261029-icons';
 
 const $=id=>document.getElementById(id);
 const node=(tag,content,className)=>{const el=document.createElement(tag);if(content)el.textContent=content;if(className)el.className=className;return el;};

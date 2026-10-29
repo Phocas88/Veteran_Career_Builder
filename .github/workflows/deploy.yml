@@ -58,7 +58,7 @@ jobs:
 
       - name: Verify simplified resume journeys
         working-directory: resume-workspace-src
-        run: npx playwright test --config=playwright.career.config.mjs cover-letters.spec.mjs entry-flow.spec.mjs analytics.spec.mjs clear-journey.spec.mjs career-extras.spec.mjs --max-failures=1
+        run: npx playwright test --config=playwright.career.config.mjs app-shell.spec.mjs cover-letters.spec.mjs entry-flow.spec.mjs analytics.spec.mjs clear-journey.spec.mjs career-extras.spec.mjs --max-failures=1
 
       - name: Verify career tools in a mobile browser
         working-directory: resume-workspace-src

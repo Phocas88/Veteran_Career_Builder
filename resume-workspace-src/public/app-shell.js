@@ -10,22 +10,24 @@ export function showAppView(next,{scroll=true}={}){
  if(!['home','workspace','settings','calculator',...careerViews].includes(next))return;
  const previous=view;view=next;
  $('home-panel').hidden=next!=='home';$('document-workspace').hidden=next!=='workspace';$('career-dialog').hidden=!careerViews.has(next);$('settings-panel').hidden=next!=='settings';$('calculator-panel').hidden=next!=='calculator';
- document.body.dataset.appView=next;if($('app-menu-open'))$('app-menu-open').classList.toggle('active',!['home','workspace','versions','profile'].includes(next));
+ document.body.dataset.appView=next;
  if(config&&previous!==next&&!replaying)history.pushState({appView:next},'',location.pathname+location.search+'#'+next);
  const active=['workspace','versions','match','skills'].includes(next)?'resumes':next;
  for(const b of document.querySelectorAll('[data-app-route]')){b.classList.toggle('active',b.dataset.appRoute===active);if(b.dataset.appRoute===active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}
  document.dispatchEvent(new CustomEvent('app:view-changed',{detail:{view:next,previous}}));
  if(scroll&&previous!==next){window.scrollTo({top:0,behavior:'instant'});const heading=(careerViews.has(next)?$('career-title'):next==='home'?$('home-title'):next==='settings'?$('settings-title'):next==='calculator'?$('calculator-title'):null);heading?.focus({preventScroll:true});}
 }
-function initReadableMenu(){
- const nav=document.querySelector('.app-nav'),dialog=$('app-menu-dialog'),links=$('app-menu-links'),button=$('app-menu-open'),destinations=[...nav.querySelectorAll('[data-app-route]')],mobile=matchMedia('(max-width:760px)');
- const descriptions={letter:['Cover letters','Write, save and download a cover letter'],'digital-cv':['Virtual CV','Share your career experience with a link'],applications:['Job tracker','Keep track of jobs and applications'],library:['Service library','Understand military codes and qualifications']};
- for(const item of destinations){const detail=descriptions[item.dataset.appRoute];if(!detail)continue;const title=item.querySelector('span');title.textContent=detail[0];const note=document.createElement('small');note.textContent=detail[1];item.append(note);}
- const arrange=()=>{if(dialog.open)dialog.close();if(mobile.matches){for(const item of destinations)if(descriptions[item.dataset.appRoute])links.append(item);}else for(const item of destinations)nav.insertBefore(item,button);};
- button.onclick=()=>dialog.showModal();$('app-menu-close').onclick=()=>dialog.close();dialog.addEventListener('click',event=>{if(event.target.closest('[data-app-route],[data-career-launch]'))dialog.close();},{capture:true});mobile.addEventListener('change',arrange);arrange();
+function initIconNavigation(){
+ const nav=document.querySelector('.app-nav');let height=0;
+ // Keep the last form controls and notices above both rows, including larger
+ // text settings and the device's safe area. Destinations never move to a menu.
+ const measure=()=>{const next=Math.ceil(nav.getBoundingClientRect().height);if(next&&next!==height){height=next;document.documentElement.style.setProperty('--app-nav-height',next+'px');}};
+ measure();
+ if(typeof ResizeObserver==='function')new ResizeObserver(measure).observe(nav);
+ else window.addEventListener('resize',measure);
 }
 export function initAppShell(options){
- config=options;initReadableMenu();
+ config=options;initIconNavigation();
  for(const b of document.querySelectorAll('[data-app-route]'))b.onclick=()=>{
   const target=b.dataset.appRoute;
   if(target==='resumes')options.openCareer('versions');
@@ -34,6 +36,7 @@ export function initAppShell(options){
   else if(target==='digital-cv')options.openCareer('digital-cv');
   else if(target==='letter')options.openCareer('letter');
   else if(target==='library')options.openCareer('library');
+  else if(target==='careers')options.openCareer('careers');
   else showAppView(target);
  };
  $('app-home').onclick=()=>showAppView('home');$('app-settings').onclick=()=>showAppView('settings');

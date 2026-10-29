@@ -1,6 +1,7 @@
 // Fictional fields only. Read Google's real SDK, then abort every analytics hit
 // before delivery so this privacy check does not populate the owner's reports.
 import http from 'node:http';
+import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {chromium} from 'playwright';
@@ -14,6 +15,14 @@ try{
  browser=await chromium.launch({channel:'chromium'});const context=await browser.newContext();const external=[],hits=[];const page=await context.newPage();page.on('pageerror',error=>diagnostics.errors.push(error.message));page.on('console',message=>{if(['error','warning'].includes(message.type()))diagnostics.console.push(message.text().replace(/PRIVATE_[A-Z_]+/g,'REDACTED_TEST'));});page.on('response',async response=>{if(response.url().startsWith('https://vcp-proxy.vercel.app/api/resume-analytics')){const headers=await response.allHeaders();diagnostics.responses.push({status:response.status(),csp:headers['content-security-policy'],xfo:headers['x-frame-options'],referrer:headers['referrer-policy']});}});
  await context.route('**/*',async route=>{
   const request=route.request(),url=new URL(request.url());
+  if(url.hostname==='vcp-proxy.vercel.app'&&url.pathname==='/api/resume-analytics'){
+   const response=await route.fetch();let body=await response.text();
+   assert.ok(body.includes('cookie_update:false,'),'Expected public collector config');
+   body=body.replace('cookie_update:false,',"cookie_update:false,cookie_flags:'SameSite=None;Secure;Partitioned',");
+   const script=body.match(/<script>([\s\S]*)<\/script>/)[1],hash=createHash('sha256').update(script).digest('base64');
+   const headers={...response.headers()};headers['content-security-policy']=headers['content-security-policy'].replace(/'sha256-[^']*'/,"'sha256-"+hash+"'");
+   return route.fulfill({response,body,headers});
+  }
   if(url.hostname.endsWith('google-analytics.com')||url.hostname.endsWith('analytics.google.com')){const headers=await request.allHeaders();const record={url:request.url(),body:request.postData()||'',headers};external.push(record);hits.push(record);return route.abort();}
   if(url.hostname==='www.googletagmanager.com')external.push({url:request.url(),headers:await request.allHeaders()});return route.continue();
  });
@@ -22,5 +31,5 @@ try{
  assert.ok(hits.length,'The live Google SDK should attempt a measurement request.');assert.ok(hits.some(hit=>(hit.url+' '+hit.body).includes('vcp_resume_review_complete')),'The SDK should serialize a permitted app event.');
  assert.ok(!JSON.stringify(external).includes('PRIVATE_'),'No parent URL, title, field, filename or extra event property may reach Google.');
  for(const hit of hits){const url=new URL(hit.url);assert.equal(url.searchParams.get('tid'),MEASUREMENT_ID);assert.equal(url.searchParams.get('cid'),cid);assert.equal(url.searchParams.get('dl'),'https://veterancareerpath.com/resumereview/screen/home');}
- console.log('REAL_ANALYTICS_SDK_CHECK '+JSON.stringify({sdkLoaded:true,allowedEventSerialized:true,privateDataSent:false,analyticsHitsDelivered:0,destinationMatched:true,browserIdMatched:true}));
+ console.log('PARTITIONED_ANALYTICS_SDK_CHECK '+JSON.stringify({sdkLoaded:true,allowedEventSerialized:true,privateDataSent:false,analyticsHitsDelivered:0,destinationMatched:true,browserIdMatched:true}));
 }finally{await browser?.close();await Promise.all(servers.map(server=>new Promise(resolve=>server.close(resolve))));}

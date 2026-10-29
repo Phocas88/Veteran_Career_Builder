@@ -41,5 +41,5 @@ test('failed saves never prompt, and switching accounts clears an open comment a
 });
 
 test('the optional cover letter guides a manual resume into its included review without a second checkout',async({page})=>{
- const state=await fixture(page);await start(page);await page.locator('#resume-input').fill(sampleResume);await finish(page);await page.locator('#completion-skip').click();await page.locator('#completion-letter').click();await expect(page.locator('#letter-start-note')).toContainText('No additional payment');await page.locator('#letter-start-current').click();await expect(page.locator('#flow-checkout')).toBeVisible();await expect(page.locator('#flow-payment')).toBeHidden();expect(state.purchases).toBe(1);await expect(page.locator('#ai-consent')).not.toBeChecked();
+ const state=await fixture(page);await start(page);await page.locator('#resume-input').fill(sampleResume);await finish(page);await page.locator('#completion-skip').click();await page.locator('#completion-letter').click();await expect(page.locator('#letter-start-note')).toContainText('No additional payment');await page.locator('#letter-start-current').click();await expect(page.locator('[data-flow="checkout"]')).toBeVisible();await expect(page.locator('#flow-payment')).toBeHidden();expect(state.purchases).toBe(1);await expect(page.locator('#ai-consent')).not.toBeChecked();
 });

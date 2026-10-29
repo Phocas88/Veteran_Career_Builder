@@ -27,6 +27,8 @@
 </script>
 <link rel="stylesheet" href="/admin-resume-reviews.css">
 <link rel="stylesheet" href="/admin-billing.css?v=20261029-admin">
+<link rel="stylesheet" href="/admin-resume.css?v=20261029-resume-reports">
+<script defer src="/admin-resume.js?v=20261029-resume-reports"></script>
 <script defer src="/admin-billing.js?v=20261029-admin"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -183,8 +185,11 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <div class="stat-card" style="border-color:rgba(240,192,64,.25);"><div class="stat-n" id="stat-msg-unread">—</div><div class="stat-l">Messages</div><div class="stat-sub">unread</div></div>
   </div>
 
+  <div class="stat-card" style="margin-bottom:1rem;border-color:#f0c040"><button type="button" id="resume-admin-shortcut" class="resume-admin-shortcut"><div class="stat-n" id="stat-resume-purchases">—</div><div class="stat-l">VCP Resume purchases →</div><div class="stat-sub" id="stat-resume-purchase-period">Last 30 days · open purchases and app activity</div></button></div>
+
   <!-- Tabs -->
   <div class="tabs">
+    <button class="tab" id="resume-admin-tab" onclick="switchTab('vcp-resume',this)" style="border-color:#f0c040">VCP Resume</button>
     <button class="tab active" onclick="switchTab('emails',this)">📧 Subscribers</button>
     <button class="tab" onclick="switchTab('users',this)">👥 Users</button>
     <button class="tab" onclick="switchTab('salary',this)">💰 Salary Data</button>
@@ -197,6 +202,8 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <button class="tab" onclick="switchTab('add-story',this)">+ Add Story</button>
     <button class="tab" id="rr-tab-btn" onclick="switchTab('resume-reviews',this)">📝 Resume Reviews <span id="rr-tab-badge" style="color:#f0c040;font-weight:700;display:none;"></span></button>
   </div>
+
+  <div class="panel" id="panel-vcp-resume"><div class="resume-admin-intro"><h2>VCP Resume</h2><p>See purchases, $0 promo checkouts, additional templates and app activity here.</p></div><div id="resume-admin-root"><p class="resume-admin-note">Open VCP Resume to load your reports.</p></div></div>
 
   <!-- RESUME REVIEWS -->
   <div class="panel" id="panel-resume-reviews">
@@ -275,6 +282,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
   <!-- ANALYTICS -->
   <div class="panel" id="panel-analytics">
+    <p style="margin:1rem 0"><button class="tab" onclick="switchTab('vcp-resume',document.getElementById('resume-admin-tab'))">Open VCP Resume purchases &amp; app activity →</button></p>
     <section class="admin-report-links" aria-labelledby="admin-reports-title">
       <h3 id="admin-reports-title">Website &amp; VCP Resume analytics</h3>
       <p>VCP Resume uses your existing Google Analytics property (G-CMFKLT321J). Open Google Analytics and look for page titles starting with “VCP Resume” or events starting with <strong>vcp_resume_</strong>.</p>
@@ -394,6 +402,7 @@ var adminReady = false;
 function setAdminReady(ok, failed) {
   adminReady = !!ok;
   if(!ok&&window.clearSubscribers)window.clearSubscribers();
+  if(!ok&&window.clearResumeReport)window.clearResumeReport();
   onAdminAuth(ok, failed);
   if (ok) {
     if (!authed) {
@@ -403,6 +412,7 @@ function setAdminReady(ok, failed) {
     }
     try { loadAll(); } catch(e){}
     adminRefreshActive();
+    if(location.hash==='#vcp-resume')switchTab('vcp-resume',document.getElementById('resume-admin-tab'));
   }
 }
 
@@ -415,6 +425,7 @@ document.addEventListener('DOMContentLoaded', function(){
     firebase.auth().getRedirectResult().catch(function(){});
     firebase.auth().onAuthStateChanged(function(user){
       if(!user&&window.clearSubscribers)window.clearSubscribers();
+      if(!user&&window.clearResumeReport)window.clearResumeReport();
       if (user && !user.isAnonymous) {
         user.getIdTokenResult().then(function(res){ setAdminReady(!!(res.claims && res.claims.admin === true)); }).catch(function(){});
       }
@@ -505,6 +516,7 @@ function onAdminAuth(isAdmin, failed) {
 // stat cards / badges immediately (they render into hidden panels — harmless).
 // Analytics stays lazy (heavier chart) and loads when its tab is opened.
 function adminRefreshActive() {
+  if(window.loadResumeReport)window.loadResumeReport();
   try { loadAll(); } catch(e){}
   try { loadSubscribers(); } catch(e){}
   try { loadMessages(); } catch(e){}
@@ -513,6 +525,7 @@ function adminRefreshActive() {
 }
 
 function doLogout() {
+  if(window.clearResumeReport)window.clearResumeReport();
   if(window.clearSubscribers)window.clearSubscribers();
   if(window.firebase&&firebase.auth)firebase.auth().signOut().catch(function(){});
   authed = false;
@@ -527,6 +540,7 @@ function switchTab(name, btn) {
   btn.classList.add('active');
   document.getElementById('panel-' + name).classList.add('active');
   if (name === 'resume-reviews' && window.rrOnTabOpen) window.rrOnTabOpen();
+  if (name === 'vcp-resume' && window.loadResumeReport)window.loadResumeReport();
   if (name === 'analytics') loadAnalytics();
   if (name === 'subscribers') loadSubscribers();
   if (name === 'messages') loadMessages();

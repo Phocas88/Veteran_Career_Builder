@@ -1,4 +1,4 @@
-import {initUsageAnalytics,trackUsage} from './analytics.js?v=20261029-analytics';
+import {initUsageAnalytics,trackUsage} from './analytics.js?v=20261029-resume-reports';
 import {initAppResources} from './app-resources.js?v=20261028-va-pdf';
 import {initResumeDelivery} from './resume-delivery.js?v=20261028-guided';
 import {initReviewFlow} from './review-flow.js?v=20261028-guided';

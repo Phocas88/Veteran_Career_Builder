@@ -1,4 +1,4 @@
-import {CONSENT_KEY,VISITOR_KEY,SESSION_KEY,ONCE_KEY,BRIDGE_URL,BRIDGE_ORIGIN,PROTOCOL_VERSION,PROTOCOL,analyticsEvent,allowedScreen,readConsent,trafficSource,analyticsIdentity,forgetAnalytics} from './analytics-model.js?v=20261029-analytics';
+import {CONSENT_KEY,VISITOR_KEY,SESSION_KEY,ONCE_KEY,BRIDGE_URL,BRIDGE_ORIGIN,PROTOCOL_VERSION,PROTOCOL,analyticsEvent,allowedScreen,readConsent,trafficSource,analyticsIdentity,forgetAnalytics} from './analytics-model.js?v=20261029-resume-reports';
 import {careerBuildContext} from './payments.js?v=20261028-guided';
 
 const $=id=>document.getElementById(id);

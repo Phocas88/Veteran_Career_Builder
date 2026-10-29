@@ -1,0 +1,23 @@
+name: Check live app publishing
+on:
+  push:
+    branches: [codex/check-live-app-20261029]
+    paths: [.github/workflows/check-live-app-once.yml]
+permissions:
+  contents: read
+  pages: read
+jobs:
+  live-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Read current Pages source
+        run: node scripts/check-pages-source.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify live public pages and billing authorization
+        run: node scripts/verify-published-pages.mjs

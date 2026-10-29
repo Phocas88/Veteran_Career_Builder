@@ -7,7 +7,7 @@ import {showAppView} from './app-shell.js?v=20261028-guided';
 import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261028-guided';
 import { fillBackground, readBackground } from './background-form.js?v=20261026-career-tools';
 import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, deletePurchasedResume, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261028-guided';
-import { initCareerTools } from './career-tools.js?v=20261029-completion';
+import { initCareerTools } from './career-tools.js?v=20261029-letters';
 import {initCompletionPrompt} from './completion-prompt.js?v=20261029-completion2';
 import {initAppShell} from './app-shell.js?v=20261028-guided';
 import {privacyChoicePending} from './analytics.js?v=20261029-entry';
@@ -190,9 +190,21 @@ export async function saveFinishedResume(draft){
  if(version!==accountVersion)throw new Error('Your account changed while saving. Reopen your finished resume.');
  callback.markVersion(item);await refreshSaved();return item;
 }
+async function letterRequest(action,details={},signal){
+ const c=await ensureConnection(),owner=c.auth.currentUser,version=accountVersion;
+ if(!owner)throw new Error('Sign in or continue as guest to open your cover letters.');
+ const token=await owner.getIdToken();
+ if(owner.uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Reopen Cover letters.');
+ const response=await fetch('https://vcp-proxy.vercel.app/api/claude',{method:'POST',headers:{'Content-Type':'application/json','X-VCP-Firebase-Token':token},body:JSON.stringify({workspace:true,action,...details}),signal:signal||AbortSignal.timeout(20000)});
+ const result=await response.json();
+ if(owner.uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Reopen Cover letters.');
+ if(!response.ok||(result.httpStatus||response.status)>=400)throw new Error(result.error||'Your cover letter could not load. Retry the existing purchase.');
+ return result;
+}
 export function initWorkspace(adapter) {
   callback = adapter; fillProfile({});
   careerUI=initCareerTools({
+   letterRequest,ensureLetterGuest:ensureGuest,saveLegacyLetter:async(id,content,title)=>{await ensureConnection();if(!user?.email)throw new Error('Sign in to save this letter.');return store.saveLetter(id,content,title);},
    user:()=>user,openAccount:()=>openAccount(),reviewCurrent:()=>adapter.showCheckout(),getProfile:readProfile,getDraft:()=>callback.getDraft(),
    applyProfile:profile=>{fillProfile(profile);profileDirty=true;profileStorage?.dirty();const select=document.querySelector('[data-profile-section]');select.value='roles';select.dispatchEvent(new Event('change'));},
    saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),

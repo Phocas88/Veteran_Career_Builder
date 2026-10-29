@@ -60,3 +60,11 @@ test('overlong backgrounds fail without silently cutting the generated resume',(
  const roles=Array.from({length:12},()=>({branch:'navy',title:'Supply specialist',duties:'A'.repeat(2400)}));
  assert.throws(()=>profileToResume({name:'ALEX',roles}),/fields are unchanged/);
 });
+test('achievements and nested duties survive service draft creation even without a duty title or specialty code',()=>{
+ for(const role of [{branch:'army',achievements:'Reduced verified scheduling errors.'},{branch:'navy',mosRoles:[{keyDuty:'Coordinated public training schedules.'}]},{branch:'marines',additionalDuties:[{name:'Safety representative',duties:'Delivered weekly safety briefings.',startDate:'2022-01',endDate:'2023-02'}]},{branch:'airforce',deployments:[{name:'Public training rotation',duties:'Maintained releasable equipment records.'}]}]){
+  const text=profileToResume({name:'EXAMPLE VETERAN',roles:[role]});
+  assert.match(text,/MILITARY EXPERIENCE/);assert.ok(text.includes(role.achievements||role.mosRoles?.[0].keyDuty||role.additionalDuties?.[0].duties||role.deployments?.[0].duties));
+ }
+ assert.throws(()=>profileToResume({name:'EXAMPLE VETERAN',roles:[{additionalDuties:[{name:'Safety representative',duties:'Led verified safety briefings.'}]}]}),/Choose a branch/);
+ const text=profileToResume({name:'EXAMPLE VETERAN',jobs:[{achievements:'Resolved verified inventory discrepancies.'}],projects:[{duties:'Organized a community event.'}]});assert.match(text,/Resolved verified inventory discrepancies/);assert.match(text,/Organized a community event/);
+});

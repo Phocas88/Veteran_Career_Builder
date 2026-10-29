@@ -9,7 +9,7 @@ export function initCompletionPrompt(api){
  function next(submitted=false){
   $('completion-feedback').hidden=true;$('completion-next').hidden=false;
   $('completion-title').textContent=submitted?'Thank you for your feedback':'What would you like to do next?';
-  $('completion-intro').textContent=submitted?'Your feedback was sent. Choose a next step, or return to your resume.':'Your resume is complete. Choose a next step, or return to download it.';
+  $('completion-intro').textContent=submitted?'Your feedback was sent. These next steps are optional.':'Your resume is complete. These next steps are optional.';
   dialog.scrollTop=0;$('completion-title').focus({preventScroll:true});
  }
  async function offer(buildId){
@@ -19,7 +19,7 @@ export function initCompletionPrompt(api){
   try{
    const result=await api.request('feedback-prompt',{buildId});
    if(version!==generation||!current(c)||result.show!==true||document.body.dataset.appView!=='workspace'||document.querySelector('dialog[open]'))return;
-   context=c;$('completion-feedback').reset();$('completion-submit').disabled=false;$('completion-skip').disabled=false;$('completion-feedback-status').textContent='';$('completion-share-status').textContent='';$('completion-rating-label').textContent='Choose 1 to 5 stars';
+   context=c;$('completion-link-fallback').hidden=true;$('completion-feedback').reset();$('completion-submit').disabled=false;$('completion-skip').disabled=false;$('completion-feedback-status').textContent='';$('completion-share-status').textContent='';$('completion-rating-label').textContent='Choose 1 to 5 stars';
    for(const label of dialog.querySelectorAll('.completion-stars label'))label.dataset.filled='false';
    $('completion-feedback').hidden=false;$('completion-next').hidden=true;$('completion-title').textContent='How was your experience?';$('completion-intro').textContent='Your resume is saved and ready to download.';dialog.showModal();
   }catch{/* A feedback connection failure never interrupts the saved resume. */}
@@ -42,7 +42,7 @@ export function initCompletionPrompt(api){
  $('completion-close').onclick=close;$('completion-done').onclick=close;$('completion-skip').onclick=()=>next();
  dialog.addEventListener('close',()=>{generation++;controller?.abort();controller=null;busy=false;context=null;$('completion-comment').value='';if(document.body.dataset.appView==='workspace')$('download-pdf')?.focus({preventScroll:true});});
  for(const [id,run]of [['completion-cv',api.openCv],['completion-letter',api.openLetter]])$(id).onclick=()=>{if(!current(context))return;close();run();};
- const selectLink=()=>{$('completion-link').focus();$('completion-link').select();$('completion-share-status').textContent='Link selected. Copy it and send it to another veteran.';};
+ const selectLink=()=>{$('completion-link-fallback').hidden=false;$('completion-link').focus();$('completion-link').select();$('completion-share-status').textContent='Link selected. Copy it and send it to another veteran.';};
  async function copy(){
   const version=generation;
   try{if(!navigator.clipboard?.writeText){selectLink();return;}await navigator.clipboard.writeText(APP_SHARE_URL);if(version===generation&&dialog.open)$('completion-share-status').textContent='App link copied. Paste it into a message to another veteran.';}

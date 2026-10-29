@@ -97,7 +97,7 @@ export const VISITOR_KEY='vcp_resume_analytics_visitor_v1';
 export const SESSION_KEY='vcp_resume_analytics_session_v1';
 export const ONCE_KEY='vcp_resume_analytics_once_v1';
 export const BRIDGE_ORIGIN='https://vcp-proxy.vercel.app';
-export const BRIDGE_URL=BRIDGE_ORIGIN+'/api/resume-analytics?v=20261029-analytics';
+export const BRIDGE_URL=BRIDGE_ORIGIN+'/api/resume-analytics?v=20261029-resume-reports';
 export const PROTOCOL_VERSION='vcp-resume-analytics-v1';
 export function analyticsEvent(name,params={}){
  if(!Object.hasOwn(PROTOCOL.events,name)||!params||typeof params!=='object'||Array.isArray(params))return null;

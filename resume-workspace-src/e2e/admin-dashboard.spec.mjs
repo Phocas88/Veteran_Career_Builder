@@ -27,7 +27,7 @@ async function fixture(page,billing){
    return route.fulfill({json:{messages:[],unread:0,subscribers:[]}});
   }
   if(url.hostname==='analyticsdata.googleapis.com'){
-   const body=route.request().postDataJSON();ga.push(body);return route.fulfill({json:{rows:[]}});
+   const body=route.request().postDataJSON();ga.push(body);return route.fulfill({json:{rows:body.dimensions?.[0]?.name==='pagePath'?[{dimensionValues:[{value:'<b>Example page</b>'}],metricValues:[{value:'3'}]}]:[]}});
   }
   return route.fulfill({body:''});
  });
@@ -54,6 +54,6 @@ test('an expired admin token refreshes once and a later access denial clears bil
 test('Analytics offers working report links and scopes optional embedded GA reports to the app',async({page})=>{
  const {ga}=await fixture(page,route=>route.fulfill({json:{subscribers:[],nextCursor:null}}));
  await page.locator('.tabs button').filter({hasText:'Analytics'}).click();await expect(page.locator('#admin-open-ga')).toHaveAttribute('href','https://analytics.google.com/analytics/web/');await expect(page.locator('#admin-app-report-guide')).toHaveAttribute('href','/resumereview/analytics-guide.html');await expect(page.locator('#panel-analytics')).not.toContainText('Could not load');
- await page.locator('.admin-report-advanced > summary').click();await page.locator('#ga-client-id').fill('fixture.apps.googleusercontent.com');await page.locator('#ga-property-id').fill('123456789');await page.locator('#ga-connect-btn').click();await expect.poll(()=>ga.length).toBeGreaterThan(0);expect(ga[0].dimensionFilter.filter.stringFilter.value).toBe('/resumereview/screen/');
+ await page.locator('.admin-report-advanced > summary').click();await page.locator('#ga-client-id').fill('fixture.apps.googleusercontent.com');await page.locator('#ga-property-id').fill('123456789');await page.locator('#ga-connect-btn').click();await expect.poll(()=>ga.length).toBeGreaterThan(0);expect(ga[0].dimensionFilter.filter.stringFilter.value).toBe('/resumereview/screen/');await expect(page.locator('#ga-today')).toHaveText('0');await expect(page.locator('#ga-pages')).toContainText('<b>Example page</b>');await expect(page.locator('#ga-pages b')).toHaveCount(0);
  const before=ga.length;await page.locator('#ga-report-scope').selectOption('all');await expect.poll(()=>ga.length).toBeGreaterThan(before);expect(ga.at(-1).dimensionFilter).toBeUndefined();
 });

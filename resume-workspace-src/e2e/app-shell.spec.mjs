@@ -81,7 +81,7 @@ test('resizing preserves the screen, its active icon and unsaved work without mo
  expect(await page.evaluate(()=>window.__writes)).toEqual([]);await navigateApp(page,'library');await page.goBack();await expect(page.locator('#builder-name')).toHaveValue('EXAMPLE UNSAVED PROFILE');await expect(appRoute(page,'profile')).toHaveAttribute('aria-current','page');
 });
 test('larger text and landscape retain readable icons and keep final controls above the navigation',async({page})=>{
- await guestHome(page);await page.setViewportSize({width:360,height:800});await page.addStyleTag({content:'.standalone-app .app-nav>button>span{font-size:17px!important}'});await navigateApp(page,'profile');
+ await guestHome(page);await page.setViewportSize({width:360,height:800});await page.locator('.app-nav>button>span').evaluateAll(labels=>labels.forEach(label=>label.style.fontSize='17px'));await navigateApp(page,'profile');
  await expect.poll(()=>page.evaluate(()=>Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--app-nav-height')))).toBeGreaterThan(140);await page.locator('#profile-use-bottom').scrollIntoViewIfNeeded();const action=await page.locator('#profile-use-bottom').boundingBox(),nav=await page.locator('.app-nav').boundingBox();expect(action.y+action.height).toBeLessThanOrEqual(nav.y);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.setViewportSize({width:667,height:375});await expect(page.locator('.app-nav>button:visible')).toHaveCount(9);await expect.poll(async()=>Math.ceil((await page.locator('.app-nav').boundingBox()).height)).toBeLessThan(110);await navigateApp(page,'calculator');await expect(page.locator('#calculator-title')).toBeVisible();
 });

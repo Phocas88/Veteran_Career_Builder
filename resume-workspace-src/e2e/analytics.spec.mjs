@@ -3,14 +3,14 @@ import {readFile,mkdir} from 'node:fs/promises';
 import {installAccount,unlockEntry,agreements,paidResponse} from './helpers/workspace.mjs';
 const fixture=JSON.parse(await readFile(new URL('./fixtures/analytics-bridge.json',import.meta.url),'utf8'));
 const choice='vcp_resume_analytics_choice_v1',visitor='vcp_resume_analytics_visitor_v1';
-async function analyticsFixture(page,{allow=false,gpc=false,blocked=false}={}){
+async function analyticsFixture(page,{allow=false,gpc=false,blocked=false,origin='http://127.0.0.1:3000'}={}){
  const requests=[],activityRequests=[];
  await page.addInitScript(({allow,gpc})=>{window.__analyticsCommands=[];window.addEventListener('message',event=>{if(event.data?.analyticsProbe===true)window.__analyticsCommands.push(event.data.command);});if(allow)localStorage.setItem('vcp_resume_analytics_choice_v1',JSON.stringify({version:1,enabled:true,updatedAt:Date.now()}));if(gpc)Object.defineProperty(navigator,'globalPrivacyControl',{value:true});},{allow,gpc});
  await page.route('https://vcp-proxy.vercel.app/api/resume-activity',route=>{requests.push(route.request().url());activityRequests.push(route.request().postDataJSON());return route.fulfill({status:204,body:''});});
  await page.route('https://vcp-proxy.vercel.app/api/resume-analytics*',route=>{requests.push(route.request().url());return route.fulfill({body:fixture.html,headers:{'Content-Type':'text/html','Content-Security-Policy':fixture.csp,'Referrer-Policy':'no-referrer'}});});
  await page.route('https://www.googletagmanager.com/**',route=>{
   requests.push(route.request().url());if(blocked)return route.abort();
-  return route.fulfill({contentType:'text/javascript',body:`const probe=value=>parent.postMessage({analyticsProbe:true,command:Array.from(value)},'http://127.0.0.1:3000');window.dataLayer.forEach(probe);const original=window.dataLayer.push.bind(window.dataLayer);window.dataLayer.push=function(value){probe(value);return original(value);};`});
+  return route.fulfill({contentType:'text/javascript',body:`const probe=value=>parent.postMessage({analyticsProbe:true,command:Array.from(value)},${JSON.stringify(origin)});window.dataLayer.forEach(probe);const original=window.dataLayer.push.bind(window.dataLayer);window.dataLayer.push=function(value){probe(value);return original(value);};`});
  });
  return {requests,activityRequests};
 }
@@ -47,7 +47,9 @@ test('blocked analytics fails quietly and never prevents app navigation',async({
 });
 
 test('consented owner-dashboard activity contains categories only and stops when consent is withdrawn',async({page})=>{
- await installAccount(page,'registered');const {activityRequests}=await analyticsFixture(page,{allow:true});await page.goto('/?email=PRIVATE_QUERY&utm_source=linkedin');await ready(page);await page.locator('[data-app-route=profile]').click();await page.locator('#builder-name').fill('PRIVATE_NAME');await page.locator('#builder-email').fill('private@example.com');await expect.poll(()=>activityRequests.length).toBeGreaterThan(0);
+ await installAccount(page,'registered');const {activityRequests}=await analyticsFixture(page,{allow:true,origin:'https://veterancareerpath.com'});
+ await page.route('https://veterancareerpath.com/resumereview/**',async route=>{const url=new URL(route.request().url()),response=await page.request.get('http://127.0.0.1:3000'+url.pathname.slice('/resumereview'.length)+url.search);return route.fulfill({response});});
+ await page.goto('https://veterancareerpath.com/resumereview/?email=PRIVATE_QUERY&utm_source=linkedin');await ready(page);await page.locator('[data-app-route=profile]').click();await page.locator('#builder-name').fill('PRIVATE_NAME');await page.locator('#builder-email').fill('private@example.com');await expect.poll(()=>activityRequests.length).toBeGreaterThan(0);
  const data=JSON.stringify(activityRequests);expect(data).not.toContain('PRIVATE_');expect(data).not.toContain('private@example.com');expect(data).not.toContain('client_id');expect(data).not.toContain('session_id');expect(data).not.toContain('veteran-a');for(const packet of activityRequests)for(const event of packet.events)expect(Object.keys(event).sort()).toEqual(['name','screen','source']);
  await page.locator('#app-settings').click();await page.locator('#cookie-settings').click();await page.locator('#analytics-preferences [data-analytics-choice=deny]').click();const before=activityRequests.length;await page.waitForTimeout(1500);expect(activityRequests.length).toBe(before);
 });

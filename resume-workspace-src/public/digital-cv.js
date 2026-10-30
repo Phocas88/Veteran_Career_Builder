@@ -1,6 +1,6 @@
-import {cleanPublicCv,cvSkillGroups,cvCredentialEntries,cvListItems} from './cv-content.js?v=20261030-sections';
+import {cleanPublicCv,cvSkillGroups,cvCredentialEntries,cvListItems} from './cv-content.js?v=20261030-certifications';
 import {safeProfilePhoto} from './profile-media.js?v=20261026-career-tools';
-import {profileToCv,resumeToCv,selectCv,optionsFromCv,cvDefaults,cvUrl,safeCvLink,cvSectionCounts,normalizePublishedCv} from './digital-cv-model.js?v=20261030-sections';
+import {profileToCv,resumeToCv,selectCv,optionsFromCv,cvDefaults,cvUrl,safeCvLink,cvSectionCounts,normalizePublishedCv} from './digital-cv-model.js?v=20261030-certifications';
 const $=id=>document.getElementById(id);
 const node=(tag,text)=>{const el=document.createElement(tag);if(text)el.textContent=text;return el;};
 const optionNames=Object.keys(cvDefaults());

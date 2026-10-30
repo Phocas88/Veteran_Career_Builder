@@ -1,4 +1,4 @@
-import {cleanPublicCv,cvSkillGroups,cvCredentialEntries,cvListItems} from './cv-content.js?v=20261030-sections';
+import {cleanPublicCv,cvSkillGroups,cvCredentialEntries,cvListItems} from './cv-content.js?v=20261030-certifications';
 import {cleanResumeText,splitResumeSections,flowParagraphs} from './resume-text.js?v=20261028-guided';
 import {safeProfilePhoto} from './profile-media.js?v=20261026-career-tools';
 import {parseProfileResume} from './profile-import-model.js?v=20261028-guided';

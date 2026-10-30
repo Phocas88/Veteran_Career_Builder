@@ -47,3 +47,13 @@ test('unpunctuated Credentials notes become independent certifications and respe
  const hidden=selectCv(source,{...cvDefaults(),certifications:false,training:false});assert.equal(hidden.skills.certs,'');assert.deepEqual(hidden.training,[]);assert.doesNotMatch(JSON.stringify(hidden.education),/Credentials|Green Belt|Warehouse Certificate|training|SQL Course/);
  const academic=cleanPublicCv({education:[{institution:'Example University',degree:'Graduate Certificate: Digital Credentials Management',field:'Credentials Management'}]});assert.equal(academic.education[0].field,'Credentials Management');assert.equal(academic.skills.certs,'');
 });
+
+test('PDF-wrapped ERP and WMS names remain individual systems rather than operations group headings',async()=>{
+ const {cvSkillGroups,cleanPublicCv}=await import('../public/cv-content.js');
+ const systems=['NetSuite','Aptean Apprise WMS','Epicor Indago','SAP ERP / SAP MM / GCSS-Army','Oracle SCM','IFS ERP','RedPrairie'];
+ const source={name:'Alex Example',skills:{technical:'Enterprise Platforms: '+systems.slice(0,-1).join(', ')+'\nRedPrairie Operations: Inventory control, warehouse leadership, supply chain planning'}};
+ const groups=cvSkillGroups(source.skills.technical);assert.deepEqual(groups,[{title:'Enterprise Platforms',items:systems},{title:'Operations',items:['Inventory control','warehouse leadership','supply chain planning']}]);
+ const cv=selectCv(source,cvDefaults());assert.deepEqual(cvSkillGroups(cv.skills.technical),groups);assert.deepEqual(cleanPublicCv(cv),cleanPublicCv(cleanPublicCv(cv)));assert.match(source.skills.technical,/RedPrairie Operations:/);
+ assert.equal(selectCv(source,{...cvDefaults(),skills:false}).skills.technical,'');
+ assert.deepEqual(cvSkillGroups('Customer Service Operations: Scheduling, Telephone support'),[{title:'Customer Service Operations',items:['Scheduling','Telephone support']}]);
+});

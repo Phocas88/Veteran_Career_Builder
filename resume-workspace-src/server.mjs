@@ -60,6 +60,7 @@ export function makeServer({ apiKey = process.env.OPENAI_API_KEY, model = proces
       for (const file of ['cover-letters.js','cover-letters.css','career-tools.js','career-model.js','career.css','letter-exports.js','career-explorer.js','interest-model.js','career-data.js']) routes.add('/'+file);
       for (const file of ['service-library.js','service-library-model.js','service-library-data.json']) routes.add('/'+file);
       routes.add('/service-codes.js');
+      routes.add('/skill-organization.js');
       if (!routes.has(url.pathname) && !(url.pathname.startsWith('/vendor/') || url.pathname.startsWith('/template-previews/'))) return send(404, 'Page not found.', 'text/plain');
       const file = url.pathname === '/' ? 'index.html' : url.pathname.slice(1);
       const fullPath = path.resolve(root, file);

@@ -5,7 +5,7 @@ import {initReviewFlow} from './review-flow.js?v=20261028-guided';
 import {initDesignEditor} from './design-editor.js?v=20261026-clear-journey';
 import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261028-guided';
 import {showAppView} from './app-shell.js?v=20261029-icons';
-import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261029-icons';
+import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261030-sections';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js?v=20261028-guided';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';

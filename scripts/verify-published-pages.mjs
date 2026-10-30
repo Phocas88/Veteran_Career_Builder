@@ -1,7 +1,9 @@
 // Only public pages and an unauthenticated authorization check. No user records.
 const base='https://veterancareerpath.com';
 const checks=[
- ['/resumereview/','data-app-route="careers"'],
+ ['/resumereview/','app.js?v=20261030-sections'],
+ ['/resumereview/digital-cv.js','cv-skill-grid'],
+ ['/resumereview/cv-content.js','function cvSkillGroups'],
  ['/resumereview/app-shell.js','initIconNavigation'],
  ['/resumereview/cover-letters.js',"'letter-prepare'"],
  ['/resumereview/analytics-guide.html','G-CMFKLT321J'],

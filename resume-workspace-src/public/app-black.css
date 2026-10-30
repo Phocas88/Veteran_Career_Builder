@@ -177,14 +177,32 @@ body.standalone-app #cv-preview{width:100%;max-width:100%;padding:0;overflow:aut
 #cv-preview .cv-preview-heading{display:flex;align-items:center;gap:28px;padding:0 0 32px;border-bottom:1px solid #dce5ed}
 #cv-preview .cv-preview-heading h2{font-size:48px;line-height:1.1;letter-spacing:-1px;margin:0 0 14px;color:#10263f}
 #cv-preview .cv-preview-heading p{font-size:20px;color:#40516a;margin:6px 0}
-#cv-preview .cv-profile-photo{width:112px;height:112px;object-fit:cover;border-radius:50%;flex-shrink:0;margin:0}
-#cv-preview .cv-preview-body{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(0,1fr);gap:48px;padding-top:12px}
-#cv-preview .cv-preview-body.cv-preview-single{grid-template-columns:minmax(0,1fr)}
-#cv-preview .cv-preview-body.cv-preview-single>div:empty,#cv-preview .cv-preview-body.cv-preview-single>aside:empty{display:none}
-#cv-preview .cv-preview-support{padding-left:28px;border-left:1px solid #dce5ed}
-#cv-preview .cv-preview-sheet h3{font-size:19px;color:#10263f;border-bottom:1px solid #dce5ed;padding:0 0 10px;margin:30px 0 16px}
-#cv-preview .cv-preview-sheet h4{font-size:18px;color:#10263f;margin:20px 0 6px}
-#cv-preview .cv-preview-sheet p,#cv-preview .cv-preview-sheet li,#cv-preview .cv-preview-sheet a{font-size:16px;line-height:1.7;color:#40516a}
+#cv-preview .cv-profile-photo{width:112px;height:112px;object-fit:cover;border-radius:50%;flex-shrink:0;margin:0 0 0 auto;order:2}#cv-preview .cv-preview-heading>div{flex:1;order:1}
+#cv-preview .cv-preview-body{display:block;padding-top:12px}
+#cv-preview .cv-preview-body>section{padding-bottom:30px;margin-bottom:28px;border-bottom:1px solid #e0e7ef}
+#cv-preview .cv-preview-body>section:last-child{border:0;margin-bottom:0;padding-bottom:0}
+#cv-preview .cv-preview-sheet h3{font-size:21px;color:#10263f;border:0;margin:22px 0 20px;padding:0}
+#cv-preview .cv-preview-sheet h4{font-size:18px;color:#10263f;margin:0 0 10px;line-height:1.5}
+#cv-preview .cv-preview-sheet p,#cv-preview .cv-preview-sheet li,#cv-preview .cv-preview-sheet a{font-size:16px;line-height:1.75;color:#40516a}
+#cv-preview .cv-record-grid,#cv-preview .cv-skill-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+#cv-preview .cv-record-grid>*:only-child,#cv-preview .cv-skill-grid>*:only-child{grid-column:1/-1}
+#cv-preview .cv-record,#cv-preview .cv-skill-group{padding:22px 24px;background:#f9fbfd;border:1px solid #e2e9f0;border-radius:10px;min-width:0}
+#cv-preview .cv-record p{margin:7px 0 0;font-size:15px}
+#cv-preview .cv-record .cv-qualification{font-size:16px;font-weight:550;color:#334d69}
+#cv-preview .cv-record .cv-record-meta{font-size:14px;color:#5c6f84}
+#cv-preview .cv-record-notes{white-space:pre-line}
+#cv-preview .cv-skill-group h4{font-size:17px;padding-bottom:12px;border-bottom:1px solid #e0e8f0;margin:0 0 14px}
+#cv-preview .cv-skill-list{columns:2;column-gap:24px;padding-left:19px;margin:0}
+#cv-preview .cv-skill-list li{font-size:15px;break-inside:avoid;margin:0 0 7px;padding-left:2px}
+#cv-preview .cv-skill-group:only-child .cv-skill-list{columns:3}
+#cv-preview .cv-language-list{columns:3;padding-left:20px}
+#cv-preview .cv-preview-position{padding-bottom:26px;margin-bottom:26px;border-bottom:1px solid #e3e9ef}
+#cv-preview .cv-preview-position:last-child{border:0;margin:0;padding:0}
+#cv-preview .cv-preview-position-heading{display:flex;align-items:baseline;justify-content:space-between;gap:24px}
+#cv-preview .cv-preview-position-heading h4{flex:1;margin:0}
+#cv-preview .cv-preview-position-heading p{font-size:13px;margin:0;white-space:nowrap}
+#cv-preview .cv-preview-position ul{padding-left:20px;margin-top:14px;max-width:920px}
+#cv-preview .cv-preview-position li{margin:6px 0}
 
 /* One task at a time, with readable text and touch targets. */
 body.standalone-app{font-size:17px}body.standalone-app :is(.field-label,.cv-edit-field,.checkbox-label){font-size:16px;line-height:1.6}body.standalone-app :is(.field-hint,.career-tool-help,.account-value,.home-purchase-note){font-size:15px;line-height:1.7}

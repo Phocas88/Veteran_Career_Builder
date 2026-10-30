@@ -1,24 +1,32 @@
+import {cleanPublicCv,cvSkillGroups,cvCredentialEntries,cvListItems} from './cv-content.js?v=20261030-sections';
 import {safeProfilePhoto} from './profile-media.js?v=20261026-career-tools';
-import {profileToCv,resumeToCv,selectCv,optionsFromCv,cvDefaults,cvUrl,safeCvLink,cvSectionCounts,normalizePublishedCv} from './digital-cv-model.js?v=20261028-guided';
+import {profileToCv,resumeToCv,selectCv,optionsFromCv,cvDefaults,cvUrl,safeCvLink,cvSectionCounts,normalizePublishedCv} from './digital-cv-model.js?v=20261030-sections';
 const $=id=>document.getElementById(id);
 const node=(tag,text)=>{const el=document.createElement(tag);if(text)el.textContent=text;return el;};
 const optionNames=Object.keys(cvDefaults());
-export function renderCvPreview(root,cv){
- root.replaceChildren();
+const previewDate=value=>{const match=/^(\d{4})-(0[1-9]|1[0-2])$/.exec(value||'');return match?new Intl.DateTimeFormat('en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(value+'-01T00:00:00Z')):value||'';};
+const previewDates=entry=>[previewDate(entry.startDate),entry.current?'Present':previewDate(entry.endDate)].filter(Boolean).join(' – ')||entry.dateText||'';
+export function renderCvPreview(root,value){
+ const cv=cleanPublicCv(value);root.replaceChildren();
  const sheet=node('div');sheet.className='cv-preview-sheet';const header=node('header');header.className='cv-preview-heading';
  if(safeProfilePhoto(cv.photo)){const photo=node('img');photo.src=cv.photo;photo.alt='Profile photo';photo.className='cv-profile-photo';photo.width=104;photo.height=104;header.append(photo);}
  const introduction=node('div');introduction.append(node('h2',cv.name||'Your name'));if(cv.headline)introduction.append(node('p',cv.headline));if(cv.location)introduction.append(node('p',cv.location));header.append(introduction);
- const body=node('div');body.className='cv-preview-body';const primary=node('div'),support=node('aside');primary.className='cv-preview-primary';support.className='cv-preview-support';support.setAttribute('aria-label','Education and qualifications');body.append(primary,support);sheet.append(header,body);root.append(sheet);
- const section=(title,children,column=primary)=>{if(!children.length)return;const s=node('section');s.append(node('h3',title),...children);column.append(s);};
- if(cv.summary)section('Summary',[node('p',cv.summary)]);
- const experience=rows=>rows.map(e=>{const d=node('article');d.append(node('h4',e.title||[e.rank,e.mosTitle].filter(Boolean).join(' · ')||'Military service'),node('p',[e.employer||e.unit,e.branch,e.serviceType].filter(Boolean).join(' · ')),node('p',[e.startDate,e.current?'Present':e.endDate].filter(Boolean).join(' – ')));if(e.bullets?.length){const ul=node('ul');ul.append(...e.bullets.map(b=>node('li',b)));d.append(ul);}return d;});
- section('Civilian experience',experience(cv.civilian||[]));section('Military service',experience(cv.military||[]));section('Projects & volunteering',(cv.projects||[]).map(e=>{const block=node('article');block.append(node('h4',[e.name,e.title].filter(Boolean).join(' · ')));if(e.bullets?.length){const list=node('ul');list.append(...e.bullets.map(b=>node('li',b)));block.append(list);}return block;}));
- section('Education',(cv.education||[]).map(e=>{const p=node('p');p.append(node('strong',[e.degree,e.field].filter(Boolean).join(' · ')),node('br'),document.createTextNode([e.institution,e.year].filter(Boolean).join(' · ')));return p;}),support);
- section('Training',(cv.training||[]).map(e=>node('p',[e.name,e.institution,e.date,e.status].filter(Boolean).join(' · '))),support);
- for(const [key,title]of [['technical','Skills'],['leadership','Leadership'],['certs','Certifications'],['languages','Languages']])if(cv.skills?.[key])section(title,[node('p',cv.skills[key])],support);
+ const body=node('div');body.className='cv-preview-body';sheet.append(header,body);root.append(sheet);
+ const section=(title,children,key)=>{if(!children.length)return;const s=node('section');s.dataset.cvContent=key;s.append(node('h3',title),...children);body.append(s);};
+ const list=(values,className)=>{const ul=node('ul');if(className)ul.className=className;ul.append(...values.map(text=>node('li',text)));return ul;};
+ const grid=(cards,className='cv-record-grid')=>{const wrap=node('div');wrap.className=className;wrap.append(...cards);return [wrap];};
+ const record=(title,paragraphs,className='cv-record')=>{const article=node('article');article.className=className;article.append(node('h4',title));for(const [text,style]of paragraphs.filter(([text])=>!!text)){const p=node('p',text);if(style)p.className=style;article.append(p);}return article;};
+ if(cv.summary)section('Professional summary',cv.summary.split(/\n\s*\n/).map(text=>node('p',text)),'summary');
+ const experience=(rows,military=false)=>rows.map(e=>{const d=node('article');d.className='cv-preview-position';const heading=node('div');heading.className='cv-preview-position-heading';heading.append(node('h4',military?[e.rank,e.mosTitle||e.title].filter(Boolean).join(' · ')||'Military service':e.title||'Professional experience'));if(previewDates(e))heading.append(node('p',previewDates(e)));d.append(heading);const org=[e.employer||e.unit,e.branch,e.serviceType,e.location].filter(Boolean).join(' · ');if(org)d.append(node('p',org));if(e.bullets?.length)d.append(list(e.bullets));return d;});
+ section('Professional experience',experience(cv.civilian||[]),'civilian');section('Military service',experience(cv.military||[],true),'military');
+ const groups=cvSkillGroups(cv.skills?.technical,cv.skills?.leadership);if(groups.length)section('Skills & tools',grid(groups.map(group=>{const card=record(group.title,[],'cv-skill-group');card.append(list(group.items,'cv-skill-list'));return card;}),'cv-skill-grid'),'skills');
+ if(cv.education?.length)section('Education',grid(cv.education.map(e=>{const qualification=[e.degree,e.field].filter(Boolean).join(' · ');return record(e.institution||qualification||'Education',[[e.institution?qualification:'','cv-qualification'],[[e.year,e.status].filter(Boolean).join(' · '),'cv-record-meta'],[e.details,'cv-record-notes']],'cv-record cv-education');})),'education');
+ const certificates=cvCredentialEntries(cv.skills?.certs);if(certificates.length)section('Licenses & certifications',grid(certificates.map(e=>record(e.name,[[e.details,'']],'cv-record cv-certification'))),'certifications');
+ if(cv.training?.length)section('Training & professional development',grid(cv.training.map(e=>record(e.name,[[e.institution,''],[[e.date,e.status].filter(Boolean).join(' · '),'cv-record-meta']],'cv-record cv-training'))),'training');
+ section('Projects & volunteering',(cv.projects||[]).map(e=>{const block=record(e.name||'Project',[[e.title,''],[previewDates(e),'cv-record-meta']],'cv-preview-position');if(e.bullets?.length)block.append(list(e.bullets));return block;}),'projects');
+ const languages=cvListItems(cv.skills?.languages);if(languages.length)section('Languages',[list(languages,'cv-language-list')],'languages');
  const contact=[];for(const [key,label]of [['email','Email'],['phone','Phone'],['linkedin','LinkedIn'],['portfolio','Portfolio'],['github','GitHub'],['website','Website']])if(cv.contact?.[key]){const a=node('a',label+': '+cv.contact[key]);const value=cv.contact[key];a.href=key==='email'?'mailto:'+encodeURIComponent(value):key==='phone'?'tel:'+value.replace(/[^+\d]/g,''):safeCvLink(value);a.rel='noopener noreferrer';a.target='_blank';contact.push(a);}
- section('Contact',contact,support);if(!primary.children.length||!support.children.length)body.classList.add('cv-preview-single');
-
+ section('Contact',contact,'contact');
 }
 export function initDigitalCv(api){
  let base={},published=null,slug='',generation=0,busy=false,loaded=false,loadFailed=false,sources=[],stage='source',previewReady=false,reviewStep=null;
@@ -61,10 +69,10 @@ export function initDigitalCv(api){
  function renderEditors(){
   const root=$('cv-education-fields');root.replaceChildren();for(const [index,entry]of (base.education||[]).entries()){
    const card=node('fieldset');card.className='cv-education-entry';card.append(node('legend','Education '+(index+1)));
-   for(const [key,label,max,placeholder]of [['institution','School or institution',200,'e.g. Example University'],['degree','Degree or qualification',160,'e.g. Bachelor of Science'],['field','Field of study',200,'e.g. Business Administration'],['year','Year or expected completion',60,'e.g. 2022 or Expected 2027']])editField(card,label,entry[key],max,value=>{entry[key]=value;},{placeholder});
+   for(const [key,label,max,placeholder]of [['institution','School or institution',200,'e.g. Example University'],['degree','Degree or qualification',160,'e.g. Bachelor of Science'],['field','Field of study',200,'e.g. Business Administration'],['year','Year or expected completion',100,'e.g. 2022 or Expected June 2027'],['status','Completion status · optional',60,'e.g. In progress or Completed']])editField(card,label,entry[key],max,value=>{entry[key]=value;},{placeholder});
    const remove=node('button','Remove this education entry');remove.type='button';remove.className='text-button';remove.onclick=()=>{base.education.splice(index,1);renderEditors();changed();};card.append(remove);root.append(card);
   }
-  const skills=$('cv-skill-fields');skills.replaceChildren();base.skills||={};for(const [key,label,placeholder]of [['technical','Skills & tools','e.g. Inventory planning, Excel, staff training'],['leadership','Leadership skills · optional','e.g. Team coaching, scheduling'],['certs','Licenses & certifications · optional','Include only credentials you actually hold'],['languages','Languages · optional','e.g. Spanish — conversational']])editField(skills,label,base.skills[key],6000,value=>{base.skills[key]=value;},{multiline:true,placeholder});
+  const skills=$('cv-skill-fields');skills.replaceChildren();base.skills||={};for(const [key,label,placeholder]of [['technical','Skills & tools','e.g. Inventory planning, Excel, staff training'],['leadership','Leadership skills · optional','e.g. Team coaching, scheduling'],['certs','Licenses & certifications · optional','One credential per line; include the issuer and status as recorded'],['languages','Languages · optional','e.g. Spanish — conversational']])editField(skills,label,base.skills[key],6000,value=>{base.skills[key]=value;},{multiline:true,placeholder});
  }
  $('cv-add-education').onclick=()=>{base.education||=[];if(base.education.length>=30){message('This CV supports up to 30 education entries.');return;}base.education.push({institution:'',degree:'',field:'',year:''});$('cv-include-education').checked=true;renderEditors();changed();$('cv-education-fields').querySelector('fieldset:last-child input').focus();};
  function fill(source,opts){base=structuredClone(source);for(const k of ['name','headline','summary'])$('cv-'+k).value=source[k]||'';for(const k of optionNames)$('cv-include-'+k).checked=!!opts[k];$('cv-consent').checked=false;renderEditors();preview();}

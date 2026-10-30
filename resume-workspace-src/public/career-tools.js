@@ -1,7 +1,7 @@
 import {initCareerExplorer} from './career-explorer.js?v=20261028-guided';
 import {initApplicationImport} from './application-import.js?v=20261026-career-tools';
 import {designs} from './resume-designs.js?v=20261027-resume-studio';
-import {initDigitalCv} from './digital-cv.js?v=20261030-sections';
+import {initDigitalCv} from './digital-cv.js?v=20261030-certifications';
 import {selectProfileSection} from './background-form.js?v=20261026-career-tools';
 import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261025-standalone-app';
 import { savedResumeToDraft } from './cloud-store.js?v=20261028-guided';

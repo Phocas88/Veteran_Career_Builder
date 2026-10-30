@@ -5,7 +5,7 @@ const cvText=value=>typeof value==='string'?value.trim():'';
 const cvRows=value=>(Array.isArray(value)?value:[]).filter(row=>row&&typeof row==='object'&&!Array.isArray(row));
 const cvUnique=values=>{const seen=new Set();return values.filter(value=>{const key=typeof value==='string'?value.replace(/\s+/g,' ').toLocaleLowerCase():JSON.stringify(value);if(!key||seen.has(key))return false;seen.add(key);return true;});};
 function cvListItems(value){
- const output=[];let part='',depth=0;const characters=[...cvText(value)];
+ const output=[];let part='',depth=0;const characters=[...cvText(value).replace(/([/&,\(])[ \t]*\r?\n[ \t]*/g,'$1 ')];
  for(const [index,char]of characters.entries()){if(char==='('||char==='[')depth++;if(char===')'||char===']')depth=Math.max(0,depth-1);if(!depth&&/[,;\n|•]/.test(char)&&!(char===','&&/\d/.test(characters[index-1]||'')&&/\d/.test(characters[index+1]||''))){const item=part.trim().replace(/^[▪◦*\-]\s+/,'');if(item)output.push(item);part='';}else part+=char;}
  if(part.trim())output.push(part.trim().replace(/^[▪◦*\-]\s+/,''));
  // A year or corporate suffix belongs to the preceding item, not a new card.
@@ -30,9 +30,20 @@ function cvTrainingEntries(value){
 function cvSkillGroups(technical='',leadership=''){
  const groups=[],known='Software(?:\\s*(?:&|and)\\s*Development|\\s+Development)|(?:Data\\s*(?:&|and)\\s*)?(?:Analytics?|Analysis)(?:\\s*(?:&|and)\\s*Automation)?|Enterprise\\s+(?:Platforms?|Systems?)|Operations(?:\\s*(?:&|and)\\s*(?:Logistics|Supply\\s+Chain|Business))?|Technical(?:\\s*(?:&|and)\\s*Business)?\\s+Skills|Core\\s+Skills|Leadership(?:\\s+Skills)?|Tools\\s*(?:&|and)\\s*Technologies|Business\\s+Skills|Professional\\s+Skills|Additional\\s+Skills';
  const label=new RegExp('(?:\\b('+known+')|(?:^|[\\n;])\\s*([^:\\n;,]{2,70}))\\s*:\\s*','gi');
+ const systemsHeading=/^(?:Enterprise\s+(?:Platforms?|Systems?)|(?:ERP|WMS)(?:\s*(?:&|and|\/)\s*(?:ERP|WMS))?(?:\s+(?:Systems?|Platforms?))?)$/i;
+ const systemName=/^(?:Red\s*Prairie|Blue\s*Yonder|JDA|NetSuite|Apt(?:ean)?\s+Apprise(?:\s+WMS)?|Aptean(?:\s+Apprise)?(?:\s+WMS)?|Epicor(?:\s+Indago)?|Oracle(?:\s+(?:SCM|WMS|ERP|Cloud|EBS))?|SAP(?:\s+(?:ERP|WMS|MM|EWM))?|IFS(?:\s+ERP)?|GCSS[- ]Army|Microsoft\s+Dynamics(?:\s+365)?)$/i;
+ const knownSuffix=new RegExp('\\b('+known+')$','i');
  function add(title,body){const items=cvListItems(body);if(!items.length)return;const old=groups.find(group=>group.title.toLocaleLowerCase()===title.toLocaleLowerCase());if(old)old.items=cvUnique([...old.items,...items]);else groups.push({title,items});}
  for(const [source,fallback]of [[cvText(technical),'Core skills'],[cvText(leadership),'Leadership skills']]){
-  let cursor=0,title=fallback;for(const match of source.matchAll(label)){add(title,source.slice(cursor,match.index));title=(match[1]||match[2]).trim();cursor=match.index+match[0].length;}add(title,source.slice(cursor));
+  let cursor=0,title=fallback;for(const match of source.matchAll(label)){
+   add(title,source.slice(cursor,match.index));let next=(match[1]||match[2]).trim();
+   // A wrapped PDF line can join the last system to the next heading, as in
+   // "RedPrairie Operations:". Keep the named system with the other systems;
+   // do not label every operational skill as experience with that product.
+   const suffix=match[2]&&next.match(knownSuffix),prefix=suffix?next.slice(0,suffix.index).trim():'';
+   if(prefix&&systemName.test(prefix)){add(groups.find(group=>systemsHeading.test(group.title))?.title||'ERP & WMS systems',prefix);next=suffix[1];}
+   title=next;cursor=match.index+match[0].length;
+  }add(title,source.slice(cursor));
  }
  return groups;
 }
@@ -60,14 +71,19 @@ function recoverCvSections(value={}){
 const degreePattern=/\b(?:bachelor(?:['’]s)?(?:\s+of\s+(?:science|arts|business|applied\s+science))?|master(?:['’]s)?(?:\s+of\s+(?:science|arts|business\s+administration))?|associate(?:['’]s)?(?:\s+of\s+(?:science|arts|applied\s+science))?|doctor(?:ate)?|Ph\.?D\.?|B\.?S\.?|B\.?A\.?|M\.?S\.?|M\.?B\.?A\.?)\b/i;
 function cleanPublicCv(value={}){
  const p=recoverCvSections(value),certs=[cvText(p.skills.certs)],training=cvRows(p.training).map(e=>({name:cvText(e.name),institution:cvText(e.institution),date:cvText(e.date),status:cvText(e.status)})).filter(e=>e.name),education=[];
- function extract(text){
-  const pattern=/\b(Credentials?|Certifications?|Certificates?|Licenses?(?:\s*(?:&|and)\s*Certifications?)?|Training|Courses?)\s*:\s*/gi;let main=text,cursor=0,target=null;
-  for(const match of text.matchAll(pattern)){if(/^certificates?$/i.test(match[1])&&/\b(?:graduate|postgraduate|undergraduate|academic)\s+$/i.test(text.slice(0,match.index)))continue;if(target){const content=text.slice(cursor,match.index);if(target==='training')training.push(...cvTrainingEntries(content));else certs.push(content);}else main=text.slice(0,match.index);target=/training|courses?/i.test(match[1])?'training':'certs';cursor=match.index+match[0].length;}
+ function extract(text,plainAtStart=true){
+  const pattern=/\b(Credentials?|Certifications?|Certificates?|Licenses?(?:\s*(?:&|and)\s*Certifications?)?|Training|Courses?)\s*(?:[:—–]\s*|-[ \t]+)/gi;
+  // PDF imports often flatten a bold label into the first words of a field.
+  // Unpunctuated labels must start a field or line; words inside a degree name
+  // (for example Digital Credentials Management) are not section boundaries.
+  const plain=/(?:^|\r?\n)[ \t]*(Credentials|Certifications|Certificates|Licenses(?:[ \t]*(?:&|and)[ \t]*Certifications)?|Training|Courses)(?:[ \t]*\r?\n[ \t]*|[ \t]+)(?=[^\s:—–-])(?!\b(?:in|of|for|and|or)\b)/gi;
+  const matches=[...text.matchAll(pattern),...[...text.matchAll(plain)].filter(match=>plainAtStart||match.index>0)].sort((a,b)=>a.index-b.index||b[0].length-a[0].length);let main=text,cursor=0,target=null,end=-1;
+  for(const match of matches){if(match.index<end)continue;end=match.index+match[0].length;if(/^certificates?$/i.test(match[1])&&/\b(?:graduate|postgraduate|undergraduate|academic)\s+$/i.test(text.slice(0,match.index)))continue;if(target){const content=text.slice(cursor,match.index);if(target==='training')training.push(...cvTrainingEntries(content));else certs.push(content);}else main=text.slice(0,match.index);target=/training|courses?/i.test(match[1])?'training':'certs';cursor=match.index+match[0].length;}
   if(target){const content=text.slice(cursor);if(target==='training')training.push(...cvTrainingEntries(content));else for(const item of cvListItems(content)){if(/\b(?:training|course)\b/i.test(item))training.push({name:item,institution:'',date:'',status:''});else certs.push(item);}}
   return main.trim().replace(/[,;|·\s]+$/,'');
  }
  function record(entry){
-  let institution=extract(cvText(entry.institution)),degree=extract(cvText(entry.degree)),field=extract(cvText(entry.field)),year=extract(cvText(entry.year)),status=cvText(entry.status),details=extract(cvText(entry.details));
+  let institution=extract(cvText(entry.institution),false),degree=extract(cvText(entry.degree),false),field=extract(cvText(entry.field),false),year=extract(cvText(entry.year),false),status=cvText(entry.status),details=extract(cvText(entry.details));
   // Recover a degree embedded after the institution without guessing a school.
   const embedded=institution.match(degreePattern);if(embedded&&embedded.index>0&&!degree){degree=institution.slice(embedded.index);institution=institution.slice(0,embedded.index).replace(/[,;|·\s]+$/,'');}
   const parts=degree.split(/\s*[|·]\s*/);if(parts.length>1){degree=parts[0];for(const part of parts.slice(1)){if(/^(?:in progress|completed|not completed|incomplete|pursuing)$/i.test(part))status=status||part;else if(!field)field=part;else details=[details,part].filter(Boolean).join('\n');}}

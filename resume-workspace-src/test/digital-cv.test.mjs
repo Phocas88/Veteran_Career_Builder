@@ -39,3 +39,21 @@ test('organizing a selected CV cannot revive sections or contact details the use
 test('all selected work-history bullets remain available, with wrapped continuations joined and duplicate dates removed',()=>{
  const bullets=Array.from({length:20},(_,i)=>'Verified responsibility '+(i+1)+'.');const cv=profileToCv({name:'Alex Morgan',jobs:[{jobTitle:'Coordinator',employer:'Example Employer',startDate:'2019-04',endDate:'2020-06',duties:[...bullets,'Built workflows using','APIs and relational databases.','Jun 2020'].join('\n')}]});assert.equal(cv.civilian[0].bullets.length,21);assert.equal(cv.civilian[0].bullets.at(-1),'Built workflows using APIs and relational databases.');assert.ok(cv.civilian[0].bullets.includes('Verified responsibility 20.'));assert.equal(cv.civilian[0].endDate,'2020-06');assert.ok(!cv.civilian[0].bullets.includes('Jun 2020'));
 });
+
+test('unpunctuated Credentials notes become independent certifications and respect opt-out choices',async()=>{
+ const {cleanPublicCv}=await import('../public/cv-content.js');const source={name:'Alex Example',summary:'Verified summary.',education:[{institution:'Example University',degree:'Bachelor of Science',field:'Data Analytics',year:'Expected June 2027',details:'Credentials Lean Six Sigma Green Belt; Warehouse Certificate (Example Institute); SAP /\nInventory system training; Learn SQL Course'}],skills:{},contact:{}};
+ const organized=cleanPublicCv(source);assert.equal(organized.education[0].details,'');assert.match(organized.skills.certs,/Lean Six Sigma Green Belt/);assert.equal(organized.training[0].name,'SAP / Inventory system training');assert.deepEqual(cleanPublicCv(organized),organized);
+ const visible=selectCv(source,cvDefaults());assert.match(visible.skills.certs,/Warehouse Certificate/);assert.doesNotMatch(JSON.stringify(visible.education),/Credentials|Green Belt|Warehouse Certificate|training|SQL Course/);
+ const hidden=selectCv(source,{...cvDefaults(),certifications:false,training:false});assert.equal(hidden.skills.certs,'');assert.deepEqual(hidden.training,[]);assert.doesNotMatch(JSON.stringify(hidden.education),/Credentials|Green Belt|Warehouse Certificate|training|SQL Course/);
+ const academic=cleanPublicCv({education:[{institution:'Example University',degree:'Graduate Certificate: Digital Credentials Management',field:'Credentials Management'}]});assert.equal(academic.education[0].field,'Credentials Management');assert.equal(academic.skills.certs,'');
+});
+
+test('PDF-wrapped ERP and WMS names remain individual systems rather than operations group headings',async()=>{
+ const {cvSkillGroups,cleanPublicCv}=await import('../public/cv-content.js');
+ const systems=['NetSuite','Aptean Apprise WMS','Epicor Indago','SAP ERP / SAP MM / GCSS-Army','Oracle SCM','IFS ERP','RedPrairie'];
+ const source={name:'Alex Example',skills:{technical:'Enterprise Platforms: '+systems.slice(0,-1).join(', ')+'\nRedPrairie Operations: Inventory control, warehouse leadership, supply chain planning'}};
+ const groups=cvSkillGroups(source.skills.technical);assert.deepEqual(groups,[{title:'Enterprise Platforms',items:systems},{title:'Operations',items:['Inventory control','warehouse leadership','supply chain planning']}]);
+ const cv=selectCv(source,cvDefaults());assert.deepEqual(cvSkillGroups(cv.skills.technical),groups);assert.deepEqual(cleanPublicCv(cv),cleanPublicCv(cleanPublicCv(cv)));assert.match(source.skills.technical,/RedPrairie Operations:/);
+ assert.equal(selectCv(source,{...cvDefaults(),skills:false}).skills.technical,'');
+ assert.deepEqual(cvSkillGroups('Customer Service Operations: Scheduling, Telephone support'),[{title:'Customer Service Operations',items:['Scheduling','Telephone support']}]);
+});

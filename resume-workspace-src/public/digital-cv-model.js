@@ -1,4 +1,4 @@
-import {cleanPublicCv,cvSkillGroups,cvCredentialEntries,cvListItems} from './cv-content.js?v=20261030-certifications';
+import {cleanPublicCv,cvSkillGroups,cvCredentialEntries,cvListItems} from './cv-content.js?v=20261030-skill-quality';
 import {cleanResumeText,splitResumeSections,flowParagraphs} from './resume-text.js?v=20261028-guided';
 import {safeProfilePhoto} from './profile-media.js?v=20261026-career-tools';
 import {parseProfileResume} from './profile-import-model.js?v=20261028-guided';
@@ -6,6 +6,11 @@ import {parseProfileResume} from './profile-import-model.js?v=20261028-guided';
 const text=(v,max=1000)=>typeof v==='string'?v.trim().slice(0,max):'';
 const rows=v=>Array.isArray(v)?v.filter(x=>x&&typeof x==='object').slice(0,30):[];
 const lines=(...values)=>values.flatMap(v=>text(v,6000).split(/\n+/)).map(v=>v.replace(/^[•*\-\s]+/,'')).filter(Boolean);
+function profileSkills(p){
+ const entries=(Array.isArray(p.skillsEntries)?p.skillsEntries:[]).slice(0,150),categories={Technical:'Core skills',Leadership:'Leadership skills',Communication:'Communication & collaboration',Operations:'Operations',Other:'Additional skills'},groups=[];
+ for(const entry of entries){const name=text(entry.name,250);if(!name)continue;const title=categories[entry.category]||'Core skills';let group=groups.find(g=>g.title===title);if(!group){group={title,items:[]};groups.push(group);}group.items.push(name);}
+ return groups.map(group=>group.title+': '+group.items.join(', ')).join('\n')||text(p.skills,6000);
+}
 export function safeCvLink(value){try{const raw=text(value,500),url=new URL(/^[a-z][a-z0-9+.-]*:/i.test(raw)?raw:/^[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:[/:?#]|$)/i.test(raw)?'https://'+raw:raw);return ['https:','http:'].includes(url.protocol)&&!url.username&&!url.password?url.href:'';}catch{return '';}}
 export const cvDefaults=()=>({military:true,civilian:true,education:true,skills:true,certifications:true,languages:true,training:true,projects:true,location:false,email:false,phone:false,linkedin:false,portfolio:false,github:false,website:false,photo:false,index:false});
 export function profileToCv(p={}){
@@ -15,7 +20,7 @@ export function profileToCv(p={}){
  education:rows(p.educationEntries?.length?p.educationEntries:typeof p.education==='string'&&p.education.trim()?parseProfileResume('EDUCATION\n'+p.education).data.educationEntries:[]).filter(e=>e.institution||e.degree).map(e=>({degree:text(e.degree,6000),status:text(e.status,60),field:text(e.field,6000),institution:text(e.institution,6000),year:text(e.year||e.endDate,100)})),
  training:rows(p.training).filter(e=>e.name).map(e=>({name:text(e.name,200),institution:text(e.institution,200),date:text(e.date||e.endDate,60),status:text(e.status,60)})),
  projects:rows(p.projects).filter(e=>e.name).map(e=>({name:text(e.name,200),title:text(e.title,200),startDate:text(e.startDate,30),endDate:text(e.endDate,30),dateText:text(e.dates,100),current:e.current===true,bullets:lines(e.duties,e.achievements)})),
- skills:{technical:(Array.isArray(p.skillsEntries)?p.skillsEntries:[]).slice(0,150).map(e=>text(e.name,250)).filter(Boolean).join(', ')||text(p.skills,6000),leadership:'',certs:rows(p.certifications).map(e=>[text(e.name,150),text(e.issuer,120),text(e.status,40)].filter(Boolean).join(' — ')).filter(Boolean).join('\n'),languages:rows(p.languages).map(e=>text(e.name,120)).filter(Boolean).join(', ')},
+ skills:{technical:profileSkills(p),leadership:'',certs:rows(p.certifications).map(e=>[text(e.name,150),text(e.issuer,120),text(e.status,40)].filter(Boolean).join(' — ')).filter(Boolean).join('\n'),languages:rows(p.languages).map(e=>text(e.name,120)).filter(Boolean).join(', ')},
  contact:{email:text(p.email,254),phone:text(p.phone,60),linkedin:safeCvLink(p.linkedin),portfolio:safeCvLink(p.portfolio),github:safeCvLink(p.github),website:safeCvLink(p.website)}});
 }
 export function resumeToCv(resume){

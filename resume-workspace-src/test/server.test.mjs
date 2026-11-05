@@ -30,7 +30,7 @@ async function withServer(fn, options = {}) {
 }
 
 test('the application and modules load; local secrets and source files cannot be downloaded', async () => withServer(async (base, request) => {
-  for (const route of ['/', '/app.js', '/skill-organization.js', '/cv-content.js', '/corrections.js', '/build-recovery.js', '/styles.css', '/manifest.webmanifest']) assert.equal((await request(base + route)).status, 200);
+  for (const route of ['/', '/app.js', '/app-install.js', '/app-worker.js', '/offline.html', '/app-icon-192.png', '/app-icon-512.png', '/app-icon-maskable-512.png', '/apple-touch-icon.png', '/app-install.css', '/skill-organization.js', '/cv-content.js', '/corrections.js', '/build-recovery.js', '/styles.css', '/manifest.webmanifest']) assert.equal((await request(base + route)).status, 200);
   for (const route of ['/.env.local', '/server.mjs', '/package.json', '/.git/config', '/lib/review.mjs']) assert.equal((await request(base + route)).status, 404);
   const home = await request(base);
   assert.match(home.headers.get('content-security-policy'), /script-src 'self'/);

@@ -5,7 +5,7 @@ import path from 'node:path';
 import { reviewResume, ReviewError } from './lib/review.mjs';
 
 const root = fileURLToPath(new URL('./public/', import.meta.url));
-const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json', '.wasm': 'application/wasm', '.woff': 'font/woff', '.ttf': 'font/ttf', '.txt': 'text/plain; charset=utf-8' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.jpg': 'image/jpeg', '.png':'image/png', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json', '.wasm': 'application/wasm', '.woff': 'font/woff', '.ttf': 'font/ttf', '.txt': 'text/plain; charset=utf-8' };
 export function makeServer({ apiKey = process.env.OPENAI_API_KEY, model = process.env.OPENAI_MODEL, review = reviewResume } = {}) {
   const limits = new Map();
   return createServer(async (req, res) => {
@@ -61,6 +61,7 @@ export function makeServer({ apiKey = process.env.OPENAI_API_KEY, model = proces
       for (const file of ['service-library.js','service-library-model.js','service-library-data.json']) routes.add('/'+file);
       routes.add('/service-codes.js');
       routes.add('/skill-organization.js');
+      for(const file of ['app-install.js','app-install.css','app-worker.js','offline.html','app-icon-192.png','app-icon-512.png','app-icon-maskable-512.png','apple-touch-icon.png'])routes.add('/'+file);
       if (!routes.has(url.pathname) && !(url.pathname.startsWith('/vendor/') || url.pathname.startsWith('/template-previews/'))) return send(404, 'Page not found.', 'text/plain');
       const file = url.pathname === '/' ? 'index.html' : url.pathname.slice(1);
       const fullPath = path.resolve(root, file);

@@ -37,7 +37,7 @@ jobs:
           node --check scripts/apply-security-refactor.mjs
 
       - name: Verify website security protections
-        run: node --test test/security-headers.test.mjs test/hosting-domains.test.mjs
+        run: node --test test/security-headers.test.mjs test/hosting-domains.test.mjs test/standalone-resume.test.mjs
 
       - name: Verify app.bundle.js + app.html are in sync with app.js
         run: |
@@ -58,7 +58,7 @@ jobs:
 
       - name: Verify simplified resume journeys
         working-directory: resume-workspace-src
-        run: npx playwright test --config=playwright.career.config.mjs digital-cv.spec.mjs app-shell.spec.mjs cover-letters.spec.mjs entry-flow.spec.mjs analytics.spec.mjs clear-journey.spec.mjs career-extras.spec.mjs --max-failures=1
+        run: npx playwright test --config=playwright.career.config.mjs pwa.spec.mjs digital-cv.spec.mjs app-shell.spec.mjs cover-letters.spec.mjs entry-flow.spec.mjs analytics.spec.mjs clear-journey.spec.mjs career-extras.spec.mjs --max-failures=1
 
       - name: Verify career tools in a mobile browser
         working-directory: resume-workspace-src
@@ -101,6 +101,15 @@ jobs:
             http://127.0.0.1:8080/mos/12p.html
           budgetPath: .github/lighthouse-budget.json
           uploadArtifacts: true
+
+      - name: Package the standalone app for its future website
+        run: node scripts/build-standalone-resume.mjs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vcp-resume-standalone
+          path: /tmp/vcp-resume-standalone
+          retention-days: 14
 
       - name: Package the built site for GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

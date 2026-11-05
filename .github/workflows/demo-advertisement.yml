@@ -1,0 +1,37 @@
+name: Render fictional app advertisement demo
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'resume-workspace-src/scripts/render-ad-demo.mjs'
+      - 'resume-workspace-src/scripts/fixtures/ad-demo*'
+      - '.github/workflows/demo-advertisement.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'resume-workspace-src/scripts/render-ad-demo.mjs'
+      - 'resume-workspace-src/scripts/fixtures/ad-demo*'
+      - '.github/workflows/demo-advertisement.yml'
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: resume-workspace-src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --include=dev --no-audit --no-fund
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/render-ad-demo.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vcp-demo-advertisement
+          path: /tmp/vcp-demo-advertisement
+          retention-days: 14

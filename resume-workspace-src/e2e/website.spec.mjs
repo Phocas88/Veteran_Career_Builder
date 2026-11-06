@@ -12,8 +12,8 @@ test('the public landing page displays complete fictional examples with privacy 
  await expect(page.locator('h1')).toContainText('Your experience.');await expect(page.locator('.site-header .site-brand')).toContainText('Veteran Resumes');await expect(page.locator('.site-header .site-brand img')).toHaveAttribute('src','/brand.svg');
  await expect(page.locator('.sample-card')).toHaveCount(4);for(const image of await page.locator('.sample-card img').all()){await image.scrollIntoViewIfNeeded();await expect.poll(()=>image.evaluate(img=>img.complete&&img.naturalWidth>=816)).toBe(true);}
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect(errors).toEqual([]);
- await page.screenshot({path:screenshots+'/landing-mobile.png',fullPage:true});
- await page.setViewportSize({width:1440,height:1000});await page.screenshot({path:screenshots+'/landing-desktop.png',fullPage:true});
+ await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:screenshots+'/landing-mobile.png',fullPage:true});
+ await page.setViewportSize({width:1440,height:1000});await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:screenshots+'/landing-desktop.png',fullPage:true});
 });
 test('landing start choices pass through account entry to the existing payment step without purchasing automatically',async({page})=>{
  await prepare(page);const purchases=[];page.on('request',r=>{try{if(r.postDataJSON()?.action==='purchase')purchases.push(r.url());}catch{}});

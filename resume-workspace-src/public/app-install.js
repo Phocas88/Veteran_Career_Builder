@@ -18,7 +18,7 @@ export function initAppInstall({win=window,nav=navigator,doc=document,moduleUrl=
  doc.getElementById('app-install-close').addEventListener('click',()=>dialog.close());
  dialog.addEventListener('close',()=>returnFocus?.focus());
  win.addEventListener('beforeinstallprompt',event=>{event.preventDefault();deferred=event;render();});
- win.addEventListener('appinstalled',()=>{installed=true;deferred=null;status.textContent='App installed. Open VCP Resume from your device’s apps.';if(dialog.open)dialog.close();render();});
+ win.addEventListener('appinstalled',()=>{installed=true;deferred=null;status.textContent='App installed. Open Veteran Resumes from your device’s apps.';if(dialog.open)dialog.close();render();});
  win.matchMedia?.('(display-mode: standalone)').addEventListener?.('change',render);
  render();
  // Cache only the public offline help and installation assets. The worker does

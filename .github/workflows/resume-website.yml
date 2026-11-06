@@ -1,0 +1,32 @@
+name: Verify Veteran Resumes public website
+on:
+  pull_request:
+    paths: ['resume-website-src/**', 'scripts/build-resume-landing.mjs', 'scripts/build-resume-website.mjs', 'resume-workspace-src/**', 'test/resume-website.test.mjs', 'vercel.json', '.github/workflows/resume-website.yml']
+  push:
+    branches: [main]
+    paths: ['resume-website-src/**', 'scripts/build-resume-landing.mjs', 'scripts/build-resume-website.mjs', 'resume-workspace-src/**', 'test/resume-website.test.mjs', 'vercel.json', '.github/workflows/resume-website.yml']
+permissions:
+  contents: read
+jobs:
+  website:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --prefix resume-workspace-src --include=dev --no-audit --no-fund
+      - run: node scripts/build-resume-website.mjs
+      - run: npx playwright install chromium
+        working-directory: resume-workspace-src
+      - run: npx playwright test --config=playwright.website.config.mjs
+        working-directory: resume-workspace-src
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: veteran-resumes-website-previews
+          path: |
+            /tmp/veteran-resumes-website-previews
+            resume-workspace-src/test-results
+          retention-days: 7

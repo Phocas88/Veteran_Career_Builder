@@ -1,4 +1,8 @@
-# VCP Resume: standalone website and browser installation
+# Veteran Resumes: public website and workspace
+
+The public site is `https://veteranresumes.com/`; its guided workspace is `/app/`. The root keeps compatibility assets for open editors and redirects recognized old purchase/deep links in `website-routing.mjs`. The PWA keeps its original `/index.html` identity and now starts at `/app/`. Account, guest, draft, analytics and payment identifiers remain unchanged on the same origin. No user documents are moved or deleted by the layout change.
+
+Public sample PDFs and full-page PNGs come only from the reviewed fictional Alex Carter fixture and the application's actual exporters. `render-website-examples.mjs` checks the rendered content and page count. Native template previews still use the real renderer. `playwright.website.config.mjs` verifies the public gallery, consent, app entry, recovery links and installed launch; existing app journeys continue through the normal quality gate.
 
 The app can be installed from its HTTPS website on supported phone and desktop browsers. The Install app control uses the browser's installation prompt when available and otherwise provides short Android, iPhone/iPad and computer instructions. No Android APK or store listing is included in this release.
 

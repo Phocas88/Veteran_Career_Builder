@@ -40,7 +40,7 @@ test('settings keeps account, purchase, legal and storage controls out of the wo
 });
 test('desktop has horizontal app navigation and direct Library links reopen correctly',async({page})=>{
  await installAccount(page,'registered');await page.setViewportSize({width:1440,height:960});await page.goto('/#library');await expect(page.locator('#career-title')).toHaveText('Service library');await expect(page.locator('[data-library-stage="branch"]')).toBeVisible();await page.locator('[data-library-branch="army"]').click();await page.locator('#library-choose-specialty').click();await expect(page.locator('#library-results .library-result').first()).toBeVisible();
- await expect(page.locator('.app-nav')).toBeVisible();const nav=await page.locator('.app-nav').boundingBox();expect(nav.width).toBe(1440);expect(nav.height).toBeLessThan(100);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'/tmp/app-library-desktop.png'});
+ await expect(page.locator('.app-nav')).toBeVisible();const nav=await page.locator('.app-nav').boundingBox();expect(nav.width).toBeGreaterThan(900);expect(nav.x).toBeGreaterThanOrEqual(0);expect(nav.x+nav.width).toBeLessThanOrEqual(1440);for(const item of await page.locator('.app-nav>button').all())await expect(item).toBeVisible();expect(nav.height).toBeLessThan(100);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'/tmp/app-library-desktop.png'});
 });
 
 test('application entry opens on demand, can be cancelled, and does not save without an explicit action',async({page})=>{

@@ -172,7 +172,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     </div>
   </div>
 
-  <div class="stat-card" style="margin-bottom:1rem;border-color:#f0c040"><div class="resume-admin-entry-actions"><button type="button" id="resume-admin-shortcut" class="resume-admin-shortcut"><div class="stat-n" id="stat-resume-purchases">—</div><div class="stat-l">VCP Resume purchases →</div><div class="stat-sub" id="stat-resume-purchase-period">All time purchases · open purchases and app activity</div></button><button type="button" id="resume-admin-activity-shortcut" class="tab">App activity →</button></div></div>
+  <div class="stat-card" style="margin-bottom:1rem;border-color:#f0c040"><div class="resume-admin-entry-actions"><button type="button" id="resume-admin-shortcut" class="resume-admin-shortcut"><div class="stat-n" id="stat-resume-purchases">—</div><div class="stat-l">Veteran Resumes purchases →</div><div class="stat-sub" id="stat-resume-purchase-period">All time purchases · open purchases and app activity</div></button><button type="button" id="resume-admin-activity-shortcut" class="tab">App activity →</button></div></div>
 
   <!-- Stats -->
   <div class="stats-row" id="stats-row">
@@ -191,7 +191,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
   <!-- Tabs -->
   <div class="tabs" id="admin-sections">
-    <button class="tab" id="resume-admin-tab" onclick="switchTab('vcp-resume',this)" style="border-color:#f0c040">VCP Resume</button>
+    <button class="tab" id="resume-admin-tab" onclick="switchTab('vcp-resume',this)" style="border-color:#f0c040">Veteran Resumes</button>
     <button class="tab active" onclick="switchTab('emails',this)">📧 Subscribers</button>
     <button class="tab" onclick="switchTab('users',this)">👥 Users</button>
     <button class="tab" onclick="switchTab('salary',this)">💰 Salary Data</button>
@@ -205,7 +205,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
     <button class="tab" id="rr-tab-btn" onclick="switchTab('resume-reviews',this)">📝 Resume Reviews <span id="rr-tab-badge" style="color:#f0c040;font-weight:700;display:none;"></span></button>
   </div>
 
-  <div class="panel" id="panel-vcp-resume"><div class="resume-admin-intro"><p><a href="#admin-sections" style="color:#f0c040">← Admin menu</a></p><h2>VCP Resume</h2><p>See purchases, $0 promo checkouts, app activity and veteran feedback here.</p></div><div id="resume-admin-root"><p class="resume-admin-note">Open VCP Resume to load your reports.</p></div></div>
+  <div class="panel" id="panel-vcp-resume"><div class="resume-admin-intro"><p><a href="#admin-sections" style="color:#f0c040">← Admin menu</a></p><h2>Veteran Resumes</h2><p>See purchases, $0 promo checkouts, app activity and veteran feedback here.</p></div><div id="resume-admin-root"><p class="resume-admin-note">Open Veteran Resumes to load your reports.</p></div></div>
 
   <!-- RESUME REVIEWS -->
   <div class="panel" id="panel-resume-reviews">
@@ -214,7 +214,7 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
   <!-- PAID SUBSCRIBERS -->
   <div class="panel" id="panel-subscribers">
-    <div style="font-size:.85rem;color:rgba(192,216,240,.5);margin-bottom:1rem;">Recurring website subscriptions are shown here. VCP Resume uses one-time payments; find those in the Stripe Payments dashboard.</div>
+    <div style="font-size:.85rem;color:rgba(192,216,240,.5);margin-bottom:1rem;">Recurring website subscriptions are shown here. Veteran Resumes uses one-time payments; find those in the Stripe Payments dashboard.</div>
     <div id="subs-root"><div class="loading">Loading subscribers…</div></div>
   </div>
 
@@ -284,15 +284,15 @@ html,body{font-family:'Inter',sans-serif;background:#060d1a;color:#e8f0f8;min-he
 
   <!-- ANALYTICS -->
   <div class="panel" id="panel-analytics">
-    <p style="margin:1rem 0"><button class="tab" onclick="switchTab('vcp-resume',document.getElementById('resume-admin-tab'))">Open VCP Resume purchases &amp; app activity →</button></p>
+    <p style="margin:1rem 0"><button class="tab" onclick="switchTab('vcp-resume',document.getElementById('resume-admin-tab'))">Open Veteran Resumes purchases &amp; app activity →</button></p>
     <section class="admin-report-links" aria-labelledby="admin-reports-title">
-      <h3 id="admin-reports-title">Website &amp; VCP Resume analytics</h3>
-      <p>VCP Resume uses your existing Google Analytics property (G-CMFKLT321J). Open Google Analytics and look for page titles starting with “VCP Resume” or events starting with <strong>vcp_resume_</strong>.</p>
+      <h3 id="admin-reports-title">Website &amp; Veteran Resumes analytics</h3>
+      <p>Veteran Resumes uses your existing Google Analytics property (G-CMFKLT321J). Open Google Analytics and look for page titles starting with “Veteran Resumes” or events starting with <strong>vcp_resume_</strong>.</p>
       <div class="subs-actions"><a id="admin-open-ga" href="https://analytics.google.com/analytics/web/" target="_blank" rel="noopener noreferrer">Open Google Analytics ↗</a><a id="admin-app-report-guide" href="/resumereview/analytics-guide.html" target="_blank" rel="noopener noreferrer">App reporting guide ↗</a></div>
       <p>App reports include visitors who allowed analytics. Stripe remains the source for billing totals.</p>
     </section>
     <details class="admin-report-advanced"><summary>Optional: show Google Analytics reports here</summary>
-    <label class="admin-report-scope">Report for<select id="ga-report-scope" onchange="if(gaToken)gaFetchAll()"><option value="app">VCP Resume app</option><option value="all">Website and app together</option><option value="website">Main website</option></select></label>
+    <label class="admin-report-scope">Report for<select id="ga-report-scope" onchange="if(gaToken)gaFetchAll()"><option value="app">Veteran Resumes app</option><option value="all">Website and app together</option><option value="website">Main website</option></select></label>
     <div class="ga-setup" id="ga-setup">
       <h3>Connect Google Analytics 4</h3>
       <p>View your site traffic, top pages, visitor locations, and more, pulled directly from GA4.<br>

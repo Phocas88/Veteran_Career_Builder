@@ -208,7 +208,7 @@ export function createPdfDefinition(model){
   const main={width:mainWidth,stack:pdfFlow(model,parts.main,mainWidth)},side={width:sideWidth,stack:pdfFlow(model,parts.side,sideWidth)};
   content.push({columns:parts.layout==='left'?[side,main]:[main,side],columnGap:gap});
  }
- return {pageBreakBefore:(node,following)=>(node.headlineLevel===1||node.style==='heading')&&following.getFollowingNodesOnPage().length===0,info:{title:model.title?`${model.title} — Resume`:'Resume',creator:'VCP Resume'},pageSize:{width:page.width,height:page.height},pageMargins:[m.left,m.top,m.right,m.bottom],defaultStyle:{font:s.font,fontSize:s.fontSize,lineHeight:s.lineHeight,color:'#222222'},content,
+ return {pageBreakBefore:(node,following)=>(node.headlineLevel===1||node.style==='heading')&&following.getFollowingNodesOnPage().length===0,info:{title:model.title?`${model.title} — Resume`:'Resume',creator:'Veteran Resumes'},pageSize:{width:page.width,height:page.height},pageMargins:[m.left,m.top,m.right,m.bottom],defaultStyle:{font:s.font,fontSize:s.fontSize,lineHeight:s.lineHeight,color:'#222222'},content,
  footer:(current,total)=>total>1?{columns:[{text:model.title||''},{text:`${current} / ${total}`,alignment:'right'}],font:s.font,fontSize:8,color:'#666666',margin:[m.left,12,m.right,0]}:null};
 }
 export async function exportPdf(model){const {pdfMake}=await import('./vendor/pdf-export.mjs');return pdfMake.createPdf(createPdfDefinition(model)).getBlob();}
@@ -243,7 +243,7 @@ export async function exportWord(model){
   children.push(new Table({width:{size:100,type:WidthType.PERCENTAGE},borders:tableBorders,rows:[new TableRow({children:parts.layout==='left'?[side,main]:[main,side]})]}));
  }
  const footer=new Footer({children:[new Paragraph({children:[new TextRun({text:(model.title||'')+'   ',font,size:16,color:'666666'}),new TextRun({children:[PageNumber.CURRENT,' / ',PageNumber.TOTAL_PAGES],font,size:16,color:'666666'})]})]});
- const m=s.margins,document=new Document({title:model.title?`${model.title} — Resume`:'Resume',creator:'VCP Resume',styles:{default:{document:{run:{font,size:s.fontSize*2}}}},sections:[{properties:{page:{size:{width:Math.round(page.width*20),height:Math.round(page.height*20)},margin:{top:m.top*20,right:m.right*20,bottom:m.bottom*20,left:m.left*20}}},footers:{default:footer},children}]});
+ const m=s.margins,document=new Document({title:model.title?`${model.title} — Resume`:'Resume',creator:'Veteran Resumes',styles:{default:{document:{run:{font,size:s.fontSize*2}}}},sections:[{properties:{page:{size:{width:Math.round(page.width*20),height:Math.round(page.height*20)},margin:{top:m.top*20,right:m.right*20,bottom:m.bottom*20,left:m.left*20}}},footers:{default:footer},children}]});
  return Packer.toBlob(document);
 }
 export function exportFilename(model,extension){const title=(model.title||'resume').normalize('NFKD').replace(/\p{M}/gu,'').replace(/[^a-z0-9]+/giu,'-').replace(/^-|-$/gu,'').slice(0,65)||'resume';return `${title.toLowerCase()}-${model.design}-${model.arrangement}.${extension}`;}

@@ -52,7 +52,7 @@ export function initCompletionPrompt(api){
  $('completion-share').onclick=async()=>{
   if(!navigator.share){await copy();return;}
   const version=generation;
-  try{await navigator.share({title:'VCP Resume',text:'A resume and career app built for veterans. Take a look:',url:APP_SHARE_URL});if(version===generation&&dialog.open)$('completion-share-status').textContent='Thanks for sharing VCP Resume.';}
+  try{await navigator.share({title:'Veteran Resumes',text:'A resume and career app built for veterans. Take a look:',url:APP_SHARE_URL});if(version===generation&&dialog.open)$('completion-share-status').textContent='Thanks for sharing Veteran Resumes.';}
   catch(error){if(version===generation&&dialog.open)$('completion-share-status').textContent=error.name==='AbortError'?'Sharing canceled. You can share or copy the link when ready.':'Sharing could not open. Use Copy link instead.';}
  };
  document.addEventListener('resume:finished',event=>offer(event.detail?.buildId));

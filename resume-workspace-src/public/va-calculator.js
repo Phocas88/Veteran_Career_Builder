@@ -144,7 +144,7 @@ export function initVaCalculator(){
   const button=$('va-download-pdf'),generation=exportGeneration,snapshot=lastEstimate;
   const detail=Array.from($('va-input-summary').querySelectorAll('li')).map(item=>item.textContent);
   const content=[
-   {text:'Veteran Career Path · VCP Resume',fontSize:10,color:'#555555'},
+   {text:'Veteran Career Path · Veteran Resumes',fontSize:10,color:'#555555'},
    {text:'VA compensation estimate',fontSize:22,bold:true,margin:[0,12,0,8]},
    {text:rateYear(snapshot.result.year).label,fontSize:13,bold:true,margin:[0,0,0,18]},
    {text:'Combined rating: '+snapshot.combined.rating+'%',margin:[0,0,0,8]},
@@ -176,7 +176,7 @@ export function initVaCalculator(){
   const d=popup.document;d.title='VA compensation estimate';const style=d.createElement('style');
   style.textContent='body{font:12pt Arial,sans-serif;color:#111;background:#fff;max-width:800px;margin:32px auto;padding:0 22px;line-height:1.6}h1{font-size:24pt}h2{font-size:17pt;margin-top:24px}li{margin:8px 0}a{overflow-wrap:anywhere;color:#111}@media print{button{display:none}@page{margin:18mm}}';d.head.append(style);
   const add=(tag,text)=>{const value=d.createElement(tag);value.textContent=text;d.body.append(value);return value;};
-  add('p','Veteran Career Path · VCP Resume');add('h1','VA compensation estimate');add('h2',rateYear(lastEstimate.result.year).label);
+  add('p','Veteran Career Path · Veteran Resumes');add('h1','VA compensation estimate');add('h2',rateYear(lastEstimate.result.year).label);
   add('p','Combined rating: '+lastEstimate.combined.rating+'%');add('p',money(lastEstimate.result.monthly)+' / month · '+money(lastEstimate.result.annual)+' / year');
   add('p',$('va-pay-basis').textContent);if(lastEstimate.result.projected)add('p',$('va-cola-comparison').textContent);
   add('h2','Monthly payment breakdown');d.body.append(d.importNode($('va-breakdown'),true));

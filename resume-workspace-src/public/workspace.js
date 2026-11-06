@@ -14,6 +14,7 @@ import {privacyChoicePending} from './analytics.js?v=20261029-entry';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261029-entry';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261028-guided';
 import { connectFirebase } from './firebase-client.js';
+import {initLandingEntry} from './landing-entry.js?v=20261107-cozy';
 
 const $ = id => document.getElementById(id);
 const website = /(^|\.)veterancareerpath\.com$/i.test(location.hostname);
@@ -369,6 +370,8 @@ export function initWorkspace(adapter) {
   });
   try { $('storage-notice').hidden = localStorage.getItem('vcp_workspace_storage_choice') === 'essential'; } catch { /* Show explanation without persistence. */ }
   // Restore only this program’s named Firebase session. No offline disk cache.
+  document.body.dataset.workspaceReady='true';
+  initLandingEntry({getChoice:choice,getDraft:()=>callback.getDraft(),hasPaidBuild});
   ensureConnection().then(prepareGooglePersistence).catch(()=>{$('welcome-google-status').textContent='Google sign-in could not load. Try email sign-in or continue as guest.';status('Account services could not load. You can still edit and export without cloud storage.');});
 }
 

@@ -37,7 +37,7 @@ jobs:
           node --check scripts/apply-security-refactor.mjs
 
       - name: Verify website security protections
-        run: node --test test/security-headers.test.mjs test/hosting-domains.test.mjs test/standalone-resume.test.mjs
+        run: node --test test/security-headers.test.mjs test/hosting-domains.test.mjs test/standalone-resume.test.mjs test/resume-website.test.mjs
 
       - name: Verify app.bundle.js + app.html are in sync with app.js
         run: |

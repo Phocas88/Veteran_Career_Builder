@@ -13,5 +13,5 @@ self.addEventListener('fetch',event=>{
   event.respondWith((async()=>{const cache=await caches.open(cacheName);return await cache.match(url.href)||fetch(request);})());return;
  }
  const relative=url.pathname.slice(scope.pathname.length);if(request.mode!=='navigate'||relative==='api'||relative.startsWith('api/'))return;
- event.respondWith(fetch(request).catch(async()=>{const cache=await caches.open(cacheName);return await cache.match(offline)||new Response('You are offline. Reconnect, then reload VCP Resume.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'no-store'}});}));
+ event.respondWith(fetch(request).catch(async()=>{const cache=await caches.open(cacheName);return await cache.match(offline)||new Response('You are offline. Reconnect, then reload Veteran Resumes.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'no-store'}});}));
 });

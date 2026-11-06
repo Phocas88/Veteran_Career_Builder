@@ -4,6 +4,10 @@
   "installCommand": "npm ci --prefix resume-workspace-src --include=dev --no-audit --no-fund",
   "buildCommand": "node scripts/build-resume-website.mjs",
   "outputDirectory": "resume-website",
+  "redirects": [
+    {"source": "/index.html", "destination": "/app/", "permanent": false},
+    {"source": "/app", "destination": "/app/", "permanent": true}
+  ],
   "headers": [
     {
       "source": "/(.*)",

@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "framework": null,
+  "installCommand": "npm ci --prefix resume-workspace-src --include=dev --no-audit --no-fund",
+  "buildCommand": "node scripts/build-resume-website.mjs",
+  "outputDirectory": "resume-website",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {"key": "Content-Security-Policy", "value": "object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"},
+        {"key": "X-Content-Type-Options", "value": "nosniff"},
+        {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"}
+      ]
+    },
+    {"source": "/app-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}]},
+    {"source": "/manifest.webmanifest", "headers": [{"key": "Cache-Control", "value": "no-cache"}]}
+  ]
+}

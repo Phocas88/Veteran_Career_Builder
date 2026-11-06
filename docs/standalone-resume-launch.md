@@ -20,9 +20,11 @@ When the final domain is owned and ready, set `VCP_APP_ORIGIN` to its exact HTTP
 6. Test guest and account purchases, a 100% discount, failed-build recovery, saved document download, cover letters, profile editing, Virtual CV updates and the install/offline flow on the new origin. Existing receipts and shared links must keep working.
 7. Users must sign in again on the new origin. Device-only drafts and guest browser identity do not automatically transfer between domains. Provide an export/account-linking transition before redirecting the old app.
 
-## Domain and name status, November 5, 2026
+## Domain and launch status, November 6, 2026
 
-The owner is considering `VeteranResumes.com` and has not purchased it. The registrar lookup returned available at USD 12.03 for one year, with USD 12.03 renewal; availability and prices can change. No purchase, DNS change or rebranding has been performed.
+The owner confirms purchasing `VeteranResumes.com`. Authoritative DNS is currently at GoDaddy (`ns47.domaincontrol.com` and `ns48.domaincontrol.com`). Connect only the apex and www website records returned for the new Vercel project; preserve mail and other DNS records. The original main website and app remain accessible while this separate deployment is checked.
+
+The dedicated `veteran-resumes` Vercel project uses the repository's root `vercel.json`. It builds the library, document engines and full template examples, then packages only the public app into `resume-website` with canonical/share links pointing at `https://veteranresumes.com/`. It retains the existing account database and API. Adding DNS does not itself authorize Google sign-in: add `veteranresumes.com`, `www.veteranresumes.com` and the project's stable Vercel hostname to Firebase Authentication → Settings → Authorized domains. Keep the previous authorized hosts. Confirm any Google API-key referrer restrictions also accept the new site. Do not redirect the previous app until guest purchases and device-only drafts have a transition path.
 
 This is not trademark clearance. Preliminary web searches did not verify a specific exact-name conflicting registration, and the interactive USPTO trademark database was not readable through the research tool. A clearance search should cover similar names for related resume/career services and software, federal pending/registered marks and earlier common-law uses. The proposed wording appears descriptive of the service and may be harder to protect exclusively; that is a preliminary assessment, not a legal opinion.
 

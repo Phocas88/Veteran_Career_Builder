@@ -20,11 +20,13 @@ test('the public page and workspace have distinct routes while preserving the or
  fs.writeFileSync(path.join(source,'manifest.webmanifest'),JSON.stringify({id:'./index.html',start_url:'./',scope:'./'}));
  fs.writeFileSync(path.join(source,'index.html'),'<html><head><link rel="manifest" href="./manifest.webmanifest"><script src="./app-install.js?v=1"></script></head><body><section class="app-install-card"></section><input value="https://veterancareerpath.com/resumereview/"></body></html>');
  fs.writeFileSync(path.join(source,'.env'),'PRIVATE');
+ fs.mkdirSync(path.join(source,'site-examples'));fs.writeFileSync(path.join(source,'site-examples/cover-letter.pdf'),'%PDF-fictional-example');
  buildResumeWebsite({source,output});
  const landing=fs.readFileSync(path.join(output,'index.html'),'utf8'),app=fs.readFileSync(path.join(output,'app/index.html'),'utf8'),manifest=JSON.parse(fs.readFileSync(path.join(output,'manifest.webmanifest'),'utf8'));
  assert.match(landing,/Your experience\./);assert.match(landing,/Fictional example/);assert.match(landing,/site-examples\/cover-letter\.png/);assert.match(landing,/href="\/app\//);
  assert.match(app,/src="\/app-install\.js/);assert.match(app,/href="\/manifest\.webmanifest"/);assert.match(app,/canonical" href="https:\/\/veteranresumes\.com\/app\//);assert.match(app,/Guest purchases and drafts/);
  assert.equal(manifest.id,'/index.html');assert.equal(manifest.start_url,'/app/');assert.equal(manifest.scope,'/');
  assert.ok(fs.existsSync(path.join(output,'app.js')));assert.ok(fs.existsSync(path.join(output,'app/app.js')));assert.ok(fs.existsSync(path.join(output,'website-routing.mjs')));
+ assert.equal(fs.readFileSync(path.join(output,'site-examples/cover-letter.pdf'),'utf8'),'%PDF-fictional-example');
  assert.equal(fs.existsSync(path.join(output,'app/.env')),false);assert.equal(fs.existsSync(path.join(output,'.env')),false);
 });

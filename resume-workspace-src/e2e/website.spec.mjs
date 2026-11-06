@@ -4,7 +4,7 @@ import {installAccount} from './helpers/workspace.mjs';
 const screenshots='/tmp/veteran-resumes-website-previews';
 test.beforeAll(async()=>mkdir(screenshots,{recursive:true}));
 async function prepare(page,kind='none',options={}){await installAccount(page,kind,options);await page.route('**/api/resume-analytics',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><title>Isolated test collector</title>'}));}
-async function enter(page){if(await page.locator('#usage-analytics-notice').isVisible())await page.locator('[data-analytics-choice=deny]').first().click();if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();}
+async function enter(page){await expect(page.locator('body')).toHaveAttribute('data-workspace-ready','true');if(await page.locator('#usage-analytics-notice').isVisible())await page.locator('[data-analytics-choice=deny]').first().click();if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();}
 
 test('the public landing page displays complete fictional examples with privacy choice before any analytics',async({page})=>{
  await prepare(page,'none',{privacyPrompt:true});const hits=[],errors=[];page.on('request',r=>{if(/resume-analytics|google-analytics|googletagmanager/.test(r.url()))hits.push(r.url());});page.on('pageerror',e=>errors.push(e.message));

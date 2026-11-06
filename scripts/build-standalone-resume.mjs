@@ -13,7 +13,7 @@ export function buildStandaloneResume({source=path.join(root,'resume-workspace-s
  const appOrigin=standaloneOrigin(origin),required=['index.html','app.js','app-install.js','app-install.css','app-worker.js','offline.html','manifest.webmanifest','app-icon-192.png','app-icon-512.png','app-icon-maskable-512.png','apple-touch-icon.png','vendor/pdf.mjs','vendor/pdf.worker.mjs','vendor/pdf-export.mjs','vendor/word-export.mjs','service-library-data.json'];
  for(const file of required)if(!fs.existsSync(path.join(source,file)))throw new Error('Build the resume workspace first. Missing public asset: '+file);
  const sourcePath=path.resolve(source),outputPath=path.resolve(output);if(outputPath===sourcePath||outputPath.startsWith(sourcePath+path.sep)||sourcePath.startsWith(outputPath+path.sep)||outputPath===path.parse(outputPath).root)throw new Error('Choose a separate output directory for the standalone app.');
- const allowed=new Set(['.html','.js','.mjs','.css','.json','.webmanifest','.svg','.png','.jpg','.jpeg','.webp','.gif','.ttf','.woff','.woff2','.wasm','.bcmap','.pfb','.txt']);
+ const allowed=new Set(['.html','.js','.mjs','.css','.json','.webmanifest','.svg','.png','.jpg','.jpeg','.webp','.gif','.pdf','.ttf','.woff','.woff2','.wasm','.bcmap','.pfb','.txt']);
  fs.rmSync(outputPath,{recursive:true,force:true});fs.cpSync(sourcePath,outputPath,{recursive:true,filter:file=>{
   const relative=path.relative(sourcePath,file);if(!relative)return true;if(relative.split(path.sep).some(part=>part.startsWith('.')||['node_modules','api','test','scripts'].includes(part)))return false;
   const stat=fs.lstatSync(file);if(stat.isSymbolicLink())return false;return stat.isDirectory()||allowed.has(path.extname(file).toLowerCase());

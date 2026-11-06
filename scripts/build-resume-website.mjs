@@ -15,7 +15,6 @@ function run(command,args,cwd=root){
 run(process.execPath,['scripts/build-service-library.mjs']);
 run(npm,['run','check'],workspace);
 run(npm,['run','build'],workspace);
-run(npm,['exec','--','playwright','install','chromium'],workspace);
-run(npm,['run','build:previews'],workspace);
+run(process.execPath,['scripts/render-template-previews-node.mjs'],workspace);
 const result=buildStandaloneResume({output:path.join(root,'resume-website'),origin:'https://veteranresumes.com'});
 console.log('RESUME_WEBSITE_BUILT '+JSON.stringify(result));

@@ -14,7 +14,7 @@ body.standalone-app{
 }
 body.standalone-app .app-shell{background:none;color:var(--ink)}
 body.standalone-app main{max-width:1200px;padding:calc(var(--app-top-space) + 38px) 38px calc(var(--app-bottom-space) + 48px);scroll-margin-top:calc(var(--app-header-height) + var(--app-top-space) + 24px)}
-html:has(body.standalone-app){scroll-padding-top:calc(var(--app-header-height) + var(--app-top-space) + 20px);scroll-padding-bottom:calc(var(--app-bottom-space) + 20px)}
+html:has(body.standalone-app){color-scheme:light;background:#f7f3e9;scroll-padding-top:calc(var(--app-header-height) + var(--app-top-space) + 20px);scroll-padding-bottom:calc(var(--app-bottom-space) + 20px)}
 body.standalone-app :is(h1,h2,h3,h4,h5,h6),body.standalone-app .app-shell :is(h1,h2,h3,h4,h5,h6),body.standalone-app #career-dialog :is(h1,h2,h3,h4,h5,h6){color:var(--ink);letter-spacing:-.025em}
 body.standalone-app :is(h1,.screen-heading h1,.delivery-header h2,#career-title,#welcome-title,#profile-setup-question){font-family:'Workspace Serif',Georgia,serif;font-weight:400;font-size:clamp(32px,4vw,44px);line-height:1.15;letter-spacing:-.035em}
 body.standalone-app :is(.card-heading h2,.summary-card h2,.suggestions-heading h2,dialog>h2,.dialog-heading h2){font-family:'Workspace Serif',Georgia,serif;font-weight:400;font-size:29px;line-height:1.2}
@@ -215,7 +215,7 @@ body.standalone-app .resume-document :is(h1,h2,h3,h4){font-family:inherit}
 body.standalone-app .template-example{background:#f9f7f0}
 body.standalone-app .template-example :is(h2,h3,h4,p){color:#25313c;font-family:inherit}
 @media(max-width:760px){
- body.standalone-app main{padding:28px 23px calc(var(--app-bottom-space) + 36px)}
+ body.standalone-app main{padding:24px 23px calc(var(--app-bottom-space) + 36px)}
  body.standalone-app .app-topbar{padding:12px 18px;gap:9px;min-height:78px}
  body.standalone-app .app-brand{gap:8px}
  body.standalone-app .app-brand img{width:36px;height:36px}
@@ -231,6 +231,8 @@ body.standalone-app .template-example :is(h2,h3,h4,p){color:#25313c;font-family:
  body.standalone-app .button{font-size:15px}
  body.standalone-app .steps button{font-size:12px}
  body.standalone-app .steps .step-number{font-size:11px}
+ body.standalone-app .app-price{margin:16px 0}
+ body.standalone-app #home-title{margin-bottom:14px}
  body.standalone-app .home-tools-title{display:block;font-size:26px}
  body.standalone-app .home-tools-title span{display:block;margin-top:6px}
  body.standalone-app .home-tool-button{padding:17px 18px}
@@ -254,3 +256,7 @@ body.standalone-app .template-example :is(h2,h3,h4,p){color:#25313c;font-family:
 }
 @media(prefers-reduced-motion:reduce){body.standalone-app *,body.standalone-app *:before{scroll-behavior:auto!important;transition:none!important}}
 @media print{body.standalone-app{background:#fff;color:#17222f}}
+
+body.standalone-app :is(.account-data,.career-storage,.version-save-details)>summary{color:#506045}
+body.standalone-app :is(.auth-divider,.welcome-brand,.app-install-status){color:var(--muted)}
+body.standalone-app .auth-divider:before,body.standalone-app .auth-divider:after{background:var(--line)}

@@ -49,7 +49,7 @@ test('profile, library, cover letters and calculator retain readable controls in
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:screenshots+'/workspace-'+route+'-phone.png'});
  }
- await page.locator('#app-settings').click();await page.locator('#settings-account').click();await expect(page.locator('#account-dialog')).toBeVisible();await page.screenshot({path:screenshots+'/workspace-account-phone.png'});
+ await page.locator('#app-settings').click();await page.locator('#settings-account').click();await expect(page.locator('#account-dialog')).toBeVisible();await expect(page.locator('#account-data>summary')).toHaveCSS('color','rgb(80, 96, 69)');await page.screenshot({path:screenshots+'/workspace-account-phone.png'});
 });
 test('legacy checkout links reach the authenticated app with the original recovery identifier',async({page})=>{
  await prepare(page,'registered');const id='c'.repeat(64),recovered=[];page.on('request',r=>{try{const body=r.postDataJSON();if(body?.buildId===id)recovered.push(body.action);}catch{}});

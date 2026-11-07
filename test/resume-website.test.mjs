@@ -6,6 +6,14 @@ import path from 'node:path';
 import {buildResumeWebsite} from '../scripts/build-resume-landing.mjs';
 import {appDestination} from '../resume-website-src/website-routing.mjs';
 
+test('the app permits Google authentication popups without weakening the existing content protections',()=>{
+ const config=JSON.parse(fs.readFileSync(new URL('../vercel.json',import.meta.url),'utf8'));
+ const app=config.headers.find(rule=>rule.source==='/app/(.*)');
+ assert.equal(app.headers.find(header=>header.key==='Cross-Origin-Opener-Policy').value,'same-origin-allow-popups');
+ const security=config.headers.find(rule=>rule.source==='/(.*)').headers;
+ assert.ok(security.some(header=>header.key==='Content-Security-Policy'&&header.value.includes("object-src 'none'")));
+});
+
 test('legacy checkout returns, saved deep links and installed launches reach the workspace without losing recovery context',()=>{
  const id='a'.repeat(64),origin='https://veteranresumes.com';
  for(const tail of ['?build='+id+'&checkout=success','?build='+id+'&template=modern&checkout=canceled','?letter='+id+'&checkout=success#letter','#digital-cv','#profile'])assert.equal(appDestination(origin+'/'+tail),origin+'/app/'+tail);

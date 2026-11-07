@@ -1,6 +1,6 @@
 /* Public installation support only. Private application data is never cached. */
 'use strict';
-const VERSION='20261105-install',scope=new URL(self.registration.scope),prefix='vcp-resume-install:'+scope.pathname+':',cacheName=prefix+VERSION;
+const VERSION='20261107-shared-theme',scope=new URL(self.registration.scope),prefix='vcp-resume-install:'+scope.pathname+':',cacheName=prefix+VERSION;
 const offline=new URL('./offline.html',scope).href;
 const assets=['./offline.html','./app-install.css?v='+VERSION,'./app-icon-192.png','./app-icon-512.png','./app-icon-maskable-512.png','./apple-touch-icon.png'].map(file=>new URL(file,scope).href);
 const publicAssets=new Set(assets);

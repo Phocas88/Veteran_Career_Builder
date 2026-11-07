@@ -10,7 +10,7 @@ import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPa
 import { initCareerTools } from './career-tools.js?v=20261030-skill-quality';
 import {initCompletionPrompt} from './completion-prompt.js?v=20261029-completion2';
 import {initAppShell} from './app-shell.js?v=20261029-icons';
-import {privacyChoicePending} from './analytics.js?v=20261029-entry';
+import {privacyChoicePending} from './analytics.js?v=20261107-dedicated-ga4';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261029-entry';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261028-guided';
 import { connectFirebase } from './firebase-client.js';

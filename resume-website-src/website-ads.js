@@ -1,5 +1,5 @@
-import {CONSENT_KEY,readConsent} from './analytics-model.js?v=20261107-domain-reports';
-import {setUsageAnalyticsConsent,usageAnalyticsAllowed} from './analytics.js?v=20261107-domain-reports';
+import {CONSENT_KEY,readConsent} from './analytics-model.js?v=20261107-dedicated-ga4';
+import {setUsageAnalyticsConsent,usageAnalyticsAllowed} from './analytics.js?v=20261107-dedicated-ga4';
 
 export const PUBLISHER='ca-pub-4999040528510137';
 export const ADS_CHOICE='veteran_resumes_advertising_choice_v1';

@@ -75,6 +75,8 @@ function refreshNotice(){
  $('analytics-choice-status').textContent=status;
  for(const button of document.querySelectorAll('[data-analytics-choice="allow"]'))button.disabled=privacySignal();
 }
+export function setUsageAnalyticsConsent(allow){choose(allow);}
+export function usageAnalyticsAllowed(){return consent===true&&!privacySignal();}
 function choose(allow){
  consent=allow&&!privacySignal();storage.setItem(CONSENT_KEY,JSON.stringify({version:1,enabled:consent,updatedAt:Date.now()}));
  blocked=false;

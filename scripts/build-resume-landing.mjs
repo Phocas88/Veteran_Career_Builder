@@ -16,7 +16,7 @@ export function buildResumeWebsite({source=path.join(root,'resume-workspace-src/
  html=html.replace('rel="canonical" href="'+origin+'/"','rel="canonical" href="'+origin+'/app/"').replace('href="./manifest.webmanifest"','href="/manifest.webmanifest"').replace('src="./app-install.js?','src="/app-install.js?');
  html=html.replace('</head>','<meta name="robots" content="noindex,follow">\n</head>');
  fs.writeFileSync(appIndex,html);
- for(const file of ['index.html','landing.css','landing.js','website-routing.mjs']){
+ for(const file of ['index.html','landing.css','landing.js','website-routing.mjs','website-ads.js','ads.txt']){
   const body=fs.readFileSync(path.join(website,file));fs.writeFileSync(path.join(output,file),file.endsWith('.html')?protectHtml(body.toString()):body);
  }
  const manifestFile=path.join(output,'manifest.webmanifest'),manifest=JSON.parse(fs.readFileSync(manifestFile,'utf8'));

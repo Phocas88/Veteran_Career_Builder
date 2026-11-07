@@ -1,4 +1,4 @@
-import {initUsageAnalytics,trackUsage} from './analytics.js?v=20261029-entry';
+import {initUsageAnalytics,trackUsage} from './analytics.js?v=20261107-dedicated-ga4';
 import {initAppResources} from './app-resources.js?v=20261029-icons';
 import {initResumeDelivery} from './resume-delivery.js?v=20261028-guided';
 import {initReviewFlow} from './review-flow.js?v=20261028-guided';

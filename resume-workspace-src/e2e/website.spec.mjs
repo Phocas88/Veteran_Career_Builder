@@ -6,18 +6,21 @@ test.beforeAll(async()=>mkdir(screenshots,{recursive:true}));
 async function prepare(page,kind='none',options={}){await installAccount(page,kind,options);await page.route('**/api/resume-analytics',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><title>Isolated test collector</title>'}));}
 async function enter(page){await expect(page.locator('body')).toHaveAttribute('data-workspace-ready','true');if(await page.locator('#usage-analytics-notice').isVisible())await page.locator('[data-analytics-choice=deny]').first().click();if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();}
 
-test('the public landing page displays complete fictional examples with privacy choice before any analytics',async({page})=>{
+test('the public landing page shows full templates and client-ready copy with privacy choice before analytics',async({page})=>{
  await prepare(page,'none',{privacyPrompt:true});const hits=[],errors=[];page.on('request',r=>{if(/resume-analytics|google-analytics|googletagmanager/.test(r.url()))hits.push(r.url());});page.on('pageerror',e=>errors.push(e.message));
- await page.setViewportSize({width:360,height:800});await page.goto('/');await expect(page.locator('#usage-analytics-notice')).toBeVisible();expect(hits).toEqual([]);await page.locator('[data-analytics-choice=deny]').click();
+ await page.emulateMedia({reducedMotion:'reduce'});await page.setViewportSize({width:360,height:800});await page.goto('/');await expect(page.locator('#usage-analytics-notice')).toBeVisible();expect(hits).toEqual([]);await page.locator('[data-analytics-choice=deny]').click();
  await expect(page.locator('h1')).toContainText('Your experience.');await expect(page.locator('.site-header .site-brand')).toContainText('Veteran Resumes');await expect(page.locator('.site-header .site-brand img')).toHaveAttribute('src','/brand.svg');
- await expect(page.locator('.sample-card')).toHaveCount(4);for(const image of await page.locator('.sample-card img').all()){await image.scrollIntoViewIfNeeded();await expect.poll(()=>image.evaluate(img=>img.complete&&img.naturalWidth>=816)).toBe(true);}
+ await expect(page.locator('.sample-card')).toHaveCount(8);for(const image of await page.locator('.sample-card img').all()){await image.scrollIntoViewIfNeeded();await expect.poll(()=>image.evaluate(img=>img.complete&&img.naturalWidth>=816)).toBe(true);}
+ await expect(page.locator('main')).not.toContainText(/\b(?:demo|fictional)\b/i);await expect(page.locator('[data-hero-play]')).toBeHidden();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect(errors).toEqual([]);
- await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:screenshots+'/landing-mobile.png',fullPage:true});
+ await page.evaluate(()=>{document.getElementById('template-rail').scrollLeft=0;scrollTo(0,0);});await page.screenshot({path:screenshots+'/landing-mobile.png',fullPage:true});
+ await page.locator('.hero-showcase').screenshot({path:screenshots+'/carousel-mobile.jpg',type:'jpeg',quality:85});
  await page.setViewportSize({width:1440,height:1000});await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:screenshots+'/landing-desktop.png',fullPage:true});
+ await page.screenshot({path:screenshots+'/hero-desktop.jpg',type:'jpeg',quality:85});await page.locator('#examples').screenshot({path:screenshots+'/templates-desktop.jpg',type:'jpeg',quality:85});
 });
 test('landing start choices pass through account entry to the existing payment step without purchasing automatically',async({page})=>{
  await prepare(page);const purchases=[];page.on('request',r=>{try{if(r.postDataJSON()?.action==='purchase')purchases.push(r.url());}catch{}});
- await page.goto('/');await page.getByRole('link',{name:'Create my resume',exact:true}).click();await enter(page);
+ await page.goto('/');await page.locator('.hero').getByRole('link',{name:'Create my resume',exact:true}).click();await enter(page);
  await expect(page.locator('#flow-payment')).toBeVisible();await expect(page.locator('#purchase-path')).toContainText('Build a new resume');await expect(page.locator('#upfront-consent')).not.toBeChecked();expect(purchases).toEqual([]);expect(new URL(page.url()).pathname).toBe('/app/');
 });
 test('upload entry is explicit and saved work is not discarded by a start shortcut',async({page})=>{
@@ -25,9 +28,38 @@ test('upload entry is explicit and saved work is not discarded by a start shortc
 });
 test('document examples filter, open at a readable size and link to real PDFs',async({page})=>{
  await prepare(page);await page.goto('/');await page.locator('[data-sample-filter=letter]').click();await expect(page.locator('.sample-card:visible')).toHaveCount(1);
- const button=page.locator('[data-example=cover-letter]');await button.click();await expect(page.locator('#example-dialog')).toBeVisible();await expect(page.locator('#example-image')).toHaveAttribute('src','/site-examples/cover-letter.png');
+ const button=page.locator('.sample-card [data-example=cover-letter]');await button.click();await expect(page.locator('#example-dialog')).toBeVisible();await expect(page.locator('#example-image')).toHaveAttribute('src','/site-examples/cover-letter.png');
  const pdf=await page.request.get('/site-examples/cover-letter.pdf');expect(pdf.ok()).toBe(true);expect((await pdf.body()).subarray(0,4).toString()).toBe('%PDF');await page.screenshot({path:screenshots+'/cover-letter-example.png'});
  await page.keyboard.press('Escape');await expect(button).toBeFocused();
+});
+
+test('featured templates support keyboard navigation, photo previews and reduced motion',async({page})=>{
+ await prepare(page);await page.emulateMedia({reducedMotion:'reduce'});await page.setViewportSize({width:1280,height:950});await page.goto('/');
+ const hero=page.locator('[data-hero-carousel]');await expect(hero).toHaveAttribute('data-active-index','0');await hero.locator('[data-hero-next]').click();
+ await expect(hero.locator('[data-hero-name]')).toHaveText('Folio');await expect(hero.locator('.hero-slide[aria-hidden=false]')).toHaveCount(1);await expect(hero.locator('[data-hero-play]')).toBeHidden();
+ const portrait=hero.locator('.hero-slide[aria-hidden=false] button');await portrait.click();await expect(page.locator('#example-dialog-title')).toHaveText('Folio resume');await expect(page.locator('#example-image')).toHaveAttribute('src','/site-examples/resume-folio.png');
+ await page.keyboard.press('Escape');await expect(portrait).toBeFocused();await page.keyboard.press('ArrowLeft');await expect(hero.locator('[data-hero-name]')).toHaveText('Modern');
+ await hero.locator('[data-hero-dot="3"]').click();await expect(hero.locator('[data-hero-name]')).toHaveText('Federal experience');
+ await hero.locator('.hero-slide[aria-hidden=false] button').click();const info=await (await page.request.get('/site-examples/manifest.json')).json(),federal=info.examples.find(item=>item.key==='resume-federal-experience');
+ expect(federal.photo).toBe(false);expect(federal.pages).toBeLessThanOrEqual(2);await expect(page.locator('#example-pages img')).toHaveCount(federal.pages);
+});
+
+test('template filters reveal federal and portrait formats and the rail remains usable on small screens',async({page})=>{
+ await prepare(page);await page.emulateMedia({reducedMotion:'reduce'});await page.setViewportSize({width:390,height:844});await page.goto('/');
+ await page.locator('[data-sample-filter=federal]').click();await expect(page.locator('.sample-card:visible')).toHaveCount(2);await expect(page.locator('.sample-card:visible').first()).toHaveAttribute('data-category','federal');
+ await page.locator('#examples').screenshot({path:screenshots+'/templates-federal-phone.jpg',type:'jpeg',quality:85});
+ await page.locator('[data-sample-filter=photo]').click();await expect(page.locator('.sample-card:visible')).toHaveCount(2);for(const card of await page.locator('.sample-card:visible').all())await expect(card).toHaveAttribute('data-photo','true');
+ const rail=page.locator('#template-rail');await page.locator('[data-rail-next]').click();await expect.poll(()=>rail.evaluate(node=>node.scrollLeft)).toBeGreaterThan(0);
+ await rail.focus();await page.keyboard.press('Home');await expect.poll(()=>rail.evaluate(node=>node.scrollLeft)).toBe(0);await page.keyboard.press('End');await expect(page.locator('[data-rail-next]')).toBeDisabled();
+ await page.locator('#examples').screenshot({path:screenshots+'/templates-portrait-phone.jpg',type:'jpeg',quality:85});
+ for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
+});
+
+test('automatic rotation waits for privacy choice and can be paused without starting again',async({page})=>{
+ await prepare(page,'none',{privacyPrompt:true});await page.emulateMedia({reducedMotion:'no-preference'});await page.setViewportSize({width:1280,height:950});await page.clock.install();await page.goto('/');
+ const hero=page.locator('[data-hero-carousel]');await expect(page.locator('#usage-analytics-notice')).toBeVisible();await page.clock.fastForward(13500);await expect(hero).toHaveAttribute('data-active-index','0');
+ await page.locator('[data-analytics-choice=deny]').click();await page.mouse.move(0,0);await page.clock.fastForward(6600);await expect(hero).toHaveAttribute('data-active-index','1');
+ await hero.locator('[data-hero-play]').click();await expect(hero).toHaveAttribute('data-playing','false');await page.mouse.move(0,0);await page.clock.fastForward(13500);await expect(hero).toHaveAttribute('data-active-index','1');
 });
 test('the workspace matches the public website and keeps every tool reachable on phones and desktop',async({page})=>{
  await prepare(page,'registered');await page.setViewportSize({width:320,height:800});await page.goto('/app/');await enter(page);

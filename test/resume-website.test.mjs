@@ -44,7 +44,7 @@ test('the public page and workspace have distinct routes while preserving the or
  fs.mkdirSync(path.join(source,'site-examples'));fs.writeFileSync(path.join(source,'site-examples/cover-letter.pdf'),'%PDF-fictional-example');
  buildResumeWebsite({source,output});
  const landing=fs.readFileSync(path.join(output,'index.html'),'utf8'),app=fs.readFileSync(path.join(output,'app/index.html'),'utf8'),manifest=JSON.parse(fs.readFileSync(path.join(output,'manifest.webmanifest'),'utf8'));
- assert.match(landing,/Your experience\./);assert.match(landing,/Fictional example/);assert.match(landing,/site-examples\/cover-letter\.png/);assert.match(landing,/href="\/app\//);
+ assert.match(landing,/Your experience\./);assert.doesNotMatch(landing,/\b(?:demo|fictional)\b/i);assert.match(landing,/data-hero-carousel/);assert.match(landing,/id="template-rail"/);assert.match(landing,/site-examples\/resume-folio\.png/);assert.match(landing,/site-examples\/resume-federal-experience\.png/);assert.match(landing,/site-examples\/cover-letter\.png/);assert.match(landing,/href="\/app\//);
  assert.match(landing,/google-adsense-account/);assert.doesNotMatch(app,/google-adsense-account|website-ads\.js/);
  assert.match(fs.readFileSync(path.join(output,'ads.txt'),'utf8'),/^google\.com, pub-4999040528510137, DIRECT, f08c47fec0942fa0/);
  assert.equal(fs.existsSync(path.join(output,'app/website-ads.js')),false);

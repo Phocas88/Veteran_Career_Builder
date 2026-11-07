@@ -1,7 +1,12 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {analyticsEvent,allowedScreen,readConsent,trafficSource,analyticsIdentity,forgetAnalytics,CONSENT_KEY,VISITOR_KEY,SESSION_KEY,ONCE_KEY} from '../public/analytics-model.js';
+import {analyticsEvent,allowedScreen,readConsent,trafficSource,analyticsIdentity,forgetAnalytics,analyticsBridgeOrigin,CONSENT_KEY,VISITOR_KEY,SESSION_KEY,ONCE_KEY} from '../public/analytics-model.js';
 const now=1793200000000;
 const store=()=>{const data=new Map();return {data,getItem:key=>data.get(key)||null,setItem:(key,value)=>data.set(key,value),removeItem:key=>data.delete(key)};};
+test('the standalone site uses a separate same-site collector and legacy or lookalike hosts cannot select it',()=>{
+ for(const host of ['veteranresumes.com','www.veteranresumes.com'])assert.equal(analyticsBridgeOrigin(host),'https://usage.veteranresumes.com');
+ for(const host of ['veterancareerpath.com','www.veterancareerpath.com','localhost','127.0.0.1','veteranresumes.com.evil.invalid','evil.veteranresumes.com',''])assert.equal(analyticsBridgeOrigin(host),'https://vcp-proxy.vercel.app');
+ assert.notEqual(new URL(analyticsBridgeOrigin('veteranresumes.com')).origin,'https://veteranresumes.com');
+});
 test('analytics is a distinct explicit, expiring app choice and malformed/main-site choices never grant it',()=>{
  for(const value of [null,'yes','essential','true','{"analytics":true}','{"enabled":true}','bad JSON'])assert.equal(readConsent(value,now),null);
  assert.equal(readConsent(JSON.stringify({version:1,enabled:true,updatedAt:now}),now),true);assert.equal(readConsent(JSON.stringify({version:1,enabled:false,updatedAt:now}),now),false);

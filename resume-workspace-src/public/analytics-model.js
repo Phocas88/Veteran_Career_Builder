@@ -107,7 +107,12 @@ export const CONSENT_KEY='vcp_resume_analytics_choice_v1';
 export const VISITOR_KEY='vcp_resume_analytics_visitor_v1';
 export const SESSION_KEY='vcp_resume_analytics_session_v1';
 export const ONCE_KEY='vcp_resume_analytics_once_v1';
-export const BRIDGE_ORIGIN='https://vcp-proxy.vercel.app';
+// Keep Google code on a separate origin within the app's site. New Google tags
+// do not emit reliably from a cross-site frame; the legacy app keeps its bridge.
+export function analyticsBridgeOrigin(hostname=''){
+ return ['veteranresumes.com','www.veteranresumes.com'].includes(hostname)?'https://usage.veteranresumes.com':'https://vcp-proxy.vercel.app';
+}
+export const BRIDGE_ORIGIN=analyticsBridgeOrigin(globalThis.location?.hostname||'');
 export const BRIDGE_URL=BRIDGE_ORIGIN+'/api/resume-analytics?v=20261107-dedicated-ga4';
 export const PROTOCOL_VERSION='vcp-resume-analytics-v1';
 export function analyticsEvent(name,params={}){

@@ -1,5 +1,5 @@
 import {designs,fontFamilies,accentColors,normalizeExportSettings} from './resume-designs.js?v=20261027-resume-studio';
-import {initTemplateExamples} from './template-examples.js?v=20261031-template-switch';
+import {initTemplateExamples} from './template-examples.js?v=20261107-client-preview';
 const $=id=>document.getElementById(id);
 const node=(tag,text,className)=>{const el=document.createElement(tag);if(text)el.textContent=text;if(className)el.className=className;return el;};
 const ownSectionSettings=settings=>Object.fromEntries(Object.entries(settings).filter(([key])=>['sectionOrder','headings','hiddenSections','photo'].includes(key)));

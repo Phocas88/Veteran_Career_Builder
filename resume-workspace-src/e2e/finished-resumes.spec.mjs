@@ -10,7 +10,7 @@ test('one included finish saves to the account, reprints free, and another perso
  await page.locator('#delivery-change-design').click();await page.locator('#template-finish').click();expect(Object.keys(await page.evaluate(()=>window.__records)).filter(k=>k.includes('/resumeProgramResumes/'))).toHaveLength(1);
  const download=page.waitForEvent('download');await page.locator('#download-resume').click();expect((await download).suggestedFilename()).toMatch(/\.txt$/);
  await page.locator('#delivery-change-design').click();await page.locator('[name="resume-design"][value="modern"]').locator('..').click();await expect(page.locator('#template-finish')).toContainText('$1.00');await expect(page.locator('#export-preview')).toBeEmpty();await expect(page.locator('#download-pdf')).toBeDisabled();await page.evaluate(()=>dispatchEvent(new Event('beforeprint')));await expect(page.locator('#print-content')).toBeEmpty();
- await page.locator('[data-preview-template="modern"]').click();await expect(page.locator('#template-example-status')).toContainText('Fictional example');await page.locator('#template-example-close').click();
+ await page.locator('[data-preview-template="modern"]').click();await expect(page.locator('#template-example-status')).toContainText('Your resume is unchanged');await page.locator('#template-example-close').click();
  const checkout=[];await page.route('https://checkout.stripe.com/**',route=>{checkout.push(route.request().url());return route.fulfill({body:'Fixture checkout — no real payment'});});await page.locator('#template-finish').click();await expect.poll(()=>checkout.length).toBe(1);
 });
 test('updated resume becomes a private CV preview and replaces the published snapshot at the same link only with consent',async({page})=>{

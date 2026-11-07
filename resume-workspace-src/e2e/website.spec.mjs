@@ -65,10 +65,15 @@ test('the workspace matches the public website and keeps every tool reachable on
  await prepare(page,'registered');await page.setViewportSize({width:320,height:800});await page.goto('/app/');await enter(page);
  await expect(page.locator('.app-brand')).toContainText('Veteran Resumes');await expect(page.locator('.app-brand')).toContainText('by Veteran Career Path');await expect(page.locator('body')).toHaveCSS('background-color','rgb(247, 243, 233)');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(page.locator('.app-nav>button')).toHaveCount(9);await page.screenshot({path:screenshots+'/workspace-small-phone.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:screenshots+'/professional-workspace-phone.jpg',type:'jpeg',quality:85});
  await page.setViewportSize({width:1280,height:900});await page.evaluate(()=>scrollTo(0,0));
  const header=await page.locator('.app-topbar').boundingBox(),nav=await page.locator('.app-nav').boundingBox(),heading=await page.locator('#home-title').boundingBox();
  expect(nav.y).toBeGreaterThanOrEqual(header.y+header.height-1);expect(heading.y).toBeGreaterThan(nav.y+nav.height);
+ const start=await page.locator('.home-start-panel').boundingBox(),tools=await page.locator('.home-tools-panel').boundingBox();expect(tools.x).toBeGreaterThan(start.x+start.width);expect(Math.abs(tools.y-start.y)).toBeLessThan(6);expect(nav.height).toBeLessThan(70);
+ await expect(page.locator('#home-my-resumes')).toBeVisible();await expect(page.locator('#choose-build')).toBeVisible();await expect(page.locator('#choose-import')).toBeVisible();await page.screenshot({path:screenshots+'/professional-workspace-desktop.jpg',type:'jpeg',quality:85});
  await page.screenshot({path:screenshots+'/workspace-desktop.png',fullPage:true});
+ await page.locator('#home-my-resumes').click();await expect(page.locator('body')).toHaveAttribute('data-app-view','versions');await expect(page.locator('#career-title')).toHaveText('My resumes');
+ await navigateApp(page,'home');await page.locator('#home-cover-letter').click();await expect(page.locator('body')).toHaveAttribute('data-app-view','letter');await expect(page.locator('#letter-source-step')).toBeVisible();
 });
 test('profile, library, cover letters and calculator retain readable controls in the shared theme',async({page})=>{
  await prepare(page,'registered');await page.goto('/app/');await enter(page);
@@ -80,6 +85,7 @@ test('profile, library, cover letters and calculator retain readable controls in
   await expect(field).toBeVisible();await expect(field).toHaveCSS('color','rgb(38, 39, 32)');await expect(field).toHaveCSS('background-color','rgb(255, 254, 249)');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:screenshots+'/workspace-'+route+'-phone.png'});
+  if(route==='profile'||route==='library')await page.screenshot({path:screenshots+'/professional-'+route+'-phone.jpg',type:'jpeg',quality:85});
  }
  await page.locator('#app-settings').click();await page.locator('#settings-account').click();await expect(page.locator('#account-dialog')).toBeVisible();await expect(page.locator('#account-data>summary')).toHaveCSS('color','rgb(80, 96, 69)');await page.screenshot({path:screenshots+'/workspace-account-phone.png'});
 });

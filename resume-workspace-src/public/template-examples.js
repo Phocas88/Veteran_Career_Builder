@@ -1,6 +1,7 @@
 import {createResumeDocument,designs} from './exports.js?v=20261027-resume-studio';
 import {renderPdfPages} from './page-preview.js?v=20261027-resume-studio';
 const $=id=>document.getElementById(id);
+// Preview content is an invented applicant; it never loads an account resume.
 export const exampleResume=`ALEX MORGAN
 alex.morgan@example.com · 202-555-0142 · Richmond, VA
 
@@ -8,7 +9,7 @@ PROFESSIONAL SUMMARY
 Operations professional and Army veteran with experience coordinating schedules, maintaining supply records and supporting team training. Brings clear communication, careful documentation and practical problem-solving to civilian operations roles.
 
 EXPERIENCE
-Operations Coordinator | Example Logistics Company | Jan 2022 – Present
+Operations Coordinator | Northline Logistics | Jan 2022 – Present
 Hours per week: 40
 • Coordinate daily schedules and shipment records for a regional operations team.
 • Maintain equipment and supply records, and prepare status reports for managers.
@@ -21,13 +22,13 @@ Hours per week: 40
 • Coordinated with maintenance staff to track requests and follow up on open items.
 
 EDUCATION
-Example State College · Associate of Applied Science, Business · Completed May 2022
+Westbridge College · Associate of Applied Science, Business · Completed May 2022
 
 SKILLS
 Inventory records · Excel · Scheduling · Team training · Operational reporting
 
 CERTIFICATIONS
-Example Professional Association · Operations Certificate · Completed Mar 2023
+Professional Development Institute · Operations Certificate · Completed Mar 2023
 
 PROJECTS
 Community Supply Drive · Volunteer Coordinator · Oct 2023
@@ -42,7 +43,7 @@ export async function examplePhoto(){
 export function initTemplateExamples(api){
  let selected='classic',version=0;const dialog=$('template-example-dialog'),pages=$('template-example-pages');
  function zoom(value){$('template-example-zoom').value=value;pages.classList.toggle('full-size',value==='actual');}
- async function render(){const token=++version;const design=designs[selected];$('template-example-title').textContent=design.name+' · example resume';$('template-example-description').textContent=design.description+(design.photo?' · AI-generated example portrait · upload your own photo to use this design.':'');$('template-example-use').textContent=api.useLabel?.(selected)||'Use '+design.name;$('template-example-use').disabled=!api.canUse(selected);$('template-example-use').title=api.canUse(selected)?'':'Choose a federal template while preparing a federal application.';$('template-example-status').textContent='Preparing example pages…';pages.replaceChildren();try{const result=await renderPdfPages(pages,exampleModel(selected,design.photo?await examplePhoto():null),()=>token===version&&dialog.open);if(token===version)$('template-example-status').textContent=`Fictional example · ${result.pageCount} ${result.pageCount===1?'page':'pages'} · Your resume is unchanged`;}catch{if(token===version)$('template-example-status').textContent='The example could not load. Close and try again; your resume is unchanged.';}}
+ async function render(){const token=++version;const design=designs[selected];$('template-example-title').textContent=design.name+' resume';$('template-example-description').textContent=design.description+(design.photo?' · Optional professional photo. Add your own picture to this layout.':'');$('template-example-use').textContent=api.useLabel?.(selected)||'Use '+design.name;$('template-example-use').disabled=!api.canUse(selected);$('template-example-use').title=api.canUse(selected)?'':'Choose a federal template while preparing a federal application.';$('template-example-status').textContent='Preparing example pages…';pages.replaceChildren();try{const result=await renderPdfPages(pages,exampleModel(selected,design.photo?await examplePhoto():null),()=>token===version&&dialog.open);if(token===version)$('template-example-status').textContent=`${result.pageCount} ${result.pageCount===1?'page':'pages'} · Your resume is unchanged`;}catch{if(token===version)$('template-example-status').textContent='The example could not load. Close and try again; your resume is unchanged.';}}
  function open(id){selected=id;zoom('fit');if(!dialog.open)dialog.showModal();render();}
  $('template-example-close').onclick=()=>dialog.close();dialog.addEventListener('close',()=>{version++;pages.replaceChildren();});
  $('template-example-zoom').onchange=event=>zoom(event.target.value);

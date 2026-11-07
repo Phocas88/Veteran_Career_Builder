@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {mkdir} from 'node:fs/promises';
-import {installAccount} from './helpers/workspace.mjs';
+import {installAccount,navigateApp} from './helpers/workspace.mjs';
 const screenshots='/tmp/veteran-resumes-website-previews';
 test.beforeAll(async()=>mkdir(screenshots,{recursive:true}));
 async function prepare(page,kind='none',options={}){await installAccount(page,kind,options);await page.route('**/api/resume-analytics',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><title>Isolated test collector</title>'}));}
@@ -29,11 +29,27 @@ test('document examples filter, open at a readable size and link to real PDFs',a
  const pdf=await page.request.get('/site-examples/cover-letter.pdf');expect(pdf.ok()).toBe(true);expect((await pdf.body()).subarray(0,4).toString()).toBe('%PDF');await page.screenshot({path:screenshots+'/cover-letter-example.png'});
  await page.keyboard.press('Escape');await expect(button).toBeFocused();
 });
-test('the renamed workspace uses warm readable controls and all direct tool destinations on a small phone',async({page})=>{
+test('the workspace matches the public website and keeps every tool reachable on phones and desktop',async({page})=>{
  await prepare(page,'registered');await page.setViewportSize({width:320,height:800});await page.goto('/app/');await enter(page);
- await expect(page.locator('.app-brand')).toContainText('Veteran Resumes');await expect(page.locator('.app-brand')).toContainText('by Veteran Career Path');await expect(page.locator('body')).toHaveCSS('background-color','rgb(23, 22, 18)');
+ await expect(page.locator('.app-brand')).toContainText('Veteran Resumes');await expect(page.locator('.app-brand')).toContainText('by Veteran Career Path');await expect(page.locator('body')).toHaveCSS('background-color','rgb(247, 243, 233)');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(page.locator('.app-nav>button')).toHaveCount(9);await page.screenshot({path:screenshots+'/workspace-small-phone.png',fullPage:true});
- await page.setViewportSize({width:1280,height:900});await page.screenshot({path:screenshots+'/workspace-desktop.png',fullPage:true});
+ await page.setViewportSize({width:1280,height:900});await page.evaluate(()=>scrollTo(0,0));
+ const header=await page.locator('.app-topbar').boundingBox(),nav=await page.locator('.app-nav').boundingBox(),heading=await page.locator('#home-title').boundingBox();
+ expect(nav.y).toBeGreaterThanOrEqual(header.y+header.height-1);expect(heading.y).toBeGreaterThan(nav.y+nav.height);
+ await page.screenshot({path:screenshots+'/workspace-desktop.png',fullPage:true});
+});
+test('profile, library, cover letters and calculator retain readable controls in the shared theme',async({page})=>{
+ await prepare(page,'registered');await page.goto('/app/');await enter(page);
+ for(const route of ['profile','library','letter','calculator']){
+  await navigateApp(page,route);await page.evaluate(()=>scrollTo(0,0));
+  await expect(page.locator('body')).toHaveAttribute('data-app-view',route);
+  if(route==='library'){await page.locator('[data-library-branch="army"]').click();await page.locator('#library-choose-specialty').click();}
+  const field=page.locator('input:not([type=hidden]):not([type=checkbox]):not([type=radio]):visible,select:visible,textarea:visible').first();
+  await expect(field).toBeVisible();await expect(field).toHaveCSS('color','rgb(38, 39, 32)');await expect(field).toHaveCSS('background-color','rgb(255, 254, 249)');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.screenshot({path:screenshots+'/workspace-'+route+'-phone.png'});
+ }
+ await page.locator('#app-settings').click();await page.locator('#settings-account').click();await expect(page.locator('#account-dialog')).toBeVisible();await page.screenshot({path:screenshots+'/workspace-account-phone.png'});
 });
 test('legacy checkout links reach the authenticated app with the original recovery identifier',async({page})=>{
  await prepare(page,'registered');const id='c'.repeat(64),recovered=[];page.on('request',r=>{try{const body=r.postDataJSON();if(body?.buildId===id)recovered.push(body.action);}catch{}});

@@ -18,12 +18,13 @@ export function showAppView(next,{scroll=true}={}){
  if(scroll&&previous!==next){window.scrollTo({top:0,behavior:'instant'});const heading=(careerViews.has(next)?$('career-title'):next==='home'?$('home-title'):next==='settings'?$('settings-title'):next==='calculator'?$('calculator-title'):null);heading?.focus({preventScroll:true});}
 }
 function initIconNavigation(){
- const nav=document.querySelector('.app-nav');let height=0;
- // Keep the last form controls and notices above both rows, including larger
- // text settings and the device's safe area. Destinations never move to a menu.
- const measure=()=>{const next=Math.ceil(nav.getBoundingClientRect().height);if(next&&next!==height){height=next;document.documentElement.style.setProperty('--app-nav-height',next+'px');}};
+ const nav=document.querySelector('.app-nav'),header=document.querySelector('.app-topbar');
+ const sizes=new Map();
+ // Desktop tools sit below the header; phone tools stay below the content.
+ // Measure both so larger text never covers a heading or the last form action.
+ const measure=()=>{for(const [element,property]of [[nav,'--app-nav-height'],[header,'--app-header-height']]){const next=Math.ceil(element.getBoundingClientRect().height);if(next&&next!==sizes.get(property)){sizes.set(property,next);document.documentElement.style.setProperty(property,next+'px');}}};
  measure();
- if(typeof ResizeObserver==='function')new ResizeObserver(measure).observe(nav);
+ if(typeof ResizeObserver==='function'){const observer=new ResizeObserver(measure);observer.observe(nav);observer.observe(header);}
  else window.addEventListener('resize',measure);
 }
 export function initAppShell(options){

@@ -1,102 +1,256 @@
-/* Warm, readable surfaces for the workspace. Document paper keeps its own design. */
+/* The workspace shares the public website's paper, sage and gold palette.
+   Resume documents and the public CV retain their own professional designs. */
 @font-face{font-family:Workspace Lato;src:url('./vendor/Lato-normal.woff') format('woff');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:Workspace Lato;src:url('./vendor/Lato-bold.woff') format('woff');font-style:normal;font-weight:700;font-display:swap}
-body.standalone-app{--bg:#171612;--navy:#171612;--navy-light:#24221d;--card:#24221d;--surface:#24221d;--surface-2:#302d26;--line:#49453b;--text:#f7f3ea;--muted:#c5bfb2;--gold:#edc681;--gold-light:#f7deb0;--app-line:#49453b;--app-muted:#c5bfb2;--app-surface:#24221d;--app-accent:#edc681;background:#171612;color:#f7f3ea;font:16px/1.6 'Workspace Lato',system-ui,sans-serif;color-scheme:dark}
-body.standalone-app .app-shell{background:radial-gradient(ellipse at 50% 0,#28241c66,transparent 65%)}
-body.standalone-app main{max-width:1080px;padding-top:34px;padding-bottom:calc(var(--app-nav-height) + 48px)}
-body.standalone-app :is(h1,h2,h3,h4){color:#faf6ed;letter-spacing:-.025em}
-body.standalone-app h1{font-size:clamp(28px,4vw,36px);line-height:1.2}
-body.standalone-app p{line-height:1.65}
-body.standalone-app .app-topbar{height:auto;min-height:78px;padding:12px max(20px,calc((100vw - 1032px)/2));background:#1c1b17f5;border-color:#3c3931;backdrop-filter:blur(14px)}
-body.standalone-app .app-brand{flex:1;min-width:0;gap:10px;max-width:360px}
-body.standalone-app .app-brand img{width:42px;height:42px;flex-shrink:0}
-body.standalone-app .app-brand>span{font-size:20px;min-width:0;font-weight:700}
-body.standalone-app .app-brand small{font-size:12px;line-height:1.4;color:#c5bfb2}
-body.standalone-app .app-header-actions{flex-shrink:0;gap:3px}
-body.standalone-app .header-action{color:#e5dfd2;font-size:13px;border-radius:12px}
-body.standalone-app .header-action:hover{background:#343027;color:#fff8e9}
-body.standalone-app .app-eyebrow{font-size:13px;letter-spacing:.025em;text-transform:none;color:#edc681;margin-bottom:12px}
-body.standalone-app .screen-heading>p:last-child{font-size:17px;color:#c5bfb2;max-width:580px}
-body.standalone-app #home-panel{max-width:740px;margin:12px auto}
-body.standalone-app .app-price{color:#c5bfb2;margin:18px 0}
-body.standalone-app .app-price strong{color:#edc681;font-size:22px}
-body.standalone-app .home-documents{margin:0 0 14px}
-body.standalone-app .start-options{gap:12px}
-body.standalone-app .start-option{background:#26241e;border:1px solid #5a5243;border-radius:17px;padding:20px;min-height:102px;box-shadow:0 3px 0 #0002}
-body.standalone-app .start-option:hover{background:#302c23;border-color:#edc681}
-body.standalone-app .start-option .action-icon{background:#3d3527;color:#f4d59b;border-radius:13px;width:40px;height:44px}
-body.standalone-app .start-option strong{font-size:18px}
-body.standalone-app .start-option small{font-size:14px;color:#c5bfb2;line-height:1.5}
-body.standalone-app :is(.home-purchase-note,.account-value){font-size:14px;color:#c5bfb2}
-body.standalone-app .button{font-family:inherit;font-size:16px;min-height:48px;border-radius:12px;line-height:1.4;padding:12px 19px;box-shadow:none}
-body.standalone-app .button-primary{background:#edc681;border:1px solid #edc681;color:#211c13;font-weight:700}
-body.standalone-app .button-primary:hover{background:#f6dcae;border-color:#f6dcae;color:#171612}
-body.standalone-app .button-secondary{background:#302d26;border:1px solid #655d4c;color:#f7f3ea}
-body.standalone-app .button-secondary:hover{background:#3d372c;border-color:#bda574}
-body.standalone-app .text-button{color:#f1cf94;font-family:inherit;font-size:15px;min-height:44px}
-body.standalone-app :is(button,a,input,select,textarea,summary):focus-visible{outline:3px solid #f0ce92;outline-offset:4px}
-body.standalone-app :is(.card,.context-card,.tip-card,.empty-state,.score-card,.summary-card,.strengths-card,.suggestion,.next-steps,.career-card,.career-section,.profile-section,.resume-profile-offer,.profile-import-entry,.cv-publish-box,.cv-published,.upfront-payment){background:#24221d;border-color:#49453b;border-radius:17px;box-shadow:0 6px 18px #0000000a}
-body.standalone-app :is(dialog,.profile-import-dialog){background:#24221d;border:1px solid #625946;color:#f7f3ea;border-radius:21px;box-shadow:0 24px 80px #0008}
-body.standalone-app dialog::backdrop{background:#100f0bd1;backdrop-filter:blur(5px)}
-body.standalone-app dialog p{font-size:16px;color:#d4cdbf}
-body.standalone-app :is(.section-kicker,.field-hint,.card-description,.muted,.career-hint,.pi-existing,.current-work p){color:#c5bfb2}
-body.standalone-app .section-kicker{font-size:12px;letter-spacing:.06em}
-body.standalone-app .field-label{font-size:16px;color:#e4ddd0}
-body.standalone-app .field-label span{font-size:13px;color:#c5bfb2}
-body.standalone-app :is(.library-result,.builder-group,.profile-setup-panel,.career-dialog,.service-reference-picker){background:#24221d;border-color:#49453b;color:#f7f3ea}
-body.standalone-app .library-result:hover{background:#302c23;border-color:#ab9363}
-body.standalone-app :is(.library-code,.library-result-link){color:#edc681}
-body.standalone-app .library-result-note{color:#c5bfb2}
-body.standalone-app :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background:#1a1915;border:1px solid #625c4e;color:#f7f3ea;border-radius:11px;font-family:inherit;font-size:16px;line-height:1.5;min-height:48px}
-body.standalone-app :is(input,textarea)::placeholder{color:#aba597;opacity:1}
-body.standalone-app :is(input,textarea,select):focus{border-color:#e3be7c}
-body.standalone-app :is(input[type=checkbox],input[type=radio],progress){accent-color:#edc681}
-body.standalone-app :is(.checkbox-label,.career-check,.pi-use){font-size:14px;line-height:1.55;color:#ded7c9}
-body.standalone-app .current-work{background:#302c21;border-color:#6b5a39;border-radius:15px}
-body.standalone-app .current-work strong{font-size:16px}
-body.standalone-app .home-tool-button{border-color:#474238;background:#24221d;border-radius:13px;margin-bottom:10px;padding:17px 18px;box-shadow:none}
-body.standalone-app .home-tool-button:hover{background:#302c23;border-color:#9b875c}
-body.standalone-app .home-tool-button strong{font-size:16px;color:#f6f0e4}
-body.standalone-app .home-tool-button :is(span,b){color:#c5bfb2;font-size:14px}
-body.standalone-app .home-tools-title{font-size:19px;margin:28px 0 14px}
-body.standalone-app .home-tools-title span{font-size:13px;color:#c5bfb2}
-body.standalone-app .privacy-reassurance{border-color:#49453b;background:#201f1a;color:#c5bfb2;border-radius:14px}
-body.standalone-app .privacy-reassurance strong{color:#eee4cd}
-body.standalone-app .privacy-reassurance :is(p,a){font-size:14px;color:#c5bfb2}
-body.standalone-app .privacy-reassurance svg{color:#edc681}
-body.standalone-app .app-install-card{background:#24221d;border-color:#49453b;border-radius:16px}
-body.standalone-app .app-install-copy h2{color:#f7f3ea;font-size:17px}
-body.standalone-app .app-install-copy p{color:#c5bfb2;font-size:14px}
-body.standalone-app .home-privacy-note{font-size:14px;color:#c5bfb2;padding:14px 0}
-body.standalone-app .home-privacy-note summary{cursor:pointer;color:#edc681;min-height:44px;padding:10px 0}
-body.standalone-app .home-privacy-note a{color:#edc681}
-body.standalone-app :is(.steps,.input-tabs,.review-flow-tabs){border-color:#49453b}
-body.standalone-app .steps button{font-size:14px;color:#c5bfb2}
-body.standalone-app .steps .current :is(button,.step-number){color:#edc681}
-body.standalone-app .steps .current:after{background:#edc681}
-body.standalone-app .step-number{border-color:#655d4c}
-body.standalone-app :is(.flow-heading,.flow-instruction){color:#d5cdbc;font-size:15px}
-body.standalone-app :is(.opsec-notice,.inline-notice,.import-status,.federal-warning,.template-finish-box){background:#352e21;border-color:#897044;color:#f1dcb5}
-body.standalone-app :is(.opsec-notice,.inline-notice,.import-status) p{color:#e0d3bc}
-body.standalone-app .app-nav{background:#211f19f7;border-color:#514838;border-radius:20px 20px 0 0;backdrop-filter:blur(16px);box-shadow:0 -4px 30px #0003}
-body.standalone-app .app-nav>button{color:#c5bfb2;border-radius:13px;min-height:62px}
-body.standalone-app .app-nav>button.active{background:#3e3423;color:#f5d397}
-body.standalone-app .app-nav>button:hover{background:#342f25;color:#fff6e4}
-body.standalone-app .app-nav svg{stroke-width:1.65}
-body.standalone-app .pi-entry,body.standalone-app .profile-import-dialog pre{background:#1a1915;border-color:#49453b}
-/* Examples, the user's resume and the public-CV preview stay on real paper. */
-body.standalone-app :is(.cv-preview,.cv-preview h2,.cv-preview h3,.cv-preview h4,.cv-preview p,.cv-preview li){color:#26313a}
-body.standalone-app .cv-preview{background:#fff}
-body.standalone-app .cv-preview a{color:#244c70}
+@font-face{font-family:Workspace Serif;src:url('./vendor/SourceSerif-normal.woff') format('woff');font-style:normal;font-weight:100 900;font-display:swap}
+:root{--app-header-height:92px;--app-top-space:0px;--app-bottom-space:var(--app-nav-height)}
+body.standalone-app{
+ --bg:#f7f3e9;--navy:#f7f3e9;--navy-light:#fffcf5;--paper:#fffcf5;--ink:#262720;
+ --card:#fffcf5;--surface:#fffcf5;--surface-2:#eeeddf;--line:#d8d1c0;
+ --text:#262720;--muted:#625e52;--gold:#805d28;--gold-light:#ecc78c;
+ --purple:#506045;--purple-soft:#e7ebdc;--green:#3d6448;
+ --app-line:#d8d1c0;--app-muted:#625e52;--app-surface:#fffcf5;--app-accent:#506045;
+ background:var(--bg);color:var(--ink);font:16px/1.6 'Workspace Lato',system-ui,sans-serif;color-scheme:light;
+}
+body.standalone-app .app-shell{background:none;color:var(--ink)}
+body.standalone-app main{max-width:1200px;padding:calc(var(--app-top-space) + 38px) 38px calc(var(--app-bottom-space) + 48px);scroll-margin-top:calc(var(--app-header-height) + var(--app-top-space) + 24px)}
+html:has(body.standalone-app){scroll-padding-top:calc(var(--app-header-height) + var(--app-top-space) + 20px);scroll-padding-bottom:calc(var(--app-bottom-space) + 20px)}
+body.standalone-app :is(h1,h2,h3,h4,h5,h6),body.standalone-app .app-shell :is(h1,h2,h3,h4,h5,h6),body.standalone-app #career-dialog :is(h1,h2,h3,h4,h5,h6){color:var(--ink);letter-spacing:-.025em}
+body.standalone-app :is(h1,.screen-heading h1,.delivery-header h2,#career-title,#welcome-title,#profile-setup-question){font-family:'Workspace Serif',Georgia,serif;font-weight:400;font-size:clamp(32px,4vw,44px);line-height:1.15;letter-spacing:-.035em}
+body.standalone-app :is(.card-heading h2,.summary-card h2,.suggestions-heading h2,dialog>h2,.dialog-heading h2){font-family:'Workspace Serif',Georgia,serif;font-weight:400;font-size:29px;line-height:1.2}
+body.standalone-app p{line-height:1.7}
+body.standalone-app .app-shell :is(p,li,label,legend,small),body.standalone-app #career-dialog :is(p,li,label,legend,small){color:var(--muted)}
+body.standalone-app .app-shell :is(strong,label,legend),body.standalone-app #career-dialog :is(strong,label,legend){color:var(--ink)}
+body.standalone-app .app-topbar{height:auto;min-height:92px;padding:18px max(30px,calc((100vw - 1180px)/2));gap:22px;background:#f7f3e9ed;color:var(--ink);border-color:#d8d1c099;backdrop-filter:blur(15px)}
+body.standalone-app .app-brand{flex:1;min-width:0;gap:11px;max-width:420px;color:var(--ink)}
+body.standalone-app .app-brand img{width:46px;height:46px;flex-shrink:0}
+body.standalone-app .app-brand>span{font-size:21px;color:var(--ink);min-width:0;font-weight:700;letter-spacing:-.025em}
+body.standalone-app .app-brand small{display:block;font-size:12px;line-height:1.4;color:var(--muted);margin-top:5px}
+body.standalone-app .app-header-actions{flex-shrink:0;gap:6px}
+body.standalone-app .header-action{color:#4f5744;font-size:14px;border-radius:11px;padding:10px;min-width:44px}
+body.standalone-app .header-action:hover{background:#eae9dc;color:#2b3027}
+body.standalone-app .emergency-help-button{color:#883f32;background:#fbede4;border-color:#dabcb0;padding-inline:14px}
+body.standalone-app .emergency-help-button:hover{color:#712c21;background:#f5e1d7}
+body.standalone-app .app-eyebrow{font-size:13px;letter-spacing:.04em;text-transform:none;color:#71613f;margin-bottom:15px}
+body.standalone-app .screen-heading>p:last-child{font-size:18px;color:#5b5e51;max-width:650px}
+body.standalone-app #home-panel{max-width:780px;margin:10px auto}
+body.standalone-app #home-title{font-size:clamp(34px,4.1vw,49px);margin-bottom:17px}
+body.standalone-app .app-price{color:var(--muted);margin:22px 0 18px}
+body.standalone-app .app-price :is(strong,span){color:#4f5844}
+body.standalone-app .app-price strong{font-size:24px}
+body.standalone-app .home-documents{margin:0 0 16px}
+body.standalone-app .start-options{gap:13px}
+body.standalone-app .start-option{color:var(--ink);background:#fffcf5;border:1px solid #c9c7b4;border-radius:17px;padding:22px;min-height:104px;box-shadow:0 4px 16px #514a3508}
+body.standalone-app .start-option:hover{background:#eef0e4;border-color:#788267}
+body.standalone-app .start-option .action-icon{background:#ede4d1;color:#80622f;border:1px solid #dfd2b8;border-radius:13px;width:42px;height:46px}
+body.standalone-app .start-option strong{font-size:19px;color:var(--ink)}
+body.standalone-app .start-option small{font-size:15px;color:var(--muted);line-height:1.5}
+body.standalone-app :is(.home-purchase-note,.account-value){font-size:14px;color:var(--muted);line-height:1.7}
+body.standalone-app .button{font-family:inherit;font-size:16px;min-height:48px;border-radius:11px;line-height:1.4;padding:12px 19px;box-shadow:none}
+body.standalone-app .button-primary,body.standalone-app .profile-section-actions button:last-child{background:#2b3027;border:1px solid #2b3027;color:#fffaf0;font-weight:700}
+body.standalone-app .button-primary:hover:not(:disabled){background:#414938;border-color:#414938;color:#fffaf0}
+body.standalone-app .button-primary :is(strong,small,span){color:inherit}
+body.standalone-app .button-secondary,body.standalone-app .google-button{background:#ffffff36;border:1px solid #a7a794;color:#31372c}
+body.standalone-app .button-secondary:hover:not(:disabled),body.standalone-app .google-button:hover{background:#ece9dc;border-color:#686e5a;color:#31372c}
+body.standalone-app .text-button{color:#506045;font-family:inherit;font-size:15px;min-height:44px}
+body.standalone-app #home-my-resumes{background:#eef0e4;border-color:#c4c9b4;color:#3e5033;font-size:15px;min-height:46px}
+body.standalone-app #home-my-resumes:hover{background:#e2e7d5;border-color:#859371}
+body.standalone-app :is(button,a,input,select,textarea,summary):focus-visible{outline:3px solid #8e6630;outline-offset:4px}
+body.standalone-app :is(.card,.context-card,.tip-card,.empty-state,.score-card,.summary-card,.strengths-card,.suggestion,.suggestion-card,.next-steps,.career-card,.career-section,.profile-section,.career-result,.cloud-card,.career-form,.career-storage,.service-role,.builder-group,.resume-category,.library-choice,.library-detail,.library-add,.profile-setup-panel,.profile-import-entry,.resume-profile-offer,.account-data,.purchase-history,.google-existing-choice,.answer-item,.finding,.next-step,.question-heading,.review-notes,.review-draft-actions,.review-extra-fields,.answer-action,.selected-template,.photo-upload-card,.studio-add-section,.studio-margins,.studio-section,.upfront-payment,.cv-source-panel,.cv-published,.cv-publish-box,.delivery-downloads,.letter-start,.career-kit-controls,.application-import-panel,.va-form,.va-result,.career-category,.review-career-summary,.cv-education-entry){background:var(--paper);color:var(--ink);border-color:var(--line);border-radius:16px;box-shadow:0 5px 20px #514a3508}
+body.standalone-app :is(.settings-list,.settings-list>*,.resume-entry-switch,.resume-upload-area,.resume-upload-icon,.branch-picker,.service-setup-heading,.review-finding,.review-question,.extra-fact,.ai-agreement,.checkout-summary,.studio-text-editor,.paper-toolbar,.example-page-scroll,.template-example-dialog,.question-navigation,.library-steps,.library-result,.career-kit-controls,.resume-comparison,.library-search-label,.studio-tabs,.document-tools,.profile-section-bar,.cv-options,.pi-entry,.profile-import-dialog pre){background:#f9f7ef;color:var(--ink);border-color:var(--line);box-shadow:none}
+body.standalone-app :is(.career-version-group,.library-heading,.library-context,.profile-save-actions,[data-career-panel=profile]>.career-actions){background:transparent;color:var(--ink);border-color:var(--line)}
+body.standalone-app :is(dialog,.profile-import-dialog,.loading-card){background:#fbf8ef;border:1px solid #c6bca2;color:var(--ink);border-radius:20px;box-shadow:0 20px 80px #171a1d45}
+body.standalone-app dialog::backdrop,body.standalone-app .loading-overlay{background:#26291dbd;backdrop-filter:blur(4px)}
+body.standalone-app dialog :is(p,li,label,small){font-size:16px;color:var(--muted)}
+body.standalone-app dialog a:not(.button){color:#506045;text-underline-offset:4px}
+body.standalone-app #career-dialog{background:transparent;color:var(--ink)}
+body.standalone-app :is(.field-label,.builder-field,.builder-field>span,.cv-choices label,.profile-section-title,.library-choice strong,.library-detail h6,.resume-file-summary strong,.resume-format-badges strong,.background-builder summary strong,.cloud-card>summary strong,.cv-options .cv-checks legend,.resume-upload-prompt,.resume-format-label,.resume-file-limit,#resume-text-editor .field-label){color:var(--ink)}
+body.standalone-app .field-label{font-size:16px}
+body.standalone-app :is(.field-label span,.section-kicker,.field-hint,.export-hint,.export-note,.card-description,.category-hint,.library-caution,.preview-help,.app-about,.career-account-note,.pi-existing,.builder-step-guidance,.editor-meta,.resume-more>summary,.cv-private-value,.profile-photo-field small,.welcome-privacy,.submission-privacy,.career-result blockquote,.guest-hint,.category-guide,.branch-choice-note,.full-specialty-help,.resume-replace-types,.resume-file-summary small,.resume-format-badges span,.change-label){color:var(--muted)}
+body.standalone-app :is(.field-label span,.section-kicker){font-size:13px}
+body.standalone-app :is(.card-description,.field-hint){font-size:15px}
+body.standalone-app :is(.library-filters label,.library-add>label:not(.checkbox-label),.service-role>label,.career-grid>label,.career-form>label,.profile-section-bar label){color:var(--ink);font-size:15px}
+body.standalone-app :is(.library-result,.service-reference-picker){background:var(--paper);border-color:var(--line);color:var(--ink)}
+body.standalone-app :is(.library-choice:hover,.library-result:hover){background:#eef0e4;border-color:#788267}
+body.standalone-app :is(.library-code,.library-result-link,.library-detail a,.library-detail details>summary,.category-icon,.category-chevron,.career-badge,.upfront-price,.resume-state,.task-progress,.flow-progress,.flow-heading p,.delivery-optional>summary,.cv-options>summary,.cv-profile-alternative summary,.cv-privacy-details>summary,.resume-comparison summary,.optional-page-breaks summary,.profile-import-entry>summary,.background-builder summary:before,.optional-details summary,.purchase-history>summary,.builder-actions a,.checkbox-label a,.welcome-privacy a,.submission-privacy a){color:#506045}
+body.standalone-app :is(.library-choice span,.library-result-note,.home-tool-button span,.home-tool-button b){color:var(--muted)}
+body.standalone-app :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background:#fffef9;border:1px solid #b5b29e;color:var(--ink);border-radius:10px;font-family:inherit;font-size:16px;line-height:1.55;min-height:48px;box-shadow:none}
+body.standalone-app :is(#resume-text-editor #resume-input,#rewrite-draft,#rewrite-original,#rewrite-proposed,.letter-screen #career-cover-letter){background:#fffef9;color:var(--ink);border-color:#b5b29e}
+body.standalone-app :is(input,textarea)::placeholder{color:#767568;opacity:1}
+body.standalone-app :is(input,textarea,select):focus{border-color:#6e7f5d}
+body.standalone-app :is(input[type=checkbox],input[type=radio],progress){accent-color:#56684a}
+body.standalone-app :is(.checkbox-label,.career-check,.pi-use){font-size:15px;line-height:1.6;color:#4f5546}
+body.standalone-app .current-work{background:#edf0e3;border-color:#a4b18e;border-radius:15px;color:var(--ink)}
+body.standalone-app .current-work strong{font-size:17px}
+body.standalone-app .home-tool-button{border-color:#d4cfbd;background:#faf8f1;border-radius:14px;margin-bottom:11px;padding:19px 21px;box-shadow:none;min-height:96px}
+body.standalone-app .home-tool-button:hover{background:#eef0e4;border-color:#8f9b7d}
+body.standalone-app .home-tool-button strong{font-size:17px;color:var(--ink)}
+body.standalone-app .home-tool-button :is(span,b){font-size:15px;color:#606650}
+body.standalone-app .home-tools-title{font-family:'Workspace Serif',Georgia,serif;font-weight:400;font-size:27px;margin:34px 0 17px}
+body.standalone-app .home-tools-title span{font:14px/1.5 'Workspace Lato',sans-serif;color:var(--muted)}
+body.standalone-app .privacy-reassurance{border-color:var(--line);background:transparent;color:var(--muted);padding-top:20px}
+body.standalone-app .privacy-reassurance strong{color:#47573a}
+body.standalone-app .privacy-reassurance :is(p,a){font-size:14px;color:var(--muted)}
+body.standalone-app .privacy-reassurance svg{color:#657853}
+body.standalone-app .app-install-card{background:#eeeddf;border-color:#d1d3bc;border-radius:16px}
+body.standalone-app .app-install-copy h2{color:var(--ink);font-size:18px}
+body.standalone-app .app-install-copy p{color:var(--muted);font-size:14px}
+body.standalone-app :is(.home-privacy-note,.app-about){font-size:14px;color:var(--muted);padding:14px 0}
+body.standalone-app :is(.home-privacy-note summary,.app-about summary){cursor:pointer;color:#506045;min-height:44px;padding:10px 0}
+body.standalone-app :is(.home-privacy-note a,.app-about a,.settings-list span){color:#506045}
+body.standalone-app :is(.steps,.input-tabs,.review-flow-tabs,.task-steps,.letter-workflow,.letter-saved,.letter-screen .letter-saved,.explore-tabs,.delivery-actions,.pi-progress-header,.pi-actions,.cv-section-guide,.cv-options [data-cv-review-section],#cv-review-actions,[data-cv-section-preview] article,#cv-content-check>p,.help-resource,.help-sources,.application-import-row,.profile-setup-controls){border-color:var(--line)}
+body.standalone-app :is(.steps button,.task-steps button,.letter-workflow li,.letter-screen .letter-workflow li,.explore-tabs button){color:var(--muted)}
+body.standalone-app :is(.steps li.current button,.task-steps button[aria-current=step],.letter-workflow [aria-current=step],.letter-screen .letter-workflow li[aria-current],.explore-tabs [aria-selected=true]){color:#506045;border-color:#71825f}
+body.standalone-app .steps .current:after{background:#71825f}
+body.standalone-app .step-number{border-color:#a7ad98}
+body.standalone-app .steps .current .step-number{background:#56684a;color:#fffaf0;border-color:#56684a}
+body.standalone-app :is(.flow-heading,.flow-instruction){color:var(--muted);font-size:16px}
+body.standalone-app :is(.review-task-nav,.studio-tabs,.resume-entry-switch){background:#eaeadd;border-color:#d3d6c1;border-radius:12px}
+body.standalone-app :is(.review-task-nav button,.studio-tabs button,.resume-entry-switch button,.career-tabs button){color:#5b644d;background:transparent}
+body.standalone-app :is(.review-task-nav button[aria-current=step],.studio-tabs button[aria-pressed=true],.resume-entry-switch button[aria-pressed=true],.career-tabs button[aria-pressed=true],.library-steps li[aria-current=step]){background:#fffdf4;color:#36472d;border-color:#879675;box-shadow:0 2px 6px #3b4e2310}
+body.standalone-app .library-steps li{color:var(--muted)}
+body.standalone-app :is(.category-icon,.category-chevron,.career-badge,.category-tag,.resume-format-badges li){background:#eeeddf;border-color:#cfcbb7;color:#5b644d}
+body.standalone-app :is(.resume-category[open]>.category-summary,.background-builder .resume-category[open]>.category-summary,.resume-category>summary:hover){background:#edf0e3}
+body.standalone-app .background-builder .resume-category[open]>summary>.category-icon{background:#e2e8d5;border-color:#a3af8b;color:#4f6540}
+body.standalone-app :is(.library-success,.profile-setup-finished,.profile-save-state,.resume-file-summary,.storage-notice){background:#eef2e6;border-color:#bac8a8;color:#3d5830}
+body.standalone-app :is(.opsec-notice,.inline-notice,.import-status,.federal-warning,.federal-checks,.template-finish-box,.settings-note,.cv-missing-section,.application-import-warning){background:#f7efde;border-color:#d3b781;color:#705222}
+body.standalone-app :is(.opsec-notice,.inline-notice,.import-status,.federal-checks) :is(h2,h3,p,li,summary,a),body.standalone-app .opsec-notice #opsec-heading{color:#705222}
+body.standalone-app :is(.score-card p,.summary-card p,.review-heading p,.suggestion-explanation,.findings-card p,.rewrite-card p,.rewrite-card li,.next-steps p,.suggestion-bottom p,.change-block p,.ai-agreement p,.tip-card p,.final-build-card>p,.stage-intro p){color:var(--muted)}
+body.standalone-app .score-ring strong{color:var(--ink)}
+body.standalone-app .score-ring:before{background:var(--paper)}
+body.standalone-app :is(.before-block,.original-block,.change-block){background:#f2eee6;color:#5e5549;border-color:#d5cfc2}
+body.standalone-app :is(.after-block,.replacement-block,.change-block.after){background:#edf2e7;color:#425b35;border-color:#bacba8}
+body.standalone-app .rewrite-card pre{background:#f9f7ef;color:var(--ink)}
+body.standalone-app :is(.settings-list>button:hover,.settings-list>a:hover){background:#eef0e4}
+body.standalone-app :is(.app-about strong,.storage-notice strong,.storage-notice a,.help-resource a:not(.button),.help-sources a,.help-sources summary,.application-import-row>details summary){color:#506045}
+body.standalone-app .toast{background:#eef2e6;color:#364d2c;border-color:#a5b890;bottom:calc(var(--app-bottom-space) + 12px)}
+body.standalone-app .error-banner{background:#fceee7;color:#7d3329;border-color:#c79386;bottom:calc(var(--app-bottom-space) + 12px)}
+body.standalone-app .danger{color:#a13429!important}
+body.standalone-app .resume-delete{color:#a13429}
+body.standalone-app .question-navigation{bottom:calc(var(--app-bottom-space) + 8px)}
+body.standalone-app .icon-button{background:#eaeadd;color:#4f5744}
+body.standalone-app :is(#auth-status,#builder-status,#purchase-status,#draft-save-status,#pi-confirmation,#cv-review-confirmation,#interest-save-feedback,#cv-status,#career-kit-context,#purchase-start-status,#purchase-path){color:#506045}
+body.standalone-app :is(#finished-status,#career-kit-checks li,#profile-setup-tips,.upfront-price span){color:var(--muted)}
+body.standalone-app #career-dialog :is(.library-explanation h5,.profile-section-title){color:var(--ink)}
+body.standalone-app #career-dialog :is(#profile-setup-progress,#profile-setup-status){color:#506045}
+body.standalone-app #career-dialog :is(#profile-setup-hint,.library-detail li){color:var(--muted)}
+body.standalone-app :is(#profile-setup-tip-details summary,.profile-setup-controls a,.career-actions a,.career-comparison summary,.career-kit-controls summary,#library-change-filters>summary,.career-idea summary,.career-source-notice>summary,.interest-score-details>summary,.cv-education-entry legend){color:#506045}
+body.standalone-app #profile-persistence-status[data-state=saved]{color:#3d6448}
+body.standalone-app #profile-persistence-status:is([data-state=unsaved],[data-state$=error]){color:#805d28}
+body.standalone-app :is(#career-status:not(:empty),#explore-status:not(:empty),.letter-status:not(:empty)){background:#edf0e3;border-color:#9aa980;color:#3e5033}
+body.standalone-app #career-dialog :is(.career-opsec,.library-caution){background:#f7efde;color:#705222;border-color:#d3b781}
+body.standalone-app #career-dialog .library-status:not(:empty){background:#eef2e6;color:#3d5830}
+body.standalone-app :is(#interest-options button,.career-category-items .career-result){background:#fffcf5;color:var(--ink);border-color:var(--line)}
+body.standalone-app #interest-options button:hover{background:#eef0e4;border-color:#788267;color:var(--ink)}
+body.standalone-app #interest-options [aria-pressed=true]{background:#e7ebdc;border-color:#657853;color:#3e5033}
+body.standalone-app .career-category>summary{color:var(--ink)}
+body.standalone-app :is(.career-category>summary:after,.career-category-count){color:#506045;border-color:#b3bda1}
+body.standalone-app .career-category[open]>summary{border-color:var(--line)}
+body.standalone-app .career-next-steps{border-color:#81916e}
+/* Calculator, privacy choices and completion dialogs use the same readable surfaces. */
+body.standalone-app #calculator-panel :is(.va-year-panel,.va-condition-info,.va-cola-comparison){background:#eeeddf;color:var(--ink);border-color:#d1d3bc}
+body.standalone-app #calculator-panel :is(.va-form,.va-result,.va-condition-editor){background:var(--paper);border-color:var(--line)}
+body.standalone-app #calculator-panel :is(a,.va-step-label,.va-condition-row-heading>strong,.va-result-year,#va-combined-result){color:#506045}
+body.standalone-app #calculator-panel :is(.va-optional,.va-source-details p,.va-private-note,.va-condition-info p,.va-condition-row>p,.va-result-totals h3,#va-pay-basis,.va-footer p,#va-annual-result){color:var(--muted)}
+body.standalone-app #calculator-panel :is(#va-rate-note,.va-source-details>summary){color:#705222}
+body.standalone-app #calculator-panel .va-steps li{color:var(--muted)}
+body.standalone-app #calculator-panel .va-steps [aria-current=step]{color:#506045;border-color:#71825f}
+body.standalone-app #calculator-panel .va-steps [aria-current=step]>span{background:#56684a;color:#fffaf0;border-color:#56684a}
+body.standalone-app #calculator-panel .va-steps .va-step-done>span{color:#506045;border-color:#71825f}
+body.standalone-app #calculator-panel .va-condition-actions>button:last-child{color:#a13429}
+body.standalone-app #calculator-panel .va-success{color:#3d6448}
+body.standalone-app #calculator-panel .va-error{background:#fceee7;color:#7d3329;border-color:#c79386}
+body.standalone-app #calculator-panel #va-pay-result{color:var(--ink)}
+body.standalone-app :is(.usage-analytics-notice,#analytics-choice-status){background:#fbf8ef;color:var(--ink);border-color:#c6bca2}
+body.standalone-app .usage-analytics-notice p{color:var(--muted)}
+body.standalone-app .analytics-choice-actions .button{background:#2b3027;color:#fffaf0;border-color:#2b3027}
+body.standalone-app .analytics-choice-actions .button-secondary{background:transparent;color:#31372c;border-color:#a7a794}
+body.standalone-app :is(.usage-analytics-notice>a,#analytics-preferences>a){color:#506045}
+body.standalone-app .completion-dialog :is(p,.field-hint,.completion-optional){color:var(--muted)}
+body.standalone-app .completion-stars span{color:#736e5e;background:#f1eddf;border-color:#c6bea6}
+body.standalone-app .completion-stars label[data-filled=true] span{color:#805d28;background:#f4e5bf;border-color:#a77b35}
+body.standalone-app .completion-choice{background:#fffcf5;color:var(--ink);border-color:var(--line)}
+body.standalone-app .completion-choice :is(span:first-child,b){color:#506045}
+body.standalone-app .completion-choice small{color:var(--muted)}
+/* Direct destinations stay visible. Desktop tools sit just below the site header. */
+body.standalone-app .app-nav{background:#f7f3e9f5;color:var(--ink);border-color:#d8d1c0;border-radius:0;backdrop-filter:blur(15px);box-shadow:0 -3px 18px #514a350b}
+body.standalone-app .app-nav>button{color:#606650;border-radius:10px;min-height:62px}
+body.standalone-app .app-nav>button.active{background:#e3e8d7;color:#3d5330}
+body.standalone-app .app-nav>button:hover{background:#ececde;color:#35462b}
+body.standalone-app .app-nav svg{stroke-width:1.7}
+@media(min-width:761px) and (min-height:481px){
+ :root{--app-top-space:var(--app-nav-height);--app-bottom-space:0px}
+ body.standalone-app .app-nav{top:var(--app-header-height);bottom:auto;padding:8px max(24px,calc((100vw - 1124px)/2));border-top:0;border-bottom:1px solid #d8d1c0;box-shadow:0 3px 18px #514a3506}
+ body.standalone-app .app-nav>button{min-height:60px;gap:3px}
+ body.standalone-app .template-finish-box,body.standalone-app.browsing-templates .studio-quick-actions{top:calc(var(--app-header-height) + var(--app-nav-height) + 8px)}
+}
+
+/* Preserve contrast in the older upload and profile controls as well. */
+body.standalone-app .resume-upload-area #import-resume,body.standalone-app .resume-file-summary #replace-resume{background:#2b3027;color:#fffaf0;border-color:#2b3027}
+body.standalone-app .resume-upload-area #import-resume:hover{background:#414938}
+body.standalone-app .resume-upload-area #import-resume :is(strong,small){color:#fffaf0}
+body.standalone-app .resume-upload-area :is(#file-help,.resume-local-note,.resume-older-word){color:var(--muted)}
+body.standalone-app .resume-file-summary>span{color:#506045}
+body.standalone-app .profile-section-actions button:last-child:hover{background:#414938;color:#fffaf0}
+body.standalone-app .service-role>.service-setup-heading{background:#eeeddf;color:#506045;border-color:#b3bda1}
+body.standalone-app #profile-setup-meter,body.standalone-app #profile-setup-meter::-webkit-progress-bar{background:#dde3cf}
+body.standalone-app #profile-setup-meter::-webkit-progress-value{background:#657853}
+body.standalone-app .skip-link{background:#2b3027;color:#fffaf0}
+
+/* Document canvases and CV previews keep their own fonts, colors and layout. */
+body.standalone-app .paper-card.card{background:#efede5;border-color:var(--line);color:#243047}
+body.standalone-app :is(.paper-toolbar,.preview-label,.paper-card .preview-help,.paper-card .preview-help#page-preview-status){color:#535c61}
+body.standalone-app .studio-template{background:#fffcf5!important;border-color:#c9c7b4;color:var(--ink)}
+body.standalone-app .studio-template :is(strong,small){color:var(--ink)}
+body.standalone-app .design-option{background:#fffcf5!important;color:var(--ink)!important;border-color:#c9c7b4!important}
+body.standalone-app .design-option:has(input:checked){background:#e8ecdf!important;border-color:#71825f!important;box-shadow:0 0 0 1px #71825f}
+body.standalone-app .design-option strong{color:var(--ink)!important}
+body.standalone-app .design-option small{color:var(--muted)!important}
+body.standalone-app :is(.cv-preview,.cv-preview-sheet,.resume-document){background:#fff;color:#17222f}
+body.standalone-app #career-dialog .cv-preview :is(p,li,h4),body.standalone-app .cv-preview :is(p,li,h4){color:#33435a}
+body.standalone-app #career-dialog .cv-preview :is(h2,h3),body.standalone-app .cv-preview :is(h2,h3){color:#12294d;font-family:Arial,sans-serif}
+body.standalone-app #career-dialog .cv-preview a{color:#12305e}
+body.standalone-app .resume-document :is(h1,h2,h3,h4,p,li,strong,small,span){color:inherit}
+body.standalone-app .resume-document :is(h1,h2,h3,h4){font-family:inherit}
 body.standalone-app .template-example{background:#f9f7f0}
-body.standalone-app .template-example :is(h2,h3,h4,p){color:#25313c}
-@media(max-width:600px){body.standalone-app main{padding:26px 18px calc(var(--app-nav-height) + 36px)}body.standalone-app .app-topbar{padding:10px 16px;gap:8px;min-height:76px}body.standalone-app .app-brand{gap:8px}body.standalone-app .app-brand img{width:32px;height:32px}body.standalone-app .app-brand>span{font-size:17px}body.standalone-app .app-brand small{font-size:10px}body.standalone-app .header-action{padding:8px;min-width:40px}body.standalone-app .start-option{padding:18px 16px;min-height:94px}body.standalone-app .start-option strong{font-size:17px}body.standalone-app .start-option small{font-size:14px}body.standalone-app .button{font-size:15px}body.standalone-app .card-description{font-size:15px}body.standalone-app .steps button{font-size:12px}body.standalone-app .steps .step-number{font-size:11px}body.standalone-app .home-tools-title span{display:block;margin-top:4px}body.standalone-app .home-tool-button span{font-size:14px}}
-@media(max-width:360px){body.standalone-app .app-brand{max-width:calc(100% - 132px)}body.standalone-app .app-brand>span{font-size:15px}body.standalone-app .app-brand small{font-size:10px}body.standalone-app .app-topbar{padding-inline:12px}body.standalone-app .app-brand img{width:28px;height:28px}}
+body.standalone-app .template-example :is(h2,h3,h4,p){color:#25313c;font-family:inherit}
+@media(max-width:760px){
+ body.standalone-app main{padding:28px 23px calc(var(--app-bottom-space) + 36px)}
+ body.standalone-app .app-topbar{padding:12px 18px;gap:9px;min-height:78px}
+ body.standalone-app .app-brand{gap:8px}
+ body.standalone-app .app-brand img{width:36px;height:36px}
+ body.standalone-app .app-brand>span{font-size:17px}
+ body.standalone-app .app-brand small{display:block;font-size:10px;margin-top:4px}
+ body.standalone-app .header-action{padding:8px;min-width:44px;font-size:13px}
+ body.standalone-app .emergency-help-button{padding-inline:10px}
+ body.standalone-app .screen-heading h1,body.standalone-app #home-title{font-size:34px}
+ body.standalone-app .screen-heading>p:last-child{font-size:17px;max-width:480px}
+ body.standalone-app .start-option{padding:17px 16px;min-height:96px}
+ body.standalone-app .start-option strong{font-size:18px}
+ body.standalone-app .start-option small{font-size:14px}
+ body.standalone-app .button{font-size:15px}
+ body.standalone-app .steps button{font-size:12px}
+ body.standalone-app .steps .step-number{font-size:11px}
+ body.standalone-app .home-tools-title{display:block;font-size:26px}
+ body.standalone-app .home-tools-title span{display:block;margin-top:6px}
+ body.standalone-app .home-tool-button{padding:17px 18px}
+ body.standalone-app .home-tool-button span{font-size:14px}
+}
+@media(max-width:480px){
+ body.standalone-app #account-label{display:none}
+ body.standalone-app #account-open svg{display:block}
+ body.standalone-app .app-header-actions{gap:0}
+}
+@media(max-width:360px){
+ body.standalone-app main{padding-inline:18px}
+ body.standalone-app .app-topbar{padding-inline:12px;gap:6px}
+ body.standalone-app .app-brand{gap:6px}
+ body.standalone-app .app-brand>span{font-size:15px}
+ body.standalone-app .app-brand img{width:28px;height:28px}
+ body.standalone-app .app-brand small{font-size:10px}
+ body.standalone-app .emergency-help-button{padding-inline:7px}
+ body.standalone-app .start-option{padding:16px 13px;gap:10px}
+ body.standalone-app .start-option strong{font-size:17px}
+}
 @media(prefers-reduced-motion:reduce){body.standalone-app *,body.standalone-app *:before{scroll-behavior:auto!important;transition:none!important}}
-
-body.standalone-app #home-my-resumes{background:#302d26;border-color:#655d4c;color:#f1d29d;font-size:15px;min-height:44px}
-body.standalone-app #home-my-resumes:hover{background:#3d3528}
-@media(max-width:600px){body.standalone-app .start-option{min-height:86px;padding:14px 16px}}
-
-body.standalone-app .studio-template{background:#2b2821!important}
-body.standalone-app .button-primary:hover:not(:disabled){background:#f6dcae;color:#171612}
+@media print{body.standalone-app{background:#fff;color:#17222f}}

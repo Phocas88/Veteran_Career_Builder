@@ -60,9 +60,9 @@ function updateUser(next) {
   $('account-email').textContent = registered ? next.email : '';
   $('account-signed-in').hidden=!registered;$('account-form').hidden=registered;$('google-signin-box').hidden=registered;$('auth-remember-row').hidden=registered;
   $('account-link-google').hidden=!registered||!!next.providerData?.some(provider=>provider.providerId==='google.com');
-  $('start-saved').hidden = !registered; $('save-submitted-row').hidden = !registered; $('guest-checkout-note').hidden = registered;
+  $('start-saved').hidden = true; $('save-submitted-row').hidden = !registered; $('guest-checkout-note').hidden = registered;
   $('auth-guest').hidden = registered; $('guest-end').hidden = !guest(next);
-  $('account-value').textContent = registered ? 'Save a version in Resumes to keep your work.' : 'Guest session · Sign in to save across devices.';
+  $('account-value').textContent = registered ? 'Find your saved documents in My resumes.' : 'Guest session · Sign in to save across devices.';
   status(registered ? 'Save a version here, then reopen it whenever you want to make updates.' : 'A free account lets you keep resumes and background details for later.');
   if (registered || guest(next)) { rememberChoice(registered ? 'account' : 'guest'); $('welcome-dialog').close(); }
   if (next) { restoreAccountWorkspace(next,accountVersion); if (registered) refreshSaved(); refreshPurchases(); }

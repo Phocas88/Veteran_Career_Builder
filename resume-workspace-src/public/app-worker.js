@@ -1,8 +1,8 @@
 /* Public installation support only. Private application data is never cached. */
 'use strict';
-const VERSION='20261107-shared-theme',scope=new URL(self.registration.scope),prefix='vcp-resume-install:'+scope.pathname+':',cacheName=prefix+VERSION;
+const VERSION='20261107-vcp-logo',scope=new URL(self.registration.scope),prefix='vcp-resume-install:'+scope.pathname+':',cacheName=prefix+VERSION;
 const offline=new URL('./offline.html',scope).href;
-const assets=['./offline.html','./app-install.css?v='+VERSION,'./app-icon-192.png','./app-icon-512.png','./app-icon-maskable-512.png','./apple-touch-icon.png'].map(file=>new URL(file,scope).href);
+const assets=['./offline.html','./app-install.css?v='+VERSION,'./app-icon-192.png?v='+VERSION,'./app-icon-512.png?v='+VERSION,'./app-icon-maskable-512.png?v='+VERSION,'./apple-touch-icon.png?v='+VERSION].map(file=>new URL(file,scope).href);
 const publicAssets=new Set(assets);
 self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(cacheName);await cache.addAll(assets);await self.skipWaiting();})()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const key of await caches.keys())if(key.startsWith(prefix)&&key!==cacheName)await caches.delete(key);await self.clients.claim();})()));

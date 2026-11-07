@@ -55,10 +55,13 @@ test('legacy checkout links reach the authenticated app with the original recove
  await prepare(page,'registered');const id='c'.repeat(64),recovered=[];page.on('request',r=>{try{const body=r.postDataJSON();if(body?.buildId===id)recovered.push(body.action);}catch{}});
  await page.goto('/?build='+id+'&template=modern&checkout=success');await expect(page).toHaveURL(/\/app\//);await expect.poll(()=>recovered.length).toBeGreaterThan(0);await expect(page.locator('#home-title')).toHaveCount(1);
 });
-test('installation keeps the existing app identity and launches directly into the workspace',async({page})=>{
+test('installation keeps the existing identity, launches into the workspace and displays its logo offline',async({page,context})=>{
  await prepare(page);const response=await page.request.get('/manifest.webmanifest'),manifest=await response.json();expect(manifest.id).toBe('/index.html');expect(manifest.start_url).toBe('/app/');expect(manifest.name).toBe('Veteran Resumes by Veteran Career Path');
  await page.addInitScript(()=>{const match=window.matchMedia.bind(window);window.matchMedia=query=>query.includes('display-mode: standalone')?{matches:true,media:query,addEventListener(){},removeEventListener(){}}:match(query);});
  await page.goto('/');await expect(page).toHaveURL(/\/app\//);await enter(page);await expect(page.locator('.app-brand')).toContainText('Veteran Resumes');
+ await expect.poll(()=>page.evaluate(()=>Boolean(navigator.serviceWorker.controller))).toBe(true);
+ await context.setOffline(true);
+ try{await page.reload({waitUntil:'domcontentloaded'});await expect(page.getByRole('heading',{name:'Let’s get you reconnected.'})).toBeVisible();await expect(page.locator('body')).toHaveCSS('background-color','rgb(247, 243, 233)');await expect.poll(()=>page.locator('.offline-card img').evaluate(img=>img.complete&&img.naturalWidth===192)).toBe(true);await page.screenshot({path:screenshots+'/installed-vcp-logo-offline.png'});}finally{await context.setOffline(false);}
 });
 
 const adsChoice='veteran_resumes_advertising_choice_v1';

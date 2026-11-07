@@ -20,6 +20,10 @@ export function buildResumeWebsite({source=path.join(root,'resume-workspace-src/
   const body=fs.readFileSync(path.join(website,file));fs.writeFileSync(path.join(output,file),file.endsWith('.html')?protectHtml(body.toString()):body);
  }
  const manifestFile=path.join(output,'manifest.webmanifest'),manifest=JSON.parse(fs.readFileSync(manifestFile,'utf8'));
+ // The root-scoped worker also returns this document for an /app/ launch.
+ // Root URLs keep its cached logo and stylesheet available at either address.
+ const offlineFile=path.join(output,'offline.html');
+ fs.writeFileSync(offlineFile,fs.readFileSync(offlineFile,'utf8').replaceAll('href="./app-install.css','href="/app-install.css').replaceAll('href="./app-icon-','href="/app-icon-').replaceAll('src="./app-icon-','src="/app-icon-').replace('href="./"','href="/app/"'));
  // Preserve the original installed-app identity; change its launch destination.
  Object.assign(manifest,{id:'/index.html',start_url:'/app/',scope:'/',name:'Veteran Resumes by Veteran Career Path',short_name:'Veteran Resumes'});
  fs.writeFileSync(manifestFile,JSON.stringify(manifest,null,2)+'\n');

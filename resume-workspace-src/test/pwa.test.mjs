@@ -8,7 +8,7 @@ test('the app identity, launch and icon paths work on the current path and a sta
  const manifest=JSON.parse(read('manifest.webmanifest'));
  for(const root of ['https://veterancareerpath.com/resumereview/','https://resume.example/']){
   for(const field of ['scope','start_url'])assert.equal(new URL(manifest[field],root).href,root);assert.equal(new URL(manifest.id,root).href,new URL('./index.html',root).href);
-  for(const icon of manifest.icons){const png=read(icon.src.slice(2));assert.equal(png.subarray(1,4).toString(),'PNG');const size=Number(icon.sizes.split('x')[0]);assert.equal(png.readUInt32BE(16),size);assert.equal(png.readUInt32BE(20),size);assert.ok(new URL(icon.src,root).href.startsWith(root));}
+  for(const icon of manifest.icons){const png=read(icon.src.split('?')[0].slice(2));assert.equal(png.subarray(1,4).toString(),'PNG');const size=Number(icon.sizes.split('x')[0]);assert.equal(png.readUInt32BE(16),size);assert.equal(png.readUInt32BE(20),size);assert.ok(new URL(icon.src,root).href.startsWith(root));}
  }
  assert.equal(manifest.display,'standalone');assert.equal(manifest.prefer_related_applications,false);assert.ok(manifest.icons.some(icon=>icon.sizes==='512x512'&&icon.purpose==='maskable'));
 });
@@ -21,7 +21,7 @@ function worker(scope='https://resume.example/resumereview/'){
 }
 test('installation caches only public support assets and update cleanup leaves other caches intact',async()=>{
  const w=worker();w.stores.set('private-account-cache',new Map());w.stores.set('vcp-resume-install:/:older',new Map());w.stores.set('vcp-resume-install:/resumereview/:older',new Map());await w.run('install');
- const current=[...w.stores.keys()].find(key=>key.endsWith('20261107-shared-theme'));assert.ok(current);const urls=[...w.stores.get(current).keys()];assert.equal(urls.length,6);assert.ok(urls.every(url=>/offline\.html|app-install\.css|app-icon-|apple-touch-icon/.test(url)));assert.ok(urls.every(url=>!url.includes('api/')&&!url.includes('index.html')&&!url.includes('resume-input')));
+ const current=[...w.stores.keys()].find(key=>key.endsWith('20261107-vcp-logo'));assert.ok(current);const urls=[...w.stores.get(current).keys()];assert.equal(urls.length,6);assert.ok(urls.every(url=>/offline\.html|app-install\.css|app-icon-|apple-touch-icon/.test(url)));assert.ok(urls.every(url=>!url.includes('api/')&&!url.includes('index.html')&&!url.includes('resume-input')));
  await w.run('activate');assert.deepEqual(w.removed,['vcp-resume-install:/resumereview/:older']);assert.ok(w.stores.has('private-account-cache'));assert.ok(w.stores.has('vcp-resume-install:/:older'));
 });
 test('API, payment, auth, cross-origin and out-of-scope requests are never intercepted or cached',async()=>{
@@ -45,7 +45,7 @@ test('live navigations stay on the network and offline launch returns help witho
  }
 });
 test('only the explicitly cached public support assets remain available offline',async()=>{
- const w=worker();await w.run('install');w.setOnline(false);const css={url:'https://resume.example/resumereview/app-install.css?v=20261107-shared-theme',method:'GET',mode:'cors'};assert.equal(await (await w.run('fetch',css)).text(),'PUBLIC_INSTALL_ASSET');assert.deepEqual(w.fetches,[]);
+ const w=worker();await w.run('install');w.setOnline(false);const css={url:'https://resume.example/resumereview/app-install.css?v=20261107-vcp-logo',method:'GET',mode:'cors'};assert.equal(await (await w.run('fetch',css)).text(),'PUBLIC_INSTALL_ASSET');assert.deepEqual(w.fetches,[]);
 });
 function installFixture(installed=false){
  const listeners={},mediaListeners={},buttons=[{disabled:false,events:{},addEventListener(name,handler){this.events[name]=handler;},focus(){this.focused=true;}}],panels=[{hidden:true}],status={textContent:''},dialog={open:false,events:{},showModal(){this.open=true;},close(){this.open=false;this.events.close?.();},addEventListener(name,handler){this.events[name]=handler;}},close={addEventListener(name,handler){this.click=handler;}};

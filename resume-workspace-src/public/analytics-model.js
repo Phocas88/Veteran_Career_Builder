@@ -59,9 +59,20 @@ export const PROTOCOL={
         "resume"
       ]
     },
-    "vcp_resume_active": {}
+    "vcp_resume_active": {},
+    "vcp_resume_website_action": {
+      "action": [
+        "start_resume",
+        "upload_resume",
+        "open_app",
+        "cover_letter",
+        "example",
+        "install_app"
+      ]
+    }
   },
   "screens": {
+    "website": "Public website",
     "home": "Home",
     "resumes": "My resumes",
     "resume_start": "Choose how to start",
@@ -97,7 +108,7 @@ export const VISITOR_KEY='vcp_resume_analytics_visitor_v1';
 export const SESSION_KEY='vcp_resume_analytics_session_v1';
 export const ONCE_KEY='vcp_resume_analytics_once_v1';
 export const BRIDGE_ORIGIN='https://vcp-proxy.vercel.app';
-export const BRIDGE_URL=BRIDGE_ORIGIN+'/api/resume-analytics?v=20261029-resume-reports';
+export const BRIDGE_URL=BRIDGE_ORIGIN+'/api/resume-analytics?v=20261107-domain-reports';
 export const PROTOCOL_VERSION='vcp-resume-analytics-v1';
 export function analyticsEvent(name,params={}){
  if(!Object.hasOwn(PROTOCOL.events,name)||!params||typeof params!=='object'||Array.isArray(params))return null;
@@ -110,7 +121,7 @@ export function readConsent(value,now=Date.now()){
 }
 export function trafficSource(url,referrer=''){
  try{const target=new URL(url),tag=(target.searchParams.get('utm_source')||'').toLowerCase();if(['tiktok','linkedin','google','bing'].includes(tag))return tag;
- const host=referrer?new URL(referrer).hostname.toLowerCase():'';if(!host||host==='veterancareerpath.com'||host.endsWith('.veterancareerpath.com')||host==='checkout.stripe.com'||host.endsWith('.firebaseapp.com'))return 'direct';
+ const host=referrer?new URL(referrer).hostname.toLowerCase():'';if(!host||host==='veteranresumes.com'||host==='www.veteranresumes.com'||host==='veterancareerpath.com'||host.endsWith('.veterancareerpath.com')||host==='checkout.stripe.com'||host.endsWith('.firebaseapp.com'))return 'direct';
  for(const source of ['tiktok','linkedin','google','bing'])if(host===source+'.com'||host.endsWith('.'+source+'.com'))return source;return 'other';
  }catch{return 'direct';}
 }

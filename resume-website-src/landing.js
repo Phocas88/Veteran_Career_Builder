@@ -1,4 +1,5 @@
-import {initUsageAnalytics} from './analytics.js?v=20261107-cozy';
+import {initUsageAnalytics,trackUsage} from './analytics.js?v=20261107-domain-reports';
+import {initWebsitePrivacy} from './website-ads.js?v=20261107-domain-reports';
 import {isAppInstalled} from './app-install.js?v=20261107-cozy';
 import {appDestination} from './website-routing.mjs?v=20261107-cozy';
 
@@ -6,6 +7,15 @@ const destination=appDestination(location.href,isAppInstalled());
 if(destination)location.replace(destination);
 else{
  initUsageAnalytics();
+ initWebsitePrivacy();
+ document.addEventListener('click',event=>{
+  const target=event.target.closest('a,button');if(!target)return;
+  let action;
+  if(target.hasAttribute('data-example'))action='example';
+  else if(target.hasAttribute('data-install-app'))action='install_app';
+  else if(target.tagName==='A'){const href=target.getAttribute('href')||'';if(href.startsWith('/app/?start=build'))action='start_resume';else if(href.startsWith('/app/?start=upload'))action='upload_resume';else if(href==='/app/#letter')action='cover_letter';else if(href==='/app/')action='open_app';}
+  if(action)trackUsage('vcp_resume_website_action',{action});
+ });
  // The install module auto-initializes when it finds its dialog.
  const menu=document.querySelector('.mobile-menu');
  menu.addEventListener('click',event=>{if(event.target.closest('a'))menu.open=false;});

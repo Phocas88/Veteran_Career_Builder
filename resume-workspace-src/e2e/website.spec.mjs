@@ -60,3 +60,28 @@ test('installation keeps the existing app identity and launches directly into th
  await page.addInitScript(()=>{const match=window.matchMedia.bind(window);window.matchMedia=query=>query.includes('display-mode: standalone')?{matches:true,media:query,addEventListener(){},removeEventListener(){}}:match(query);});
  await page.goto('/');await expect(page).toHaveURL(/\/app\//);await enter(page);await expect(page.locator('.app-brand')).toContainText('Veteran Resumes');
 });
+
+const adsChoice='veteran_resumes_advertising_choice_v1';
+async function advertisingFixture(page){const hits=[];await page.route('https://pagead2.googlesyndication.com/**',route=>{hits.push(route.request().url());return route.fulfill({contentType:'text/javascript',body:'window.__websiteAdvertisingFixture=true;'});});return hits;}
+test('AdSense verification is public and ads require an independent opt-in without entering the app',async({page})=>{
+ await prepare(page,'none',{privacyPrompt:true});const ads=await advertisingFixture(page),analytics=[];page.on('request',request=>{if(request.url().includes('/api/resume-analytics'))analytics.push(request.url());});
+ const authorization=await page.request.get('/ads.txt');expect(authorization.ok()).toBe(true);expect(await authorization.text()).toContain('google.com, pub-4999040528510137, DIRECT, f08c47fec0942fa0');
+ await page.goto('/');await expect(page.locator('meta[name=google-adsense-account]')).toHaveAttribute('content','ca-pub-4999040528510137');await expect(page.locator('#usage-analytics-notice')).toBeVisible();expect(ads).toEqual([]);expect(analytics).toEqual([]);
+ await page.locator('#site-ads-choice').check();await page.locator('#site-privacy-save').click();await expect.poll(()=>ads.length).toBe(1);expect(analytics).toEqual([]);
+ await page.locator('.site-footer a[href="/app/"]').click();await enter(page);await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('#website-adsense,meta[name=google-adsense-account]')).toHaveCount(0);expect(ads).toHaveLength(1);
+});
+test('website analytics measures only approved website actions when advertising is declined',async({page})=>{
+ await prepare(page,'none',{privacyPrompt:true});const ads=await advertisingFixture(page);await page.addInitScript(()=>{window.__websitePackets=[];addEventListener('message',event=>{if(event.origin==='https://vcp-proxy.vercel.app'&&event.data.websiteProbe)window.__websitePackets.push(event.data.packet);});});
+ await page.route('**/api/resume-analytics*',route=>route.fulfill({contentType:'text/html',body:`<!doctype html><script>addEventListener('message',event=>{if(event.data.type==='hello')parent.postMessage({protocol:'vcp-resume-analytics-v1',type:'ready'},event.origin);else parent.postMessage({websiteProbe:true,packet:event.data},event.origin);});</script>`}));
+ await page.goto('/?email=PRIVATE_QUERY&utm_source=linkedin');await page.locator('#site-analytics-choice').check();await page.locator('#site-privacy-save').click();await expect(page.locator('#usage-analytics-frame')).toHaveCount(1);
+ await page.locator('[data-example=resume-modern]').first().click();await expect.poll(()=>page.evaluate(()=>window.__websitePackets.some(item=>item.name==='vcp_resume_website_action'&&item.params.action==='example'&&item.screen==='website'))).toBe(true);
+ const packets=await page.evaluate(()=>window.__websitePackets);expect(packets.find(item=>item.type==='configure').screen).toBe('website');expect(JSON.stringify(packets)).not.toContain('PRIVATE_QUERY');expect(ads).toEqual([]);
+});
+test('browser privacy signals override saved advertising permission and leave both choices optional',async({page})=>{
+ await prepare(page);const ads=await advertisingFixture(page);await page.addInitScript(key=>{localStorage.setItem(key,JSON.stringify({version:1,enabled:true,updatedAt:Date.now()}));Object.defineProperty(navigator,'globalPrivacyControl',{configurable:true,get:()=>true});},adsChoice);
+ await page.goto('/');await page.locator('#privacy-options').click();await expect(page.locator('#site-ads-choice')).toBeDisabled();await expect(page.locator('#site-analytics-choice')).toBeDisabled();await expect(page.locator('#site-privacy-signal')).toBeVisible();await expect(page.locator('#usage-analytics-frame')).toHaveCount(0);expect(ads).toEqual([]);
+});
+test('withdrawing advertising reloads only the public page and stops the ad tag from restarting',async({page})=>{
+ await prepare(page,'none',{privacyPrompt:true});const ads=await advertisingFixture(page);await page.goto('/');await page.locator('#site-ads-choice').check();await page.locator('#site-privacy-save').click();await expect.poll(()=>ads.length).toBe(1);
+ await page.locator('#privacy-options').click();await page.locator('#site-ads-choice').uncheck();await Promise.all([page.waitForEvent('load'),page.locator('#site-privacy-save').click()]);await expect(page.locator('#website-adsense')).toHaveCount(0);expect(ads).toHaveLength(1);expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).enabled,adsChoice)).toBe(false);
+});

@@ -32,6 +32,9 @@ test('the public page and workspace have distinct routes while preserving the or
  buildResumeWebsite({source,output});
  const landing=fs.readFileSync(path.join(output,'index.html'),'utf8'),app=fs.readFileSync(path.join(output,'app/index.html'),'utf8'),manifest=JSON.parse(fs.readFileSync(path.join(output,'manifest.webmanifest'),'utf8'));
  assert.match(landing,/Your experience\./);assert.match(landing,/Fictional example/);assert.match(landing,/site-examples\/cover-letter\.png/);assert.match(landing,/href="\/app\//);
+ assert.match(landing,/google-adsense-account/);assert.doesNotMatch(app,/google-adsense-account|website-ads\.js/);
+ assert.match(fs.readFileSync(path.join(output,'ads.txt'),'utf8'),/^google\.com, pub-4999040528510137, DIRECT, f08c47fec0942fa0/);
+ assert.equal(fs.existsSync(path.join(output,'app/website-ads.js')),false);
  assert.match(app,/src="\/app-install\.js/);assert.match(app,/href="\/manifest\.webmanifest"/);assert.match(app,/canonical" href="https:\/\/veteranresumes\.com\/app\//);assert.match(app,/Guest purchases and drafts/);
  assert.equal(manifest.id,'/index.html');assert.equal(manifest.start_url,'/app/');assert.equal(manifest.scope,'/');
  assert.ok(fs.existsSync(path.join(output,'app.js')));assert.ok(fs.existsSync(path.join(output,'app/app.js')));assert.ok(fs.existsSync(path.join(output,'website-routing.mjs')));

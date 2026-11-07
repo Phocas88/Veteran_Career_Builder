@@ -6,7 +6,7 @@ test('the dedicated website publishes only the app and preserves install and sec
  assert.equal(config.buildCommand,'node scripts/build-resume-website.mjs');
  assert.match(config.installCommand,/npm ci --prefix resume-workspace-src/);
  assert.match(config.headers.find(row=>row.source==='/app-worker.js').headers[0].value,/no-cache/);
- assert.ok(config.headers.find(row=>row.source==='/(.*)').headers.some(row=>row.key==='Content-Security-Policy'&&row.value.includes("frame-ancestors 'self'")));
+ assert.ok(config.headers.find(row=>row.headers.some(header=>header.key==='Content-Security-Policy')).headers.some(row=>row.key==='Content-Security-Policy'&&row.value.includes("frame-ancestors 'self'")));
 });
 test('standalone origins reject paths, credentials, insecure URLs and query-driven redirects',()=>{
  assert.equal(standaloneOrigin(''),'');assert.equal(standaloneOrigin('https://resume.example/'),'https://resume.example');

@@ -1,5 +1,5 @@
-import {initUsageAnalytics,trackUsage} from './analytics.js?v=20261107-domain-reports';
-import {initWebsitePrivacy} from './website-ads.js?v=20261107-domain-reports';
+import {initUsageAnalytics,trackUsage} from './analytics.js?v=20261107-dedicated-ga4';
+import {initWebsitePrivacy} from './website-ads.js?v=20261107-dedicated-ga4';
 import {isAppInstalled} from './app-install.js?v=20261107-cozy';
 import {appDestination} from './website-routing.mjs?v=20261107-cozy';
 

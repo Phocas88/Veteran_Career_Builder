@@ -5,12 +5,17 @@
   "buildCommand": "node scripts/build-resume-website.mjs",
   "outputDirectory": "resume-website",
   "redirects": [
+    {"source": "/:path((?!api/resume-analytics$|api/resume-activity$).*)", "has": [{"type": "host", "value": "usage.veteranresumes.com"}], "destination": "https://veteranresumes.com/:path", "permanent": true},
     {"source": "/index.html", "destination": "/app/", "permanent": false},
     {"source": "/app", "destination": "/app/", "permanent": true}
   ],
+  "rewrites": [
+    {"source": "/api/resume-analytics", "has": [{"type": "host", "value": "usage.veteranresumes.com"}], "destination": "https://vcp-proxy.vercel.app/api/resume-analytics"},
+    {"source": "/api/resume-activity", "has": [{"type": "host", "value": "usage.veteranresumes.com"}], "destination": "https://vcp-proxy.vercel.app/api/resume-activity"}
+  ],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/((?!api/resume-analytics$).*)",
       "headers": [
         {"key": "Content-Security-Policy", "value": "object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"},
         {"key": "X-Content-Type-Options", "value": "nosniff"},

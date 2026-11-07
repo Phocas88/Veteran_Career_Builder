@@ -10,8 +10,21 @@ test('the app permits Google authentication popups without weakening the existin
  const config=JSON.parse(fs.readFileSync(new URL('../vercel.json',import.meta.url),'utf8'));
  const app=config.headers.find(rule=>rule.source==='/app/(.*)');
  assert.equal(app.headers.find(header=>header.key==='Cross-Origin-Opener-Policy').value,'same-origin-allow-popups');
- const security=config.headers.find(rule=>rule.source==='/(.*)').headers;
+ const security=config.headers.find(rule=>rule.headers.some(header=>header.key==='Content-Security-Policy')).headers;
  assert.ok(security.some(header=>header.key==='Content-Security-Policy'&&header.value.includes("object-src 'none'")));
+});
+
+test('the isolated analytics host exposes only its public collector routes and preserves their stricter response policy',()=>{
+ const config=JSON.parse(fs.readFileSync(new URL('../vercel.json',import.meta.url),'utf8'));
+ const rules=config.rewrites;assert.equal(rules.length,2);
+ for(const rule of rules){assert.deepEqual(rule.has,[{type:'host',value:'usage.veteranresumes.com'}]);assert.ok(['/api/resume-analytics','/api/resume-activity'].includes(rule.source));assert.equal(rule.destination,'https://vcp-proxy.vercel.app'+rule.source);}
+ const redirect=config.redirects.find(rule=>rule.has?.some(check=>check.value==='usage.veteranresumes.com'));
+ const redirected=new RegExp('^'+redirect.source.replace(':path','')+'$');assert.equal(redirect.destination,'https://veteranresumes.com/:path');
+ for(const path of ['/','/app/','/index.html','/api/private','/api/resume-analytics-extra'])assert.ok(redirected.test(path),path+' should leave the collector host');
+ for(const path of ['/api/resume-analytics','/api/resume-activity'])assert.equal(redirected.test(path),false);
+ const baseline=config.headers.find(rule=>rule.headers.some(header=>header.key==='Content-Security-Policy'));
+ const protectedPath=new RegExp('^'+baseline.source+'$');assert.equal(protectedPath.test('/api/resume-analytics'),false,'The collector must retain its backend hash-locked CSP and embedding origins');
+ for(const path of ['/','/app/','/api/resume-activity','/api/resume-analytics-extra'])assert.ok(protectedPath.test(path));
 });
 
 test('legacy checkout returns, saved deep links and installed launches reach the workspace without losing recovery context',()=>{

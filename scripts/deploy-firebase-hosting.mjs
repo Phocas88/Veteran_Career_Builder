@@ -103,8 +103,10 @@ export async function publishHostingVersion({project,config,files,headers,fetche
   const batch=files.entries.slice(start,start+1000),hashes=new Set(batch.map(file=>file.hash));
   const populated=await request(version+':populateFiles',{body:{files:Object.fromEntries(batch.map(file=>[file.path,file.hash]))}});
   if(populated.uploadRequiredHashes!==undefined&&!Array.isArray(populated.uploadRequiredHashes))throw failure('FIREBASE_HOSTING_HASH_RESPONSE_INVALID');
-  const url=checkedUploadUrl(populated.uploadUrl,version);
-  for(const hash of populated.uploadRequiredHashes||[]){
+  const required=populated.uploadRequiredHashes||[];
+  // A fully cached batch needs no upload endpoint or upload request.
+  const url=required.length?checkedUploadUrl(populated.uploadUrl,version):null;
+  for(const hash of required){
    if(!hashPattern.test(hash)||!hashes.has(hash)||!files.byHash.has(hash))throw failure('FIREBASE_HOSTING_HASH_RESPONSE_INVALID');
    needed.set(hash,url);
   }

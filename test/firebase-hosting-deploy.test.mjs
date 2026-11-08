@@ -18,7 +18,7 @@ async function fixture(){
  await fs.writeFile(path.join(root,'firebase.json'),JSON.stringify({hosting}));
  return root;
 }
-function service(files,{uploadHost,uploadStatus=200,finalStatus='FINALIZED',creationStatus=200,unknownHash=false}={}){
+function service(files,{uploadHost,uploadStatus=200,finalStatus='FINALIZED',creationStatus=200,unknownHash=false,alreadyCached=false}={}){
  const calls=[],uploads=[],batches=[];
  return {calls,uploads,batches,async fetcher(url,options={}){
   calls.push({url,method:options.method});assert.equal(options.redirect,'error');
@@ -26,6 +26,7 @@ function service(files,{uploadHost,uploadStatus=200,finalStatus='FINALIZED',crea
   if(url.endsWith('/versions'))return Response.json({name:version,status:'CREATED'},{status:creationStatus});
   if(url.endsWith(':populateFiles')){
    const batch=JSON.parse(options.body).files;batches.push(batch);assert.ok(Object.keys(batch).length<=1000);
+   if(alreadyCached)return Response.json({});
    return Response.json({uploadUrl:(uploadHost||'https://upload-firebasehosting.googleapis.com')+'/upload/'+version+'/files',uploadRequiredHashes:unknownHash?['f'.repeat(64)]:[...new Set(Object.values(batch))]});
   }
   if(url.startsWith('https://upload-firebasehosting.googleapis.com/')){
@@ -101,6 +102,14 @@ test('large manifests are batched and identical content is uploaded once',async(
   files=await prepareHostingFiles(root);const original=files.entries[0];files.entries=Array.from({length:2001},(_,i)=>({...original,path:'/file'+i}));
   const remote=service(files),result=await publishHostingVersion({project,config:{},files,headers,fetcher:remote.fetcher});
   assert.deepEqual(remote.batches.map(batch=>Object.keys(batch).length),[1000,1000,1]);assert.equal(result.files,2001);assert.equal(remote.uploads.length,1);
+ }finally{await files?.cleanup();await fs.rm(root,{recursive:true,force:true});}
+});
+
+test('an unchanged release can finalize cached files without an upload endpoint',async()=>{
+ const root=await fixture();let files;try{
+  files=await prepareHostingFiles(root);const remote=service(files,{alreadyCached:true});
+  const result=await publishHostingVersion({project,config:{},files,headers,fetcher:remote.fetcher});
+  assert.equal(result.uploadedHashes,0);assert.equal(remote.uploads.length,0);assert.match(remote.calls.at(-1).url,/\/releases\?/);
  }finally{await files?.cleanup();await fs.rm(root,{recursive:true,force:true});}
 });
 

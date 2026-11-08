@@ -14,7 +14,7 @@ test('compact home shows both starting choices on a narrow phone with a single a
 });
 test('primary destinations are normal screens and browser Back restores the last screen',async({page})=>{
  await guestHome(page);
- for(const [route,title,view] of [['digital-cv','Virtual CV','digital-cv'],['profile','My profile','profile'],['applications','Applications','applications'],['library','Service library','library'],['resumes','My resumes','versions']]){
+ for(const [route,title,view] of [['digital-cv','Virtual CV','digital-cv'],['profile','My profile','profile'],['applications','Job tracker','applications'],['library','Service library','library'],['resumes','My resumes','versions']]){
   await navigateApp(page,route);await expect(page.locator('#career-title')).toHaveText(title);await expect(appRoute(page,route)).toHaveAttribute('aria-current','page');await expect(page.locator('#home-panel')).toBeHidden();await expect(page.locator('#document-workspace')).toBeHidden();await expect(page.locator('#career-dialog')).toBeVisible();await expect(page.locator('dialog#career-dialog')).toHaveCount(0);await expect(page).toHaveURL(new RegExp('#'+view+'$'));
  }
  await page.goBack();await expect(page.locator('#career-title')).toHaveText('Service library');await navigateApp(page,'home');await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('#career-dialog')).toBeHidden();

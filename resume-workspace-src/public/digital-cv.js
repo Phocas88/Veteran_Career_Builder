@@ -46,7 +46,7 @@ export function initDigitalCv(api){
   for(const id of ['cv-copy','cv-share','cv-unpublish','cv-start-update'])$(id).disabled=busy;
   $('cv-step-preview').disabled=busy||!previewReady||reviewStep!==null;$('cv-step-share').disabled=busy||!published||reviewStep!==null;$('cv-step-source').disabled=busy;
   for(const [id,key]of [['cv-step-source','source'],['cv-step-preview','preview'],['cv-step-share','share']])$(id).setAttribute('aria-current',stage===key?'step':'false');
-  $('cv-publish').textContent=published?'Publish CV update':'Publish my digital CV';$('cv-state').textContent=reviewStep!==null&&stage==='preview'?'Step 2 · Review each section':stage==='share'?'Live · your shareable CV link':stage==='preview'?'Step 2 · Check your public preview':'Step 1 · Choose a resume';
+  $('cv-publish').textContent=published?'Publish CV update':'Publish my Virtual CV';$('cv-state').textContent=reviewStep!==null&&stage==='preview'?'Step 2 · Review each section':stage==='share'?'Live · your shareable CV link':stage==='preview'?'Step 2 · Check your public preview':'Step 1 · Choose a resume';
  }
  function show(next){stage=next;controls();reviewControls();window.scrollTo({top:0,behavior:'instant'});}
  function reviewControls(){
@@ -105,7 +105,7 @@ export function initDigitalCv(api){
   if(loaded&&!loadFailed){await refreshSources();controls();return;}
   const token=++generation,uid=api.user()?.uid;busy=true;loaded=false;loadFailed=false;published=null;controls();message('');
   if(!api.user()?.email){busy=false;controls();return;}
-  message('Loading your digital CV…');
+  message('Loading your Virtual CV…');
   try{await api.ready();const result=await api.load();if(token!==generation||uid!==api.user()?.uid)return;slug=result.slug;published=result.cv?normalizePublishedCv(result.cv):null;loaded=true;fill(published||profileToCv(api.getProfile()),published?optionsFromCv(published):cvDefaults());previewReady=!!published;
    $('cv-link').value=cvUrl(slug);$('cv-open').href=cvUrl(slug);$('cv-source-state').textContent=published?'Your currently published CV':'';stage=published?'share':'source';await refreshSources();message(published?'Your existing link is ready to share. Choose Update from a saved resume when you have a newer document.':'Choose a resume to begin. Nothing is public until you publish.');
   }catch{if(token===generation){loadFailed=true;message('Your CV could not load. Try again before replacing an existing published page.');}}
@@ -119,14 +119,14 @@ export function initDigitalCv(api){
   const cv=draft();if(!cv.name){message('Enter your name before publishing.');$('cv-name').focus();return;}
   const token=generation;busy=true;controls();message('Publishing your CV…');
   try{await api.publish(cv);if(token!==generation)return;published=cv;$('cv-consent').checked=false;
-   if(JSON.stringify(draft())===JSON.stringify(cv)){show('share');message('Your digital CV is live. Copy your link to share it.');$('cv-link').focus();}
+   if(JSON.stringify(draft())===JSON.stringify(cv)){show('share');message('Your Virtual CV is live. Copy your link to share it.');$('cv-link').focus();}
    else message('Your update was published. Newer edits in this preview are still private; publish again to include them.');
   }catch(error){if(token===generation)message('Publishing failed. Your preview is still here. Try again.');}
   finally{if(token===generation){busy=false;controls();}}
  });
- $('cv-unpublish').onclick=async()=>{if(busy||!published||!confirm('Unpublish your digital CV? The link will stop displaying it after a short cache refresh.'))return;const token=generation;busy=true;controls();try{await api.unpublish();if(token!==generation)return;published=null;show('source');message('Your digital CV is unpublished. Your resumes are still saved privately.');}catch{if(token===generation)message('Unpublishing failed. Your CV may still be public. Try again.');}finally{if(token===generation){busy=false;controls();}}};
+ $('cv-unpublish').onclick=async()=>{if(busy||!published||!confirm('Unpublish your Virtual CV? The link will stop displaying it after a short cache refresh.'))return;const token=generation;busy=true;controls();try{await api.unpublish();if(token!==generation)return;published=null;show('source');message('Your Virtual CV is unpublished. Your resumes are still saved privately.');}catch{if(token===generation)message('Unpublishing failed. Your CV may still be public. Try again.');}finally{if(token===generation){busy=false;controls();}}};
  $('cv-copy').onclick=async()=>{const token=generation;try{await navigator.clipboard.writeText(cvUrl(slug));if(token===generation)message('Link copied. You can share it with an employer.');}catch{if(token===generation){$('cv-link').focus();$('cv-link').select();message('Select and copy your link above.');}}};
- $('cv-share').hidden=!navigator.share;$('cv-share').onclick=async()=>{try{await navigator.share({title:'My digital CV',url:cvUrl(slug)});}catch(error){if(error.name!=='AbortError')message('Use Copy link to share your CV.');}};
+ $('cv-share').hidden=!navigator.share;$('cv-share').onclick=async()=>{try{await navigator.share({title:'My Virtual CV',url:cvUrl(slug)});}catch(error){if(error.name!=='AbortError')message('Use Copy link to share your CV.');}};
  function reset(){generation++;base={};published=null;slug='';busy=false;loaded=false;loadFailed=false;sources=[];stage='source';previewReady=false;reviewStep=null;confirmed.clear();$('cv-review-confirmation').textContent='';reviewControls();$('cv-resume-source').replaceChildren();fill({},cvDefaults());$('cv-source-state').textContent='';$('cv-link').value='';$('cv-open').removeAttribute('href');$('cv-retry').hidden=true;message('');controls();}
  reset();return {open,reset,useResume,useProfile};
 }

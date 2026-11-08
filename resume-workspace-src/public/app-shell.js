@@ -11,6 +11,7 @@ export function showAppView(next,{scroll=true}={}){
  const previous=view;view=next;
  $('home-panel').hidden=next!=='home';$('document-workspace').hidden=next!=='workspace';$('career-dialog').hidden=!careerViews.has(next);$('settings-panel').hidden=next!=='settings';$('calculator-panel').hidden=next!=='calculator';
  document.body.dataset.appView=next;
+ if(config)syncAppSummary();
  if(config&&previous!==next&&!replaying)history.pushState({appView:next},'',location.pathname+location.search+'#'+next);
  const active=['workspace','versions','match','skills'].includes(next)?'resumes':next;
  for(const b of document.querySelectorAll('[data-app-route]')){b.classList.toggle('active',b.dataset.appRoute===active);if(b.dataset.appRoute===active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}
@@ -64,7 +65,9 @@ export function syncAppSummary(){
  const draft=config.getDraft(),paid=config.hasPaidBuild(),hasText=!!draft.resume.trim();
  $('home-current').hidden=!paid&&!hasText;$('resume-current').hidden=!paid&&!hasText;
  $('home-current-title').textContent=hasText?(draft.role||'Your current resume'):'Your unlocked resume build';
- $('home-current-note').textContent=paid?'Continue where you left off.':'Your draft is on this device. Open purchase history if you already paid.';
+ const progress=config.getResumeProgress();
+ $('home-current-note').textContent=paid?progress.note:'Your draft is on this device. Open purchase history if you already paid.';
+ for(const id of ['home-continue','resume-continue'])$(id).textContent=paid?progress.action:'Continue resume →';
  $('resume-current-title').textContent=hasText?(draft.role||'Resume open in editor'):'Paid build · ready to continue';
  $('version-save-details').hidden=!hasText;
 }

@@ -1,0 +1,38 @@
+name: Verify confirmed-duty resume journey
+on:
+  pull_request:
+    paths: ['resume-workspace-src/**', 'resume-website-src/**', 'scripts/build-resume-website.mjs', '.github/workflows/evidence-acceptance.yml']
+  push:
+    branches: [main]
+    paths: ['resume-workspace-src/**', 'resume-website-src/**', 'scripts/build-resume-website.mjs', '.github/workflows/evidence-acceptance.yml']
+permissions:
+  contents: read
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: Phocas88/vcp-proxy
+          ref: e9f498887e71be843e1203fb8ddf57788e30b2e4
+          path: .audit-backend
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --prefix resume-workspace-src --include=dev --no-audit --no-fund
+      - run: node scripts/build-resume-website.mjs
+      - run: npx playwright install --with-deps chromium
+        working-directory: resume-workspace-src
+      - name: Complete both 88M journeys with real handlers and controlled integrations
+        env:
+          AUDIT_BACKEND_ROOT: ${{ github.workspace }}/.audit-backend
+          AUDIT_OUTPUT: /tmp/veteranresumes-88m-proof
+        run: node resume-workspace-src/scripts/audit-88m.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: confirmed-duty-88m-evidence
+          path: /tmp/veteranresumes-88m-proof
+          retention-days: 14

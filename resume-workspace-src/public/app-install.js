@@ -10,7 +10,7 @@ export function initAppInstall({win=window,nav=navigator,doc=document,moduleUrl=
   if(busy||installed)return;
   const button=event.currentTarget;if(!deferred){manual(button);return;}
   const prompt=deferred;deferred=null;busy=true;render();
-  try{await prompt.prompt();const choice=await prompt.userChoice;if(choice?.outcome==='accepted')status.textContent='Follow your browser to finish installing the app.';else status.textContent='You can install later from this button or your browser’s menu.';}
+  try{await prompt.prompt();const choice=await prompt.userChoice;if(choice?.outcome==='accepted')status.textContent='Follow your browser to add the Veteran Resumes shortcut.';else status.textContent='You can install later from this button or your browser’s menu.';}
   catch{manual(button);}
   finally{busy=false;render();}
  }

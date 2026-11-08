@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {buildResumeWebsite} from '../scripts/build-resume-landing.mjs';
 import {appDestination} from '../resume-website-src/website-routing.mjs';
+import {searchPages} from '../resume-website-src/search-pages.mjs';
 
 test('the app permits Google authentication popups without weakening the existing content protections',()=>{
  const config=JSON.parse(fs.readFileSync(new URL('../vercel.json',import.meta.url),'utf8'));
@@ -32,6 +33,7 @@ test('legacy checkout returns, saved deep links and installed launches reach the
  for(const tail of ['?build='+id+'&checkout=success','?build='+id+'&template=modern&checkout=canceled','?letter='+id+'&checkout=success#letter','#digital-cv','#profile'])assert.equal(appDestination(origin+'/'+tail),origin+'/app/'+tail);
  assert.equal(appDestination(origin+'/?utm_source=linkedin',true),origin+'/app/?utm_source=linkedin');
  for(const tail of ['', '#examples','#pricing','?build=untrusted&next=https://evil.invalid','?letter=bad'])assert.equal(appDestination(origin+'/'+tail),null);
+ for(const page of searchPages)assert.equal(appDestination(origin+'/'+page.slug+'/',true),null,'Installed visitors can still read public guides');
 });
 test('the public page and workspace have distinct routes while preserving the original installed-app identity and existing assets',t=>{
  const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'resume-website-'));t.after(()=>fs.rmSync(tmp,{recursive:true,force:true}));
@@ -44,6 +46,19 @@ test('the public page and workspace have distinct routes while preserving the or
  fs.mkdirSync(path.join(source,'site-examples'));fs.writeFileSync(path.join(source,'site-examples/cover-letter.pdf'),'%PDF-fictional-example');
  buildResumeWebsite({source,output});
  const landing=fs.readFileSync(path.join(output,'index.html'),'utf8'),app=fs.readFileSync(path.join(output,'app/index.html'),'utf8'),manifest=JSON.parse(fs.readFileSync(path.join(output,'manifest.webmanifest'),'utf8'));
+ const sitemap=fs.readFileSync(path.join(output,'sitemap.xml'),'utf8');
+ assert.equal([...sitemap.matchAll(/<loc>/g)].length,4);assert.doesNotMatch(sitemap,/\/app\/|resumeData|build=/);
+ const titles=new Set();
+ for(const page of searchPages){
+  const url='https://veteranresumes.com/'+page.slug+'/',guide=fs.readFileSync(path.join(output,page.slug,'index.html'),'utf8');
+  assert.ok(sitemap.includes('<loc>'+url+'</loc>'));assert.ok(landing.includes('href="/'+page.slug+'/"'));
+  assert.ok(guide.includes('rel="canonical" href="'+url+'"'));assert.equal([...guide.matchAll(/<h1[\s>]/g)].length,1);
+  assert.ok(guide.includes('href="'+page.destination+'"'));assert.ok(guide.includes('href="/#pricing"'));assert.doesNotMatch(guide,/noindex|aggregateRating|"ratingValue"/);
+  titles.add(guide.match(/<title>(.*?)<\/title>/)[1]);
+  const graph=[...guide.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].flatMap(match=>JSON.parse(match[1])['@graph']);
+  assert.equal(graph.find(node=>node['@type']==='Article').mainEntityOfPage,url);assert.equal(graph.find(node=>node['@type']==='BreadcrumbList').itemListElement.at(-1).item,url);
+ }
+ assert.equal(titles.size,3);assert.equal(fs.existsSync(path.join(output,'app/search-pages.mjs')),false);
  assert.match(landing,/Your experience\./);assert.doesNotMatch(landing,/\b(?:demo|fictional)\b/i);assert.match(landing,/data-hero-carousel/);assert.match(landing,/id="template-rail"/);assert.match(landing,/site-examples\/resume-folio\.png/);assert.match(landing,/site-examples\/resume-federal-experience\.png/);assert.match(landing,/site-examples\/cover-letter\.png/);assert.match(landing,/href="\/app\//);
  assert.match(landing,/google-adsense-account/);assert.doesNotMatch(app,/google-adsense-account|website-ads\.js/);
  assert.match(fs.readFileSync(path.join(output,'ads.txt'),'utf8'),/^google\.com, pub-4999040528510137, DIRECT, f08c47fec0942fa0/);

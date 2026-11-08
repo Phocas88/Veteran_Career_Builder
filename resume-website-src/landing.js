@@ -1,7 +1,7 @@
 import {initUsageAnalytics,trackUsage} from './analytics.js?v=20261107-dedicated-ga4';
 import {initWebsitePrivacy} from './website-ads.js?v=20261107-dedicated-ga4';
 import {isAppInstalled} from './app-install.js?v=20261107-cozy';
-import {appDestination} from './website-routing.mjs?v=20261107-cozy';
+import {appDestination} from './website-routing.mjs?v=20261108-search-pages';
 
 function initHeroCarousel(root){
  const slides=Array.from(root.querySelectorAll('[data-hero-slide]')),dots=Array.from(root.querySelectorAll('[data-hero-dot]'));
@@ -106,7 +106,8 @@ else{
  document.getElementById('privacy-options').addEventListener('click',()=>{
   const dialog=document.getElementById('usage-analytics-notice');if(!dialog.open)dialog.showModal();document.getElementById('usage-analytics-title').focus();
  });
- initHeroCarousel(document.querySelector('[data-hero-carousel]'));initTemplateRail();
+ const carousel=document.querySelector('[data-hero-carousel]');if(carousel)initHeroCarousel(carousel);
+ if(document.getElementById('template-rail'))initTemplateRail();
  const dialog=document.getElementById('example-dialog'),image=document.getElementById('example-image'),pdf=document.getElementById('example-pdf'),pages=document.getElementById('example-pages');
  const names={'resume-modern':'Modern resume','resume-executive':'Executive resume','resume-folio':'Folio resume','resume-classic':'Classic resume','resume-creative':'Creative resume','resume-federal':'Federal resume','resume-federal-experience':'Federal experience resume','cover-letter':'Cover letter'};
  let returnFocus,renderVersion=0,manifest;

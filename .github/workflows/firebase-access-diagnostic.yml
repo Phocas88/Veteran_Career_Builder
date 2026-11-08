@@ -2,11 +2,13 @@ name: Inspect Firebase Hosting access
 on:
   push:
     branches: [codex/publishing-repair-20261108]
+  pull_request:
+    branches: [main]
 permissions:
   contents: read
 jobs:
   inspect:
-    if: github.actor == 'Phocas88'
+    if: github.actor == 'Phocas88' && (github.ref == 'refs/heads/codex/publishing-repair-20261108' || (github.event.pull_request.head.ref == 'codex/publishing-repair-20261108' && github.event.pull_request.head.repo.full_name == github.repository))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

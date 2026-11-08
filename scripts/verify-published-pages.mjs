@@ -36,7 +36,8 @@ export async function verifyPublishedRelease({files=expectedPublishedFiles(),fet
  async function protectedRoute(endpoint,{method='GET',body,cache=false}={}){
   const response=await fetcher(apiOrigin+endpoint,{method,headers:{Origin:mainOrigin,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(15000)});
   if(response.status!==401||(cache&&response.headers.get('cache-control')!=='no-store'))throw new Error('Authorization check failed: '+endpoint);
-  const result=await response.json();if(result.error!=='missing_token')throw new Error('Authorization check failed: '+endpoint);
+  let result;try{result=await response.json();}catch{throw new Error('Authorization check failed: '+endpoint);}
+  if(method==='GET'?result.error!=='missing_token':typeof result.error!=='string'||!result.error)throw new Error('Authorization check failed: '+endpoint);
  }
  await protectedRoute('/api/admin-subscribers',{cache:true});
  await protectedRoute('/api/admin-resume');

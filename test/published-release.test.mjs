@@ -20,3 +20,7 @@ test('stale HTML is rejected even when the URL succeeds and contains an app scri
 test('a successful private response, changed authorization error or cacheable billing response fails verification',async()=>{
  for(const options of[{open:true},{wrongError:true},{cache:'public, max-age=60'}]){const mock=fixture(options);await assert.rejects(verifyPublishedRelease({files,fetcher:mock.fetcher}),/Authorization check failed/);}
 });
+test('resume-program errors retain their own sign-in message while requiring unauthorized JSON responses',async()=>{
+ const mock=fixture();const fetcher=async(url,options)=>options?.method==='POST'?Response.json({error:'Sign in to your free resume-program account.'},{status:401}):mock.fetcher(url,options);
+ assert.equal((await verifyPublishedRelease({files,fetcher})).feedbackProtected,true);
+});

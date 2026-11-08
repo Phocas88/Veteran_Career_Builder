@@ -33,7 +33,7 @@ async function api(action,extra={},signal){
 let entryMode='edit',requestId=null,entryContext=null;
 const changed=()=>document.dispatchEvent(new Event('resume:payment-changed'));
 export const hasPaidBuild=()=>!!active?.verified;
-export const careerBuildContext=()=>active?.verified?{id:active.id,completed:!!active.review,bound:!!active.input,role:active.input?.role||'',jobDescription:active.input?.jobDescription||'',refinementCount:active.refinementCount||0,templates:active.templates||[],includedTemplate:active.includedTemplate||null,matches:active.careerMatches,preliminaryMatches:active.review?.careerMatches}:null;
+export const careerBuildContext=()=>active?.verified?{id:active.id,completed:!!active.review,bound:!!active.input,role:active.input?.role||'',applicationType:active.input?.applicationType||'private',jobDescription:active.input?.jobDescription||'',refinementCount:active.refinementCount||0,templates:active.templates||[],includedTemplate:active.includedTemplate||null,matches:active.careerMatches,preliminaryMatches:active.review?.careerMatches}:null;
 export async function requestCareerAssessment(signal,source){
  if(source?.resumeId)return api('career-assess-saved',{resumeId:source.resumeId,consent:true,keepAlive:true},signal);
  const id=source?.buildId||active?.id;
@@ -170,6 +170,7 @@ export async function requestPaidReview(payload,signal){
 }
 export async function refinePaidReview(answers,signal){
  if(!active?.review||!includedUpdateAvailable())throw new Error('Reopen your purchased review to use its included clarification update.');
- const review=await runBuild(active.id,signal,'refine',{answers});
+ const id=active.id,review=await runBuild(id,signal,'refine',{answers});
+ if(active?.id!==id)throw new Error('Another resume was opened. Reopen the original purchase to recover its update.');
  active.review=review;active.refinementCount=review.refinementCount||1;changed();return review;
 }

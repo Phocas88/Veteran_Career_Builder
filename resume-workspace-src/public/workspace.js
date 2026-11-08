@@ -249,7 +249,7 @@ export function initWorkspace(adapter) {
     if(version)callback.markVersion(version);
     callback.setJob(job);choosePaidEntry('edit',{jobId:savedJob.id,resumeVersionId:version?.id||''});
    },
-   openPurchases:()=>{openAccount();$('purchase-history').open=true;},returnReview:()=>callback.showReviewTab()
+   openPurchases:()=>{openAccount();$('purchase-history').open=true;},returnReview:()=>callback.showReviewTab(),useJobReview:(review,text)=>callback.useJobReview(review,text),stageJobReview:review=>callback.stageJobReview(review),reviewAnswers:()=>callback.pendingReviewAnswers()
   });
   profileSetup=initProfileSetup({user:()=>user,getProfile:readProfile,isDirty:()=>profileDirty,fillProfile,markClean:()=>{profileDirty=false;},openProfile:()=>careerUI.open('profile'),goHome:()=>showAppView('home'),useProfile:()=>choosePaidEntry('build'),load:async()=>(await careerStore()).profile(),save:(profile,setup)=>profileStorage.save(profile,setup)});
   profileStorage=createProfileStorage({user:()=>user,read:readProfile,isDirty:()=>profileDirty,fill:data=>fillProfile(profileFromWebsite(data)),clean:()=>{profileDirty=false;},loaded:data=>profileSetup.loaded(data),store:()=>careerStore(),openAccount:()=>openAccount('create'),confirm:message=>confirm(message),status:({kind,text,busy,retry})=>{

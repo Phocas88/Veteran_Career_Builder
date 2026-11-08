@@ -13,6 +13,11 @@ body.standalone-app{
  background:var(--bg);color:var(--ink);font:16px/1.6 'Workspace Lato',system-ui,sans-serif;color-scheme:light;
 }
 body.standalone-app .app-shell{background:none;color:var(--ink)}
+body.standalone-app #career-matches .field-label{display:block;margin-top:20px}
+body.standalone-app #career-matches textarea,body.standalone-app #job-match-updated textarea{display:block;width:100%;resize:vertical;margin-top:8px;min-height:104px}
+body.standalone-app :is(#job-match-answers,#job-match-updated){margin-top:28px;padding-top:24px;border-top:1px solid var(--line);max-width:75ch;scroll-margin-top:calc(var(--app-header-height) + 24px)}
+body.standalone-app #job-match-updated-title{scroll-margin-top:calc(var(--app-header-height) + 24px)}
+body.standalone-app #job-match-error{color:#8b3026}
 body.standalone-app main{max-width:1200px;padding:calc(var(--app-top-space) + 38px) 38px calc(var(--app-bottom-space) + 48px);scroll-margin-top:calc(var(--app-header-height) + var(--app-top-space) + 24px)}
 html:has(body.standalone-app){color-scheme:light;background:#f7f3e9;scroll-padding-top:calc(var(--app-header-height) + var(--app-top-space) + 20px);scroll-padding-bottom:calc(var(--app-bottom-space) + 20px)}
 body.standalone-app :is(h1,h2,h3,h4,h5,h6),body.standalone-app .app-shell :is(h1,h2,h3,h4,h5,h6),body.standalone-app #career-dialog :is(h1,h2,h3,h4,h5,h6){color:var(--ink);letter-spacing:-.025em}

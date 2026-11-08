@@ -1,11 +1,11 @@
 import {initUsageAnalytics,trackUsage} from './analytics.js?v=20261107-dedicated-ga4';
-import {initAppResources} from './app-resources.js?v=20261029-icons';
+import {initAppResources} from './app-resources.js?v=20261108-guided-workspace';
 import {initResumeDelivery} from './resume-delivery.js?v=20261028-guided';
 import {initReviewFlow} from './review-flow.js?v=20261028-guided';
 import {initDesignEditor} from './design-editor.js?v=20261026-clear-journey';
-import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261028-guided';
-import {showAppView} from './app-shell.js?v=20261029-icons';
-import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261030-skill-quality';
+import { setFlow, syncResumeEditor, setResumeFilename,currentFlow } from './guided-flow.js?v=20261108-guided-workspace';
+import {showAppView} from './app-shell.js?v=20261108-guided-workspace';
+import { initWorkspace, requestVeteranReview, draftOwnerId, saveFinishedResume } from './workspace.js?v=20261108-guided-workspace';
 import { canApply, applyCorrections } from './corrections.js';
 import { importResumeFile } from './imports.js?v=20261028-guided';
 import { createResumeDocument, renderResume, exportWord, exportFilename, designs, arrangements, papers, federalChecks, plainTextForModel } from './exports.js?v=20261027-resume-studio';
@@ -30,6 +30,7 @@ let previewKey = '';
 let versionContext = {};
 let designEditor;
 let delivery;
+let resumeTab = 'resume';
 let lastNonFederalApplicationType='private';
 const reviewFlow=initReviewFlow({finish(useRewrite=true){
   if(collectAnswers().length&&!(state.review?.refinementCount>=1)&&!confirm('Your answers have not been used in an AI update yet. Continue with the current resume? Your answers stay in this tab.'))return;
@@ -151,6 +152,13 @@ function refreshDraft() {
   for (const id of ['download-pdf', 'download-word', 'download-resume', 'print-resume', 'copy-resume']) $(id).disabled = !canUseTemplate(document.querySelector('[name="resume-design"]:checked').value) || !text.trim() || exporting;
   refreshFederalGuidance();
   $('resume-extras').hidden=!state.review;
+  if (!state.review) {
+    const hasText = !!text.trim(), ready = text.trim().length >= 100;
+    $('review-heading').textContent = ready ? 'Your resume is ready for review' : hasText ? 'Keep working on your resume' : 'Start with your resume';
+    $('review-start-help').textContent = ready ? 'Your resume text is here. Add optional job details, then check the agreements before starting your review.' : hasText ? 'Your text is still here. Add your experience, education and skills before requesting a review.' : 'Upload a resume or build one step by step. Then you can request a review.';
+    $('review-start').textContent = ready ? 'Continue to review →' : hasText ? 'Continue editing →' : 'Add your resume →';
+    $('review-start').disabled = importing;
+  }
   document.dispatchEvent(new Event('resume:draft-changed'));
   if (state.review) {
     const remaining = state.review.suggestions.filter(s => !state.applied.has(s.id) && canApply(text, s.original));
@@ -165,6 +173,7 @@ function refreshDraft() {
 function setTab(tab, scroll = true) {
   if (!['resume', 'review', 'export'].includes(tab)) return;
   if(tab==='export'&&!hasPaidBuild()){setFlow('payment');return;}
+  resumeTab = tab;
   if (tab !== 'export') { ++previewVersion; clearTimeout(previewTimer); previewKey = ''; }
   for (const name of ['resume', 'review', 'export']) {
     $(`${name}-panel`).hidden = name !== tab;
@@ -183,6 +192,9 @@ function setTab(tab, scroll = true) {
 }
 
 document.querySelectorAll('[data-tab]').forEach(button => button.addEventListener('click', () => setTab(button.dataset.tab)));
+$('review-start').addEventListener('click', () => {
+  setFlow(input.value.trim().length >= 100 ? 'job' : input.value.trim() ? 'edit' : 'start');
+});
 
 function listItems(id, values) {
   const list = $(id);
@@ -365,7 +377,7 @@ $('apply-rewrite').addEventListener('click', () => {
   input.value = after;
   state.applied = new Set(['rewrite']); state.stale = true;
   saveDraft(); renderSuggestions(); setTab('export');
-  toast('Updated resume is in the studio. Finish & save your template to keep it in My resumes and update your digital CV.');
+  toast('Updated resume is in the studio. Finish & save your template to keep it in My resumes and update your Virtual CV.');
 });
 
 input.addEventListener('input', () => {
@@ -641,7 +653,13 @@ delivery=initResumeDelivery({edit(){setTab('resume');setFlow('edit');}});
 initWorkspace({
   showResume() { setTab('resume', false); },
   showReviewTab() { setTab('review', false); },
-  continueResume() {if(delivery.ready){setTab('export');delivery.show(true);return;}if(state.review)setTab('review');else setFlow(currentFlow()==='start'?'edit':currentFlow());},
+  continueResume() {if(delivery.ready){setTab('export');delivery.show(true);return;}if(resumeTab==='export'&&hasPaidBuild()&&input.value.trim()){setTab('export');return;}if(state.review)setTab('review');else setFlow(currentFlow()==='start'?'edit':currentFlow());},
+  getResumeProgress() {
+    if(delivery.ready)return {action:'Download resume →',note:'Your finished resume is saved. Open it to download PDF or Word, or print a copy.'};
+    if(resumeTab==='export'&&hasPaidBuild()&&input.value.trim())return {action:'Choose a design →',note:'Your wording is ready. Choose a design, then save your finished resume.'};
+    if(state.review)return {action:'Continue review →',note:'Your review is ready. Check the suggested wording, then choose a design.'};
+    return {action:'Continue resume →',note:'Your resume is in progress. Continue from your last step.'};
+  },
   showPayment() { setFlow('payment'); },
   openEntry(mode) { setFlow(mode==='build'?'build':'edit'); },
   showCheckout() { setFlow('checkout', false); },

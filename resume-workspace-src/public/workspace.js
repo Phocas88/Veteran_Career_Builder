@@ -3,13 +3,13 @@ import {initProfileImport} from './profile-import.js?v=20261026-guided-updates';
 import {createProfileStorage} from './profile-storage.js?v=20261030-visible-gallery';
 import {beginGooglePopup,googleErrorMessage,startsProfileSetup} from './google-auth.js?v=20261028-google-signin';
 import {initProfileSetup} from './profile-setup.js?v=20261026-career-tools';
-import {showAppView} from './app-shell.js?v=20261029-icons';
-import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261028-guided';
+import {showAppView} from './app-shell.js?v=20261108-guided-workspace';
+import { initGuidedFlow, setFlow } from './guided-flow.js?v=20261108-guided-workspace';
 import { fillBackground, readBackground } from './background-form.js?v=20261026-career-tools';
 import { initPayments, requestPaidReview, resetPayments, refreshPurchases, hasPaidBuild, choosePaidEntry, forgetActiveBuild, unlockSavedBuild, careerBuildContext, listPurchasedResumes, deletePurchasedResume, openPurchasedResume, readPurchasedResume, openBuild } from './payments.js?v=20261028-guided';
-import { initCareerTools } from './career-tools.js?v=20261030-skill-quality';
+import { initCareerTools } from './career-tools.js?v=20261108-guided-workspace';
 import {initCompletionPrompt} from './completion-prompt.js?v=20261029-completion2';
-import {initAppShell} from './app-shell.js?v=20261029-icons';
+import {initAppShell} from './app-shell.js?v=20261108-guided-workspace';
 import {privacyChoicePending} from './analytics.js?v=20261107-dedicated-ga4';
 import { normalizeProfile, profileToResume, profileFromWebsite } from './veteran-profile.js?v=20261029-entry';
 import { createCloudStore, savedResumeToDraft } from './cloud-store.js?v=20261028-guided';
@@ -265,7 +265,7 @@ export function initWorkspace(adapter) {
     finally{if(version===accountVersion)$('save-progress').disabled=false;}
   });
   $('profile-load-retry').onclick=()=>profileStorage.reload();
-  initAppShell({openCareer:careerUI.open,openAccount:()=>openAccount(),getDraft:()=>callback.getDraft(),hasPaidBuild,continueResume:()=>callback.continueResume()});
+  initAppShell({openCareer:careerUI.open,openAccount:()=>openAccount(),getDraft:()=>callback.getDraft(),getResumeProgress:()=>callback.getResumeProgress(),hasPaidBuild,continueResume:()=>callback.continueResume()});
   initCompletionPrompt({owner:()=>user?.uid,build:careerBuildContext,openCv:()=>$('finished-cv').click(),openLetter:()=>careerUI.open('letter'),request:async(action,details,signal)=>{
     const c=await ensureConnection(),owner=c.auth.currentUser,version=accountVersion;
     if(!owner)throw new Error('Sign in again.');

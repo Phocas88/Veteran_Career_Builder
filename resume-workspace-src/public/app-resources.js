@@ -1,4 +1,4 @@
-import {showAppView} from './app-shell.js?v=20261029-icons';
+import {showAppView} from './app-shell.js?v=20261108-guided-workspace';
 import {initVaCalculator} from './va-calculator.js?v=20261028-va-pdf';
 const $=id=>document.getElementById(id);
 export function initAppResources(){

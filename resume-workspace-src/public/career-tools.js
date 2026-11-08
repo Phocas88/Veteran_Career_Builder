@@ -2,19 +2,30 @@ import {initCareerExplorer} from './career-explorer.js?v=20261028-guided';
 import {initJobClarifications} from './job-clarifications.js';
 import {initApplicationImport} from './application-import.js?v=20261026-career-tools';
 import {designs} from './resume-designs.js?v=20261027-resume-studio';
-import {initDigitalCv} from './digital-cv.js?v=20261030-skill-quality';
+import {initDigitalCv} from './digital-cv.js?v=20261108-guided-workspace';
 import {selectProfileSection} from './background-form.js?v=20261026-career-tools';
 import { normalizeJob, jobStatuses, versionGroups, profileSummary } from './career-model.js?v=20261025-standalone-app';
 import { savedResumeToDraft } from './cloud-store.js?v=20261028-guided';
 import { careerBuildContext, requestCareerKit } from './payments.js?v=20261028-guided';
 import {initCoverLetters} from './cover-letters.js?v=20261029-letters';
 import {initServiceLibrary} from './service-library.js?v=20261026-career-tools';
-import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261029-icons';
+import {showAppView,getAppView,isCareerView,syncAppSummary} from './app-shell.js?v=20261108-guided-workspace';
 
 const $=id=>document.getElementById(id);
 const node=(tag,content,className)=>{const el=document.createElement(tag);if(content)el.textContent=content;if(className)el.className=className;return el;};
 const button=(label,run)=>{const b=node('button',label,'text-button');b.type='button';b.addEventListener('click',()=>Promise.resolve().then(run).catch(e=>status(e.message)));return b;};
 const status=message=>{$('career-status').textContent=message;if(message)document.dispatchEvent(new CustomEvent('app:notice',{detail:message}));};
+const pageSteps={
+ profile:['Use “Guide me through my profile” to add one section at a time, or choose a section yourself. You can also import a resume and confirm its details section by section.','Choose Save profile to keep your details privately in your account. Check the save message before leaving.','Use this profile for a resume when you are ready. Sharing a Virtual CV is a separate choice.'],
+ versions:['Find the document you want. Finished resumes show “Ready to download”; drafts still need editing or a design.','Choose Download PDF for a finished resume, or Open finished resume for Word and print options. Repeat downloads of a purchased design are included.','Use the actions on that document to update your Virtual CV or assess careers. A new design costs $1; starting another resume costs $1.99.'],
+ letter:['Choose a saved resume, upload a file or paste your resume text. You do not need to purchase a resume first.','Add the company and job details, check them, then pay $1 for your letter. Your letter will appear when it is ready.','Edit and save your letter, then download it. Reopen saved letters here. Cover letters are optional.'],
+ 'digital-cv':['Choose a resume from the list, or use your saved profile details as the starting point.','Confirm each section, then check the public preview. Choose which contact details and photo to include.','Publish only when you are ready to share. Later updates use the same link; your saved resumes stay private.'],
+ jobs:['Use Import applications to paste a job posting, upload a posting file or import a CSV file. You can also add one application yourself.','Check the suggested fields, fill any gaps and choose Save application. Sign in to keep your job tracker across devices.','Update the status, interview and follow-up dates as your application moves forward.'],
+ careers:['Choose a saved resume, upload one or paste your experience. Include all relevant work, education and skills.','Start the assessment. Your results appear automatically on the next screen, grouped into categories you can open.','Open a career to see supporting duties and any gaps. The separate interests activity is optional.'],
+ library:['Choose your branch, then the type of code or qualification you want to find.','Search by code or title and select a result to read its description. If it is missing, you can enter your own.','Add only specialties and qualifications you actually held. Check the confirmation, then save your profile.'],
+ match:['Open the completed resume you want to use from My resumes, then return here.','Add the job posting and compare requirements. Each result shows what your resume supports and what needs confirmation.','Answer any relevant questions beside the results. Review updated wording before choosing to use it.'],
+ skills:['Open the completed resume you want to use from My resumes, then return here.','Translate your service experience into civilian wording. A code or rank alone does not establish a duty.','Check every suggestion against your actual work before using it in an application.']
+};
 export function initCareerTools(api){
  let tab='profile',generation=0,jobs=[],versions=[],editingJob=null,kitController,busy=false;
  let jobCursor=null,moreJobs=false;const kits=new Map();
@@ -48,12 +59,15 @@ export function initCareerTools(api){
   else if(!busy){jobQuestions.reset();$('career-match-summary').textContent='Compare your resume with the job to see supported requirements and optional questions.';$('career-matches').replaceChildren();$('career-translations').replaceChildren();$('career-kit-checks').hidden=true;}
  }
  function select(next){
+  const changed=tab!==next;
   tab=next;for(const el of document.querySelectorAll('[data-career-panel]'))el.hidden=el.dataset.careerPanel!==tab;
+  $('career-page-steps').replaceChildren(...(pageSteps[tab]||[]).map(text=>node('li',text)));
+  if(changed)$('career-page-help').open=false;
   for(const el of document.querySelectorAll('[data-career-tab]'))el.setAttribute('aria-pressed',String(el.dataset.careerTab===tab));
   $('career-kit-controls').hidden=!['match','skills'].includes(tab);
   if(['match','skills'].includes(tab)){const matching=tab==='match';$('career-kit-details').querySelector('summary').textContent=matching?'Compare your resume with this job':'Translate your service experience';$('career-kit-title').textContent=matching?'Check the job requirements':'Civilian wording for your service';$('career-kit-generate').textContent=matching?'Compare my resume':'Translate my service experience';}
   $('career-storage').hidden=['library','digital-cv','careers','letter'].includes(tab);
-  $('career-title').textContent=({careers:'Career explorer','digital-cv':'Virtual CV',profile:'My profile',jobs:'Applications',library:'Service library',versions:'My resumes',match:'Job match',skills:'Translate skills',letter:'Cover letters'})[tab];
+  $('career-title').textContent=({careers:'Career explorer','digital-cv':'Virtual CV',profile:'My profile',jobs:'Job tracker',library:'Service library',versions:'My resumes',match:'Job match',skills:'Translate skills',letter:'Cover letters'})[tab];
   document.querySelector('.document-tools').hidden=!['match','skills'].includes(tab);
   $('career-tool-help').textContent=({careers:'Explore your experience, your interests, and your next step.','digital-cv':'Choose what to share, preview it, then publish.',profile:'Your background, ready to reuse.',library:'Find codes and qualifications for every branch.',jobs:'Your job search, one application at a time.',versions:'Your purchased resumes, ready to open and download.',match:'See how your experience fits the job.',skills:'Civilian wording grounded in your actual service.',letter:'Optional. Create a matching letter when you need one.'})[tab]||'';
   $('career-kit-checks').hidden=!['match','skills'].includes(tab)||!$('career-checks').children.length;
@@ -102,7 +116,7 @@ export function initCareerTools(api){
     row.dataset.resumeState=item.finished?'finished':item.stage||'draft';row.append(node('span',item.finished?'Ready to download':item.stage==='review'?'Review ready':'Draft in progress','resume-state'),node('h3',item.finished?(item.title==='My resume'?'My resume':item.title||'My resume'):(item.title||'Resume build')),node('p',`${item.finished?designs[item.design||item.workspace?.design]?.name+' template · ':''}${type} · ${new Date(item.createdAt).toLocaleDateString()}`));
     const actions=node('div',null,'career-actions');
     if(item.finished){const download=button('Download PDF',async()=>{await api.downloadVersion(item);});download.className='button button-primary';actions.append(download);}
-    actions.append(button(item.finished?'Open finished resume':item.stage==='review'?'Continue to design':'Continue editing',async()=>{await api.openVersion(item);}));if(item.finished||item.workspace?.resume)actions.append(button('Update digital CV',async()=>{const owner=api.user()?.uid;const draft=await api.resolveVersion(item);if(owner!==api.user()?.uid)return;open('digital-cv');await digitalCv.useResume(draft.resume,item.title||'Saved resume');}));
+    actions.append(button(item.finished?'Open finished resume':item.stage==='review'?'Continue to design':'Continue editing',async()=>{await api.openVersion(item);}));if(item.finished||item.workspace?.resume)actions.append(button('Update Virtual CV',async()=>{const owner=api.user()?.uid;const draft=await api.resolveVersion(item);if(owner!==api.user()?.uid)return;open('digital-cv');await digitalCv.useResume(draft.resume,item.title||'Saved resume');}));
     actions.append(button('Assess careers',async()=>{open('careers');await careerExplorer.useSource(item);}));
     const more=node('details',null,'resume-more'),summary=node('summary','More options');more.append(summary);
     if(!item.purchased||item.content)more.append(button('Compare text',()=>{$('career-current-text').value=api.getDraft().resume;$('career-version-text').value=savedResumeToDraft(item).resume;$('career-version-comparison').hidden=false;$('career-version-comparison').open=true;}));

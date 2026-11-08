@@ -15,6 +15,7 @@ async function inspect(name,scope,url,method='GET',body){
  const auth=await token(scope);if(auth.failed){console.log('GOOGLE_CONNECTION '+JSON.stringify({name,authentication:false,status:auth.status,reason:auth.reason}));return;}
  const r=await fetch(url,{method,headers:auth.headers,...(body?{body:JSON.stringify(body)}:{}),redirect:'error',signal:AbortSignal.timeout(15000)});let b={};try{b=await r.json();}catch{}
  const result={name,authentication:true,status:r.status,...(!r.ok?{reason:reason(b)}:{})};
+ if(r.ok&&name==='service-enable')result.allowed=Array.isArray(b.permissions)&&b.permissions.includes('serviceusage.services.enable');
  if(r.ok&&name==='site-verification'){
   const match=typeof b.token==='string'&&b.token.match(/<meta\s+name=["']google-site-verification["']\s+content=["']([A-Za-z0-9_-]{10,300})["']/i);
   result.publicTokenAvailable=!!match;if(match)console.log('PUBLIC_SEARCH_VERIFICATION_TOKEN '+match[1]);
@@ -24,6 +25,7 @@ async function inspect(name,scope,url,method='GET',body){
  console.log('GOOGLE_CONNECTION '+JSON.stringify(result));
 }
 for(const operation of [
+ ['service-enable','https://www.googleapis.com/auth/cloud-platform','https://cloudresourcemanager.googleapis.com/v1/projects/veteran-career-builder:testIamPermissions','POST',{permissions:['serviceusage.services.enable']}],
  ['site-verification','https://www.googleapis.com/auth/siteverification','https://www.googleapis.com/siteVerification/v1/token','POST',{site:{type:'SITE',identifier:site},verificationMethod:'META'}],
  ['search-console','https://www.googleapis.com/auth/webmasters.readonly','https://www.googleapis.com/webmasters/v3/sites/'+encodeURIComponent(site)],
  ['adsense','https://www.googleapis.com/auth/adsense.readonly','https://adsense.googleapis.com/v2/accounts/pub-4999040528510137/sites?pageSize=100']

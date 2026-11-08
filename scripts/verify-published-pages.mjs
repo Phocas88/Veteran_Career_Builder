@@ -1,33 +1,55 @@
-// Only public pages and an unauthenticated authorization check. No user records.
-const base='https://veterancareerpath.com';
-const checks=[
- ['/resumereview/','app.js?v=20261030-skill-quality'],
- ['/resumereview/digital-cv.js','cv-skill-grid'],
- ['/resumereview/cv-content.js','function cvSkillGroups'],
- ['/resumereview/skill-organization.js','function organizeSkillGroups'],
- ['/resumereview/app-install.js','initAppInstall'],
- ['/resumereview/app-worker.js','Public installation support only'],
- ['/resumereview/manifest.webmanifest','app-icon-maskable-512'],
- ['/resumereview/offline.html','Let’s get you reconnected.'],
- ['/resumereview/app-shell.js','initIconNavigation'],
- ['/resumereview/cover-letters.js',"'letter-prepare'"],
- ['/resumereview/analytics-guide.html','G-CMFKLT321J'],
- ['/admin.html','admin-billing.js?v=20261029-admin'],
- ['/admin-billing.js','/api/admin-subscribers'],
- ['/admin-resume.js','renderFeedback'],
- ['/resumereview/analytics.js','privacyChoicePending'],
- ['/resumereview/completion-prompt.js','feedback-submit'],
- ['/resumereview/completion-prompt.css','.completion-stars'],
-];
-for(let attempt=0;attempt<12;attempt++){
- try{
-  for(const [path,expected]of checks){const response=await fetch(base+path+'?release='+(process.env.GITHUB_SHA||'admin-reporting'),{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!response.ok||!(await response.text()).includes(expected))throw new Error('Waiting for '+path);}
-  const api=await fetch('https://vcp-proxy.vercel.app/api/admin-subscribers',{headers:{Origin:base},signal:AbortSignal.timeout(15000)});
-  if(api.status!==401||(await api.json()).error!=='missing_token'||api.headers.get('cache-control')!=='no-store')throw new Error('Waiting for the protected subscriber route');
-  const report=await fetch('https://vcp-proxy.vercel.app/api/admin-resume',{headers:{Origin:base},signal:AbortSignal.timeout(15000)});if(report.status!==401||(await report.json()).error!=='missing_token')throw new Error('Waiting for protected app reports');
-  const feedback=await fetch('https://vcp-proxy.vercel.app/api/claude',{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:JSON.stringify({workspace:true,action:'feedback-submit',buildId:'a'.repeat(64),rating:5,comment:''}),signal:AbortSignal.timeout(15000)});if(feedback.status!==401)throw new Error('Waiting for protected feedback submission');
-  const letter=await fetch('https://vcp-proxy.vercel.app/api/claude',{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:JSON.stringify({workspace:true,action:'letter-list'}),signal:AbortSignal.timeout(15000)});if(letter.status!==401)throw new Error('Waiting for protected cover letter purchases');
-  const collector=await fetch('https://vcp-proxy.vercel.app/api/resume-activity',{headers:{Origin:'https://vcp-proxy.vercel.app'},signal:AbortSignal.timeout(15000)});if(collector.status!==405)throw new Error('Waiting for aggregate activity route');
-  console.log('PUBLISHED_ADMIN_CHECK '+JSON.stringify({publicPages:checks.length,appAvailable:true,guideAvailable:true,billingRouteProtected:true,appReportsProtected:true,aggregateRouteAvailable:true,completionAvailable:true,coverLettersAvailable:true,letterPurchasesProtected:true,feedbackProtected:true,privateRecordsRead:false}));break;
- }catch(error){if(attempt===11)throw error;console.log(error.message);await new Promise(resolve=>setTimeout(resolve,10000));}
+// Public release files and unauthenticated authorization checks. No user records.
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import {protectHtml} from './security-headers.mjs';
+import {searchPages,siteSchema,jsonLd,renderSearchPage} from '../resume-website-src/search-pages.mjs';
+
+const root=fileURLToPath(new URL('../',import.meta.url));
+const mainOrigin='https://veterancareerpath.com',resumeOrigin='https://veteranresumes.com',apiOrigin='https://vcp-proxy.vercel.app';
+const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
+const publicFiles=['digital-cv.js','cv-content.js','skill-organization.js','app-install.js','app-worker.js','manifest.webmanifest','offline.html','app-shell.js','cover-letters.js','analytics-guide.html','analytics.js','completion-prompt.js','completion-prompt.css'];
+
+export function expectedPublishedFiles(sourceRoot=root){
+ const read=relative=>fs.readFileSync(path.join(sourceRoot,relative));
+ const records=[];
+ const add=(url,bytes)=>records.push({url,sha256:digest(bytes)});
+ const publicFile=file=>'resume-workspace-src/public/'+file;
+ const entry=read(publicFile('index.html')).toString().replace('</head>','<link rel="canonical" href="'+mainOrigin+'/resumereview/">\n</head>');
+ add(mainOrigin+'/resumereview/',protectHtml(entry));
+ // Compare release bytes instead of old version strings and private function names.
+ for(const file of publicFiles){const bytes=read(publicFile(file));add(mainOrigin+'/resumereview/'+file,file.endsWith('.html')?protectHtml(bytes.toString()):bytes);}
+ for(const file of ['admin.html','admin-billing.js','admin-resume.js','index.html']){const bytes=read(file);add(mainOrigin+'/'+(file==='index.html'?'':file),file.endsWith('.html')?protectHtml(bytes.toString()):bytes);}
+ const landing=read('resume-website-src/index.html').toString().replace('</head>',jsonLd(siteSchema(resumeOrigin))+'</head>');
+ add(resumeOrigin+'/',protectHtml(landing));
+ for(const page of searchPages)add(resumeOrigin+'/'+page.slug+'/',protectHtml(renderSearchPage(page,landing,resumeOrigin)));
+ return records;
+}
+
+export async function verifyPublishedRelease({files=expectedPublishedFiles(),fetcher=fetch,release=process.env.GITHUB_SHA||'release-check'}={}){
+ for(const file of files){
+  const url=new URL(file.url);url.searchParams.set('release',release);
+  const response=await fetcher(url.href,{cache:'no-store',signal:AbortSignal.timeout(15000)});
+  if(!response.ok||digest(Buffer.from(await response.arrayBuffer()))!==file.sha256)throw new Error('Published release does not match: '+file.url);
+ }
+ async function protectedRoute(endpoint,{method='GET',body,cache=false}={}){
+  const response=await fetcher(apiOrigin+endpoint,{method,headers:{Origin:mainOrigin,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(15000)});
+  if(response.status!==401||(cache&&response.headers.get('cache-control')!=='no-store'))throw new Error('Authorization check failed: '+endpoint);
+  let result;try{result=await response.json();}catch{throw new Error('Authorization check failed: '+endpoint);}
+  if(method==='GET'?result.error!=='missing_token':typeof result.error!=='string'||!result.error)throw new Error('Authorization check failed: '+endpoint);
+ }
+ await protectedRoute('/api/admin-subscribers',{cache:true});
+ await protectedRoute('/api/admin-resume');
+ await protectedRoute('/api/claude',{method:'POST',body:{workspace:true,action:'feedback-submit',buildId:'a'.repeat(64),rating:5,comment:''}});
+ await protectedRoute('/api/claude',{method:'POST',body:{workspace:true,action:'letter-list'}});
+ const collector=await fetcher(apiOrigin+'/api/resume-activity',{headers:{Origin:apiOrigin},signal:AbortSignal.timeout(15000)});if(collector.status!==405)throw new Error('Aggregate activity method check failed');
+ return {publicPages:files.length,releaseBytesMatch:true,billingRouteProtected:true,appReportsProtected:true,letterPurchasesProtected:true,feedbackProtected:true,aggregateRouteAvailable:true,privateRecordsRead:false};
+}
+
+if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
+ for(let attempt=0;attempt<12;attempt++){
+  try{console.log('PUBLISHED_RELEASE_CHECK '+JSON.stringify(await verifyPublishedRelease()));break;}
+  catch(error){if(attempt===11)throw error;console.log(error.message);await new Promise(resolve=>setTimeout(resolve,10000));}
+ }
 }

@@ -1,4 +1,4 @@
-name: Validate and Deploy Firebase Hosting
+name: Validate and Publish Websites
 
 on:
   pull_request:
@@ -37,7 +37,7 @@ jobs:
           node --check scripts/apply-security-refactor.mjs
 
       - name: Verify website security protections
-        run: node --test test/security-headers.test.mjs test/hosting-domains.test.mjs test/standalone-resume.test.mjs test/resume-website.test.mjs
+        run: node --test test/security-headers.test.mjs test/hosting-domains.test.mjs test/standalone-resume.test.mjs test/resume-website.test.mjs test/published-release.test.mjs test/firebase-hosting-access.test.mjs
 
       - name: Verify app.bundle.js + app.html are in sync with app.js
         run: |
@@ -143,7 +143,7 @@ jobs:
       - name: Deploy the built site to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Verify the published app, owner guide and protected billing route
+      - name: Verify current release files and protected endpoints on both websites
         run: node scripts/verify-published-pages.mjs
 
   deploy:
@@ -165,6 +165,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Check Firebase Hosting access before building the mirror
+        run: node scripts/check-firebase-hosting-access.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_DEPLOY_PROJECT: veteran-career-builder
 
       - name: Regenerate sitemap
         run: python generate-sitemap.py

@@ -1,0 +1,19 @@
+name: Inspect website Google connections
+on:
+  push:
+    branches: [codex/full-service-audit-20261108]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    if: github.repository == 'Phocas88/Veteran_Career_Builder' && github.actor == 'Phocas88'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inspect only the target website with the existing CI identity
+        run: node scripts/qa-google-connection-probe.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

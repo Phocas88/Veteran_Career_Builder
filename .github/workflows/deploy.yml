@@ -37,7 +37,7 @@ jobs:
           node --check scripts/apply-security-refactor.mjs
 
       - name: Verify website security protections
-        run: node --test test/security-headers.test.mjs test/hosting-domains.test.mjs test/standalone-resume.test.mjs test/resume-website.test.mjs test/published-release.test.mjs test/firebase-hosting-access.test.mjs
+        run: node --test test/security-headers.test.mjs test/hosting-domains.test.mjs test/standalone-resume.test.mjs test/resume-website.test.mjs test/published-release.test.mjs test/firebase-hosting-access.test.mjs test/firebase-hosting-deploy.test.mjs
 
       - name: Verify app.bundle.js + app.html are in sync with app.js
         run: |
@@ -152,7 +152,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      checks: write
+    concurrency:
+      group: firebase-hosting-live
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
 
@@ -181,13 +183,13 @@ jobs:
       - name: Build Firebase hosting directory
         run: node scripts/build-hosting.mjs
 
-      - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          channelId: live
-          projectId: veteran-career-builder
-          force: true
+      - name: Publish the complete Firebase mirror through its Hosting API
+        run: node scripts/deploy-firebase-hosting.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_DEPLOY_PROJECT: veteran-career-builder
+
+      - name: Verify the Firebase release files and security headers
+        run: node scripts/verify-firebase-hosting.mjs
 
 

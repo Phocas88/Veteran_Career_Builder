@@ -4,8 +4,9 @@ import {createSign} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-export const requiredHostingPermissions=['serviceusage.services.get','firebase.projects.get','firebasehosting.sites.get','firebasehosting.sites.list','firebasehosting.sites.update','resourcemanager.projects.get','apikeys.keys.list','apikeys.keys.get','apikeys.keys.getKeyString'];
-const optionalPermissions=['resourcemanager.projects.getIamPolicy','resourcemanager.projects.setIamPolicy'];
+// These are the permissions used by our Hosting REST publisher. It does not
+// inspect Service Usage, list API keys, change IAM or deploy other services.
+export const requiredHostingPermissions=['firebasehosting.sites.get','firebasehosting.sites.update'];
 const oauthUrl='https://oauth2.googleapis.com/token';
 const failure=code=>Object.assign(new Error(code),{code});
 
@@ -21,25 +22,29 @@ export function deployAssertion(credential,now=Date.now()){
  try{const signer=createSign('RSA-SHA256');signer.update(input);return input+'.'+signer.sign(credential.private_key,'base64url');}catch{throw failure('FIREBASE_CREDENTIAL_INVALID_PRIVATE_KEY');}
 }
 
-export async function inspectFirebaseHostingAccess({credential,project='veteran-career-builder',fetcher=fetch,now=Date.now()}={}){
+export function validateProject(project){
  if(!/^[a-z][a-z0-9-]{4,61}[a-z0-9]$/.test(project))throw failure('FIREBASE_TARGET_PROJECT_INVALID');
- const tokenResponse=await fetcher(oauthUrl,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'urn:ietf:params:oauth:grant-type:jwt-bearer',assertion:deployAssertion(credential,now)}).toString(),signal:AbortSignal.timeout(15000)});
+ return project;
+}
+
+export async function googleDeployHeaders(credential,{fetcher=fetch,now=Date.now()}={}){
+ let tokenResponse;try{tokenResponse=await fetcher(oauthUrl,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'urn:ietf:params:oauth:grant-type:jwt-bearer',assertion:deployAssertion(credential,now)}).toString(),redirect:'error',signal:AbortSignal.timeout(15000)});}catch{throw failure('FIREBASE_OAUTH_REQUEST_FAILED');}
  let token;try{token=await tokenResponse.json();}catch{throw failure('FIREBASE_OAUTH_RESPONSE_INVALID');}
  if(!tokenResponse.ok||typeof token.access_token!=='string'||!token.access_token)throw failure('FIREBASE_OAUTH_AUTHENTICATION_FAILED');
- const headers={Authorization:'Bearer '+token.access_token,'Content-Type':'application/json'};
- const projectResponse=await fetcher('https://cloudresourcemanager.googleapis.com/v1/projects/'+project,{headers,signal:AbortSignal.timeout(15000)});
- let projectInfo;try{projectInfo=await projectResponse.json();}catch{throw failure('FIREBASE_PROJECT_LOOKUP_FAILED');}
- const projectNumber=String(projectInfo?.projectNumber||'');
- if(!projectResponse.ok||projectInfo.projectId!==project||!/^\d{1,20}$/.test(projectNumber))throw failure('FIREBASE_PROJECT_LOOKUP_FAILED');
- const permissionResponse=await fetcher('https://cloudresourcemanager.googleapis.com/v1/projects/'+project+':testIamPermissions',{method:'POST',headers,body:JSON.stringify({permissions:[...requiredHostingPermissions,...optionalPermissions]}),signal:AbortSignal.timeout(15000)});
+ return {Authorization:'Bearer '+token.access_token,'Content-Type':'application/json'};
+}
+
+export async function inspectFirebaseHostingAccess({credential,project='veteran-career-builder',fetcher=fetch,now=Date.now()}={}){
+ validateProject(project);
+ const headers=await googleDeployHeaders(credential,{fetcher,now});
+ const permissionResponse=await fetcher('https://cloudresourcemanager.googleapis.com/v1/projects/'+project+':testIamPermissions',{method:'POST',headers,body:JSON.stringify({permissions:requiredHostingPermissions}),redirect:'error',signal:AbortSignal.timeout(15000)});
  let permissionBody={};try{permissionBody=await permissionResponse.json();}catch{/* Report a bounded failure, not raw Google output. */}
  const tested=permissionResponse.ok&&Array.isArray(permissionBody.permissions),granted=new Set(tested?permissionBody.permissions:[]);
- // Service Usage resource names require the numeric project number, not its ID.
- const serviceResponse=await fetcher('https://serviceusage.googleapis.com/v1/projects/'+projectNumber+'/services/firebasehosting.googleapis.com',{headers,signal:AbortSignal.timeout(15000)});
- let service={};try{service=await serviceResponse.json();}catch{/* Unknown state must not be reported as enabled. */}
- const state=serviceResponse.ok&&['ENABLED','DISABLED'].includes(service.state)?service.state:'UNKNOWN';
- const report={project,projectNumber,serviceAccount:credential.client_email,credentialProject:credential.project_id||null,authentication:'accepted',permissionTestStatus:permissionResponse.status,permissionsTested:tested,missingPermissions:tested?requiredHostingPermissions.filter(p=>!granted.has(p)):null,hostingServiceStatus:serviceResponse.status,hostingServiceState:state,canManageProjectIam:tested&&optionalPermissions.slice(0,2).every(p=>granted.has(p)),apiKeyListAllowed:tested&&granted.has('apikeys.keys.list')};
- report.ready=tested&&report.missingPermissions.length===0&&state==='ENABLED';return report;
+ const siteResponse=await fetcher('https://firebasehosting.googleapis.com/v1beta1/projects/'+project+'/sites/'+project,{headers,redirect:'error',signal:AbortSignal.timeout(15000)});
+ let site={};try{site=await siteResponse.json();}catch{/* Unknown results never pass. */}
+ const siteAccessible=siteResponse.ok&&typeof site.name==='string'&&/^projects\/[a-z0-9-]+\/sites\/[a-z0-9-]+$/.test(site.name)&&site.name.endsWith('/sites/'+project);
+ const report={project,serviceAccount:credential.client_email,credentialProject:credential.project_id||null,authentication:'accepted',deploymentMethod:'hosting-rest-api',permissionTestStatus:permissionResponse.status,permissionsTested:tested,missingPermissions:tested?requiredHostingPermissions.filter(p=>!granted.has(p)):null,hostingSiteStatus:siteResponse.status,siteAccessible};
+ report.ready=tested&&report.missingPermissions.length===0&&siteAccessible;return report;
 }
 
 export function accessExitCode(report,{reportOnly=false}={}){return reportOnly||report.ready?0:1;}

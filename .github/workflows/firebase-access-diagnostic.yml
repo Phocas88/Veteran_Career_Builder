@@ -1,0 +1,22 @@
+name: Inspect Firebase Hosting access
+on:
+  push:
+    branches: [codex/publishing-repair-20261108]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    if: github.actor == 'Phocas88'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test credential-safe permission inspection
+        run: node --test test/firebase-hosting-access.test.mjs
+      - name: Inspect the existing deploy account without changing permissions
+        run: node scripts/check-firebase-hosting-access.mjs --report-only
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_DEPLOY_PROJECT: veteran-career-builder

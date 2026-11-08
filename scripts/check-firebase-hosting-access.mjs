@@ -4,8 +4,8 @@ import {createSign} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-export const requiredHostingPermissions=['serviceusage.services.get','firebase.projects.get','firebasehosting.sites.get','firebasehosting.sites.list','firebasehosting.sites.update','resourcemanager.projects.get'];
-const optionalPermissions=['resourcemanager.projects.getIamPolicy','resourcemanager.projects.setIamPolicy','apikeys.keys.list'];
+export const requiredHostingPermissions=['serviceusage.services.get','firebase.projects.get','firebasehosting.sites.get','firebasehosting.sites.list','firebasehosting.sites.update','resourcemanager.projects.get','apikeys.keys.list','apikeys.keys.get','apikeys.keys.getKeyString'];
+const optionalPermissions=['resourcemanager.projects.getIamPolicy','resourcemanager.projects.setIamPolicy'];
 const oauthUrl='https://oauth2.googleapis.com/token';
 const failure=code=>Object.assign(new Error(code),{code});
 
@@ -43,6 +43,8 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
  try{
   const report=await inspectFirebaseHostingAccess({credential:parseDeployCredential(process.env.FIREBASE_SERVICE_ACCOUNT),project:process.env.FIREBASE_DEPLOY_PROJECT||'veteran-career-builder'});
   console.log('FIREBASE_HOSTING_ACCESS '+JSON.stringify(report));
+  console.log('FIREBASE_DEPLOY_ACCOUNT '+report.serviceAccount);
+  for(const permission of report.missingPermissions||[])console.log('FIREBASE_MISSING_PERMISSION '+permission);
   if(!report.ready)console.log('::warning::Firebase Hosting access needs attention. See the safe permission report above; credentials were not printed.');
   process.exitCode=accessExitCode(report,{reportOnly:process.argv.includes('--report-only')});
  }catch(error){console.error('FIREBASE_HOSTING_ACCESS_FAILED '+(error.code?.startsWith('FIREBASE_')?error.code:'FIREBASE_ACCESS_REQUEST_FAILED'));process.exitCode=1;}

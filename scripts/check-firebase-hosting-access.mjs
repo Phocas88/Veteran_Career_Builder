@@ -27,13 +27,18 @@ export async function inspectFirebaseHostingAccess({credential,project='veteran-
  let token;try{token=await tokenResponse.json();}catch{throw failure('FIREBASE_OAUTH_RESPONSE_INVALID');}
  if(!tokenResponse.ok||typeof token.access_token!=='string'||!token.access_token)throw failure('FIREBASE_OAUTH_AUTHENTICATION_FAILED');
  const headers={Authorization:'Bearer '+token.access_token,'Content-Type':'application/json'};
+ const projectResponse=await fetcher('https://cloudresourcemanager.googleapis.com/v1/projects/'+project,{headers,signal:AbortSignal.timeout(15000)});
+ let projectInfo;try{projectInfo=await projectResponse.json();}catch{throw failure('FIREBASE_PROJECT_LOOKUP_FAILED');}
+ const projectNumber=String(projectInfo?.projectNumber||'');
+ if(!projectResponse.ok||projectInfo.projectId!==project||!/^\d{1,20}$/.test(projectNumber))throw failure('FIREBASE_PROJECT_LOOKUP_FAILED');
  const permissionResponse=await fetcher('https://cloudresourcemanager.googleapis.com/v1/projects/'+project+':testIamPermissions',{method:'POST',headers,body:JSON.stringify({permissions:[...requiredHostingPermissions,...optionalPermissions]}),signal:AbortSignal.timeout(15000)});
  let permissionBody={};try{permissionBody=await permissionResponse.json();}catch{/* Report a bounded failure, not raw Google output. */}
  const tested=permissionResponse.ok&&Array.isArray(permissionBody.permissions),granted=new Set(tested?permissionBody.permissions:[]);
- const serviceResponse=await fetcher('https://serviceusage.googleapis.com/v1/projects/'+project+'/services/firebasehosting.googleapis.com',{headers,signal:AbortSignal.timeout(15000)});
+ // Service Usage resource names require the numeric project number, not its ID.
+ const serviceResponse=await fetcher('https://serviceusage.googleapis.com/v1/projects/'+projectNumber+'/services/firebasehosting.googleapis.com',{headers,signal:AbortSignal.timeout(15000)});
  let service={};try{service=await serviceResponse.json();}catch{/* Unknown state must not be reported as enabled. */}
  const state=serviceResponse.ok&&['ENABLED','DISABLED'].includes(service.state)?service.state:'UNKNOWN';
- const report={project,serviceAccount:credential.client_email,credentialProject:credential.project_id||null,authentication:'accepted',permissionTestStatus:permissionResponse.status,permissionsTested:tested,missingPermissions:tested?requiredHostingPermissions.filter(p=>!granted.has(p)):null,hostingServiceStatus:serviceResponse.status,hostingServiceState:state,canManageProjectIam:tested&&optionalPermissions.slice(0,2).every(p=>granted.has(p)),apiKeyListAllowed:tested&&granted.has('apikeys.keys.list')};
+ const report={project,projectNumber,serviceAccount:credential.client_email,credentialProject:credential.project_id||null,authentication:'accepted',permissionTestStatus:permissionResponse.status,permissionsTested:tested,missingPermissions:tested?requiredHostingPermissions.filter(p=>!granted.has(p)):null,hostingServiceStatus:serviceResponse.status,hostingServiceState:state,canManageProjectIam:tested&&optionalPermissions.slice(0,2).every(p=>granted.has(p)),apiKeyListAllowed:tested&&granted.has('apikeys.keys.list')};
  report.ready=tested&&report.missingPermissions.length===0&&state==='ENABLED';return report;
 }
 

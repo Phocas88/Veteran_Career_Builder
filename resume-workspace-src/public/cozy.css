@@ -231,6 +231,12 @@ body.standalone-app .app-nav svg{stroke-width:1.7}
 }
 
 /* Preserve contrast in the older upload and profile controls as well. */
+body.standalone-app :is(.profile-section-actions,.profile-setup-offer,.profile-save-actions,.profile-setup-controls){background:var(--paper);color:var(--ink);border-color:var(--line)}
+body.standalone-app .profile-section-actions .button{background:#fffdf4;color:#354b3b;border-color:#8b987c}
+body.standalone-app .profile-section-actions .button:last-child{background:#314536;color:#fffaf0;border-color:#314536}
+body.standalone-app .profile-section-actions .button:first-child:not(:disabled):hover{background:#e8ecdf;color:#253128}
+body.standalone-app .profile-section-actions .button:disabled{opacity:1;background:#eeede4;color:#625e52;border-color:#c6c7b8;cursor:not-allowed}
+body.standalone-app #profile-setup-offer-button{color:#354b3b;min-height:44px}
 body.standalone-app .resume-upload-area #import-resume,body.standalone-app .resume-file-summary #replace-resume{background:#314536;color:#fffaf0;border-color:#314536}
 body.standalone-app .resume-upload-area #import-resume:hover{background:#405640}
 body.standalone-app .resume-upload-area #import-resume :is(strong,small){color:#fffaf0}

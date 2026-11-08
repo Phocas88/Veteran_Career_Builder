@@ -66,3 +66,24 @@ test('the current step is readable against its actual background',async({page})=
   const a=luminance(rgb(getComputedStyle(node).color)),b=luminance(bg||[255,255,255]);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);
  });expect(contrast).toBeGreaterThanOrEqual(4.5);
 });
+
+async function contrast(locator){
+ return locator.evaluate(node=>{
+  const rgba=value=>value.match(/[\d.]+/g).map(Number),over=(front,back)=>front.slice(0,3).map((v,i)=>v*(front[3]??1)+back[i]*(1-(front[3]??1))),chain=[];
+  for(let n=node;n;n=n.parentElement)chain.unshift(rgba(getComputedStyle(n).backgroundColor));let background=[255,255,255];for(const color of chain)background=over(color,background);
+  const color=over(rgba(getComputedStyle(node).color),background),luminance=values=>values.map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i],0),a=luminance(color),b=luminance(background);return(Math.max(a,b)+.05)/(Math.min(a,b)+.05);
+ });
+}
+
+test('Profile section buttons remain readable and usable through previous, next and hover states',async({page})=>{
+ await setup(page);await page.goto('/');await navigateApp(page,'profile');await page.locator('[data-profile-section]').selectOption('educationEntries');
+ const previous=page.locator('#background-fields>.profile-section-actions button').first(),next=page.locator('#background-fields>.profile-section-actions button').last();
+ for(const control of[previous,next]){await expect(control).toBeEnabled();expect(await contrast(control)).toBeGreaterThanOrEqual(4.5);await control.hover();expect(await contrast(control)).toBeGreaterThanOrEqual(4.5);}
+ await previous.click();await expect(page.locator('[data-profile-section]')).toHaveValue('jobs');await next.click();await expect(page.locator('[data-profile-section]')).toHaveValue('educationEntries');
+ await page.setViewportSize({width:1280,height:900});expect(await contrast(previous)).toBeGreaterThanOrEqual(4.5);
+});
+
+test('the Profile guide offer has readable text and opens the actual setup prompts',async({page})=>{
+ await setup(page);await page.goto('/');await navigateApp(page,'profile');const guide=page.locator('#profile-setup-offer-button');expect(await contrast(guide)).toBeGreaterThanOrEqual(4.5);
+ await guide.focus();await page.keyboard.press('Enter');await expect(page.locator('#profile-setup-panel')).toBeVisible();await expect(page.locator('#profile-setup-question')).toBeFocused();
+});

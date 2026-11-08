@@ -125,18 +125,24 @@ test('the full publisher uses the existing credential only for Google and cleans
  }finally{await fs.rm(root,{recursive:true,force:true});}
 });
 
-test('public verification checks the built release bytes and authentication-compatible security headers',async()=>{
+test('public verification uses canonical clean URLs and checks release bytes and authentication-compatible headers',async()=>{
  const root=await fixture();
  try{
   await fs.mkdir(path.join(root,'.firebase-public/resumereview'));
   for(const file of ['index.html','cozy.css','digital-cv.js','skill-organization.js'])await fs.writeFile(path.join(root,'.firebase-public/resumereview',file),'public '+file);
   const expectedHeaders=Object.fromEntries(hosting.headers[0].headers.map(item=>[item.key,item.value]));
+  const canonicalFiles=new Map([['/','index.html'],['/app','app.html'],['/app.js','app.js'],['/app.bundle.js','app.bundle.js'],['/resumereview','resumereview/index.html'],['/resumereview/cozy.css','resumereview/cozy.css'],['/resumereview/digital-cv.js','resumereview/digital-cv.js'],['/resumereview/skill-organization.js','resumereview/skill-organization.js']]);
+  const visited=new Set();
   function fetcher({stale=false,badHeader=false}={}){return async url=>{
    assert.equal(url.origin,'https://example-target.web.app');assert.ok(url.searchParams.get('release'));
-   const body=await fs.readFile(path.join(root,'.firebase-public',url.pathname));
+   // Reproduce Hosting's query-only redirect for a noncanonical index URL.
+   if(url.pathname.endsWith('/index.html'))return new Response('',{status:301,headers:{Location:url.search}});
+   assert.ok(canonicalFiles.has(url.pathname));visited.add(url.pathname);
+   const body=await fs.readFile(path.join(root,'.firebase-public',canonicalFiles.get(url.pathname)));
    return new Response(stale?'OLD_RELEASE':body,{headers:{...expectedHeaders,...(badHeader?{'Cross-Origin-Opener-Policy':'same-origin'}:{})}});
   };}
   const result=await verifyFirebaseMirror({root,project,fetcher:fetcher()});assert.equal(result.files,8);assert.equal(result.securityHeadersMatch,true);
+  assert.deepEqual(visited,new Set(canonicalFiles.keys()));
   await assert.rejects(verifyFirebaseMirror({root,project,fetcher:fetcher({stale:true})}),/release mismatch/);
   await assert.rejects(verifyFirebaseMirror({root,project,fetcher:fetcher({badHeader:true})}),/header mismatch/);
  }finally{await fs.rm(root,{recursive:true,force:true});}

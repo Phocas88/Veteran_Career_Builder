@@ -14,7 +14,12 @@ export async function verifyFirebaseMirror({root=process.cwd(),project='veteran-
  const hosting=JSON.parse(fs.readFileSync(path.join(root,'firebase.json'),'utf8')).hosting;
  const expected=Object.fromEntries(hosting.headers.find(rule=>rule.source==='**').headers.map(item=>[item.key,item.value]));
  for(const file of publicFiles){
-  const url=new URL('/'+file,'https://'+project+'.web.app');url.searchParams.set('release',release);
+  // Use the canonical clean URL. Firebase's /index.html?query redirect can
+  // return a query-only Location, which loops back to that same filename.
+  let route='/'+file;
+  if(hosting.cleanUrls)route=route.replace(/(^|\/)index\.html$/,'$1').replace(/\.html$/,'');
+  if(hosting.trailingSlash===false&&route!=='/')route=route.replace(/\/$/,'');
+  const url=new URL(route,'https://'+project+'.web.app');url.searchParams.set('release',release);
   const response=await fetcher(url,{cache:'no-store',signal:AbortSignal.timeout(15000)});
   if(!response.ok||digest(Buffer.from(await response.arrayBuffer()))!==digest(fs.readFileSync(path.join(root,'.firebase-public',file))))throw new Error('Firebase mirror release mismatch: '+file);
   for(const header of securityHeaders)if(!expected[header]||response.headers.get(header)!==expected[header])throw new Error('Firebase mirror header mismatch: '+header);

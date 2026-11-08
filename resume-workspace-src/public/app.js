@@ -232,7 +232,7 @@ function renderSuggestions() {
   refreshDraft();
 }
 
-function showReview(review, submittedSource) {
+function showReview(review, submittedSource, {navigate=true}={}) {
   state.review = review;
   state.applied.clear();
   state.history = [];
@@ -265,7 +265,7 @@ function showReview(review, submittedSource) {
   renderSuggestions();
   syncAnswerAction();
   reviewFlow.refresh(review);document.dispatchEvent(new Event('resume:review-assessed'));
-  setTab('review');
+  if(navigate)setTab('review');
 }
 
 function answerField(id,label){
@@ -676,6 +676,9 @@ initWorkspace({
     syncApplicationType(); setTab('resume', false); refreshDraft(); saveDraft(); setFlow('edit', false);
   },
   loadReview(review,source) { showReview(review,source); },
+  pendingReviewAnswers() {return state.review&&!state.rewriteInvalid&&!(state.review.refinementCount>=1)?collectAnswers():[];},
+  stageJobReview(review) {showReview(review,review.submittedResume,{navigate:false});},
+  useJobReview(review,text) {showReview({...review,revisedResume:text},review.submittedResume);$('apply-rewrite').click();},
   markVersion(item) {versionContext={versionFamily:item.familyId || item.id,versionId:item.id,versionTitle:item.title};},
   setJob(job) {roleInput.value=job.role;jobInput.value=job.description;applicationInput.value=job.applicationType;syncApplicationType();if(state.review){state.stale=true;state.rewriteInvalid=true;}refreshDraft();saveDraft();},
   clearAccountDraft() {

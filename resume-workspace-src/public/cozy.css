@@ -319,3 +319,13 @@ body.standalone-app .template-example :is(h2,h3,h4,p){color:#25313c;font-family:
 body.standalone-app :is(.account-data,.career-storage,.version-save-details)>summary{color:#506045}
 body.standalone-app :is(.auth-divider,.welcome-brand,.app-install-status){color:var(--muted)}
 body.standalone-app .auth-divider:before,body.standalone-app .auth-divider:after{background:var(--line)}
+
+/* Nested service accordions use the same readable surfaces as the profile. */
+body.standalone-app .background-builder .resume-category{background:var(--surface);border-color:var(--line)}
+body.standalone-app .background-builder .resume-category>.category-summary{background:var(--surface);color:var(--ink)}
+body.standalone-app .background-builder .resume-category[open]>.category-summary,body.standalone-app .background-builder .resume-category>.category-summary:hover{background:#edf0e3}
+body.standalone-app .background-builder .resume-category>.category-summary h3{color:var(--ink)}
+body.standalone-app .background-builder .resume-category>.category-summary .category-hint{color:var(--muted);font-size:13px}
+body.standalone-app .background-builder .resume-category .category-icon{background:var(--surface-2);border-color:var(--line);color:var(--app-accent)}
+body.standalone-app .background-builder .resume-category .category-chevron{color:var(--app-accent)}
+body.standalone-app :is(.profile-section-title,#library-flow-title){font-size:23px;line-height:1.3}

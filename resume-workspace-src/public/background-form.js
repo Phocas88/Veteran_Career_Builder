@@ -65,7 +65,7 @@ function entry(group,spec,value={}){
  for(const [key,nested]of Object.entries(spec.nested||{}))box.append(makeGroup(key,nested,value[key]||[]));
  if(group.dataset.group==='roles'){
   const field=key=>box.querySelector(':scope > label > [data-key="'+key+'"]').closest('label');
-  const heading=(text,before)=>{const h=document.createElement('h4');h.className='service-setup-heading';h.textContent=text;box.insertBefore(h,before);};
+  const heading=(text,before)=>{const h=document.createElement('h3');h.className='service-setup-heading';h.textContent=text;box.insertBefore(h,before);};
   heading('1 · Service, rank & dates',field('branch'));
   const anchor=field('code');
   for(const key of ['startDate','endDate','current'])box.insertBefore(field(key),anchor);
@@ -92,7 +92,7 @@ export function fillBackground(input={}){
  const label=document.createElement('label');label.textContent='Profile section';const select=document.createElement('select');select.dataset.profileSection='true';select.id='profile-section';select.setAttribute('aria-label','Profile section');
  const titles=Object.fromEntries(profileSteps.map(step=>[step.key,step.title]));
  for(const [key,title]of Object.entries(titles))select.add(new Option(title,key));label.append(select);nav.append(label);root.append(nav);
- const heading=document.createElement('h3');heading.className='profile-section-title';heading.tabIndex=-1;root.append(heading);
+ const heading=document.createElement('h2');heading.className='profile-section-title';heading.tabIndex=-1;root.append(heading);
  const personal=document.createElement('fieldset');personal.className='service-role';personal.id='builder-personal';const legend=document.createElement('legend');legend.textContent='Personal & contact information';personal.append(legend);
  for(const f of personalFields){const label=control(f,p[f.key]);label.querySelector('[data-key]').id='builder-'+f.key;personal.append(label);}
  const personalCategory=document.createElement('details');personalCategory.className='resume-category personal-category';personalCategory.dataset.profileCategory='personal';personalCategory.append(categorySummary('personal','Personal & contact information'),personal);root.append(personalCategory);

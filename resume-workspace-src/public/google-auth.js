@@ -11,9 +11,9 @@ export function beginGooglePopup(connection,{linkCurrent=false,switchFromGuest=f
 export function googleErrorMessage(error){
  const code=error?.code||'';
  if(/popup-closed-by-user|cancelled-popup-request/.test(code))return 'Google sign-in was cancelled. Your current work is unchanged.';
- if(/popup-blocked/.test(code))return 'Allow pop-ups for this site, then try Google again. If this app is inside TikTok or LinkedIn, open it in Chrome or Safari. Save or download guest work before changing browsers.';
- if(/operation-not-allowed|configuration-not-found/.test(code))return 'Google sign-in is not enabled for this app yet. Use email sign-in or continue as a guest.';
- if(/unauthorized-domain/.test(code))return 'Google sign-in is not configured for this website address. Use the main app at veterancareerpath.com/resumereview or sign in with email.';
+ if(/popup-blocked/.test(code))return 'Allow pop-ups for this site, then try Google again. If this page opened inside TikTok or LinkedIn, open it in Chrome or Safari. Save or download guest work before changing browsers.';
+ if(/operation-not-allowed|configuration-not-found/.test(code))return 'Google sign-in is not enabled for this website yet. Use email sign-in or continue as a guest.';
+ if(/unauthorized-domain/.test(code))return 'Google sign-in is not configured for this website address. Open https://veteranresumes.com/ or sign in with email.';
  if(/account-exists-with-different-credential/.test(code))return 'This email already has an account with another sign-in method. Sign in with that method first, then choose Link Google in Account. Your guest work and purchases have not been moved.';
  if(/credential-already-in-use/.test(code))return 'This Google account already belongs to an existing account. Your guest session is unchanged. Keep using this guest session, choose a different Google account, or switch accounts after saving or downloading your guest work.';
  if(/provider-already-linked/.test(code))return 'Google is already linked to this account.';

@@ -103,7 +103,7 @@ export function initVaCalculator(){
  function conditionInput(){
   const official=$('va-rating-mode').value==='official';
   if(official){if(!$('va-official').value)throw new Error('Choose your VA-assigned combined rating.');return {official:true,rating:Number($('va-official').value),steps:[]};}
-  if(hasPending())throw new Error(editing?'Press “Save condition changes” before continuing.':'Your condition has not been added yet. Press “Add condition to my list” before continuing.');
+  if(hasPending())throw new Error(editing?'Press “Save Condition Changes” before continuing.':'Your condition has not been added yet. Press “Add Condition to My List” before continuing.');
   if(!conditions.length)throw new Error('Add at least one condition, or choose “I know my VA combined rating.”');
   return {official:false,...combinedRating(conditions.map(item=>item.rating))};
  }

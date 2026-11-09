@@ -1,10 +1,8 @@
-// Package the existing VCP artwork for browsers and device launchers.
+// Package the Veteran Resumes artwork for browsers and device launchers.
 import {readFile,writeFile} from 'node:fs/promises';
 import {createCanvas,loadImage} from '@napi-rs/canvas';
-const root=new URL('../public/',import.meta.url),brand=await readFile(new URL('brand.svg',root),'utf8');
-let original;
-try{original=await readFile(new URL('../../img/optimized/logo-512.png',import.meta.url));}
-catch(error){if(error.code!=='ENOENT')throw error;const embedded=brand.match(/data:image\/webp;base64,([^\"]+)/);if(!embedded)throw new Error('Missing VCP logo artwork');original=Buffer.from(embedded[1],'base64');}
+const root=new URL('../public/',import.meta.url);
+const original=await readFile(new URL('../assets/veteran-resumes-logo.png',import.meta.url));
 const logo=await loadImage(original);
 function png(size,{background=false,maskable=false}={}){
  const canvas=createCanvas(size,size),ctx=canvas.getContext('2d');
@@ -29,5 +27,13 @@ await writeFile(new URL('favicon-32.png',root),png(32));
 const sizes=[16,32,48],images=sizes.map(size=>png(size)),header=Buffer.alloc(6+16*sizes.length);header.writeUInt16LE(1,2);header.writeUInt16LE(sizes.length,4);let offset=header.length;
 for(let i=0;i<sizes.length;i++){const at=6+i*16;header[at]=sizes[i];header[at+1]=sizes[i];header.writeUInt16LE(1,at+4);header.writeUInt16LE(32,at+6);header.writeUInt32LE(images[i].length,at+8);header.writeUInt32LE(offset,at+12);offset+=images[i].length;}
 await writeFile(new URL('favicon.ico',root),Buffer.concat([header,...images]));
+const mark=createCanvas(512,512),markCtx=mark.getContext('2d');
+markCtx.imageSmoothingEnabled=true;markCtx.imageSmoothingQuality='high';
+const scale=Math.min(512/logo.width,512/logo.height),width=logo.width*scale,height=logo.height*scale;
+markCtx.drawImage(logo,(512-width)/2,(512-height)/2,width,height);
+const webp=mark.toBuffer('image/webp',90);
+const brand='<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Veteran Resumes"><image width="512" height="512" href="data:image/webp;base64,'+webp.toString('base64')+'"/></svg>';
+await writeFile(new URL('brand.svg',root),brand);
 await writeFile(new URL('icon.svg',root),brand);
-console.log('Prepared VCP favicons and installation icons from the existing logo.');
+console.log('Prepared Veteran Resumes branding, favicons and installation icons.');
+

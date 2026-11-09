@@ -1,6 +1,6 @@
 /* Public installation support only. Private application data is never cached. */
 'use strict';
-const VERSION='20261107-vcp-logo',scope=new URL(self.registration.scope),prefix='vcp-resume-install:'+scope.pathname+':',cacheName=prefix+VERSION;
+const VERSION='20261109-veteran-logo',scope=new URL(self.registration.scope),prefix='vcp-resume-install:'+scope.pathname+':',cacheName=prefix+VERSION;
 const offline=new URL('./offline.html',scope).href;
 const assets=['./offline.html','./app-install.css?v='+VERSION,'./app-icon-192.png?v='+VERSION,'./app-icon-512.png?v='+VERSION,'./app-icon-maskable-512.png?v='+VERSION,'./apple-touch-icon.png?v='+VERSION].map(file=>new URL(file,scope).href);
 const publicAssets=new Set(assets);
@@ -15,3 +15,4 @@ self.addEventListener('fetch',event=>{
  const relative=url.pathname.slice(scope.pathname.length);if(request.mode!=='navigate'||relative==='api'||relative.startsWith('api/'))return;
  event.respondWith(fetch(request).catch(async()=>{const cache=await caches.open(cacheName);return await cache.match(offline)||new Response('You are offline. Reconnect, then reload Veteran Resumes.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'no-store'}});}));
 });
+

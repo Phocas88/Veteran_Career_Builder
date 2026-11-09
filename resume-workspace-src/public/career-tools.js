@@ -18,7 +18,7 @@ const status=message=>{$('career-status').textContent=message;if(message)documen
 const pageSteps={
  profile:['Use “Guide me through my profile” to add one section at a time, or choose a section yourself. You can also import a resume and confirm its details section by section.','Choose Save profile to keep your details privately in your account. Check the save message before leaving.','Use this profile for a resume when you are ready. Sharing a Virtual CV is a separate choice.'],
  versions:['Find the document you want. Finished resumes show “Ready to download”; drafts still need editing or a design.','Choose Download PDF for a finished resume, or Open finished resume for Word and print options. Repeat downloads of a purchased design are included.','Use the actions on that document to update your Virtual CV or assess careers. A new design costs $1; starting another resume costs $1.99.'],
- letter:['Choose a saved resume, upload a file or paste your resume text. You do not need to purchase a resume first.','Add the company and job details, check them, then pay $1 for your letter. Your letter will appear when it is ready.','Edit and save your letter, then download it. Reopen saved letters here. Cover letters are optional.'],
+ letter:['Choose a finished resume from My Resumes. If you need one, create and finish your resume first.','Add the company, position and optional posting link, check the details, then pay $1 for your letter. Your letter will appear when it is ready.','Edit and save your letter, then download it. Reopen saved letters here. Cover letters are optional.'],
  'digital-cv':['Choose a resume from the list, or use your saved profile details as the starting point.','Confirm each section, then check the public preview. Choose which contact details and photo to include.','Publish only when you are ready to share. Later updates use the same link; your saved resumes stay private.'],
  jobs:['Use Import applications to paste a job posting, upload a posting file or import a CSV file. You can also add one application yourself.','Check the suggested fields, fill any gaps and choose Save application. Sign in to keep your job tracker across devices.','Update the status, interview and follow-up dates as your application moves forward.'],
  careers:['Choose a saved resume, upload one or paste your experience. Include all relevant work, education and skills.','Start the assessment. Your results appear automatically on the next screen, grouped into categories you can open.','Open a career to see supporting duties and any gaps. The separate interests activity is optional.'],
@@ -37,9 +37,12 @@ export function initCareerTools(api){
  const readJob=()=>normalizeJob(Object.fromEntries(fieldNames.map(k=>[k,field(k).value])));
  const profileHome=$('background-fields').parentElement;
  const profileBefore=$('background-fields').nextSibling;
+ const profileExtras=['career-page-help','career-tool-help','career-status','career-storage'].map(id=>{const element=$(id),anchor=document.createComment('Shared '+id);element.before(anchor);return {id,element,anchor};});
+ function placeProfileExtras(profile){for(const {id,element,anchor}of profileExtras){if(profile)$(id==='career-storage'?'profile-storage-slot':'profile-help-slot').append(element);else anchor.after(element);}}
+
  const digitalCv=initDigitalCv({user:api.user,getProfile:api.getProfile,getDraft:api.getDraft,listVersions:api.listVersions,resolveVersion:api.resolveVersion,ready:api.profileReady,load:api.loadDigitalCv,publish:api.publishDigitalCv,unpublish:api.unpublishDigitalCv,openAccount:api.openAccount,openProfile:()=>open('profile')});
  const careerExplorer=initCareerExplorer(api);
- const coverLetters=initCoverLetters(api);
+ const coverLetters=initCoverLetters({...api,startResume:()=>{close();showAppView('home');}});
  const jobQuestions=initJobClarifications({getDraft:api.getDraft,reviewAnswers:api.reviewAnswers,stageReview:api.stageJobReview,useReview(review,text){close();api.useJobReview(review,text);}});
  const library=initServiceLibrary({getProfile:api.getProfile,applyProfile:api.applyProfile,showProfile:()=>{select('profile');selectProfileSection('roles');},user:api.user,saveProfile:api.saveProfile,openAccount:api.openAccount});
  function restoreProfile(){profileHome.insertBefore($('background-fields'),profileBefore);}
@@ -60,14 +63,14 @@ export function initCareerTools(api){
  }
  function select(next){
   const changed=tab!==next;
-  tab=next;for(const el of document.querySelectorAll('[data-career-panel]'))el.hidden=el.dataset.careerPanel!==tab;
+  placeProfileExtras(next==='profile');tab=next;for(const el of document.querySelectorAll('[data-career-panel]'))el.hidden=el.dataset.careerPanel!==tab;
   $('career-page-steps').replaceChildren(...(pageSteps[tab]||[]).map(text=>node('li',text)));
   if(changed)$('career-page-help').open=false;
   for(const el of document.querySelectorAll('[data-career-tab]'))el.setAttribute('aria-pressed',String(el.dataset.careerTab===tab));
   $('career-kit-controls').hidden=!['match','skills'].includes(tab);
   if(['match','skills'].includes(tab)){const matching=tab==='match';$('career-kit-details').querySelector('summary').textContent=matching?'Compare your resume with this job':'Translate your service experience';$('career-kit-title').textContent=matching?'Check the job requirements':'Civilian wording for your service';$('career-kit-generate').textContent=matching?'Compare my resume':'Translate my service experience';}
   $('career-storage').hidden=['library','digital-cv','careers','letter'].includes(tab);
-  $('career-title').textContent=({careers:'Career explorer','digital-cv':'Virtual CV',profile:'My profile',jobs:'Job tracker',library:'Service library',versions:'My resumes',match:'Job match',skills:'Translate skills',letter:'Cover letters'})[tab];
+  $('career-title').textContent=({careers:'Career Explorer','digital-cv':'Virtual CV',profile:'My Profile',jobs:'Job Tracker',library:'Service Library',versions:'My Resumes',match:'Job Match',skills:'Translate Skills',letter:'Cover Letters'})[tab];
   document.querySelector('.document-tools').hidden=!['match','skills'].includes(tab);
   $('career-tool-help').textContent=({careers:'Explore your experience, your interests, and your next step.','digital-cv':'Choose what to share, preview it, then publish.',profile:'Your background, ready to reuse.',library:'Find codes and qualifications for every branch.',jobs:'Your job search, one application at a time.',versions:'Your purchased resumes, ready to open and download.',match:'See how your experience fits the job.',skills:'Civilian wording grounded in your actual service.',letter:'Optional. Create a matching letter when you need one.'})[tab]||'';
   $('career-kit-checks').hidden=!['match','skills'].includes(tab)||!$('career-checks').children.length;
@@ -102,9 +105,9 @@ export function initCareerTools(api){
  $('career-profile-load').onclick=()=>guarded(async()=>{const loaded=await api.loadProfile();updateProfile();return loaded;},'Saved career profile loaded. Your editor is unchanged.');
  $('career-profile-build').onclick=()=>{close();api.buildProfile();};
  function updateVersionOptions(){
-  const selected=field('resumeVersionId').value;const select=field('resumeVersionId');select.replaceChildren(new Option('Not selected',''));
+  const selected=field('resumeVersionId').value;const select=field('resumeVersionId');select.replaceChildren(new Option('Not Selected',''));
   for(const item of versions)select.add(new Option(`${item.title} · ${item.createdAt?.slice(0,10)||''}`,item.id));
-  if(selected&&!versions.some(v=>v.id===selected))select.add(new Option('Previously linked version (not loaded or deleted)',selected));
+  if(selected&&!versions.some(v=>v.id===selected))select.add(new Option('Previously Linked Version (Not Loaded or Deleted)',selected));
   select.value=selected;
  }
  function renderVersions(){
@@ -113,19 +116,19 @@ export function initCareerTools(api){
    const section=node('section',null,'career-version-group');
    for(const item of group){const row=node('article',null,'career-result');
     const type={private:'Civilian',federal:'Federal',government:'State / local'}[item.workspace?.applicationType]||'Resume';
-    row.dataset.resumeState=item.finished?'finished':item.stage||'draft';row.append(node('span',item.finished?'Ready to download':item.stage==='review'?'Review ready':'Draft in progress','resume-state'),node('h3',item.finished?(item.title==='My resume'?'My resume':item.title||'My resume'):(item.title||'Resume build')),node('p',`${item.finished?designs[item.design||item.workspace?.design]?.name+' template · ':''}${type} · ${new Date(item.createdAt).toLocaleDateString()}`));
+    row.dataset.resumeState=item.finished?'finished':item.stage||'draft';row.append(node('span',item.finished?'Ready to Download':item.stage==='review'?'Review Ready':'Draft in Progress','resume-state'),node('h3',item.finished?(item.title==='My resume'?'My resume':item.title||'My resume'):(item.title||'Resume build')),node('p',`${item.finished?designs[item.design||item.workspace?.design]?.name+' template · ':''}${type} · ${new Date(item.createdAt).toLocaleDateString()}`));
     const actions=node('div',null,'career-actions');
     if(item.finished){const download=button('Download PDF',async()=>{await api.downloadVersion(item);});download.className='button button-primary';actions.append(download);}
     actions.append(button(item.finished?'Open finished resume':item.stage==='review'?'Continue to design':'Continue editing',async()=>{await api.openVersion(item);}));if(item.finished||item.workspace?.resume)actions.append(button('Update Virtual CV',async()=>{const owner=api.user()?.uid;const draft=await api.resolveVersion(item);if(owner!==api.user()?.uid)return;open('digital-cv');await digitalCv.useResume(draft.resume,item.title||'Saved resume');}));
-    actions.append(button('Assess careers',async()=>{open('careers');await careerExplorer.useSource(item);}));
-    const more=node('details',null,'resume-more'),summary=node('summary','More options');more.append(summary);
-    if(!item.purchased||item.content)more.append(button('Compare text',()=>{$('career-current-text').value=api.getDraft().resume;$('career-version-text').value=savedResumeToDraft(item).resume;$('career-version-comparison').hidden=false;$('career-version-comparison').open=true;}));
-    if(item.purchased)more.append(button('Purchase & recovery details',()=>api.openPurchases()));
-    const remove=button('Delete resume',async()=>{
+    actions.append(button('Assess Careers',async()=>{open('careers');await careerExplorer.useSource(item);}));
+    const more=node('details',null,'resume-more'),summary=node('summary','More Options');more.append(summary);
+    if(!item.purchased||item.content)more.append(button('Compare Text',()=>{$('career-current-text').value=api.getDraft().resume;$('career-version-text').value=savedResumeToDraft(item).resume;$('career-version-comparison').hidden=false;$('career-version-comparison').open=true;}));
+    if(item.purchased)more.append(button('Purchase & Recovery Details',()=>api.openPurchases()));
+    const remove=button('Delete Resume',async()=>{
      const note=item.finished&&(item.buildId||item.workspace?.buildId)?'Delete this saved template and its career matches? Other templates, the submitted resume, and the payment receipt remain in purchase history. Your profile and Virtual CV are unchanged.':item.purchased?'Delete this resume build, its submitted text, review, and saved copies? The payment receipt is kept; this does not issue a refund. Your profile and Virtual CV are unchanged.':'Delete this saved resume and its career matches? Your profile, Virtual CV, and other saved documents are unchanged.';
      if(!confirm(note))return;const owner=api.user()?.uid;remove.disabled=true;remove.textContent='Deleting…';
      try{await api.removeVersion(item);if(owner!==api.user()?.uid)return;await refresh();status('Resume deleted from My resumes.');}
-     finally{remove.disabled=false;remove.textContent='Delete resume';}
+     finally{remove.disabled=false;remove.textContent='Delete Resume';}
     });remove.classList.add('resume-delete');actions.append(remove);
     row.append(actions,more);section.append(row);
    }return section;
@@ -138,7 +141,7 @@ export function initCareerTools(api){
   editingJob=job.id||null;const data=normalizeJob(job);updateVersionOptions();
   if(data.resumeVersionId&&!versions.some(v=>v.id===data.resumeVersionId))field('resumeVersionId').add(new Option(data.resumeVersionLabel||'Previously linked version',data.resumeVersionId));
   for(const k of fieldNames)field(k).value=data[k]||'';
-  $('career-job-form-title').textContent=editingJob?'Update application':'Add an application';
+  $('career-job-form-title').textContent=editingJob?'Update application':'Add an Application';
  }
  function renderJobs(){
   $('career-job-more').hidden=!moreJobs;$('career-job-count').textContent=jobs.length?jobs.length+' applications loaded'+(moreJobs?' · Load older applications to include earlier records.':''):'';
@@ -148,8 +151,8 @@ export function initCareerTools(api){
    const li=node('li',null,'career-result');li.append(node('h4',job.role),node('p',`${job.company} · ${job.status}`));
    const dates=[job.appliedDate&&'Applied: '+job.appliedDate,job.interviewDate&&'Interview: '+job.interviewDate,job.followUpDate&&'Follow up: '+job.followUpDate].filter(Boolean);
    if(dates.length)li.append(node('p',dates.join(' · ')));
-   if(job.resumeVersionId)li.append(node('p','Submitted resume: '+(job.resumeVersionLabel||'Saved version')));
-   const actions=node('div',null,'career-actions');actions.append(button('Edit',()=>{fillJob(job);$('career-job-form').hidden=false;$('career-job-form').scrollIntoView({block:'start'});}),button('Copy as new',()=>{fillJob({...job,id:undefined,status:'Saved',appliedDate:'',interviewDate:'',followUpDate:'',notes:''});$('career-job-form').hidden=false;$('career-job-form').scrollIntoView({block:'start'});field('company').focus({preventScroll:true});}),button('Use job for resume',()=>tailor(job)),button('Delete',async()=>{if(!confirm('Delete this application record? Saved resume versions remain.'))return;await api.removeJob(job.id);await refresh();if(editingJob===job.id)fillJob();status('Application deleted.');}));
+   if(job.resumeVersionId)li.append(node('p','Submitted resume: '+(job.resumeVersionLabel||'Saved Version')));
+   const actions=node('div',null,'career-actions');actions.append(button('Edit',()=>{fillJob(job);$('career-job-form').hidden=false;$('career-job-form').scrollIntoView({block:'start'});}),button('Copy as New',()=>{fillJob({...job,id:undefined,status:'Saved',appliedDate:'',interviewDate:'',followUpDate:'',notes:''});$('career-job-form').hidden=false;$('career-job-form').scrollIntoView({block:'start'});field('company').focus({preventScroll:true});}),button('Use Job for Resume',()=>tailor(job)),button('Delete',async()=>{if(!confirm('Delete this application record? Saved resume versions remain.'))return;await api.removeJob(job.id);await refresh();if(editingJob===job.id)fillJob();status('Application deleted.');}));
    if(job.url){const link=node('a','Open job posting ↗');link.href=job.url;link.target='_blank';link.rel='noopener noreferrer';actions.append(link);}li.append(actions);return li;
   }));
  }
@@ -194,3 +197,4 @@ export function initCareerTools(api){
  fillJob();
  return {open,accountChanged(){account();careerExplorer.accountChanged();coverLetters.accountChanged();if(tab==='digital-cv'&&isCareerView())digitalCv.open();if(api.user()?.email&&isCareerView()&&['jobs','versions'].includes(tab))refresh().catch(e=>status(e.message));},reset(){jobQuestions.reset();coverLetters.reset();careerExplorer.reset();applicationImport.reset();digitalCv.reset();library.reset();generation++;kitController?.abort();busy=false;jobs=[];jobCursor=null;moreJobs=false;versions=[];kits.clear();editingJob=null;$('career-current-text').value='';$('career-version-text').value='';$('career-version-comparison').hidden=true;$('career-version-title').value='';$('career-storage-consent').checked=false;$('career-ai-consent').checked=false;$('career-checks').replaceChildren();$('career-kit-checks').hidden=true;$('career-matches').replaceChildren();$('career-translations').replaceChildren();$('career-match-summary').textContent='';status('');fillJob();$('career-job-form').hidden=true;renderJobs();renderVersions();if(!$('career-dialog').hidden)close();}};
 }
+

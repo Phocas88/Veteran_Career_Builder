@@ -12,7 +12,7 @@ function picker(box, kind, getLabel, getItems, onChoose) {
   const modes=document.createElement('div');modes.className='picker-modes';
   const browse=document.createElement('button'),manual=document.createElement('button');
   for(const b of [browse,manual]){b.type='button';b.className='button button-secondary';}
-  browse.textContent='Find in library';manual.textContent='Enter my own';modes.append(browse,manual);
+  browse.textContent='Find in Library';manual.textContent='Enter My Own';modes.append(browse,manual);
   const library=document.createElement('div');library.className='picker-library';
   const searchLabel=document.createElement('label'),searchCaption=document.createElement('span'),search=document.createElement('input');search.type='search';search.maxLength=120;search.placeholder='Search by code or name';search.dataset.librarySearch=kind;searchLabel.append(searchCaption,search);
   const label=document.createElement('label'),caption=document.createElement('span'),select=document.createElement('select');select.dataset.library=kind;label.append(caption,select);library.append(searchLabel,label);
@@ -37,7 +37,7 @@ function picker(box, kind, getLabel, getItems, onChoose) {
     for(const item of items)if((item.value+' '+item.label).toLowerCase().includes(query))select.add(new Option(item.label,item.value));
     if([...select.options].some(o=>o.value===previous))select.value=previous;
     select.disabled=search.disabled=!items.length;
-    if(items.length&&select.options.length===1)select.options[0].textContent='No matches — try another search or enter your own';
+    if(items.length&&select.options.length===1)select.options[0].textContent='No Matches — Try Another Search or Enter Your Own';
     included();
   };
   browse.onclick=()=>{manualMode=false;included();search.focus({preventScroll:true});};
@@ -56,13 +56,13 @@ function rankDropdown(service) {
   const select = document.createElement('select'); select.dataset.key = 'rank';
   old.replaceWith(select);
   const customLabel = document.createElement('label'); customLabel.className = 'builder-field';
-  const caption = document.createElement('span'); caption.textContent = 'Unlisted / historical rank (as held)';
+  const caption = document.createElement('span'); caption.textContent = 'Unlisted / Historical Rank (as Held)';
   const custom = document.createElement('input'); custom.dataset.rankCustom = 'true'; custom.maxLength = 250;
   customLabel.append(caption, custom); select.closest('label').after(customLabel);
   let first = true;
   const refresh = () => {
     const value = first ? initial : select.value === '__custom__' ? custom.value : select.value; first = false;
-    select.replaceChildren(new Option('Choose a rank (optional)', ''));
+    select.replaceChildren(new Option('Choose a Rank (Optional)', ''));
     const catalog = catalogFor(service);
     for (const [key, label] of [['enlisted', 'Enlisted'], ['warrant', 'Warrant officers'], ['officer', 'Officers']]) {
       if (!catalog?.ranks[key]?.length) continue;
@@ -70,7 +70,7 @@ function rankDropdown(service) {
       for (const r of catalog.ranks[key]) group.append(new Option(`${r.grade} · ${r.title} (${r.abbr})`, r.abbr));
       select.append(group);
     }
-    select.add(new Option('Other / historical rank — enter below', '__custom__'));
+    select.add(new Option('Other / Historical Rank — Enter Below', '__custom__'));
     if (value && ![...select.options].some(o => o.value === value)) { custom.value = value; select.value = '__custom__'; }
     else select.value = value;
     customLabel.hidden = select.value !== '__custom__';
@@ -184,3 +184,4 @@ export function wireServiceBranchChoices(service) {
   });
   refresh();
 }
+

@@ -32,12 +32,12 @@ function rememberChoice(value) { try { if(value)sessionStorage.setItem('vcp_resu
 function showWelcome(){if(!privacyChoicePending()&&!document.querySelector('dialog[open]'))$('welcome-dialog').showModal();}
 function mode(value) {
   authMode = value;
-  $('auth-title').textContent = value === 'create' ? 'Create your free account' : 'Welcome back';
+  $('auth-title').textContent = value === 'create' ? 'Create your free account' : 'Welcome Back';
   $('auth-submit').value = value;
-  $('auth-submit').textContent = value === 'create' ? 'Create free account' : 'Sign in';
+  $('auth-submit').textContent = value === 'create' ? 'Create free account' : 'Sign In';
   $('auth-password').autocomplete = value === 'create' ? 'new-password' : 'current-password';
   $('account-terms').closest('label').hidden = value !== 'create';
-  $('auth-switch').textContent = value === 'create' ? 'Already have an account? Sign in' : 'New here? Create a free account';
+  $('auth-switch').textContent = value === 'create' ? 'Already have an account? Sign in' : 'New Here? Create a Free Account';
   $('guest-link-note').hidden = !guest(user);
   $('auth-status').textContent='';$('google-existing-choice').hidden=true;
 }
@@ -196,7 +196,7 @@ async function letterRequest(action,details={},signal){
  if(!owner)throw new Error('Sign in or continue as guest to open your cover letters.');
  const token=await owner.getIdToken();
  if(owner.uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Reopen Cover letters.');
- const response=await fetch('https://vcp-proxy.vercel.app/api/claude',{method:'POST',headers:{'Content-Type':'application/json','X-VCP-Firebase-Token':token},body:JSON.stringify({workspace:true,action,...details}),signal:signal||AbortSignal.timeout(20000)});
+ const response=await fetch('https://vcp-proxy.vercel.app/api/claude',{method:'POST',headers:{'Content-Type':'application/json','X-VCP-Firebase-Token':token},body:JSON.stringify({workspace:true,action,...details}),signal:signal||AbortSignal.timeout(action==='letter-prepare'?45000:20000)});
  const result=await response.json();
  if(owner.uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Reopen Cover letters.');
  if(!response.ok||(result.httpStatus||response.status)>=400)throw new Error(result.error||'Your cover letter could not load. Retry the existing purchase.');
@@ -205,7 +205,7 @@ async function letterRequest(action,details={},signal){
 export function initWorkspace(adapter) {
   callback = adapter; fillProfile({});
   careerUI=initCareerTools({
-   letterRequest,ensureLetterGuest:ensureGuest,saveLegacyLetter:async(id,content,title)=>{await ensureConnection();if(!user?.email)throw new Error('Sign in to save this letter.');return store.saveLetter(id,content,title);},
+   letterRequest,ensureLetterGuest:ensureGuest,saveLegacyLetter:async(id,content,title,metadata)=>{await ensureConnection();if(!user?.email)throw new Error('Sign in to save this letter.');return store.saveLetter(id,content,title,metadata);},
    user:()=>user,openAccount:()=>openAccount(),reviewCurrent:()=>adapter.showCheckout(),getProfile:readProfile,getDraft:()=>callback.getDraft(),
    applyProfile:profile=>{fillProfile(profile);profileDirty=true;profileStorage?.dirty();const select=document.querySelector('[data-profile-section]');select.value='roles';select.dispatchEvent(new Event('change'));},
    saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),
@@ -217,6 +217,13 @@ export function initWorkspace(adapter) {
    publishDigitalCv:async cv=>{const uid=user?.uid,version=accountVersion;const s=await careerStore();if(uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Review your CV again.');return s.publishDigitalCv(cv);},
    unpublishDigitalCv:async()=>{const uid=user?.uid,version=accountVersion;const s=await careerStore();if(uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Open your CV again.');return s.unpublishDigitalCv();},
    buildProfile:()=>choosePaidEntry('build'),
+   listLetterResumes:async()=>{
+    await ensureConnection();const uid=user?.uid,version=accountVersion;if(!uid)return [];
+    const builds=await listPurchasedResumes();let saved=[];if(user?.email)try{saved=await store.list();}catch{/* The purchased document remains available without its library copy. */}
+    if(uid!==user?.uid||version!==accountVersion)throw new Error('Your account changed. Open Cover Letters again.');
+    const purchased=purchasedResumeItems(builds).filter(item=>item.finished),keys=new Set(purchased.map(item=>item.buildId+':'+item.design));
+    return mergeResumeItems(saved,purchased).filter(item=>item.finished&&keys.has((item.buildId||item.workspace?.buildId)+':'+(item.design||item.workspace?.design)));
+   },
    listVersions:async()=>{
     const uid=user?.uid,version=accountVersion,s=await careerStore();
     const values=await Promise.allSettled([s.list(),listPurchasedResumes()]);
@@ -259,7 +266,7 @@ export function initWorkspace(adapter) {
   profileImport=initProfileImport({user:()=>user,getProfile:readProfile,getResume:()=>callback.getDraft().resume,ready:async()=>{await ensureConnection();await profileStorage.accountChanged();},applyProfile:profile=>{fillProfile(profile);profileDirty=true;profileStorage.dirty();},saveProfile:()=>profileStorage.save(undefined,profileSetup?.snapshot()||undefined),openProfile:()=>careerUI.open('profile'),openAccount:()=>openAccount('create')});
   document.addEventListener('resume:save-working',async()=>{
     if(!user?.email){$('draft-save-status').textContent='Create an account to save this draft across visits.';openAccount('create');return;}
-    const uid=user.uid,version=accountVersion;$('save-progress').disabled=true;$('draft-save-status').textContent='Saving your draft…';
+    const uid=user.uid,version=accountVersion;$('save-progress').disabled=true;$('draft-save-status').textContent='Saving Your Draft…';
     try{await ensureConnection();if(version!==accountVersion||uid!==user?.uid)return;const item=await store.saveWorking(callback.getDraft());if(version!==accountVersion)return;callback.markVersion(item);$('draft-save-status').textContent='Draft saved in My resumes. Finish your design when you are ready to download.';}
     catch(error){if(version===accountVersion)$('draft-save-status').textContent='This draft could not be saved. Keep this tab open and try again.';}
     finally{if(version===accountVersion)$('save-progress').disabled=false;}
@@ -380,8 +387,9 @@ export async function requestVeteranReview(payload, signal) {
   if (!$('purchase-consent').checked) { $('purchase-consent').focus(); throw new Error('Agree to save your paid build for recovery before starting AI review. No additional payment is needed.'); }
   const c = await ensureGuest();
   if (c.auth.currentUser && !guest(c.auth.currentUser) && $('save-submitted').checked) {
-    await store.save(callback.getDraft(), payload.role ? payload.role + ' · submitted resume' : 'Submitted resume');
+    await store.save(callback.getDraft(), payload.role ? payload.role + ' · submitted resume' : 'Submitted Resume');
     await refreshSaved();
   }
   return requestPaidReview(payload,signal);
 }
+

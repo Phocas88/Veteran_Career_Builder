@@ -99,7 +99,8 @@ export function createCloudStore({ db, auth }) {
     },
     async removeJob(id) {const {uid,ref}=owner();if(typeof id!=='string'||!/^[\w-]{1,160}$/.test(id))throw new Error('Choose a saved application.');await ref.collection('resumeProgramJobs').doc(id).delete();assertOwner(uid);},
     async letters() {const {uid,ref}=owner();const snap=await ref.collection('resumeProgramLetters').orderBy('updatedAt','desc').limit(100).get();assertOwner(uid);return snap.docs.map(doc=>({...doc.data(),id:doc.id}));},
-    async saveLetter(buildId,content,title) {const {uid,ref}=owner();if(!/^[a-f0-9]{64}$/.test(buildId)||typeof content!=='string'||!content.trim()||content.length>10000)throw new Error('Open a completed build and add a cover letter of up to 10,000 characters.');await ref.collection('resumeProgramLetters').doc(buildId).set({content,title:String(title||'Cover letter').slice(0,200),buildId,updatedAt:new Date().toISOString()});assertOwner(uid);},
+    async saveLetter(buildId,content,title,metadata={}) {const {uid,ref}=owner();if(!/^[a-f0-9]{64}$/.test(buildId)||typeof content!=='string'||!content.trim()||content.length>10000)throw new Error('Open a completed build and add a cover letter of up to 10,000 characters.');await ref.collection('resumeProgramLetters').doc(buildId).set({content,title:String(title||'Cover Letter').slice(0,200),buildId,...Object.fromEntries(['company','role','jobUrl'].filter(k=>typeof metadata[k]==='string').map(k=>[k,metadata[k].slice(0,k==='jobUrl'?2000:200)])),updatedAt:new Date().toISOString()},{merge:true});assertOwner(uid);},
     async removeLetter(id) {const {uid,ref}=owner();if(typeof id!=='string'||!/^[\w-]{1,160}$/.test(id))throw new Error('Choose a saved cover letter.');await ref.collection('resumeProgramLetters').doc(id).delete();assertOwner(uid);}
   };
 }
+

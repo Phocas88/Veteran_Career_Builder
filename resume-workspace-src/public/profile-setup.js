@@ -11,7 +11,7 @@ export function initProfileSetup(api){
   const step=running?selected():profileSteps.find(s=>s.key===state?.section)||profileSteps[0],index=profileSteps.indexOf(step);
   document.body.classList.toggle('profile-setup-active',running);
   $('profile-setup-panel').hidden=!running;$('profile-setup-controls').hidden=!running;
-  $('profile-setup-offer').hidden=running;$('profile-setup-offer-button').textContent=state&&state.status!=='complete'?'Continue profile setup →':'Guide me through my profile →';
+  $('profile-setup-offer').hidden=running;$('profile-setup-offer-button').textContent=state&&state.status!=='complete'?'Continue Profile Setup →':'Guide Me Through My Profile →';
   $('profile-setup-finished').hidden=state?.status!=='complete';
   $('profile-setup-progress').textContent=`Step ${index+1} of ${profileSteps.length} · ${step.title}`;
   $('profile-setup-meter').value=index+1;$('profile-setup-meter').max=profileSteps.length;
@@ -20,13 +20,13 @@ export function initProfileSetup(api){
   $('profile-setup-tip-details').open=false;
   $('profile-setup-cloud-row').hidden=!api.user()?.email;
   $('profile-setup-save-note').textContent=canSave()?'Next, Skip and Finish later save your profile and setup progress to your private app account.':'Changes stay in this tab until you choose to save them. Skipping keeps any details you have entered.';
-  $('profile-setup-next').textContent=canSave()?(index===profileSteps.length-1?'Save & finish setup':'Save & next →'):(index===profileSteps.length-1?'Finish setup':'Next →');
-  $('profile-setup-next').setAttribute('aria-label',index===profileSteps.length-1?'Finish profile setup':'Next: '+profileSteps[index+1].title);
+  $('profile-setup-next').textContent=canSave()?(index===profileSteps.length-1?'Save & Finish Setup':'Save & Next →'):(index===profileSteps.length-1?'Finish Setup':'Next →');
+  $('profile-setup-next').setAttribute('aria-label',index===profileSteps.length-1?'Finish Profile Setup':'Next: '+profileSteps[index+1].title);
   for(const id of ['profile-setup-next','profile-setup-skip','profile-setup-later','profile-setup-back'])$(id).disabled=busy||(id==='profile-setup-back'&&index===0);
   const pending=!!state&&state.status!=='complete';$('home-profile-setup').hidden=!pending;
   $('home-profile-setup-note').textContent=`Step ${index+1} of ${profileSteps.length} · ${lastSaved?'Saved to your account':'Changes in this tab only'}`;
  }
- function focusPrompt(){ $('profile-setup-panel').scrollIntoView({block:'start',behavior:'instant'});$('profile-setup-question').focus({preventScroll:true}); }
+ function focusPrompt(){const heading=document.querySelector('#background-fields .profile-section-title');document.querySelector('[data-career-panel=profile]').scrollIntoView({block:'start',behavior:'instant'});heading?.focus({preventScroll:true});}
  function activate(){running=true;state.status='active';api.openProfile();selectProfileSection(state.section);render();focusPrompt();}
  function start(){generation++;state={version:1,status:'active',section:'personal',skipped:[]};needsRestore=false;lastSaved=false;$('profile-setup-status').textContent='';activate();}
  function resume(){
@@ -43,7 +43,7 @@ export function initProfileSetup(api){
   try{
    let wrote=false;
    if(canSave()){
-    $('profile-setup-status').textContent='Saving your profile…';
+    $('profile-setup-status').textContent='Saving Your Profile…';
     const profile=api.getProfile();if(await api.save(profile,candidate)===false)return;
     if(token!==generation||api.user()?.uid!==uid)return;
     if(JSON.stringify(profile)===JSON.stringify(api.getProfile()))api.markClean();
@@ -78,3 +78,4 @@ export function initProfileSetup(api){
  document.addEventListener('app:view-changed',render);
  render();return {newAccount:start,accountChanged,reset,snapshot,loaded};
 }
+

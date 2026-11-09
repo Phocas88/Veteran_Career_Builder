@@ -13,8 +13,8 @@ export function syncResumeEditor() {
   $('resume-text-editor').hidden = sourceMode !== 'paste' && !hasText;
   $('resume-file-summary').hidden = !hasText || sourceMode !== 'upload';
   $('resume-file-name').textContent = importedName || 'Your resume text';
-  $('resume-heading').textContent = hasText ? 'Check your resume' : 'Add your resume';
-  $('resume-text-label').textContent = hasText ? 'Review & edit your resume text' : 'Paste your resume';
+  $('resume-heading').textContent = hasText ? 'Check your resume' : 'Add Your Resume';
+  $('resume-text-label').textContent = hasText ? 'Review & edit your resume text' : 'Paste Your Resume';
   $('resume-text-help').textContent = importedName ? 'Check that names, dates, and bullet points were read correctly. You can edit the text below.' : 'Include your experience, education, and skills. You can make changes here.';
   $('manual-finish').hidden=!hasText;
   $('manual-finish').disabled=$('resume-input').value.trim().length<100;
@@ -27,7 +27,7 @@ function sourceModeTo(mode, focus = false) {
   if (focus) $('resume-input').focus({preventScroll:true});
 }
 
-const labels = { start:'Choose how to start', payment:'Unlock your resume build', build:'Add your background', edit:'Check your resume', job:'Add job details', checkout:'Confirm AI review' };
+const labels = { start:'Choose how to start', payment:'Unlock your resume build', build:'Add Your Background', edit:'Check your resume', job:'Add job details', checkout:'Confirm AI review' };
 export function setFlow(stage, scroll = true) {
   if (!Object.hasOwn(labels, stage)) return;
   if (!['start','payment'].includes(stage) && adapter && !adapter.canUse()) stage='payment';
@@ -77,3 +77,4 @@ export function initGuidedFlow(options) {
   for (const id of ['resume-input','target-role','application-type']) $(id).addEventListener('input', updateCheckoutSummary);
   setFlow($('resume-input').value.trim() ? 'edit' : 'start', false);
 }
+

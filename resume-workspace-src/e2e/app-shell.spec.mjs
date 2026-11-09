@@ -14,13 +14,13 @@ test('compact home shows both starting choices on a narrow phone with a single a
 });
 test('primary destinations are normal screens and browser Back restores the last screen',async({page})=>{
  await guestHome(page);
- for(const [route,title,view] of [['digital-cv','Virtual CV','digital-cv'],['profile','My profile','profile'],['applications','Job tracker','applications'],['library','Service library','library'],['resumes','My resumes','versions']]){
+ for(const [route,title,view] of [['digital-cv','Virtual CV','digital-cv'],['profile','My Profile','profile'],['applications','Job Tracker','applications'],['library','Service Library','library'],['resumes','My Resumes','versions']]){
   await navigateApp(page,route);await expect(page.locator('#career-title')).toHaveText(title);await expect(appRoute(page,route)).toHaveAttribute('aria-current','page');await expect(page.locator('#home-panel')).toBeHidden();await expect(page.locator('#document-workspace')).toBeHidden();await expect(page.locator('#career-dialog')).toBeVisible();await expect(page.locator('dialog#career-dialog')).toHaveCount(0);await expect(page).toHaveURL(new RegExp('#'+view+'$'));
  }
- await page.goBack();await expect(page.locator('#career-title')).toHaveText('Service library');await navigateApp(page,'home');await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('#career-dialog')).toBeHidden();
+ await page.goBack();await expect(page.locator('#career-title')).toHaveText('Service Library');await navigateApp(page,'home');await expect(page.locator('#home-panel')).toBeVisible();await expect(page.locator('#career-dialog')).toBeHidden();
 });
 test('profile sections preserve service and contact entries across navigation without cloud writes',async({page})=>{
- await guestHome(page);await navigateApp(page,'profile');await page.locator('#builder-name').fill('EXAMPLE VETERAN');
+ await guestHome(page);await navigateApp(page,'profile');await expect(page.locator('#profile-section-title')).toHaveText('Personal & Contact');await expect(page.locator('.builder-step-guidance')).toHaveText('Section 1 of 9');const layout=await page.evaluate(()=>{const panel=document.querySelector('[data-career-panel=profile]'),notice=panel.querySelector('.opsec-notice'),fields=document.querySelector('#career-profile-slot'),tools=document.querySelector('#profile-tools');return {noticeBeforeFields:!!(notice.compareDocumentPosition(fields)&Node.DOCUMENT_POSITION_FOLLOWING),toolsAfterFields:!!(fields.compareDocumentPosition(tools)&Node.DOCUMENT_POSITION_FOLLOWING)};});expect(layout).toEqual({noticeBeforeFields:true,toolsAfterFields:true});await page.locator('#builder-name').fill('EXAMPLE VETERAN');
  await selectProfileSection(page,'roles');await expect(page.locator('#builder-personal')).toBeHidden();const role=page.locator('#service-roles > fieldset').first();await role.locator(':scope > label > [data-key="branch"]').selectOption('army');await role.locator(':scope > label > [data-key="fullCode"]').fill('88M02');
  await navigateApp(page,'library');await navigateApp(page,'profile');await expect(role.locator('[data-key="fullCode"]')).toHaveValue('88M02');await selectProfileSection(page,'personal');await expect(page.locator('#builder-name')).toHaveValue('EXAMPLE VETERAN');expect(await page.evaluate(()=>window.__writes)).toEqual([]);
  await page.screenshot({path:'/tmp/app-profile-mobile.png'});
@@ -39,7 +39,7 @@ test('settings keeps account, purchase, legal and storage controls out of the wo
  await page.locator('#settings-purchases').click();await expect(page.locator('#account-dialog')).toBeVisible();await expect(page.locator('#purchase-history')).toHaveAttribute('open','');
 });
 test('desktop has horizontal app navigation and direct Library links reopen correctly',async({page})=>{
- await installAccount(page,'registered');await page.setViewportSize({width:1440,height:960});await page.goto('/#library');await expect(page.locator('#career-title')).toHaveText('Service library');await expect(page.locator('[data-library-stage="branch"]')).toBeVisible();await page.locator('[data-library-branch="army"]').click();await page.locator('#library-choose-specialty').click();await expect(page.locator('#library-results .library-result').first()).toBeVisible();
+ await installAccount(page,'registered');await page.setViewportSize({width:1440,height:960});await page.goto('/#library');await expect(page.locator('#career-title')).toHaveText('Service Library');await expect(page.locator('[data-library-stage="branch"]')).toBeVisible();await page.locator('[data-library-branch="army"]').click();await page.locator('#library-choose-specialty').click();await expect(page.locator('#library-results .library-result').first()).toBeVisible();
  await expect(page.locator('.app-nav')).toBeVisible();const nav=await page.locator('.app-nav').boundingBox();expect(nav.width).toBe(1440);expect(nav.height).toBeLessThan(100);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'/tmp/app-library-desktop.png'});
 });
 
@@ -59,14 +59,14 @@ test('privacy and security is available before sign-in, from home and from setti
  await page.setViewportSize({width:360,height:800});await installAccount(page);await page.goto('/');await expect(page.locator('#welcome-dialog')).toBeVisible();
  const [info]=await Promise.all([page.waitForEvent('popup'),page.locator('.welcome-privacy a').click()]);
  await expect(info).toHaveURL(/\/security\.html$/);await expect(info.locator('h1')).toContainText('Your information.');await expect(info.locator('.trust-facts')).toBeVisible();await expect(info.locator('a[href*=server-side-encryption]')).toBeVisible();
- await info.getByText('How I delete or export my information',{exact:true}).click();await expect(info.locator('details[open]')).toContainText('My resumes → Delete resume');await expect(info.locator('details[open]')).toContainText('Virtual CV → Unpublish');expect(await info.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await info.screenshot({path:'/tmp/vcp-ux-previews/privacy-security-phone.png',fullPage:true});await info.close();
+ await info.getByText('How I Delete or Export My Information',{exact:true}).click();await expect(info.locator('details[open]')).toContainText('My resumes → Delete resume');await expect(info.locator('details[open]')).toContainText('Virtual CV → Unpublish');expect(await info.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await info.screenshot({path:'/tmp/vcp-ux-previews/privacy-security-phone.png',fullPage:true});await info.close();
  await expect(page.locator('#welcome-dialog')).toBeVisible();await page.locator('#welcome-guest').click();await expect(page.locator('#home-privacy')).toBeVisible();expect(await page.evaluate(()=>window.__writes)).toEqual([]);
  await page.locator('#app-settings').click();const [settingsInfo]=await Promise.all([page.waitForEvent('popup'),page.locator('#settings-security-link').click()]);await expect(settingsInfo.locator('h1')).toContainText('Your information.');await settingsInfo.close();await expect(page.locator('#settings-title')).toBeVisible();expect(await page.evaluate(()=>window.__writes)).toEqual([]);
 });
 
 test('every main tool has its own visible labeled icon and opens directly on phones and desktop',async({page})=>{
  await guestHome(page);
- const routes=[['home','Home','home'],['resumes','My resumes','versions'],['letter','Cover letters','letter'],['digital-cv','Virtual CV','digital-cv'],['profile','Profile','profile'],['applications','Job tracker','applications'],['careers','Careers','careers'],['library','Library','library'],['calculator','VA calculator','calculator']];
+ const routes=[['home','Home','home'],['resumes','My Resumes','versions'],['letter','Cover Letters','letter'],['digital-cv','Virtual CV','digital-cv'],['profile','Profile','profile'],['applications','Job Tracker','applications'],['careers','Careers','careers'],['library','Library','library'],['calculator','VA Calculator','calculator']];
  for(const width of [320,360,390,768,1440]){
   await page.setViewportSize({width,height:width===1440?960:800});await expect(page.locator('.app-nav>button:visible')).toHaveCount(9);await expect(page.locator('#app-menu-open,#app-menu-dialog')).toHaveCount(0);
   const nav=await page.locator('.app-nav').boundingBox();expect(nav.width).toBe(width);expect(nav.height).toBeLessThan(width<=760?170:100);
@@ -90,11 +90,13 @@ test('larger text and landscape retain readable icons and keep final controls ab
 test('the account icon remains named and usable when phone text labels are hidden',async({page})=>{
  await guestHome(page);
  for(const width of [320,390,1280]){
+  await expect(page.getByRole('button',{name:'Emergency Resources',exact:true})).toBeVisible();
   await page.setViewportSize({width,height:844});
-  const button=page.getByRole('button',{name:'My account',exact:true});
+  const button=page.getByRole('button',{name:'My Account',exact:true});
   await expect(button).toHaveAttribute('id','account-open');
   await expect(button).toBeVisible();await button.focus();await page.keyboard.press('Enter');
   await expect(page.locator('#account-dialog')).toBeVisible();
   await page.locator('#account-close').click();await expect(page.locator('#account-dialog')).not.toBeVisible();
  }
 });
+

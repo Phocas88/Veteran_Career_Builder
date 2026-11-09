@@ -85,3 +85,16 @@ test('larger text and landscape retain readable icons and keep final controls ab
  await expect.poll(()=>page.evaluate(()=>Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--app-nav-height')))).toBeGreaterThan(140);await page.locator('#profile-use-bottom').scrollIntoViewIfNeeded();const action=await page.locator('#profile-use-bottom').boundingBox(),nav=await page.locator('.app-nav').boundingBox();expect(action.y+action.height).toBeLessThanOrEqual(nav.y);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.setViewportSize({width:667,height:375});await expect(page.locator('.app-nav>button:visible')).toHaveCount(9);await expect.poll(async()=>Math.ceil((await page.locator('.app-nav').boundingBox()).height)).toBeLessThan(110);await navigateApp(page,'calculator');await expect(page.locator('#calculator-title')).toBeVisible();
 });
+
+
+test('the account icon remains named and usable when phone text labels are hidden',async({page})=>{
+ await guestHome(page);
+ for(const width of [320,390,1280]){
+  await page.setViewportSize({width,height:844});
+  const button=page.getByRole('button',{name:'My account',exact:true});
+  await expect(button).toHaveAttribute('id','account-open');
+  await expect(button).toBeVisible();await button.focus();await page.keyboard.press('Enter');
+  await expect(page.locator('#account-dialog')).toBeVisible();
+  await page.locator('#account-close').click();await expect(page.locator('#account-dialog')).not.toBeVisible();
+ }
+});

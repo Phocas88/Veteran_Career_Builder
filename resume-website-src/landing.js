@@ -9,7 +9,7 @@ function initHeroCarousel(root){
  let index=0,playing=!motion.matches,hovered=false,inView=true,start=null,suppressClickUntil=0,playChoice=null;
  function playback(value){
   playing=Boolean(value)&&!motion.matches;root.dataset.playing=String(playing);
-  play.hidden=motion.matches;play.textContent=playing?'Pause Ⅱ':'Play ▷';play.setAttribute('aria-label',playing?'Pause template rotation':'Play template rotation');
+  play.hidden=motion.matches;play.textContent=playing?'Pause':'Play';play.setAttribute('aria-label',playing?'Pause template rotation':'Play template rotation');
   status.setAttribute('aria-live',playing?'off':'polite');
  }
  function show(value,manual=false){

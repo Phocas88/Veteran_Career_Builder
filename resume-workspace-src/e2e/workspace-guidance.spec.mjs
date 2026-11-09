@@ -51,10 +51,10 @@ test('every career tool has optional keyboard-accessible instructions matched to
  await navigateApp(page,'calculator');await page.locator('#calculator-panel .page-help summary').click();await expect(page.locator('#calculator-panel .page-help li').first()).toBeVisible();
 });
 
-test('urgent resources are clearly labelled and fit with all nine tools on a small phone',async({page})=>{
- await page.setViewportSize({width:320,height:740});await setup(page);await page.goto('/');const urgent=page.getByRole('button',{name:'Urgent help and crisis resources'});await expect(urgent).toHaveText('Urgent help');
+test('emergency resources are clearly labelled and fit with all nine tools on a small phone',async({page})=>{
+ await page.setViewportSize({width:320,height:740});await setup(page);await page.goto('/');const urgent=page.getByRole('button',{name:'Emergency Resources'});await expect(urgent).toHaveText('Emergency Resources');
  const box=await urgent.boundingBox();expect(box.height).toBeGreaterThanOrEqual(44);expect(box.width).toBeGreaterThanOrEqual(44);expect(box.x+box.width).toBeLessThanOrEqual(320);
- await urgent.click();await expect(page.locator('#emergency-help-title')).toHaveText('Emergency help');await expect(page.locator('#emergency-help-dialog a[href="tel:988"]')).toBeVisible();await page.locator('#emergency-help-close').click();
+ await urgent.click();await expect(page.locator('#emergency-help-title')).toHaveText('Emergency Resources');await expect(page.locator('#emergency-help-dialog a[href="tel:988"]')).toBeVisible();await page.locator('#emergency-help-close').click();
  await expect(page.locator('.app-nav>button')).toHaveCount(9);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
 

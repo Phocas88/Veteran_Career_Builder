@@ -62,7 +62,9 @@ function recoverCvSections(value={}){
    if(monthDate.test(text)&&[dateKey(row.startDate),dateKey(row.endDate),cvText(row.dateText)].some(v=>v.toLocaleLowerCase().includes(text.toLocaleLowerCase())))continue;
    const prior=bullets.at(-1);if(prior&&!/[.!?]$/.test(prior)&&(/\b(?:and|or|using|with|including|through|for|to|of|across|within)\s*$/i.test(prior)||/^(?:and|or|using|including|through|within|flow\b)\s*/.test(text)))bullets[bullets.length-1]+=' '+text;else bullets.push(text);
   }
-  return {...row,title:typeof row.title==='string'?cleanResumeText(row.title,name):row.title,bullets};
+  const cleaned={...row,bullets};
+  if(typeof row.title==='string')cleaned.title=cleanResumeText(row.title,name);else delete cleaned.title;
+  return cleaned;
  });
  const civilian=cleanRows(value.civilian),military=cleanRows(value.military);
  const skills=typeof value.skills==='string'?{technical:value.skills}:{...(value.skills&&typeof value.skills==='object'?value.skills:{})};

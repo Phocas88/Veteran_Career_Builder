@@ -1,3 +1,4 @@
+import {designs} from './resume-designs.js?v=20261027-resume-studio';
 import {groupLetters,letterDetails,letterSource,letterJobUrl,letterFileName} from './cover-letter-model.js';
 import {exportLetter} from './letter-exports.js?v=20261025-standalone-app';
 const $=id=>document.getElementById(id);
@@ -8,7 +9,8 @@ export function initCoverLetters(api){
  const status=text=>{$('letter-status').textContent=text;};
  const read=()=>({resume:selected?.draft?.resume||'',role:$('letter-role').value.trim(),company:$('letter-company').value.trim(),jobUrl:$('letter-job-url').value.trim(),jobDescription:$('letter-posting').value.trim(),additionalDetails:$('letter-details').value.trim(),applicationType});
  function fill(input={}){for(const [id,key]of [['letter-role','role'],['letter-company','company'],['letter-job-url','jobUrl'],['letter-posting','jobDescription'],['letter-details','additionalDetails']])$(id).value=input[key]||'';applicationType=input.applicationType||'private';}
- function sourceOptions(){const value=selected?.id||'';$('letter-resume-choice').replaceChildren(new Option('Choose a Finished Resume',''),...sources.map(r=>new Option(r.title||'My Resume',r.id)));$('letter-resume-choice').value=value;$('letter-source-empty').hidden=sources.length>0;$('letter-saved-sources').hidden=!sources.length;$('letter-source-signin').hidden=!!api.user()?.email||sources.length>0;$('letter-next-job').disabled=busy||!selected;$('letter-selected-resume').hidden=!selected;if(selected)$('letter-selected-resume').textContent='Selected: '+(selected.title||'My Resume')+' · '+(selected.design||selected.workspace?.design||'Saved Design').replaceAll('-',' ');}
+ function sourceLabel(item){const title=item.title&&item.title!=='My resume'?item.title:'My Resume',design=designs[item.design||item.workspace?.design]?.name,date=new Date(item.createdAt);return [title,design&&design+' Template',Number.isNaN(date.valueOf())?'':new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(date)].filter(Boolean).join(' · ');}
+ function sourceOptions(){const value=selected?.id||'';$('letter-resume-choice').replaceChildren(new Option('Choose a Finished Resume',''),...sources.map(r=>new Option(sourceLabel(r),r.id)));$('letter-resume-choice').value=value;$('letter-source-empty').hidden=sources.length>0;$('letter-saved-sources').hidden=!sources.length;$('letter-source-signin').hidden=!!api.user()?.email||sources.length>0;$('letter-next-job').disabled=busy||!selected;$('letter-selected-resume').hidden=!selected;if(selected)$('letter-selected-resume').textContent='Selected: '+sourceLabel(selected);}
  async function loadSources(version=generation){
   if(!api.user()){sources=[];selected=null;sourceOptions();return;}
   const values=await api.listLetterResumes();if(version!==generation)return;sources=values.filter(item=>letterSource(item));if(selected&&!sources.some(r=>r.id===selected.id))selected=null;sourceOptions();
@@ -97,7 +99,7 @@ export function initCoverLetters(api){
  for(const [id,format]of [['career-letter-pdf','pdf'],['career-letter-word','docx'],['career-letter-text','txt']])$(id).onclick=()=>guarded(async version=>{if(!active?.result)return;const blob=await exportLetter($('career-cover-letter').value,format);if(version!==generation)return;const a=node('a');a.href=URL.createObjectURL(blob);a.download=letterFileName({...active,kind:active.legacy?'saved':'paid'})+'.'+format;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);status('Cover letter downloaded. Repeat downloads are included.');});
  async function open(){
   if(busy)return;const version=generation;await guarded(async()=>{
-   await Promise.all([refresh(version),loadSources(version)]);if(version!==generation)return;
+   const loaded=await Promise.allSettled([refresh(version),loadSources(version)]);if(version!==generation)return;if(loaded[0].status==='rejected')status('Your saved letters could not load. Choose Refresh to try again.');else if(loaded[1].status==='rejected')status('Your resumes could not load. Choose Refresh Resumes to try again. Your saved letters remain available below.');
    const url=new URL(location.href),id=url.searchParams.get('letter');if(returnHandled||!/^[a-f0-9]{64}$/.test(id||''))return;
    if(!api.user()){status('Sign in to the account used for this letter, or return to the guest session where you started checkout.');return;}
    const result=await api.letterRequest('letter-get',{letterId:id});if(version!==generation)return;returnHandled=true;url.searchParams.delete('letter');url.searchParams.delete('checkout');history.replaceState(null,'',url.pathname+url.search+url.hash);

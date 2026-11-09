@@ -1,8 +1,9 @@
+import {titleCaseLabel} from './ui-titles.js';
 import {describeReference} from './service-descriptions.js?v=20261026-career-tools';
 import {searchServiceLibrary,addReferenceToProfile} from './service-library-model.js?v=20261026-career-tools';
 const $=id=>document.getElementById(id);
 const el=(tag,text,className)=>{const n=document.createElement(tag);if(text)n.textContent=text;if(className)n.className=className;return n;};
-const kindName={specialty:'Specialties',qualification:'Qualifications',designator:'Special qualifications / designators'};
+const kindName={specialty:'Specialties',qualification:'Qualifications',designator:'Special Qualifications / Designators'};
 export function initServiceLibrary(api){
  let data,loading,selected=null,limit=20,generation=0,initial=true,controller,stage='branch';
  const message=text=>{$('library-status').textContent=text;};
@@ -18,9 +19,9 @@ export function initServiceLibrary(api){
  function render(){
   if(!data)return;
   const branch=$('library-branch').value,kind=$('library-kind').value,query=$('library-search').value;
-  const meta=data.branches[branch];$('library-branch-summary').textContent=meta?.name||'All branches';$('library-current-context').textContent=(meta?.name||'All branches')+' · '+kindName[kind];$('library-qualification-label').textContent=(meta?.qualificationLabel||'Additional qualifications')+' →';$('library-designator-label').textContent=(meta?.designatorLabel||'Special identifiers')+' →';$('library-save-profile').textContent=api.user()?.email?'Save Profile':'Create an Account to Save';
-  $('library-kind').options[1].textContent=meta?.qualificationLabel||'Qualifications (ASI / NEC / branch identifiers)';
-  $('library-kind').options[2].textContent=meta?.designatorLabel||'Special qualifications / designators';
+  const meta=data.branches[branch];$('library-branch-summary').textContent=meta?.name||'All branches';$('library-current-context').textContent=(meta?.name||'All branches')+' · '+kindName[kind];$('library-qualification-label').textContent=titleCaseLabel(meta?.qualificationLabel||'Additional qualifications')+' →';$('library-designator-label').textContent=titleCaseLabel(meta?.designatorLabel||'Special identifiers')+' →';$('library-save-profile').textContent=api.user()?.email?'Save Profile':'Create an Account to Save';
+  $('library-kind').options[1].textContent=titleCaseLabel(meta?.qualificationLabel||'Qualifications (ASI / NEC / branch identifiers)');
+  $('library-kind').options[2].textContent=titleCaseLabel(meta?.designatorLabel||'Special qualifications / designators');
   const found=searchServiceLibrary(data,{branch,kind,query});
   $('library-count').textContent=`${Math.min(limit,found.length)} of ${found.length} ${kindName[kind].toLowerCase()}${meta?' · '+meta.name:''}`;
   $('library-empty').hidden=found.length>0;$('library-more').hidden=found.length<=limit;

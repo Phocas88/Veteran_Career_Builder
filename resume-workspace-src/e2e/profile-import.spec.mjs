@@ -54,7 +54,7 @@ test('confirmation advances visibly, saves each approved section, and leads into
  await page.setViewportSize({width:360,height:800});await installAccount(page,'registered');await page.goto('/');await profileFile(page);
  await expect(page.locator('#pi-progress')).toContainText('0 confirmed');await page.locator('#pi-apply').click();
  await expect(page.locator('#pi-title')).toHaveText('Military Service');await expect(page.locator('#pi-confirmation')).toContainText('Personal & contact saved to your profile');await expect(page.locator('#pi-progress')).toContainText('1 confirmed');
- expect(await page.locator('.pi-scroll').evaluate(n=>n.scrollTop)).toBe(0);await expect(page.locator('#pi-step option').first()).toHaveText('✓ Personal & contact');
+ expect(await page.locator('.pi-scroll').evaluate(n=>n.scrollTop)).toBe(0);await expect(page.locator('#pi-step option').first()).toHaveText('✓ Personal & Contact');
  for(let n=1;n<9;n++)await page.locator('#pi-skip').click();
  await expect(page.locator('#pi-finished')).toBeVisible();await expect(page.locator('#pi-results')).toContainText('Personal & contact · saved');await expect(page.locator('#pi-results')).toContainText('Military service · not changed');
  expect(await page.evaluate(()=>window.__writes.filter(w=>w.path.startsWith('publicProfiles/')).length)).toBe(0);

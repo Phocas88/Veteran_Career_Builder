@@ -82,7 +82,7 @@ test('profile, library, cover letters and calculator retain readable controls in
   await expect(page.locator('body')).toHaveAttribute('data-app-view',route);
   if(route==='library'){await page.locator('[data-library-branch="army"]').click();await page.locator('#library-choose-specialty').click();}
   const field=page.locator('input:not([type=hidden]):not([type=checkbox]):not([type=radio]):visible,select:visible,textarea:visible').first();
-  await expect(field).toBeVisible();await expect(field).toHaveCSS('color','rgb(38, 39, 32)');await expect(field).toHaveCSS('background-color','rgb(255, 254, 249)');
+  if(route==='letter'){await expect(page.locator('#letter-source-empty')).toBeVisible();await expect(page.locator('#letter-start-resume')).toBeVisible();await expect(page.locator('#letter-resume')).toHaveCount(0);}else{await expect(field).toBeVisible();await expect(field).toHaveCSS('color','rgb(38, 39, 32)');await expect(field).toHaveCSS('background-color','rgb(255, 254, 249)');}
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:screenshots+'/workspace-'+route+'-phone.png'});
   if(route==='profile'||route==='library')await page.screenshot({path:screenshots+'/professional-'+route+'-phone.jpg',type:'jpeg',quality:85});

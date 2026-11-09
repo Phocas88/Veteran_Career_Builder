@@ -1,3 +1,4 @@
+import {titleCaseLabel} from './ui-titles.js';
 import {describeReference} from './service-descriptions.js?v=20261026-career-tools';
 import { branchCatalog, additionalDuties } from './branch-catalog.js';
 import {findSpecialty,fullCodeMatchesBase} from './service-codes.js?v=20261025-standalone-app';
@@ -31,7 +32,7 @@ function picker(box, kind, getLabel, getItems, onChoose) {
     browse.setAttribute('aria-pressed',String(!manualMode));manual.setAttribute('aria-pressed',String(manualMode));library.hidden=manualMode;
   }
   const render=()=>{
-    const previous=select.value,title=getLabel();caption.textContent='Choose '+title.toLowerCase();searchCaption.textContent='Find '+title.toLowerCase();
+    const previous=select.value,title=getLabel();caption.textContent=titleCaseLabel('Choose '+title.toLowerCase());searchCaption.textContent=titleCaseLabel('Find '+title.toLowerCase());
     const items=getItems(),query=search.value.trim().toLowerCase();
     select.replaceChildren(new Option(items.length?'Choose an item — it is added to this draft':'Choose a branch first',''));
     for(const item of items)if((item.value+' '+item.label).toLowerCase().includes(query))select.add(new Option(item.label,item.value));

@@ -8,27 +8,27 @@ export function initReviewFlow(api){
  let stage='draft',index=0;
  const root=$('review-results'),nav=el('nav',null,'review-task-nav');nav.setAttribute('aria-label','Review steps');
  for(const [key,text]of [['draft','Revised resume'],['details','Questions · optional']]){const b=el('button',text);b.type='button';b.dataset.reviewStage=key;b.onclick=()=>show(key);nav.append(b);}
- const careerButton=el('button','Career matches');careerButton.type='button';careerButton.onclick=()=>{document.dispatchEvent(new Event('careers:show-resume'));document.dispatchEvent(new CustomEvent('app:open-career',{detail:'careers'}));};careerButton.id='review-explore-careers';careerButton.className='text-button';
- const finish=el('button','Continue to design →');finish.type='button';finish.dataset.reviewFinish='true';finish.onclick=()=>api.finish();nav.append(finish);
- const title=el('h2','Review your revised resume');title.id='review-task-title';title.tabIndex=-1;
+ const careerButton=el('button','Career Matches');careerButton.type='button';careerButton.onclick=()=>{document.dispatchEvent(new Event('careers:show-resume'));document.dispatchEvent(new CustomEvent('app:open-career',{detail:'careers'}));};careerButton.id='review-explore-careers';careerButton.className='text-button';
+ const finish=el('button','Continue to Design →');finish.type='button';finish.dataset.reviewFinish='true';finish.onclick=()=>api.finish();nav.append(finish);
+ const title=el('h2','Review Your Revised Resume');title.id='review-task-title';title.tabIndex=-1;
  const intro=el('p','Step 1: check the resume below. If details are missing, choose Questions. When you are satisfied, press Continue to design.','review-task-intro');
  const draft=el('section');draft.id='review-draft-stage';
- const notes=el('details',null,'review-notes');notes.id='review-notes';notes.append(el('summary','Review summary, strengths & individual edits'));
+ const notes=el('details',null,'review-notes');notes.id='review-notes';notes.append(el('summary','Review Summary, Strengths & Individual Edits'));
  for(const n of [root.querySelector('.review-overview'),root.querySelector('.strengths-card'),root.querySelector('.suggestions-header'),$('review-stale'),$('undo-review'),$('suggestion-list')])notes.append(n);
  const details=el('section');details.id='review-details-stage';
  const questionHeader=el('div',null,'question-heading'),counter=el('p',null,'question-counter');counter.id='review-question-counter';counter.setAttribute('role','status');
- questionHeader.append(el('h3','Fill in the gaps'),el('p','Answer what you know, or skip a question. One AI update is included; gather your answers before sending.'),counter);
+ questionHeader.append(el('h3','Fill in the Gaps'),el('p','Answer what you know, or skip a question. One AI update is included; gather your answers before sending.'),counter);
  const findings=$('findings-card'),steps=$('next-steps-card');
  findings.replaceChildren($('review-findings'));
  const extra=el('section',null,'review-extra-fields');extra.id='review-extra-fields';extra.append(el('h3','Anything else to add?'),el('p','Optional: identify the job or section, then enter a fact you can verify.'),$('additional-facts'),$('add-review-fact'));
  const send=steps.querySelector('.answer-action');send.id='review-send-area';
  steps.replaceChildren($('next-steps'),extra);
- const actions=el('div',null,'question-navigation'),prev=el('button','← Previous','button button-secondary'),next=el('button','Next question →','button button-primary');prev.type=next.type='button';prev.id='review-question-prev';next.id='review-question-next';
+ const actions=el('div',null,'question-navigation'),prev=el('button','← Previous','button button-secondary'),next=el('button','Next Question →','button button-primary');prev.type=next.type='button';prev.id='review-question-prev';next.id='review-question-next';
  prev.onclick=()=>{index--;renderQuestion(true);};next.onclick=()=>{index++;renderQuestion(true);};actions.append(prev,next);
- const skip=el('button','Skip questions & continue to design →','text-button');skip.type='button';skip.id='review-skip-details';skip.onclick=()=>api.finish();
+ const skip=el('button','Skip Questions & Continue to Design →','text-button');skip.type='button';skip.id='review-skip-details';skip.onclick=()=>api.finish();
  details.append(questionHeader,findings,steps,actions,send,skip);
- const draftActions=el('div',null,'review-draft-actions');const ask=el('button','Something missing? Answer follow-up questions','button button-secondary');ask.id='review-open-details';ask.type='button';ask.onclick=()=>show('details');
- const current=el('button','Keep my current resume & choose a design →','text-button');current.type='button';current.id='review-keep-current';current.onclick=()=>api.finish(false);
+ const draftActions=el('div',null,'review-draft-actions');const ask=el('button','Something Missing? Answer Follow-Up Questions','button button-secondary');ask.id='review-open-details';ask.type='button';ask.onclick=()=>show('details');
+ const current=el('button','Keep My Current Resume & Choose a Design →','text-button');current.type='button';current.id='review-keep-current';current.onclick=()=>api.finish(false);
  draftActions.append(ask,current);
  const oldActions=root.querySelector('.results-actions');oldActions?.remove();
  const careerSummary=el('section',null,'review-career-summary');careerSummary.id='review-career-summary';draft.append($('rewrite-card'),draftActions,notes,careerSummary);root.replaceChildren(nav,title,intro,draft,details);
@@ -40,12 +40,13 @@ export function initReviewFlow(api){
   steps.hidden=index<$('review-findings').children.length;
   extra.hidden=index!==all.length;send.hidden=index!==all.length;
   prev.disabled=index===0;next.hidden=index===all.length;
-  next.textContent=index===all.length-1?'Next: extra details & submit →':'Next question →';
+  next.textContent=index===all.length-1?'Next: extra details & submit →':'Next Question →';
   const answered=all.filter(q=>q.querySelector('textarea')?.value.trim()).length;
   counter.textContent=index===all.length?`Ready to finish · ${answered} of ${all.length} questions answered`:`Question ${index+1} of ${all.length} · ${answered} answered`;
   if(focus){questionHeader.scrollIntoView({block:'start',behavior:'instant'});const target=index===all.length?extra.querySelector('input'):all[index]?.querySelector('textarea');target?.focus({preventScroll:true});}
  }
- function show(value,focus=true){stage=value;draft.hidden=value!=='draft';details.hidden=value!=='details';for(const b of nav.querySelectorAll('[data-review-stage]'))b.setAttribute('aria-current',b.dataset.reviewStage===value?'step':'false');title.textContent=value==='draft'?'Review your revised resume':'Add details only you can provide';intro.hidden=value==='details';renderQuestion();if(focus){title.focus({preventScroll:true});root.scrollIntoView({block:'start',behavior:'instant'});}}
+ function show(value,focus=true){stage=value;draft.hidden=value!=='draft';details.hidden=value!=='details';for(const b of nav.querySelectorAll('[data-review-stage]'))b.setAttribute('aria-current',b.dataset.reviewStage===value?'step':'false');title.textContent=value==='draft'?'Review Your Revised Resume':'Add details only you can provide';intro.hidden=value==='details';renderQuestion();if(focus){title.focus({preventScroll:true});root.scrollIntoView({block:'start',behavior:'instant'});}}
  root.addEventListener('input',()=>renderQuestion());
- return {refresh(review){const matches=validResumeMatches(review.careerMatches);careerSummary.replaceChildren();careerSummary.hidden=false;careerSummary.append(el('h3',matches.length?'Quick ideas from this resume review':'Explore your career options'));if(matches.length){const list=el('ul');list.append(...matches.slice(0,5).map(m=>el('li',occupation(m.code).title)));careerSummary.append(list,el('p','These initial ideas come from the targeted review. Run Career explorer to assess your full background independently of the target job.'));}else careerSummary.append(el('p','Open Career explorer for resume-based ideas and the optional interest check.'));careerButton.textContent='Assess my full background for career paths →';careerSummary.append(careerButton);index=0;ask.textContent=`Something missing? Answer ${questions().length} follow-up ${questions().length===1?'question':'questions'}`;intro.textContent=review.refinementCount?'Your answers have been incorporated. Check the updated draft, then use it for your download.':'Step 1: check the resume below. If details are missing, choose Questions. When you are satisfied, press Continue to design.';notes.open=!review.revisedResume;show('draft',false);},reset(){careerSummary.replaceChildren();careerSummary.hidden=true;careerButton.textContent='Career matches';index=0;notes.open=false;show('draft',false);},show,get stage(){return stage;}};
+ return {refresh(review){const matches=validResumeMatches(review.careerMatches);careerSummary.replaceChildren();careerSummary.hidden=false;careerSummary.append(el('h3',matches.length?'Quick ideas from this resume review':'Explore your career options'));if(matches.length){const list=el('ul');list.append(...matches.slice(0,5).map(m=>el('li',occupation(m.code).title)));careerSummary.append(list,el('p','These initial ideas come from the targeted review. Run Career explorer to assess your full background independently of the target job.'));}else careerSummary.append(el('p','Open Career explorer for resume-based ideas and the optional interest check.'));careerButton.textContent='Assess My Full Background for Career Paths →';careerSummary.append(careerButton);index=0;ask.textContent=`Something missing? Answer ${questions().length} follow-up ${questions().length===1?'question':'questions'}`;intro.textContent=review.refinementCount?'Your answers have been incorporated. Check the updated draft, then use it for your download.':'Step 1: check the resume below. If details are missing, choose Questions. When you are satisfied, press Continue to design.';notes.open=!review.revisedResume;show('draft',false);},reset(){careerSummary.replaceChildren();careerSummary.hidden=true;careerButton.textContent='Career Matches';index=0;notes.open=false;show('draft',false);},show,get stage(){return stage;}};
 }
+

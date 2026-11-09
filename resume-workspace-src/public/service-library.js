@@ -1,8 +1,9 @@
+import {titleCaseLabel} from './ui-titles.js';
 import {describeReference} from './service-descriptions.js?v=20261026-career-tools';
 import {searchServiceLibrary,addReferenceToProfile} from './service-library-model.js?v=20261026-career-tools';
 const $=id=>document.getElementById(id);
 const el=(tag,text,className)=>{const n=document.createElement(tag);if(text)n.textContent=text;if(className)n.className=className;return n;};
-const kindName={specialty:'Specialties',qualification:'Qualifications',designator:'Special qualifications / designators'};
+const kindName={specialty:'Specialties',qualification:'Qualifications',designator:'Special Qualifications / Designators'};
 export function initServiceLibrary(api){
  let data,loading,selected=null,limit=20,generation=0,initial=true,controller,stage='branch';
  const message=text=>{$('library-status').textContent=text;};
@@ -10,7 +11,7 @@ export function initServiceLibrary(api){
  function chooseBranch(branch){$('library-branch').value=branch;$('library-search').value='';hideDetail();limit=20;render();setStage('kind');}
  function targets(){
   const select=$('library-target'),previous=select.value,profile=api.getProfile();
-  select.replaceChildren(new Option('New service experience','new'));
+  select.replaceChildren(new Option('New Service Experience','new'));
   profile.roles.forEach((r,i)=>{if(r.branch===selected?.branch)select.add(new Option([r.title||r.mosTitle||r.code||'Service experience '+(i+1),r.startDate,r.endDate].filter(Boolean).join(' · '),String(i)));});
   select.value=previous!=='new'&&[...select.options].some(o=>o.value===previous)?previous:select.options[1]?.value||'new';
  }
@@ -18,9 +19,9 @@ export function initServiceLibrary(api){
  function render(){
   if(!data)return;
   const branch=$('library-branch').value,kind=$('library-kind').value,query=$('library-search').value;
-  const meta=data.branches[branch];$('library-branch-summary').textContent=meta?.name||'All branches';$('library-current-context').textContent=(meta?.name||'All branches')+' · '+kindName[kind];$('library-qualification-label').textContent=(meta?.qualificationLabel||'Additional qualifications')+' →';$('library-designator-label').textContent=(meta?.designatorLabel||'Special identifiers')+' →';$('library-save-profile').textContent=api.user()?.email?'Save profile':'Create an account to save';
-  $('library-kind').options[1].textContent=meta?.qualificationLabel||'Qualifications (ASI / NEC / branch identifiers)';
-  $('library-kind').options[2].textContent=meta?.designatorLabel||'Special qualifications / designators';
+  const meta=data.branches[branch];$('library-branch-summary').textContent=meta?.name||'All branches';$('library-current-context').textContent=(meta?.name||'All branches')+' · '+kindName[kind];$('library-qualification-label').textContent=titleCaseLabel(meta?.qualificationLabel||'Additional qualifications')+' →';$('library-designator-label').textContent=titleCaseLabel(meta?.designatorLabel||'Special identifiers')+' →';$('library-save-profile').textContent=api.user()?.email?'Save Profile':'Create an Account to Save';
+  $('library-kind').options[1].textContent=titleCaseLabel(meta?.qualificationLabel||'Qualifications (ASI / NEC / branch identifiers)');
+  $('library-kind').options[2].textContent=titleCaseLabel(meta?.designatorLabel||'Special qualifications / designators');
   const found=searchServiceLibrary(data,{branch,kind,query});
   $('library-count').textContent=`${Math.min(limit,found.length)} of ${found.length} ${kindName[kind].toLowerCase()}${meta?' · '+meta.name:''}`;
   $('library-empty').hidden=found.length>0;$('library-more').hidden=found.length<=limit;
@@ -39,9 +40,9 @@ export function initServiceLibrary(api){
   const body=$('library-detail-body');body.replaceChildren();
   $('library-code-description').textContent=describeReference(entry);
   if(entry.intro)body.append(el('p',entry.intro));
-  if(entry.capabilities?.length){body.append(el('h5','Experience to reflect on'));const list=el('ul');for(const capability of entry.capabilities)list.append(el('li',capability));body.append(list,el('p','These are general reference topics. Describe only the duties and training you personally completed.'));}
-  if(entry.paths?.length){body.append(el('h5','Civilian directions to explore'));for(const p of entry.paths){const card=el('article',null,'library-path');card.append(el('h6',p.name),el('p',p.why));if(p.bridge)card.append(el('p','What to check: '+p.bridge));if(p.url)card.append(linked('Explore this career guide',p.url));body.append(card);}}
-  if(entry.crosswalk?.length){const details=el('details');details.append(el('summary','Related O*NET occupations'));const ul=el('ul');for(const o of entry.crosswalk)ul.append(el('li',o.title+' · '+o.code));details.append(ul,el('p',data.crosswalkSource+' · website snapshot '+data.crosswalkDate+'. A crosswalk does not establish individual qualifications.'));body.append(details);}
+  if(entry.capabilities?.length){body.append(el('h5','Experience to Reflect On'));const list=el('ul');for(const capability of entry.capabilities)list.append(el('li',capability));body.append(list,el('p','These are general reference topics. Describe only the duties and training you personally completed.'));}
+  if(entry.paths?.length){body.append(el('h5','Civilian Directions to Explore'));for(const p of entry.paths){const card=el('article',null,'library-path');card.append(el('h6',p.name),el('p',p.why));if(p.bridge)card.append(el('p','What to check: '+p.bridge));if(p.url)card.append(linked('Explore this career guide',p.url));body.append(card);}}
+  if(entry.crosswalk?.length){const details=el('details');details.append(el('summary','Related O*NET Occupations'));const ul=el('ul');for(const o of entry.crosswalk)ul.append(el('li',o.title+' · '+o.code));details.append(ul,el('p',data.crosswalkSource+' · website snapshot '+data.crosswalkDate+'. A crosswalk does not establish individual qualifications.'));body.append(details);}
   const links=el('div',null,'career-actions');if(entry.guide)links.append(linked('Read the full website MOS guide',entry.guide));
   links.append(linked('Website special qualifications guide','https://veterancareerpath.com/military-special-qualifications-civilian-guide.html'));
   for(const source of entry.citations||[])links.append(linked(source.label,source.url));body.append(links,el('p','Reference: '+entry.sources.join(' · ')+(entry.reviewedAt?' · website review date '+entry.reviewedAt:'')+'. Codes and titles can change. Verify against your service records and current branch guidance.'));
@@ -79,3 +80,4 @@ export function initServiceLibrary(api){
  $('library-view-profile').onclick=()=>api.showProfile();$('library-manual').onclick=()=>api.showProfile();
  setStage('branch',false);return {open,reset(){generation++;controller?.abort();loading=null;selected=null;initial=true;limit=20;$('library-search').value='';$('library-kind').value='specialty';$('library-target').replaceChildren();$('library-use-title').value='';$('library-view-profile').hidden=true;hideDetail();setStage('branch',false);message('');}};
 }
+

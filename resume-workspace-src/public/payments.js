@@ -134,11 +134,11 @@ export async function refreshPurchases(){
    const row=document.createElement('li'),text=document.createElement('span');
    text.textContent=new Date(build.createdAt).toLocaleDateString()+' · '+price+' · '+({complete:'Ready',paid:'Paid — continue building',running:'Building',awaiting_payment:'Checkout started — payment not yet verified'}[build.status]||build.status);
    const open=document.createElement('button');open.type='button';open.className='text-button';open.textContent=build.status==='complete'?'Open result':'Continue / recover';open.onclick=()=>openBuild(build.id).catch(e=>msg(e.message));
-   const remove=document.createElement('button');remove.type='button';remove.className='text-button danger';remove.textContent='Delete data';remove.onclick=async()=>{
+   const remove=document.createElement('button');remove.type='button';remove.className='text-button danger';remove.textContent='Delete Data';remove.onclick=async()=>{
     if(!confirm('Delete this build’s input, answers and AI result? This does not cancel payment or issue a refund. A minimal purchase record is retained for accounting.'))return;
     try{await api('delete',{buildId:build.id});if(active?.id===build.id)forgetActiveBuild();await refreshPurchases();msg('Build input and result deleted from the active database.');}catch(e){msg(e.message);}
    };
-   row.append(text,open);for(const design of (build.templates||[]).filter(value=>!(build.deletedTemplates||[]).includes(value))){const use=document.createElement('button');use.type='button';use.className='text-button';use.textContent='Open saved '+design;use.onclick=async()=>{try{await openBuild(build.id);const result=await api('template-open',{buildId:build.id,design});config.adapter.loadDraft(result.document);config.adapter.showExport({ready:true});}catch(e){msg(e.message);}};row.append(use);}row.append(remove);list.append(row);
+   row.append(text,open);for(const design of (build.templates||[]).filter(value=>!(build.deletedTemplates||[]).includes(value))){const use=document.createElement('button');use.type='button';use.className='text-button';use.textContent='Open Saved '+design;use.onclick=async()=>{try{await openBuild(build.id);const result=await api('template-open',{buildId:build.id,design});config.adapter.loadDraft(result.document);config.adapter.showExport({ready:true});}catch(e){msg(e.message);}};row.append(use);}row.append(remove);list.append(row);
   }
   $('purchase-empty').hidden=builds.length>0;
   const params=new URLSearchParams(location.search),id=params.get('build');
@@ -174,3 +174,4 @@ export async function refinePaidReview(answers,signal){
  if(active?.id!==id)throw new Error('Another resume was opened. Reopen the original purchase to recover its update.');
  active.review=review;active.refinementCount=review.refinementCount||1;changed();return review;
 }
+

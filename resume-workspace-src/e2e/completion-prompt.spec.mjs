@@ -4,11 +4,14 @@ import {installAccount,start,checkout,agreements} from './helpers/workspace.mjs'
 import {sampleResume} from './helpers/purchased-resumes.mjs';
 const link='https://veterancareerpath.com/resumereview/';
 async function fixture(page,kind='registered'){
- await installAccount(page,kind,{templateEntitlements:[]});const state={requests:[],claimed:false,purchases:0,fail:false,failFinish:false};
+ await installAccount(page,kind,{templateEntitlements:[]});const state={requests:[],claimed:false,purchases:0,fail:false,failFinish:false,document:null};
  await page.route('https://vcp-proxy.vercel.app/api/claude',async route=>{
   const body=route.request().postDataJSON();if(body.action==='purchase')state.purchases++;
   if(body.action.startsWith('feedback-')){state.requests.push(body);expect(route.request().headers()['x-vcp-firebase-token']).toMatch(/^firebase-/);if(body.action==='feedback-prompt'){const show=!state.claimed;state.claimed=true;return route.fulfill({json:{show}});}return state.fail?route.fulfill({status:503,json:{error:'unavailable'}}):route.fulfill({json:{submitted:true}});}
   if(body.action==='template-finish'&&state.failFinish)return route.fulfill({status:503,json:{error:'Unable to save'}});
+  if(body.action==='template-finish')state.document={...body.document,buildId:body.buildId};
+  if(body.action==='list')return route.fulfill({json:{builds:state.document?[{id:state.document.buildId,status:'complete',createdAt:'2026-11-09T12:00:00Z',templates:[state.document.design],includedTemplate:state.document.design}]:[]}});
+  if(body.action==='template-open')return route.fulfill({json:{document:state.document}});
   if(body.action==='run')return route.fulfill({json:{review:{score:82,summary:'Verified review.',strengths:[],findings:[],nextSteps:[],suggestions:[],revisedResume:sampleResume,rewriteNotes:[]}}});
   return route.fallback();
  });return state;
@@ -41,5 +44,6 @@ test('failed saves never prompt, and switching accounts clears an open comment a
 });
 
 test('a finished manual resume can be used for a separate $1 letter without requiring another resume review',async({page})=>{
- const state=await fixture(page);await start(page);await page.locator('#resume-input').fill(sampleResume);await finish(page);await page.locator('#completion-skip').click();await page.locator('#completion-letter').click();await page.locator('#letter-use-current').click();await expect(page.locator('#letter-resume')).toHaveValue(sampleResume);await expect(page.locator('.letter-intro')).toContainText('$1 each');expect(state.purchases).toBe(1);expect(state.requests.some(r=>r.action==='letter-prepare')).toBe(false);
+ const state=await fixture(page);await start(page);await page.locator('#resume-input').fill(sampleResume);await finish(page);await page.locator('#completion-skip').click();await page.locator('#completion-letter').click();await expect(page.locator('#letter-resume-choice option')).toHaveCount(2);await page.locator('#letter-resume-choice').selectOption({index:1});await expect(page.locator('#letter-selected-resume')).toBeVisible();await expect(page.locator('#letter-next-job')).toBeEnabled();await expect(page.locator('#letter-resume')).toHaveCount(0);await expect(page.locator('.letter-intro')).toContainText('$1 Each');expect(state.purchases).toBe(1);expect(state.requests.some(r=>r.action==='letter-prepare')).toBe(false);
 });
+

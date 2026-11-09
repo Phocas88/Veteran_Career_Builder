@@ -51,7 +51,7 @@ function startPagePreview(model) {
   previewKey = key;
   const version = ++previewVersion;
   clearTimeout(previewTimer);
-  $('page-preview-status').textContent = 'Preparing your PDF pages…';
+  $('page-preview-status').textContent = 'Preparing Your PDF Pages…';
   $('pdf-pages').setAttribute('aria-busy', 'true');
   $('page-limit-warning').hidden = true;
   previewTimer = setTimeout(async () => {
@@ -101,7 +101,7 @@ function refreshExport() {
   $('preview-label').textContent = `${designs[model.design].name} · ${arrangements[model.arrangement].name} · ${papers[model.paper].name}`;
   const previous = $('page-break-target').value;
   const candidates = model.nodes.filter(x => ['heading', 'job'].includes(x.type));
-  $('page-break-target').replaceChildren(new Option('Choose a heading or job…', ''), ...candidates.map(x => new Option(x.text, x.id)));
+  $('page-break-target').replaceChildren(new Option('Choose a Heading or Job…', ''), ...candidates.map(x => new Option(x.text, x.id)));
   if (candidates.some(x => x.id === previous)) $('page-break-target').value = previous;
   $('page-break-list').replaceChildren(...candidates.filter(x => pageBreaks.has(x.id)).map(x => {
     const button = element('button', 'text-button break-remove', `Remove break: ${x.text}`);
@@ -154,9 +154,9 @@ function refreshDraft() {
   $('resume-extras').hidden=!state.review;
   if (!state.review) {
     const hasText = !!text.trim(), ready = text.trim().length >= 100;
-    $('review-heading').textContent = ready ? 'Your resume is ready for review' : hasText ? 'Keep working on your resume' : 'Start with your resume';
+    $('review-heading').textContent = ready ? 'Your resume is ready for review' : hasText ? 'Keep working on your resume' : 'Start with Your Resume';
     $('review-start-help').textContent = ready ? 'Your resume text is here. Add optional job details, then check the agreements before starting your review.' : hasText ? 'Your text is still here. Add your experience, education and skills before requesting a review.' : 'Upload a resume or build one step by step. Then you can request a review.';
-    $('review-start').textContent = ready ? 'Continue to review →' : hasText ? 'Continue editing →' : 'Add your resume →';
+    $('review-start').textContent = ready ? 'Continue to review →' : hasText ? 'Continue editing →' : 'Add Your Resume →';
     $('review-start').disabled = importing;
   }
   document.dispatchEvent(new Event('resume:draft-changed'));
@@ -184,7 +184,7 @@ function setTab(tab, scroll = true) {
     if (button.dataset.tab === tab) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
   });
-  $('breadcrumb-current').textContent = { resume: 'Your resume', review: 'Review & improve', export: 'Export resume' }[tab];
+  $('breadcrumb-current').textContent = { resume: 'Your Resume', review: 'Review & Improve', export: 'Export Resume' }[tab];
   showAppView(tab==='resume'&&currentFlow()==='start'?'home':'workspace',{scroll:false});
   document.querySelector('.steps').hidden=tab==='resume'&&currentFlow()==='payment';
   refreshDraft();
@@ -509,7 +509,7 @@ $('error-dismiss').addEventListener('click', () => { $('error-banner').hidden = 
 $('template-finish').addEventListener('click',async()=>{
  if(exporting||!hasPaidBuild()||!input.value.trim())return;
  const owner=draftOwnerId(),model=currentDocument(),firstFinish=!careerBuildContext()?.includedTemplate;exporting=true;refreshDraft();
- $('finished-status').textContent='Saving your finished resume…';
+ $('finished-status').textContent='Saving Your Finished Resume…';
  try{
   if(model.applicationType==='federal')checkFederalDownload(model,await preparePdf(model));
   const result=await finishTemplate(currentDraft());if(!result||owner!==draftOwnerId())return;
@@ -718,3 +718,4 @@ initWorkspace({
 });
 document.addEventListener('resume:payment-changed',()=>{refreshDraft();syncAnswerAction();});
 $('purchase-history-open').addEventListener('click',()=>{$('account-open').click();$('purchase-history').open=true;});
+

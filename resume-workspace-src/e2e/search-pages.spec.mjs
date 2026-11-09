@@ -24,5 +24,6 @@ test('guide reading, examples, navigation and privacy work on phone and desktop'
 });
 
 test('the cover letter guide leads directly to the separate letter service',async({page})=>{
- await installAccount(page,'none');await page.goto('/veteran-cover-letter/');await page.locator('.guide-hero a[href="/app/#letter"]').click();await expect(page).toHaveURL(/\/app\/#letter$/);await expect(page.locator('#career-title')).toHaveText('Cover letters');await expect(page.locator('#letter-source-step')).toBeVisible();
+ await installAccount(page,'none');await page.goto('/veteran-cover-letter/');await page.locator('.guide-hero a[href="/app/#letter"]').click();await expect(page).toHaveURL(/\/app\/#letter$/);await expect(page.locator('#career-title')).toHaveText('Cover Letters');await expect(page.locator('#letter-source-step')).toBeVisible();
 });
+

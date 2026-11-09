@@ -20,7 +20,7 @@ test('the public landing page shows full templates and client-ready copy with pr
 });
 test('landing start choices pass through account entry to the existing payment step without purchasing automatically',async({page})=>{
  await prepare(page);const purchases=[];page.on('request',r=>{try{if(r.postDataJSON()?.action==='purchase')purchases.push(r.url());}catch{}});
- await page.goto('/');await page.locator('.hero').getByRole('link',{name:'Create my resume',exact:true}).click();await enter(page);
+ await page.goto('/');await page.locator('.hero').getByRole('link',{name:'Create My Resume',exact:true}).click();await enter(page);
  await expect(page.locator('#flow-payment')).toBeVisible();await expect(page.locator('#purchase-path')).toContainText('Build a new resume');await expect(page.locator('#upfront-consent')).not.toBeChecked();expect(purchases).toEqual([]);expect(new URL(page.url()).pathname).toBe('/app/');
 });
 test('upload entry is explicit and saved work is not discarded by a start shortcut',async({page})=>{
@@ -39,7 +39,7 @@ test('featured templates support keyboard navigation, photo previews and reduced
  await expect(hero.locator('[data-hero-name]')).toHaveText('Folio');await expect(hero.locator('.hero-slide[aria-hidden=false]')).toHaveCount(1);await expect(hero.locator('[data-hero-play]')).toBeHidden();
  const portrait=hero.locator('.hero-slide[aria-hidden=false] button');await portrait.click();await expect(page.locator('#example-dialog-title')).toHaveText('Folio resume');await expect(page.locator('#example-image')).toHaveAttribute('src','/site-examples/resume-folio.png');
  await page.keyboard.press('Escape');await expect(portrait).toBeFocused();await page.keyboard.press('ArrowLeft');await expect(hero.locator('[data-hero-name]')).toHaveText('Modern');
- await hero.locator('[data-hero-dot="3"]').click();await expect(hero.locator('[data-hero-name]')).toHaveText('Federal experience');
+ await hero.locator('[data-hero-dot="3"]').click();await expect(hero.locator('[data-hero-name]')).toHaveText('Federal Experience');
  await hero.locator('.hero-slide[aria-hidden=false] button').click();const info=await (await page.request.get('/site-examples/manifest.json')).json(),federal=info.examples.find(item=>item.key==='resume-federal-experience');
  expect(federal.photo).toBe(false);expect(federal.pages).toBeLessThanOrEqual(2);await expect(page.locator('#example-pages img')).toHaveCount(federal.pages);
 });
@@ -72,7 +72,7 @@ test('the workspace matches the public website and keeps every tool reachable on
  const start=await page.locator('.home-start-panel').boundingBox(),tools=await page.locator('.home-tools-panel').boundingBox();expect(tools.x).toBeGreaterThan(start.x+start.width);expect(Math.abs(tools.y-start.y)).toBeLessThan(6);expect(nav.height).toBeLessThan(70);
  await expect(page.locator('#home-my-resumes')).toBeVisible();await expect(page.locator('#choose-build')).toBeVisible();await expect(page.locator('#choose-import')).toBeVisible();await page.screenshot({path:screenshots+'/professional-workspace-desktop.jpg',type:'jpeg',quality:85});
  await page.screenshot({path:screenshots+'/workspace-desktop.png',fullPage:true});
- await page.locator('#home-my-resumes').click();await expect(page.locator('body')).toHaveAttribute('data-app-view','versions');await expect(page.locator('#career-title')).toHaveText('My resumes');
+ await page.locator('#home-my-resumes').click();await expect(page.locator('body')).toHaveAttribute('data-app-view','versions');await expect(page.locator('#career-title')).toHaveText('My Resumes');
  await navigateApp(page,'home');await page.locator('#home-cover-letter').click();await expect(page.locator('body')).toHaveAttribute('data-app-view','letter');await expect(page.locator('#letter-source-step')).toBeVisible();
 });
 test('profile, library, cover letters and calculator retain readable controls in the shared theme',async({page})=>{
@@ -82,7 +82,7 @@ test('profile, library, cover letters and calculator retain readable controls in
   await expect(page.locator('body')).toHaveAttribute('data-app-view',route);
   if(route==='library'){await page.locator('[data-library-branch="army"]').click();await page.locator('#library-choose-specialty').click();}
   const field=page.locator('input:not([type=hidden]):not([type=checkbox]):not([type=radio]):visible,select:visible,textarea:visible').first();
-  await expect(field).toBeVisible();await expect(field).toHaveCSS('color','rgb(38, 39, 32)');await expect(field).toHaveCSS('background-color','rgb(255, 254, 249)');
+  if(route==='letter'){await expect(page.locator('#letter-source-empty')).toBeVisible();await expect(page.locator('#letter-start-resume')).toBeVisible();await expect(page.locator('#letter-resume')).toHaveCount(0);}else{await expect(field).toBeVisible();await expect(field).toHaveCSS('color','rgb(38, 39, 32)');await expect(field).toHaveCSS('background-color','rgb(255, 254, 249)');}
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:screenshots+'/workspace-'+route+'-phone.png'});
   if(route==='profile'||route==='library')await page.screenshot({path:screenshots+'/professional-'+route+'-phone.jpg',type:'jpeg',quality:85});
@@ -126,3 +126,4 @@ test('withdrawing advertising reloads only the public page and stops the ad tag 
  await prepare(page,'none',{privacyPrompt:true});const ads=await advertisingFixture(page);await page.goto('/');await page.locator('#site-ads-choice').check();await page.locator('#site-privacy-save').click();await expect.poll(()=>ads.length).toBe(1);
  await page.locator('#privacy-options').click();await page.locator('#site-ads-choice').uncheck();await Promise.all([page.waitForEvent('load'),page.locator('#site-privacy-save').click()]);await expect(page.locator('#website-adsense')).toHaveCount(0);expect(ads).toHaveLength(1);expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).enabled,adsChoice)).toBe(false);
 });
+

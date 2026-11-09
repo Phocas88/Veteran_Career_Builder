@@ -19,7 +19,7 @@ export function initCompletionPrompt(api){
   try{
    const result=await api.request('feedback-prompt',{buildId});
    if(version!==generation||!current(c)||result.show!==true||document.body.dataset.appView!=='workspace'||document.querySelector('dialog[open]'))return;
-   context=c;$('completion-link-fallback').hidden=true;$('completion-feedback').reset();$('completion-submit').disabled=false;$('completion-skip').disabled=false;$('completion-feedback-status').textContent='';$('completion-share-status').textContent='';$('completion-rating-label').textContent='Choose 1 to 5 stars';
+   context=c;$('completion-link-fallback').hidden=true;$('completion-feedback').reset();$('completion-submit').disabled=false;$('completion-skip').disabled=false;$('completion-feedback-status').textContent='';$('completion-share-status').textContent='';$('completion-rating-label').textContent='Choose 1 to 5 Stars';
    for(const label of dialog.querySelectorAll('.completion-stars label'))label.dataset.filled='false';
    $('completion-feedback').hidden=false;$('completion-next').hidden=true;$('completion-title').textContent='How was your experience?';$('completion-intro').textContent='Your resume is saved and ready to download.';dialog.showModal();
   }catch{/* A feedback connection failure never interrupts the saved resume. */}
@@ -27,14 +27,14 @@ export function initCompletionPrompt(api){
  $('completion-feedback').addEventListener('change',()=>{
   const value=Number(new FormData($('completion-feedback')).get('experience-rating'));
   const labels=['Poor','Fair','Good','Very good','Excellent'];
-  $('completion-rating-label').textContent=value?value+' out of 5 · '+labels[value-1]:'Choose 1 to 5 stars';
+  $('completion-rating-label').textContent=value?value+' out of 5 · '+labels[value-1]:'Choose 1 to 5 Stars';
   for(const label of dialog.querySelectorAll('.completion-stars label'))label.dataset.filled=String(Number(label.querySelector('input').value)<=value);
  });
  $('completion-feedback').onsubmit=async event=>{
   event.preventDefault();if(busy||!current(context))return;
   const rating=Number(new FormData(event.currentTarget).get('experience-rating'));if(!Number.isInteger(rating)||rating<1||rating>5)return;
   const c=context,version=generation;busy=true;controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
-  $('completion-submit').disabled=true;$('completion-skip').disabled=true;$('completion-feedback-status').textContent='Sending your feedback…';
+  $('completion-submit').disabled=true;$('completion-skip').disabled=true;$('completion-feedback-status').textContent='Sending Your Feedback…';
   try{const result=await api.request('feedback-submit',{buildId:c.buildId,rating,comment:$('completion-comment').value.trim()},controller.signal);if(version!==generation||!current(c)||!dialog.open)return;if(result.submitted!==true)throw new Error('not_submitted');next(true);}
   catch{if(version===generation&&current(c)&&dialog.open)$('completion-feedback-status').textContent='Your resume is saved. Feedback could not be sent. Try again, or choose Skip.';}
   finally{clearTimeout(timeout);if(version===generation){busy=false;controller=null;$('completion-submit').disabled=false;$('completion-skip').disabled=false;}}
@@ -60,3 +60,4 @@ export function initCompletionPrompt(api){
  document.addEventListener('app:view-changed',()=>{if(dialog.open)close();});
  return {reset};
 }
+

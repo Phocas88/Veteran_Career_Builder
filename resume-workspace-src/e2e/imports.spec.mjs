@@ -62,7 +62,7 @@ test('canceling replacement keeps the existing draft', async ({ page }) => {
 
 test('existing resume starts with a clear file choice without opening the keyboard',async({page})=>{
  await page.goto('/');if(await page.locator('#welcome-dialog').isVisible())await page.locator('#welcome-guest').click();await page.locator('#choose-import').click();await unlockEntry(page);
- await expect(page.locator('#import-resume')).toHaveText(/Import your resume/);await expect(page.locator('#import-resume')).toBeVisible();await expect(page.locator('#resume-text-editor')).toBeHidden();await expect(page.locator('#next-job')).toBeDisabled();
+ await expect(page.locator('#import-resume')).toHaveText(/Import Your Resume/);await expect(page.locator('#import-resume')).toBeVisible();await expect(page.locator('#resume-text-editor')).toBeHidden();await expect(page.locator('#next-job')).toBeDisabled();
  expect(await page.evaluate(()=>document.activeElement.id)).not.toBe('resume-input');
  const chooser=page.waitForEvent('filechooser');await page.locator('#import-resume').click();await (await chooser).setFiles(fixture('resume.pdf'));
  await expect(page.locator('#resume-file-name')).toHaveText('resume.pdf');await expect(page.locator('#resume-text-editor')).toBeVisible();await expect(page.locator('#resume-upload-area')).toBeHidden();await expect(page.locator('#next-job')).toBeEnabled();
@@ -74,3 +74,4 @@ test('paste and upload choices preserve entered text and use a readable mobile e
  await page.locator('#resume-input').fill(original);await page.locator('#resume-upload-mode').click();await expect(page.locator('#resume-input')).toHaveValue(original);await page.locator('#resume-paste-mode').click();await expect(page.locator('#resume-input')).toHaveValue(original);
  const type=await page.locator('#resume-input').evaluate(el=>({size:parseFloat(getComputedStyle(el).fontSize),line:parseFloat(getComputedStyle(el).lineHeight)}));expect(type.size).toBeGreaterThanOrEqual(16);expect(type.line/type.size).toBeLessThanOrEqual(1.7);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+

@@ -34,7 +34,7 @@ export function initVaCalculator(){
   const matches=findConditions({category:$('va-condition-category').value,query:$('va-condition-search').value});
   preset.replaceChildren(new Option(matches.length?'Choose a condition':'No matches — enter your condition name',''));
   for(const item of matches)preset.add(new Option(item.name,item.id));
-  preset.add(new Option('My condition is not listed — enter its name','custom'));
+  preset.add(new Option('My Condition Is Not Listed — Enter Its Name','custom'));
   preset.value=[...preset.options].some(option=>option.value===selected)?selected:'';
   $('va-condition-count').textContent=matches.length+' common '+(matches.length===1?'condition':'conditions')+(matches.length?' · or enter the name from your letter.':'. Try another search, or enter the name from your letter.');
   describeSelection();
@@ -49,7 +49,7 @@ export function initVaCalculator(){
  }
  function resetEditor(){
   editing=null;$('va-condition-search').value='';$('va-condition-name').value='';$('va-condition-rating').value='';$('va-condition-type').value='unspecified';
-  $('va-editor-title').textContent='Add a condition';$('va-add-condition').textContent='+ Add condition to my list';fillPresets();
+  $('va-editor-title').textContent='Add a Condition';$('va-add-condition').textContent='+ Add Condition to My List';fillPresets();
  }
  function setEditor(open,{moveFocus=true}={}){
   editor.hidden=!open;$('va-add-another').hidden=open||!conditions.length;
@@ -74,14 +74,14 @@ export function initVaCalculator(){
    };
    actions.append(edit,remove);row.append(actions);list.append(row);
   }
-  $('va-list-title').textContent='Your conditions ('+conditions.length+')';$('va-list-empty').hidden=!!conditions.length;
+  $('va-list-title').textContent='Your Conditions ('+conditions.length+')';$('va-list-empty').hidden=!!conditions.length;
  }
  function editCondition(id){
   const item=conditions.find(value=>value.id===id);if(!item)return;
   resetEditor();editing=id;$('va-condition-category').value=item.categoryId||'';
   const stored=CONDITIONS.find(value=>value.id===item.presetId);fillPresets(stored?stored.id:'custom');
   $('va-condition-name').value=item.name;$('va-condition-rating').value=String(item.rating);$('va-condition-type').value=item.type;
-  $('va-editor-title').textContent='Edit this condition';$('va-add-condition').textContent='Save condition changes';
+  $('va-editor-title').textContent='Edit This Condition';$('va-add-condition').textContent='Save Condition Changes';
   clearErrors();$('va-condition-status').textContent='';setEditor(true);
  }
  function addCondition(){
@@ -103,7 +103,7 @@ export function initVaCalculator(){
  function conditionInput(){
   const official=$('va-rating-mode').value==='official';
   if(official){if(!$('va-official').value)throw new Error('Choose your VA-assigned combined rating.');return {official:true,rating:Number($('va-official').value),steps:[]};}
-  if(hasPending())throw new Error(editing?'Press “Save condition changes” before continuing.':'Your condition has not been added yet. Press “Add condition to my list” before continuing.');
+  if(hasPending())throw new Error(editing?'Press “Save Condition Changes” before continuing.':'Your condition has not been added yet. Press “Add Condition to My List” before continuing.');
   if(!conditions.length)throw new Error('Add at least one condition, or choose “I know my VA combined rating.”');
   return {official:false,...combinedRating(conditions.map(item=>item.rating))};
  }
@@ -153,7 +153,7 @@ export function initVaCalculator(){
    {text:$('va-pay-basis').textContent,margin:[0,0,0,12]},
   ];
   if(snapshot.result.projected)content.push({text:$('va-cola-comparison').textContent,margin:[0,0,0,14]});
-  content.push({text:'Monthly payment breakdown',fontSize:14,bold:true,margin:[0,14,0,8]},...snapshot.result.breakdown.map(item=>({text:item.label+': '+money(item.amount),margin:[0,0,0,6]})),{text:'Conditions & family details used',fontSize:14,bold:true,margin:[0,16,0,8]},{ul:detail,margin:[0,0,0,14]});
+  content.push({text:'Monthly Payment Breakdown',fontSize:14,bold:true,margin:[0,14,0,8]},...snapshot.result.breakdown.map(item=>({text:item.label+': '+money(item.amount),margin:[0,0,0,6]})),{text:'Conditions & Family Details Used',fontSize:14,bold:true,margin:[0,16,0,8]},{ul:detail,margin:[0,0,0,14]});
   if(!snapshot.combined.official)content.push({text:'Combined-rating math',fontSize:14,bold:true,margin:[0,12,0,8]},{ol:Array.from($('va-math').children).map(item=>item.textContent),margin:[0,0,0,14]});
   content.push({text:snapshot.result.projected?'2027 projection: each 2026 VA table amount is multiplied by 1.036 and rounded to cents. VA has not yet published 2027 dollar tables. Final figures and rounding may differ.':'Published 2026 VA rates, effective December 1, 2025.',margin:[0,14,0,10]},{text:$('calculator-panel').querySelector('.va-footer p').textContent,fontSize:9,margin:[0,0,0,12]},{text:'Sources checked October 28, 2026',fontSize:11,bold:true,margin:[0,12,0,8]},...Array.from(document.querySelectorAll('.va-year-panel a')).map(link=>({text:link.href,link:link.href,fontSize:9,margin:[0,0,0,8]})));
   button.disabled=true;button.textContent='Preparing PDF…';$('va-print-status').textContent='Preparing your estimate as a PDF on this device.';
@@ -179,8 +179,8 @@ export function initVaCalculator(){
   add('p','Veteran Career Path · Veteran Resumes');add('h1','VA compensation estimate');add('h2',rateYear(lastEstimate.result.year).label);
   add('p','Combined rating: '+lastEstimate.combined.rating+'%');add('p',money(lastEstimate.result.monthly)+' / month · '+money(lastEstimate.result.annual)+' / year');
   add('p',$('va-pay-basis').textContent);if(lastEstimate.result.projected)add('p',$('va-cola-comparison').textContent);
-  add('h2','Monthly payment breakdown');d.body.append(d.importNode($('va-breakdown'),true));
-  add('h2','Conditions & family details used');d.body.append(d.importNode($('va-input-summary'),true));
+  add('h2','Monthly Payment Breakdown');d.body.append(d.importNode($('va-breakdown'),true));
+  add('h2','Conditions & Family Details Used');d.body.append(d.importNode($('va-input-summary'),true));
   if(!lastEstimate.combined.official){add('h2','Combined-rating math');d.body.append(d.importNode($('va-math'),true));}
   add('p',lastEstimate.result.projected?'2027 projection: 2026 VA table amounts × 1.036, rounded individually to cents. VA has not yet published 2027 dollar tables; final figures and rounding may differ.':'Published 2026 VA amounts, effective December 1, 2025.');
   add('p',$('calculator-panel').querySelector('.va-footer p').textContent);
@@ -213,3 +213,4 @@ export function initVaCalculator(){
  $('va-download-pdf').onclick=downloadEstimate;$('va-print').onclick=printEstimate;$('va-clear').onclick=()=>{reset();focus('va-conditions-title');};
  document.addEventListener('app:account-cleared',reset);reset();
 }
+

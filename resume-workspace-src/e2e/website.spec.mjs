@@ -9,7 +9,7 @@ async function enter(page){await expect(page.locator('body')).toHaveAttribute('d
 test('the public landing page shows full templates and client-ready copy with privacy choice before analytics',async({page})=>{
  await prepare(page,'none',{privacyPrompt:true});const hits=[],errors=[];page.on('request',r=>{if(/resume-analytics|google-analytics|googletagmanager/.test(r.url()))hits.push(r.url());});page.on('pageerror',e=>errors.push(e.message));
  await page.emulateMedia({reducedMotion:'reduce'});await page.setViewportSize({width:360,height:800});await page.goto('/');await expect(page.locator('#usage-analytics-notice')).toBeVisible();expect(hits).toEqual([]);await page.locator('[data-analytics-choice=deny]').click();
- await expect(page.locator('h1')).toContainText('Your experience.');await expect(page.locator('.site-header .site-brand')).toContainText('Veteran Resumes');await expect(page.locator('.site-header .site-brand img')).toHaveAttribute('src','/brand.svg');
+ await expect(page.locator('h1')).toContainText('Your experience.');await expect(page.locator('.site-header .site-brand')).toContainText('Veteran Resumes');await expect(page.locator('.site-header .site-brand img')).toHaveAttribute('src','/brand.svg?v=20261109-veteran-logo');
  await expect(page.locator('.sample-card')).toHaveCount(8);for(const image of await page.locator('.sample-card img').all()){await image.scrollIntoViewIfNeeded();await expect.poll(()=>image.evaluate(img=>img.complete&&img.naturalWidth>=816)).toBe(true);}
  await expect(page.locator('main')).not.toContainText(/\b(?:demo|fictional)\b/i);await expect(page.locator('[data-hero-play]')).toBeHidden();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect(errors).toEqual([]);
